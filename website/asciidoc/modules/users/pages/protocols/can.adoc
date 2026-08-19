@@ -17,57 +17,49 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-= CAN Bus Driver Adapter
+= CAN Bus
 
 image::users/protocols/can_banner.png[banner,512,167]
 
+NOTE: This page describes how the CAN drivers are put together. There is no driver with the
+protocol code `can` - connect with xref:canopen.adoc[CANopen] (`canopen`) or
+xref:genericcan.adoc[GenericCAN] (`genericcan`) instead.
 
+CAN differs from the other buses PLC4X supports in that the wire carries short, identifier-tagged
+frames rather than a request/response stream. The transports own the bus access and hand the
+drivers a uniform frame type; each driver then interprets those frames according to its own
+application-layer protocol.
 
-The CAN Bus driver is a special kind of driver which does not bring any logic.
-Its responsibility is to combine link:../transports/can.html[CAN transport facade] and custom application layer protocols.
-In this way, the protocol can use its own "root frame" type which is not delivered from CAN bus frame.
+== Transport and frame model
 
-== More details on the driver
+The link:../transports/can.html[CAN transport facade] provides a single frame representation that
+all CAN drivers work against:
 
-The `CANDriverAdapter` is a full implementation of Apache PLC4X API.
-Under the hood adapter will forward all operations to delegate driver.
-Work which is done by the adapter is to transform data incoming via CAN transport into frame supported by driver.
-In this regard the `CANDriverAdapter` does not implement any real protocol.
-All it does is transformation of incoming frames into frame desired by real driver.
+* `CanFrame` (`plc4j/transports/can`) - an identifier, up to 8 data bytes, and the standard/extended
+and remote-transmission-request flags. Standard identifiers are 11 bit (`MAX_STANDARD_ID`), extended
+ones 29 bit (`MAX_EXTENDED_ID`).
+* `CanFrameBuilder` - obtained from `CanFrame.builder()`, used by the drivers to construct outgoing
+frames.
+* `CanIdFilter` - lets a driver subscribe to a subset of identifiers instead of the whole bus.
 
-Below diagram explains how driver adapter works with CANopen.
-Given that this is currently biggest CAN driver implemented in Apache PLC4X we will use it as a reference.
+Two transports implement this facade: `can-socketcan` (Linux SocketCAN, the usual choice on real
+hardware) and `can-virtualcan` (an in-process bus, useful for tests and for running two PLC4X
+components against each other without a physical interface).
 
-[ditaa,apache-plc4x-can-canopen]
-....
-                                                     +--------------------------------------------+
-                                                     |            CAN Driver Adapter              |
+== Driver structure
 
-                                                                                    +----------------------------------------------------------+
-                                                       Conversation                 |                        CANopen Driver                    |
-                                       Protocol          Context                                        Protocol
-       CAN Transport                  Root Frame         Wrapper               Frame Handler           Root Frame               Protocol Logic
- wire   /---------\                 /------------\                                                     /---------\            |
- -----> | receive | --------------> | SocketCAN  | -----[transform] ------> [ map to protocol ] -----> | CANopen | ---------> | receive
-        |---------|                 |   Frame    |                                                     |  Frame  |            |
- <------|  write  |---------------- \------------/ <----------------------- [ map to transport] <----- \---------/ <--------- | publish
-        \---------/                                                                                                           |
-....
+Each CAN driver is a `ConnectionBase` implementation that owns a message codec translating between
+`CanFrame` and its own protocol frame:
 
-Looking at left most side of diagram we can see a CAN transport.
-The transport knows how to receive and send data to the CAN bus.
-Transport can create its own intermediate representation of CAN data frame.
-In case of `SocketCAN` there is a dedicated type called `SocketCANFrame`.
+* xref:canopen.adoc[CANopen] - `CANOpenConnection` with `CANOpenMessageCodec`, implementing the
+CANopen service model (SDO, PDO, NMT, heartbeat).
+* xref:genericcan.adoc[GenericCAN] - `GenericCANConnection`, which applies no application-layer
+semantics at all and simply maps identifiers to typed payload slices.
 
-Most of other drivers in Apache PLC4X which rely on TCP, UDP or serial transports can unify right above transport.
-Yet due to variety of APIs which are possible to be used with CAN bus such early unification at API level is not possible.
+Incoming frames arrive from the codec and are dispatched to the subscriptions registered for the
+matching node id; outgoing writes are encoded and handed straight back to the codec.
 
-Place where `CANDriverAdapter` jumps in is once transport formed the frame structure.
-Then, adapter asks the transport to turn that structure into a `FrameData`.
-An instance of `FrameData` is then passed to an adapter delivered by CANopen Driver.
-This adapter can then create a `CANopenFrame` which is processed by desired driver logic.
-
-The return side, when desired driver wants to publish information is a bit simplified.
-Because `FrameData` does not be a real type (it is an interface) we can skip it.
-With a help of a `CANFrameBuilder` provided by CAN transport driver can easily construct a structure which is supported by it.
-While this makes an API asymmetric it also makes it possible to use any third party transport with `CANopenDriver`.
+NOTE: Earlier releases interposed a separate `CANDriverAdapter` between the transport and the
+driver, with a `FrameData` interface and per-transport frame types such as `SocketCANFrame`. That
+indirection was removed when the drivers were ported to the new SPI: the adapter's work is now done
+by the driver's own connection class, and every transport produces a `CanFrame` directly.

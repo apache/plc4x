@@ -71,9 +71,16 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse {
 
     @Override
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
+        // A single handle can cover several tags - drivers commonly create one handle for the whole
+        // request and map it to every tag name. Returning it once per tag would make the usual
+        // "register a consumer on every handle" loop deliver each event N times, see GH-1896.
+        // Duplicates are detected by identity: two distinct handles that happen to compare equal
+        // are still two subscriptions.
+        Map<PlcSubscriptionHandle, Boolean> seen = new IdentityHashMap<>();
         List<PlcSubscriptionHandle> handles = new ArrayList<>(values.size());
         for (PlcResponseItem<PlcSubscriptionHandle> item : values.values()) {
-            if (item != null && item.getValue() != null) {
+            if (item != null && item.getValue() != null
+                && seen.put(item.getValue(), Boolean.TRUE) == null) {
                 handles.add(item.getValue());
             }
         }

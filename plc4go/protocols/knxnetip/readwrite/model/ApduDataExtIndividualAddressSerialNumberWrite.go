@@ -184,13 +184,13 @@ func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetPlx4xTypeName() stri
 	return "ApduDataExtIndividualAddressSerialNumberWrite"
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

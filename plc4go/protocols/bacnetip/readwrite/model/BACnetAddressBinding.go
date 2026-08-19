@@ -215,8 +215,8 @@ func (m *_BACnetAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetAddressBinding"
 }
 
-func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetAddressBinding) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAddressBinding) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

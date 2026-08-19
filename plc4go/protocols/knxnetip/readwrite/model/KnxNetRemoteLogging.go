@@ -212,8 +212,8 @@ func (m *_KnxNetRemoteLogging) GetPlx4xTypeName() string {
 	return "KnxNetRemoteLogging"
 }
 
-func (m *_KnxNetRemoteLogging) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
+func (m *_KnxNetRemoteLogging) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -221,7 +221,7 @@ func (m *_KnxNetRemoteLogging) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxNetRemoteLogging) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxNetRemoteLogging) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

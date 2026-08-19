@@ -100,11 +100,11 @@ func CastChunkType(structType any) ChunkType {
 	return castFunc(structType)
 }
 
-func (m ChunkType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ChunkType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m ChunkType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ChunkType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

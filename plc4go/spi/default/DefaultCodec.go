@@ -122,13 +122,15 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	d := &defaultCodec{
-		DefaultCodecRequirements:       defaultCodecRequirements,
-		transportInstance:              transportInstance,
-		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
-		expectations:                   []spi.Expectation{},
-		customMessageHandling:          customMessageHandler,
-		notifyExpireWorker:             make(chan struct{}),
-		notifyReceiveWorker:            make(chan struct{}),
+		DefaultCodecRequirements:      defaultCodecRequirements,
+		transportInstance:             transportInstance,
+		defaultIncomingMessageChannel: make(chan spi.Message, 100),
+		expectations:                  []spi.Expectation{},
+		customMessageHandling:         customMessageHandler,
+		// Buffered by one so a notification sent while the worker is between selects
+		// (e.g. inside TimeoutExpectations) is deferred instead of lost.
+		notifyExpireWorker:             make(chan struct{}, 1),
+		notifyReceiveWorker:            make(chan struct{}, 1),
 		receiveTimeout:                 receiveTimeout,
 		traceDefaultMessageCodecWorker: traceDefaultMessageCodecWorker || config.TraceDefaultMessageCodecWorker,
 		log:                            customLogger,
@@ -171,6 +173,12 @@ func (m *defaultCodec) Connect(ctx context.Context) error {
 	}
 
 	m.log.Debug().Msg("Message codec currently not running, starting worker now")
+	// The context is one-shot: a previous Disconnect (or a fatal transport error)
+	// cancelled it. Recreate it on reconnect, otherwise the freshly started workers
+	// would exit immediately through their ctx.Done() paths.
+	if m.ctx.Err() != nil {
+		m.ctx, m.ctxCancel = context.WithCancel(context.Background())
+	}
 	// running must be true BEFORE the workers start: a worker that observes
 	// running==false in its loop condition AND in its restart defer terminates
 	// permanently, leaving a "connected" codec whose expectations never expire.
@@ -197,10 +205,12 @@ func (m *defaultCodec) Disconnect() error {
 		return errors.New("already disconnected")
 	}
 	m.log.Trace().Msg("Disconnecting")
+	// The ctx cancellation wakes and stops both workers. The notify channels are
+	// deliberately NOT closed: they stay usable across a reconnect, and a late
+	// Expect/SendRequest on a disconnected codec must not panic with a send on a
+	// closed channel.
 	m.ctxCancel()
 	m.running.Store(false)
-	close(m.notifyExpireWorker)
-	close(m.notifyReceiveWorker)
 	m.log.Trace().Msg("Waiting for worker to shutdown")
 	m.activeWorker.Wait()
 	m.log.Trace().Msg("worker shut down")
@@ -500,6 +510,18 @@ mainLoop:
 			syncer := make(chan struct{})
 			m.wg.Go(func() {
 				defer close(syncer)
+				// A malformed frame can panic generated parsers (e.g. allocation
+				// panics on wire-declared sizes); recover here so a poisoned frame
+				// fails this receive cycle instead of killing the process.
+				defer func() {
+					if r := recover(); r != nil {
+						m.log.Error().
+							Str("stack", string(debug.Stack())).
+							Interface("err", r).
+							Msg("panic-ed while receiving")
+						err = errors.Errorf("panic while receiving: %v", r)
+					}
+				}()
 				if !m.running.Load() {
 					err = errors.New("not running")
 					return

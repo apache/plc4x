@@ -56,8 +56,8 @@ type ComObjectTableContract interface {
 
 // ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
 type ComObjectTableRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
 }
@@ -231,17 +231,17 @@ func (m *_ComObjectTable) GetPlx4xTypeName() string {
 	return "ComObjectTable"
 }
 
-func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ComObjectTable) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ComObjectTable) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

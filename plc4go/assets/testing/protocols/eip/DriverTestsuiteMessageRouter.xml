@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       byteOrder="LITTLE_ENDIAN">
+
+  <name>EIP</name>
+
+  <protocol-name>eip</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
+  <driver-name>eip</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>big-endian</name>
+      <value>false</value>
+    </parameter>
+  </driver-parameters>
+
+  <setup>
+    <!--
+      First the driver is expected to send a ListServicesRequest in order to find out if CIP
+      encapsulation is supported.
+    -->
+    <outgoing-plc-message name="Send list services request">
+      <parser-arguments>
+        <response>false</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">0</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesRequest>
+        </ListServicesRequest>
+      </EipPacket>
+    </outgoing-plc-message>
+    <!-- The PLC will respond accordingly -->
+    <incoming-plc-message name="Receive list services response">
+      <parser-arguments>
+        <response>true</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">25</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">2417269484</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesResponse>
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">256</id>
+              <ServicesResponse>
+                <serviceLen dataType="uint" bitLength="16">19</serviceLen>
+                <encapsulationProtocol dataType="uint" bitLength="16">1</encapsulationProtocol>
+                <reserved dataType="uint" bitLength="2">0</reserved>
+                <supportsCIPEncapsulation dataType="bit" bitLength="1">true</supportsCIPEncapsulation>
+                <reserved dataType="uint" bitLength="12">0</reserved>
+                <supportsUDP dataType="bit" bitLength="1">false</supportsUDP>
+                <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
+              </ServicesResponse>
+            </TypeId>
+          </typeIds>
+        </ListServicesResponse>
+      </EipPacket>
+    </incoming-plc-message>
+    <outgoing-plc-message name="Send connection request">
+      <parser-arguments>
+        <response>false</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionRequest>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionRequest>
+      </EipPacket>
+    </outgoing-plc-message>
+    <incoming-plc-message name="Receive connection response">
+      <parser-arguments>
+        <response>true</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionResponse>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionResponse>
+      </EipPacket>
+    </incoming-plc-message>
+
+    <outgoing-plc-message name="Send get attribute all request">
+      <parser-arguments>
+        <response>false</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">22</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">6</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllRequest>
+                      <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                      <classSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">2</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </classSegment>
+                      <instanceSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </instanceSegment>
+                    </GetAttributeAllRequest>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeIds>
+        </CipRRData>
+      </EipPacket>
+    </outgoing-plc-message>
+    <!-- Device advertises ONLY the MessageRouter class (2) - no ConnectionManager, so no ForwardOpen -->
+    <incoming-plc-message name="Receive get attribute all response">
+      <parser-arguments>
+        <response>true</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">26</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">10</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <attributes>
+                        <CIPAttributes>
+                          <numberOfClasses dataType="uint" bitLength="16">1</numberOfClasses>
+                          <classId isList="true">
+                            <value dataType="uint" bitLength="16">2</value>
+                          </classId>
+                          <numberAvailable dataType="uint" bitLength="16">1</numberAvailable>
+                          <data dataType="byte" bitLength="0">0x</data>
+                        </CIPAttributes>
+                      </attributes>
+                    </GetAttributeAllResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeIds>
+        </CipRRData>
+      </EipPacket>
+    </incoming-plc-message>
+  </setup>
+
+  <testcase>
+    <name>Two element read request via message router</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz1</name>
+              <address>%rate</address>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz2</name>
+              <address>%count</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send MultipleServiceRequest to PLC">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <EipPacket>
+          <command dataType="uint" bitLength="16">111</command>
+          <packetLength dataType="uint" bitLength="16">64</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+          <status dataType="uint" bitLength="32">0</status>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+          <options dataType="uint" bitLength="32">0</options>
+          <CipRRData>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">48</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">false</response>
+                      <service dataType="uint" bitLength="7">82</service>
+                      <CipUnconnectedRequest>
+                        <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                        <classSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                  <ClassID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                  </ClassID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </classSegment>
+                        <instanceSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                  <InstanceID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <instance dataType="uint" bitLength="8">1</instance>
+                                  </InstanceID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </instanceSegment>
+                        <reserved dataType="uint" bitLength="16">40197</reserved>
+                        <messageSize dataType="uint" bitLength="16">34</messageSize>
+                        <unconnectedService>
+                          <CipService>
+                            <response dataType="bit" bitLength="1">false</response>
+                            <service dataType="uint" bitLength="7">10</service>
+                            <MultipleServiceRequest>
+                              <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                              <requestPath dataType="uint" bitLength="32">19137056</requestPath>
+                              <data>
+                                <Services>
+                                  <serviceNb dataType="uint" bitLength="16">2</serviceNb>
+                                  <offsets isList="true">
+                                    <value dataType="uint" bitLength="16">6</value>
+                                    <value dataType="uint" bitLength="16">16</value>
+                                  </offsets>
+                                  <services isList="true">
+                                    <CipService>
+                                      <response dataType="bit" bitLength="1">false</response>
+                                      <service dataType="uint" bitLength="7">76</service>
+                                      <CipReadRequest>
+                                        <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
+                                        <tag dataType="byte" bitLength="48">0x910472617465</tag>
+                                        <elementNb dataType="uint" bitLength="16">1</elementNb>
+                                      </CipReadRequest>
+                                    </CipService>
+                                    <CipService>
+                                      <response dataType="bit" bitLength="1">false</response>
+                                      <service dataType="uint" bitLength="7">76</service>
+                                      <CipReadRequest>
+                                        <requestPathSize dataType="uint" bitLength="8">4</requestPathSize>
+                                        <tag dataType="byte" bitLength="64">0x9105636f756e7400</tag>
+                                        <elementNb dataType="uint" bitLength="16">1</elementNb>
+                                      </CipReadRequest>
+                                    </CipService>
+                                  </services>
+                                </Services>
+                              </data>
+                            </MultipleServiceRequest>
+                          </CipService>
+                        </unconnectedService>
+                        <route dataType="uint" bitLength="16">1</route>
+                        <backPlane dataType="int" bitLength="8">1</backPlane>
+                        <slot dataType="int" bitLength="8">0</slot>
+                      </CipUnconnectedRequest>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
+          </CipRRData>
+        </EipPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Get MultipleServiceResponse from PLC">
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <EipPacket>
+          <command dataType="uint" bitLength="16">111</command>
+          <packetLength dataType="uint" bitLength="16">46</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+          <status dataType="uint" bitLength="32">0</status>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+          <options dataType="uint" bitLength="32">0</options>
+          <CipRRData>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">30</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">true</response>
+                      <service dataType="uint" bitLength="7">10</service>
+                      <MultipleServiceResponse>
+                        <reserved dataType="uint" bitLength="8">0</reserved>
+                        <status dataType="uint" bitLength="8">0</status>
+                        <extStatus dataType="uint" bitLength="8">0</extStatus>
+                        <serviceNb dataType="uint" bitLength="16">2</serviceNb>
+                        <offsets isList="true">
+                          <value dataType="uint" bitLength="16">6</value>
+                          <value dataType="uint" bitLength="16">16</value>
+                        </offsets>
+                        <servicesData dataType="byte" bitLength="160">0xcc000000c40000000216cc000000c4002a000000</servicesData>
+                      </MultipleServiceResponse>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
+          </CipRRData>
+        </EipPacket>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz1>
+                    <PlcTagItem>
+                      <tag>
+                        <EipTag>
+                          <node dataType="string" bitLength="32" encoding="UTF8">rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
+                          <elementNb dataType="uint" bitLength="16">1</elementNb>
+                        </EipTag>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz1>
+                  <hurz2>
+                    <PlcTagItem>
+                      <tag>
+                        <EipTag>
+                          <node dataType="string" bitLength="40" encoding="UTF8">count</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
+                          <elementNb dataType="uint" bitLength="16">1</elementNb>
+                        </EipTag>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz2>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz1>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDINT dataType="int" bitLength="32">369229824</PlcDINT>
+                </value>
+              </PlcResponseItem>
+            </hurz1>
+            <hurz2>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDINT dataType="int" bitLength="32">42</PlcDINT>
+                </value>
+              </PlcResponseItem>
+            </hurz2>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Single element write request via message router</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>%rate:DINT</address>
+              <value>369229824</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="Send CipWriteRequest to PLC">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <EipPacket>
+          <command dataType="uint" bitLength="16">111</command>
+          <packetLength dataType="uint" bitLength="16">44</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+          <status dataType="uint" bitLength="32">0</status>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+          <options dataType="uint" bitLength="32">0</options>
+          <CipRRData>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">28</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">false</response>
+                      <service dataType="uint" bitLength="7">82</service>
+                      <CipUnconnectedRequest>
+                        <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                        <classSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                  <ClassID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                  </ClassID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </classSegment>
+                        <instanceSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                  <InstanceID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <instance dataType="uint" bitLength="8">1</instance>
+                                  </InstanceID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </instanceSegment>
+                        <reserved dataType="uint" bitLength="16">40197</reserved>
+                        <messageSize dataType="uint" bitLength="16">14</messageSize>
+                        <unconnectedService>
+                          <CipService>
+                            <response dataType="bit" bitLength="1">false</response>
+                            <service dataType="uint" bitLength="7">77</service>
+                            <CipWriteRequest>
+                              <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
+                              <tag dataType="byte" bitLength="48">0x910472617465</tag>
+                              <dataType>
+                                <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
+                                </CIPDataTypeCode>
+                              </dataType>
+                              <elementNb dataType="uint" bitLength="16">1</elementNb>
+                              <data dataType="byte" bitLength="32">0x00000216</data>
+                            </CipWriteRequest>
+                          </CipService>
+                        </unconnectedService>
+                        <route dataType="uint" bitLength="16">1</route>
+                        <backPlane dataType="int" bitLength="8">1</backPlane>
+                        <slot dataType="int" bitLength="8">0</slot>
+                      </CipUnconnectedRequest>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
+          </CipRRData>
+        </EipPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Get CipWriteResponse from PLC">
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <EipPacket>
+          <command dataType="uint" bitLength="16">111</command>
+          <packetLength dataType="uint" bitLength="16">28</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+          <status dataType="uint" bitLength="32">0</status>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+          <options dataType="uint" bitLength="32">0</options>
+          <CipRRData>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">4</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">true</response>
+                      <service dataType="uint" bitLength="7">77</service>
+                      <CipWriteResponse>
+                        <reserved dataType="uint" bitLength="8">0</reserved>
+                        <status dataType="uint" bitLength="8">0</status>
+                        <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      </CipWriteResponse>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
+          </CipRRData>
+        </EipPacket>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <EipTag>
+                          <node dataType="string" bitLength="32" encoding="UTF8">rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
+                          <elementNb dataType="uint" bitLength="16">1</elementNb>
+                        </EipTag>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+              <values isList="true">
+                <hurz>
+                  <PlcDINT dataType="int" bitLength="32">369229824</PlcDINT>
+                </hurz>
+              </values>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>

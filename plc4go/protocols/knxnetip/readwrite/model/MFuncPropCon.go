@@ -184,13 +184,13 @@ func (m *_MFuncPropCon) GetPlx4xTypeName() string {
 	return "MFuncPropCon"
 }
 
-func (m *_MFuncPropCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MFuncPropCon) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MFuncPropCon) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MFuncPropCon) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -440,18 +440,18 @@ func (_m *MockLengthAware) EXPECT() *MockLengthAware_Expecter {
 }
 
 // GetLengthInBits provides a mock function for the type MockLengthAware
-func (_mock *MockLengthAware) GetLengthInBits(ctx context.Context) uint16 {
+func (_mock *MockLengthAware) GetLengthInBits(ctx context.Context) uint64 {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLengthInBits")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func(context.Context) uint16); ok {
+	var r0 uint64
+	if returnFunc, ok := ret.Get(0).(func(context.Context) uint64); ok {
 		r0 = returnFunc(ctx)
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint64)
 	}
 	return r0
 }
@@ -480,29 +480,29 @@ func (_c *MockLengthAware_GetLengthInBits_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockLengthAware_GetLengthInBits_Call) Return(v uint16) *MockLengthAware_GetLengthInBits_Call {
+func (_c *MockLengthAware_GetLengthInBits_Call) Return(v uint64) *MockLengthAware_GetLengthInBits_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockLengthAware_GetLengthInBits_Call) RunAndReturn(run func(ctx context.Context) uint16) *MockLengthAware_GetLengthInBits_Call {
+func (_c *MockLengthAware_GetLengthInBits_Call) RunAndReturn(run func(ctx context.Context) uint64) *MockLengthAware_GetLengthInBits_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetLengthInBytes provides a mock function for the type MockLengthAware
-func (_mock *MockLengthAware) GetLengthInBytes(ctx context.Context) uint16 {
+func (_mock *MockLengthAware) GetLengthInBytes(ctx context.Context) uint64 {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLengthInBytes")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func(context.Context) uint16); ok {
+	var r0 uint64
+	if returnFunc, ok := ret.Get(0).(func(context.Context) uint64); ok {
 		r0 = returnFunc(ctx)
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint64)
 	}
 	return r0
 }
@@ -531,12 +531,12 @@ func (_c *MockLengthAware_GetLengthInBytes_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockLengthAware_GetLengthInBytes_Call) Return(v uint16) *MockLengthAware_GetLengthInBytes_Call {
+func (_c *MockLengthAware_GetLengthInBytes_Call) Return(v uint64) *MockLengthAware_GetLengthInBytes_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockLengthAware_GetLengthInBytes_Call) RunAndReturn(run func(ctx context.Context) uint16) *MockLengthAware_GetLengthInBytes_Call {
+func (_c *MockLengthAware_GetLengthInBytes_Call) RunAndReturn(run func(ctx context.Context) uint64) *MockLengthAware_GetLengthInBytes_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -569,18 +569,18 @@ func (_m *MockPositionAware) EXPECT() *MockPositionAware_Expecter {
 }
 
 // GetPos provides a mock function for the type MockPositionAware
-func (_mock *MockPositionAware) GetPos() uint16 {
+func (_mock *MockPositionAware) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -602,12 +602,12 @@ func (_c *MockPositionAware_GetPos_Call) Run(run func()) *MockPositionAware_GetP
 	return _c
 }
 
-func (_c *MockPositionAware_GetPos_Call) Return(v uint16) *MockPositionAware_GetPos_Call {
+func (_c *MockPositionAware_GetPos_Call) Return(v uint32) *MockPositionAware_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockPositionAware_GetPos_Call) RunAndReturn(run func() uint16) *MockPositionAware_GetPos_Call {
+func (_c *MockPositionAware_GetPos_Call) RunAndReturn(run func() uint32) *MockPositionAware_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -752,18 +752,18 @@ func (_c *MockReadBuffer_GetByteOrder_Call) RunAndReturn(run func() binary.ByteO
 }
 
 // GetPos provides a mock function for the type MockReadBuffer
-func (_mock *MockReadBuffer) GetPos() uint16 {
+func (_mock *MockReadBuffer) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -785,12 +785,12 @@ func (_c *MockReadBuffer_GetPos_Call) Run(run func()) *MockReadBuffer_GetPos_Cal
 	return _c
 }
 
-func (_c *MockReadBuffer_GetPos_Call) Return(v uint16) *MockReadBuffer_GetPos_Call {
+func (_c *MockReadBuffer_GetPos_Call) Return(v uint32) *MockReadBuffer_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockReadBuffer_GetPos_Call) RunAndReturn(run func() uint16) *MockReadBuffer_GetPos_Call {
+func (_c *MockReadBuffer_GetPos_Call) RunAndReturn(run func() uint32) *MockReadBuffer_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2203,7 +2203,7 @@ func (_c *MockReadBuffer_ReadUint8_Call) RunAndReturn(run func(logicalName strin
 }
 
 // Reset provides a mock function for the type MockReadBuffer
-func (_mock *MockReadBuffer) Reset(pos uint16) {
+func (_mock *MockReadBuffer) Reset(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -2214,16 +2214,16 @@ type MockReadBuffer_Reset_Call struct {
 }
 
 // Reset is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockReadBuffer_Expecter) Reset(pos interface{}) *MockReadBuffer_Reset_Call {
 	return &MockReadBuffer_Reset_Call{Call: _e.mock.On("Reset", pos)}
 }
 
-func (_c *MockReadBuffer_Reset_Call) Run(run func(pos uint16)) *MockReadBuffer_Reset_Call {
+func (_c *MockReadBuffer_Reset_Call) Run(run func(pos uint32)) *MockReadBuffer_Reset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -2237,7 +2237,7 @@ func (_c *MockReadBuffer_Reset_Call) Return() *MockReadBuffer_Reset_Call {
 	return _c
 }
 
-func (_c *MockReadBuffer_Reset_Call) RunAndReturn(run func(pos uint16)) *MockReadBuffer_Reset_Call {
+func (_c *MockReadBuffer_Reset_Call) RunAndReturn(run func(pos uint32)) *MockReadBuffer_Reset_Call {
 	_c.Run(run)
 	return _c
 }
@@ -2539,18 +2539,18 @@ func (_c *MockReadBufferByteBased_GetBytes_Call) RunAndReturn(run func() []byte)
 }
 
 // GetPos provides a mock function for the type MockReadBufferByteBased
-func (_mock *MockReadBufferByteBased) GetPos() uint16 {
+func (_mock *MockReadBufferByteBased) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -2572,12 +2572,12 @@ func (_c *MockReadBufferByteBased_GetPos_Call) Run(run func()) *MockReadBufferBy
 	return _c
 }
 
-func (_c *MockReadBufferByteBased_GetPos_Call) Return(v uint16) *MockReadBufferByteBased_GetPos_Call {
+func (_c *MockReadBufferByteBased_GetPos_Call) Return(v uint32) *MockReadBufferByteBased_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockReadBufferByteBased_GetPos_Call) RunAndReturn(run func() uint16) *MockReadBufferByteBased_GetPos_Call {
+func (_c *MockReadBufferByteBased_GetPos_Call) RunAndReturn(run func() uint32) *MockReadBufferByteBased_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -4085,7 +4085,7 @@ func (_c *MockReadBufferByteBased_ReadUint8_Call) RunAndReturn(run func(logicalN
 }
 
 // Reset provides a mock function for the type MockReadBufferByteBased
-func (_mock *MockReadBufferByteBased) Reset(pos uint16) {
+func (_mock *MockReadBufferByteBased) Reset(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -4096,16 +4096,16 @@ type MockReadBufferByteBased_Reset_Call struct {
 }
 
 // Reset is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockReadBufferByteBased_Expecter) Reset(pos interface{}) *MockReadBufferByteBased_Reset_Call {
 	return &MockReadBufferByteBased_Reset_Call{Call: _e.mock.On("Reset", pos)}
 }
 
-func (_c *MockReadBufferByteBased_Reset_Call) Run(run func(pos uint16)) *MockReadBufferByteBased_Reset_Call {
+func (_c *MockReadBufferByteBased_Reset_Call) Run(run func(pos uint32)) *MockReadBufferByteBased_Reset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -4119,7 +4119,7 @@ func (_c *MockReadBufferByteBased_Reset_Call) Return() *MockReadBufferByteBased_
 	return _c
 }
 
-func (_c *MockReadBufferByteBased_Reset_Call) RunAndReturn(run func(pos uint16)) *MockReadBufferByteBased_Reset_Call {
+func (_c *MockReadBufferByteBased_Reset_Call) RunAndReturn(run func(pos uint32)) *MockReadBufferByteBased_Reset_Call {
 	_c.Run(run)
 	return _c
 }
@@ -4457,18 +4457,18 @@ func (_c *MockWriteBuffer_GetByteOrder_Call) RunAndReturn(run func() binary.Byte
 }
 
 // GetPos provides a mock function for the type MockWriteBuffer
-func (_mock *MockWriteBuffer) GetPos() uint16 {
+func (_mock *MockWriteBuffer) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -4490,12 +4490,12 @@ func (_c *MockWriteBuffer_GetPos_Call) Run(run func()) *MockWriteBuffer_GetPos_C
 	return _c
 }
 
-func (_c *MockWriteBuffer_GetPos_Call) Return(v uint16) *MockWriteBuffer_GetPos_Call {
+func (_c *MockWriteBuffer_GetPos_Call) Return(v uint32) *MockWriteBuffer_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockWriteBuffer_GetPos_Call) RunAndReturn(run func() uint16) *MockWriteBuffer_GetPos_Call {
+func (_c *MockWriteBuffer_GetPos_Call) RunAndReturn(run func() uint32) *MockWriteBuffer_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -6226,18 +6226,18 @@ func (_c *MockWriteBufferBoxBased_GetByteOrder_Call) RunAndReturn(run func() bin
 }
 
 // GetPos provides a mock function for the type MockWriteBufferBoxBased
-func (_mock *MockWriteBufferBoxBased) GetPos() uint16 {
+func (_mock *MockWriteBufferBoxBased) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -6259,12 +6259,12 @@ func (_c *MockWriteBufferBoxBased_GetPos_Call) Run(run func()) *MockWriteBufferB
 	return _c
 }
 
-func (_c *MockWriteBufferBoxBased_GetPos_Call) Return(v uint16) *MockWriteBufferBoxBased_GetPos_Call {
+func (_c *MockWriteBufferBoxBased_GetPos_Call) Return(v uint32) *MockWriteBufferBoxBased_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockWriteBufferBoxBased_GetPos_Call) RunAndReturn(run func() uint16) *MockWriteBufferBoxBased_GetPos_Call {
+func (_c *MockWriteBufferBoxBased_GetPos_Call) RunAndReturn(run func() uint32) *MockWriteBufferBoxBased_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -7926,18 +7926,18 @@ func (_c *MockWriteBufferByteBased_GetBytes_Call) RunAndReturn(run func() []byte
 }
 
 // GetPos provides a mock function for the type MockWriteBufferByteBased
-func (_mock *MockWriteBufferByteBased) GetPos() uint16 {
+func (_mock *MockWriteBufferByteBased) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -7959,12 +7959,12 @@ func (_c *MockWriteBufferByteBased_GetPos_Call) Run(run func()) *MockWriteBuffer
 	return _c
 }
 
-func (_c *MockWriteBufferByteBased_GetPos_Call) Return(v uint16) *MockWriteBufferByteBased_GetPos_Call {
+func (_c *MockWriteBufferByteBased_GetPos_Call) Return(v uint32) *MockWriteBufferByteBased_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockWriteBufferByteBased_GetPos_Call) RunAndReturn(run func() uint16) *MockWriteBufferByteBased_GetPos_Call {
+func (_c *MockWriteBufferByteBased_GetPos_Call) RunAndReturn(run func() uint32) *MockWriteBufferByteBased_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -9677,18 +9677,18 @@ func (_c *MockWriteBufferJsonBased_GetJsonString_Call) RunAndReturn(run func() (
 }
 
 // GetPos provides a mock function for the type MockWriteBufferJsonBased
-func (_mock *MockWriteBufferJsonBased) GetPos() uint16 {
+func (_mock *MockWriteBufferJsonBased) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -9710,12 +9710,12 @@ func (_c *MockWriteBufferJsonBased_GetPos_Call) Run(run func()) *MockWriteBuffer
 	return _c
 }
 
-func (_c *MockWriteBufferJsonBased_GetPos_Call) Return(v uint16) *MockWriteBufferJsonBased_GetPos_Call {
+func (_c *MockWriteBufferJsonBased_GetPos_Call) Return(v uint32) *MockWriteBufferJsonBased_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockWriteBufferJsonBased_GetPos_Call) RunAndReturn(run func() uint16) *MockWriteBufferJsonBased_GetPos_Call {
+func (_c *MockWriteBufferJsonBased_GetPos_Call) RunAndReturn(run func() uint32) *MockWriteBufferJsonBased_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -11331,18 +11331,18 @@ func (_c *MockWriteBufferXmlBased_GetByteOrder_Call) RunAndReturn(run func() bin
 }
 
 // GetPos provides a mock function for the type MockWriteBufferXmlBased
-func (_mock *MockWriteBufferXmlBased) GetPos() uint16 {
+func (_mock *MockWriteBufferXmlBased) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -11364,12 +11364,12 @@ func (_c *MockWriteBufferXmlBased_GetPos_Call) Run(run func()) *MockWriteBufferX
 	return _c
 }
 
-func (_c *MockWriteBufferXmlBased_GetPos_Call) Return(v uint16) *MockWriteBufferXmlBased_GetPos_Call {
+func (_c *MockWriteBufferXmlBased_GetPos_Call) Return(v uint32) *MockWriteBufferXmlBased_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockWriteBufferXmlBased_GetPos_Call) RunAndReturn(run func() uint16) *MockWriteBufferXmlBased_GetPos_Call {
+func (_c *MockWriteBufferXmlBased_GetPos_Call) RunAndReturn(run func() uint32) *MockWriteBufferXmlBased_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }

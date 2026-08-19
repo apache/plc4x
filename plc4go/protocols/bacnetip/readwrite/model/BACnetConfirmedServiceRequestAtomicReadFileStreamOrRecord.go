@@ -66,8 +66,8 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract interface
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -345,8 +345,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPlx4xTyp
 	return "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -359,11 +359,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthIn
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

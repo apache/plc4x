@@ -409,8 +409,8 @@ func (m *_BACnetActionCommand) GetPlx4xTypeName() string {
 	return "BACnetActionCommand"
 }
 
-func (m *_BACnetActionCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetActionCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Optional Field (deviceIdentifier)
 	if m.DeviceIdentifier != nil {
@@ -452,7 +452,7 @@ func (m *_BACnetActionCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetActionCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetActionCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -63,8 +63,8 @@ type SALDataContract interface {
 
 // SALDataRequirements provides a set of functions which need to be implemented by a sub struct
 type SALDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetApplicationId returns ApplicationId (discriminator field)
 	GetApplicationId() ApplicationId
 }
@@ -512,8 +512,8 @@ func (m *_SALData) GetPlx4xTypeName() string {
 	return "SALData"
 }
 
-func (m *_SALData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SALData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Optional Field (salData)
 	if m.SalData != nil {
@@ -523,11 +523,11 @@ func (m *_SALData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_SALData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_SALData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

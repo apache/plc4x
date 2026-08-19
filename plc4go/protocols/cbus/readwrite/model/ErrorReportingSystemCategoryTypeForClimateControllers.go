@@ -178,11 +178,11 @@ func CastErrorReportingSystemCategoryTypeForClimateControllers(structType any) E
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBits(ctx context.Context) uint16 {
+func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -104,11 +104,11 @@ include::partial$s7.adoc[]
 
 |
 | `read`
-| Only supported with `tcp` transport.
+| Only supported with `cotp` transport.
 
 |
 | `write`
-| Only supported with `tcp` transport.
+| Only supported with `cotp` transport.
 
 //|
 //| `subscribe`
@@ -130,7 +130,7 @@ Any inconsistency in the URL definition will generate an exception that must be 
      .
      .
 try {
-    PlcConnection connection  new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400"); //(2.1)
+    PlcConnection connection  new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?cotp.remote-rack=0&cotp.remote-slot=3&controller-type=S7_400"); //(2.1)
     final PlcReadRequest.Builder subscription  connection.readRequestBuilder(); //(2.2)
      .
      .
@@ -344,18 +344,18 @@ This section collects what the community has found to work (see PLC4X issues #19
 Two things are important when connecting to an S7-200 (Smart):
 
 . Disable the automatic controller-type detection by passing `controller-type=S7_200`. The S7-200 does not answer the SZL/SSL identification request the driver normally uses to auto-detect the CPU family, so — as with the `LOGO` device mentioned above — the type has to be provided explicitly.
-. Provide the TSAP (Transport Service Access Point) values explicitly. The S7-200 (Smart) expects both the local and the remote TSAP to be `0x0200`, which is `512` in decimal. Set them with `local-tsap=512` and `remote-tsap=512`; a non-zero TSAP overrides the rack/slot based addressing.
+. Provide the TSAP (Transport Service Access Point) values explicitly. The S7-200 (Smart) expects both the local and the remote TSAP to be `0x0200`, which is `512` in decimal. Set them with `cotp.local-tsap=512` and `cotp.remote-tsap=512`; a non-zero TSAP overrides the rack/slot based addressing.
 
 A minimal, working connection string therefore looks like this:
 
 ----
-s7://192.168.12.100?local-tsap=512&remote-tsap=512&controller-type=S7_200
+s7://192.168.12.100?cotp.local-tsap=512&cotp.remote-tsap=512&controller-type=S7_200
 ----
 
-`remote-rack=0` and `remote-slot=0` are the defaults, so they are optional, but may be added for clarity:
+`cotp.remote-rack=0` and `cotp.remote-slot=0` are the defaults, so they are optional, but may be added for clarity:
 
 ----
-s7://192.168.12.100?remote-rack=0&remote-slot=0&local-tsap=512&remote-tsap=512&controller-type=S7_200
+s7://192.168.12.100?cotp.remote-rack=0&cotp.remote-slot=0&cotp.local-tsap=512&cotp.remote-tsap=512&controller-type=S7_200
 ----
 
 Both reading and writing have been confirmed to work against an S7-200 Smart with this configuration.
@@ -582,7 +582,7 @@ public class PLCEventModeSubscription {
  
    public static void main(String[] args) throws Exception {
     try (PlcConnection connection  new PlcDriverManager()
-			.getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+			.getConnection("s7://192.168.1.51?cotp.remote-rack=0&cotp.remote-slot=3&controller-type=S7_400")) {
 
       final PlcSubscriptionRequest.Builder subscription  connection.subscriptionRequestBuilder(); // <01>
 
@@ -765,7 +765,7 @@ Below is an example code for the subscription of events type *SYS*.
 ----
 public static void main(String[] args) throws Exception {
  try (PlcConnection connection  new PlcDriverManager().
-  getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+  getConnection("s7://192.168.1.51?cotp.remote-rack=0&cotp.remote-slot=3&controller-type=S7_400")) {
 
    final PlcSubscriptionRequest.Builder subscription  connection.subscriptionRequestBuilder(); //<01>
 
@@ -805,7 +805,7 @@ And below is an example code for the subscription of events type *USR*.
 ----
 public static void main(String[] args) throws Exception {
  try (PlcConnection connection  new PlcDriverManager().
-  getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+  getConnection("s7://192.168.1.51?cotp.remote-rack=0&cotp.remote-slot=3&controller-type=S7_400")) {
 
    final PlcSubscriptionRequest.Builder subscription  connection.subscriptionRequestBuilder();
 
@@ -1074,7 +1074,7 @@ public static void main(String[] args) throws Exception {
     System.out.println("URL: https://cache.industry.siemens.com/dl/files/604/44240604/att_67003/v1/s7sfc_en-EN.pdf");
     System.out.println("******************************************************************************************");          
         
-    try (PlcConnection connection  new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) { //(01)
+    try (PlcConnection connection  new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?cotp.remote-rack=0&cotp.remote-slot=3&controller-type=S7_400")) { //(01)
             
         final PlcReadRequest.Builder readrequest  connection.readRequestBuilder(); //(02)
                        

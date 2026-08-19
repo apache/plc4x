@@ -66,6 +66,9 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(nil, 0, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		groupAddressReadResponse, err := m.sendGroupAddressReadRequest(ctx, groupAddress)
@@ -79,12 +82,12 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 		payload = append(payload, byte(groupAddressReadResponse.GetDataFirstByte()))
 		payload = append(payload, groupAddressReadResponse.GetData()...)
 
-		// Parse the response data.
+		// Parse the response data. The payload is handed to the datapoint parser as-is:
+		// the generated parser reads the reserved bits/byte of the datapoint-type itself,
+		// so skipping the first byte here would consume the value of a small
+		// datapoint-type and shift a bigger one by a byte.
+		// (Java: KnxNetIpConnection hands the payload to KnxDatapoint.staticParse unchanged)
 		rb := utils.NewReadBufferByteBased(payload)
-		// If the size of the tag is greater than 6, we have to skip the first byte
-		if datapointType.DatapointMainType().SizeInBits() > 6 {
-			_, _ = rb.ReadUint8("datapointType", 8)
-		}
 		// Set a default datatype if none is provided
 		if *datapointType == driverModel.KnxDatapointType_DPT_UNKNOWN {
 			defaultDatapointType := driverModel.KnxDatapointType_USINT
@@ -102,6 +105,93 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 	})
 
 	return result
+}
+
+// WriteGroupAddress serializes the given value according to the given datapoint-type and
+// sends it as a GroupValueWrite to the given group address.
+//
+// The returned channel is always completed exactly once: with a nil error if the gateway
+// acknowledged and confirmed the frame, and with an error on any failure, including the
+// request-timeout which is applied here. (Java: KnxNetIpConnection#onWrite)
+func (m *Connection) WriteGroupAddress(ctx context.Context, groupAddress []byte, datapointType *driverModel.KnxDatapointType, value values.PlcValue) <-chan KnxWriteResult {
+	result := make(chan KnxWriteResult, 1)
+
+	sendResponse := func(err error) {
+		select {
+		case result <- KnxWriteResult{err: err}:
+		default:
+			m.log.Trace().Err(err).Msg("dropping write result")
+		}
+	}
+
+	m.wg.Go(func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(errors.Errorf("panic-ed %v", err))
+			}
+		}()
+
+		dataFirstByte, data, err := SerializeGroupValue(value, datapointType)
+		if err != nil {
+			sendResponse(err)
+			return
+		}
+
+		// Don't wait forever for a gateway which never answers.
+		// (Java: ackFuture.orTimeout(getConfiguration().getRequestTimeout(), MILLISECONDS))
+		writeContext, cancel := context.WithTimeout(ctx, m.getRequestTimeout())
+		defer cancel()
+		if err := m.sendGroupAddressWriteRequest(writeContext, groupAddress, dataFirstByte, data); err != nil {
+			sendResponse(errors.Wrap(err, "error writing group address"))
+			return
+		}
+
+		sendResponse(nil)
+	})
+
+	return result
+}
+
+// SerializeGroupValue turns a plc-value into the payload of a GroupValueWrite APDU: the
+// 6 bit "data first byte" which is part of the APDU itself, and the data bytes which follow
+// it.
+//
+// The generated datapoint serialization already produces exactly that layout: datapoint-types
+// of up to 6 bits are packed into a single byte (which then is the small-payload), everything
+// bigger is preceded by an empty reserved byte which becomes the (zero) first byte. Splitting
+// the serialized bytes into first-byte and rest is therefore the exact inverse of the
+// read-path, which glues them back together and hands the result to the datapoint parser
+// unchanged.
+// (Java: KnxNetIpConnection#serializePayload)
+func SerializeGroupValue(value values.PlcValue, datapointType *driverModel.KnxDatapointType) (int8, []byte, error) {
+	if value == nil {
+		return 0, nil, errors.New("no value given to write")
+	}
+	if datapointType == nil || *datapointType == driverModel.KnxDatapointType_DPT_UNKNOWN {
+		return 0, nil, errors.New("no datapoint-type given, unable to serialize the value")
+	}
+	serialized, err := driverModel.KnxDatapointSerialize(value, *datapointType)
+	if err != nil {
+		return 0, nil, errors.Wrap(err, "error serializing value")
+	}
+	if len(serialized) == 0 {
+		return 0, nil, errors.Errorf("serializing a value of type %s didn't produce any data", datapointType)
+	}
+	// The apdu only has room for 6 bits here, so anything bigger would silently be truncated.
+	// (Java: KnxNetIpConnection#checkSixBitByte)
+	if serialized[0] > 0x3F {
+		return 0, nil, errors.Errorf("the first byte of a value of type %s doesn't fit into the 6 bit small-payload", datapointType)
+	}
+	if len(serialized) == 1 {
+		return int8(serialized[0]), nil, nil
+	}
+	return int8(serialized[0]), serialized[1:], nil
 }
 
 func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverModel.KnxAddress) <-chan KnxDeviceConnectResult {
@@ -125,6 +215,9 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(nil, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		// If we're already connected, use that connection instead.
@@ -160,8 +253,15 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 				"error reading device descriptor: "+err.Error()))
 			return
 		}
-		// Save the device-descriptor value
-		deviceDescriptor := uint16(deviceDescriptorResponse.GetData()[0])<<8 | (uint16(deviceDescriptorResponse.GetData()[1]) & 0xFF)
+		// Save the device-descriptor value. The wire format permits an empty
+		// data array, so the 16-bit descriptor must be length-checked before
+		// indexing.
+		descriptorData := deviceDescriptorResponse.GetData()
+		if len(descriptorData) < 2 {
+			sendResponse(nil, errors.Errorf("device descriptor response contains %d data bytes (expected at least 2)", len(descriptorData)))
+			return
+		}
+		deviceDescriptor := uint16(descriptorData[0])<<8 | (uint16(descriptorData[1]) & 0xFF)
 		connection.deviceDescriptor = deviceDescriptor
 
 		// Last, not least, read the max APDU size
@@ -220,6 +320,9 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(nil, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		if connection, ok := m.DeviceConnections[targetAddress]; ok {
@@ -257,6 +360,9 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		// Check if there is already a connection available,
@@ -264,7 +370,13 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 		connection, ok := m.DeviceConnections[targetAddress]
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
-			deviceConnectionResult := <-connections
+			var deviceConnectionResult KnxDeviceConnectResult
+			select {
+			case deviceConnectionResult = <-connections:
+			case <-ctx.Done():
+				sendResponse(errors.Wrap(ctx.Err(), "context done while connecting to device"))
+				return
+			}
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
 				sendResponse(errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)))
@@ -316,6 +428,9 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(nil, 0, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		// Check if there is already a connection available,
@@ -323,7 +438,13 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 		connection, ok := m.DeviceConnections[targetAddress]
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
-			deviceConnectionResult := <-connections
+			var deviceConnectionResult KnxDeviceConnectResult
+			select {
+			case deviceConnectionResult = <-connections:
+			case <-ctx.Done():
+				sendResponse(nil, 0, errors.Wrap(ctx.Err(), "context done while connecting to device"))
+				return
+			}
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
 				sendResponse(nil,
@@ -400,6 +521,9 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(nil, 0, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		// Check if there is already a connection available,
@@ -407,7 +531,13 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		connection, ok := m.DeviceConnections[targetAddress]
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
-			deviceConnectionResult := <-connections
+			var deviceConnectionResult KnxDeviceConnectResult
+			select {
+			case deviceConnectionResult = <-connections:
+			case <-ctx.Done():
+				sendResponse(nil, 0, errors.Wrap(ctx.Err(), "context done while connecting to device"))
+				return
+			}
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
 				sendResponse(
@@ -464,6 +594,9 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
+				// Always complete the result channel, otherwise callers
+				// blocked on it would hang forever after a recovered panic.
+				sendResponse(nil, 0, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		// Set a default datatype, if none is specified
@@ -477,7 +610,13 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		connection, ok := m.DeviceConnections[targetAddress]
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
-			deviceConnectionResult := <-connections
+			var deviceConnectionResult KnxDeviceConnectResult
+			select {
+			case deviceConnectionResult = <-connections:
+			case <-ctx.Done():
+				sendResponse(nil, 0, errors.Wrap(ctx.Err(), "context done while connecting to device"))
+				return
+			}
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
 				sendResponse(
@@ -489,7 +628,8 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		}
 
 		if connection == nil {
-			// TODO: do we need to send a response here
+			// Complete the result channel so callers blocked on it don't hang forever.
+			sendResponse(nil, 0, errors.New("unable to connect to device"))
 			return
 		}
 		// If we successfully got a connection, read the property
@@ -508,7 +648,8 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
 			memoryReadResponse, err := m.sendDeviceMemoryReadRequest(ctx, targetAddress, curStartingAddress, numBytes)
 			if err != nil {
-				// TODO: do we need to send a response here
+				// Complete the result channel so callers blocked on it don't hang forever.
+				sendResponse(nil, 0, errors.Wrap(err, "error reading device memory"))
 				return
 			}
 

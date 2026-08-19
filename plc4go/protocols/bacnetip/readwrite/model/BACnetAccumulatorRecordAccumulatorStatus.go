@@ -112,11 +112,11 @@ func CastBACnetAccumulatorRecordAccumulatorStatus(structType any) BACnetAccumula
 	return castFunc(structType)
 }
 
-func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

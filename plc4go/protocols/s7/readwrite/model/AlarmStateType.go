@@ -118,11 +118,11 @@ func CastAlarmStateType(structType any) AlarmStateType {
 	return castFunc(structType)
 }
 
-func (m AlarmStateType) GetLengthInBits(ctx context.Context) uint16 {
+func (m AlarmStateType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m AlarmStateType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AlarmStateType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -226,8 +226,8 @@ func (m *_S7MessageResponseData) GetPlx4xTypeName() string {
 	return "S7MessageResponseData"
 }
 
-func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7MessageContract.(*_S7Message).getLengthInBits(ctx))
+func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7MessageContract.(*_S7Message).getLengthInBits(ctx))
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7MessageResponseData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7MessageResponseData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

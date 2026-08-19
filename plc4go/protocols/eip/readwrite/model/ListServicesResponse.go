@@ -220,8 +220,8 @@ func (m *_ListServicesResponse) GetPlx4xTypeName() string {
 	return "ListServicesResponse"
 }
 
-func (m *_ListServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+func (m *_ListServicesResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Implicit Field (typeIdCount)
 	lengthInBits += 16
@@ -237,7 +237,7 @@ func (m *_ListServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ListServicesResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ListServicesResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

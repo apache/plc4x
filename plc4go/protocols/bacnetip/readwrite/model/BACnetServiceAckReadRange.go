@@ -409,8 +409,8 @@ func (m *_BACnetServiceAckReadRange) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadRange"
 }
 
-func (m *_BACnetServiceAckReadRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckReadRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -442,7 +442,7 @@ func (m *_BACnetServiceAckReadRange) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckReadRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckReadRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

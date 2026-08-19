@@ -139,13 +139,13 @@ func (m *_Index) GetPlx4xTypeName() string {
 	return "Index"
 }
 
-func (m *_Index) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Index) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_Index) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Index) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

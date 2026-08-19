@@ -162,7 +162,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("objectId", uint32(len([]rune(m.ObjectId.String()))*8), m.ObjectId.String()); err != nil {
+	if err := writeBuffer.WriteString("objectId", uint32(len([]rune(m.ObjectId.String()))*8), m.ObjectId.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 
@@ -170,7 +170,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 	for _, p := range m.Properties {
-		if err := writeBuffer.WriteString("property", uint32(len([]rune(p.String()))*8), p.String()); err != nil {
+		if err := writeBuffer.WriteString("property", uint32(len([]rune(p.String()))*8), p.String(), utils.WithEncoding("UTF8")); err != nil {
 			return err
 		}
 	}

@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.tools.eventpump;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -52,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <pre>
  * TagBatch batch = TagBatch.builder()
  *     .withBatchId("batch1")
- *     .withConnectionManager(connectionManager)
+ *     .withConnectionFactory(connectionFactory)
  *     .withConnectionString("ads://192.168.1.1:851")
  *     .addTag("temperature", "MAIN.temperature")
  *     .addTag("pressure", "MAIN.pressure")
@@ -71,7 +72,7 @@ public class TagBatch implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(TagBatch.class);
 
     private final String batchId;
-    private final PlcConnectionManager connectionManager;
+    private final PlcConnectionFactory connectionFactory;
     private final String connectionString;
     private final Map<String, String> tags; // tagName -> tagAddress
     private final Map<String, String> transforms; // tagName -> transformation expression
@@ -84,8 +85,20 @@ public class TagBatch implements AutoCloseable {
     private static final long DEFAULT_INITIAL_BACKOFF_MS = 1_000;
     private final long maxBackoffMs;
     private final long initialBackoffMs;
-    private int consecutiveFailures;
-    private long nextAllowedFetchTimeMs;
+    // Written from whichever thread completes a fetch, read from the trigger
+    // thread in fetchTags() — must be safely published.
+    private volatile int consecutiveFailures;
+    private volatile long nextAllowedFetchTimeMs;
+    private volatile long currentBackoffMs;
+
+    // Upper bound on a single fetch cycle. This is NOT a replacement for the driver's
+    // own request timeout (configure that in the connection string, e.g.
+    // "?request-timeout=10000") — it is deliberately set an order of magnitude higher,
+    // and exists only so that a driver which never completes its read future cannot
+    // wedge this batch forever: fetchInProgress would stay true and every later trigger
+    // would be skipped, silently killing the batch with no recovery.
+    private static final long DEFAULT_FETCH_TIMEOUT_MS = 300_000;
+    private final long fetchTimeoutMs;
 
     // Guard against overlapping fetch cycles. If a previous fetch hasn't completed
     // when the next trigger fires, the new fetch is skipped to prevent queue pile-up.
@@ -113,7 +126,7 @@ public class TagBatch implements AutoCloseable {
      * Private constructor - use Builder to create instances.
      *
      * @param batchId A unique identifier for this batch
-     * @param connectionManager The connection manager to use for leasing connections
+     * @param connectionFactory The connection manager to use for leasing connections
      * @param connectionString The connection string to use for getting connections
      * @param tags A map of tag names to tag addresses
      * @param transforms A map of tag names to transformation expressions
@@ -122,15 +135,15 @@ public class TagBatch implements AutoCloseable {
      * @param valueTransformer The value transformer to use (or null for default from registry)
      * @param transformerRegistry The transformer registry (or null to create default)
      */
-    private TagBatch(String batchId, PlcConnectionManager connectionManager, String connectionString,
+    private TagBatch(String batchId, PlcConnectionFactory connectionFactory, String connectionString,
                      Map<String, String> tags, Map<String, String> transforms, Trigger trigger,
                      TagBatchListener listener, ValueTransformer valueTransformer,
                      ValueTransformerRegistry transformerRegistry,
-                     long maxBackoffMs, long initialBackoffMs) {
+                     long maxBackoffMs, long initialBackoffMs, long fetchTimeoutMs) {
         if (batchId == null || batchId.trim().isEmpty()) {
             throw new IllegalArgumentException("Batch ID cannot be null or empty");
         }
-        if (connectionManager == null) {
+        if (connectionFactory == null) {
             throw new IllegalArgumentException("Connection manager cannot be null");
         }
         if (connectionString == null || connectionString.trim().isEmpty()) {
@@ -144,7 +157,7 @@ public class TagBatch implements AutoCloseable {
         }
 
         this.batchId = batchId;
-        this.connectionManager = connectionManager;
+        this.connectionFactory = connectionFactory;
         this.connectionString = connectionString;
         this.tags = new LinkedHashMap<>(tags); // Preserve order
         this.transforms = transforms != null ? new LinkedHashMap<>(transforms) : new LinkedHashMap<>();
@@ -167,6 +180,8 @@ public class TagBatch implements AutoCloseable {
         this.initialBackoffMs = initialBackoffMs;
         this.consecutiveFailures = 0;
         this.nextAllowedFetchTimeMs = 0;
+        this.currentBackoffMs = 0;
+        this.fetchTimeoutMs = fetchTimeoutMs;
 
         LOGGER.debug("Created TagBatch '{}' with {} tags ({} with transformations)",
             batchId, tags.size(), this.transforms.size());
@@ -195,7 +210,7 @@ public class TagBatch implements AutoCloseable {
      */
     public static class Builder {
         private String batchId;
-        private PlcConnectionManager connectionManager;
+        private PlcConnectionFactory connectionFactory;
         private String connectionString;
         private final Map<String, String> tagAddresses = new LinkedHashMap<>();
         private final Map<String, String> transforms = new LinkedHashMap<>();
@@ -205,6 +220,25 @@ public class TagBatch implements AutoCloseable {
         private ValueTransformerRegistry transformerRegistry;
         private long maxBackoffMs = DEFAULT_MAX_BACKOFF_MS;
         private long initialBackoffMs = DEFAULT_INITIAL_BACKOFF_MS;
+        private long fetchTimeoutMs = DEFAULT_FETCH_TIMEOUT_MS;
+
+        /**
+         * Set the upper bound for a single fetch cycle.
+         * <p>
+         * This is a watchdog, not a request timeout: it only exists so a driver that never
+         * completes its read future cannot wedge the batch permanently. Configure the actual
+         * request timeout on the connection string instead (for example
+         * {@code "opcua:tcp://host:4840?request-timeout=10000"}), and leave this comfortably
+         * above it — the default is 5 minutes.
+         *
+         * @param timeout The timeout, or a value &lt;= 0 to disable the watchdog entirely
+         * @param unit The time unit of the timeout
+         * @return This builder
+         */
+        public Builder withFetchTimeout(long timeout, TimeUnit unit) {
+            this.fetchTimeoutMs = timeout <= 0 ? 0 : unit.toMillis(timeout);
+            return this;
+        }
 
         /**
          * Set the batch ID.
@@ -220,11 +254,11 @@ public class TagBatch implements AutoCloseable {
         /**
          * Set the connection manager.
          *
-         * @param connectionManager The connection manager to use for leasing connections
+         * @param connectionFactory The connection manager to use for leasing connections
          * @return This builder
          */
-        public Builder withConnectionManager(PlcConnectionManager connectionManager) {
-            this.connectionManager = connectionManager;
+        public Builder withConnectionFactory(PlcConnectionFactory connectionFactory) {
+            this.connectionFactory = connectionFactory;
             return this;
         }
 
@@ -367,7 +401,7 @@ public class TagBatch implements AutoCloseable {
             if (batchId == null || batchId.trim().isEmpty()) {
                 throw new IllegalStateException("Batch ID must be set");
             }
-            if (connectionManager == null) {
+            if (connectionFactory == null) {
                 throw new IllegalStateException("Connection manager must be set");
             }
             if (connectionString == null || connectionString.trim().isEmpty()) {
@@ -378,8 +412,9 @@ public class TagBatch implements AutoCloseable {
             }
             // Note: listener is optional and can be null
 
-            return new TagBatch(batchId, connectionManager, connectionString, tagAddresses, transforms,
-                trigger, listener, valueTransformer, transformerRegistry, maxBackoffMs, initialBackoffMs);
+            return new TagBatch(batchId, connectionFactory, connectionString, tagAddresses, transforms,
+                trigger, listener, valueTransformer, transformerRegistry, maxBackoffMs, initialBackoffMs,
+                fetchTimeoutMs);
         }
     }
 
@@ -478,7 +513,7 @@ public class TagBatch implements AutoCloseable {
 
             // Lease a connection from the manager for this read operation
             LOGGER.debug("Batch '{}' - Leasing connection for fetch", batchId);
-            PlcConnection connection = connectionManager.getConnection(connectionString);
+            PlcConnection connection = connectionFactory.getConnection(connectionString);
             LOGGER.debug("Batch '{}' - Connection leased successfully", batchId);
 
             try {
@@ -511,8 +546,15 @@ public class TagBatch implements AutoCloseable {
                 LOGGER.debug("Batch '{}' - Executing read request", batchId);
                 CompletableFuture<? extends PlcReadResponse> readFuture = request.execute();
 
+                // Bound the cycle so a driver that never completes its future cannot wedge
+                // this batch forever. This does not cancel or shorten the driver's own
+                // request timeout — it fires only long after that should have.
+                CompletableFuture<? extends PlcReadResponse> guardedFuture = fetchTimeoutMs > 0
+                    ? readFuture.orTimeout(fetchTimeoutMs, TimeUnit.MILLISECONDS)
+                    : readFuture;
+
                 // Process the response and close the connection afterward
-                return readFuture
+                return guardedFuture
                     .whenComplete((response, throwable) -> {
                         try {
                             if (throwable != null) {
@@ -627,8 +669,8 @@ public class TagBatch implements AutoCloseable {
      *
      * @return The connection manager
      */
-    public PlcConnectionManager getConnectionManager() {
-        return connectionManager;
+    public PlcConnectionFactory getConnectionFactory() {
+        return connectionFactory;
     }
 
     /**
@@ -642,20 +684,24 @@ public class TagBatch implements AutoCloseable {
 
     /**
      * Get the tags being fetched.
+     * <p>
+     * Returns a snapshot: the tag map is mutable at runtime, so handing out a view of the
+     * live map would let a caller iterating it collide with a concurrent
+     * {@link #addTag(String, String)} and see a ConcurrentModificationException.
      *
-     * @return An unmodifiable map of tag names to addresses
+     * @return An unmodifiable snapshot of tag names to addresses
      */
-    public Map<String, String> getTags() {
-        return Collections.unmodifiableMap(tags);
+    public synchronized Map<String, String> getTags() {
+        return Collections.unmodifiableMap(new LinkedHashMap<>(tags));
     }
 
     /**
      * Get the names of all tags in the batch.
      *
-     * @return An unmodifiable set of tag names
+     * @return An unmodifiable snapshot of the tag names
      */
     public synchronized Set<String> getTagNames() {
-        return Collections.unmodifiableSet(tags.keySet());
+        return Collections.unmodifiableSet(new LinkedHashSet<>(tags.keySet()));
     }
 
     /**
@@ -860,14 +906,27 @@ public class TagBatch implements AutoCloseable {
 
     /**
      * Enter or increase backoff after a failed fetch attempt.
-     * Uses exponential backoff: initialBackoffMs * 2^(failures-1), capped at maxBackoffMs.
+     * Uses exponential backoff: the window doubles per consecutive failure, capped at
+     * maxBackoffMs.
+     * <p>
+     * The window is derived by doubling the previous one rather than evaluating
+     * {@code initialBackoffMs * (1L << (failures - 1))}. That expression is unsafe for a
+     * long outage: the multiplication overflows to a negative value from the 55th
+     * consecutive failure (with the 1s/60s defaults), which puts the next allowed fetch
+     * time in the past and disables the backoff altogether, and the shift itself wraps at
+     * 64 (Java masks long shift distances to {@code & 63}), restarting the ramp at the
+     * initial window. Both turn a long outage back into full-rate hammering of a PLC that
+     * is already in trouble. Doubling a value that is capped at maxBackoffMs every step
+     * cannot overflow.
      */
     private void enterBackoff() {
         consecutiveFailures++;
-        long backoffMs = Math.min(initialBackoffMs * (1L << (consecutiveFailures - 1)), maxBackoffMs);
-        nextAllowedFetchTimeMs = System.currentTimeMillis() + backoffMs;
+        long previous = currentBackoffMs;
+        long next = (previous <= 0) ? initialBackoffMs : previous * 2;
+        currentBackoffMs = Math.min(next, maxBackoffMs);
+        nextAllowedFetchTimeMs = System.currentTimeMillis() + currentBackoffMs;
         LOGGER.info("Batch '{}' entering backoff: next attempt in {}ms (failure {})",
-            batchId, backoffMs, consecutiveFailures);
+            batchId, currentBackoffMs, consecutiveFailures);
     }
 
     /**
@@ -878,6 +937,7 @@ public class TagBatch implements AutoCloseable {
             LOGGER.info("Batch '{}' backoff reset after {} failures", batchId, consecutiveFailures);
             consecutiveFailures = 0;
             nextAllowedFetchTimeMs = 0;
+            currentBackoffMs = 0;
         }
     }
 
@@ -888,6 +948,18 @@ public class TagBatch implements AutoCloseable {
      */
     int getConsecutiveFailures() {
         return consecutiveFailures;
+    }
+
+    /**
+     * Get the length of the current backoff window in milliseconds (for testing).
+     * <p>
+     * Unlike {@link #getNextAllowedFetchTimeMs()} this doesn't decay as time passes, so a test
+     * can assert on the window that was computed rather than on whatever is left of it.
+     *
+     * @return The current backoff window, or 0 if the batch isn't in backoff
+     */
+    long getCurrentBackoffMs() {
+        return currentBackoffMs;
     }
 
     /**

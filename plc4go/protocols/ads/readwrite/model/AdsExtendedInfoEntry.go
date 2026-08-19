@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -63,8 +64,8 @@ type AdsExtendedInfoEntryContract interface {
 
 // AdsExtendedInfoEntryRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsExtendedInfoEntryRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() AdsDatatypeId
 }
@@ -441,14 +442,14 @@ func (m *_AdsExtendedInfoEntry) GetPlx4xTypeName() string {
 	return "AdsExtendedInfoEntry"
 }
 
-func (m *_AdsExtendedInfoEntry) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsExtendedInfoEntry) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (nameLength)
 	lengthInBits += 8
 
 	// Simple field (name)
-	lengthInBits += uint16(int32(uint8(len(m.GetName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetName()))) * int32(int32(8)))
 
 	// Const Field (nameTerminator)
 	lengthInBits += 8
@@ -456,11 +457,11 @@ func (m *_AdsExtendedInfoEntry) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsExtendedInfoEntry) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsExtendedInfoEntry) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AdsExtendedInfoEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsExtendedInfoEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -508,7 +509,7 @@ func (m *_AdsExtendedInfoEntry) parse(ctx context.Context, readBuffer utils.Read
 	}
 	_ = nameLength
 
-	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))))
+	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
@@ -618,7 +619,7 @@ func (pm *_AdsExtendedInfoEntry) serializeParent(ctx context.Context, writeBuffe
 		return errors.Wrap(err, "Error serializing 'nameLength' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetName())))*int32(int32(8))))); err != nil {
+	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetName())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'name' field")
 	}
 

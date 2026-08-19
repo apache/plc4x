@@ -1,0 +1,38 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package eip
+
+import (
+	"encoding/binary"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestPacketSizeFromHeader(t *testing.T) {
+	// 24-byte encapsulation header; bytes 2..3 are the payload length
+	littleEndianHeader := []byte{0x6f, 0x00, 0x28, 0x00}
+	assert.Equal(t, uint32(0x28+24), packetSizeFromHeader(littleEndianHeader, binary.LittleEndian))
+	bigEndianHeader := []byte{0x00, 0x6f, 0x00, 0x28}
+	assert.Equal(t, uint32(0x28+24), packetSizeFromHeader(bigEndianHeader, binary.BigEndian))
+	// regression for the f009 uint16 wrap: 0xFFE8 + 24 must not wrap to 0
+	wrapHeader := []byte{0x6f, 0x00, 0xe8, 0xff}
+	assert.Equal(t, uint32(0xFFE8+24), packetSizeFromHeader(wrapHeader, binary.LittleEndian))
+}

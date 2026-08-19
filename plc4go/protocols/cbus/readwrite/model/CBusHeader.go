@@ -211,8 +211,8 @@ func (m *_CBusHeader) GetPlx4xTypeName() string {
 	return "CBusHeader"
 }
 
-func (m *_CBusHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (priorityClass)
 	lengthInBits += 2
@@ -229,7 +229,7 @@ func (m *_CBusHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

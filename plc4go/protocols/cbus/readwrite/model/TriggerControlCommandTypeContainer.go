@@ -833,11 +833,11 @@ func CastTriggerControlCommandTypeContainer(structType any) TriggerControlComman
 	return castFunc(structType)
 }
 
-func (m TriggerControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m TriggerControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m TriggerControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TriggerControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

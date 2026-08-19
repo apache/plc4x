@@ -20,6 +20,7 @@ package org.apache.plc4x.java.utils.testutils.driver.internal.handlers;
 
 import org.apache.plc4x.java.spi.buffers.api.Message;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.xmlbased.ReadBufferXmlBased;
@@ -129,7 +130,13 @@ public class IncomingPlcMessageHandler {
             }
 
             try {
-                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[message.getLengthInBytes()]);
+                // The default integer/float encodings match what every driver codec configures;
+                // generated serializers (e.g. S7) fail without them on fields that don't pass
+                // explicit per-field options.
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[message.getLengthInBytes()],
+                    WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+                    WithOption.WithSignedIntegerEncoding("twos-complement"),
+                    WithOption.WithFloatEncoding("IEEE754"));
                 writeBuffer.writeMessage(message);
                 byte[] bytes = writeBuffer.getBytes();
                 LOGGER.info("Sending serialized message: {}", StaticHelper.ENCODE_HEX(bytes));

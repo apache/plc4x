@@ -33,28 +33,51 @@ To read and write data to a PLC4X device, the EtherNet/IP driver uses symbolic s
 
 ----
 
-%{tagname}[{startIndex}]:{numberOfElements}
-%{tagname}[{startIndex}]:{numberOfElements}:{DataType}
+{tagname}
+{tagname}:{DataType}
+{tagname}:{numberOfElements}
+{tagname}[{startIndex}]:{DataType}:{numberOfElements}
 
 ----
 [cols="2" ,options="header"]
 |===
 |Name |Description
-|Tagname |symbolic name of the Data
-|Start Index (optional)|if the data is an array, we can specify a starting index from where we want to read
-|Number of elements (optional)|if the data is an array, we can specify the number of elements we want to read. Use this in combination with the starting index to get the exact scope you want.
-|DataType (writing) |Specify the Data-type of the value you want to write (mandatory)
+|Tagname |symbolic name of the data. May optionally be prefixed with `%`.
+|Start Index (optional)|if the data is an array, we can specify a starting index from where we want to read. It is appended to the tag name and has to be the last part of it.
+|DataType (optional)|the data type of the value. Defaults to `DINT` when omitted, so for anything that is not a 32-bit integer it should be given explicitly - also when reading.
+|Number of elements (optional)|if the data is an array, we can specify the number of elements we want to read. Defaults to `1`. Use this in combination with the starting index to get the exact scope you want.
+|===
+
+NOTE: The data type comes *before* the number of elements. Reading four DINTs starting at index 0
+ is `myArray[0]:DINT:4`.
+
+.Examples
+[cols="2" ,options="header"]
+|===
+|Address |Meaning
+|`myTag` |a single element of `myTag`, decoded as `DINT`
+|`myTag:REAL` |a single element of `myTag`, decoded as `REAL`
+|`myTag:4` |four elements of `myTag`, decoded as `DINT`
+|`myArray[3]:DINT` |element 3 of `myArray`
+|`myArray[0]:DINT:4` |elements 0 to 3 of `myArray`, returned as a list
 |===
 
 === Data Types
+
+These are the data types the driver can encode and decode:
+
 [cols="2" ,options="header"]
 |===
 |To store a|Use this data type
 |Bit|BOOL
-|Bit array|DWORD (32-bit boolean array)
 |8-bit integer|SINT
 |16-bit integer|INT
 |32-bit integer|DINT
 |64-bit integer|LINT
 |32-bit float|REAL
+|64-bit float|LREAL
+|Character string|STRING
 |===
+
+NOTE: Other CIP data types are accepted by the address parser but are not encoded or decoded by the
+ driver; reading such a tag results in a response code of `INTERNAL_ERROR` rather than a value.

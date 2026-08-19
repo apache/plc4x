@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetPlx4xTypeName() str
 	return "BACnetConstructedDataBBMDAcceptFDRegistrations"
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (bbmdAcceptFDRegistrations)
 	lengthInBits += m.BbmdAcceptFDRegistrations.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

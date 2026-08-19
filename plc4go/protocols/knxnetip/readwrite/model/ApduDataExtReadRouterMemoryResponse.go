@@ -184,13 +184,13 @@ func (m *_ApduDataExtReadRouterMemoryResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtReadRouterMemoryResponse"
 }
 
-func (m *_ApduDataExtReadRouterMemoryResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtReadRouterMemoryResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtReadRouterMemoryResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtReadRouterMemoryResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSecurityTimeWindow"
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (securityTimeWindow)
 	lengthInBits += m.SecurityTimeWindow.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

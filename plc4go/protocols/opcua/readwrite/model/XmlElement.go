@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -181,21 +182,21 @@ func (m *_XmlElement) GetPlx4xTypeName() string {
 	return "XmlElement"
 }
 
-func (m *_XmlElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_XmlElement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (length)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 8 * uint16(len(m.Value))
+		lengthInBits += 8 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_XmlElement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_XmlElement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -232,7 +233,7 @@ func (m *_XmlElement) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	}
 	m.Length = length
 
-	value, err := ReadCountArrayField[string](ctx, "value", ReadString(readBuffer, uint32(8)), uint64(length))
+	value, err := ReadCountArrayField[string](ctx, "value", ReadString(readBuffer, uint32(8)), uint64(length), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -266,7 +267,7 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteString(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteString(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 

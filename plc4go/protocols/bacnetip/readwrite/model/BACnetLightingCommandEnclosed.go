@@ -247,8 +247,8 @@ func (m *_BACnetLightingCommandEnclosed) GetPlx4xTypeName() string {
 	return "BACnetLightingCommandEnclosed"
 }
 
-func (m *_BACnetLightingCommandEnclosed) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLightingCommandEnclosed) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -262,7 +262,7 @@ func (m *_BACnetLightingCommandEnclosed) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetLightingCommandEnclosed) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLightingCommandEnclosed) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

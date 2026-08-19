@@ -225,8 +225,8 @@ func (m *_CALDataAcknowledge) GetPlx4xTypeName() string {
 	return "CALDataAcknowledge"
 }
 
-func (m *_CALDataAcknowledge) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+func (m *_CALDataAcknowledge) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -237,7 +237,7 @@ func (m *_CALDataAcknowledge) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALDataAcknowledge) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALDataAcknowledge) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

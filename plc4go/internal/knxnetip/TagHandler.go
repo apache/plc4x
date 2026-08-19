@@ -139,6 +139,16 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+	// The "#com-obj" form has to be checked first as the plain device-query pattern
+	// would otherwise never see it (it doesn't allow any suffix, so it simply wouldn't
+	// match, leaving communication-object browsing unreachable).
+	if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, query); match != nil {
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
+		return NewCommunicationObjectQuery(
+			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
+	}
 	if match := utils.GetSubgroupMatches(m.deviceQuery, query); match != nil {
 		return NewDeviceQuery(
 			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil

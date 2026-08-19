@@ -252,8 +252,8 @@ func (m *_BACnetConstructedDataIntervalOffset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntervalOffset"
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (intervalOffset)
 	lengthInBits += m.IntervalOffset.GetLengthInBits(ctx)
@@ -263,7 +263,7 @@ func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

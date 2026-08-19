@@ -100,11 +100,11 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(st
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

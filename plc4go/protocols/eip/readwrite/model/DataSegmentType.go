@@ -58,8 +58,8 @@ type DataSegmentTypeContract interface {
 
 // DataSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type DataSegmentTypeRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDataSegmentType returns DataSegmentType (discriminator field)
 	GetDataSegmentType() uint8
 }
@@ -209,19 +209,19 @@ func (m *_DataSegmentType) GetPlx4xTypeName() string {
 	return "DataSegmentType"
 }
 
-func (m *_DataSegmentType) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DataSegmentType) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (dataSegmentType)
 	lengthInBits += 5
 
 	return lengthInBits
 }
 
-func (m *_DataSegmentType) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_DataSegmentType) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_DataSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DataSegmentType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

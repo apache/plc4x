@@ -66,8 +66,8 @@ type BACnetConstructedDataContract interface {
 
 // BACnetConstructedDataRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConstructedDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
 	GetObjectTypeArgument() BACnetObjectType
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
@@ -8209,8 +8209,8 @@ func (m *_BACnetConstructedData) GetPlx4xTypeName() string {
 	return "BACnetConstructedData"
 }
 
-func (m *_BACnetConstructedData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConstructedData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -8223,11 +8223,11 @@ func (m *_BACnetConstructedData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConstructedData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetConstructedData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

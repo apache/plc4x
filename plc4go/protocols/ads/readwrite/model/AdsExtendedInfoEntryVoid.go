@@ -184,13 +184,13 @@ func (m *_AdsExtendedInfoEntryVoid) GetPlx4xTypeName() string {
 	return "AdsExtendedInfoEntryVoid"
 }
 
-func (m *_AdsExtendedInfoEntryVoid) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsExtendedInfoEntryContract.(*_AdsExtendedInfoEntry).getLengthInBits(ctx))
+func (m *_AdsExtendedInfoEntryVoid) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsExtendedInfoEntryContract.(*_AdsExtendedInfoEntry).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AdsExtendedInfoEntryVoid) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsExtendedInfoEntryVoid) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

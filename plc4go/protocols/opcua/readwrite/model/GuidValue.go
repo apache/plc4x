@@ -221,8 +221,8 @@ func (m *_GuidValue) GetPlx4xTypeName() string {
 	return "GuidValue"
 }
 
-func (m *_GuidValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_GuidValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (data1)
 	lengthInBits += 32
@@ -235,18 +235,18 @@ func (m *_GuidValue) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data4) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data4))
+		lengthInBits += 8 * uint64(len(m.Data4))
 	}
 
 	// Array field
 	if len(m.Data5) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data5))
+		lengthInBits += 8 * uint64(len(m.Data5))
 	}
 
 	return lengthInBits
 }
 
-func (m *_GuidValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_GuidValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -157,8 +157,8 @@ func (m *_BacnetConstants) GetTypeName() string {
 	return "BacnetConstants"
 }
 
-func (m *_BacnetConstants) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BacnetConstants) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (bacnetUdpDefaultPort)
 	lengthInBits += 16
@@ -166,7 +166,7 @@ func (m *_BacnetConstants) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BacnetConstants) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BacnetConstants) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

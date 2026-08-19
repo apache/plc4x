@@ -49,27 +49,27 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("code", uint32(len(d.Code)*8), d.Code); err != nil {
+	if err := writeBuffer.WriteString("code", uint32(len(d.Code)*8), d.Code, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("host", uint32(len(d.Host)*8), d.Host); err != nil {
+	if err := writeBuffer.WriteString("host", uint32(len(d.Host)*8), d.Host, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("port", uint32(len(d.Port)*8), d.Port); err != nil {
+	if err := writeBuffer.WriteString("port", uint32(len(d.Port)*8), d.Port, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("endpoint", uint32(len(d.Endpoint)*8), d.Endpoint); err != nil {
+	if err := writeBuffer.WriteString("endpoint", uint32(len(d.Endpoint)*8), d.Endpoint, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("transportEndpoint", uint32(len(d.TransportEndpoint)*8), d.TransportEndpoint); err != nil {
+	if err := writeBuffer.WriteString("transportEndpoint", uint32(len(d.TransportEndpoint)*8), d.TransportEndpoint, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("params", uint32(len(d.Params)*8), d.Params); err != nil {
+	if err := writeBuffer.WriteString("params", uint32(len(d.Params)*8), d.Params, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -90,7 +90,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.Thumbprint)
-			if err := writeBuffer.WriteString("thumbprint", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("thumbprint", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -103,37 +103,41 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("username", uint32(len(d.Username)*8), d.Username); err != nil {
+	if err := writeBuffer.WriteString("username", uint32(len(d.Username)*8), d.Username, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("password", uint32(len(d.Password)*8), d.Password); err != nil {
+	if err := writeBuffer.WriteString("password", uint32(len(d.Password)*8), d.Password, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("securityPolicy", uint32(len(d.SecurityPolicy)*8), d.SecurityPolicy); err != nil {
+	if err := writeBuffer.WriteString("securityPolicy", uint32(len(d.SecurityPolicy)*8), d.SecurityPolicy, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("keyStoreFile", uint32(len(d.KeyStoreFile)*8), d.KeyStoreFile); err != nil {
+	if err := writeBuffer.WriteString("keyStoreFile", uint32(len(d.KeyStoreFile)*8), d.KeyStoreFile, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("certDirectory", uint32(len(d.CertDirectory)*8), d.CertDirectory); err != nil {
+	if err := writeBuffer.WriteString("certDirectory", uint32(len(d.CertDirectory)*8), d.CertDirectory, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("keyStorePassword", uint32(len(d.KeyStorePassword)*8), d.KeyStorePassword); err != nil {
+	if err := writeBuffer.WriteString("keyStorePassword", uint32(len(d.KeyStorePassword)*8), d.KeyStorePassword, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	if d.Ckp != nil {
 		{
 			_value := fmt.Sprintf("%v", d.Ckp)
 
-			if err := writeBuffer.WriteString("ckp", uint32(len(_value)*8), _value); err != nil {
+			if err := writeBuffer.WriteString("ckp", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
+	}
+
+	if err := writeBuffer.WriteBit("allowUnverifiedSecurityPolicies", d.AllowUnverifiedSecurityPolicies); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("Configuration"); err != nil {
 		return err

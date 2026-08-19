@@ -290,8 +290,8 @@ func (m *_ReadEventDetailsSorted) GetPlx4xTypeName() string {
 	return "ReadEventDetailsSorted"
 }
 
-func (m *_ReadEventDetailsSorted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadEventDetailsSorted) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numValuesPerNode)
 	lengthInBits += 32
@@ -319,7 +319,7 @@ func (m *_ReadEventDetailsSorted) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReadEventDetailsSorted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadEventDetailsSorted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

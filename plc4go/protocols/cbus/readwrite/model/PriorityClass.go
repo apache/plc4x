@@ -106,11 +106,11 @@ func CastPriorityClass(structType any) PriorityClass {
 	return castFunc(structType)
 }
 
-func (m PriorityClass) GetLengthInBits(ctx context.Context) uint16 {
+func (m PriorityClass) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m PriorityClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PriorityClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

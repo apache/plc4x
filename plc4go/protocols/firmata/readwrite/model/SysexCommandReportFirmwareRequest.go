@@ -188,13 +188,13 @@ func (m *_SysexCommandReportFirmwareRequest) GetPlx4xTypeName() string {
 	return "SysexCommandReportFirmwareRequest"
 }
 
-func (m *_SysexCommandReportFirmwareRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandReportFirmwareRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SysexCommandReportFirmwareRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandReportFirmwareRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

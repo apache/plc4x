@@ -63,7 +63,7 @@ This can be done with the Mock Driver in the following way.
 
 First, a new Mock Connection is established (like any other connection also would be):
 ```
-PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionManager().getConnection("mock:my-mock-connection");
+PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionFactory().getConnection("mock:my-mock-connection");
 ```
 You see, that we directly cast the Connection to a `PlcMockConnection`. This is done, because we need to _connect_ a Device to this Mock Connection.
 
@@ -99,7 +99,7 @@ Like in the following Example
 ```
 MockDevice mockDevice = Mockito.mock(MockDevice.class);
 
-PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionManager().getConnection("mock:my-mock-connection");
+PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionFactory().getConnection("mock:my-mock-connection");
 connection.setDevice(mockDevice);
 
 // Populate the Mock to avoid a NPE
@@ -125,7 +125,7 @@ But as the `MockDriver` uses a static Mock Connection registry the following Cod
 MockDevice mockDevice = Mockito.mock(MockDevice.class);
 
 // Setup
-PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionManager().getConnection("mock:my-mock-connection");
+PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionFactory().getConnection("mock:my-mock-connection");
 connection.setDevice(mockDevice);
 // Populate the Mock to avoid a NPE
 when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hello")));
@@ -134,7 +134,7 @@ when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new Pl
 // or at least mock:my-mock-connection as connection string
 // Here: send a request to the field "MyAdress"
 // and we build up a new Connection
-try (PlcConnection conn = PlcDriverManager.getDefault().getConnectionManager().getConnection("mock:my-mock-connection")) {
+try (PlcConnection conn = PlcDriverManager.getDefault().getConnectionFactory().getConnection("mock:my-mock-connection")) {
     conn
         .readRequestBuilder
         .addItem("station", "MyAdress")
@@ -160,6 +160,5 @@ Some Examples of further (more Complex) use cases can be found in the PLC4X Code
 
 * `org.apache.plc4x.java.opm.PlcEntityManagerTest`
 * `org.apache.plc4x.java.opm.PlcEntityManagerComplexTest`
-* `org.apache.plc4x.java.scraper.ScraperTest`
 
-and many more Test classes, especially in the OPM and the Scraper Module.
+and many more Test classes, especially in the OPM Module.

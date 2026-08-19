@@ -191,12 +191,12 @@ func Cast${type.name}(structType any) ${type.name} {
 	return castFunc(structType)
 }
 
-func (m ${type.name}) GetLengthInBits(ctx context.Context) uint16 {
+func (m ${type.name}) GetLengthInBits(ctx context.Context) uint64 {
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	return <#if type.type.orElseThrow().isStringTypeReference()>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
-func (m ${type.name}) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ${type.name}) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

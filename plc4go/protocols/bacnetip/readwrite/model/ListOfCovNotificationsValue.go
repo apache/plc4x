@@ -267,8 +267,8 @@ func (m *_ListOfCovNotificationsValue) GetPlx4xTypeName() string {
 	return "ListOfCovNotificationsValue"
 }
 
-func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (propertyIdentifier)
 	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
@@ -289,7 +289,7 @@ func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_ListOfCovNotificationsValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ListOfCovNotificationsValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

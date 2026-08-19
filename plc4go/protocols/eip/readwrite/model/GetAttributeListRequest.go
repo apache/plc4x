@@ -192,13 +192,13 @@ func (m *_GetAttributeListRequest) GetPlx4xTypeName() string {
 	return "GetAttributeListRequest"
 }
 
-func (m *_GetAttributeListRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_GetAttributeListRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_GetAttributeListRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_GetAttributeListRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

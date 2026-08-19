@@ -66,7 +66,7 @@ Preparation of certificate is beyond driver, however in case when no client cert
 Please follow our tutorial link:../getting-started/opcua-client-certificate.html[on provisioning of client private key and certificate].
 By following it you will be able to create self-signed certificate for use with both hardware and software based OPC-UA servers.
 Please note that there are multiple appearances of certificates within specification.
-There is transport level certificate which can be provided though keystore options, but there is also a X509 Certificate which can be used for authentication (currently unsupported by PLC4X).
+There is the application instance certificate securing the communication channel, which is provided through the keystore options described below, and there is a X509 certificate identifying the *user*, which is supplied separately - see <<User authentication>>.
 
 The security modes differ between themselves by strength of applied signature and encryption algorithms.
 Driver is able to communicate with single security mode at the time.
@@ -77,11 +77,98 @@ The `SIGN` mode gives possibility o browse packets in tools such wireshark.
 
 === Certificate verification
 The OPC UA specification defines its own procedures for certificate validation.
-In order to simplify implementation by default server certificate validation is relaxed.
-Unless explicitly disabled through configuration of `trust-store-file` all server certificates will be accepted without validation.
 
-In case when secure communication is enabled the `trust-store-file` option might be used to point certificates which client should accept.
-The acceptance rely on regular TLS checks (expiry date, certificate path etc.), does not validate OPC UA specific parts such as application URI.
+The driver verifies the server certificate by default and fails closed: if no trust anchor is
+configured, the server certificate is rejected and the connection fails. Configure one of:
+
+* `trust-store-file` - validate the certificate chain against the given trust store. The acceptance
+relies on regular TLS checks (expiry date, certificate path etc.); it does not validate OPC UA
+specific parts such as the application URI.
+* `server-certificate-file` - pin trust to exactly that certificate. Only the certificate read from
+the configured file is trusted; a certificate learned over the unauthenticated discovery channel is
+never used as a trust anchor.
+
+WARNING: `insecure-certificate-verification=true` disables server certificate verification
+altogether. This makes the connection vulnerable to man-in-the-middle attacks and is intended for
+local testing only.
+
+=== Client certificate
+
+If no `key-store-file` is configured, the driver generates a self-signed application instance
+certificate for the session. It is a 2048 bit RSA key signed with SHA-256; use `generated-key-size`
+to ask for a larger key when the server demands one:
+
+----
+opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256&message-security=SIGN_ENCRYPT&generated-key-size=4096
+----
+
+A generated certificate is fresh for every connection, so a server that keeps a trust list will
+reject it until it is trusted there. For anything beyond a first connection attempt, supply your own
+certificate through `key-store-file` instead - see
+link:../getting-started/opcua-client-certificate.html[the client certificate tutorial].
+
+== User authentication
+
+Beside securing the channel, OPC UA authenticates the user of a session. The driver supports all
+three token types the specification defines: anonymous, username/password and a X509 user
+certificate.
+
+Anonymous access is what you get when no credentials are supplied. A username and password can come
+from the connection string:
+
+----
+opcua:tcp://127.0.0.1:12686?username=admin&password=password
+----
+
+or, together with the certificate variant, from a `PlcAuthentication` handed to the driver manager.
+The object passed to `getConnection` decides which token type the driver asks the server for, and
+credentials given this way take precedence over those in the connection string:
+
+[source,java]
+----
+PlcConnection connection = driverManager.getConnection(
+    "opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256",
+    new PlcUsernamePasswordAuthentication("admin", "password"));
+----
+
+=== User certificate
+
+To authenticate as a user with a X509 certificate, pass a `PlcCertificateAuthentication` carrying
+the key store that holds the user certificate and its private key:
+
+[source,java]
+----
+KeyStore keyStore = KeyStore.getInstance("PKCS12");
+try (InputStream in = new FileInputStream("user.p12")) {
+    keyStore.load(in, "changeit".toCharArray());
+}
+
+PlcConnection connection = driverManager.getConnection(
+    "opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256",
+    new PlcCertificateAuthentication(keyStore, "changeit".toCharArray()));
+----
+
+The driver takes the first key store entry holding a private key. When the store holds more than one
+identity, name the one to use:
+
+[source,java]
+----
+new PlcCertificateAuthentication(keyStore, "changeit".toCharArray(), "operator");
+----
+
+The certificate has to use an RSA key, and the server has to trust it - servers usually keep a
+separate trust list for user certificates, distinct from the one for application instance
+certificates.
+
+NOTE: This is not the same certificate as the one configured through `key-store-file`. That one is
+the application instance certificate: it secures the channel and says which installation is
+talking, whereas the user certificate says who is talking. Nothing stops you from using the same
+certificate for both, provided the server trusts it for both purposes.
+
+The driver proves possession of the private key by signing the server certificate and server nonce,
+using the security policy the server declares for its certificate user token policy. A server that
+offers certificate authentication with a security policy of `None` leaves no algorithm to sign
+with; the driver refuses such an endpoint rather than sending an unverifiable token.
 
 === Negotiation procedure
 Depending on settings driver might or might not attempt to discover endpoints from remote server.
@@ -126,19 +213,23 @@ The following data types are supported
 - BYTE (uint 8)
 - INT (int 16)
 - UINT (uint 16)
-- WORD (uint 16)
 - DINT (int 32)
 - UDINT (uint 32)
-- DWORD (uint 32)
 - LINT (int 64)
 - ULINT (uint 64)
-- LWORD (uint 64)
 - REAL (float)
 - LREAL (double)
 - CHAR (char)
 - WCHAR (2 byte char)
 - STRING (utf-8)
-- WSTRING (utf-16)
+- TIME (duration, milliseconds)
+- LTIME (duration, nanoseconds)
+- DATE (date)
+- LDATE (date)
+- TIME_OF_DAY (time of day)
+- LTIME_OF_DAY (time of day)
+- DATE_AND_TIME (date and time)
+- LDATE_AND_TIME (date and time)
 
 
 === Example of a valid OPC UA address:
@@ -165,12 +256,15 @@ ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;a=Value;REAL
 ----
 Event Subscription:
 ----
-ns=0;i=2253;a=EventNotifier;BOOL{EventId: '', EventType: '', Severity: '', Time: '', Message: ''}
+ns=0;i=2253;a=EventNotifier;BOOL|EventId=x,EventType=x,Severity=x,Time=x,Message=x
 ----
 
 Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
 The `a` attribute is required only for event subscriptions which additionally makes use of tag config.
-Tag config is a list of key-value pairs which rely on simplified JSON syntax.
+Tag config is appended after a `|` as a comma-separated `key=value` list naming the event
+fields to request. The values are placeholders and are ignored, but they must be non-empty
+and alphanumeric, and a `;{Data Type}` segment has to precede the `|` - otherwise the config
+is silently dropped.
 
 == Some useful tips
 
@@ -217,7 +311,7 @@ Fields which are supported are defined in OPC UA `BaseEventType`:
 - `Message`
 - `Severity`
 
-Example syntax: `ns=0;i=2253;a=EventNotifier;BOOL{EventId: '', EventType: '', Severity: '', Time: '', Message: ''}`.
+Example syntax: `ns=0;i=2253;a=EventNotifier;BOOL|EventId=x,EventType=x,Severity=x,Time=x,Message=x`.
 
 Subscription event generated by client upon receiving notification will contain an object (`PlcSTRUCT`/`Map`) which will contain all requested fields.
 Please note that Apache PLC4X does only basic normalization of data, thus your application need to take care of actual processing of event data.

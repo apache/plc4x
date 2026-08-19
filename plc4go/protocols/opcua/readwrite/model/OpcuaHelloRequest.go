@@ -281,8 +281,8 @@ func (m *_OpcuaHelloRequest) GetPlx4xTypeName() string {
 	return "OpcuaHelloRequest"
 }
 
-func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 32
@@ -296,7 +296,7 @@ func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

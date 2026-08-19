@@ -22,6 +22,7 @@ import static org.apache.plc4x.java.opcua.readwrite.ChunkType.ABORT;
 import static org.apache.plc4x.java.opcua.readwrite.ChunkType.FINAL;
 
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.List;
@@ -136,6 +137,7 @@ public class Conversation implements SecureChannelState {
     private OpcuaProtocolLimits limits;
 
     private X509Certificate localCertificate = null;
+    private int localCertificateChainSize = 0;
     private X509Certificate remoteCertificate = null;
     private byte[] remoteNonce;
     private byte[] localNonce;
@@ -176,6 +178,9 @@ public class Conversation implements SecureChannelState {
             this.remoteCertificate = configuration.getServerCertificate();
             this.encryptionHandler = new EncryptionHandler(this, senderKeyPair.getPrivateKey());
             this.localCertificate = senderKeyPair.getCertificate();
+            // The header is sized against what actually goes on the wire, which for a CA-signed
+            // certificate is the whole chain rather than the certificate alone.
+            this.localCertificateChainSize = senderKeyPair.getEncodedCertificateChain().length;
         } else {
             this.messageSecurity = MessageSecurity.NONE;
             this.encryptionHandler = new EncryptionHandler(this, null);
@@ -453,8 +458,7 @@ public class Conversation implements SecureChannelState {
                             }
                         }
 
-                        if (extensionObjectBody instanceof ServiceFault) {
-                            ServiceFault fault = (ServiceFault) extensionObjectBody;
+                        if (extensionObjectBody instanceof ServiceFault fault) {
                             future.completeExceptionally(toProtocolException(fault));
                         } else {
                             future.complete(extensionObjectBody);
@@ -558,8 +562,8 @@ public class Conversation implements SecureChannelState {
     }
 
     static PlcProtocolException toProtocolException(ServiceFault fault) {
-        if (fault.getResponseHeader() instanceof ResponseHeader) {
-            ResponseHeader responseHeader = (ResponseHeader) fault.getResponseHeader();
+        if (fault.getResponseHeader() != null) {
+            ResponseHeader responseHeader = fault.getResponseHeader();
             long statusCode = responseHeader.getServiceResult().getStatusCode();
             String statusName = OpcuaStatusCode.isDefined(statusCode) ? OpcuaStatusCode.enumForValue(statusCode).name() : "<unknown>";
             return new PlcProtocolException("Server returned error " + statusName + " (0x" + Long.toHexString(statusCode) + ")");
@@ -580,6 +584,14 @@ public class Conversation implements SecureChannelState {
     @Override
     public X509Certificate getLocalCertificate() {
         return localCertificate;
+    }
+
+    /**
+     * Number of bytes the local certificate occupies in the asymmetric security header, i.e. the
+     * whole certificate chain when there is one.
+     */
+    public int getLocalCertificateChainSize() {
+        return localCertificateChainSize;
     }
 
     public void setRemoteNonce(byte[] remoteNonce) {
@@ -606,12 +618,17 @@ public class Conversation implements SecureChannelState {
         return messageSecurity;
     }
 
-    public byte[] encryptPassword(byte[] encodeablePassword) {
-        return encryptionHandler.encryptPassword(encodeablePassword);
+    public byte[] encryptPassword(byte[] encodeablePassword, SecurityPolicy policy) {
+        return encryptionHandler.encryptPassword(encodeablePassword, policy);
     }
 
     public void setSecurityHeader(SecurityHeader securityHeader) {
         this.securityHeader.set(securityHeader);
+    }
+
+    public SignatureData createUserTokenSignature(PrivateKey userPrivateKey, SecurityPolicy policy)
+        throws GeneralSecurityException {
+        return encryptionHandler.createUserTokenSignature(userPrivateKey, policy);
     }
 
     public SignatureData createClientSignature() throws GeneralSecurityException {

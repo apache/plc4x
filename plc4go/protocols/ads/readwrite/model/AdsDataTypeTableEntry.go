@@ -810,8 +810,8 @@ func (m *_AdsDataTypeTableEntry) GetPlx4xTypeName() string {
 	return "AdsDataTypeTableEntry"
 }
 
-func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (entryLength)
 	lengthInBits += 32
@@ -943,19 +943,19 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 16
 
 	// Simple field (mainName)
-	lengthInBits += uint16(int32(uint16(len(m.GetMainName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetMainName()))) * int32(int32(8)))
 
 	// Const Field (mainNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (secondaryName)
-	lengthInBits += uint16(int32(uint16(len(m.GetSecondaryName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetSecondaryName()))) * int32(int32(8)))
 
 	// Const Field (secondaryNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
-	lengthInBits += uint16(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
@@ -978,7 +978,7 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Guid) > 0 {
-		lengthInBits += 8 * uint16(len(m.Guid))
+		lengthInBits += 8 * uint64(len(m.Guid))
 	}
 
 	// Optional Field (methodInfos)
@@ -998,13 +998,13 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Rest) > 0 {
-		lengthInBits += 8 * uint16(len(m.Rest))
+		lengthInBits += 8 * uint64(len(m.Rest))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDataTypeTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDataTypeTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

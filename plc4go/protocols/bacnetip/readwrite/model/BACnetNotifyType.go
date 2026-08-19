@@ -100,11 +100,11 @@ func CastBACnetNotifyType(structType any) BACnetNotifyType {
 	return castFunc(structType)
 }
 
-func (m BACnetNotifyType) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetNotifyType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetNotifyType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetNotifyType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

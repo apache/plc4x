@@ -520,6 +520,32 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
+    /**
+     * Same as {@link #getWriteBufferWriteMethodCall(SimpleTypeReference, String, TypedField)}, but
+     * with the arguments of the surrounding type in scope.
+     * <p>
+     * A vstring's length is an expression, and in a dataIo it usually refers to one of those
+     * arguments - "stringLength" for instance. Without them, serialization renders the name as a
+     * field of the message being written ("_message-&gt;string_length"), which does not exist there
+     * and does not compile. The parse side does not have this problem, because it leaves names it
+     * cannot resolve alone.
+     */
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName,
+                                                TypedField field, List<Argument> parserArguments) {
+        if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
+            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
+            if (!(encodingTerm instanceof StringLiteral)) {
+                throw new FreemarkerException("Encoding must be a quoted string value");
+            }
+            String encoding = ((StringLiteral) encodingTerm).getValue();
+            String lengthExpression = toSerializationExpression(null, field,
+                simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), parserArguments);
+            return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
+                encoding + "\", (const uint8_t*) " + fieldName + ")";
+        }
+        return getWriteBufferWriteMethodCall(simpleTypeReference, fieldName, field);
+    }
+
     @Override
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {

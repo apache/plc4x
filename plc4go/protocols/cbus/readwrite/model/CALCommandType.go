@@ -136,11 +136,11 @@ func CastCALCommandType(structType any) CALCommandType {
 	return castFunc(structType)
 }
 
-func (m CALCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m CALCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m CALCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m CALCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

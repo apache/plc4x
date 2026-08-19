@@ -231,6 +231,35 @@ class TagResolverTest {
         assertEquals(PlcValueType.Struct, TagResolver.plcValueTypeForName(null, null));
     }
 
+    /**
+     * With 'load-symbol-and-data-type-tables' disabled the tables are never fetched, so symbolic
+     * addresses cannot be resolved at all. Saying that is far more useful than reporting every
+     * symbol as unknown, which is what a user saw before - see GH-1626.
+     */
+    @Test
+    void symbolicAddressIsRejectedWhenTablesWereNotLoaded() {
+        TagResolver withoutTables = new TagResolver(symbols, types, false);
+
+        PlcInvalidTagException exception = assertThrows(PlcInvalidTagException.class,
+            () -> withoutTables.resolve(new SymbolicAdsTag("MAIN.g_s32", null, List.of())));
+
+        assertTrue(exception.getMessage().contains("MAIN.g_s32"), exception.getMessage());
+        assertTrue(exception.getMessage().contains("load-symbol-and-data-type-tables"),
+            "the message has to name the option that disabled the tables: " + exception.getMessage());
+    }
+
+    /**
+     * A genuinely unknown symbol still reports as unknown when the tables *are* loaded - the new
+     * message must not swallow that case.
+     */
+    @Test
+    void unknownSymbolStillReportsAsUnknownWhenTablesAreLoaded() {
+        PlcInvalidTagException exception = assertThrows(PlcInvalidTagException.class,
+            () -> resolver.resolve(new SymbolicAdsTag("MAIN.doesNotExist", null, List.of())));
+
+        assertTrue(exception.getMessage().contains("Unknown symbol"), exception.getMessage());
+    }
+
     @Test
     void extractStringLength_parsesParens() {
         assertEquals(80, TagResolver.extractStringLength("STRING(80)"));

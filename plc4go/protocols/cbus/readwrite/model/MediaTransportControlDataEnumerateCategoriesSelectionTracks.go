@@ -263,8 +263,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetPlx4xT
 	return "MediaTransportControlDataEnumerateCategoriesSelectionTracks"
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (enumerateType)
 	lengthInBits += 8
@@ -283,7 +283,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

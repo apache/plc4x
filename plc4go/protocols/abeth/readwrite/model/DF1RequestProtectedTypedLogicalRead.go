@@ -273,8 +273,8 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetPlx4xTypeName() string {
 	return "DF1RequestProtectedTypedLogicalRead"
 }
 
-func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1RequestCommandContract.(*_DF1RequestCommand).getLengthInBits(ctx))
+func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1RequestCommandContract.(*_DF1RequestCommand).getLengthInBits(ctx))
 
 	// Simple field (byteSize)
 	lengthInBits += 8
@@ -294,7 +294,7 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

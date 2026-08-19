@@ -186,8 +186,8 @@ func (m *_InterfaceOptions1PowerUpSettings) GetPlx4xTypeName() string {
 	return "InterfaceOptions1PowerUpSettings"
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (interfaceOptions1)
 	lengthInBits += m.InterfaceOptions1.GetLengthInBits(ctx)
@@ -195,7 +195,7 @@ func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFailedAttemptsTime"
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (failedAttemptsTime)
 	lengthInBits += m.FailedAttemptsTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFailedAttemptsTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

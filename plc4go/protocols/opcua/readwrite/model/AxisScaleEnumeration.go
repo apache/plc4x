@@ -100,11 +100,11 @@ func CastAxisScaleEnumeration(structType any) AxisScaleEnumeration {
 	return castFunc(structType)
 }
 
-func (m AxisScaleEnumeration) GetLengthInBits(ctx context.Context) uint16 {
+func (m AxisScaleEnumeration) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m AxisScaleEnumeration) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AxisScaleEnumeration) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

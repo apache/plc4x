@@ -211,8 +211,8 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadPropertyMultiple"
 }
 
-func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -224,7 +224,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

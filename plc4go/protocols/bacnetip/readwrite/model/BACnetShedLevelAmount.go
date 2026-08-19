@@ -225,8 +225,8 @@ func (m *_BACnetShedLevelAmount) GetPlx4xTypeName() string {
 	return "BACnetShedLevelAmount"
 }
 
-func (m *_BACnetShedLevelAmount) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetShedLevelContract.(*_BACnetShedLevel).getLengthInBits(ctx))
+func (m *_BACnetShedLevelAmount) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetShedLevelContract.(*_BACnetShedLevel).getLengthInBits(ctx))
 
 	// Simple field (amount)
 	lengthInBits += m.Amount.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetShedLevelAmount) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetShedLevelAmount) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetShedLevelAmount) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

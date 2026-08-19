@@ -252,8 +252,8 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFileAccessMethod"
 }
 
-func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fileAccessMethod)
 	lengthInBits += m.FileAccessMethod.GetLengthInBits(ctx)
@@ -263,7 +263,7 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

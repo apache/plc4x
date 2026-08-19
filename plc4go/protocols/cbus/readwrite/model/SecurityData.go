@@ -64,8 +64,8 @@ type SecurityDataContract interface {
 
 // SecurityDataRequirements provides a set of functions which need to be implemented by a sub struct
 type SecurityDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetArgument returns Argument (discriminator field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (discriminator field)
@@ -831,8 +831,8 @@ func (m *_SecurityData) GetPlx4xTypeName() string {
 	return "SecurityData"
 }
 
-func (m *_SecurityData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SecurityData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -845,11 +845,11 @@ func (m *_SecurityData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_SecurityData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_SecurityData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -263,8 +263,8 @@ func (m *_ActionMethodDataType) GetPlx4xTypeName() string {
 	return "ActionMethodDataType"
 }
 
-func (m *_ActionMethodDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ActionMethodDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (objectId)
 	lengthInBits += m.ObjectId.GetLengthInBits(ctx)
@@ -275,7 +275,7 @@ func (m *_ActionMethodDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ActionMethodDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ActionMethodDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

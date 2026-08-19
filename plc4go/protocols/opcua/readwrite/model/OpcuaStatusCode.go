@@ -1726,11 +1726,11 @@ func CastOpcuaStatusCode(structType any) OpcuaStatusCode {
 	return castFunc(structType)
 }
 
-func (m OpcuaStatusCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaStatusCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaStatusCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaStatusCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

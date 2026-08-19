@@ -24,6 +24,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum SecurityPolicy {
     NONE("http://opcfoundation.org/UA/SecurityPolicy#None",
@@ -38,7 +39,7 @@ public enum SecurityPolicy {
         new MacSignatureAlgorithm("HmacSHA1"),
         new EncryptionAlgorithm("AES/CBC/NoPadding"),
         new SignatureAlgorithm("SHA1withRSA", "http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
-        new EncryptionAlgorithm("RSA/ECB/PKCS1Padding"),
+        new EncryptionAlgorithm("RSA/ECB/PKCS1Padding", "http://www.w3.org/2001/04/xmlenc#rsa-1_5"),
         20, 16, 16, 16, 16
     ),
 
@@ -46,7 +47,7 @@ public enum SecurityPolicy {
         new MacSignatureAlgorithm("HmacSHA1"),
         new EncryptionAlgorithm("AES/CBC/NoPadding"),
         new SignatureAlgorithm("SHA1withRSA", "http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
-        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA-1AndMGF1Padding"),
+        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA-1AndMGF1Padding", "http://www.w3.org/2001/04/xmlenc#rsa-oaep"),
         20, 24, 32, 16, 32
     ),
 
@@ -54,7 +55,7 @@ public enum SecurityPolicy {
         new MacSignatureAlgorithm("HmacSHA256"),
         new EncryptionAlgorithm("AES/CBC/NoPadding"),
         new SignatureAlgorithm("SHA256withRSA", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"),
-        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA-1AndMGF1Padding"),
+        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA-1AndMGF1Padding", "http://www.w3.org/2001/04/xmlenc#rsa-oaep"),
         32, 32, 32, 16, 32
     ),
 
@@ -62,7 +63,7 @@ public enum SecurityPolicy {
         new MacSignatureAlgorithm("HmacSHA256"),
         new EncryptionAlgorithm("AES/CBC/NoPadding"),
         new SignatureAlgorithm("SHA256withRSA", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"),
-        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA-1AndMGF1Padding"),
+        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA-1AndMGF1Padding", "http://www.w3.org/2001/04/xmlenc#rsa-oaep"),
         32, 32, 16, 16, 32
     ),
 
@@ -70,7 +71,7 @@ public enum SecurityPolicy {
         new MacSignatureAlgorithm("HmacSHA256"),
         new EncryptionAlgorithm("AES/CBC/NoPadding"),
         new SignatureAlgorithm("SHA256withRSA/PSS", "http://opcfoundation.org/UA/security/rsa-pss-sha2-256"),
-        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA256AndMGF1Padding"),
+        new EncryptionAlgorithm("RSA/ECB/OAEPWithSHA256AndMGF1Padding", "http://opcfoundation.org/UA/security#rsa-oaep-sha2-256"),
         32, 32, 32, 16, 32
     );
 
@@ -107,6 +108,20 @@ public enum SecurityPolicy {
         this.encryptionKeySize = encryptionKeySize;
         this.encryptionBlockSize = encryptionBlockSize;
         this.nonceLength = nonceLength;
+    }
+
+    /**
+     * Looks a policy up by its {@code http://opcfoundation.org/UA/SecurityPolicy#...} URI, which is
+     * how policies are named on the wire. Empty when the URI is unknown - callers decide what to
+     * fall back to, rather than getting an exception.
+     */
+    public static Optional<SecurityPolicy> findByUri(String securityPolicyUri) {
+        if (securityPolicyUri == null || securityPolicyUri.isEmpty()) {
+            return Optional.empty();
+        }
+        return Arrays.stream(values())
+            .filter(v -> v.getSecurityPolicyUri().equalsIgnoreCase(securityPolicyUri))
+            .findAny();
     }
 
     public static SecurityPolicy findByName(String securityPolicy) {
@@ -196,13 +211,32 @@ public enum SecurityPolicy {
 
     public static class EncryptionAlgorithm {
         private final String name;
+        private final String uri;
 
         EncryptionAlgorithm(String name) {
+            this(name, "");
+        }
+
+        EncryptionAlgorithm(String name, String uri) {
             this.name = name;
+            this.uri = uri;
         }
 
         public Cipher getCipher() throws NoSuchPaddingException, NoSuchAlgorithmException {
             return Cipher.getInstance(name);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * The algorithm identifier as it has to be declared on the wire, e.g. in the
+         * {@code encryptionAlgorithm} field of a UserNameIdentityToken. Empty when the algorithm
+         * is never named on the wire (the symmetric ones) or when there is no encryption at all.
+         */
+        public String getUri() {
+            return uri;
         }
     }
 

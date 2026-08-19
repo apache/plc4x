@@ -229,15 +229,15 @@ func (m *_ReadAtTimeDetails) GetPlx4xTypeName() string {
 	return "ReadAtTimeDetails"
 }
 
-func (m *_ReadAtTimeDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadAtTimeDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfReqTimes)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.ReqTimes) > 0 {
-		lengthInBits += 64 * uint16(len(m.ReqTimes))
+		lengthInBits += 64 * uint64(len(m.ReqTimes))
 	}
 
 	// Reserved Field (reserved)
@@ -249,7 +249,7 @@ func (m *_ReadAtTimeDetails) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReadAtTimeDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadAtTimeDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

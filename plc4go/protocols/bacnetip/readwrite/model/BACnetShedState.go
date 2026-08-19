@@ -106,11 +106,11 @@ func CastBACnetShedState(structType any) BACnetShedState {
 	return castFunc(structType)
 }
 
-func (m BACnetShedState) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetShedState) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetShedState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetShedState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

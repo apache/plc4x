@@ -52,9 +52,8 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 		if err != nil {
 			return nil, err
 		}
-		numberOfValues := uint16(parsedUint1)
-		bigEndian := parserArguments[2] == "true"
-		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues, bigEndian)
+		stringLength := uint16(parsedUint1)
+		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, stringLength)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusDeviceInformationObject":

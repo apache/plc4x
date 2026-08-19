@@ -19,7 +19,11 @@
 
 = Profinet (In Development)
 
-
+WARNING: The PROFINET driver is not usable yet. Two parallel implementations exist in the code base
+(`plc4j-driver-profinet` and `plc4j-driver-profinet-ng`, of which only the latter is shipped) and
+neither completes a working exchange - the subscription response future is never completed and
+cyclic IO frames are logged rather than dispatched. This page describes the intended design and is
+kept for reference; it is not linked from the navigation.
 
 The PROFINET driver implements a class 3 real time controller. Which is able to communicate with multiple devices
 on the same network segment.
@@ -116,4 +120,3 @@ Although the GSD file contains all the information needed to configure which dat
 The easiest approach is to use the browsing function of the Profinet driver to return a list of all available tags.
 Then only the addresses of interest can be selected.
 
-|===

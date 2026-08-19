@@ -89,6 +89,9 @@ import java.util.stream.Collectors;
 public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implements OpcuaWire {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaConnection.class);
+
+    /** Publishing interval used when a subscription tag doesn't ask for one. */
+    private static final Duration DEFAULT_CYCLE_TIME = Duration.ofMillis(1000);
     public static final PascalString NULL_STRING = new PascalString(null);
     private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
@@ -321,12 +324,17 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         RequestHeader requestHeader = conversation.createRequestHeader();
 
-        List<ReadValueId> readValueArray = new ArrayList<>(request.getTagNames().size());
-        Iterator<String> iterator = request.getTagNames().iterator();
+        // Tags the builder rejected (unparseable address) carry their code straight into the
+        // response; they have no node id to ask the server for.
+        Map<String, PlcResponseItem<PlcValue>> rejectedTags = rejectedReadTags(request);
+        List<String> sendable = sendableTagNames(request);
+        if (sendable.isEmpty()) {
+            return CompletableFuture.completedFuture(new DefaultPlcReadResponse(request, rejectedTags));
+        }
+
+        List<ReadValueId> readValueArray = new ArrayList<>(sendable.size());
         Map<String, PlcTag> tagMap = new LinkedHashMap<>();
-        for (int i = 0; i < request.getTagNames().size(); i++) {
-            String tagName = iterator.next();
-            // TODO: We need to check that the tag-return-code is OK as it could also be INVALID_TAG
+        for (String tagName : sendable) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
             tagMap.put(tagName, tag);
 
@@ -362,15 +370,56 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             }
             if (structFutures.isEmpty()) {
                 return CompletableFuture.completedFuture(new DefaultPlcReadResponse(request,
-                    readResponse(tagMap, results, Collections.emptyMap())));
+                    inRequestOrder(request, readResponse(tagMap, results, Collections.emptyMap()), rejectedTags)));
             }
             return CompletableFuture.allOf(structFutures.values().toArray(new CompletableFuture[0]))
                 .thenApply(v -> {
                     Map<String, StructureDefinition> structDefs = new HashMap<>();
                     structFutures.forEach((name, future) -> structDefs.put(name, future.getNow(null)));
-                    return new DefaultPlcReadResponse(request, readResponse(tagMap, results, structDefs));
+                    return new DefaultPlcReadResponse(request,
+                        inRequestOrder(request, readResponse(tagMap, results, structDefs), rejectedTags));
                 });
         });
+    }
+
+    /**
+     * The tag names that can actually be put on the wire. A tag whose address the builder
+     * couldn't parse stays in the request with an error code and a {@code null} tag; it must
+     * neither be sent nor take up a slot in the response, which OPC UA maps back to tags by
+     * position.
+     */
+    private static List<String> sendableTagNames(PlcTagRequest request) {
+        List<String> names = new ArrayList<>(request.getNumberOfTags());
+        for (String tagName : request.getTagNames()) {
+            if (request.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                names.add(tagName);
+            }
+        }
+        return names;
+    }
+
+    /** Response items for the tags the builder rejected, keyed by name. */
+    private static Map<String, PlcResponseItem<PlcValue>> rejectedReadTags(PlcTagRequest request) {
+        Map<String, PlcResponseItem<PlcValue>> rejected = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            PlcResponseCode code = request.getTagResponseCode(tagName);
+            if (code != PlcResponseCode.OK) {
+                rejected.put(tagName, new DefaultPlcResponseItem<>(code, null));
+            }
+        }
+        return rejected;
+    }
+
+    /** Response codes for the tags the builder rejected, keyed by name. */
+    private static Map<String, PlcResponseCode> rejectedWriteTags(PlcTagRequest request) {
+        Map<String, PlcResponseCode> rejected = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            PlcResponseCode code = request.getTagResponseCode(tagName);
+            if (code != PlcResponseCode.OK) {
+                rejected.put(tagName, code);
+            }
+        }
+        return rejected;
     }
 
     /** The tag's OPC UA IndexRange as a PascalString, or the null string when the whole node is addressed. */
@@ -399,6 +448,18 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             nodeId = new NodeId(new NodeIdString(tag.getNamespace(), new PascalString(tag.getIdentifier())));
         }
         return nodeId;
+    }
+
+    /** Merges decoded and rejected tags back into the order the caller asked for. */
+    private static Map<String, PlcResponseItem<PlcValue>> inRequestOrder(PlcTagRequest request,
+                                                                        Map<String, PlcResponseItem<PlcValue>> decoded,
+                                                                        Map<String, PlcResponseItem<PlcValue>> rejected) {
+        Map<String, PlcResponseItem<PlcValue>> ordered = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            PlcResponseItem<PlcValue> item = decoded.get(tagName);
+            ordered.put(tagName, item != null ? item : rejected.get(tagName));
+        }
+        return ordered;
     }
 
     public Map<String, PlcResponseItem<PlcValue>> readResponse(Map<String, PlcTag> tagMap, List<DataValue> results) {
@@ -493,7 +554,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
             TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(dataTypeRead));
         return conversation.submit(request, ReadResponse.class).thenCompose(response -> {
-            NodeId dataTypeNodeId = dataTypeNodeIdOf(response.getResults().get(0));
+            NodeId dataTypeNodeId = dataTypeNodeIdOf(response.getResults().getFirst());
             if (dataTypeNodeId == null) {
                 return CompletableFuture.completedFuture(null);
             }
@@ -508,7 +569,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
             TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(definitionRead));
         return conversation.submit(request, ReadResponse.class).thenApply(response -> {
-            DataValue value = response.getResults().get(0);
+            DataValue value = response.getResults().getFirst();
             if (!value.getValueSpecified() || !(value.getValue() instanceof VariantExtensionObject)) {
                 // Server doesn't expose the DataTypeDefinition attribute (e.g. pre-1.04 servers
                 // return BadAttributeIdInvalid); the layout must come from the legacy type
@@ -521,7 +582,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             }
             // The DataTypeDefinition is a well-known standard type (ns=0;i=101), so it is parsed
             // into a typed BinaryExtensionObjectWithMask whose body is the StructureDefinition.
-            ExtensionObjectDefinition body = extensionObjects.get(0).getBody();
+            ExtensionObjectDefinition body = extensionObjects.getFirst().getBody();
             return (body instanceof StructureDefinition) ? (StructureDefinition) body : null;
         });
     }
@@ -582,11 +643,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L), 0L,
             Collections.singletonList(description));
         return conversation.submit(request, BrowseResponse.class).thenApply(response -> {
-            BrowseResult result = response.getResults().get(0);
+            BrowseResult result = response.getResults().getFirst();
             if (result.getReferences() == null || result.getReferences().isEmpty()) {
                 return null;
             }
-            ExpandedNodeId target = result.getReferences().get(0).getNodeId();
+            ExpandedNodeId target = result.getReferences().getFirst().getNodeId();
             return target == null ? null : new NodeId(target.getNodeId());
         });
     }
@@ -596,7 +657,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         ReadValueId readValueId = new ReadValueId(node, attributeId, NULL_STRING, new QualifiedName(0, NULL_STRING));
         ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
             TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(readValueId));
-        return conversation.submit(request, ReadResponse.class).thenApply(response -> response.getResults().get(0));
+        return conversation.submit(request, ReadResponse.class).thenApply(response -> response.getResults().getFirst());
     }
 
     private static String stringValueOf(DataValue dataValue) {
@@ -604,7 +665,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<PascalString> values = ((VariantString) dataValue.getValue()).getValue();
-        return (values == null || values.isEmpty()) ? null : values.get(0).getStringValue();
+        return (values == null || values.isEmpty()) ? null : values.getFirst().getStringValue();
     }
 
     private static byte[] byteStringValueOf(DataValue dataValue) {
@@ -615,7 +676,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         if (arrays == null || arrays.isEmpty()) {
             return null;
         }
-        List<Short> bytes = arrays.get(0).getValue();
+        List<Short> bytes = arrays.getFirst().getValue();
         byte[] result = new byte[bytes.size()];
         for (int i = 0; i < bytes.size(); i++) {
             result[i] = bytes.get(i).byteValue();
@@ -657,7 +718,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             Set<String> lengthFields = new HashSet<>();
             for (int i = 0; i < fieldNodes.getLength(); i++) {
                 String lengthField = ((Element) fieldNodes.item(i)).getAttribute("LengthField");
-                if (lengthField != null && !lengthField.isEmpty()) {
+                if (!lengthField.isEmpty()) {
                     lengthFields.add(lengthField);
                 }
             }
@@ -690,25 +751,24 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         String local = typeName.contains(":") ? typeName.substring(typeName.indexOf(':') + 1) : typeName;
-        switch (local) {
-            case "Boolean":    return 1;
-            case "SByte":      return 2;
-            case "Byte":       return 3;
-            case "Int16":      return 4;
-            case "UInt16":     return 5;
-            case "Int32":      return 6;
-            case "UInt32":     return 7;
-            case "Int64":      return 8;
-            case "UInt64":     return 9;
-            case "Float":      return 10;
-            case "Double":     return 11;
-            case "String":
-            case "CharArray":  return 12;
-            case "DateTime":   return 13;
-            case "Guid":       return 14;
-            case "ByteString": return 15;
-            default:           return null;
-        }
+        return switch (local) {
+            case "Boolean" -> 1;
+            case "SByte" -> 2;
+            case "Byte" -> 3;
+            case "Int16" -> 4;
+            case "UInt16" -> 5;
+            case "Int32" -> 6;
+            case "UInt32" -> 7;
+            case "Int64" -> 8;
+            case "UInt64" -> 9;
+            case "Float" -> 10;
+            case "Double" -> 11;
+            case "String", "CharArray" -> 12;
+            case "DateTime" -> 13;
+            case "Guid" -> 14;
+            case "ByteString" -> 15;
+            default -> null;
+        };
     }
 
     /** Turns a struct Variant (single or array of ExtensionObjects) into a PlcStruct / PlcList of PlcStruct. */
@@ -778,23 +838,22 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
         // Each OPC UA built-in is read with the smallest buffer reader that covers its bit width
         // (readUnsignedByte only handles 1-7 bits, so 8-bit and unsigned values step up a size).
-        switch (id) {
-            case 1:  return new PlcBOOL(buffer.readUnsignedShort(8) != 0);
-            case 2:  return new PlcSINT(buffer.readSignedByte(8));
-            case 3:  return new PlcUSINT(buffer.readUnsignedShort(8));
-            case 4:  return new PlcINT(buffer.readSignedShort(16));
-            case 5:  return new PlcUINT(buffer.readUnsignedInt(16));
-            case 6:  return new PlcDINT(buffer.readSignedInt(32));
-            case 7:  return new PlcUDINT(buffer.readUnsignedLong(32));
-            case 8:  return new PlcLINT(buffer.readSignedLong(64));
-            case 9:  return new PlcULINT(buffer.readUnsignedBigInteger(64));
-            case 10: return new PlcREAL(buffer.readFloat(32));
-            case 11: return new PlcLREAL(buffer.readDouble(64));
-            case 12: return new PlcSTRING(PascalString.staticParse(buffer).getStringValue());
-            default:
-                throw new PlcRuntimeException("Unsupported struct field data type id " + id
-                    + " (nested structs, enums and non-builtin types are not yet decoded)");
-        }
+        return switch (id) {
+            case 1 -> new PlcBOOL(buffer.readUnsignedShort(8) != 0);
+            case 2 -> new PlcSINT(buffer.readSignedByte(8));
+            case 3 -> new PlcUSINT(buffer.readUnsignedShort(8));
+            case 4 -> new PlcINT(buffer.readSignedShort(16));
+            case 5 -> new PlcUINT(buffer.readUnsignedInt(16));
+            case 6 -> new PlcDINT(buffer.readSignedInt(32));
+            case 7 -> new PlcUDINT(buffer.readUnsignedLong(32));
+            case 8 -> new PlcLINT(buffer.readSignedLong(64));
+            case 9 -> new PlcULINT(buffer.readUnsignedBigInteger(64));
+            case 10 -> new PlcREAL(buffer.readFloat(32));
+            case 11 -> new PlcLREAL(buffer.readDouble(64));
+            case 12 -> new PlcSTRING(PascalString.staticParse(buffer).getStringValue());
+            default -> throw new PlcRuntimeException("Unsupported struct field data type id " + id
+                + " (nested structs, enums and non-builtin types are not yet decoded)");
+        };
     }
 
     /** Canonical key for a NodeId (namespace + identifier) used to cache resolved type layouts. */
@@ -832,7 +891,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     private CompletableFuture<Map<String, StructWriteInfo>> resolveStructWriteInfos(DefaultPlcWriteRequest request) {
         Map<String, StructWriteInfo> resolved = new ConcurrentHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        for (String tagName : request.getTagNames()) {
+        for (String tagName : sendableTagNames(request)) {
             if (!isStructValue(request.getPlcValue(tagName))) {
                 continue;
             }
@@ -894,7 +953,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L), 0L,
             Collections.singletonList(description));
         return conversation.submit(request, BrowseResponse.class).thenApply(response -> {
-            List<ReferenceDescription> references = response.getResults().get(0).getReferences();
+            List<ReferenceDescription> references = response.getResults().getFirst().getReferences();
             if (references == null || references.isEmpty()) {
                 return null;
             }
@@ -903,7 +962,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                     return reference.getNodeId();
                 }
             }
-            return references.get(0).getNodeId();
+            return references.getFirst().getNodeId();
         });
     }
 
@@ -916,7 +975,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             Collections.singletonList(extensionObject));
     }
 
-    /** Serialises a PlcStruct into the OPC UA binary body described by its StructureDefinition. */
+    /** Serializes a PlcStruct into the OPC UA binary body described by its StructureDefinition. */
     private static byte[] encodeStructBody(PlcValue value, StructureDefinition definition) {
         try {
             byte[] body = new byte[structBodySize(value, definition)];
@@ -991,15 +1050,14 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
     private static int scalarSize(Long builtInDataTypeId, PlcValue value) {
         int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
-        switch (id) {
-            case 1: case 2: case 3:          return 1;
-            case 4: case 5:                  return 2;
-            case 6: case 7: case 10:         return 4;
-            case 8: case 9: case 11:         return 8;
-            case 12: return new PascalString(value.getString()).getLengthInBytes();
-            default:
-                throw new PlcRuntimeException("Unsupported struct field data type id " + id + " for writing");
-        }
+        return switch (id) {
+            case 1, 2, 3 -> 1;
+            case 4, 5 -> 2;
+            case 6, 7, 10 -> 4;
+            case 8, 9, 11 -> 8;
+            case 12 -> new PascalString(value.getString()).getLengthInBytes();
+            default -> throw new PlcRuntimeException("Unsupported struct field data type id " + id + " for writing");
+        };
     }
 
     // The standard "Objects" folder — the usual entry point into a server's address space.
@@ -1126,14 +1184,14 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 0L,                 // requestedMaxReferencesPerNode 0 -> server decides
                 Collections.singletonList(description));
             resultFuture = conversation.submit(request, BrowseResponse.class)
-                .thenApply(response -> response.getResults().get(0));
+                .thenApply(response -> response.getResults().getFirst());
         } else {
             BrowseNextRequest request = new BrowseNextRequest(
                 conversation.createRequestHeader(),
                 false,              // don't release the continuation point, we want the next batch
                 Collections.singletonList(continuationPoint));
             resultFuture = conversation.submit(request, BrowseNextResponse.class)
-                .thenApply(response -> response.getResults().get(0));
+                .thenApply(response -> response.getResults().getFirst());
         }
         return resultFuture.thenCompose(result -> {
             if (result.getReferences() != null) {
@@ -1191,7 +1249,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         }
 
         return new DefaultPlcBrowseItem(tag, name, readable, writable,
-            Collections.<PlcSubscriptionType>emptySet(), false, arrayInfo, children, options);
+            Collections.emptySet(), false, arrayInfo, children, options);
     }
 
     // The node attributes read for every variable child during a browse so items carry a real
@@ -1379,7 +1437,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<NodeId> nodeIds = ((VariantNodeId) dataValue.getValue()).getValue();
-        return (nodeIds == null || nodeIds.isEmpty()) ? null : nodeIds.get(0);
+        return (nodeIds == null || nodeIds.isEmpty()) ? null : nodeIds.getFirst();
     }
 
     /**
@@ -1443,7 +1501,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<Short> values = ((VariantByte) dataValue.getValue()).getValue();
-        return (values == null || values.isEmpty()) ? null : values.get(0);
+        return (values == null || values.isEmpty()) ? null : values.getFirst();
     }
 
     /** Extracts the first Int32 from a Variant, or null if not an int32 scalar. */
@@ -1452,7 +1510,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<Integer> values = ((VariantInt32) dataValue.getValue()).getValue();
-        return (values == null || values.isEmpty()) ? null : values.get(0);
+        return (values == null || values.isEmpty()) ? null : values.getFirst();
     }
 
     /** Extracts the UInt32 list from a Variant, or null if not a uint32 value. */
@@ -1499,19 +1557,17 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         }
         NodeIdTypeDefinition nodeId = expandedNodeId.getNodeId();
         String identifier = nodeId.getIdentifier();
-        if (nodeId instanceof NodeIdTwoByte) {
-            return "ns=0;i=" + identifier;
-        } else if (nodeId instanceof NodeIdFourByte fourByte) {
-            return "ns=" + fourByte.getNamespaceIndex() + ";i=" + identifier;
-        } else if (nodeId instanceof NodeIdNumeric numeric) {
-            return "ns=" + numeric.getNamespaceIndex() + ";i=" + identifier;
-        } else if (nodeId instanceof NodeIdString string) {
-            return "ns=" + string.getNamespaceIndex() + ";s=" + identifier;
-        }
-        // GUID and opaque (ByteString) node identifiers are not round-tripped in Phase 1:
-        // NodeIdGuid#getIdentifier() returns the raw byte-array toString(), which the tag
-        // parser can't turn back into a usable node id. Such nodes are skipped for now.
-        return null;
+        return switch (nodeId) {
+            case NodeIdTwoByte ignored -> "ns=0;i=" + identifier;
+            case NodeIdFourByte fourByte -> "ns=" + fourByte.getNamespaceIndex() + ";i=" + identifier;
+            case NodeIdNumeric numeric -> "ns=" + numeric.getNamespaceIndex() + ";i=" + identifier;
+            case NodeIdString string -> "ns=" + string.getNamespaceIndex() + ";s=" + identifier;
+            default ->
+                // GUID and opaque (ByteString) node identifiers are not round-tripped in Phase 1:
+                // NodeIdGuid#getIdentifier() returns the raw byte-array toString(), which the tag
+                // parser can't turn back into a usable node id. Such nodes are skipped for now.
+                null;
+        };
     }
 
     private static String localizedTextValue(LocalizedText localizedText) {
@@ -1530,168 +1586,201 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
     public static PlcValue variantToPlcValue(PlcTag tag, Variant variant) {
         PlcValue value = null;
-        if (variant instanceof VariantBoolean) {
-            byte[] array = ((VariantBoolean) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.length);
-            for (byte b : array) {
-                values.add(new PlcBOOL(b != 0));
+        // A node that exists but currently carries no value is encoded as a Null variant
+        // (VariantType 0). That's a valid, successful read of an empty value, not an
+        // unsupported type, so it maps to PlcNull rather than to null.
+        switch (variant) {
+            case null -> {
+                return new PlcNull();
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantSByte) {
-            byte[] array = ((VariantSByte) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.length);
-            for (byte b : array) {
-                values.add(new PlcSINT(b));
+            case VariantNull ignored -> {
+                return new PlcNull();
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantByte) {
-            List<Short> array = ((VariantByte) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Short s : array) {
-                values.add(new PlcUSINT(s));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantInt16) {
-            List<Short> array = ((VariantInt16) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Short s : array) {
-                values.add(new PlcINT(s));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantUInt16) {
-            List<Integer> array = ((VariantUInt16) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Integer i : array) {
-                values.add(new PlcUINT(i));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantInt32) {
-            List<Integer> array = ((VariantInt32) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Integer i : array) {
-                values.add(new PlcDINT(i));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantUInt32) {
-            List<Long> array = ((VariantUInt32) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Long l : array) {
-                values.add(new PlcUDINT(l));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantInt64) {
-            List<Long> array = ((VariantInt64) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Long l : array) {
-                values.add(new PlcLINT(l));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantUInt64) {
-            List<BigInteger> array = ((VariantUInt64) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (BigInteger bi : array) {
-                values.add(new PlcULINT(bi));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantFloat) {
-            List<Float> array = ((VariantFloat) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Float f : array) {
-                values.add(new PlcREAL(f));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantDouble) {
-            List<Double> array = ((VariantDouble) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Double d : array) {
-                values.add(new PlcLREAL(d));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantString) {
-            List<PascalString> stringArray = ((VariantString) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(stringArray.size());
-            for (PascalString ps : stringArray) {
-                values.add(new PlcSTRING(ps.getStringValue()));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantDateTime) {
-            List<Long> array = ((VariantDateTime) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (Long l : array) {
-                values.add(DefaultPlcValueHandler.of(tag, LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(l)), ZoneOffset.UTC)));
-            }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantGuid) {
-            List<GuidValue> array = ((VariantGuid) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (GuidValue guidValue : array) {
-                //These two data sections aren't little endian like the rest.
-                byte[] data4Bytes = guidValue.getData4();
-                int data4 = 0;
-                for (byte data4Byte : data4Bytes) {
-                    data4 = (data4 << 8) + (data4Byte & 0xff);
+            case VariantBoolean variantBoolean -> {
+                byte[] array = variantBoolean.getValue();
+                List<PlcValue> values = new ArrayList<>(array.length);
+                for (byte b : array) {
+                    values.add(new PlcBOOL(b != 0));
                 }
-                byte[] data5Bytes = guidValue.getData5();
-                long data5 = 0;
-                for (byte data5Byte : data5Bytes) {
-                    data5 = (data5 << 8) + (data5Byte & 0xff);
+                value = structurePlcValues(values, variant);
+            }
+            case VariantSByte variantSByte -> {
+                byte[] array = variantSByte.getValue();
+                List<PlcValue> values = new ArrayList<>(array.length);
+                for (byte b : array) {
+                    values.add(new PlcSINT(b));
                 }
-                values.add(new PlcSTRING(Long.toHexString(guidValue.getData1()) + "-" + Integer.toHexString(guidValue.getData2()) + "-" + Integer.toHexString(guidValue.getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5)));
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantXmlElement) {
-            List<PascalString> strings = ((VariantXmlElement) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(strings.size());
-            for (PascalString ps : strings) {
-                values.add(new PlcSTRING(ps.getStringValue()));
+            case VariantByte variantByte -> {
+                List<Short> array = variantByte.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Short s : array) {
+                    values.add(new PlcUSINT(s));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantLocalizedText) {
-            List<LocalizedText> strings = ((VariantLocalizedText) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(strings.size());
-            for (LocalizedText lt : strings) {
-                String s = "";
-                s += lt.getLocaleSpecified() ? lt.getLocale().getStringValue() + "|" : "";
-                s += lt.getTextSpecified() ? lt.getText().getStringValue() : "";
-                values.add(new PlcSTRING(s));
+            case VariantInt16 variantInt16 -> {
+                List<Short> array = variantInt16.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Short s : array) {
+                    values.add(new PlcINT(s));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantQualifiedName) {
-            List<QualifiedName> strings = ((VariantQualifiedName) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(strings.size());
-            for (QualifiedName qn : strings) {
-                values.add(new PlcSTRING("ns=" + qn.getNamespaceIndex() + ";s=" + qn.getName().getStringValue()));
+            case VariantUInt16 variantUInt16 -> {
+                List<Integer> array = variantUInt16.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Integer i : array) {
+                    values.add(new PlcUINT(i));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantExtensionObject) {
-            List<ExtensionObject> objects = ((VariantExtensionObject) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(objects.size());
-            for (ExtensionObject eo : objects) {
-                values.add(new PlcSTRING(eo.toString()));
+            case VariantInt32 variantInt32 -> {
+                List<Integer> array = variantInt32.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Integer i : array) {
+                    values.add(new PlcDINT(i));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantNodeId) {
-            List<NodeId> nodeIds = ((VariantNodeId) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(nodeIds.size());
-            for (NodeId nid : nodeIds) {
-                values.add(new PlcSTRING(nid.toString()));
+            case VariantUInt32 variantUInt32 -> {
+                List<Long> array = variantUInt32.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Long l : array) {
+                    values.add(new PlcUDINT(l));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantStatusCode) {
-            List<StatusCode> statusCodes = ((VariantStatusCode) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(statusCodes.size());
-            for (StatusCode sc : statusCodes) {
-                values.add(new PlcSTRING(sc.toString()));
+            case VariantInt64 variantInt64 -> {
+                List<Long> array = variantInt64.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Long l : array) {
+                    values.add(new PlcLINT(l));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
-        } else if (variant instanceof VariantByteString) {
-            List<ByteStringArray> array = ((VariantByteString) variant).getValue();
-            List<PlcValue> values = new ArrayList<>(array.size());
-            for (ByteStringArray byteStringArray : array) {
-                Short[] tmpValue = byteStringArray.getValue().toArray(new Short[0]);
-                values.add(DefaultPlcValueHandler.of(tag, tmpValue));
+            case VariantUInt64 variantUInt64 -> {
+                List<BigInteger> array = variantUInt64.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (BigInteger bi : array) {
+                    values.add(new PlcULINT(bi));
+                }
+                value = structurePlcValues(values, variant);
             }
-            value = structurePlcValues(values, variant);
+            case VariantFloat variantFloat -> {
+                List<Float> array = variantFloat.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Float f : array) {
+                    values.add(new PlcREAL(f));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantDouble variantDouble -> {
+                List<Double> array = variantDouble.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Double d : array) {
+                    values.add(new PlcLREAL(d));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantString variantString -> {
+                List<PascalString> stringArray = variantString.getValue();
+                List<PlcValue> values = new ArrayList<>(stringArray.size());
+                for (PascalString ps : stringArray) {
+                    values.add(new PlcSTRING(ps.getStringValue()));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantDateTime variantDateTime -> {
+                List<Long> array = variantDateTime.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Long l : array) {
+                    values.add(DefaultPlcValueHandler.of(tag, LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(l)), ZoneOffset.UTC)));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantGuid variantGuid -> {
+                List<GuidValue> array = variantGuid.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (GuidValue guidValue : array) {
+                    //These two data sections aren't little endian like the rest.
+                    byte[] data4Bytes = guidValue.getData4();
+                    int data4 = 0;
+                    for (byte data4Byte : data4Bytes) {
+                        data4 = (data4 << 8) + (data4Byte & 0xff);
+                    }
+                    byte[] data5Bytes = guidValue.getData5();
+                    long data5 = 0;
+                    for (byte data5Byte : data5Bytes) {
+                        data5 = (data5 << 8) + (data5Byte & 0xff);
+                    }
+                    values.add(new PlcSTRING(Long.toHexString(guidValue.getData1()) + "-" + Integer.toHexString(guidValue.getData2()) + "-" + Integer.toHexString(guidValue.getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5)));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantXmlElement variantXmlElement -> {
+                List<PascalString> strings = variantXmlElement.getValue();
+                List<PlcValue> values = new ArrayList<>(strings.size());
+                for (PascalString ps : strings) {
+                    values.add(new PlcSTRING(ps.getStringValue()));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantLocalizedText variantLocalizedText -> {
+                List<LocalizedText> strings = variantLocalizedText.getValue();
+                List<PlcValue> values = new ArrayList<>(strings.size());
+                for (LocalizedText lt : strings) {
+                    String s = "";
+                    s += lt.getLocaleSpecified() ? lt.getLocale().getStringValue() + "|" : "";
+                    s += lt.getTextSpecified() ? lt.getText().getStringValue() : "";
+                    values.add(new PlcSTRING(s));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantQualifiedName variantQualifiedName -> {
+                List<QualifiedName> strings = variantQualifiedName.getValue();
+                List<PlcValue> values = new ArrayList<>(strings.size());
+                for (QualifiedName qn : strings) {
+                    values.add(new PlcSTRING("ns=" + qn.getNamespaceIndex() + ";s=" + qn.getName().getStringValue()));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantExtensionObject variantExtensionObject -> {
+                List<ExtensionObject> objects = variantExtensionObject.getValue();
+                List<PlcValue> values = new ArrayList<>(objects.size());
+                for (ExtensionObject eo : objects) {
+                    values.add(new PlcSTRING(eo.toString()));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantNodeId variantNodeId -> {
+                List<NodeId> nodeIds = variantNodeId.getValue();
+                List<PlcValue> values = new ArrayList<>(nodeIds.size());
+                for (NodeId nid : nodeIds) {
+                    values.add(new PlcSTRING(nid.toString()));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantStatusCode variantStatusCode -> {
+                List<StatusCode> statusCodes = variantStatusCode.getValue();
+                List<PlcValue> values = new ArrayList<>(statusCodes.size());
+                for (StatusCode sc : statusCodes) {
+                    values.add(new PlcSTRING(sc.toString()));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            case VariantByteString variantByteString -> {
+                List<ByteStringArray> array = variantByteString.getValue();
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (ByteStringArray byteStringArray : array) {
+                    Short[] tmpValue = byteStringArray.getValue().toArray(new Short[0]);
+                    values.add(DefaultPlcValueHandler.of(tag, tmpValue));
+                }
+                value = structurePlcValues(values, variant);
+            }
+            default -> {
+            }
         }
 
         // If the tag declares a specific type (via suffix like :TIME, :DATE, etc.),
@@ -1715,7 +1804,9 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         // If the value is already a properly typed temporal value (e.g., from DTL
         // conversion), skip the override to avoid corrupting it.
         PlcValueType currentType = value.getPlcValueType();
-        if (currentType == targetType || isTemporalType(currentType)) {
+        // There is nothing to re-interpret for an empty value; converting it would turn a
+        // "no value" into a bogus zero-valued TIME/DATE/... .
+        if (currentType == targetType || currentType == PlcValueType.NULL || isTemporalType(currentType)) {
             return value;
         }
         if (value instanceof PlcList list) {
@@ -1943,9 +2034,9 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             } else if (serverAttributes != null && serverAttributes.unsigned()) {
                 // Node is the abstract UInteger type: no concrete built-in to resolve to, so pick
                 // an unsigned type sized to the value (an abstract node accepts any subtype).
-                dataType = inferUnsignedWriteType(plcValueList.get(0));
+                dataType = inferUnsignedWriteType(plcValueList.getFirst());
             } else {
-                dataType = inferWriteType(plcValueList.get(0));
+                dataType = inferWriteType(plcValueList.getFirst());
             }
         }
         int length = valueObject.getLength();
@@ -2203,14 +2294,19 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         LOGGER.trace("Writing Value");
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
+        if (sendableTagNames(request).isEmpty()) {
+            return CompletableFuture.completedFuture(
+                new DefaultPlcWriteResponse(request, rejectedWriteTags(request)));
+        }
+
         // Phase 4: for tags without an explicit ;TYPE suffix, resolve the server-declared data
         // type (via the session type cache) up-front so the write is built with the authoritative
         // OPC UA type instead of a lossy Java-value guess. Then assemble and submit the write.
         return resolveWriteTypes(request).thenCompose(serverAttributes ->
             resolveStructWriteInfos(request).thenCompose(structInfos -> {
                 RequestHeader requestHeader = conversation.createRequestHeader();
-                List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
-                for (String tagName : request.getTagNames()) {
+                List<WriteValue> writeValueList = new ArrayList<>(request.getNumberOfTags());
+                for (String tagName : sendableTagNames(request)) {
                     OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
                     NodeId nodeId = generateNodeId(tag);
@@ -2251,7 +2347,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     private CompletableFuture<Map<String, NodeAttributes>> resolveWriteTypes(DefaultPlcWriteRequest request) {
         Map<String, NodeAttributes> serverAttributes = new ConcurrentHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        for (String tagName : request.getTagNames()) {
+        for (String tagName : sendableTagNames(request)) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
             // An explicit ;TYPE suffix is authoritative — no server round-trip needed.
             if (tag.getDataType() != OpcuaDataType.NULL) {
@@ -2274,10 +2370,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     }
 
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
-        Map<String, PlcResponseCode> responseMap = new HashMap<>();
+        Map<String, PlcResponseCode> responseMap = new HashMap<>(rejectedWriteTags(request));
         List<StatusCode> results = writeResponse.getResults();
-        Iterator<String> responseIterator = request.getTagNames().iterator();
-        for (int i = 0; i < request.getTagNames().size(); i++) {
+        // Only the tags that were actually sent have a slot in the response.
+        List<String> sendable = sendableTagNames(request);
+        Iterator<String> responseIterator = sendable.iterator();
+        for (int i = 0; i < sendable.size(); i++) {
             String tagName = responseIterator.next();
             long opcStatusCode = results.get(i).getStatusCode();
             PlcResponseCode statusCode = mapOpcStatusCode(opcStatusCode, PlcResponseCode.REMOTE_ERROR);
@@ -2290,12 +2388,24 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     @Override
     protected CompletableFuture<PlcSubscriptionResponse> onSubscribe(PlcSubscriptionRequest subscriptionRequest) {
         List<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
-        long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+        // A subscription has a single publishing interval, so take the fastest rate any of its tags
+        // asked for - taking the first tag's rate would starve every faster tag behind it. The
+        // individual sampling rates are set per monitored item (see onSubscribeCreateMonitoredItemsRequest).
+        long cycleTime = tagNames.stream()
+            .map(subscriptionRequest::getTag)
+            .map(tag -> tag.getDuration().orElse(DEFAULT_CYCLE_TIME))
+            .min(Duration::compareTo)
+            .orElse(DEFAULT_CYCLE_TIME)
+            .toMillis();
 
         return onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
                 long subscriptionId = response.getSubscriptionId();
+                // The server may revise the publishing interval; everything we time against it
+                // (the publish request cadence and its timeouts) has to follow the revised value,
+                // not what we asked for.
+                long revisedCycleTime = revisedPublishingInterval(response, cycleTime);
                 OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this,
-                    conversation, subscriptionRequest, subscriptionId, cycleTime);
+                    conversation, subscriptionRequest, subscriptionId, cycleTime, revisedCycleTime);
                 if (subscriptionRequest.getConsumer() != null) {
                     handle.register(subscriptionRequest.getConsumer());
                 }
@@ -2308,7 +2418,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 subscriptions.put(handle.getSubscriptionId(), handle);
                 return handle;
             })
-            .thenCompose(handle -> handle.onSubscribeCreateMonitoredItemsRequest())
+            .thenCompose(OpcuaSubscriptionHandle::onSubscribeCreateMonitoredItemsRequest)
             .thenApply(handle -> {
                 Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
                 for (String tagName : subscriptionRequest.getTagNames()) {
@@ -2322,6 +2432,23 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
                 return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
             });
+    }
+
+    /**
+     * The publishing interval the server actually granted, in milliseconds. Servers are free to
+     * revise the interval we requested (typically upwards, to their smallest supported rate).
+     * Falls back to the requested value if the server reports something unusable.
+     */
+    private static long revisedPublishingInterval(CreateSubscriptionResponse response, long requestedCycleTime) {
+        double revised = response.getRevisedPublishingInterval();
+        if (revised <= 0) {
+            return requestedCycleTime;
+        }
+        long revisedMillis = Math.round(revised);
+        if (revisedMillis != requestedCycleTime) {
+            LOGGER.debug("Server revised the publishing interval from {}ms to {}ms", requestedCycleTime, revisedMillis);
+        }
+        return revisedMillis;
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
@@ -2376,13 +2503,5 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     public static long getDateTime(long dateTime) {
         return (dateTime - EPOCH_OFFSET) / 10000;
     }
-
-    private GuidValue toGuidValue(String identifier) {
-        LOGGER.error("Querying Guid nodes is not supported");
-        byte[] data4 = new byte[]{0, 0};
-        byte[] data5 = new byte[]{0, 0, 0, 0, 0, 0};
-        return new GuidValue(0L, 0, 0, data4, data5);
-    }
-
 
 }

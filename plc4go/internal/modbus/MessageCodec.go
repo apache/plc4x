@@ -101,7 +101,10 @@ func isEOF(err error) (matched bool) {
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
-	tcpAdu := message.(model.ModbusTcpADU)
+	tcpAdu, ok := message.(model.ModbusTcpADU)
+	if !ok {
+		return errors.Errorf("message is not a ModbusTcpADU, got %T", message)
+	}
 	// Serialize the request
 	theBytes, err := tcpAdu.Serialize()
 	if err != nil {

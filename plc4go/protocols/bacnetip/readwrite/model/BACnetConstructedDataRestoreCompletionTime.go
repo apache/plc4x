@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetPlx4xTypeName() string 
 	return "BACnetConstructedDataRestoreCompletionTime"
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (completionTime)
 	lengthInBits += m.CompletionTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -100,11 +100,11 @@ func CastBACnetEventTransitionBits(structType any) BACnetEventTransitionBits {
 	return castFunc(structType)
 }
 
-func (m BACnetEventTransitionBits) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetEventTransitionBits) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetEventTransitionBits) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetEventTransitionBits) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

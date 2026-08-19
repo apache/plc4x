@@ -229,8 +229,8 @@ func (m *_LogicalSegment) GetPlx4xTypeName() string {
 	return "LogicalSegment"
 }
 
-func (m *_LogicalSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PathSegmentContract.(*_PathSegment).getLengthInBits(ctx))
+func (m *_LogicalSegment) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PathSegmentContract.(*_PathSegment).getLengthInBits(ctx))
 
 	// Simple field (segmentType)
 	lengthInBits += m.SegmentType.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_LogicalSegment) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LogicalSegment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LogicalSegment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

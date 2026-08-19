@@ -40,9 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.KeyPair;
+import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.regex.Matcher;
@@ -93,15 +92,19 @@ public class OpcuaDriverContext {
         String serverKeyStore = configuration.getKeyStoreFile();
 
         if (serverKeyStore == null) {
-            LOGGER.info("Client certificate not provided, creating temporary certificate and private key");
-            certificateKeyPair = CertificateGenerator.generateCertificate();
+            int keySize = configuration.getGeneratedKeySize();
+            if (keySize < 2048 || keySize % 1024 != 0) {
+                throw new IllegalArgumentException("'generated-key-size' has to be a multiple of 1024"
+                    + " and at least 2048, was " + keySize);
+            }
+            LOGGER.info("Client certificate not provided, creating temporary {} bit certificate and private key", keySize);
+            certificateKeyPair = CertificateGenerator.generateCertificate(keySize);
         } else {
             LOGGER.info("Loading KeyStore at {}", serverKeyStore);
 
             KeyStore keyStore = openKeyStore(configuration.getKeyStoreFile(), configuration.getKeyStoreType(), configuration.getKeyStorePassword());
-            String alias = keyStore.aliases().nextElement();
-            KeyPair kp = new KeyPair(keyStore.getCertificate(alias).getPublicKey(), (PrivateKey) keyStore.getKey(alias, configuration.getKeyStorePassword()));
-            certificateKeyPair = new CertificateKeyPair(kp, (X509Certificate) keyStore.getCertificate(alias));
+            certificateKeyPair = KeyStoreCredentials.load(keyStore, configuration.getKeyStorePassword(), null,
+                configuration.getKeyStoreFile(), "application instance certificates");
         }
 
         if (configuration.getServerCertificate() != null) {
@@ -112,6 +115,7 @@ public class OpcuaDriverContext {
 
         certificateVerifier = buildCertificateVerifier(configuration);
     }
+
 
     /**
      * Selects the server-certificate trust strategy, in order of precedence:
@@ -264,7 +268,10 @@ public class OpcuaDriverContext {
         }
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(new FileInputStream(serverKeyStore), password);
+        // The stream has to be closed explicitly - on Windows an open handle keeps the file locked.
+        try (InputStream inputStream = new FileInputStream(serverKeyStore)) {
+            keyStore.load(inputStream, password);
+        }
         return keyStore;
     }
 

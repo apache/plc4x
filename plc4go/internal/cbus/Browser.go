@@ -36,6 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Browser struct {
@@ -122,7 +123,7 @@ unitLoop:
 				AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 				Build()
 			timeout := 5 * time.Second // TODO: do we want to keep this
-			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, timeout)
+			timeoutCtx, timeoutCancel := utils.WithNamedTimeout(ctx, "browse timeout", timeout)
 			m.log.Trace().
 				Stringer("readRequest", readRequest).
 				Dur("timeout", timeout).
@@ -216,7 +217,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	if err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
 	}
-	subCtx, subCtxCancel := context.WithTimeout(ctx, 2*time.Second)
+	subCtx, subCtxCancel := utils.WithNamedTimeout(ctx, "MMI subscribe timeout", 2*time.Second)
 	defer subCtxCancel()
 	subscriptionResult := <-subscriptionRequest.Execute(subCtx)
 	if err := subscriptionResult.GetErr(); err != nil {
@@ -336,7 +337,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	if err != nil {
 		return nil, errors.Wrap(err, "Error building the installation MMI")
 	}
-	readCtx, readCtxCancel := context.WithTimeout(ctx, 2*time.Second)
+	readCtx, readCtxCancel := utils.WithNamedTimeout(ctx, "MMI read timeout", 2*time.Second)
 	defer readCtxCancel()
 	readWg := new(sync.WaitGroup)
 	readWg.Go(func() {

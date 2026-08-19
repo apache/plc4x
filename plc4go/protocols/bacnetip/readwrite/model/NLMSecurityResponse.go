@@ -257,8 +257,8 @@ func (m *_NLMSecurityResponse) GetPlx4xTypeName() string {
 	return "NLMSecurityResponse"
 }
 
-func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (responseCode)
 	lengthInBits += 8
@@ -271,13 +271,13 @@ func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.VariableParameters) > 0 {
-		lengthInBits += 8 * uint16(len(m.VariableParameters))
+		lengthInBits += 8 * uint64(len(m.VariableParameters))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMSecurityResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMSecurityResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

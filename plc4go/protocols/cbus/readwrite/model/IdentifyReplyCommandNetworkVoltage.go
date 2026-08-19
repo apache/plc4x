@@ -249,8 +249,8 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandNetworkVoltage"
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (volts)
 	lengthInBits += 16
@@ -267,7 +267,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

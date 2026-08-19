@@ -96,7 +96,7 @@ func (m *Connection) sendGatewayConnectionRequest(ctx context.Context) (driverMo
 	connectionRequest := driverModel.NewConnectionRequest(
 		driverModel.NewHPAIDiscoveryEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
 		driverModel.NewHPAIDataEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
-		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
+		driverModel.NewConnectionRequestInformationTunnelConnection(m.getTunnelConnectionType()),
 	)
 
 	result := make(chan driverModel.ConnectionResponse, 1)
@@ -294,6 +294,157 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
+	}
+}
+
+// sendGroupAddressWriteRequest puts a GroupValueWrite for the given group address onto the
+// bus. A gateway answers such a tunneling-request twice: first with a TunnelingResponse
+// acknowledging it accepted the frame, and then with an LDataCon echoing the frame back as
+// soon as it made it onto the bus. Both are correlated here, so a write only reports success
+// if the frame was really sent.
+// (Java: KnxNetIpConnection#onWrite)
+func (m *Connection) sendGroupAddressWriteRequest(ctx context.Context, groupAddress []byte, dataFirstByte int8, data []byte) error {
+	sequenceCounter := m.getNewSequenceCounter()
+	groupAddressWriteRequest := driverModel.NewTunnelingRequest(
+		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, sequenceCounter),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				true,
+				false,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+				true,
+				6,
+				0,
+				m.ClientKnxAddress, groupAddress,
+				driverModel.NewApduDataContainer(
+					false,
+					0,
+					driverModel.NewApduDataGroupValueWrite(dataFirstByte, data),
+				),
+			),
+		),
+	)
+
+	// The confirmation expectation gets a context of its own so it can be dropped again as
+	// soon as this write is done. A stale expectation - e.g. one left behind by a write
+	// which already failed on the ack - would otherwise stay registered until its ttl runs
+	// out and consume the confirmation of a later write, since HandleMessages fans a
+	// message out to every expectation accepting it.
+	confirmationCtx, cancelConfirmation := context.WithCancel(ctx)
+	defer cancelConfirmation()
+
+	// Register the expectation for the confirmation before sending anything, otherwise a
+	// fast gateway could confirm the frame before we started listening for it.
+	confirmationResult := make(chan error, 1)
+	m.messageCodec.Expect(
+		confirmationCtx,
+		"group_address_write_confirmation",
+		func(message spi.Message) bool {
+			// A canceled expectation is only removed the next time the expire-worker runs,
+			// so stop accepting anything the moment this write is over.
+			if confirmationCtx.Err() != nil {
+				return false
+			}
+			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+				return false
+			}
+			lDataCon, ok := tunnelingRequest.GetCemi().(driverModel.LDataCon)
+			if !ok {
+				return false
+			}
+			dataFrameExt, ok := lDataCon.GetDataFrame().(driverModel.LDataExtended)
+			if !ok {
+				return false
+			}
+			// Only the confirmation of the very frame we sent is of interest here: the
+			// gateway echoes it back verbatim, so source- and destination-address as well
+			// as the payload have to match, otherwise concurrent writes (to the same group
+			// address, or from another client on the same tunnel) satisfy each other.
+			if !dataFrameExt.GetGroupAddress() ||
+				!m.sliceEqual(dataFrameExt.GetDestinationAddress(), groupAddress) ||
+				!knxAddressEqual(dataFrameExt.GetSourceAddress(), m.ClientKnxAddress) {
+				return false
+			}
+			dataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+			if !ok {
+				return false
+			}
+			groupValueWrite, ok := dataContainer.GetDataApdu().(driverModel.ApduDataGroupValueWrite)
+			if !ok {
+				return false
+			}
+			return groupValueWrite.GetDataFirstByte() == dataFirstByte &&
+				m.sliceEqual(groupValueWrite.GetData(), data)
+		},
+		func(message spi.Message) error {
+			lDataCon := message.(driverModel.TunnelingRequest).GetCemi().(driverModel.LDataCon)
+			if lDataCon.GetDataFrame().GetErrorFlag() {
+				confirmationResult <- errors.New("the gateway reported an error confirming the group value write")
+				return nil
+			}
+			confirmationResult <- nil
+			return nil
+		},
+		func(err error) error {
+			// If this is a timeout, do a check if the connection requires a reconnection
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
+				m.handleTimeout()
+			}
+			confirmationResult <- errors.Wrap(err, "got error waiting for the write confirmation")
+			return nil
+		},
+	)
+
+	ackResult := make(chan error, 1)
+	if err := m.messageCodec.SendRequest(ctx, "send_group_address_write_request", groupAddressWriteRequest, func(message spi.Message) bool {
+		tunnelingResponse, ok := message.(driverModel.TunnelingResponse)
+		if !ok {
+			return false
+		}
+		dataBlock := tunnelingResponse.GetTunnelingResponseDataBlock()
+		return dataBlock.GetCommunicationChannelId() == m.CommunicationChannelId &&
+			dataBlock.GetSequenceCounter() == sequenceCounter
+	}, func(message spi.Message) error {
+		tunnelingResponse := message.(driverModel.TunnelingResponse)
+		if status := tunnelingResponse.GetTunnelingResponseDataBlock().GetStatus(); status != driverModel.Status_NO_ERROR {
+			ackResult <- errors.Errorf("got a return status of: %s", status)
+			return nil
+		}
+		ackResult <- nil
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		ackResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "got error sending request")
+	}
+
+	// First wait for the gateway to acknowledge the tunneling-request itself ...
+	select {
+	case err := <-ackResult:
+		if err != nil {
+			return err
+		}
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "context done while waiting for the tunneling ack")
+	}
+	// ... and then for the confirmation that the frame was put onto the bus.
+	select {
+	case err := <-confirmationResult:
+		return err
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "context done while waiting for the write confirmation")
 	}
 }
 

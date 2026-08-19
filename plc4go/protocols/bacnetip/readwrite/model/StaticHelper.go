@@ -234,7 +234,7 @@ func ReadProprietaryEnumGeneric(ctx context.Context, readBuffer utils.ReadBuffer
 		return uint32(0), nil
 	}
 	// We need to reset our reader to the position we read before
-	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
+	readBuffer.Reset(readBuffer.GetPos() - uint32(actualLength))
 	bitsToRead := (uint8)(actualLength * 8)
 	return readBuffer.ReadUint32("proprietaryValue", bitsToRead)
 }

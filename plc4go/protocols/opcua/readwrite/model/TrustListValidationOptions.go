@@ -130,11 +130,11 @@ func CastTrustListValidationOptions(structType any) TrustListValidationOptions {
 	return castFunc(structType)
 }
 
-func (m TrustListValidationOptions) GetLengthInBits(ctx context.Context) uint16 {
+func (m TrustListValidationOptions) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m TrustListValidationOptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TrustListValidationOptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

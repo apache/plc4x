@@ -245,8 +245,8 @@ func (m *_ConfigurationUpdateTargetType) GetPlx4xTypeName() string {
 	return "ConfigurationUpdateTargetType"
 }
 
-func (m *_ConfigurationUpdateTargetType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ConfigurationUpdateTargetType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (path)
 	lengthInBits += m.Path.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_ConfigurationUpdateTargetType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ConfigurationUpdateTargetType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConfigurationUpdateTargetType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -106,11 +106,11 @@ func CastPerformUpdateType(structType any) PerformUpdateType {
 	return castFunc(structType)
 }
 
-func (m PerformUpdateType) GetLengthInBits(ctx context.Context) uint16 {
+func (m PerformUpdateType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PerformUpdateType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PerformUpdateType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

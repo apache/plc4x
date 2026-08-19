@@ -225,8 +225,8 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetPlx4xTyp
 	return "BACnetPropertyAccessResultAccessResultPropertyAccessError"
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).getLengthInBits(ctx))
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).getLengthInBits(ctx))
 
 	// Simple field (propertyAccessError)
 	lengthInBits += m.PropertyAccessError.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthIn
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

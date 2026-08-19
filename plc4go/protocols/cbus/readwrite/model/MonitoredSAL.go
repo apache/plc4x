@@ -62,8 +62,8 @@ type MonitoredSALContract interface {
 
 // MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
 type MonitoredSALRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetSalType returns SalType (discriminator field)
 	GetSalType() byte
 }
@@ -247,17 +247,17 @@ func (m *_MonitoredSAL) GetPlx4xTypeName() string {
 	return "MonitoredSAL"
 }
 
-func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_MonitoredSAL) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_MonitoredSAL) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

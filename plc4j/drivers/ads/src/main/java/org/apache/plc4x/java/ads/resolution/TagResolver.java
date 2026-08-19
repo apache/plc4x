@@ -39,13 +39,37 @@ public final class TagResolver {
     private final Map<String, AdsSymbolTableEntry> symbolTable;
     private final Map<String, AdsDataTypeTableEntry> dataTypeTable;
 
+    private final boolean symbolTablesLoaded;
+
     public TagResolver(Map<String, AdsSymbolTableEntry> symbolTable,
                        Map<String, AdsDataTypeTableEntry> dataTypeTable) {
+        this(symbolTable, dataTypeTable, true);
+    }
+
+    /**
+     * @param symbolTablesLoaded whether the symbol- and data-type tables were loaded at all. When
+     *                           they weren't (the connection option
+     *                           {@code load-symbol-and-data-type-tables} is disabled), symbolic
+     *                           addresses simply cannot be resolved and saying so is more useful
+     *                           than reporting every symbol as unknown - see GH-1626.
+     */
+    public TagResolver(Map<String, AdsSymbolTableEntry> symbolTable,
+                       Map<String, AdsDataTypeTableEntry> dataTypeTable,
+                       boolean symbolTablesLoaded) {
         this.symbolTable = symbolTable;
         this.dataTypeTable = dataTypeTable;
+        this.symbolTablesLoaded = symbolTablesLoaded;
     }
 
     public ResolvedAdsTag resolve(SymbolicAdsTag tag) {
+        if (!symbolTablesLoaded) {
+            throw new PlcInvalidTagException(
+                "Cannot resolve the symbolic address '" + tag.getSymbolicAddress()
+                    + "': the symbol and data-type tables were not loaded because the connection"
+                    + " option 'load-symbol-and-data-type-tables' is disabled. Either enable that"
+                    + " option or address the value directly as"
+                    + " '{IndexGroup}/{IndexOffset}:{TYPE}'.");
+        }
         AddressParser.AddressPart root = AddressParser.parse(tag.getSymbolicAddress());
         AdsSymbolTableEntry symbol = symbolTable.get(root.baseSegment());
         if (symbol == null) {

@@ -338,8 +338,8 @@ func (m *_UABinaryFileDataType) GetPlx4xTypeName() string {
 	return "UABinaryFileDataType"
 }
 
-func (m *_UABinaryFileDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_UABinaryFileDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfNamespaces)
 	lengthInBits += 32
@@ -405,7 +405,7 @@ func (m *_UABinaryFileDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_UABinaryFileDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UABinaryFileDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -186,8 +186,8 @@ func (m *_LightingLabelOptions) GetPlx4xTypeName() string {
 	return "LightingLabelOptions"
 }
 
-func (m *_LightingLabelOptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LightingLabelOptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 1
@@ -210,7 +210,7 @@ func (m *_LightingLabelOptions) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LightingLabelOptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LightingLabelOptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

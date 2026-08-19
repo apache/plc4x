@@ -211,8 +211,8 @@ func (m *_NLMWhoIsRouterToNetwork) GetPlx4xTypeName() string {
 	return "NLMWhoIsRouterToNetwork"
 }
 
-func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Optional Field (destinationNetworkAddress)
 	if m.DestinationNetworkAddress != nil {
@@ -222,7 +222,7 @@ func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMWhoIsRouterToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMWhoIsRouterToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

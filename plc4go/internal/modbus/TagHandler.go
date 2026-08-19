@@ -22,6 +22,8 @@ package modbus
 import (
 	"fmt"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/rs/zerolog"
 
@@ -66,8 +68,12 @@ type TagHandler struct {
 }
 
 func NewTagHandler(_options ...options.WithOption) TagHandler {
-	generalAddressPattern := `(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
-	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
+	// STRING and WSTRING carry the length of one string in parentheses, the way plc4j's
+	// ModbusTag.ADDRESS_PATTERN spells it: "holding-register:1:STRING(20)[3]" is three
+	// 20-character strings. The quantity in brackets keeps meaning "how many values". Behind that,
+	// curly braces may carry per-tag settings (plc4j TagConfigParser.TAG_CONFIG_PATTERN).
+	generalAddressPattern := `(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+)(\((?P<stringLength>\d+)\))?)?(\[(?P<quantity>\d+)])?` + tagConfigPattern + `$`
+	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+)(\((?P<stringLength>\d+)\))?)?(\[(?P<quantity>\d+)])?` + tagConfigPattern + `$`
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return TagHandler{
 		plc4xCoilPattern:               regexp.MustCompile("^coil:" + generalAddressPattern),
@@ -85,71 +91,121 @@ func NewTagHandler(_options ...options.WithOption) TagHandler {
 	}
 }
 
+// defaultDataTypeFor is the type an address without an explicit one is read and written as. Ported
+// from plc4j, where the per-area factories default to BOOL for the bit areas
+// (ModbusTagCoil.java:95, and likewise ModbusTagDiscreteInput) and to INT for the register areas
+// (ModbusTagHoldingRegister.java:94, and likewise ModbusTagInputRegister/ExtendedRegister).
+func defaultDataTypeFor(tagType TagType) readWriteModel.ModbusDataType {
+	switch tagType {
+	case Coil, DiscreteInput:
+		return readWriteModel.ModbusDataType_BOOL
+	default:
+		return readWriteModel.ModbusDataType_INT
+	}
+}
+
+func dataTypeFor(tagType TagType, dataTypeString string) (readWriteModel.ModbusDataType, error) {
+	if dataTypeString == "" {
+		return defaultDataTypeFor(tagType), nil
+	}
+	typeByName, ok := readWriteModel.ModbusDataTypeByName(dataTypeString)
+	if !ok {
+		return 0, errors.Errorf("Unknown type %s", dataTypeString)
+	}
+	return typeByName, nil
+}
+
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
-	if match := utils.GetSubgroupMatches(m.plc4xCoilPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
+	for _, candidate := range []struct {
+		pattern *regexp.Regexp
+		tagType TagType
+	}{
+		{m.plc4xCoilPattern, Coil},
+		{m.numericCoilPattern, Coil},
+		{m.plc4xDiscreteInputPattern, DiscreteInput},
+		{m.numericDiscreteInputPattern, DiscreteInput},
+		{m.plc4xInputRegisterPattern, InputRegister},
+		{m.numericInputRegisterPattern, InputRegister},
+		{m.plc4xHoldingRegisterPattern, HoldingRegister},
+		{m.numericHoldingRegisterPattern, HoldingRegister},
+		{m.plc4xExtendedRegisterPattern, ExtendedRegister},
+		{m.numericExtendedRegisterPattern, ExtendedRegister},
+	} {
+		match := utils.GetSubgroupMatches(candidate.pattern, tagAddress)
+		if match == nil {
+			continue
 		}
-		return NewModbusPlcTagFromStrings(Coil, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.numericCoilPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
+		dataType, err := dataTypeFor(candidate.tagType, match["datatype"])
+		if err != nil {
+			return nil, err
 		}
-		return NewModbusPlcTagFromStrings(Coil, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.plc4xDiscreteInputPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
+		config, err := parseTagConfig(match["config"])
+		if err != nil {
+			return nil, err
 		}
-		return NewModbusPlcTagFromStrings(DiscreteInput, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.numericDiscreteInputPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(DiscreteInput, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.plc4xInputRegisterPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(InputRegister, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.numericInputRegisterPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(InputRegister, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.plc4xHoldingRegisterPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(HoldingRegister, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.numericHoldingRegisterPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(HoldingRegister, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.plc4xExtendedRegisterPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(ExtendedRegister, match["address"], match["quantity"], typeByName, m.options...)
-	} else if match := utils.GetSubgroupMatches(m.numericExtendedRegisterPattern, tagAddress); match != nil {
-		typeByName, ok := readWriteModel.ModbusDataTypeByName(match["datatype"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["datatype"])
-		}
-		return NewModbusPlcTagFromStrings(ExtendedRegister, match["address"], match["quantity"], typeByName, m.options...)
+		return NewModbusPlcTagFromStrings(candidate.tagType, match["address"], match["quantity"], match["stringLength"], dataType, config, m.options...)
 	}
 	return nil, errors.Errorf("Invalid address format for address '%s'", tagAddress)
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
+}
+
+// tagConfigPattern is the optional trailing block of per-tag settings, written in curly braces
+// behind the address. Ported from plc4j's TagConfigParser.TAG_CONFIG_PATTERN.
+const tagConfigPattern = `(\{(?P<config>[^}]*)})?`
+
+// tagConfigKeyValuePattern picks the individual settings out of that block. It follows JSON syntax
+// with unquoted keys, as plc4j's TagConfigParser.KEY_VALUE_PATTERN does. A bare word is accepted on
+// top of what plc4j allows, so that an unquoted enum name such as "byte-order: BIG_ENDIAN" is read
+// rather than silently skipped.
+var tagConfigKeyValuePattern = regexp.MustCompile(`(?P<parameter>[\w\-_]+):\s*(?P<value>-?\d+\.\d+|-?\d+|"[^"]*"|'[^']*'|true|false|[A-Za-z_][\w\-]*),?`)
+
+// tagConfig is what a tag may say about itself on top of its address.
+type tagConfig struct {
+	unitId    *uint8
+	byteOrder *ByteOrder
+}
+
+// parseTagConfig reads the settings out of the curly-brace block. An empty block, or none at all,
+// simply leaves everything at the connection's defaults.
+func parseTagConfig(config string) (tagConfig, error) {
+	var parsed tagConfig
+	if config == "" {
+		return parsed, nil
+	}
+	for _, match := range tagConfigKeyValuePattern.FindAllStringSubmatch(config, -1) {
+		parameter, value := match[1], unquoteTagConfigValue(match[2])
+		switch parameter {
+		case "unit-id":
+			unitId, err := strconv.ParseUint(value, 10, 8)
+			if err != nil {
+				return tagConfig{}, errors.Errorf("Couldn't parse unit-id '%s' into an int between 0 and 255", value)
+			}
+			asUint8 := uint8(unitId)
+			parsed.unitId = &asUint8
+		case "byte-order":
+			byteOrder, ok := ByteOrderByName(value)
+			if !ok {
+				return tagConfig{}, errors.Errorf("Unknown byte-order %s", value)
+			}
+			parsed.byteOrder = &byteOrder
+		default:
+			// plc4j's TagConfigParser collects every key into a map and leaves it to each tag to
+			// pick out the ones it knows, so an address carrying a setting this driver has no use
+			// for still parses.
+		}
+	}
+	return parsed, nil
+}
+
+// unquoteTagConfigValue strips the quotes a string value may be written with.
+func unquoteTagConfigValue(value string) string {
+	for _, quote := range []string{"'", `"`} {
+		if len(value) >= 2 && strings.HasPrefix(value, quote) && strings.HasSuffix(value, quote) {
+			return value[1 : len(value)-1]
+		}
+	}
+	return value
 }

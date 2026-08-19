@@ -64,7 +64,7 @@ public class FieldReaderArray<T> implements FieldCommons {
             // Make some variables available that would be otherwise challenging to forward.
             ThreadLocalHelper.curItemThreadLocal.set(curItem);
             ThreadLocalHelper.lastItemThreadLocal.set(curItem == itemCount - 1);
-            result.add(dataReader.read(options));
+            result.add(dataReader.read(listElementOptions(options)));
         }
         dataReader.popContext(options);
         LOGGER.debug("done reading field {}", getName(options));
@@ -83,7 +83,7 @@ public class FieldReaderArray<T> implements FieldCommons {
         LOGGER.debug("start reading at pos {} while < {}", startPos, stopPosition);
         while (dataReader.getPositionInBits() < stopPosition) {
             numberOfElements++;
-            T element = dataReader.read(options);
+            T element = dataReader.read(listElementOptions(options));
             LOGGER.debug("Read element[{}] {}", numberOfElements, element);
             result.add(element);
         }
@@ -99,11 +99,21 @@ public class FieldReaderArray<T> implements FieldCommons {
         dataReader.pushContext(options);
         List<T> result = new ArrayList<>();
         while (!termination.get()) {
-            result.add(dataReader.read(options));
+            result.add(dataReader.read(listElementOptions(options)));
         }
         dataReader.popContext(options);
         LOGGER.debug("done reading field {}", getName(options));
         return result;
+    }
+
+    /**
+     * Marks an element read as part of a list: complex element types are serialized without a
+     * logical-name wrapper inside their list context, so the complex data reader skips the
+     * wrapper for reads carrying this marker (simple data readers ignore it).
+     */
+    private WithOption[] listElementOptions(WithOption[] options) {
+        // AddOptions prepends the new options, so the marker takes precedence.
+        return WithOption.AddOptions(options, WithOption.WithRenderAsList(true));
     }
 
 }

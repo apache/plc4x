@@ -184,13 +184,13 @@ func (m *_ApduControlAck) GetPlx4xTypeName() string {
 	return "ApduControlAck"
 }
 
-func (m *_ApduControlAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
+func (m *_ApduControlAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduControlAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduControlAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

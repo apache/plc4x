@@ -192,6 +192,40 @@ func Test_getOrLeaveBool(t *testing.T) {
 	}
 }
 
+// TestCompareResults_StringLeafDiffs pins down that dataType="string" leaf
+// differences are no longer swallowed by CompareResults. Previously a
+// "We ignore newline diffs" carve-out (added in 8828c6815e, meant to survive
+// a CDATA-vs-entity-escaping rendering difference that no longer exists)
+// unconditionally skipped every dataType="string" Update delta because its
+// guard re-invoked xdiff.Compare directly on the two leaf value nodes, which
+// always reports "no diff" for a leaf-vs-leaf root comparison regardless of
+// their actual content. See GH-2611 EIP parity follow-up.
+func TestCompareResults_StringLeafDiffs(t *testing.T) {
+	t.Run("equal documents still pass", func(t *testing.T) {
+		doc := `<root><code dataType="string" bitLength="16" encoding="UTF-8">OK</code></root>`
+		fakeT := &testing.T{}
+		err := CompareResults(fakeT, []byte(doc), []byte(doc))
+		assert.NoError(t, err)
+		assert.False(t, fakeT.Failed())
+	})
+
+	t.Run("differing string leaf now fails", func(t *testing.T) {
+		expected := `<root><code dataType="string" bitLength="16" encoding="UTF-8">OK</code></root>`
+		actual := `<root><code dataType="string" bitLength="16" encoding="UTF-8">NOTOK</code></root>`
+		fakeT := &testing.T{}
+		err := CompareResults(fakeT, []byte(actual), []byte(expected))
+		assert.Error(t, err, "a string-leaf value difference must fail CompareResults")
+	})
+
+	t.Run("differing non-string leaf still fails (control)", func(t *testing.T) {
+		expected := `<root><elementNb dataType="uint" bitLength="16">1</elementNb></root>`
+		actual := `<root><elementNb dataType="uint" bitLength="16">2</elementNb></root>`
+		fakeT := &testing.T{}
+		err := CompareResults(fakeT, []byte(actual), []byte(expected))
+		assert.Error(t, err)
+	})
+}
+
 func Test_getOrLeaveDuration(t *testing.T) {
 	type args struct {
 		key     string

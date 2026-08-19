@@ -130,11 +130,11 @@ func CastBACnetAuthorizationExemption(structType any) BACnetAuthorizationExempti
 	return castFunc(structType)
 }
 
-func (m BACnetAuthorizationExemption) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAuthorizationExemption) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAuthorizationExemption) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAuthorizationExemption) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

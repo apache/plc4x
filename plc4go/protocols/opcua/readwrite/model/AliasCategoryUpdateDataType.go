@@ -245,8 +245,8 @@ func (m *_AliasCategoryUpdateDataType) GetPlx4xTypeName() string {
 	return "AliasCategoryUpdateDataType"
 }
 
-func (m *_AliasCategoryUpdateDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AliasCategoryUpdateDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (category)
 	lengthInBits += m.Category.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_AliasCategoryUpdateDataType) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_AliasCategoryUpdateDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AliasCategoryUpdateDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

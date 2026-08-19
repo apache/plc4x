@@ -228,8 +228,8 @@ func (m *_NLMNetworkNumberIs) GetPlx4xTypeName() string {
 	return "NLMNetworkNumberIs"
 }
 
-func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (networkNumber)
 	lengthInBits += 16
@@ -243,7 +243,7 @@ func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

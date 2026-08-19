@@ -225,8 +225,8 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetPlx4
 	return "BACnetNotificationParametersChangeOfValueNewValueChangedValue"
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (changedValue)
 	lengthInBits += m.ChangedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLeng
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

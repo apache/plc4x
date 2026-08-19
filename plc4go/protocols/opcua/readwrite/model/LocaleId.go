@@ -139,13 +139,13 @@ func (m *_LocaleId) GetPlx4xTypeName() string {
 	return "LocaleId"
 }
 
-func (m *_LocaleId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LocaleId) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_LocaleId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LocaleId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

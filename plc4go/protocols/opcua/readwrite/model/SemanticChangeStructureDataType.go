@@ -263,8 +263,8 @@ func (m *_SemanticChangeStructureDataType) GetPlx4xTypeName() string {
 	return "SemanticChangeStructureDataType"
 }
 
-func (m *_SemanticChangeStructureDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SemanticChangeStructureDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (affected)
 	lengthInBits += m.Affected.GetLengthInBits(ctx)
@@ -275,7 +275,7 @@ func (m *_SemanticChangeStructureDataType) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_SemanticChangeStructureDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SemanticChangeStructureDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -226,21 +226,21 @@ func (m *_APDUUnknown) GetPlx4xTypeName() string {
 	return "APDUUnknown"
 }
 
-func (m *_APDUUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUUnknown) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Simple field (unknownTypeRest)
 	lengthInBits += 4
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
-		lengthInBits += 8 * uint16(len(m.UnknownBytes))
+		lengthInBits += 8 * uint64(len(m.UnknownBytes))
 	}
 
 	return lengthInBits
 }
 
-func (m *_APDUUnknown) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUUnknown) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

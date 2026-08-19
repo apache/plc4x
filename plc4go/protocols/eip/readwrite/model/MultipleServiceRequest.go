@@ -259,8 +259,8 @@ func (m *_MultipleServiceRequest) GetPlx4xTypeName() string {
 	return "MultipleServiceRequest"
 }
 
-func (m *_MultipleServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_MultipleServiceRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Const Field (requestPathSize)
 	lengthInBits += 8
@@ -274,7 +274,7 @@ func (m *_MultipleServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MultipleServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MultipleServiceRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

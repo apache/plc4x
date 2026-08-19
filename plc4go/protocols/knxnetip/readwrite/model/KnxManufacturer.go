@@ -865,8 +865,11 @@ const (
 	KnxManufacturer_M_SMARTVOS                                           KnxManufacturer = 819
 	KnxManufacturer_M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH            KnxManufacturer = 820
 	KnxManufacturer_M_CHINT                                              KnxManufacturer = 821
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 822
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 823
+	KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG                        KnxManufacturer = 822
+	KnxManufacturer_M_CARBON_INTEGRATION                                 KnxManufacturer = 823
+	KnxManufacturer_M_ALLSMART                                           KnxManufacturer = 824
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 825
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 826
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1696,6 +1699,9 @@ func init() {
 		KnxManufacturer_M_SMARTVOS,
 		KnxManufacturer_M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH,
 		KnxManufacturer_M_CHINT,
+		KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG,
+		KnxManufacturer_M_CARBON_INTEGRATION,
+		KnxManufacturer_M_ALLSMART,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4921,10 +4927,22 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 822:
 		{ /* '822' */
-			return 43954
+			return 884
 		}
 	case 823:
 		{ /* '823' */
+			return 885
+		}
+	case 824:
+		{ /* '824' */
+			return 886
+		}
+	case 825:
+		{ /* '825' */
+			return 43954
+		}
+	case 826:
+		{ /* '826' */
 			return 43959
 		}
 	case 83:
@@ -8235,10 +8253,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 822:
 		{ /* '822' */
-			return "ABB - reserved"
+			return "Beeker Tech GmbH & Co. KG"
 		}
 	case 823:
 		{ /* '823' */
+			return "Carbon Integration"
+		}
+	case 824:
+		{ /* '824' */
+			return "AllSmart"
+		}
+	case 825:
+		{ /* '825' */
+			return "ABB - reserved"
+		}
+	case 826:
+		{ /* '826' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 83:
@@ -9939,8 +9969,14 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 821:
 		return KnxManufacturer_M_CHINT, true
 	case 822:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG, true
 	case 823:
+		return KnxManufacturer_M_CARBON_INTEGRATION, true
+	case 824:
+		return KnxManufacturer_M_ALLSMART, true
+	case 825:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 826:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 83:
 		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
@@ -11592,6 +11628,12 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH, true
 	case "M_CHINT":
 		return KnxManufacturer_M_CHINT, true
+	case "M_BEEKER_TECH_GMBH_AND_CO__KG":
+		return KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG, true
+	case "M_CARBON_INTEGRATION":
+		return KnxManufacturer_M_CARBON_INTEGRATION, true
+	case "M_ALLSMART":
+		return KnxManufacturer_M_ALLSMART, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -11655,11 +11697,11 @@ func CastKnxManufacturer(structType any) KnxManufacturer {
 	return castFunc(structType)
 }
 
-func (m KnxManufacturer) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxManufacturer) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m KnxManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxManufacturer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -13318,6 +13360,12 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH"
 	case KnxManufacturer_M_CHINT:
 		return "M_CHINT"
+	case KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG:
+		return "M_BEEKER_TECH_GMBH_AND_CO__KG"
+	case KnxManufacturer_M_CARBON_INTEGRATION:
+		return "M_CARBON_INTEGRATION"
+	case KnxManufacturer_M_ALLSMART:
+		return "M_ALLSMART"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

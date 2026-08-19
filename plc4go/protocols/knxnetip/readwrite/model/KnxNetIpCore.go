@@ -211,8 +211,8 @@ func (m *_KnxNetIpCore) GetPlx4xTypeName() string {
 	return "KnxNetIpCore"
 }
 
-func (m *_KnxNetIpCore) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
+func (m *_KnxNetIpCore) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -220,7 +220,7 @@ func (m *_KnxNetIpCore) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxNetIpCore) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxNetIpCore) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

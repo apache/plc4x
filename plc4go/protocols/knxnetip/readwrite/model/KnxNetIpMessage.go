@@ -63,8 +63,8 @@ type KnxNetIpMessageContract interface {
 
 // KnxNetIpMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type KnxNetIpMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
 }
@@ -408,8 +408,8 @@ func (m *_KnxNetIpMessage) GetPlx4xTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
@@ -425,11 +425,11 @@ func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

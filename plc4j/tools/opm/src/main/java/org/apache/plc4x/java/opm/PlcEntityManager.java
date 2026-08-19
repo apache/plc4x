@@ -19,11 +19,12 @@
 package org.apache.plc4x.java.opm;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.TypeCache;
 import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  * regular Pojo it was before.
  * <p>
  * All invocations on the getters are forwarded to the
- * {@link PlcEntityInterceptor#interceptGetter(Object, Method, Callable, String, PlcConnectionManager, AliasRegistry, Map, Map)}
+ * {@link PlcEntityInterceptor#interceptGetter(Object, Method, Callable, String, PlcConnectionFactory, AliasRegistry, Map, Map)}
  * method.
  */
 public class PlcEntityManager {
@@ -81,24 +82,31 @@ public class PlcEntityManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityManager.class);
 
     public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
-    static final String CONNECTION_MANAGER_FIELD_NAME = "_connectionManager";
+    static final String CONNECTION_FACTORY_FIELD_NAME = "_connectionFactory";
     static final String ALIAS_REGISTRY = "_aliasRegistry";
     public static final String LAST_FETCHED = "_lastFetched";
     public static final String LAST_WRITTEN = "_lastWritten";
 
-    private final PlcConnectionManager connectionManager;
+    /**
+     * Generated proxy classes, keyed by class loader and entity class. Soft references so the
+     * cache can't keep class loaders alive on its own.
+     */
+    private static final TypeCache<Class<?>> PROXY_CACHE =
+        new TypeCache.WithInlineExpunction<>(TypeCache.Sort.SOFT);
+
+    private final PlcConnectionFactory connectionFactory;
     private final SimpleAliasRegistry registry;
 
     public PlcEntityManager() {
         this(new DefaultPlcDriverManager());
     }
 
-    public PlcEntityManager(PlcConnectionManager connectionManager) {
-        this(connectionManager, new SimpleAliasRegistry());
+    public PlcEntityManager(PlcConnectionFactory connectionFactory) {
+        this(connectionFactory, new SimpleAliasRegistry());
     }
 
-    public PlcEntityManager(PlcConnectionManager connectionManager, SimpleAliasRegistry registry) {
-        this.connectionManager = connectionManager;
+    public PlcEntityManager(PlcConnectionFactory connectionFactory, SimpleAliasRegistry registry) {
+        this.connectionFactory = connectionFactory;
         this.registry = registry;
     }
 
@@ -142,24 +150,12 @@ public class PlcEntityManager {
     private <T> T connect(Class<T> clazz, String address, T existingInstance) throws OPMException {
         OpmUtils.getPlcEntityAndCheckPreconditions(clazz);
         try {
-            // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
-            // to the intercept method
-            T instance = new ByteBuddy()
-                .subclass(clazz)
-                .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
-                .defineField(CONNECTION_MANAGER_FIELD_NAME, PlcConnectionManager.class, Visibility.PRIVATE)
-                .defineField(ALIAS_REGISTRY, AliasRegistry.class, Visibility.PRIVATE)
-                .defineField(LAST_FETCHED, Map.class, Visibility.PRIVATE)
-                .defineField(LAST_WRITTEN, Map.class, Visibility.PRIVATE)
-                .method(not(isDeclaredBy(Object.class))).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
-                .make()
-                .load(Thread.currentThread().getContextClassLoader())
-                .getLoaded()
+            T instance = proxyClassFor(clazz)
                 .getConstructor()
                 .newInstance();
             // Set connection value into the private field
             FieldUtils.writeDeclaredField(instance, PLC_ADDRESS_FIELD_NAME, address, true);
-            FieldUtils.writeDeclaredField(instance, CONNECTION_MANAGER_FIELD_NAME, connectionManager, true);
+            FieldUtils.writeDeclaredField(instance, CONNECTION_FACTORY_FIELD_NAME, connectionFactory, true);
             FieldUtils.writeDeclaredField(instance, ALIAS_REGISTRY, registry, true);
             Map<String, Instant> lastFetched = new HashMap<>();
             FieldUtils.writeDeclaredField(instance, LAST_FETCHED, lastFetched, true);
@@ -168,19 +164,52 @@ public class PlcEntityManager {
 
             // Initially fetch all values
             if (existingInstance == null) {
-                PlcEntityInterceptor.readAllFields(instance, connectionManager, address, registry, lastFetched);
+                PlcEntityInterceptor.readAllFields(instance, connectionFactory, address, registry, lastFetched);
             } else {
                 // Copy all field values from the existing instance to the new one.
                 FieldUtils.getAllFieldsList(clazz).stream()
                     .peek(field -> field.setAccessible(true))
                     .forEach(field -> setValueToField(field, instance, getValueFromField(field, existingInstance)));
 
-                PlcEntityInterceptor.writeAllFields(instance, connectionManager, address, registry, lastWritten);
+                PlcEntityInterceptor.writeAllFields(instance, connectionFactory, address, registry, lastWritten);
             }
 
             return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | IllegalAccessError e) {
             throw new OPMException("Unable to instantiate Proxy", e);
+        }
+    }
+
+    /**
+     * Returns the generated proxy class for the given entity class, generating it on first use.
+     * <p>
+     * The generated type depends only on the entity class, so it is cached and reused - see
+     * GH-1935. Generating and loading a fresh subclass on every {@link #connect(Class, String)}
+     * (and therefore on every {@link #read(Class, String)} / {@link #write(Class, String, Object)})
+     * leaks one class per call, which fills up metaspace in any polling application.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> Class<? extends T> proxyClassFor(Class<T> clazz) throws OPMException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            // The cache is keyed by class loader and entity class, so the same entity loaded by
+            // two class loaders correctly gets a proxy per loader. The monitor makes concurrent
+            // callers wait for one generation instead of racing to generate the same class.
+            return (Class<? extends T>) PROXY_CACHE.findOrInsert(classLoader, clazz,
+                () -> new ByteBuddy()
+                    .subclass(clazz)
+                    .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
+                    .defineField(CONNECTION_FACTORY_FIELD_NAME, PlcConnectionFactory.class, Visibility.PRIVATE)
+                    .defineField(ALIAS_REGISTRY, AliasRegistry.class, Visibility.PRIVATE)
+                    .defineField(LAST_FETCHED, Map.class, Visibility.PRIVATE)
+                    .defineField(LAST_WRITTEN, Map.class, Visibility.PRIVATE)
+                    .method(not(isDeclaredBy(Object.class))).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
+                    .make()
+                    .load(classLoader)
+                    .getLoaded(),
+                PROXY_CACHE);
+        } catch (RuntimeException e) {
+            throw new OPMException("Unable to generate Proxy for " + clazz.getName(), e);
         }
     }
 
@@ -213,11 +242,11 @@ public class PlcEntityManager {
             throw new OPMException("Unable to disconnect Object, is no entity!");
         }
         try {
-            Object manager = FieldUtils.readDeclaredField(entity, CONNECTION_MANAGER_FIELD_NAME, true);
+            Object manager = FieldUtils.readDeclaredField(entity, CONNECTION_FACTORY_FIELD_NAME, true);
             if (manager == null) {
                 throw new OPMException("Instance is already disconnected!");
             }
-            FieldUtils.writeDeclaredField(entity, CONNECTION_MANAGER_FIELD_NAME, null, true);
+            FieldUtils.writeDeclaredField(entity, CONNECTION_FACTORY_FIELD_NAME, null, true);
         } catch (IllegalAccessException e) {
             throw new OPMException("Unable to fetch driverManager instance on entity instance", e);
         }

@@ -41,6 +41,14 @@ import (
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+	// handles contains all subscription handles which are still active. KNX has no
+	// wire-level subscribe, the handles are a purely local filter, so unsubscribing
+	// simply means dropping the handle here.
+	handles map[*SubscriptionHandle]struct{} `ignore:"true"`
+	// consumersMutex guards consumers and handles, which are written by Subscribe,
+	// Unsubscribe, Register and Unregister while being read from the codec worker
+	// (via Connection.handleValueCacheUpdate).
+	consumersMutex sync.RWMutex
 
 	wg sync.WaitGroup // use to track spawned go routines
 
@@ -55,6 +63,7 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 	return &Subscriber{
 		connection:     connection,
 		consumers:      make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
+		handles:        make(map[*SubscriptionHandle]struct{}),
 		passLogToModel: passLoggerToModel,
 		log:            customLogger,
 		_options:       _options,
@@ -81,7 +90,11 @@ func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
 			responseCodes[tagName] = apiModel.PlcResponseCode_OK
 			tagType := internalPlcSubscriptionRequest.GetType(tagName)
-			subscriptionValues[tagName] = NewSubscriptionHandle(s, tagName, internalPlcSubscriptionRequest.GetTag(tagName), tagType, internalPlcSubscriptionRequest.GetInterval(tagName))
+			subscriptionHandle := NewSubscriptionHandle(s, tagName, internalPlcSubscriptionRequest.GetTag(tagName), tagType, internalPlcSubscriptionRequest.GetInterval(tagName))
+			subscriptionValues[tagName] = subscriptionHandle
+			s.consumersMutex.Lock()
+			s.handles[subscriptionHandle] = struct{}{}
+			s.consumersMutex.Unlock()
 		}
 
 		utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcSubscriptionRequestResult(
@@ -98,14 +111,128 @@ func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	return result
 }
 
+// Unsubscribe deregisters the handles of the given request. As soon as we establish a
+// connection we start getting data, subscriptions are just an internal handling of which
+// values to pass where, so unsubscribing means dropping the handles (and the consumer
+// registrations which only referenced them) again.
 func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
-	// TODO: handle context
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
-	utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented")))
-	// TODO: As soon as we establish a connection, we start getting data...
-	// subscriptions are more an internal handling of which values to pass where.
-
+	s.wg.Go(func() {
+		defer func() {
+			if err := recover(); err != nil {
+				utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
+			}
+		}()
+		request, ok := unsubscriptionRequest.(*spiModel.DefaultPlcUnsubscriptionRequest)
+		if !ok {
+			utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.Errorf("unsupported unsubscription request type %T", unsubscriptionRequest)))
+			return
+		}
+		if err := ctx.Err(); err != nil {
+			utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, err))
+			return
+		}
+		err := s.unsubscribeHandles(request.GetSubscriptionHandles())
+		utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(
+			unsubscriptionRequest,
+			spiModel.NewDefaultPlcUnsubscriptionResponse(unsubscriptionRequest),
+			err,
+		))
+	})
 	return result
+}
+
+// unsubscribeHandles drops the given handles and all consumer registrations which are
+// left without a single active handle. Handles which don't belong to this subscriber are
+// silently ignored as an unsubscription request can span multiple subscribers.
+func (s *Subscriber) unsubscribeHandles(subscriptionHandles []apiModel.PlcSubscriptionHandle) error {
+	var collectedErrors []error
+	s.consumersMutex.Lock()
+	for _, handle := range subscriptionHandles {
+		subscriptionHandle, ok := handle.(*SubscriptionHandle)
+		if !ok {
+			collectedErrors = append(collectedErrors, errors.Errorf("%T is not a knx subscription handle", handle))
+			continue
+		}
+		delete(s.handles, subscriptionHandle)
+	}
+	for registration := range s.consumers {
+		registeredHandles := registration.GetSubscriptionHandles()
+		if len(registeredHandles) == 0 {
+			continue
+		}
+		stillActive := false
+		for _, handle := range registeredHandles {
+			subscriptionHandle, ok := handle.(*SubscriptionHandle)
+			if !ok {
+				continue
+			}
+			if _, active := s.handles[subscriptionHandle]; active {
+				stillActive = true
+				break
+			}
+		}
+		if !stillActive {
+			delete(s.consumers, registration)
+		}
+	}
+	nothingLeft := len(s.handles) == 0
+	s.consumersMutex.Unlock()
+
+	// Once there is nothing left to deliver, stop being fed by the connection.
+	if nothingLeft && s.connection != nil {
+		s.connection.removeSubscriber(s)
+	}
+	return errors.Join(collectedErrors...)
+}
+
+// activeRegistration is a snapshot of one consumer registration reduced to the handles
+// which are still subscribed.
+type activeRegistration struct {
+	consumer apiModel.PlcSubscriptionEventConsumer
+	handles  []*SubscriptionHandle
+}
+
+// activeRegistrations snapshots the current registrations so events can be delivered
+// without holding the lock while calling into the (possibly re-entrant) consumers.
+func (s *Subscriber) activeRegistrations() []activeRegistration {
+	s.consumersMutex.RLock()
+	defer s.consumersMutex.RUnlock()
+	registrations := make([]activeRegistration, 0, len(s.consumers))
+	for registration, consumer := range s.consumers {
+		var handles []*SubscriptionHandle
+		for _, handle := range registration.GetSubscriptionHandles() {
+			subscriptionHandle, ok := handle.(*SubscriptionHandle)
+			if !ok {
+				continue
+			}
+			if _, active := s.handles[subscriptionHandle]; !active {
+				continue
+			}
+			handles = append(handles, subscriptionHandle)
+		}
+		if len(handles) == 0 {
+			continue
+		}
+		registrations = append(registrations, activeRegistration{consumer: consumer, handles: handles})
+	}
+	return registrations
+}
+
+// deliversFor decides if a handle of the given subscription-type wants to see the current
+// group-value write. KNX is event driven: change-of-state handles only get fed if the
+// value actually changed, event handles get every write.
+// (Java: KnxNetIpConnection advertises PlcSubscriptionType.EVENT)
+func deliversFor(tagType apiModel.PlcSubscriptionType, changed bool) bool {
+	switch tagType {
+	case apiModel.SubscriptionChangeOfState:
+		return changed
+	case apiModel.SubscriptionEvent:
+		return true
+	default:
+		// Cyclic subscriptions are not supported by the knx driver.
+		return false
+	}
 }
 
 /*
@@ -121,14 +248,14 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 	}
 
 	// TODO: aggregate tags and send it to a consumer which want's all of them
-	for registration, consumer := range s.consumers {
-		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
-			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
+	for _, registration := range s.activeRegistrations() {
+		consumer := registration.consumer
+		for _, subscriptionHandle := range registration.handles {
 			groupAddressTag, ok := subscriptionHandle.tag.(GroupAddressTag)
 			if !ok || !groupAddressTag.matches(groupAddress) {
 				continue
 			}
-			if subscriptionHandle.tagType != apiModel.SubscriptionChangeOfState || !changed {
+			if !deliversFor(subscriptionHandle.tagType, changed) {
 				continue
 			}
 			tags := map[string]apiModel.PlcTag{}
@@ -138,15 +265,17 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 			addresses := map[string][]byte{}
 			plcValues := map[string]values.PlcValue{}
 			tagName := subscriptionHandle.tagName
+			// The payload is the raw group-value payload: the byte carrying the 6 embedded
+			// data bits followed by whatever data bytes came after it. The generated
+			// datapoint parser already accounts for that layout (it reads the reserved
+			// bits/byte itself), so it gets the payload as-is - skipping anything here
+			// would eat the value of a small datapoint-type and shift a bigger one.
+			// (Java: KnxNetIpConnection hands the payload to KnxDatapoint.staticParse unchanged)
 			rb := utils.NewReadBufferByteBased(payload)
 			if groupAddressTag.GetTagType() == nil {
 				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_DATATYPE
 				plcValues[tagName] = nil
 				continue
-			}
-			// If the size of the tag is greater than 6, we have to skip the first byte
-			if groupAddressTag.GetTagType().GetLengthInBits(ctx) > 6 {
-				_, _ = rb.ReadUint8("groupAddress", 8)
 			}
 			elementType := *groupAddressTag.GetTagType()
 			numElements := uint16(1)
@@ -206,10 +335,14 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 
 func (s *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
 	consumerRegistration := spiModel.NewDefaultPlcConsumerRegistration(s, consumer, handles...)
+	s.consumersMutex.Lock()
+	defer s.consumersMutex.Unlock()
 	s.consumers[consumerRegistration.(*spiModel.DefaultPlcConsumerRegistration)] = consumer
 	return consumerRegistration
 }
 
 func (s *Subscriber) Unregister(registration apiModel.PlcConsumerRegistration) {
+	s.consumersMutex.Lock()
+	defer s.consumersMutex.Unlock()
 	delete(s.consumers, registration.(*spiModel.DefaultPlcConsumerRegistration))
 }

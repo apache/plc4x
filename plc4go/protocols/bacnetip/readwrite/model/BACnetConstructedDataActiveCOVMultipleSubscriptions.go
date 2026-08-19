@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetPlx4xTypeName(
 	return "BACnetConstructedDataActiveCOVMultipleSubscriptions"
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ActiveCOVMultipleSubscriptions) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

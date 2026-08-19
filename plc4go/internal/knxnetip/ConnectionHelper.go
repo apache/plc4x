@@ -27,6 +27,7 @@ import (
 	"runtime/debug"
 	"slices"
 	"strconv"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -41,12 +42,16 @@ import (
 // Internal helper functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// interceptIncomingMessage is called by the codec for every frame which arrives.
+//
+// The keepalive ticker is deliberately NOT reset here: the KNXnet/IP heartbeat has to
+// run at a fixed interval, independent of the traffic on the bus. Resetting it on every
+// incoming frame means that on any installation with group telegrams more often than
+// every 60s the ConnectionStateRequest would never be sent at all and the gateway would
+// drop the tunnel after 120s.
+// (Java: KnxNetIpConnection uses scheduleAtFixedRate with a fixed heartbeat interval)
 func (m *Connection) interceptIncomingMessage(spi.Message) {
 	m.resetTimeout()
-	if m.connectionStateTimer != nil {
-		// Reset the timer for sending the ConnectionStateRequest
-		m.connectionStateTimer.Reset(60 * time.Second)
-	}
 }
 
 func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
@@ -129,10 +134,8 @@ func (m *Connection) handleValueCacheUpdate(ctx context.Context, destinationAddr
 		m.valueCacheMutex.Unlock()
 		changed = true
 	}
-	if m.subscribers != nil {
-		for _, subscriber := range m.subscribers {
-			subscriber.handleValueChange(ctx, destinationAddress, payload, changed)
-		}
+	for _, subscriber := range m.getSubscribers() {
+		subscriber.handleValueChange(ctx, destinationAddress, payload, changed)
 	}
 }
 
@@ -174,20 +177,74 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 	return 3
 }
 
+// getTunnelConnectionType evaluates the "connection-type" connection option and
+// maps it to the KnxLayer used in the ConnectionRequest.
+// (Java: KnxNetIpConfiguration#connectionType)
+func (m *Connection) getTunnelConnectionType() driverModel.KnxLayer {
+	if val, ok := m.options["connection-type"]; ok && len(val) > 0 {
+		switch strings.ToUpper(strings.TrimSpace(val[0])) {
+		case "LINK_LAYER", "TUNNEL_LINK_LAYER":
+			return driverModel.KnxLayer_TUNNEL_LINK_LAYER
+		case "RAW", "TUNNEL_RAW":
+			return driverModel.KnxLayer_TUNNEL_RAW
+		case "BUSMONITOR", "TUNNEL_BUSMONITOR":
+			return driverModel.KnxLayer_TUNNEL_BUSMONITOR
+		default:
+			m.log.Warn().Str("connection-type", val[0]).Msg("Invalid value for connection-type, falling back to LINK_LAYER")
+		}
+	}
+	return driverModel.KnxLayer_TUNNEL_LINK_LAYER
+}
+
+// getRequestTimeout evaluates the "request-timeout" connection option (in
+// milliseconds) which limits how long we wait for a gateway reply.
+// (Java: KnxNetIpConfiguration#requestTimeout)
+func (m *Connection) getRequestTimeout() time.Duration {
+	if val, ok := m.options["request-timeout"]; ok && len(val) > 0 {
+		requestTimeout, err := strconv.ParseUint(val[0], 10, 32)
+		if err == nil && requestTimeout > 0 {
+			return time.Duration(requestTimeout) * time.Millisecond
+		}
+		m.log.Warn().Str("request-timeout", val[0]).Msg("Invalid value for request-timeout, falling back to the default")
+	}
+	return defaultRequestTimeout
+}
+
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
+	m.subscribersMutex.Lock()
+	defer m.subscribersMutex.Unlock()
 	if slices.Contains(m.subscribers, subscriber) {
-		m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber %v already added")
+		m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
 		return
 	}
 	m.subscribers = append(m.subscribers, subscriber)
 }
 
 func (m *Connection) removeSubscriber(subscriber *Subscriber) {
-	for i, sub := range m.subscribers {
-		if sub == subscriber {
-			m.subscribers = append(m.subscribers[:i], m.subscribers[i+1:]...)
-		}
+	m.subscribersMutex.Lock()
+	defer m.subscribersMutex.Unlock()
+	m.subscribers = slices.DeleteFunc(m.subscribers, func(other *Subscriber) bool {
+		return other == subscriber
+	})
+}
+
+// getSubscribers returns a snapshot of the currently registered subscribers so the
+// callers can iterate them without holding the lock while calling into them.
+func (m *Connection) getSubscribers() []*Subscriber {
+	m.subscribersMutex.RLock()
+	defer m.subscribersMutex.RUnlock()
+	return slices.Clone(m.subscribers)
+}
+
+// knxAddressEqual compares two individual knx addresses by value. The generated model
+// types are interfaces backed by pointers, so "==" would compare identities instead.
+func knxAddressEqual(a, b driverModel.KnxAddress) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
 	}
+	return a.GetMainGroup() == b.GetMainGroup() &&
+		a.GetMiddleGroup() == b.GetMiddleGroup() &&
+		a.GetSubGroup() == b.GetSubGroup()
 }
 
 func (m *Connection) sliceEqual(a, b []byte) bool {

@@ -225,8 +225,8 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetPlx4xTypeName() string {
 	return "BACnetTimerStateChangeValueUnsigned"
 }
 
-func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
+func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

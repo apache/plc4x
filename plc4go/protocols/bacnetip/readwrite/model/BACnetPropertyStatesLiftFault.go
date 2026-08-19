@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesLiftFault) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesLiftFault"
 }
 
-func (m *_BACnetPropertyStatesLiftFault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesLiftFault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (liftFault)
 	lengthInBits += m.LiftFault.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesLiftFault) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesLiftFault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesLiftFault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

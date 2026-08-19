@@ -56,7 +56,7 @@ import org.apache.plc4x.java.tools.eventpump.*;
 import org.apache.plc4x.java.tools.eventpump.triggers.TimerTrigger;
 import org.apache.plc4x.java.tools.eventpump.triggers.Trigger;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.spi.PlcDriverManager;
 
 import java.util.HashMap;
@@ -64,7 +64,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // Create connection
-PlcConnectionManager connectionManager = PlcDriverManager.getDefault();
+PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault().getConnectionFactory();
 PlcConnection connection = connectionManager.getConnection("ads:tcp://192.168.1.1");
 
 // Create a batch using the Builder pattern
@@ -136,7 +136,7 @@ import org.apache.plc4x.java.tools.eventpump.config.*;
 import java.io.File;
 
 // Load configuration
-PlcConnectionManager connectionManager = PlcDriverManager.getDefault();
+PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault().getConnectionFactory();
 
 EventPump pump = EventPumpFactory.fromYaml(
     new File("config.yaml"),
@@ -646,7 +646,7 @@ ValueTransformerRegistry registry = ValueTransformerRegistry.createDefault();
 // Use this registry for all batches in your EventPump
 TagBatch batch = TagBatch.builder()
     .withBatchId("batch1")
-    .withConnectionManager(connectionManager)
+    .withConnectionFactory(connectionFactory)
     .withConnectionString("ads:tcp://192.168.1.1")
     .addTag("temp", "MAIN.temp")
     .addTransform("temp", "#value * 1.8 + 32")

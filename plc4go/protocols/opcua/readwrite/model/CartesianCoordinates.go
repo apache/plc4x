@@ -184,13 +184,13 @@ func (m *_CartesianCoordinates) GetPlx4xTypeName() string {
 	return "CartesianCoordinates"
 }
 
-func (m *_CartesianCoordinates) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CartesianCoordinates) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_CartesianCoordinates) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CartesianCoordinates) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

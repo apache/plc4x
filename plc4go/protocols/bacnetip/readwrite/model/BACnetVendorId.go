@@ -1673,6 +1673,12 @@ const (
 	BACnetVendorId_SPEC_PROM_DIZAJNOOO                                                          BACnetVendorId = 1638
 	BACnetVendorId_FACTS_ENGINEERINGLLC                                                         BACnetVendorId = 1639
 	BACnetVendorId_G_ASERV_GMBH                                                                 BACnetVendorId = 1640
+	BACnetVendorId_LEEDS_ELECTRONICS_ENGINEERING_LIMITED                                        BACnetVendorId = 1641
+	BACnetVendorId_MITO_CONTRACTING_GROUP_INC                                                   BACnetVendorId = 1642
+	BACnetVendorId_CALECTROAB                                                                   BACnetVendorId = 1643
+	BACnetVendorId_BMSOS_TECHNOLOGY_INC                                                         BACnetVendorId = 1644
+	BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH                                              BACnetVendorId = 1645
+	BACnetVendorId_IVIVA_PTE_LTD                                                                BACnetVendorId = 1646
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3311,6 +3317,12 @@ func init() {
 		BACnetVendorId_SPEC_PROM_DIZAJNOOO,
 		BACnetVendorId_FACTS_ENGINEERINGLLC,
 		BACnetVendorId_G_ASERV_GMBH,
+		BACnetVendorId_LEEDS_ELECTRONICS_ENGINEERING_LIMITED,
+		BACnetVendorId_MITO_CONTRACTING_GROUP_INC,
+		BACnetVendorId_CALECTROAB,
+		BACnetVendorId_BMSOS_TECHNOLOGY_INC,
+		BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH,
+		BACnetVendorId_IVIVA_PTE_LTD,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6160,6 +6172,30 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1640:
 		{ /* '1640' */
 			return 1640
+		}
+	case 1641:
+		{ /* '1641' */
+			return 1641
+		}
+	case 1642:
+		{ /* '1642' */
+			return 1642
+		}
+	case 1643:
+		{ /* '1643' */
+			return 1643
+		}
+	case 1644:
+		{ /* '1644' */
+			return 1644
+		}
+	case 1645:
+		{ /* '1645' */
+			return 1645
+		}
+	case 1646:
+		{ /* '1646' */
+			return 1646
 		}
 	case 165:
 		{ /* '165' */
@@ -12703,6 +12739,30 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1640' */
 			return "GAserv GmbH"
 		}
+	case 1641:
+		{ /* '1641' */
+			return "Leeds Electronics Engineering Limited"
+		}
+	case 1642:
+		{ /* '1642' */
+			return "MITO Contracting Group Inc."
+		}
+	case 1643:
+		{ /* '1643' */
+			return "Calectro AB"
+		}
+	case 1644:
+		{ /* '1644' */
+			return "bmsOS Technology Inc."
+		}
+	case 1645:
+		{ /* '1645' */
+			return "Vossloh-Schwabe Deutschand GmbH"
+		}
+	case 1646:
+		{ /* '1646' */
+			return "Iviva Pte Ltd"
+		}
 	case 165:
 		{ /* '165' */
 			return "Smart Temp Australia Pty. Ltd."
@@ -17822,6 +17882,18 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH, true
 	case 1640:
 		return BACnetVendorId_G_ASERV_GMBH, true
+	case 1641:
+		return BACnetVendorId_LEEDS_ELECTRONICS_ENGINEERING_LIMITED, true
+	case 1642:
+		return BACnetVendorId_MITO_CONTRACTING_GROUP_INC, true
+	case 1643:
+		return BACnetVendorId_CALECTROAB, true
+	case 1644:
+		return BACnetVendorId_BMSOS_TECHNOLOGY_INC, true
+	case 1645:
+		return BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH, true
+	case 1646:
+		return BACnetVendorId_IVIVA_PTE_LTD, true
 	case 165:
 		return BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD, true
 	case 166:
@@ -21090,6 +21162,18 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH, true
 	case "G_ASERV_GMBH":
 		return BACnetVendorId_G_ASERV_GMBH, true
+	case "LEEDS_ELECTRONICS_ENGINEERING_LIMITED":
+		return BACnetVendorId_LEEDS_ELECTRONICS_ENGINEERING_LIMITED, true
+	case "MITO_CONTRACTING_GROUP_INC":
+		return BACnetVendorId_MITO_CONTRACTING_GROUP_INC, true
+	case "CALECTROAB":
+		return BACnetVendorId_CALECTROAB, true
+	case "BMSOS_TECHNOLOGY_INC":
+		return BACnetVendorId_BMSOS_TECHNOLOGY_INC, true
+	case "VOSSLOH_SCHWABE_DEUTSCHAND_GMBH":
+		return BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH, true
+	case "IVIVA_PTE_LTD":
+		return BACnetVendorId_IVIVA_PTE_LTD, true
 	case "SMART_TEMP_AUSTRALIA_PTY_LTD":
 		return BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD, true
 	case "COOPER_CONTROLS":
@@ -22953,11 +23037,11 @@ func CastBACnetVendorId(structType any) BACnetVendorId {
 	return castFunc(structType)
 }
 
-func (m BACnetVendorId) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetVendorId) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetVendorId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetVendorId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -24430,6 +24514,18 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "HSC_REGELUNGSTECHNIK_GMBH"
 	case BACnetVendorId_G_ASERV_GMBH:
 		return "G_ASERV_GMBH"
+	case BACnetVendorId_LEEDS_ELECTRONICS_ENGINEERING_LIMITED:
+		return "LEEDS_ELECTRONICS_ENGINEERING_LIMITED"
+	case BACnetVendorId_MITO_CONTRACTING_GROUP_INC:
+		return "MITO_CONTRACTING_GROUP_INC"
+	case BACnetVendorId_CALECTROAB:
+		return "CALECTROAB"
+	case BACnetVendorId_BMSOS_TECHNOLOGY_INC:
+		return "BMSOS_TECHNOLOGY_INC"
+	case BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH:
+		return "VOSSLOH_SCHWABE_DEUTSCHAND_GMBH"
+	case BACnetVendorId_IVIVA_PTE_LTD:
+		return "IVIVA_PTE_LTD"
 	case BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD:
 		return "SMART_TEMP_AUSTRALIA_PTY_LTD"
 	case BACnetVendorId_COOPER_CONTROLS:

@@ -232,8 +232,8 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetPlx4xTypeName() str
 	return "MediaTransportControlDataNextPreviousSelection"
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -245,7 +245,7 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

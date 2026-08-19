@@ -226,8 +226,8 @@ func (m *_NLMRejectMessageToNetwork) GetPlx4xTypeName() string {
 	return "NLMRejectMessageToNetwork"
 }
 
-func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (rejectReason)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_NLMRejectMessageToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRejectMessageToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

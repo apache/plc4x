@@ -22,6 +22,7 @@ package eip
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -44,8 +45,36 @@ const (
 )
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
-	// TODO: This isn't pretty ...
-	return NewTag(tagAddress, model.CIPDataTypeCode_DINT, uint16(1)), nil
+	matches := m.addressPattern.FindStringSubmatch(tagAddress)
+	if matches == nil {
+		return nil, fmt.Errorf("invalid tag address: %s", tagAddress)
+	}
+
+	tagName := matches[m.addressPattern.SubexpIndex(TAG)]
+	dataTypeStr := matches[m.addressPattern.SubexpIndex(DATA_TYPE)]
+	elementNbStr := matches[m.addressPattern.SubexpIndex(ELEMENT_NB)]
+
+	var dataType model.CIPDataTypeCode
+	if dataTypeStr == "" {
+		dataType = model.CIPDataTypeCode_DINT
+	} else {
+		var found bool
+		dataType, found = model.CIPDataTypeCodeByName(dataTypeStr)
+		if !found {
+			return nil, fmt.Errorf("unknown data type: %s", dataTypeStr)
+		}
+	}
+
+	elementNb := uint16(1)
+	if elementNbStr != "" {
+		nb, err := strconv.ParseUint(elementNbStr, 10, 16)
+		if err != nil {
+			return nil, fmt.Errorf("invalid element count: %s", elementNbStr)
+		}
+		elementNb = uint16(nb)
+	}
+
+	return NewTag(tagName, dataType, elementNb), nil
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

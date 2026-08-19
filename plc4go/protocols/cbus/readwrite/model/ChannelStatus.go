@@ -100,11 +100,11 @@ func CastChannelStatus(structType any) ChannelStatus {
 	return castFunc(structType)
 }
 
-func (m ChannelStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m ChannelStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ChannelStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ChannelStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

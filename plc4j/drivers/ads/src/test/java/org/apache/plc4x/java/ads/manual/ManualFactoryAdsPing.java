@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class ManualFactoryAdsPing {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1")){
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1")){
             for (int i = 0; i < 10; i++) {
                 PlcPingResponse pingResponse = connection.ping().get(1000, TimeUnit.MILLISECONDS);
                 if (pingResponse.getResponseCode() == PlcResponseCode.OK) {

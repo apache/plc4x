@@ -356,6 +356,22 @@ plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s) {
   return data;
 }
 
+/**
+ * A wide string is read with the same buffer call as a narrow one, so what arrives here is a byte
+ * string in whatever encoding the wire used, not a wchar_t sequence - there is no wide-string
+ * reader in the SPI to produce one. It is kept apart from PLC4C_STRING so the type information
+ * survives, but the payload lives in the same union member the parser filled.
+ */
+plc4c_data *plc4c_data_create_wstring_data(unsigned int size, char *s) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_WSTRING;
+  data->size = size;
+  data->data.string_value = s;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
 plc4c_data *plc4c_data_create_char_data(char s) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_CHAR;
@@ -526,7 +542,8 @@ void plc4c_data_printf(plc4c_data *data) {
       printf("%s", data->data.string_value);
       break;
     case PLC4C_WSTRING:
-      printf("%ls", data->data.wstring_value);
+      // See plc4c_data_create_wstring_data: the payload is a byte string.
+      printf("%s", data->data.string_value);
       break;
 
     case PLC4C_LIST:
@@ -573,6 +590,7 @@ void plc4c_data_destroy(plc4c_data *data) {
   } else {
     switch (data->data_type) {
       case PLC4C_STRING:
+      case PLC4C_WSTRING:
         free(data->data.string_value);
         break;
       case PLC4C_LIST:

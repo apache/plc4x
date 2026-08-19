@@ -192,13 +192,13 @@ func (m *_ModbusPDUGetComEventCounterRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUGetComEventCounterRequest"
 }
 
-func (m *_ModbusPDUGetComEventCounterRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUGetComEventCounterRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUGetComEventCounterRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUGetComEventCounterRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -278,15 +278,15 @@ func (m *_LPollData) GetPlx4xTypeName() string {
 	return "LPollData"
 }
 
-func (m *_LPollData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
+func (m *_LPollData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
 
 	// Simple field (sourceAddress)
 	lengthInBits += m.SourceAddress.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.TargetAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.TargetAddress))
+		lengthInBits += 8 * uint64(len(m.TargetAddress))
 	}
 
 	// Reserved Field (reserved)
@@ -298,7 +298,7 @@ func (m *_LPollData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LPollData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LPollData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -100,11 +100,11 @@ func CastOpcuaNodeIdServicesVariableDiscrepancy(structType any) OpcuaNodeIdServi
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableDiscrepancy) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableDiscrepancy) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableDiscrepancy) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableDiscrepancy) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

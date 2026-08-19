@@ -574,18 +574,18 @@ func (_c *MockDataReader_GetByteOrder_Call[T]) RunAndReturn(run func() binary.By
 }
 
 // GetPos provides a mock function for the type MockDataReader
-func (_mock *MockDataReader[T]) GetPos() uint16 {
+func (_mock *MockDataReader[T]) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -607,12 +607,12 @@ func (_c *MockDataReader_GetPos_Call[T]) Run(run func()) *MockDataReader_GetPos_
 	return _c
 }
 
-func (_c *MockDataReader_GetPos_Call[T]) Return(v uint16) *MockDataReader_GetPos_Call[T] {
+func (_c *MockDataReader_GetPos_Call[T]) Return(v uint32) *MockDataReader_GetPos_Call[T] {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockDataReader_GetPos_Call[T]) RunAndReturn(run func() uint16) *MockDataReader_GetPos_Call[T] {
+func (_c *MockDataReader_GetPos_Call[T]) RunAndReturn(run func() uint32) *MockDataReader_GetPos_Call[T] {
 	_c.Call.Return(run)
 	return _c
 }
@@ -853,7 +853,7 @@ func (_c *MockDataReader_SetByteOrder_Call[T]) RunAndReturn(run func(byteOrder b
 }
 
 // SetPos provides a mock function for the type MockDataReader
-func (_mock *MockDataReader[T]) SetPos(pos uint16) {
+func (_mock *MockDataReader[T]) SetPos(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -864,16 +864,16 @@ type MockDataReader_SetPos_Call[T any] struct {
 }
 
 // SetPos is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockDataReader_Expecter[T]) SetPos(pos interface{}) *MockDataReader_SetPos_Call[T] {
 	return &MockDataReader_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
-func (_c *MockDataReader_SetPos_Call[T]) Run(run func(pos uint16)) *MockDataReader_SetPos_Call[T] {
+func (_c *MockDataReader_SetPos_Call[T]) Run(run func(pos uint32)) *MockDataReader_SetPos_Call[T] {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -887,7 +887,7 @@ func (_c *MockDataReader_SetPos_Call[T]) Return() *MockDataReader_SetPos_Call[T]
 	return _c
 }
 
-func (_c *MockDataReader_SetPos_Call[T]) RunAndReturn(run func(pos uint16)) *MockDataReader_SetPos_Call[T] {
+func (_c *MockDataReader_SetPos_Call[T]) RunAndReturn(run func(pos uint32)) *MockDataReader_SetPos_Call[T] {
 	_c.Run(run)
 	return _c
 }
@@ -1032,18 +1032,18 @@ func (_c *MockDataReaderComplex_GetByteOrder_Call[T]) RunAndReturn(run func() bi
 }
 
 // GetPos provides a mock function for the type MockDataReaderComplex
-func (_mock *MockDataReaderComplex[T]) GetPos() uint16 {
+func (_mock *MockDataReaderComplex[T]) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -1065,12 +1065,12 @@ func (_c *MockDataReaderComplex_GetPos_Call[T]) Run(run func()) *MockDataReaderC
 	return _c
 }
 
-func (_c *MockDataReaderComplex_GetPos_Call[T]) Return(v uint16) *MockDataReaderComplex_GetPos_Call[T] {
+func (_c *MockDataReaderComplex_GetPos_Call[T]) Return(v uint32) *MockDataReaderComplex_GetPos_Call[T] {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockDataReaderComplex_GetPos_Call[T]) RunAndReturn(run func() uint16) *MockDataReaderComplex_GetPos_Call[T] {
+func (_c *MockDataReaderComplex_GetPos_Call[T]) RunAndReturn(run func() uint32) *MockDataReaderComplex_GetPos_Call[T] {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1400,7 +1400,7 @@ func (_c *MockDataReaderComplex_SetByteOrder_Call[T]) RunAndReturn(run func(byte
 }
 
 // SetPos provides a mock function for the type MockDataReaderComplex
-func (_mock *MockDataReaderComplex[T]) SetPos(pos uint16) {
+func (_mock *MockDataReaderComplex[T]) SetPos(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -1411,16 +1411,16 @@ type MockDataReaderComplex_SetPos_Call[T any] struct {
 }
 
 // SetPos is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockDataReaderComplex_Expecter[T]) SetPos(pos interface{}) *MockDataReaderComplex_SetPos_Call[T] {
 	return &MockDataReaderComplex_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
-func (_c *MockDataReaderComplex_SetPos_Call[T]) Run(run func(pos uint16)) *MockDataReaderComplex_SetPos_Call[T] {
+func (_c *MockDataReaderComplex_SetPos_Call[T]) Run(run func(pos uint32)) *MockDataReaderComplex_SetPos_Call[T] {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -1434,7 +1434,7 @@ func (_c *MockDataReaderComplex_SetPos_Call[T]) Return() *MockDataReaderComplex_
 	return _c
 }
 
-func (_c *MockDataReaderComplex_SetPos_Call[T]) RunAndReturn(run func(pos uint16)) *MockDataReaderComplex_SetPos_Call[T] {
+func (_c *MockDataReaderComplex_SetPos_Call[T]) RunAndReturn(run func(pos uint32)) *MockDataReaderComplex_SetPos_Call[T] {
 	_c.Run(run)
 	return _c
 }
@@ -1579,18 +1579,18 @@ func (_c *MockDataReaderEnum_GetByteOrder_Call[T]) RunAndReturn(run func() binar
 }
 
 // GetPos provides a mock function for the type MockDataReaderEnum
-func (_mock *MockDataReaderEnum[T]) GetPos() uint16 {
+func (_mock *MockDataReaderEnum[T]) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -1612,12 +1612,12 @@ func (_c *MockDataReaderEnum_GetPos_Call[T]) Run(run func()) *MockDataReaderEnum
 	return _c
 }
 
-func (_c *MockDataReaderEnum_GetPos_Call[T]) Return(v uint16) *MockDataReaderEnum_GetPos_Call[T] {
+func (_c *MockDataReaderEnum_GetPos_Call[T]) Return(v uint32) *MockDataReaderEnum_GetPos_Call[T] {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockDataReaderEnum_GetPos_Call[T]) RunAndReturn(run func() uint16) *MockDataReaderEnum_GetPos_Call[T] {
+func (_c *MockDataReaderEnum_GetPos_Call[T]) RunAndReturn(run func() uint32) *MockDataReaderEnum_GetPos_Call[T] {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1858,7 +1858,7 @@ func (_c *MockDataReaderEnum_SetByteOrder_Call[T]) RunAndReturn(run func(byteOrd
 }
 
 // SetPos provides a mock function for the type MockDataReaderEnum
-func (_mock *MockDataReaderEnum[T]) SetPos(pos uint16) {
+func (_mock *MockDataReaderEnum[T]) SetPos(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -1869,16 +1869,16 @@ type MockDataReaderEnum_SetPos_Call[T any] struct {
 }
 
 // SetPos is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockDataReaderEnum_Expecter[T]) SetPos(pos interface{}) *MockDataReaderEnum_SetPos_Call[T] {
 	return &MockDataReaderEnum_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
-func (_c *MockDataReaderEnum_SetPos_Call[T]) Run(run func(pos uint16)) *MockDataReaderEnum_SetPos_Call[T] {
+func (_c *MockDataReaderEnum_SetPos_Call[T]) Run(run func(pos uint32)) *MockDataReaderEnum_SetPos_Call[T] {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -1892,7 +1892,7 @@ func (_c *MockDataReaderEnum_SetPos_Call[T]) Return() *MockDataReaderEnum_SetPos
 	return _c
 }
 
-func (_c *MockDataReaderEnum_SetPos_Call[T]) RunAndReturn(run func(pos uint16)) *MockDataReaderEnum_SetPos_Call[T] {
+func (_c *MockDataReaderEnum_SetPos_Call[T]) RunAndReturn(run func(pos uint32)) *MockDataReaderEnum_SetPos_Call[T] {
 	_c.Run(run)
 	return _c
 }
@@ -2037,18 +2037,18 @@ func (_c *MockDataReaderSimpleBaseContract_GetByteOrder_Call[T]) RunAndReturn(ru
 }
 
 // GetPos provides a mock function for the type MockDataReaderSimpleBaseContract
-func (_mock *MockDataReaderSimpleBaseContract[T]) GetPos() uint16 {
+func (_mock *MockDataReaderSimpleBaseContract[T]) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -2070,12 +2070,12 @@ func (_c *MockDataReaderSimpleBaseContract_GetPos_Call[T]) Run(run func()) *Mock
 	return _c
 }
 
-func (_c *MockDataReaderSimpleBaseContract_GetPos_Call[T]) Return(v uint16) *MockDataReaderSimpleBaseContract_GetPos_Call[T] {
+func (_c *MockDataReaderSimpleBaseContract_GetPos_Call[T]) Return(v uint32) *MockDataReaderSimpleBaseContract_GetPos_Call[T] {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockDataReaderSimpleBaseContract_GetPos_Call[T]) RunAndReturn(run func() uint16) *MockDataReaderSimpleBaseContract_GetPos_Call[T] {
+func (_c *MockDataReaderSimpleBaseContract_GetPos_Call[T]) RunAndReturn(run func() uint32) *MockDataReaderSimpleBaseContract_GetPos_Call[T] {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2233,7 +2233,7 @@ func (_c *MockDataReaderSimpleBaseContract_SetByteOrder_Call[T]) RunAndReturn(ru
 }
 
 // SetPos provides a mock function for the type MockDataReaderSimpleBaseContract
-func (_mock *MockDataReaderSimpleBaseContract[T]) SetPos(pos uint16) {
+func (_mock *MockDataReaderSimpleBaseContract[T]) SetPos(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -2244,16 +2244,16 @@ type MockDataReaderSimpleBaseContract_SetPos_Call[T any] struct {
 }
 
 // SetPos is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) SetPos(pos interface{}) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
 	return &MockDataReaderSimpleBaseContract_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
-func (_c *MockDataReaderSimpleBaseContract_SetPos_Call[T]) Run(run func(pos uint16)) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
+func (_c *MockDataReaderSimpleBaseContract_SetPos_Call[T]) Run(run func(pos uint32)) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -2267,7 +2267,7 @@ func (_c *MockDataReaderSimpleBaseContract_SetPos_Call[T]) Return() *MockDataRea
 	return _c
 }
 
-func (_c *MockDataReaderSimpleBaseContract_SetPos_Call[T]) RunAndReturn(run func(pos uint16)) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
+func (_c *MockDataReaderSimpleBaseContract_SetPos_Call[T]) RunAndReturn(run func(pos uint32)) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
 	_c.Run(run)
 	return _c
 }

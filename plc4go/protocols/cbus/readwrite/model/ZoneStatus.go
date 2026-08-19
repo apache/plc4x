@@ -165,8 +165,8 @@ func (m *_ZoneStatus) GetPlx4xTypeName() string {
 	return "ZoneStatus"
 }
 
-func (m *_ZoneStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ZoneStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (value)
 	lengthInBits += 2
@@ -174,7 +174,7 @@ func (m *_ZoneStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ZoneStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ZoneStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

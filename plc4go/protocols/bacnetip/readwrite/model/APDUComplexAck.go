@@ -372,8 +372,8 @@ func (m *_APDUComplexAck) GetPlx4xTypeName() string {
 	return "APDUComplexAck"
 }
 
-func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -413,13 +413,13 @@ func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Segment) > 0 {
-		lengthInBits += 8 * uint16(len(m.Segment))
+		lengthInBits += 8 * uint64(len(m.Segment))
 	}
 
 	return lengthInBits
 }
 
-func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

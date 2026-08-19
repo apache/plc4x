@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBlinkWarnEnable"
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (blinkWarnEnable)
 	lengthInBits += m.BlinkWarnEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

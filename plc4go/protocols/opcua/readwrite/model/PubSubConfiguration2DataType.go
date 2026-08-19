@@ -349,8 +349,8 @@ func (m *_PubSubConfiguration2DataType) GetPlx4xTypeName() string {
 	return "PubSubConfiguration2DataType"
 }
 
-func (m *_PubSubConfiguration2DataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PubSubConfiguration2DataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfPublishedDataSets)
 	lengthInBits += 32
@@ -452,7 +452,7 @@ func (m *_PubSubConfiguration2DataType) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_PubSubConfiguration2DataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PubSubConfiguration2DataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

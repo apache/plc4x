@@ -231,8 +231,8 @@ func (m *_BACnetServiceAckCreateObject) GetPlx4xTypeName() string {
 	return "BACnetServiceAckCreateObject"
 }
 
-func (m *_BACnetServiceAckCreateObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckCreateObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckCreateObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckCreateObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

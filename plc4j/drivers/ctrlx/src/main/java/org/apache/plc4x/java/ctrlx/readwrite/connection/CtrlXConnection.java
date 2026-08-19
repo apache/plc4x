@@ -132,27 +132,34 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         return Optional.ofNullable(plcTag);
     }
 
+    /**
+     * Reading, writing and subscribing are not implemented - the corresponding request builders
+     * return {@code null}. Browsing has an implementation, but it does not work yet. Reporting any
+     * of them as supported makes callers that check the metadata first (the connection cache and
+     * the tooling among them) attempt an operation that cannot succeed, so all four are reported
+     * as unsupported until they actually work.
+     */
     @Override
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
             public boolean isReadSupported() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean isWriteSupported() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean isSubscribeSupported() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean isBrowseSupported() {
-                return true;
+                return false;
             }
         };
     }
@@ -229,8 +236,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                 responseCodes.put(queryName, PlcResponseCode.OK);
                 responseItems.put(queryName, new ArrayList<>());
                 PlcQuery query = browseRequest.getQuery(queryName);
-                if (query instanceof CtrlXQuery) {
-                    CtrlXQuery ctrlXQuery = (CtrlXQuery) query;
+                if (query instanceof CtrlXQuery ctrlXQuery) {
                     matchers.put(queryName, ctrlXQuery.getMatcher());
                 } else {
                     future.completeExceptionally(
@@ -268,7 +274,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                     if (children.isEmpty()) {
                         List<String> matchingQueryNames = matchers.entrySet().stream()
                             .filter(entry -> entry.getValue().matches(curNode)).map(Map.Entry::getKey)
-                            .collect(Collectors.toList());
+                            .toList();
                         // If there's at least one matching query, read the "metadata", which contains information
                         // on if the property is readable or writable.
                         if (!matchingQueryNames.isEmpty()) {
@@ -292,7 +298,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                     // If this node has children, then it's branch, and we need to add its children to the queue.
                     else {
                         // Add all children to the list.
-                        uncheckedNodeList.addAll(children.stream().map(child -> curNode + "/" + child).collect(Collectors.toList()));
+                        uncheckedNodeList.addAll(children.stream().map(child -> curNode + "/" + child).toList());
                     }
                 } catch (ApiException e) {
                     // Ignore ...

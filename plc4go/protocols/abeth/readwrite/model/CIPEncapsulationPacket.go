@@ -68,8 +68,8 @@ type CIPEncapsulationPacketContract interface {
 
 // CIPEncapsulationPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type CIPEncapsulationPacketRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint16
 }
@@ -315,8 +315,8 @@ func (m *_CIPEncapsulationPacket) GetPlx4xTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
-func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 16
 
@@ -331,7 +331,7 @@ func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.SenderContext) > 0 {
-		lengthInBits += 8 * uint16(len(m.SenderContext))
+		lengthInBits += 8 * uint64(len(m.SenderContext))
 	}
 
 	// Simple field (options)
@@ -343,11 +343,11 @@ func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CIPEncapsulationPacket) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CIPEncapsulationPacket) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CIPEncapsulationPacket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CIPEncapsulationPacket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

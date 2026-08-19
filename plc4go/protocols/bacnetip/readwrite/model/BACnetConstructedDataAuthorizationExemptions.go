@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetPlx4xTypeName() strin
 	return "BACnetConstructedDataAuthorizationExemptions"
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AuthorizationExemption) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

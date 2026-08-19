@@ -183,91 +183,18 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					return
 				}
 				length, fromAddr, err := socket.ReadFromUDP(buf)
+				if err != nil {
+					// A read error usually means the socket was closed; ending the worker
+					// here avoids busy-looping on a dead socket.
+					d.log.Debug().Err(err).Msg("error reading from udp socket, ending")
+					return
+				}
 				if length == 0 {
 					continue
 				}
-				ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-				discoveryResponse, err := model.AdsDiscoveryParse(ctxForModel, buf[0:length])
-				if err != nil {
-					d.log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
-					continue
-				}
-
-				if discoveryResponse.GetRequestId() != 0 ||
-					discoveryResponse.GetPortNumber() != model.AdsPortNumbers_SYSTEM_SERVICE ||
-					discoveryResponse.GetOperation() != model.Operation_DISCOVERY_RESPONSE {
-					continue
-				}
-
-				remoteAmsNetId := discoveryResponse.GetAmsNetId()
-				var hostNameBlock model.AdsDiscoveryBlockHostName
-				//var osDataBlock model.AdsDiscoveryBlockOsData
-				var versionBlock model.AdsDiscoveryBlockVersion
-				var fingerprintBlock model.AdsDiscoveryBlockFingerprint
-				for _, block := range discoveryResponse.GetBlocks() {
-					if err := ctx.Err(); err != nil {
-						d.log.Debug().Err(err).Msg("ending")
-						return
-					}
-					switch block.GetBlockType() {
-					case model.AdsDiscoveryBlockType_HOST_NAME:
-						hostNameBlock = block.(model.AdsDiscoveryBlockHostName)
-						/*									case model.AdsDiscoveryBlockType_OS_DATA:
-															osDataBlock = block.(model.AdsDiscoveryBlockOsData)*/
-					case model.AdsDiscoveryBlockType_VERSION:
-						versionBlock = block.(model.AdsDiscoveryBlockVersion)
-					case model.AdsDiscoveryBlockType_FINGERPRINT:
-						fingerprintBlock = block.(model.AdsDiscoveryBlockFingerprint)
-					}
-				}
-
-				if hostNameBlock == nil {
-					continue
-				}
-
-				opts := make(map[string][]string)
-				opts["sourceAmsNetId"] = []string{discoveryItem.localAddress.String() + ".1.1"}
-				opts["sourceAmsPort"] = []string{"65534"}
-				opts["targetAmsNetId"] = []string{strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet5())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet6()))}
-				// TODO: Check if this is legit, or if we can get the information from somewhere.
-				opts["targetAmsPort"] = []string{"851"}
-
-				attributes := make(map[string]apiValues.PlcValue)
-				attributes["hostName"] = spiValues.NewPlcSTRING(hostNameBlock.GetHostName().GetText())
-				if versionBlock != nil {
-					versionData := versionBlock.GetVersionData()
-					patchVersion := (int(versionData[3])&0xFF)<<8 | (int(versionData[2]) & 0xFF)
-					attributes["twinCatVersion"] = spiValues.NewPlcSTRING(fmt.Sprintf("%d.%d.%d", int(versionData[0])&0xFF, int(versionData[1])&0xFF, patchVersion))
-				}
-				if fingerprintBlock != nil {
-					attributes["fingerprint"] = spiValues.NewPlcSTRING(string(fingerprintBlock.GetData()))
-				}
-				// TODO: Find out how to handle the OS Data
-
-				// Add an entry to the results.
-				remoteAddress, err2 := url.Parse("udp://" + strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
-					strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + ":" +
-					strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
-				if err2 == nil {
-					plcDiscoveryItem := spiModel.NewDefaultPlcDiscoveryItem(
-						"ads",
-						"tcp",
-						*remoteAddress,
-						opts,
-						hostNameBlock.GetHostName().GetText(),
-						attributes,
-					)
-
-					// Pass the event back to the callback
-					callback(plcDiscoveryItem)
-				}
+				// Handle each datagram in its own function with its own recover, so one
+				// malformed packet cannot end response processing for this interface.
+				d.handleDiscoveryResponse(ctx, discoveryItem, fromAddr, buf[0:length], callback)
 			}
 		})
 	}
@@ -333,6 +260,119 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 	time.Sleep(time.Second * 10)
 	return nil
+}
+
+// handleDiscoveryResponse processes a single discovery response datagram. It contains
+// its own recover, so a panic caused by one malformed packet is contained to that
+// packet and doesn't end the per-interface receive worker.
+func (d *Discoverer) handleDiscoveryResponse(ctx context.Context, discoveryItem *discovery, fromAddr *net.UDPAddr, data []byte, callback func(event apiModel.PlcDiscoveryItem)) {
+	defer func() {
+		if err := recover(); err != nil {
+			d.log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Str("src-ip", fromAddr.String()).
+				Msg("panic-ed handling discovery response")
+		}
+	}()
+	ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
+	discoveryResponse, err := model.AdsDiscoveryParse(ctxForModel, data)
+	if err != nil {
+		d.log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
+		return
+	}
+
+	if discoveryResponse.GetRequestId() != 0 ||
+		discoveryResponse.GetPortNumber() != model.AdsPortNumbers_SYSTEM_SERVICE ||
+		discoveryResponse.GetOperation() != model.Operation_DISCOVERY_RESPONSE {
+		return
+	}
+
+	remoteAmsNetId := discoveryResponse.GetAmsNetId()
+	var hostNameBlock model.AdsDiscoveryBlockHostName
+	//var osDataBlock model.AdsDiscoveryBlockOsData
+	var versionBlock model.AdsDiscoveryBlockVersion
+	var fingerprintBlock model.AdsDiscoveryBlockFingerprint
+	for _, block := range discoveryResponse.GetBlocks() {
+		if err := ctx.Err(); err != nil {
+			d.log.Debug().Err(err).Msg("ending")
+			return
+		}
+		switch block.GetBlockType() {
+		case model.AdsDiscoveryBlockType_HOST_NAME:
+			hostNameBlock = block.(model.AdsDiscoveryBlockHostName)
+			/*									case model.AdsDiscoveryBlockType_OS_DATA:
+												osDataBlock = block.(model.AdsDiscoveryBlockOsData)*/
+		case model.AdsDiscoveryBlockType_VERSION:
+			versionBlock = block.(model.AdsDiscoveryBlockVersion)
+		case model.AdsDiscoveryBlockType_FINGERPRINT:
+			fingerprintBlock = block.(model.AdsDiscoveryBlockFingerprint)
+		}
+	}
+
+	if hostNameBlock == nil {
+		return
+	}
+
+	opts := make(map[string][]string)
+	opts["sourceAmsNetId"] = []string{discoveryItem.localAddress.String() + ".1.1"}
+	opts["sourceAmsPort"] = []string{"65534"}
+	opts["targetAmsNetId"] = []string{strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet5())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet6()))}
+	// TODO: Check if this is legit, or if we can get the information from somewhere.
+	opts["targetAmsPort"] = []string{"851"}
+
+	attributes := make(map[string]apiValues.PlcValue)
+	attributes["hostName"] = spiValues.NewPlcSTRING(hostNameBlock.GetHostName().GetText())
+	if versionBlock != nil {
+		versionData := versionBlock.GetVersionData()
+		// The version data length is wire-controlled, so it must be checked before
+		// indexing; skip the attribute on short data.
+		if len(versionData) >= 4 {
+			patchVersion := (int(versionData[3])&0xFF)<<8 | (int(versionData[2]) & 0xFF)
+			attributes["twinCatVersion"] = spiValues.NewPlcSTRING(fmt.Sprintf("%d.%d.%d", int(versionData[0])&0xFF, int(versionData[1])&0xFF, patchVersion))
+		}
+	}
+	if fingerprintBlock != nil {
+		attributes["fingerprint"] = spiValues.NewPlcSTRING(string(fingerprintBlock.GetData()))
+	}
+	// TODO: Find out how to handle the OS Data
+
+	// Derive the connection address from the datagram's actual sender: the AmsNetId
+	// in the response body is under the sender's control and need not match its
+	// address, so it must not decide where we connect to (the claimed NetId is
+	// still passed along as targetAmsNetId above).
+	netIdDerivedAddress := strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
+		strconv.Itoa(int(remoteAmsNetId.GetOctet4()))
+	if netIdDerivedAddress != fromAddr.IP.String() {
+		d.log.Warn().
+			Str("claimed-address", netIdDerivedAddress).
+			Str("source-address", fromAddr.IP.String()).
+			Msg("AmsNetId-derived address differs from the datagram source address, using the source address")
+	}
+
+	// Add an entry to the results.
+	remoteAddress, err2 := url.Parse("udp://" + fromAddr.IP.String() + ":" +
+		strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
+	if err2 == nil {
+		plcDiscoveryItem := spiModel.NewDefaultPlcDiscoveryItem(
+			"ads",
+			"tcp",
+			*remoteAddress,
+			opts,
+			hostNameBlock.GetHostName().GetText(),
+			attributes,
+		)
+
+		// Pass the event back to the callback
+		callback(plcDiscoveryItem)
+	}
 }
 
 func (d *Discoverer) Close() error {

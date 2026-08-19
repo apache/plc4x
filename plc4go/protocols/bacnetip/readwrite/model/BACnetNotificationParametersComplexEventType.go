@@ -225,8 +225,8 @@ func (m *_BACnetNotificationParametersComplexEventType) GetPlx4xTypeName() strin
 	return "BACnetNotificationParametersComplexEventType"
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (listOfValues)
 	lengthInBits += m.ListOfValues.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

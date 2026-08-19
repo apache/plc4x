@@ -329,8 +329,8 @@ func (m *_LDataExtended) GetPlx4xTypeName() string {
 	return "LDataExtended"
 }
 
-func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
+func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -346,7 +346,7 @@ func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.DestinationAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.DestinationAddress))
+		lengthInBits += 8 * uint64(len(m.DestinationAddress))
 	}
 
 	// Implicit Field (dataLength)
@@ -358,7 +358,7 @@ func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LDataExtended) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LDataExtended) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

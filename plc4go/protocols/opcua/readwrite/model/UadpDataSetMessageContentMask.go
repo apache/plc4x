@@ -124,11 +124,11 @@ func CastUadpDataSetMessageContentMask(structType any) UadpDataSetMessageContent
 	return castFunc(structType)
 }
 
-func (m UadpDataSetMessageContentMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m UadpDataSetMessageContentMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m UadpDataSetMessageContentMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m UadpDataSetMessageContentMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

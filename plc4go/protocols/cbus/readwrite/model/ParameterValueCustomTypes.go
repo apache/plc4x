@@ -231,8 +231,8 @@ func (m *_ParameterValueCustomTypes) GetPlx4xTypeName() string {
 	return "ParameterValueCustomTypes"
 }
 
-func (m *_ParameterValueCustomTypes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+func (m *_ParameterValueCustomTypes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_ParameterValueCustomTypes) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_ParameterValueCustomTypes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterValueCustomTypes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

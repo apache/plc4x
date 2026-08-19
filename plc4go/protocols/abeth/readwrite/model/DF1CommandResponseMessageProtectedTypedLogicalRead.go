@@ -213,18 +213,18 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetPlx4xTypeName()
 	return "DF1CommandResponseMessageProtectedTypedLogicalRead"
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1ResponseMessageContract.(*_DF1ResponseMessage).getLengthInBits(ctx))
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1ResponseMessageContract.(*_DF1ResponseMessage).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

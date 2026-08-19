@@ -9407,11 +9407,11 @@ func CastKnxDatapointType(structType any) KnxDatapointType {
 	return castFunc(structType)
 }
 
-func (m KnxDatapointType) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxDatapointType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m KnxDatapointType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxDatapointType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

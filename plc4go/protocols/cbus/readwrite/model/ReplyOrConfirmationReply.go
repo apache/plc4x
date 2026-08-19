@@ -260,8 +260,8 @@ func (m *_ReplyOrConfirmationReply) GetPlx4xTypeName() string {
 	return "ReplyOrConfirmationReply"
 }
 
-func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
+func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
 
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits(ctx)
@@ -272,7 +272,7 @@ func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_ReplyOrConfirmationReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReplyOrConfirmationReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

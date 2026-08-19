@@ -124,11 +124,11 @@ func CastBACnetDeviceStatus(structType any) BACnetDeviceStatus {
 	return castFunc(structType)
 }
 
-func (m BACnetDeviceStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetDeviceStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetDeviceStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetDeviceStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

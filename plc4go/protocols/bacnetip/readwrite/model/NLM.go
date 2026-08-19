@@ -60,8 +60,8 @@ type NLMContract interface {
 
 // NLMRequirements provides a set of functions which need to be implemented by a sub struct
 type NLMRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (discriminator field)
 	GetIsVendorProprietaryMessage() bool
 	// GetMessageType returns MessageType (discriminator field)
@@ -482,8 +482,8 @@ func (m *_NLM) GetPlx4xTypeName() string {
 	return "NLM"
 }
 
-func (m *_NLM) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NLM) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
 
@@ -492,11 +492,11 @@ func (m *_NLM) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLM) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_NLM) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_NLM) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLM) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -48,18 +47,22 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
     private static final String APPURI = "urn:eclipse:milo:plc4x:server";
 
-    public static CertificateKeyPair generateCertificate() {
-        KeyPairGenerator kpg = null;
-        try {
-            kpg = KeyPairGenerator.getInstance("RSA");
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Security Algorithim is unsupported for certificate");
-            return null;
-        }
-        kpg.initialize(2048);
-        KeyPair caKeys = kpg.generateKeyPair();
-        KeyPair userKeys = kpg.generateKeyPair();
+    /** Key size used when the connection string doesn't ask for a specific one. */
+    public static final int DEFAULT_KEY_SIZE = 2048;
 
+    /**
+     * Generates a self-signed application instance certificate with a 2048 bit key.
+     */
+    public static CertificateKeyPair generateCertificate() {
+        return generateCertificate(DEFAULT_KEY_SIZE);
+    }
+
+    /**
+     * Generates a self-signed application instance certificate.
+     *
+     * @param keySize size of the RSA key in bits; servers may demand a minimum, commonly 4096
+     */
+    public static CertificateKeyPair generateCertificate(int keySize) {
         X500NameBuilder nameBuilder = new X500NameBuilder();
 
         nameBuilder.addRDN(BCStyle.CN, "Apache PLC4X Driver Client");
@@ -69,7 +72,10 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
         nameBuilder.addRDN(BCStyle.ST, "DE");
         nameBuilder.addRDN(BCStyle.C, "US");
 
-        BigInteger serial = new BigInteger(RandomUtils.nextBytes(40));
+        // X.509 requires a positive serial number of at most 20 octets. Building it from 40 random
+        // bytes produced an over-long and, half the time, negative serial, which strict servers
+        // reject.
+        BigInteger serial = new BigInteger(127, new SecureRandom()).setBit(126);
 
         final Calendar calender = Calendar.getInstance();
         calender.add(Calendar.DATE, -1);
@@ -80,7 +86,7 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
         KeyPairGenerator generator = null;
         try {
             generator = KeyPairGenerator.getInstance("RSA");
-            generator.initialize(2048, new SecureRandom());
+            generator.initialize(keySize, new SecureRandom());
             KeyPair keyPair = generator.generateKeyPair();
 
             SubjectPublicKeyInfo subjectPublicKeyInfo = SubjectPublicKeyInfo.getInstance(
@@ -99,15 +105,29 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
 
             GeneralName[] gnArray = new GeneralName[]{new GeneralName(GeneralName.dNSName, InetAddress.getLocalHost().getHostName()), new GeneralName(GeneralName.uniformResourceIdentifier, APPURI)};
 
-            certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(keyPair.getPublic()));
+            JcaX509ExtensionUtils extensionUtils = new JcaX509ExtensionUtils();
+            certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, extensionUtils.createAuthorityKeyIdentifier(keyPair.getPublic()));
+            // Servers look the certificate up by its subject key identifier; without it some
+            // reject the certificate outright.
+            certificateBuilder.addExtension(Extension.subjectKeyIdentifier, false, extensionUtils.createSubjectKeyIdentifier(keyPair.getPublic()));
             certificateBuilder.addExtension(Extension.extendedKeyUsage, false, new ExtendedKeyUsage(new KeyPurposeId[]{KeyPurposeId.id_kp_clientAuth, KeyPurposeId.id_kp_serverAuth}));
-            certificateBuilder.addExtension(Extension.keyUsage, false, new KeyUsage(KeyUsage.dataEncipherment | KeyUsage.digitalSignature | KeyUsage.keyAgreement | KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.nonRepudiation));
-            certificateBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
+            // The key usages an application instance certificate is supposed to carry
+            // (OPC UA Part 6). keyCertSign has no business here - this certificate signs no other
+            // certificates.
+            certificateBuilder.addExtension(Extension.keyUsage, false, new KeyUsage(KeyUsage.dataEncipherment | KeyUsage.digitalSignature | KeyUsage.keyEncipherment | KeyUsage.nonRepudiation));
+            // This is an end entity certificate, not a CA. Claiming to be a CA made servers with
+            // stricter certificate checks refuse it.
+            certificateBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(false));
 
             GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence(gnArray));
             certificateBuilder.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
 
-            ContentSigner sigGen = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(keyPair.getPrivate());
+            // SHA-1 is deprecated and rejected by the SHA-256 based security policies as well as by
+            // any server holding a modern security baseline.
+            ContentSigner sigGen = new JcaContentSignerBuilder("SHA256withRSA")
+                // Pass the provider instance rather than the name "BC": this class would
+                // otherwise depend on some other class having registered it first.
+                .setProvider(new BouncyCastleProvider()).build(keyPair.getPrivate());
 
             X509CertificateHolder certificateHolder = certificateBuilder.build(sigGen);
 

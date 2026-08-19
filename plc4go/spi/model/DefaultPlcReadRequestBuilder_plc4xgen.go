@@ -52,7 +52,7 @@ func (d *DefaultPlcReadRequestBuilder) SerializeWithWriteBuffer(ctx context.Cont
 		return err
 	}
 	for _, elem := range d.tagNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem); err != nil {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
@@ -65,7 +65,7 @@ func (d *DefaultPlcReadRequestBuilder) SerializeWithWriteBuffer(ctx context.Cont
 	for _name, elem := range d.tagAddresses {
 		name := _name
 
-		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), elem); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), elem, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
@@ -91,7 +91,7 @@ func (d *DefaultPlcReadRequestBuilder) SerializeWithWriteBuffer(ctx context.Cont
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

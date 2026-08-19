@@ -17,10 +17,101 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-= CtlrX
+= CtrlX
 
+WARNING: This driver is unfinished and not usable yet. Discovery and pinging are the only things
+that work; there is no tag address syntax, so reading and writing are not available, and the browse
+implementation does not work yet either. This page describes the current state for anyone
+continuing the work - it is not linked from the navigation.
 
+The CtrlX driver talks to Bosch Rexroth ctrlX CORE devices through their REST/Data-Layer API over
+HTTPS, rather than over an industrial fieldbus protocol.
 
-== Connection String Options
+== Supported Operations
 
-//include::../../../ctrlx.adoc[]
+[cols="2,5a"]
+|===
+|Operation |Description
+
+|`ping`
+|Checks that the device is reachable and the credentials are accepted.
+
+|`discover`
+|Locates ctrlX CORE devices on the local network.
+
+|`browse`
+|*Does not work yet.* The connection carries an implementation that is meant to enumerate the
+device's Data Layer nodes, and it is the furthest along of the unfinished operations, but it does
+not produce usable results.
+
+|`read` / `write` / `subscribe`
+|*Not implemented.* The corresponding request builders return `null`, so attempting one fails.
+|===
+
+The connection reports all four of these as unsupported in its metadata, so a caller that checks
+`getMetadata()` before deciding what to do gets an honest answer rather than being sent into a
+request that cannot succeed.
+
+== Connection String
+
+----
+ctrlx:https://{host}
+ctrlx://{host}
+----
+
+`https` is the only supported transport, and it is also the default - so the transport part can be
+omitted. Any other transport is rejected with
+`Only 'https' transport is supported by this driver`.
+
+== Authentication
+
+IMPORTANT: A CtrlX connection *always* requires a username and password. Obtaining a connection
+without authentication throws `CtrlX connections require authentication.`, and an authentication
+object that is not a username/password pair is rejected as well.
+
+[source,java]
+----
+PlcConnection connection = new DefaultPlcDriverManager()
+    .getConnection("ctrlx://192.168.1.1",
+        new PlcUsernamePasswordAuthentication("boschrexroth", "boschrexroth"));
+----
+
+== Browsing
+
+NOTE: Browsing does not work yet. What follows describes how the existing implementation is meant
+to be used, for whoever picks the work up.
+
+Browse queries are glob patterns matched against the Data Layer node paths, not tag addresses.
+`**` matches everything and is intended as the simplest way to see what a device exposes:
+
+[source,java]
+----
+PlcBrowseResponse response = connection.browseRequestBuilder()
+    .addQuery("all", "**")
+    .build().execute().get();
+----
+
+The driver has no tag address syntax of its own - `parseTag` is not implemented - which is the
+reason read and write are unavailable.
+
+== Discovery
+
+The driver supports discovery, which locates ctrlX CORE devices on the local network.
+
+== Maven Dependency
+
+The driver is not part of the `plc4j-driver-all` meta package while it is unfinished, so it has to
+be added explicitly:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-ctrlx</artifactId>
+  <version>{page-component-version}</version>
+</dependency>
+----
+
+NOTE: The driver declares no connection-string parameters of its own, which is why this page has no
+generated options table like the other protocols. Everything it needs comes from the host in the
+connection string plus the credentials.

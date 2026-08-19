@@ -227,8 +227,8 @@ func (m *_CBusCommandPointToPoint) GetPlx4xTypeName() string {
 	return "CBusCommandPointToPoint"
 }
 
-func (m *_CBusCommandPointToPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusCommandContract.(*_CBusCommand).getLengthInBits(ctx))
+func (m *_CBusCommandPointToPoint) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusCommandContract.(*_CBusCommand).getLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)
@@ -236,7 +236,7 @@ func (m *_CBusCommandPointToPoint) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusCommandPointToPoint) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusCommandPointToPoint) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

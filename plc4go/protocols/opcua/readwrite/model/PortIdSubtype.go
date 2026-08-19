@@ -124,11 +124,11 @@ func CastPortIdSubtype(structType any) PortIdSubtype {
 	return castFunc(structType)
 }
 
-func (m PortIdSubtype) GetLengthInBits(ctx context.Context) uint16 {
+func (m PortIdSubtype) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PortIdSubtype) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PortIdSubtype) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

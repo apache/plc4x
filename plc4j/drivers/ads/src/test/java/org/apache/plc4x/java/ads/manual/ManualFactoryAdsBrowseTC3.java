@@ -32,7 +32,7 @@ public class ManualFactoryAdsBrowseTC3 {
     public static void main(String[] args) throws Exception {
 
         long startTime = System.currentTimeMillis();
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1")){
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1")){
             PlcBrowseResponse plcBrowseResponse = connection.browseRequestBuilder()
                 //.addQuery("all", "**")
                 .addQuery("allMain", "MAIN.*")

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -226,14 +227,14 @@ func (m *_AnsiExtendedSymbolSegment) GetPlx4xTypeName() string {
 	return "AnsiExtendedSymbolSegment"
 }
 
-func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DataSegmentTypeContract.(*_DataSegmentType).getLengthInBits(ctx))
+func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DataSegmentTypeContract.(*_DataSegmentType).getLengthInBits(ctx))
 
 	// Implicit Field (dataSize)
 	lengthInBits += 8
 
 	// Simple field (symbol)
-	lengthInBits += uint16(int32(uint8(len(m.GetSymbol()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetSymbol()))) * int32(int32(8)))
 
 	// Optional Field (pad)
 	if m.Pad != nil {
@@ -243,7 +244,7 @@ func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -264,7 +265,7 @@ func (m *_AnsiExtendedSymbolSegment) parse(ctx context.Context, readBuffer utils
 	}
 	_ = dataSize
 
-	symbol, err := ReadSimpleField(ctx, "symbol", ReadString(readBuffer, uint32(int32(dataSize)*int32(int32(8)))))
+	symbol, err := ReadSimpleField(ctx, "symbol", ReadString(readBuffer, uint32(int32(dataSize)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbol' field"))
 	}
@@ -306,7 +307,7 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'dataSize' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "symbol", m.GetSymbol(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetSymbol())))*int32(int32(8))))); err != nil {
+		if err := WriteSimpleField[string](ctx, "symbol", m.GetSymbol(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetSymbol())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'symbol' field")
 		}
 

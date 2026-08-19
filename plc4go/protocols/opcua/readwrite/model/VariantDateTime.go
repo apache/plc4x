@@ -226,8 +226,8 @@ func (m *_VariantDateTime) GetPlx4xTypeName() string {
 	return "VariantDateTime"
 }
 
-func (m *_VariantDateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantDateTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -236,13 +236,13 @@ func (m *_VariantDateTime) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 64 * uint16(len(m.Value))
+		lengthInBits += 64 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_VariantDateTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantDateTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

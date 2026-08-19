@@ -213,8 +213,8 @@ func (m *_BVLCRegisterForeignDevice) GetPlx4xTypeName() string {
 	return "BVLCRegisterForeignDevice"
 }
 
-func (m *_BVLCRegisterForeignDevice) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCRegisterForeignDevice) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Simple field (ttl)
 	lengthInBits += 16
@@ -222,7 +222,7 @@ func (m *_BVLCRegisterForeignDevice) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_BVLCRegisterForeignDevice) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCRegisterForeignDevice) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

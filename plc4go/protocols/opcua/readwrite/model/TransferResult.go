@@ -245,8 +245,8 @@ func (m *_TransferResult) GetPlx4xTypeName() string {
 	return "TransferResult"
 }
 
-func (m *_TransferResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_TransferResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -256,13 +256,13 @@ func (m *_TransferResult) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.AvailableSequenceNumbers) > 0 {
-		lengthInBits += 32 * uint16(len(m.AvailableSequenceNumbers))
+		lengthInBits += 32 * uint64(len(m.AvailableSequenceNumbers))
 	}
 
 	return lengthInBits
 }
 
-func (m *_TransferResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TransferResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

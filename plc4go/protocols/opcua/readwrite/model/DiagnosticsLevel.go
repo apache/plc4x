@@ -112,11 +112,11 @@ func CastDiagnosticsLevel(structType any) DiagnosticsLevel {
 	return castFunc(structType)
 }
 
-func (m DiagnosticsLevel) GetLengthInBits(ctx context.Context) uint16 {
+func (m DiagnosticsLevel) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m DiagnosticsLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DiagnosticsLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -124,11 +124,11 @@ func CastBACnetDaysOfWeek(structType any) BACnetDaysOfWeek {
 	return castFunc(structType)
 }
 
-func (m BACnetDaysOfWeek) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetDaysOfWeek) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetDaysOfWeek) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetDaysOfWeek) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

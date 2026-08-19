@@ -214,8 +214,8 @@ func (m *_PublishedDataSetCustomSourceDataType) GetPlx4xTypeName() string {
 	return "PublishedDataSetCustomSourceDataType"
 }
 
-func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 7
@@ -226,7 +226,7 @@ func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

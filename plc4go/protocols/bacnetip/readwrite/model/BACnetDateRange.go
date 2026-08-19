@@ -215,8 +215,8 @@ func (m *_BACnetDateRange) GetPlx4xTypeName() string {
 	return "BACnetDateRange"
 }
 
-func (m *_BACnetDateRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetDateRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (startDate)
 	lengthInBits += m.StartDate.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetDateRange) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetDateRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetDateRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

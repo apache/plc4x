@@ -55,18 +55,18 @@ func (_m *MockPositionMover) EXPECT() *MockPositionMover_Expecter {
 }
 
 // GetPos provides a mock function for the type MockPositionMover
-func (_mock *MockPositionMover) GetPos() uint16 {
+func (_mock *MockPositionMover) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -88,18 +88,18 @@ func (_c *MockPositionMover_GetPos_Call) Run(run func()) *MockPositionMover_GetP
 	return _c
 }
 
-func (_c *MockPositionMover_GetPos_Call) Return(v uint16) *MockPositionMover_GetPos_Call {
+func (_c *MockPositionMover_GetPos_Call) Return(v uint32) *MockPositionMover_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockPositionMover_GetPos_Call) RunAndReturn(run func() uint16) *MockPositionMover_GetPos_Call {
+func (_c *MockPositionMover_GetPos_Call) RunAndReturn(run func() uint32) *MockPositionMover_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SetPos provides a mock function for the type MockPositionMover
-func (_mock *MockPositionMover) SetPos(pos uint16) {
+func (_mock *MockPositionMover) SetPos(pos uint32) {
 	_mock.Called(pos)
 	return
 }
@@ -110,16 +110,16 @@ type MockPositionMover_SetPos_Call struct {
 }
 
 // SetPos is a helper method to define mock.On call
-//   - pos uint16
+//   - pos uint32
 func (_e *MockPositionMover_Expecter) SetPos(pos interface{}) *MockPositionMover_SetPos_Call {
 	return &MockPositionMover_SetPos_Call{Call: _e.mock.On("SetPos", pos)}
 }
 
-func (_c *MockPositionMover_SetPos_Call) Run(run func(pos uint16)) *MockPositionMover_SetPos_Call {
+func (_c *MockPositionMover_SetPos_Call) Run(run func(pos uint32)) *MockPositionMover_SetPos_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint16
+		var arg0 uint32
 		if args[0] != nil {
-			arg0 = args[0].(uint16)
+			arg0 = args[0].(uint32)
 		}
 		run(
 			arg0,
@@ -133,7 +133,7 @@ func (_c *MockPositionMover_SetPos_Call) Return() *MockPositionMover_SetPos_Call
 	return _c
 }
 
-func (_c *MockPositionMover_SetPos_Call) RunAndReturn(run func(pos uint16)) *MockPositionMover_SetPos_Call {
+func (_c *MockPositionMover_SetPos_Call) RunAndReturn(run func(pos uint32)) *MockPositionMover_SetPos_Call {
 	_c.Run(run)
 	return _c
 }

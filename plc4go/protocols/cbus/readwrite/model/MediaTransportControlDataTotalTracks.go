@@ -252,8 +252,8 @@ func (m *_MediaTransportControlDataTotalTracks) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataTotalTracks"
 }
 
-func (m *_MediaTransportControlDataTotalTracks) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataTotalTracks) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (totalTracksMSB)
 	lengthInBits += 8
@@ -270,7 +270,7 @@ func (m *_MediaTransportControlDataTotalTracks) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataTotalTracks) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataTotalTracks) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

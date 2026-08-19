@@ -27,7 +27,6 @@ import (
 	"runtime/debug"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/rs/zerolog"
 
@@ -40,34 +39,32 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Reader struct {
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
 	configuration Configuration
-	sessionHandle *uint32
+	sessionState  *SessionState
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
 
-func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, _options ...options.WithOption) *Reader {
+func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionState *SessionState, _options ...options.WithOption) *Reader {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		messageCodec:  messageCodec,
 		tm:            tm,
 		configuration: configuration,
-		sessionHandle: sessionHandle,
+		sessionState:  sessionState,
 
 		log: customLogger,
 	}
 }
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
-	// TODO: handle ctx
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
 	m.wg.Go(func() {
@@ -76,92 +73,262 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
-		classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
-		instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1))
-		for _, tagName := range readRequest.GetTagNames() {
-			plcTag := readRequest.GetTag(tagName).(PlcTag)
-			tag := plcTag.GetTag()
-			elementsNb := uint16(1)
-			if plcTag.GetElementNb() > 1 {
-				elementsNb = plcTag.GetElementNb()
-			}
-			ansi, err := toAnsi(tag)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for tag %s", tagName)))
-				return
-			}
-			requestItem := readWriteModel.NewCipUnconnectedRequest(classSegment, instanceSegment,
-				readWriteModel.NewCipReadRequest(ansi, elementsNb),
-				m.configuration.backplane, m.configuration.slot)
-			typeIds := []readWriteModel.TypeId{
-				readWriteModel.NewNullAddressItem(),
-				readWriteModel.NewUnConnectedDataItem(requestItem),
-			}
-			request := readWriteModel.NewCipRRData(
-				*m.sessionHandle,
-				uint32(readWriteModel.CIPStatus_Success),
-				[]byte(DefaultSenderContext),
-				0,
-				0,
-				0,
-				typeIds,
-			)
-			transaction := m.tm.StartTransaction("read")
-			transaction.Submit("readOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
-				ctx, cancel := context.WithCancel(ctx)
-				context.AfterFunc(transactionContext, cancel)
-				if err := m.messageCodec.SendRequest(ctx, "read", request, func(message spi.Message) bool {
-					eipPacket := message.(readWriteModel.EipPacket)
-					if eipPacket == nil {
-						return false
-					}
-					cipRRData := eipPacket.(readWriteModel.CipRRData)
-					if cipRRData == nil {
-						return false
-					}
-					return cipRRData.GetSessionHandle() == *m.sessionHandle
-				}, func(message spi.Message) error {
-					cipRRData := message.(readWriteModel.CipRRData)
-					m.log.Trace().Interface("cipRRData", cipRRData).Msg("handling")
-					unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
-					// Convert the eip response into a PLC4X response
-					m.log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xReadResponse(unconnectedDataItem.GetService(), readRequest)
-					if err != nil {
-						utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-							readRequest,
-							nil,
-							errors.Wrap(err, "Error decoding response"),
-						))
-						return transaction.EndRequest()
-					}
-					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-						readRequest,
-						readResponse,
-						nil,
-					))
-					return transaction.EndRequest()
-				}, func(err error) error {
-					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-						readRequest,
-						nil,
-						errors.Wrap(err, "got timeout while waiting for response"),
-					))
-					return transaction.EndRequest()
-				}); err != nil {
-					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-						readRequest,
-						nil,
-						errors.Wrap(err, "error sending message"),
-					))
-					if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
-						m.log.Debug().Err(err).Msg("Error failing request")
-					}
-				}
-			})
+		var response apiModel.PlcReadResponse
+		var err error
+		switch {
+		case m.configuration.forceUnconnectedOperation || (!m.sessionState.useMessageRouter && !m.sessionState.useConnectionManager):
+			response, err = m.readWithoutMessageRouter(ctx, readRequest)
+		case m.sessionState.useMessageRouter && !m.sessionState.useConnectionManager:
+			response, err = m.readWithoutConnectionManager(ctx, readRequest)
+		default:
+			response, err = m.readWithConnectionManager(ctx, readRequest)
 		}
+		if err != nil {
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err))
+			return
+		}
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, response, nil))
 	})
 	return result
+}
+
+// readWithoutMessageRouter sends one unconnected request per tag, sequentially.
+func (m *Reader) readWithoutMessageRouter(ctx context.Context, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
+	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1))
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	plcValues := map[string]values.PlcValue{}
+	for _, tagName := range readRequest.GetTagNames() {
+		tag := readRequest.GetTag(tagName).(PlcTag)
+		ansi, err := toAnsi(tag.GetTag())
+		if err != nil {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+			continue
+		}
+		request := readWriteModel.NewCipRRData(
+			m.sessionState.sessionHandle, uint32(readWriteModel.CIPStatus_Success), m.sessionState.senderContext, 0,
+			EmptyInterfaceHandle, 0,
+			[]readWriteModel.TypeId{
+				readWriteModel.NewNullAddressItem(),
+				readWriteModel.NewUnConnectedDataItem(readWriteModel.NewCipUnconnectedRequest(
+					classSegment, instanceSegment,
+					readWriteModel.NewCipReadRequest(ansi, elementCount(tag)),
+					m.configuration.backplane, m.configuration.slot,
+				)),
+			},
+		)
+		message, err := sendTransactedRequestAndWait(ctx, m.log, m.messageCodec, m.tm, "read", request, m.acceptsCipRRData)
+		if err != nil {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			continue
+		}
+		service, ok := unconnectedService(message)
+		if !ok {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			continue
+		}
+		if connectedResponse, ok := service.(readWriteModel.CipConnectedResponse); ok && connectedResponse.GetStatus() == 0x03 {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+			continue
+		}
+		cipReadResponse, ok := service.(readWriteModel.CipReadResponse)
+		if !ok {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			continue
+		}
+		code, value := decodeSingleReadResponse(m.log, tag, cipReadResponse)
+		responseCodes[tagName] = code
+		plcValues[tagName] = value
+	}
+	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+}
+
+// readWithoutConnectionManager sends all tags in one unconnected message-router request.
+func (m *Reader) readWithoutConnectionManager(ctx context.Context, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	outerService, err := m.buildReadService(readRequest)
+	if err != nil {
+		return nil, err
+	}
+	request := readWriteModel.NewCipRRData(
+		m.sessionState.sessionHandle, uint32(readWriteModel.CIPStatus_Success), m.sessionState.senderContext, 0,
+		EmptyInterfaceHandle, 0,
+		[]readWriteModel.TypeId{
+			readWriteModel.NewNullAddressItem(),
+			readWriteModel.NewUnConnectedDataItem(readWriteModel.NewCipUnconnectedRequest(
+				readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6)),
+				readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1)),
+				outerService,
+				m.configuration.backplane, m.configuration.slot,
+			)),
+		},
+	)
+	message, err := sendTransactedRequestAndWait(ctx, m.log, m.messageCodec, m.tm, "read", request, m.acceptsCipRRData)
+	if err != nil {
+		return nil, err
+	}
+	service, ok := unconnectedService(message)
+	if !ok {
+		return nil, errors.New("read response contains no unconnected data item")
+	}
+	return m.decodeReadResponse(service, readRequest)
+}
+
+// readWithConnectionManager sends all tags over the connected channel opened by ForwardOpen.
+func (m *Reader) readWithConnectionManager(ctx context.Context, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	outerService, err := m.buildReadService(readRequest)
+	if err != nil {
+		return nil, err
+	}
+	request := readWriteModel.NewSendUnitData(
+		m.sessionState.sessionHandle, uint32(readWriteModel.CIPStatus_Success), m.sessionState.senderContext, 0, 0,
+		[]readWriteModel.TypeId{
+			readWriteModel.NewConnectedAddressItem(m.sessionState.connectionId),
+			readWriteModel.NewConnectedDataItem(m.sessionState.nextSequenceCount(), outerService),
+		},
+	)
+	message, err := sendTransactedRequestAndWait(ctx, m.log, m.messageCodec, m.tm, "read", request,
+		func(message spi.Message) bool {
+			sendUnitData, ok := message.(readWriteModel.SendUnitData)
+			return ok && sendUnitData.GetSessionHandle() == m.sessionState.sessionHandle
+		})
+	if err != nil {
+		return nil, err
+	}
+	sendUnitData := message.(readWriteModel.SendUnitData)
+	if len(sendUnitData.GetTypeIds()) < 2 {
+		return nil, errors.New("read response contains no connected data item")
+	}
+	dataItem, ok := sendUnitData.GetTypeIds()[1].(readWriteModel.ConnectedDataItem)
+	if !ok {
+		return nil, errors.Errorf("unexpected type id in connected read response: %T", sendUnitData.GetTypeIds()[1])
+	}
+	return m.decodeReadResponse(dataItem.GetService(), readRequest)
+}
+
+// buildReadService assembles the per-tag CipReadRequests, wrapping more than
+// one in a MultipleServiceRequest with plc4j's offset layout.
+func (m *Reader) buildReadService(readRequest apiModel.PlcReadRequest) (readWriteModel.CipService, error) {
+	tagNames := readRequest.GetTagNames()
+	requests := make([]readWriteModel.CipService, 0, len(tagNames))
+	for _, tagName := range tagNames {
+		tag := readRequest.GetTag(tagName).(PlcTag)
+		ansi, err := toAnsi(tag.GetTag())
+		if err != nil {
+			return nil, errors.Wrapf(err, "error encoding eip ansi for tag %s", tagName)
+		}
+		requests = append(requests, readWriteModel.NewCipReadRequest(ansi, elementCount(tag)))
+	}
+	return wrapMultipleServices(requests), nil
+}
+
+func (m *Reader) acceptsCipRRData(message spi.Message) bool {
+	cipRRData, ok := message.(readWriteModel.CipRRData)
+	return ok && cipRRData.GetSessionHandle() == m.sessionState.sessionHandle
+}
+
+// unconnectedService extracts the CipService from a CipRRData's second type id.
+func unconnectedService(message spi.Message) (readWriteModel.CipService, bool) {
+	cipRRData, ok := message.(readWriteModel.CipRRData)
+	if !ok || len(cipRRData.GetTypeIds()) < 2 {
+		return nil, false
+	}
+	dataItem, ok := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
+	if !ok {
+		return nil, false
+	}
+	return dataItem.GetService(), true
+}
+
+func (m *Reader) decodeReadResponse(service readWriteModel.CipService, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	plcValues := map[string]values.PlcValue{}
+	tagNames := readRequest.GetTagNames()
+	switch service := service.(type) {
+	case readWriteModel.CipReadResponse:
+		tagName := tagNames[0]
+		tag := readRequest.GetTag(tagName).(PlcTag)
+		code, value := decodeSingleReadResponse(m.log, tag, service)
+		responseCodes[tagName] = code
+		plcValues[tagName] = value
+	case readWriteModel.MultipleServiceResponse:
+		nb := int(service.GetServiceNb())
+		servicesData := service.GetServicesData()
+		offsets := service.GetOffsets()
+		for i := 0; i < nb && i < len(tagNames); i++ {
+			tagName := tagNames[i]
+			tag := readRequest.GetTag(tagName).(PlcTag)
+			singleService, ok := sliceService(servicesData, offsets, i, nb)
+			if !ok {
+				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+				continue
+			}
+			cipReadResponse, ok := singleService.(readWriteModel.CipReadResponse)
+			if !ok {
+				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+				continue
+			}
+			code, value := decodeSingleReadResponse(m.log, tag, cipReadResponse)
+			responseCodes[tagName] = code
+			plcValues[tagName] = value
+		}
+	default:
+		return nil, errors.Errorf("unsupported response type %T", service)
+	}
+	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+}
+
+// sliceService re-parses service i out of a MultipleServiceResponse payload,
+// bounds-checked so a lying offset table cannot panic.
+func sliceService(servicesData []byte, offsets []uint16, i, nb int) (readWriteModel.CipService, bool) {
+	if len(offsets) < nb {
+		return nil, false
+	}
+	offset := int(offsets[i]) - int(offsets[0])
+	var length int
+	if i == nb-1 {
+		length = len(servicesData) - offset
+	} else {
+		length = int(offsets[i+1]) - int(offsets[0]) - offset
+	}
+	if offset < 0 || length <= 0 || offset+length > len(servicesData) {
+		return nil, false
+	}
+	serviceBuf := utils.NewReadBufferByteBased(servicesData[offset:offset+length],
+		utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	service, err := readWriteModel.CipServiceParseWithBuffer[readWriteModel.CipService](
+		context.Background(), serviceBuf, false, uint16(length))
+	if err != nil {
+		return nil, false
+	}
+	return service, true
+}
+
+func decodeSingleReadResponse(log zerolog.Logger, tag PlcTag, response readWriteModel.CipReadResponse) (apiModel.PlcResponseCode, values.PlcValue) {
+	code := decodeResponseCode(response.GetStatus())
+	if code != apiModel.PlcResponseCode_OK {
+		return code, nil
+	}
+	data := response.GetData()
+	if data == nil {
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+	}
+	value, err := parsePlcValue(tag, data.GetData(), data.GetDataType())
+	if err != nil {
+		// Undecodable payload - don't report that as a successful read.
+		log.Warn().Err(err).Str("tag", tag.GetTag()).Msg("undecodable read payload")
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+	}
+	return code, value
+}
+
+// ansiPad returns the odd-length padding byte for an ANSI extended symbol
+// segment's identifier, or nil if the identifier's length is already even.
+func ansiPad(identifier string) *uint8 {
+	if len(identifier)%2 != 0 {
+		paddingValue := uint8(0)
+		return &paddingValue
+	}
+	return nil
 }
 
 func toAnsi(tag string) ([]byte, error) {
@@ -184,17 +351,12 @@ func toAnsi(tag string) ([]byte, error) {
 				}
 				newSegment = readWriteModel.NewLogicalSegment(readWriteModel.NewMemberID(0, uint8(numericIdentifier)))
 			} else {
-				newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, nil))
+				newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, ansiPad(identifier)))
 			}
 		} else {
-			var pad *uint8
-			if len(identifier)%2 != 0 {
-				paddingValue := uint8(0)
-				pad = &paddingValue
-			}
-			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, pad))
+			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, ansiPad(identifier)))
 		}
-		lengthInBytes += newSegment.GetLengthInBytes(ctx)
+		lengthInBytes += uint16(newSegment.GetLengthInBytes(ctx))
 		segments = append(segments, newSegment)
 	}
 	buffer := utils.NewWriteBufferByteBased(
@@ -206,175 +368,4 @@ func toAnsi(tag string) ([]byte, error) {
 		}
 	}
 	return buffer.GetBytes(), nil
-}
-
-func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
-	ctx := context.TODO()
-	plcValues := map[string]values.PlcValue{}
-	responseCodes := map[string]apiModel.PlcResponseCode{}
-	switch response := response.(type) {
-	case readWriteModel.CipReadResponse: // only 1 tag
-		cipReadResponse := response
-		tagName := readRequest.GetTagNames()[0]
-		tag := readRequest.GetTag(tagName).(PlcTag)
-		code := decodeResponseCode(cipReadResponse.GetStatus())
-		var plcValue values.PlcValue
-		_type := cipReadResponse.GetData().GetDataType()
-		data := utils.NewReadBufferByteBased(cipReadResponse.GetData().GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		if code == apiModel.PlcResponseCode_OK {
-			var err error
-			plcValue, err = parsePlcValue(tag, data, _type)
-			if err != nil {
-				return nil, err
-			}
-		}
-		plcValues[tagName] = plcValue
-		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponse: //Multiple response
-		multipleServiceResponse := response
-		nb := multipleServiceResponse.GetServiceNb()
-		arr := make([]readWriteModel.CipService, nb)
-		read := utils.NewReadBufferByteBased(multipleServiceResponse.GetServicesData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		total := read.GetTotalBytes()
-		for i := range nb {
-			length := uint16(0)
-			offset := multipleServiceResponse.GetOffsets()[i] - multipleServiceResponse.GetOffsets()[0] //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
-			if i == nb-1 {
-				length = uint16(total) - offset //Get the rest if last
-			} else {
-				length = multipleServiceResponse.GetOffsets()[i+1] - offset - multipleServiceResponse.GetOffsets()[0] //Calculate length with offsets (substracting first offset)
-			}
-			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-			var err error
-			// TODO: If we're using a connected connection, do this differently
-			arr[i], err = readWriteModel.CipServiceParseWithBuffer[readWriteModel.CipService](ctx, serviceBuf, false, length)
-			if err != nil {
-				return nil, err
-			}
-		}
-		services := readWriteModel.NewServices(multipleServiceResponse.GetOffsets(), arr)
-		for i, tagName := range readRequest.GetTagNames() {
-			tag := readRequest.GetTag(tagName).(PlcTag)
-			if cipReadResponse, ok := services.Services[i].(readWriteModel.CipReadResponse); ok {
-				code := decodeResponseCode(cipReadResponse.GetStatus())
-				_type := cipReadResponse.GetData().GetDataType()
-				data := utils.NewReadBufferByteBased(cipReadResponse.GetData().GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-				var plcValue values.PlcValue
-				if code == apiModel.PlcResponseCode_OK {
-					var err error
-					plcValue, err = parsePlcValue(tag, data, _type)
-					if err != nil {
-						return nil, err
-					}
-				}
-
-				plcValues[tagName] = plcValue
-				responseCodes[tagName] = code
-			} else {
-				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			}
-		}
-	default:
-		return nil, errors.Errorf("unsupported response type %T", response)
-	}
-
-	// Return the response
-	m.log.Trace().Msg("Returning the response")
-	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
-}
-
-func parsePlcValue(tag PlcTag, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
-	nb := tag.GetElementNb()
-	if nb > 1 {
-		list := make([]values.PlcValue, 0)
-		for range nb {
-			switch _type {
-			case readWriteModel.CIPDataTypeCode_DINT:
-				readInt32, err := data.ReadInt32("", _type.Size()*8)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcDINT(readInt32))
-			case readWriteModel.CIPDataTypeCode_INT:
-				readInt16, err := data.ReadInt16("", _type.Size()*8)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcINT(readInt16))
-			case readWriteModel.CIPDataTypeCode_SINT:
-				readInt8, err := data.ReadInt8("", _type.Size()*8)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcSINT(readInt8))
-			case readWriteModel.CIPDataTypeCode_REAL:
-				if _type.Size()*8 != 64 {
-					return nil, errors.New("Unexpected size")
-				}
-				readFloat64, err := data.ReadFloat64("", 64)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcLREAL(readFloat64))
-			case readWriteModel.CIPDataTypeCode_BOOL:
-				bit, err := data.ReadBit("")
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcBOOL(bit))
-			default:
-				return nil, errors.Errorf("Unknown type %v", _type)
-			}
-		}
-		return spiValues.NewPlcList(list), nil
-	} else {
-		switch _type {
-		case readWriteModel.CIPDataTypeCode_SINT:
-			readByte, err := data.ReadInt8("", _type.Size()*8)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcSINT(readByte), nil
-		case readWriteModel.CIPDataTypeCode_INT:
-			readInt16, err := data.ReadInt16("", _type.Size()*8)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcINT(readInt16), nil
-		case readWriteModel.CIPDataTypeCode_DINT:
-			readInt32, err := data.ReadInt32("", _type.Size()*8)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcDINT(readInt32), nil
-		case readWriteModel.CIPDataTypeCode_REAL:
-			if _type.Size()*8 != 64 {
-				return nil, errors.New("Unexpected size")
-			}
-			readFloat32, err := data.ReadFloat32("", 64)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcREAL(readFloat32), nil
-		case readWriteModel.CIPDataTypeCode_BOOL:
-			readBit, err := data.ReadBit("")
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcBOOL(readBit), nil
-		default:
-			return nil, errors.Errorf("Unknown type %v", _type)
-		}
-	}
-}
-
-// Helper to convert the return codes returned from the eip into one of our standard
-func decodeResponseCode(status uint8) apiModel.PlcResponseCode {
-	//TODO other status
-	switch status {
-	case 0:
-		return apiModel.PlcResponseCode_OK
-	default:
-		return apiModel.PlcResponseCode_INTERNAL_ERROR
-	}
 }

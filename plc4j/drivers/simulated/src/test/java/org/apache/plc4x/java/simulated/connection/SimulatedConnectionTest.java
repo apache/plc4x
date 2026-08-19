@@ -19,6 +19,10 @@
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.assertj.core.api.WithAssertions;
@@ -34,13 +38,16 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SimulatedConnectionTest implements WithAssertions {
@@ -102,6 +109,41 @@ class SimulatedConnectionTest implements WithAssertions {
             PlcWriteResponse response = write.get(1, TimeUnit.SECONDS);
             assertThat(response).isNotNull();
         }
+
+        /**
+         * An address the tag handler can't parse is kept in the request with an error code and a
+         * null tag. Reading it must report that code, not fail with a NullPointerException.
+         * ("Boolean" is not a PlcValueType - "BOOL" is.)
+         */
+        @Test
+        void readWithInvalidTagAddress() throws Exception {
+            PlcReadRequest plcReadRequest = SUT.readRequestBuilder()
+                .addTagAddress("invalid", "RANDOM/foo:Boolean")
+                .build();
+
+            PlcReadResponse response = SUT.read(plcReadRequest).get(1, TimeUnit.SECONDS);
+
+            assertThat(response).isNotNull();
+            assertThat(response.getResponseCode("invalid")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+        }
+
+        /**
+         * One bad address must not take the valid tags of the same request down with it.
+         */
+        @Test
+        void readMixesValidAndInvalidTagAddresses() throws Exception {
+            when(mockDevice.get(any(SimulatedTag.class))).thenReturn(Optional.of(new PlcSTRING("value")));
+
+            PlcReadRequest plcReadRequest = SUT.readRequestBuilder()
+                .addTagAddress("good", "RANDOM/foo:STRING")
+                .addTagAddress("bad", "RANDOM/foo:Boolean")
+                .build();
+
+            PlcReadResponse response = SUT.read(plcReadRequest).get(1, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("good")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+        }
     }
 
     @Nested
@@ -118,6 +160,20 @@ class SimulatedConnectionTest implements WithAssertions {
             PlcSubscriptionResponse plcSubscriptionResponse = subscribe.get(1, TimeUnit.SECONDS);
             Collection<PlcSubscriptionHandle> subscriptionHandles = plcSubscriptionResponse.getSubscriptionHandles();
             assertThat(subscriptionHandles).isNotEmpty();
+        }
+
+        /**
+         * Subscriptions handle a bad address differently from reads and writes: their builder
+         * rejects it immediately instead of carrying an error item into the request, which is
+         * why {@code onSubscribe} needs no invalid-address branch.
+         */
+        @Test
+        void subscribeWithInvalidTagAddressIsRejectedByTheBuilder() {
+            PlcSubscriptionRequest.Builder builder = SUT.subscriptionRequestBuilder();
+
+            assertThatThrownBy(() -> builder.addChangeOfStateTagAddress("bad", "STATE/foo:Boolean"))
+                .isInstanceOf(PlcInvalidTagException.class)
+                .hasMessageContaining("Boolean");
         }
 
         @Test

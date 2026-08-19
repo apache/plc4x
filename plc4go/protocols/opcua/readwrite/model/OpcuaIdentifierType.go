@@ -106,11 +106,11 @@ func CastOpcuaIdentifierType(structType any) OpcuaIdentifierType {
 	return castFunc(structType)
 }
 
-func (m OpcuaIdentifierType) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaIdentifierType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m OpcuaIdentifierType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaIdentifierType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

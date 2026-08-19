@@ -35,6 +35,13 @@ type ReadBufferByteBased interface {
 	PeekByte(offset byte) byte
 }
 
+// DefaultMaxReadBufferDepth is the default bound for nested PullContext calls.
+// Generated parsers are plain recursive-descent, so wire-controlled recursion
+// (e.g. self-nesting mspec types) would otherwise exhaust the goroutine stack,
+// which is fatal and cannot be recovered. 255 is far beyond any legitimate
+// message nesting.
+const DefaultMaxReadBufferDepth = 255
+
 func NewReadBufferByteBased(data []byte, options ...ReadBufferByteBasedOptions) ReadBufferByteBased {
 	b := &byteReadBuffer{
 		data:      data,
@@ -56,6 +63,16 @@ func WithByteOrderForReadBufferByteBased(byteOrder binary.ByteOrder) ReadBufferB
 	}
 }
 
+// WithMaxDepthForReadBufferByteBased overrides the maximum nesting depth of
+// PullContext calls (default DefaultMaxReadBufferDepth, applied when left at the
+// zero value). A negative value disables the check entirely — only do that for
+// trusted input.
+func WithMaxDepthForReadBufferByteBased(maxDepth int) ReadBufferByteBasedOptions {
+	return func(b *byteReadBuffer) {
+		b.maxDepth = maxDepth
+	}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -67,6 +84,8 @@ type byteReadBuffer struct {
 	bits      *ReadBitBuffer
 	pos       uint64
 	byteOrder binary.ByteOrder
+	depth     int
+	maxDepth  int
 }
 
 var _ ReadBuffer = (*byteReadBuffer)(nil)
@@ -85,11 +104,11 @@ func (rb *byteReadBuffer) GetByteOrder() binary.ByteOrder {
 	return rb.byteOrder
 }
 
-func (rb *byteReadBuffer) GetPos() uint16 {
-	return uint16(rb.pos / 8)
+func (rb *byteReadBuffer) GetPos() uint32 {
+	return uint32(rb.pos / 8)
 }
 
-func (rb *byteReadBuffer) Reset(pos uint16) {
+func (rb *byteReadBuffer) Reset(pos uint32) {
 	rb.pos = uint64(pos) * 8
 	rb.bits.ResetTo(rb.pos)
 }
@@ -107,10 +126,21 @@ func (rb *byteReadBuffer) HasMore(bitLength uint8) bool {
 }
 
 func (rb *byteReadBuffer) PeekByte(offset uint8) uint8 {
-	return rb.data[rb.GetPos()+uint16(offset)]
+	return rb.data[rb.GetPos()+uint32(offset)]
 }
 
-func (rb *byteReadBuffer) PullContext(_ string, _ ...WithReaderArgs) error {
+func (rb *byteReadBuffer) PullContext(logicalName string, _ ...WithReaderArgs) error {
+	// Depth guard against wire-controlled recursion: every generated parser
+	// funnels through PullContext/CloseContext, so bounding the nesting here
+	// turns otherwise fatal goroutine-stack exhaustion into a normal parse error.
+	rb.depth++
+	maxDepth := rb.maxDepth
+	if maxDepth == 0 {
+		maxDepth = DefaultMaxReadBufferDepth
+	}
+	if maxDepth > 0 && rb.depth > maxDepth {
+		return errors.Errorf("nesting depth %d at context %s exceeds the maximum of %d (use WithMaxDepthForReadBufferByteBased to raise it for trusted input)", rb.depth, logicalName, maxDepth)
+	}
 	return nil
 }
 
@@ -125,6 +155,15 @@ func (rb *byteReadBuffer) ReadByte(_ string, _ ...WithReaderArgs) (byte, error) 
 }
 
 func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithReaderArgs) ([]byte, error) {
+	// numberOfBytes is typically a raw wire value: validate it against the
+	// remaining buffer BEFORE allocating, so a forged negative or huge size
+	// cannot panic makeslice or demand gigabytes up front.
+	if numberOfBytes < 0 {
+		return nil, errors.Errorf("cannot read a negative number of bytes (%d)", numberOfBytes)
+	}
+	if remainingBits := rb.bits.BitsRemaining(); uint64(numberOfBytes) > remainingBits/8 {
+		return nil, errors.Errorf("requested %d bytes but only %d bits remain in the buffer", numberOfBytes, remainingBits)
+	}
 	byteArray := make([]byte, numberOfBytes)
 	for i := range numberOfBytes {
 		rb.pos += 8
@@ -339,5 +378,8 @@ func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, _ ...
 }
 
 func (rb *byteReadBuffer) CloseContext(_ string, _ ...WithReaderArgs) error {
+	if rb.depth > 0 {
+		rb.depth--
+	}
 	return nil
 }

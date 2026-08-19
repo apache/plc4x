@@ -36,7 +36,7 @@ var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
 
 type WriteBufferByteBased interface {
 	WriteBuffer
-	GetPos() uint16
+	GetPos() uint32
 	GetBytes() []byte
 	GetTotalBytes() uint64
 }
@@ -101,8 +101,8 @@ func (wb *byteWriteBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }
 
-func (wb *byteWriteBuffer) GetPos() uint16 {
-	return uint16(wb.pos / 8)
+func (wb *byteWriteBuffer) GetPos() uint32 {
+	return uint32(wb.pos / 8)
 }
 
 func (wb *byteWriteBuffer) GetBytes() []byte {

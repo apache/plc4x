@@ -64,8 +64,8 @@ type BACnetTimerStateChangeValueContract interface {
 
 // BACnetTimerStateChangeValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetTimerStateChangeValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
 	GetPeekedIsContextTag() bool
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
@@ -472,8 +472,8 @@ func (m *_BACnetTimerStateChangeValue) GetPlx4xTypeName() string {
 	return "BACnetTimerStateChangeValue"
 }
 
-func (m *_BACnetTimerStateChangeValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTimerStateChangeValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -482,11 +482,11 @@ func (m *_BACnetTimerStateChangeValue) getLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateChangeValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetTimerStateChangeValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateChangeValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

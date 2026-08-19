@@ -180,13 +180,13 @@ func (m *_TriggerControlDataIndicatorKill) GetPlx4xTypeName() string {
 	return "TriggerControlDataIndicatorKill"
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
+func (m *_TriggerControlDataIndicatorKill) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

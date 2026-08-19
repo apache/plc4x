@@ -58,8 +58,8 @@ type ApduDataContract interface {
 
 // ApduDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetApciType returns ApciType (discriminator field)
 	GetApciType() uint8
 }
@@ -389,19 +389,19 @@ func (m *_ApduData) GetPlx4xTypeName() string {
 	return "ApduData"
 }
 
-func (m *_ApduData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ApduData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (apciType)
 	lengthInBits += 4
 
 	return lengthInBits
 }
 
-func (m *_ApduData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ApduData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -264,15 +264,15 @@ func (m *_CipWriteRequest) GetPlx4xTypeName() string {
 	return "CipWriteRequest"
 }
 
-func (m *_CipWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_CipWriteRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Tag) > 0 {
-		lengthInBits += 8 * uint16(len(m.Tag))
+		lengthInBits += 8 * uint64(len(m.Tag))
 	}
 
 	// Simple field (dataType)
@@ -283,13 +283,13 @@ func (m *_CipWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_CipWriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipWriteRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -165,18 +165,18 @@ func (m *_MACAddress) GetPlx4xTypeName() string {
 	return "MACAddress"
 }
 
-func (m *_MACAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_MACAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Array field
 	if len(m.Addr) > 0 {
-		lengthInBits += 8 * uint16(len(m.Addr))
+		lengthInBits += 8 * uint64(len(m.Addr))
 	}
 
 	return lengthInBits
 }
 
-func (m *_MACAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MACAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

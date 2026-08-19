@@ -118,11 +118,11 @@ func CastLogRecordMask(structType any) LogRecordMask {
 	return castFunc(structType)
 }
 
-func (m LogRecordMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m LogRecordMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m LogRecordMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LogRecordMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

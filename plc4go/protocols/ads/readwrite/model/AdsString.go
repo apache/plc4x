@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -164,16 +165,16 @@ func (m *_AdsString) GetPlx4xTypeName() string {
 	return "AdsString"
 }
 
-func (m *_AdsString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Manual Field (stringValue)
-	lengthInBits += uint16(LengthZeroTerminatedString(ctx, m.GetStringValue()))
+	lengthInBits += uint64(LengthZeroTerminatedString(ctx, m.GetStringValue()))
 
 	return lengthInBits
 }
 
-func (m *_AdsString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -204,7 +205,7 @@ func (m *_AdsString) parse(ctx context.Context, readBuffer utils.ReadBuffer, str
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	stringValue, err := ReadManualField[string](ctx, "stringValue", readBuffer, EnsureType[string](ParseZeroTerminatedString(ctx, readBuffer, stringLength)))
+	stringValue, err := ReadManualField[string](ctx, "stringValue", readBuffer, EnsureType[string](ParseZeroTerminatedString(ctx, readBuffer, stringLength)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringValue' field"))
 	}
@@ -236,7 +237,7 @@ func (m *_AdsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	if err := WriteManualField[string](ctx, "stringValue", func(ctx context.Context) error {
 		return SerializeZeroTerminatedString(ctx, writeBuffer, m.GetStringValue())
-	}, writeBuffer); err != nil {
+	}, writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'stringValue' field")
 	}
 

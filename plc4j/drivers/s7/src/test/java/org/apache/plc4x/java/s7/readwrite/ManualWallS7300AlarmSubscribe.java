@@ -45,7 +45,7 @@ public class ManualWallS7300AlarmSubscribe {
     private static final long LISTEN_DURATION_MS = 600_000L;
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection(CONNECTION_URL)) {
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection(CONNECTION_URL)) {
             System.out.printf("Connected. metadata.subscribeSupported=%s%n",
                 connection.getMetadata().isSubscribeSupported());
 

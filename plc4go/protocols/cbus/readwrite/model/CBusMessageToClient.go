@@ -231,8 +231,8 @@ func (m *_CBusMessageToClient) GetPlx4xTypeName() string {
 	return "CBusMessageToClient"
 }
 
-func (m *_CBusMessageToClient) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusMessageContract.(*_CBusMessage).getLengthInBits(ctx))
+func (m *_CBusMessageToClient) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusMessageContract.(*_CBusMessage).getLengthInBits(ctx))
 
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_CBusMessageToClient) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusMessageToClient) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusMessageToClient) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -290,8 +290,8 @@ func (m *_ReadProcessedDetails) GetPlx4xTypeName() string {
 	return "ReadProcessedDetails"
 }
 
-func (m *_ReadProcessedDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadProcessedDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (startTime)
 	lengthInBits += 64
@@ -319,7 +319,7 @@ func (m *_ReadProcessedDetails) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReadProcessedDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadProcessedDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

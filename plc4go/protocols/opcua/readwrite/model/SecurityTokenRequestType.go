@@ -94,11 +94,11 @@ func CastSecurityTokenRequestType(structType any) SecurityTokenRequestType {
 	return castFunc(structType)
 }
 
-func (m SecurityTokenRequestType) GetLengthInBits(ctx context.Context) uint16 {
+func (m SecurityTokenRequestType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m SecurityTokenRequestType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SecurityTokenRequestType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

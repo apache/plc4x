@@ -862,11 +862,11 @@ func CastErrorCode(structType any) ErrorCode {
 	return castFunc(structType)
 }
 
-func (m ErrorCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m ErrorCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m ErrorCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ErrorCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -70,7 +70,7 @@ Note the transport, port and option fields are optional.
 In general all Modbus addresses have this format:
 
 ----
-{memory-Area}{start-address}:{data-type}[{array-size}]:{name-value-tag-options}
+{memory-Area}{start-address}:{data-type}[{array-size}]{name-value-tag-options}
 ----
 
 If the array-size part is omitted, the size-default of `1` is assumed.
@@ -81,12 +81,12 @@ Additionally address can contain tag configuration:
 ----
 {unit-id: 123}
 ----
-Specifying this value overrides value of `default-unit-id` parameter specified at the connection string.
+Specifying this value overrides value of `default-unit-identifier` parameter specified at the connection string.
 
 ----
 {byte-order: 'LITTLE_ENDIAN'}
 ----
-With this, can the default byte-order be overridden on a per-tag basis. If not provided the default-byte-order from the connection string is used, or BIG_ENDIAN, if this is also not provided.
+With this, can the default byte-order be overridden on a per-tag basis. If not provided the `default-payload-byte-order` from the connection string is used, or BIG_ENDIAN, if this is also not provided.
 
 === Memory Areas
 
@@ -117,10 +117,36 @@ When using the shorter versions there are two formats available  i.e. 30001 and 
 With the shorter format 3XXXX being limited to between 30001 and 39999, while the longer format 3XXXXX being limited to between 300001 and 365535.
 These memory areas all start at address 1.
 
+==== Addresses are 1-based, the wire is 0-based
+
+This is a Modbus speciality worth spelling out, because it is a frequent source of off-by-one
+confusion: the Modbus specification and virtually all device documentation number the registers and
+coils starting at *1*, but the address actually transmitted in the request is that number *minus
+one*.
+
+PLC4X follows the documentation convention - you write the address exactly as the device's manual
+lists it, and the driver decrements it on the way to the wire:
+
+[cols="2,2,2" ,options="header"]
+|===
+|Tag address |Address on the wire |Meaning
+|`coil:1` |0 |the first coil
+|`holding-register:1` |0 |the first holding register
+|`holding-register:100` |99 |the 100th holding register
+|===
+
+So a device manual documenting "holding register 40001" is addressed as `holding-register:1` (or
+`4x00001`), and the request that leaves PLC4X carries address 0.
+
+NOTE: The extended register area is the exception - it is genuinely 0-based in the specification, so
+no decrement is applied there and its lowest usable tag address is `extended-register:1` (which is
+also address 1 on the wire). `extended-register:0` is rejected.
+
 For the extended register area the addresses 0-99999 are able to be specified. These registers are mapped to file records with a length of 10000. Address 600000 corresponds to the first address in file record 0.
 Address 610000 is then the first address in the second file record and so on. It is noted that there is generally only 10 file records (600000 thru to 699999) however the spec allows for 65536 file records.
 Using the extended-register: format you are able to reference all of these, if the shorter format is used then it is limited to 699999.
-This memory area starts at address 0.
+Unlike the other memory areas this one is 0-based in the specification, so its addresses are passed
+through unchanged; the lowest usable tag address is nevertheless `extended-register:1`.
 
 === Data Types
 
@@ -143,6 +169,22 @@ The following data types are supported
 - LREAL (double)
 - CHAR (char)
 - WCHAR (2 byte char)
+- STRING (utf-8)
+- WSTRING (utf-16)
+- TIME (duration, milliseconds)
+- LTIME (duration, nanoseconds)
+- DATE (date)
+- LDATE (date)
+- TIME_OF_DAY (time of day)
+- LTIME_OF_DAY (time of day)
+- DATE_AND_TIME (date and time)
+- LDATE_AND_TIME (date and time)
+
+NOTE: Coils and discrete inputs hold a single bit each and therefore support only `BOOL`. A coil or
+discrete-input tag declared with any other data type is accepted by the address parser, but the read
+returns the response code `UNSUPPORTED`.
+
+Reading an array of coils returns all of its elements: `coil:1:BOOL[8]` yields a list of 8 values.
 
 === Some useful tips
 

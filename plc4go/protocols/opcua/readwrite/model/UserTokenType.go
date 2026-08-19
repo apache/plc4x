@@ -106,11 +106,11 @@ func CastUserTokenType(structType any) UserTokenType {
 	return castFunc(structType)
 }
 
-func (m UserTokenType) GetLengthInBits(ctx context.Context) uint16 {
+func (m UserTokenType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m UserTokenType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m UserTokenType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

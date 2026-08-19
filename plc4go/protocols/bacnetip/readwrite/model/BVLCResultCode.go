@@ -124,11 +124,11 @@ func CastBVLCResultCode(structType any) BVLCResultCode {
 	return castFunc(structType)
 }
 
-func (m BVLCResultCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m BVLCResultCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BVLCResultCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BVLCResultCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

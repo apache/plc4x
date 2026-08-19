@@ -229,8 +229,8 @@ func (m *_AdsDiscoveryBlockHostName) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockHostName"
 }
 
-func (m *_AdsDiscoveryBlockHostName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+func (m *_AdsDiscoveryBlockHostName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Simple field (hostName)
 	lengthInBits += m.HostName.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_AdsDiscoveryBlockHostName) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockHostName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlockHostName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

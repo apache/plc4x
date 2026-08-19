@@ -922,11 +922,11 @@ func CastHVACError(structType any) HVACError {
 	return castFunc(structType)
 }
 
-func (m HVACError) GetLengthInBits(ctx context.Context) uint16 {
+func (m HVACError) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m HVACError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m HVACError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

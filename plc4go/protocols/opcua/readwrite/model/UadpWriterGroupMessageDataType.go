@@ -272,8 +272,8 @@ func (m *_UadpWriterGroupMessageDataType) GetPlx4xTypeName() string {
 	return "UadpWriterGroupMessageDataType"
 }
 
-func (m *_UadpWriterGroupMessageDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_UadpWriterGroupMessageDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (groupVersion)
 	lengthInBits += 32
@@ -292,13 +292,13 @@ func (m *_UadpWriterGroupMessageDataType) GetLengthInBits(ctx context.Context) u
 
 	// Array field
 	if len(m.PublishingOffset) > 0 {
-		lengthInBits += 64 * uint16(len(m.PublishingOffset))
+		lengthInBits += 64 * uint64(len(m.PublishingOffset))
 	}
 
 	return lengthInBits
 }
 
-func (m *_UadpWriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UadpWriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -37,8 +37,14 @@ func TestStopWarn(t *testing.T) {
 		t.Log("Starting func using stopWarn")
 		func() {
 			defer StopWarn(logger, WithStopWarnInterval(10*time.Millisecond), WithStopWarnProcessId("TestStopWarn"), WithStopWarnIncludeGoroutinesStack())()
-			time.Sleep(100 * time.Millisecond)
-			t.Log("sleep done")
+			// Wait for the warnings instead of sleeping a fixed time: coarse timer
+			// granularity (~15.6ms on Windows) and dropped ticks make a tick count
+			// per wall-clock window unpredictable on loaded CI runners.
+			deadline := time.Now().Add(10 * time.Second)
+			for logHook.countMessage("TestStopWarn still in progress") <= 3 && time.Now().Before(deadline) {
+				time.Sleep(5 * time.Millisecond)
+			}
+			t.Log("wait done")
 		}()
 		t.Log("Doing assertions")
 		foundMessages := 0
@@ -95,7 +101,17 @@ func TestStopWarn(t *testing.T) {
 				WithStopWarnProcessId("TestStopWarn"),
 				WithStopWarnRegistrar(register),
 			)()
-			time.Sleep(75 * time.Millisecond)
+			// Condition-based wait: see "couple of warnings" above.
+			deadline := time.Now().Add(10 * time.Second)
+			for time.Now().Before(deadline) {
+				mu.Lock()
+				enough := len(ticks) >= 3
+				mu.Unlock()
+				if enough {
+					break
+				}
+				time.Sleep(5 * time.Millisecond)
+			}
 		}()
 		mu.Lock()
 		defer mu.Unlock()
@@ -137,6 +153,18 @@ type logHook struct {
 	logEvents []zerolog.Event
 	level     []zerolog.Level
 	messages  []string
+}
+
+func (logHook *logHook) countMessage(message string) int {
+	logHook.mu.Lock()
+	defer logHook.mu.Unlock()
+	count := 0
+	for _, m := range logHook.messages {
+		if m == message {
+			count++
+		}
+	}
+	return count
 }
 
 func (logHook *logHook) Run(logEvent *zerolog.Event, level zerolog.Level, message string) {

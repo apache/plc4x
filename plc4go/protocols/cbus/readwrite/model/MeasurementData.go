@@ -62,8 +62,8 @@ type MeasurementDataContract interface {
 
 // MeasurementDataRequirements provides a set of functions which need to be implemented by a sub struct
 type MeasurementDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() MeasurementCommandType
 }
@@ -251,8 +251,8 @@ func (m *_MeasurementData) GetPlx4xTypeName() string {
 	return "MeasurementData"
 }
 
-func (m *_MeasurementData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_MeasurementData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -262,11 +262,11 @@ func (m *_MeasurementData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MeasurementData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_MeasurementData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_MeasurementData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeasurementData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

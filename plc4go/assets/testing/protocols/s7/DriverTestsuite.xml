@@ -221,7 +221,7 @@
             <tpduCode dataType="uint" bitLength="8">240</tpduCode>
             <COTPPacketData>
               <eot dataType="bit" bitLength="1">true</eot>
-              <tpduRef dataType="uint" bitLength="7">2</tpduRef>
+              <tpduRef dataType="uint" bitLength="7">10</tpduRef>
             </COTPPacketData>
             <parameters isList="true">
             </parameters>
@@ -230,7 +230,7 @@
                 <protocolId dataType="uint" bitLength="8">50</protocolId>
                 <messageType dataType="uint" bitLength="8">7</messageType>
                 <reserved dataType="uint" bitLength="16">0</reserved>
-                <tpduReference dataType="uint" bitLength="16">1</tpduReference>
+                <tpduReference dataType="uint" bitLength="16">10</tpduReference>
                 <parameterLength dataType="uint" bitLength="16">8</parameterLength>
                 <payloadLength dataType="uint" bitLength="16">8</payloadLength>
                 <S7MessageUserData>
@@ -280,12 +280,12 @@
                                 <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
                                 <sublistList>
                                   <SzlSublist dataType="uint" bitLength="8"
-                                              stringRepresentation="MODULE_IDENTIFICATION">17
+                                              stringRepresentation="COMPONENT_IDENTIFICATION">28
                                   </SzlSublist>
                                 </sublistList>
                               </SzlId>
                             </szlId>
-                            <szlIndex dataType="uint" bitLength="16">0</szlIndex>
+                            <szlIndex dataType="uint" bitLength="16">1</szlIndex>
                           </S7PayloadUserDataItemCpuFunctionReadSzlRequest>
                         </S7PayloadUserDataItem>
                       </items>
@@ -303,7 +303,7 @@
       <TPKTPacket>
         <protocolId dataType="uint" bitLength="8">3</protocolId>
         <reserved dataType="uint" bitLength="8">0</reserved>
-        <len dataType="uint" bitLength="16">125</len>
+        <len dataType="uint" bitLength="16">69</len>
         <payload>
           <COTPPacket>
             <headerLength dataType="uint" bitLength="8">2</headerLength>
@@ -319,9 +319,9 @@
                 <protocolId dataType="uint" bitLength="8">50</protocolId>
                 <messageType dataType="uint" bitLength="8">7</messageType>
                 <reserved dataType="uint" bitLength="16">0</reserved>
-                <tpduReference dataType="uint" bitLength="16">1</tpduReference>
+                <tpduReference dataType="uint" bitLength="16">10</tpduReference>
                 <parameterLength dataType="uint" bitLength="16">12</parameterLength>
-                <payloadLength dataType="uint" bitLength="16">96</payloadLength>
+                <payloadLength dataType="uint" bitLength="16">40</payloadLength>
                 <S7MessageUserData>
                 </S7MessageUserData>
                 <parameter>
@@ -361,48 +361,11 @@
                             <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9
                             </DataTransportSize>
                           </transportSize>
-                          <dataLength dataType="uint" bitLength="16">92</dataLength>
+                          <dataLength dataType="uint" bitLength="16">36</dataLength>
                           <S7PayloadUserDataItemCpuFunctionReadSzlResponse>
-                            <szlId>
-                              <SzlId>
-                                <typeClass>
-                                  <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
-                                  </SzlModuleTypeClass>
-                                </typeClass>
-                                <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
-                                <sublistList>
-                                  <SzlSublist dataType="uint" bitLength="8"
-                                              stringRepresentation="MODULE_IDENTIFICATION">17
-                                  </SzlSublist>
-                                </sublistList>
-                              </SzlId>
-                            </szlId>
-                            <szlIndex dataType="uint" bitLength="16">0</szlIndex>
-                            <szlItemLength dataType="uint" bitLength="16">28</szlItemLength>
-                            <szlItemCount dataType="uint" bitLength="16">3</szlItemCount>
-                            <items isList="true">
-                              <SzlDataTreeItem>
-                                <itemIndex dataType="uint" bitLength="16">1</itemIndex>
-                                <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
-                                <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
-                                <ausbg dataType="uint" bitLength="16">1</ausbg>
-                                <ausbe dataType="uint" bitLength="16">8224</ausbe>
-                              </SzlDataTreeItem>
-                              <SzlDataTreeItem>
-                                <itemIndex dataType="uint" bitLength="16">6</itemIndex>
-                                <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
-                                <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
-                                <ausbg dataType="uint" bitLength="16">1</ausbg>
-                                <ausbe dataType="uint" bitLength="16">8224</ausbe>
-                              </SzlDataTreeItem>
-                              <SzlDataTreeItem>
-                                <itemIndex dataType="uint" bitLength="16">7</itemIndex>
-                                <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
-                                <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
-                                <ausbg dataType="uint" bitLength="16">22018</ausbg>
-                                <ausbe dataType="uint" bitLength="16">2</ausbe>
-                              </SzlDataTreeItem>
-                            </items>
+                            <!-- SZL header (id/index/itemLength/itemCount) + one 28-byte item
+                                 carrying the MLFB "6ES7 212-1BD30-0XB0 " -->
+                            <items dataType="byte" bitLength="288">0x001c0001001c0001000136455337203231322d31424433302d3058423020202000012020</items>
                           </S7PayloadUserDataItemCpuFunctionReadSzlResponse>
                         </S7PayloadUserDataItem>
                       </items>
@@ -441,7 +404,7 @@
               <tpduCode dataType="uint" bitLength="8">240</tpduCode>
               <COTPPacketData>
                 <eot dataType="bit" bitLength="1">true</eot>
-                <tpduRef dataType="uint" bitLength="7">10</tpduRef>
+                <tpduRef dataType="uint" bitLength="7">11</tpduRef>
               </COTPPacketData>
               <parameters isList="true">
               </parameters>
@@ -450,7 +413,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">1</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">11</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">14</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">0</payloadLength>
                   <S7MessageRequest>
@@ -517,7 +480,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">3</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">11</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">2</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">6</payloadLength>
                   <S7MessageResponseData>
@@ -568,12 +531,12 @@
                 <tags isList="true">
                   <hurz>
                     <S7Tag>
-                      <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                      <memoryArea dataType="string" bitLength="56" encoding="UTF8">OUTPUTS</memoryArea>
                       <blockNumber dataType="uint" bitLength="16">0</blockNumber>
                       <byteOffset dataType="uint" bitLength="16">0</byteOffset>
                       <bitOffset dataType="uint" bitLength="8">0</bitOffset>
                       <numElements dataType="uint" bitLength="16">1</numElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">BOOL</dataType>
                     </S7Tag>
                   </hurz>
                 </tags>
@@ -619,7 +582,7 @@
               <tpduCode dataType="uint" bitLength="8">240</tpduCode>
               <COTPPacketData>
                 <eot dataType="bit" bitLength="1">true</eot>
-                <tpduRef dataType="uint" bitLength="7">10</tpduRef>
+                <tpduRef dataType="uint" bitLength="7">11</tpduRef>
               </COTPPacketData>
               <parameters isList="true">
               </parameters>
@@ -628,7 +591,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">1</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">11</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">14</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">0</payloadLength>
                   <S7MessageRequest>
@@ -695,7 +658,7 @@
                   <protocolId dataType="uint" bitLength="8">50</protocolId>
                   <messageType dataType="uint" bitLength="8">2</messageType>
                   <reserved dataType="uint" bitLength="16">0</reserved>
-                  <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+                  <tpduReference dataType="uint" bitLength="16">11</tpduReference>
                   <parameterLength dataType="uint" bitLength="16">0</parameterLength>
                   <payloadLength dataType="uint" bitLength="16">0</payloadLength>
                   <S7MessageResponse>
@@ -716,12 +679,12 @@
                 <tags isList="true">
                   <hurz>
                     <S7Tag>
-                      <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                      <memoryArea dataType="string" bitLength="56" encoding="UTF8">OUTPUTS</memoryArea>
                       <blockNumber dataType="uint" bitLength="16">0</blockNumber>
                       <byteOffset dataType="uint" bitLength="16">0</byteOffset>
                       <bitOffset dataType="uint" bitLength="8">0</bitOffset>
                       <numElements dataType="uint" bitLength="16">1</numElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">BOOL</dataType>
                     </S7Tag>
                   </hurz>
                 </tags>

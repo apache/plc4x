@@ -181,13 +181,13 @@ func (m *_RequestEmpty) GetPlx4xTypeName() string {
 	return "RequestEmpty"
 }
 
-func (m *_RequestEmpty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+func (m *_RequestEmpty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetPlx4xTypeName() st
 	return "BACnetConstructedDataLifeSafetyPointFaultValues"
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FaultValues) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

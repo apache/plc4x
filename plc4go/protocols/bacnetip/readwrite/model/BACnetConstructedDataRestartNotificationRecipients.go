@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetPlx4xTypeName()
 	return "BACnetConstructedDataRestartNotificationRecipients"
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.RestartNotificationRecipients) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

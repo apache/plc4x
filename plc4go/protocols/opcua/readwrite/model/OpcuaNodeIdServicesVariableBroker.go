@@ -190,11 +190,11 @@ func CastOpcuaNodeIdServicesVariableBroker(structType any) OpcuaNodeIdServicesVa
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableBroker) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableBroker) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableBroker) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableBroker) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

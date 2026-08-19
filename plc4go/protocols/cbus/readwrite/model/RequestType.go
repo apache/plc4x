@@ -170,11 +170,11 @@ func CastRequestType(structType any) RequestType {
 	return castFunc(structType)
 }
 
-func (m RequestType) GetLengthInBits(ctx context.Context) uint16 {
+func (m RequestType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m RequestType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m RequestType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

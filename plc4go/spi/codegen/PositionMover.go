@@ -20,6 +20,6 @@
 package codegen
 
 type PositionMover interface {
-	GetPos() uint16
-	SetPos(pos uint16)
+	GetPos() uint32
+	SetPos(pos uint32)
 }

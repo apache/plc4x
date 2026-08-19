@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNumberOfAPDURetries"
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (numberOfApduRetries)
 	lengthInBits += m.NumberOfApduRetries.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

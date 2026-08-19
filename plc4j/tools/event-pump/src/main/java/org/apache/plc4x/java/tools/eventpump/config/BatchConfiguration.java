@@ -69,6 +69,14 @@ public class BatchConfiguration {
     private TriggerConfiguration trigger;
 
     /**
+     * Watchdog bound for a single fetch cycle, in milliseconds. Null means "use the
+     * default". This is not the request timeout — set that on the connection URL, e.g.
+     * {@code "opcua:tcp://host:4840?request-timeout=10000"}.
+     */
+    @JsonProperty("fetchTimeoutMs")
+    private Long fetchTimeoutMs;
+
+    /**
      * Get the batch ID.
      *
      * @return The batch ID
@@ -163,5 +171,23 @@ public class BatchConfiguration {
      */
     public void setTrigger(TriggerConfiguration trigger) {
         this.trigger = trigger;
+    }
+
+    /**
+     * Get the fetch watchdog timeout in milliseconds.
+     *
+     * @return The timeout, or null to use the default
+     */
+    public Long getFetchTimeoutMs() {
+        return fetchTimeoutMs;
+    }
+
+    /**
+     * Set the fetch watchdog timeout in milliseconds.
+     *
+     * @param fetchTimeoutMs The timeout, 0 or less to disable, or null to use the default
+     */
+    public void setFetchTimeoutMs(Long fetchTimeoutMs) {
+        this.fetchTimeoutMs = fetchTimeoutMs;
     }
 }

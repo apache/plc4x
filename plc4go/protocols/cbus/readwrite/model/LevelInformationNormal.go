@@ -249,8 +249,8 @@ func (m *_LevelInformationNormal) GetPlx4xTypeName() string {
 	return "LevelInformationNormal"
 }
 
-func (m *_LevelInformationNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+func (m *_LevelInformationNormal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
 
 	// Simple field (pair1)
 	lengthInBits += 8
@@ -265,7 +265,7 @@ func (m *_LevelInformationNormal) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LevelInformationNormal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LevelInformationNormal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

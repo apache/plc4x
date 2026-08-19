@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class ManualEipTest {
 
     public static void main(String[] args) {
-        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection("eip://192.168.24.32")) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("eip://192.168.24.32")) {
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             builder.addTagAddress("param", "%out01");
             var readRequest = builder.build();

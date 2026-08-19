@@ -129,8 +129,8 @@ func (j *jsonWriteBuffer) PushContext(logicalName string, writerArgs ...WithWrit
 	return nil
 }
 
-func (j *jsonWriteBuffer) GetPos() uint16 {
-	return uint16(j.pos / 8)
+func (j *jsonWriteBuffer) GetPos() uint32 {
+	return uint32(j.pos / 8)
 }
 
 func (j *jsonWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {

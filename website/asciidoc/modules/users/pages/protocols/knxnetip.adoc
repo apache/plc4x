@@ -33,11 +33,25 @@ include::partial$knxnet-ip.adoc[]
 
 KNX Addresses usually have one of the following structures:
 
-- 3-level Address: `{main-group(0-15)}`/`{middle-group(0-15)}`/`{sub-group(0-255)}`
-- 2-level Address: `{main-group(0-15)}`/`{sub-group(0-4095)}`
+- 3-level Address: `{main-group(0-31)}`/`{middle-group(0-7)}`/`{sub-group(0-255)}`
+- 2-level Address: `{main-group(0-31)}`/`{sub-group(0-2047)}`
 - 1-level Address: `{sub-group(0-65535)}`
 
-Depending on the `group-address-type` configured in the connection string or defined in the knxproj-file configured by the `knxproj-file-path` connection string parameter, the corresponding address pattern has to be used.
+Depending on the `group-address-num-levels` configured in the connection string or defined in the knxproj-file configured by the `knxproj-file-path` connection string parameter, the corresponding address pattern has to be used.
+
+=== Datapoint Type Suffix
+
+An address may carry an optional datapoint-type suffix `:DPT{main}[.{sub}]`, which tells the driver
+how to interpret the value on the wire:
+
+----
+1/2/3:DPT9.001
+----
+
+The KNX protocol does not transport the datatype of a group address, so the driver has to get it
+from somewhere. If no `knxproj-file-path` is configured, this suffix is *required* for reading and
+writing - a request for a plain `1/2/3` fails because the datapoint type cannot be resolved.
+Browsing likewise requires a `knxproj-file-path`.
 
 However, when subscribing for events, each segment allows using of the wildcard character `*`.
 If the addresses used in the KNX installation are structured, this way it is possible to, for example (depending on the scheme used):

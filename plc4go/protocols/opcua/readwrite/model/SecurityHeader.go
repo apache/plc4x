@@ -179,8 +179,8 @@ func (m *_SecurityHeader) GetPlx4xTypeName() string {
 	return "SecurityHeader"
 }
 
-func (m *_SecurityHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SecurityHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (secureChannelId)
 	lengthInBits += 32
@@ -191,7 +191,7 @@ func (m *_SecurityHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

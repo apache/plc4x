@@ -184,13 +184,13 @@ func (m *_ApduDataExtGroupPropertyValueRead) GetPlx4xTypeName() string {
 	return "ApduDataExtGroupPropertyValueRead"
 }
 
-func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

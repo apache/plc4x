@@ -110,11 +110,11 @@ func CastEnableControlCommandType(structType any) EnableControlCommandType {
 	return castFunc(structType)
 }
 
-func (m EnableControlCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m EnableControlCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m EnableControlCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m EnableControlCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

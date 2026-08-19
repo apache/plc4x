@@ -192,13 +192,13 @@ func (m *_NullEipConnectionResponse) GetPlx4xTypeName() string {
 	return "NullEipConnectionResponse"
 }
 
-func (m *_NullEipConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+func (m *_NullEipConnectionResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_NullEipConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NullEipConnectionResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

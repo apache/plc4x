@@ -234,8 +234,8 @@ func (m *_ModbusPDUDiagnosticResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUDiagnosticResponse"
 }
 
-func (m *_ModbusPDUDiagnosticResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUDiagnosticResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -246,7 +246,7 @@ func (m *_ModbusPDUDiagnosticResponse) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_ModbusPDUDiagnosticResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUDiagnosticResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

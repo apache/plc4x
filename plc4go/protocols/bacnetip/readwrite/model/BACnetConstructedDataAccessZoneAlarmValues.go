@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetPlx4xTypeName() string 
 	return "BACnetConstructedDataAccessZoneAlarmValues"
 }
 
-func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AlarmValues) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

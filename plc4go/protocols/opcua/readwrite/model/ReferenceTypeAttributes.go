@@ -373,8 +373,8 @@ func (m *_ReferenceTypeAttributes) GetPlx4xTypeName() string {
 	return "ReferenceTypeAttributes"
 }
 
-func (m *_ReferenceTypeAttributes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReferenceTypeAttributes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (specifiedAttributes)
 	lengthInBits += 32
@@ -406,7 +406,7 @@ func (m *_ReferenceTypeAttributes) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReferenceTypeAttributes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReferenceTypeAttributes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

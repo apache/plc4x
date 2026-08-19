@@ -28,6 +28,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // segmentAckWaitTimeout bounds how long we wait for the peer's SegmentAck after
@@ -216,7 +217,7 @@ func (s *segmentedRequestSender) expectSegmentAck(ctx context.Context, invokeId 
 	ackCh := make(chan readWriteModel.APDUSegmentAck, 1)
 	errCh := make(chan error, 1)
 
-	expectCtx, cancel := context.WithTimeout(ctx, segmentAckWaitTimeout)
+	expectCtx, cancel := utils.WithNamedTimeout(ctx, "segment ack wait timeout", segmentAckWaitTimeout)
 
 	m := s.messageCodec
 	m.Expect(expectCtx, "requestSegmentAck",

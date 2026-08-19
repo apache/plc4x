@@ -544,8 +544,8 @@ func (m *_ConfirmedEventNotificationRequest) GetPlx4xTypeName() string {
 	return "ConfirmedEventNotificationRequest"
 }
 
-func (m *_ConfirmedEventNotificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ConfirmedEventNotificationRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (processIdentifier)
 	lengthInBits += m.ProcessIdentifier.GetLengthInBits(ctx)
@@ -597,7 +597,7 @@ func (m *_ConfirmedEventNotificationRequest) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_ConfirmedEventNotificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConfirmedEventNotificationRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

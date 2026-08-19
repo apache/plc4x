@@ -66,8 +66,8 @@ type CBusPointToPointCommandContract interface {
 
 // CBusPointToPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusPointToPointCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIsDirect returns IsDirect (discriminator field)
 	GetIsDirect() bool
 }
@@ -297,8 +297,8 @@ func (m *_CBusPointToPointCommand) GetPlx4xTypeName() string {
 	return "CBusPointToPointCommand"
 }
 
-func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -308,11 +308,11 @@ func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToPointCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

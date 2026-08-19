@@ -98,7 +98,15 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		packetSize := uint32((uint16(data[2]) << 8) + uint16(data[3]))
+		packetSize := (uint32(data[2]) << 8) + uint32(data[3])
+		// A BVLC length below the 4 byte header can never become parseable and
+		// would make the receive worker spin forever on the same unconsumed
+		// bytes (reachable via a single spoofed UDP datagram), so treat it as
+		// a fatal framing error.
+		if packetSize < 4 {
+			return nil, transports.NewTransportError(transports.TransportErrorFatal,
+				errors.Errorf("invalid BVLC frame length %d (minimum 4)", packetSize))
+		}
 		if num < packetSize {
 			m.log.Debug().
 				Uint32("num", num).

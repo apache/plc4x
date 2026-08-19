@@ -310,124 +310,69 @@
     [array    byte   data          count         'objectLength']
 ]
 
-[dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues, bit bigEndian) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
-    [typeSwitch dataType,numberOfValues,bigEndian
-        ['BOOL','1','true'  BOOL
-            // TODO: Possibly change the order of the bit and the reserved part.
-            [reserved uint 15 '0x0000'                         ]
-            [simple   bit     value                            ]
+// DataItem encodes exactly one value of the given type, at its natural width and with no padding.
+// How those values sit in 16 bit Modbus registers - a lone 8 bit value occupying a whole register,
+// several of them packed two per register, a trailing pad byte for an odd count - is register
+// alignment, which the driver knows and this codec deliberately does not. That keeps one case per
+// data type here, and makes an array simply N calls to this parser.
+[dataIo DataItem(ModbusDataType dataType, uint 16 stringLength) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
+    [typeSwitch dataType
+        ['BOOL'    BOOL
+            [simple   bit     value]
         ]
-        ['BOOL','1','false'  BOOL
-            [reserved uint 7 '0x00'                            ]
-            [simple   bit     value                            ]
-            [reserved uint 8 '0x00'                            ]
+        ['BYTE'    BYTE
+            [simple   uint 8  value]
         ]
-        ['BOOL'      List
-            // TODO: Handle adding some reserved bits at the end to fill up the last word.
-            [array    bit     value count 'numberOfValues'     ]
-        ]
-        ['BYTE','1','true'  BYTE
-            [reserved uint 8 '0x00']
-            [simple uint 8 value]
-        ]
-        ['BYTE','1','false'  BYTE
-            [simple uint 8 value]
-            [reserved uint 8 '0x00']
-        ]
-        ['BYTE' List
-            // TODO: If the number of values is odd, add a reserved byte
-            [array    bit     value count 'numberOfValues * 8' ]
-        ]
-        ['WORD'      WORD
+        ['WORD'    WORD
             [simple   uint 16 value]
         ]
-        ['DWORD'     DWORD
+        ['DWORD'   DWORD
             [simple   uint 32 value]
         ]
-        ['LWORD'     LWORD
+        ['LWORD'   LWORD
             [simple   uint 64 value]
         ]
-        ['SINT','1','true' SINT
-            [reserved uint 8  '0x00']
-            [simple   int 8   value ]
+        ['SINT'    SINT
+            [simple   int 8   value]
         ]
-        ['SINT','1','false' SINT
-            [simple   int 8   value ]
-            [reserved uint 8  '0x00']
+        ['INT'     INT
+            [simple   int 16  value]
         ]
-        ['SINT' List
-            [array int 8 value count 'numberOfValues']
+        ['DINT'    DINT
+            [simple   int 32  value]
         ]
-        ['INT','1' INT
-            [simple int 16 value]
+        ['LINT'    LINT
+            [simple   int 64  value]
         ]
-        ['INT' List
-            [array int 16 value count 'numberOfValues']
+        ['USINT'   USINT
+            [simple   uint 8  value]
         ]
-        ['DINT','1' DINT
-            [simple int 32 value]
+        ['UINT'    UINT
+            [simple   uint 16 value]
         ]
-        ['DINT' List
-            [array int 32 value count 'numberOfValues']
+        ['UDINT'   UDINT
+            [simple   uint 32 value]
         ]
-        ['LINT','1' LINT
-            [simple int 64 value]
+        ['ULINT'   ULINT
+            [simple   uint 64 value]
         ]
-        ['LINT' List
-            [array int 64 value count 'numberOfValues']
+        ['REAL'    REAL
+            [simple   float 32 value]
         ]
-        ['USINT','1','true' USINT
-            [reserved uint 8 '0x00']
-            [simple   uint 8 value ]
+        ['LREAL'   LREAL
+            [simple   float 64 value]
         ]
-        ['USINT','1','false' USINT
-            [simple   uint 8 value ]
-            [reserved uint 8 '0x00']
+        ['CHAR'    CHAR
+            [simple   string 8  value stringEncoding='"UTF8"']
         ]
-        ['USINT' List
-            [array uint 8 value count 'numberOfValues']
+        ['WCHAR'   WCHAR
+            [simple   string 16 value stringEncoding='"UTF16BE"']
         ]
-        ['UINT','1' UINT
-            [simple uint 16 value]
+        ['STRING'  STRING
+            [simple   vstring 'stringLength * 8'  value stringEncoding='"UTF8"']
         ]
-        ['UINT' List
-            [array uint 16 value count 'numberOfValues']
-        ]
-        ['UDINT','1' UDINT
-            [simple uint 32 value]
-        ]
-        ['UDINT' List
-            [array uint 32 value count 'numberOfValues']
-        ]
-        ['ULINT','1' ULINT
-            [simple uint 64 value]
-        ]
-        ['ULINT' List
-            [array uint 64 value count 'numberOfValues']
-        ]
-        ['REAL','1' REAL
-            [simple float 32  value]
-        ]
-        ['REAL' List
-            [array float 32 value count 'numberOfValues']
-        ]
-        ['LREAL','1' LREAL
-            [simple float 64  value]
-        ]
-        ['LREAL' List
-            [array float 64 value count 'numberOfValues']
-        ]
-        ['CHAR','1' CHAR
-            [simple string 8 value stringEncoding='"UTF8"']
-        ]
-        ['CHAR' List
-            [array string 8 value count 'numberOfValues' stringEncoding='"UTF8"']
-        ]
-        ['WCHAR','1' WCHAR
-            [simple string 16 value stringEncoding='"UTF16BE"']
-        ]
-        ['WCHAR' List
-            [array string 16 value count 'numberOfValues' stringEncoding='"UTF16BE"']
+        ['WSTRING' WSTRING
+            [simple   vstring 'stringLength * 16' value stringEncoding='"UTF16BE"']
         ]
     ]
 ]

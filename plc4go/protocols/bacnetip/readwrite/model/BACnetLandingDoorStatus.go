@@ -183,8 +183,8 @@ func (m *_BACnetLandingDoorStatus) GetPlx4xTypeName() string {
 	return "BACnetLandingDoorStatus"
 }
 
-func (m *_BACnetLandingDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLandingDoorStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (landingDoors)
 	lengthInBits += m.LandingDoors.GetLengthInBits(ctx)
@@ -192,7 +192,7 @@ func (m *_BACnetLandingDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLandingDoorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLandingDoorStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

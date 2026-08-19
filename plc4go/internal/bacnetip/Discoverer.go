@@ -93,7 +93,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	if timeout <= 0 {
 		timeout = 5 * time.Second
 	}
-	ctx, cancelFunc := context.WithTimeout(ctx, timeout)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "discovery timeout", timeout)
 	defer cancelFunc()
 	incomingBVLCChannel, err := d.broadcastAndDiscover(ctx, communicationChannels, specificOptions)
 	if err != nil {

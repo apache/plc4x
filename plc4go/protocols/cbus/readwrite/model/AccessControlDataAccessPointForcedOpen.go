@@ -180,13 +180,13 @@ func (m *_AccessControlDataAccessPointForcedOpen) GetPlx4xTypeName() string {
 	return "AccessControlDataAccessPointForcedOpen"
 }
 
-func (m *_AccessControlDataAccessPointForcedOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
+func (m *_AccessControlDataAccessPointForcedOpen) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AccessControlDataAccessPointForcedOpen) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AccessControlDataAccessPointForcedOpen) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

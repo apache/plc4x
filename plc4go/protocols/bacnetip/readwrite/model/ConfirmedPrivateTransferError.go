@@ -322,8 +322,8 @@ func (m *_ConfirmedPrivateTransferError) GetPlx4xTypeName() string {
 	return "ConfirmedPrivateTransferError"
 }
 
-func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
+func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

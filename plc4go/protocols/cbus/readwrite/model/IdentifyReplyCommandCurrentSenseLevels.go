@@ -213,18 +213,18 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandCurrentSenseLevels"
 }
 
-func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.CurrentSenseLevels) > 0 {
-		lengthInBits += 8 * uint16(len(m.CurrentSenseLevels))
+		lengthInBits += 8 * uint64(len(m.CurrentSenseLevels))
 	}
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

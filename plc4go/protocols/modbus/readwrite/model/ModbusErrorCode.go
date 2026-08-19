@@ -142,11 +142,11 @@ func CastModbusErrorCode(structType any) ModbusErrorCode {
 	return castFunc(structType)
 }
 
-func (m ModbusErrorCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m ModbusErrorCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ModbusErrorCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ModbusErrorCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

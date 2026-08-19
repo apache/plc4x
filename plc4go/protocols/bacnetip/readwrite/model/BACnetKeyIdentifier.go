@@ -215,8 +215,8 @@ func (m *_BACnetKeyIdentifier) GetPlx4xTypeName() string {
 	return "BACnetKeyIdentifier"
 }
 
-func (m *_BACnetKeyIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetKeyIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (algorithm)
 	lengthInBits += m.Algorithm.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetKeyIdentifier) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetKeyIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetKeyIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

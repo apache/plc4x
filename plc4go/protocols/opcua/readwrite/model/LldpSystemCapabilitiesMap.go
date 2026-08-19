@@ -154,11 +154,11 @@ func CastLldpSystemCapabilitiesMap(structType any) LldpSystemCapabilitiesMap {
 	return castFunc(structType)
 }
 
-func (m LldpSystemCapabilitiesMap) GetLengthInBits(ctx context.Context) uint16 {
+func (m LldpSystemCapabilitiesMap) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m LldpSystemCapabilitiesMap) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LldpSystemCapabilitiesMap) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

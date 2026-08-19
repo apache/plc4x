@@ -139,13 +139,13 @@ func (m *_NumericRange) GetPlx4xTypeName() string {
 	return "NumericRange"
 }
 
-func (m *_NumericRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NumericRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_NumericRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NumericRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

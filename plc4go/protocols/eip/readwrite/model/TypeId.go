@@ -58,8 +58,8 @@ type TypeIdContract interface {
 
 // TypeIdRequirements provides a set of functions which need to be implemented by a sub struct
 type TypeIdRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetId returns Id (discriminator field)
 	GetId() uint16
 }
@@ -257,19 +257,19 @@ func (m *_TypeId) GetPlx4xTypeName() string {
 	return "TypeId"
 }
 
-func (m *_TypeId) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TypeId) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (id)
 	lengthInBits += 16
 
 	return lengthInBits
 }
 
-func (m *_TypeId) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_TypeId) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

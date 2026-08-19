@@ -178,11 +178,11 @@ func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBits(ctx context.Context) uint16 {
+func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

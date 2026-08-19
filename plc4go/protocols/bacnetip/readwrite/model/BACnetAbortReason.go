@@ -160,11 +160,11 @@ func CastBACnetAbortReason(structType any) BACnetAbortReason {
 	return castFunc(structType)
 }
 
-func (m BACnetAbortReason) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAbortReason) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAbortReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAbortReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

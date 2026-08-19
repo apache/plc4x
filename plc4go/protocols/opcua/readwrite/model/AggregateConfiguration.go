@@ -275,8 +275,8 @@ func (m *_AggregateConfiguration) GetPlx4xTypeName() string {
 	return "AggregateConfiguration"
 }
 
-func (m *_AggregateConfiguration) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AggregateConfiguration) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 6
@@ -302,7 +302,7 @@ func (m *_AggregateConfiguration) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AggregateConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AggregateConfiguration) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

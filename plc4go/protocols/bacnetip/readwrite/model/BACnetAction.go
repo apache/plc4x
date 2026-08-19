@@ -94,11 +94,11 @@ func CastBACnetAction(structType any) BACnetAction {
 	return castFunc(structType)
 }
 
-func (m BACnetAction) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAction) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAction) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAction) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

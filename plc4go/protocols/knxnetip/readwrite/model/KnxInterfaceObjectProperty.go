@@ -4909,11 +4909,11 @@ func CastKnxInterfaceObjectProperty(structType any) KnxInterfaceObjectProperty {
 	return castFunc(structType)
 }
 
-func (m KnxInterfaceObjectProperty) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxInterfaceObjectProperty) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m KnxInterfaceObjectProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxInterfaceObjectProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

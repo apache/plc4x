@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -362,8 +363,8 @@ func (m *_AdsMethodInfo) GetPlx4xTypeName() string {
 	return "AdsMethodInfo"
 }
 
-func (m *_AdsMethodInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsMethodInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (methodInfoLength)
 	lengthInBits += 32
@@ -385,7 +386,7 @@ func (m *_AdsMethodInfo) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Guid) > 0 {
-		lengthInBits += 8 * uint16(len(m.Guid))
+		lengthInBits += 8 * uint64(len(m.Guid))
 	}
 
 	// Simple field (methodId)
@@ -407,19 +408,19 @@ func (m *_AdsMethodInfo) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 16
 
 	// Simple field (name)
-	lengthInBits += uint16(int32(uint16(len(m.GetName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetName()))) * int32(int32(8)))
 
 	// Const Field (nameTerminator)
 	lengthInBits += 8
 
 	// Simple field (typeName)
-	lengthInBits += uint16(int32(uint16(len(m.GetTypeName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetTypeName()))) * int32(int32(8)))
 
 	// Const Field (typeNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
-	lengthInBits += uint16(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
@@ -434,13 +435,13 @@ func (m *_AdsMethodInfo) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Rest) > 0 {
-		lengthInBits += 8 * uint16(len(m.Rest))
+		lengthInBits += 8 * uint64(len(m.Rest))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsMethodInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsMethodInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -551,7 +552,7 @@ func (m *_AdsMethodInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	_ = parameterCount
 
-	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))))
+	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
@@ -563,7 +564,7 @@ func (m *_AdsMethodInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	_ = nameTerminator
 
-	typeName, err := ReadSimpleField(ctx, "typeName", ReadString(readBuffer, uint32(int32(typeNameLength)*int32(int32(8)))))
+	typeName, err := ReadSimpleField(ctx, "typeName", ReadString(readBuffer, uint32(int32(typeNameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeName' field"))
 	}
@@ -575,7 +576,7 @@ func (m *_AdsMethodInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	_ = typeNameTerminator
 
-	comment, err := ReadSimpleField(ctx, "comment", ReadString(readBuffer, uint32(int32(commentLength)*int32(int32(8)))))
+	comment, err := ReadSimpleField(ctx, "comment", ReadString(readBuffer, uint32(int32(commentLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comment' field"))
 	}
@@ -675,7 +676,7 @@ func (m *_AdsMethodInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'parameterCount' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetName())))*int32(int32(8))))); err != nil {
+	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetName())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'name' field")
 	}
 
@@ -683,7 +684,7 @@ func (m *_AdsMethodInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'nameTerminator' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "typeName", m.GetTypeName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetTypeName())))*int32(int32(8))))); err != nil {
+	if err := WriteSimpleField[string](ctx, "typeName", m.GetTypeName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetTypeName())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'typeName' field")
 	}
 
@@ -691,7 +692,7 @@ func (m *_AdsMethodInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'typeNameTerminator' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "comment", m.GetComment(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetComment())))*int32(int32(8))))); err != nil {
+	if err := WriteSimpleField[string](ctx, "comment", m.GetComment(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetComment())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'comment' field")
 	}
 

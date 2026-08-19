@@ -356,8 +356,8 @@ func (m *_DatagramWriterGroupTransport2DataType) GetPlx4xTypeName() string {
 	return "DatagramWriterGroupTransport2DataType"
 }
 
-func (m *_DatagramWriterGroupTransport2DataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DatagramWriterGroupTransport2DataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (messageRepeatCount)
 	lengthInBits += 8
@@ -391,7 +391,7 @@ func (m *_DatagramWriterGroupTransport2DataType) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_DatagramWriterGroupTransport2DataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DatagramWriterGroupTransport2DataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

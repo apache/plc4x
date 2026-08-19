@@ -282,8 +282,8 @@ func (m *_ConnectionResponse) GetPlx4xTypeName() string {
 	return "ConnectionResponse"
 }
 
-func (m *_ConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_ConnectionResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -304,7 +304,7 @@ func (m *_ConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConnectionResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

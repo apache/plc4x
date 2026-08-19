@@ -369,8 +369,8 @@ func (m *_AirConditioningDataSetZoneHvacMode) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetZoneHvacMode"
 }
 
-func (m *_AirConditioningDataSetZoneHvacMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
+func (m *_AirConditioningDataSetZoneHvacMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -402,7 +402,7 @@ func (m *_AirConditioningDataSetZoneHvacMode) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataSetZoneHvacMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AirConditioningDataSetZoneHvacMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -322,8 +322,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetPlx4xTypeName() 
 	return "BACnetConfirmedServiceRequestConfirmedTextMessage"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (textMessageSourceDevice)
 	lengthInBits += m.TextMessageSourceDevice.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

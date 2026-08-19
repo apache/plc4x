@@ -275,8 +275,8 @@ func (m *_ReadRawModifiedDetails) GetPlx4xTypeName() string {
 	return "ReadRawModifiedDetails"
 }
 
-func (m *_ReadRawModifiedDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadRawModifiedDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 7
@@ -302,7 +302,7 @@ func (m *_ReadRawModifiedDetails) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReadRawModifiedDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadRawModifiedDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

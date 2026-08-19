@@ -230,8 +230,8 @@ func (m *_NetworkAddressDataType) GetPlx4xTypeName() string {
 	return "NetworkAddressDataType"
 }
 
-func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (networkInterface)
 	lengthInBits += m.NetworkInterface.GetLengthInBits(ctx)
@@ -239,7 +239,7 @@ func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NetworkAddressDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkAddressDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

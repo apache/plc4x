@@ -52,7 +52,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		{
 			_value := fmt.Sprintf("%v", d.connection)
 
-			if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), _value); err != nil {
+			if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -76,7 +76,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -103,7 +103,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -134,7 +134,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}

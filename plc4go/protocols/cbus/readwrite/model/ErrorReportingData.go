@@ -62,8 +62,8 @@ type ErrorReportingDataContract interface {
 
 // ErrorReportingDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ErrorReportingDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() ErrorReportingCommandType
 }
@@ -251,8 +251,8 @@ func (m *_ErrorReportingData) GetPlx4xTypeName() string {
 	return "ErrorReportingData"
 }
 
-func (m *_ErrorReportingData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ErrorReportingData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -262,11 +262,11 @@ func (m *_ErrorReportingData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ErrorReportingData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ErrorReportingData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ErrorReportingData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ErrorReportingData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

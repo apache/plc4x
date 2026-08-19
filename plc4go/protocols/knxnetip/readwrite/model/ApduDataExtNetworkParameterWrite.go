@@ -184,13 +184,13 @@ func (m *_ApduDataExtNetworkParameterWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtNetworkParameterWrite"
 }
 
-func (m *_ApduDataExtNetworkParameterWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtNetworkParameterWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtNetworkParameterWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtNetworkParameterWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -274,11 +274,11 @@ func CastBACnetConfirmedServiceChoice(structType any) BACnetConfirmedServiceChoi
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceChoice) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceChoice) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceChoice) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceChoice) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

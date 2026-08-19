@@ -70,8 +70,8 @@ type ExtensionObjectContract interface {
 
 // ExtensionObjectRequirements provides a set of functions which need to be implemented by a sub struct
 type ExtensionObjectRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIncludeEncodingMask returns IncludeEncodingMask (discriminator field)
 	GetIncludeEncodingMask() bool
 	// GetBody returns Body (abstract field)
@@ -311,8 +311,8 @@ func (m *_ExtensionObject) GetPlx4xTypeName() string {
 	return "ExtensionObject"
 }
 
-func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (typeId)
 	lengthInBits += m.TypeId.GetLengthInBits(ctx)
@@ -324,11 +324,11 @@ func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObject) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ExtensionObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ExtensionObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

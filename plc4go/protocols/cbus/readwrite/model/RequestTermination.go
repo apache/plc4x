@@ -160,8 +160,8 @@ func (m *_RequestTermination) GetPlx4xTypeName() string {
 	return "RequestTermination"
 }
 
-func (m *_RequestTermination) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_RequestTermination) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (cr)
 	lengthInBits += 8
@@ -169,7 +169,7 @@ func (m *_RequestTermination) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestTermination) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestTermination) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

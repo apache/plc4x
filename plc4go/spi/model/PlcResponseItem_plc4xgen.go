@@ -49,7 +49,7 @@ func (d *PlcResponseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return err
 	}
 
-	if err := writeBuffer.WriteString("code", uint32(len(d.code.String())*8), d.code.String()); err != nil {
+	if err := writeBuffer.WriteString("code", uint32(len(d.code.String())*8), d.code.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -66,7 +66,7 @@ func (d *PlcResponseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.value)
-			if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

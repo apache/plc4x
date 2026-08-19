@@ -30,7 +30,6 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -42,6 +41,49 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 public class TestCertificateGenerator {
 
+    /**
+     * A random serial number that always encodes to the same number of DER bytes.
+     * <p>
+     * DER drops redundant leading bytes of an INTEGER, so a plain {@code Random.nextLong()} serial
+     * encodes to 8 bytes most of the time but occasionally to 7 or fewer - which changes the
+     * certificate's total DER length. Test expectations that contain a certificate's size (the
+     * OPC UA asymmetric security header, see ChunkFactoryTest) then fail by one byte every few
+     * hundred runs. Forcing the value to exactly 63 bits keeps it random and unique while pinning
+     * the encoded length at 8 bytes.
+     */
+    private static BigInteger serialNumber() {
+        return new BigInteger(62, new SecureRandom()).setBit(62);
+    }
+
+    /**
+     * Generates a certificate signed by the given issuer, so tests can build a real certificate
+     * chain. A self-signed certificate never exercises the code paths that deal with chains.
+     */
+    public static Entry<PrivateKey, X509Certificate> generateSignedBy(int keySize, String dn, long validitySec,
+        PrivateKey issuerKey, X509Certificate issuerCertificate) {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(keySize, new SecureRandom());
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+                issuerCertificate.getSubjectX500Principal(),
+                serialNumber(),
+                new Date(),
+                new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(validitySec)),
+                new X500Principal(dn),
+                keyPair.getPublic()
+            );
+            X509CertificateHolder cert = certGen.build(new JcaContentSignerBuilder("SHA256withRSA")
+                .build(issuerKey));
+
+            X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(cert);
+            return Map.entry(keyPair.getPrivate(), certificate);
+        } catch (CertificateException | NoSuchAlgorithmException | OperatorCreationException e) {
+            throw new RuntimeException("Could not initialize test - certificate generation failed", e);
+        }
+    }
+
     public static Entry<PrivateKey, X509Certificate> generate(int keySize, String dn, long validitySec) {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -50,7 +92,7 @@ public class TestCertificateGenerator {
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
                 new X500Principal(dn),
-                BigInteger.valueOf(new Random().nextLong()),
+                serialNumber(),
                 new Date(),
                 new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(validitySec)),
                 new X500Principal(dn),

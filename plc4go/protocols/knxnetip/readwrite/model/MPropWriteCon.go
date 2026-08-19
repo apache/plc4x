@@ -184,13 +184,13 @@ func (m *_MPropWriteCon) GetPlx4xTypeName() string {
 	return "MPropWriteCon"
 }
 
-func (m *_MPropWriteCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MPropWriteCon) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MPropWriteCon) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MPropWriteCon) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

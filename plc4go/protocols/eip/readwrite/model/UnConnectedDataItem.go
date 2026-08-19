@@ -229,8 +229,8 @@ func (m *_UnConnectedDataItem) GetPlx4xTypeName() string {
 	return "UnConnectedDataItem"
 }
 
-func (m *_UnConnectedDataItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
+func (m *_UnConnectedDataItem) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
 
 	// Implicit Field (packetSize)
 	lengthInBits += 16
@@ -241,7 +241,7 @@ func (m *_UnConnectedDataItem) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_UnConnectedDataItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UnConnectedDataItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

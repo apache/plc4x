@@ -275,8 +275,8 @@ func (m *_ServiceCertificateDataType) GetPlx4xTypeName() string {
 	return "ServiceCertificateDataType"
 }
 
-func (m *_ServiceCertificateDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ServiceCertificateDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (certificate)
 	lengthInBits += m.Certificate.GetLengthInBits(ctx)
@@ -301,7 +301,7 @@ func (m *_ServiceCertificateDataType) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_ServiceCertificateDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ServiceCertificateDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

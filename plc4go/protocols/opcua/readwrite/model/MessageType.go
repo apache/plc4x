@@ -118,11 +118,11 @@ func CastMessageType(structType any) MessageType {
 	return castFunc(structType)
 }
 
-func (m MessageType) GetLengthInBits(ctx context.Context) uint16 {
+func (m MessageType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m MessageType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MessageType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -62,7 +62,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.transportInstance)
-			if err := writeBuffer.WriteString("transportInstance", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("transportInstance", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -86,7 +86,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}
@@ -103,7 +103,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	{
 		_value := fmt.Sprintf("%v", d.customMessageHandling)
 
-		if err := writeBuffer.WriteString("customMessageHandling", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("customMessageHandling", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
@@ -112,7 +112,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%s", d.receiveTimeout))*8), fmt.Sprintf("%s", d.receiveTimeout)); err != nil {
+	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%s", d.receiveTimeout))*8), fmt.Sprintf("%s", d.receiveTimeout), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -133,7 +133,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.ctx)
-			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -152,7 +152,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.ctxCancel)
-			if err := writeBuffer.WriteString("ctxCancel", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("ctxCancel", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -171,7 +171,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.transportErrorHandler)
-			if err := writeBuffer.WriteString("transportErrorHandler", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("transportErrorHandler", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

@@ -217,8 +217,8 @@ func (m *_ReplyNetwork) GetPlx4xTypeName() string {
 	return "ReplyNetwork"
 }
 
-func (m *_ReplyNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ReplyNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (networkRoute)
 	lengthInBits += m.NetworkRoute.GetLengthInBits(ctx)
@@ -229,7 +229,7 @@ func (m *_ReplyNetwork) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReplyNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReplyNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

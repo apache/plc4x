@@ -66,8 +66,8 @@ type CBusPointToPointToMultiPointCommandContract interface {
 
 // CBusPointToPointToMultiPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusPointToPointToMultiPointCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedApplication returns PeekedApplication (discriminator field)
 	GetPeekedApplication() byte
 }
@@ -311,8 +311,8 @@ func (m *_CBusPointToPointToMultiPointCommand) GetPlx4xTypeName() string {
 	return "CBusPointToPointToMultiPointCommand"
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (bridgeAddress)
 	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
@@ -323,11 +323,11 @@ func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

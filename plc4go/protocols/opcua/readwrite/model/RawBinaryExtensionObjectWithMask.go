@@ -225,15 +225,15 @@ func (m *_RawBinaryExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "RawBinaryExtensionObjectWithMask"
 }
 
-func (m *_RawBinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
+func (m *_RawBinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
 
 	// Implicit Field (bodyLength)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.RawBody) > 0 {
-		lengthInBits += 8 * uint16(len(m.RawBody))
+		lengthInBits += 8 * uint64(len(m.RawBody))
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -241,7 +241,7 @@ func (m *_RawBinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_RawBinaryExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RawBinaryExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

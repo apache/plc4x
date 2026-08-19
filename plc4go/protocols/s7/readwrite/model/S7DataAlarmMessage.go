@@ -63,8 +63,8 @@ type S7DataAlarmMessageContract interface {
 
 // S7DataAlarmMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type S7DataAlarmMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 }
@@ -244,8 +244,8 @@ func (m *_S7DataAlarmMessage) GetPlx4xTypeName() string {
 	return "S7DataAlarmMessage"
 }
 
-func (m *_S7DataAlarmMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7DataAlarmMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -256,11 +256,11 @@ func (m *_S7DataAlarmMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7DataAlarmMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7DataAlarmMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7DataAlarmMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7DataAlarmMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

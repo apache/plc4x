@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"fmt"
+	"strconv"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -44,8 +45,7 @@ func NewDeviceQuery(mainGroup string, middleGroup string, subGroup string) Devic
 }
 
 func (k DeviceQuery) GetQueryString() string {
-	// TODO: Implement this ...
-	return ""
+	return k.GetAddressString()
 }
 
 func (k DeviceQuery) GetAddressString() string {
@@ -60,12 +60,28 @@ func (k DeviceQuery) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
 }
 
+// toKnxAddress converts the query into a single KnxAddress. As a query can contain
+// wildcards, ranges and lists, this is only possible if all three segments are plain
+// numbers. Otherwise nil is returned and the caller has to expand the query first
+// (see Browser.calculateAddresses).
 func (k DeviceQuery) toKnxAddress() driverModel.KnxAddress {
-	return nil
+	mainGroup, err := strconv.ParseUint(k.MainGroup, 10, 8)
+	if err != nil {
+		return nil
+	}
+	middleGroup, err := strconv.ParseUint(k.MiddleGroup, 10, 8)
+	if err != nil {
+		return nil
+	}
+	subGroup, err := strconv.ParseUint(k.SubGroup, 10, 8)
+	if err != nil {
+		return nil
+	}
+	return driverModel.NewKnxAddress(uint8(mainGroup), uint8(middleGroup), uint8(subGroup))
 }
 
 func (k DeviceQuery) String() string {
-	return "" // TODO: implement this
+	return fmt.Sprintf("knx.DeviceQuery{%s}", k.GetAddressString())
 }
 
 type CommunicationObjectQuery struct {
@@ -86,8 +102,7 @@ func NewCommunicationObjectQuery(mainGroup uint8, middleGroup uint8, subGroup ui
 }
 
 func (k CommunicationObjectQuery) GetQueryString() string {
-	// TODO: Implement this ...
-	return ""
+	return k.GetAddressString()
 }
 
 func (k CommunicationObjectQuery) GetAddressString() string {
@@ -110,4 +125,10 @@ func (k CommunicationObjectQuery) toKnxAddress() driverModel.KnxAddress {
 		k.SubGroup,
 	)
 	return individualAddress
+}
+
+// String is defined explicitly as CommunicationObjectQuery embeds both apiModel.PlcQuery
+// and DeviceTag, which would otherwise make the promoted fmt.Stringer ambiguous.
+func (k CommunicationObjectQuery) String() string {
+	return fmt.Sprintf("knx.CommunicationObjectQuery{%s}", k.GetAddressString())
 }

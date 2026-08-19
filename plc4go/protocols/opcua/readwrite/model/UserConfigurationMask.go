@@ -112,11 +112,11 @@ func CastUserConfigurationMask(structType any) UserConfigurationMask {
 	return castFunc(structType)
 }
 
-func (m UserConfigurationMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m UserConfigurationMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m UserConfigurationMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m UserConfigurationMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -226,8 +226,8 @@ func (m *_NLMEstablishConnectionToNetwork) GetPlx4xTypeName() string {
 	return "NLMEstablishConnectionToNetwork"
 }
 
-func (m *_NLMEstablishConnectionToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMEstablishConnectionToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -238,7 +238,7 @@ func (m *_NLMEstablishConnectionToNetwork) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

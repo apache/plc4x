@@ -209,8 +209,8 @@ func (m *_BACnetBDTEntry) GetPlx4xTypeName() string {
 	return "BACnetBDTEntry"
 }
 
-func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (bbmdAddress)
 	lengthInBits += m.BbmdAddress.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetBDTEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetBDTEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

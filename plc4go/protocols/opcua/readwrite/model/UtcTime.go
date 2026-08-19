@@ -139,13 +139,13 @@ func (m *_UtcTime) GetPlx4xTypeName() string {
 	return "UtcTime"
 }
 
-func (m *_UtcTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_UtcTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_UtcTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UtcTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

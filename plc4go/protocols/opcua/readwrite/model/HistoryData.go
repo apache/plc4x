@@ -212,8 +212,8 @@ func (m *_HistoryData) GetPlx4xTypeName() string {
 	return "HistoryData"
 }
 
-func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfDataValues)
 	lengthInBits += 32
@@ -229,7 +229,7 @@ func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HistoryData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HistoryData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -58,8 +58,8 @@ type LogicalSegmentTypeContract interface {
 
 // LogicalSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type LogicalSegmentTypeRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetLogicalSegmentType returns LogicalSegmentType (discriminator field)
 	GetLogicalSegmentType() uint8
 }
@@ -233,19 +233,19 @@ func (m *_LogicalSegmentType) GetPlx4xTypeName() string {
 	return "LogicalSegmentType"
 }
 
-func (m *_LogicalSegmentType) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LogicalSegmentType) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (logicalSegmentType)
 	lengthInBits += 3
 
 	return lengthInBits
 }
 
-func (m *_LogicalSegmentType) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_LogicalSegmentType) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_LogicalSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LogicalSegmentType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

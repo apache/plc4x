@@ -23,6 +23,7 @@ import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.fields.data.reader.DataReaderFactory;
 import org.apache.plc4x.java.spi.fields.data.writer.DataWriterFactory;
+import org.apache.plc4x.java.spi.fields.exceptions.ParseAssertException;
 import org.apache.plc4x.java.spi.fields.fields.reader.FieldReaderFactory;
 import org.apache.plc4x.java.spi.fields.fields.writer.FieldWriterFactory;
 import org.apache.plc4x.java.spi.fields.utils.ThreadLocalHelper;
@@ -52,11 +53,16 @@ public class AmsString implements Message {
     // Implicit Field: strLen
     int strLen = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("strLen"));
 
+    // Validation Field
+    if(!((strLen) >= (1))) {
+      throw new ParseAssertException("AmsString length must be at least 1");
+    }
+
     // Simple Field: text
     String text = FieldReaderFactory.readSimpleField(DataReaderFactory.readString(readBuffer, (8) * (((strLen) - (1)))), WithOption.WithName("text"));
 
     // Reserved Field
-    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("AmsString.reserved2"));
+    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("AmsString.reserved3"));
 
     readBuffer.popContext();
     return new AmsString(text);
@@ -70,6 +76,8 @@ public class AmsString implements Message {
     // Implicit Field: strLen
     int strLen = (int) ((StaticHelper.STR_LEN(text)) + (1));
     FieldWriterFactory.writeImplicitField((int) strLen, DataWriterFactory.writeUnsignedInt(writeBuffer, 16), WithOption.WithName("strLen"));
+
+    // Validation Field (Nothing needed here)
 
     // Simple Field: text
     FieldWriterFactory.writeSimpleField((String) text, DataWriterFactory.writeString(writeBuffer, (8) * (((strLen) - (1)))), WithOption.WithName("text"));
@@ -92,6 +100,8 @@ public class AmsString implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Implicit Field: strLen
     lengthInBits += 16;
+
+    // Validation Field (Nothing needed here)
 
     // Simple Field: text
     lengthInBits += (8) * ((((StaticHelper.STR_LEN(text)) + (1)) - (1)));

@@ -32,7 +32,7 @@ public class ManualWallS7300Browse {
     public static void main(String[] args) throws Exception {
 
         long startTime = System.currentTimeMillis();
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("s7://192.168.24.60?local-device-group=OS")){
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("s7://192.168.24.60?local-device-group=OS")){
             PlcBrowseResponse plcBrowseResponse = connection.browseRequestBuilder()
                 .addQuery("all", "**")
                 .build().executeWithInterceptor((queryName, query, item) -> {

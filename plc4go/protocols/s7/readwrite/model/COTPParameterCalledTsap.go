@@ -211,8 +211,8 @@ func (m *_COTPParameterCalledTsap) GetPlx4xTypeName() string {
 	return "COTPParameterCalledTsap"
 }
 
-func (m *_COTPParameterCalledTsap) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+func (m *_COTPParameterCalledTsap) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -220,7 +220,7 @@ func (m *_COTPParameterCalledTsap) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPParameterCalledTsap) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameterCalledTsap) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

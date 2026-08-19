@@ -59,7 +59,7 @@ plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
+plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint32_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 

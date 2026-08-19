@@ -21,7 +21,12 @@ package org.apache.plc4x.java.spi.drivers.throttle;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -216,5 +221,101 @@ class RequestThrottleTest {
         // Permit should be released even though supplier threw
         assertEquals(1, throttle.getAvailablePermits());
         assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * Submitting a request must never park the calling thread. A driver that chains requests with
+     * thenCompose runs the follow-up on the thread that completed the previous stage - typically
+     * the connection's receive thread. If submitting blocked there while all permits were held,
+     * that thread could no longer deliver the response that would free a permit, and the
+     * connection stalled until an unrelated request timed out.
+     */
+    @Test
+    void submittingDoesNotBlockWhenNoPermitIsAvailable() throws Exception {
+        RequestThrottle throttle = new RequestThrottle(1);
+        CompletableFuture<String> blocker = new CompletableFuture<>();
+        throttle.execute(() -> blocker);
+
+        // No permit left. This must return immediately rather than parking this thread.
+        AtomicBoolean started = new AtomicBoolean();
+        CompletableFuture<String> queued = throttle.execute(() -> {
+            started.set(true);
+            return CompletableFuture.completedFuture("second");
+        });
+
+        assertFalse(started.get(), "the queued request must not start before a permit is free");
+        assertFalse(queued.isDone());
+
+        blocker.complete("first");
+
+        assertEquals("second", queued.get(5, TimeUnit.SECONDS));
+        assertEquals(1, throttle.getAvailablePermits());
+    }
+
+    /**
+     * The deadlock itself: the queued request is released by the completion of the first one, from
+     * the very thread that is inside the first request's completion callback.
+     */
+    @Test
+    void requestCompletingFromWithinAnotherRequestDoesNotDeadlock() throws Exception {
+        RequestThrottle throttle = new RequestThrottle(1);
+        CompletableFuture<String> first = new CompletableFuture<>();
+        CompletableFuture<String> firstResult = throttle.execute(() -> first);
+
+        // Chain a second request onto the first, the way a driver splits a large request.
+        CompletableFuture<String> chained = firstResult.thenCompose(
+            ignored -> throttle.execute(() -> CompletableFuture.completedFuture("chained")));
+
+        // Completing from this thread runs the continuation - and therefore the second submit -
+        // on this thread, while the permit is still held by the first request.
+        first.complete("first");
+
+        assertEquals("chained", chained.get(5, TimeUnit.SECONDS));
+        assertEquals(1, throttle.getAvailablePermits());
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * Queued requests start in submission order.
+     */
+    @Test
+    void queuedRequestsRunInOrder() throws Exception {
+        RequestThrottle throttle = new RequestThrottle(1);
+        CompletableFuture<String> blocker = new CompletableFuture<>();
+        throttle.execute(() -> blocker);
+
+        List<Integer> order = Collections.synchronizedList(new ArrayList<>());
+        List<CompletableFuture<String>> queued = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            int index = i;
+            queued.add(throttle.execute(() -> {
+                order.add(index);
+                return CompletableFuture.completedFuture("done" + index);
+            }));
+        }
+
+        blocker.complete("first");
+        for (CompletableFuture<String> future : queued) {
+            future.get(5, TimeUnit.SECONDS);
+        }
+
+        assertEquals(List.of(0, 1, 2, 3, 4), order);
+        assertEquals(1, throttle.getAvailablePermits());
+    }
+
+    /**
+     * Raising the limit has to let already-queued requests start.
+     */
+    @Test
+    void raisingTheLimitStartsQueuedRequests() throws Exception {
+        RequestThrottle throttle = new RequestThrottle(1);
+        throttle.execute(() -> new CompletableFuture<>());
+
+        CompletableFuture<String> queued = throttle.execute(() -> CompletableFuture.completedFuture("ok"));
+        assertFalse(queued.isDone());
+
+        throttle.adjustMaxConcurrentRequests(2);
+
+        assertEquals("ok", queued.get(5, TimeUnit.SECONDS));
     }
 }

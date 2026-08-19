@@ -64,8 +64,8 @@ type BACnetPriorityValueContract interface {
 
 // BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetPriorityValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
 	GetPeekedIsContextTag() bool
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
@@ -448,8 +448,8 @@ func (m *_BACnetPriorityValue) GetPlx4xTypeName() string {
 	return "BACnetPriorityValue"
 }
 
-func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -458,11 +458,11 @@ func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

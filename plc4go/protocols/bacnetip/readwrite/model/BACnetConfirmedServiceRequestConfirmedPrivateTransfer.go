@@ -289,8 +289,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetPlx4xTypeNam
 	return "BACnetConfirmedServiceRequestConfirmedPrivateTransfer"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += m.VendorId.GetLengthInBits(ctx)
@@ -306,7 +306,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

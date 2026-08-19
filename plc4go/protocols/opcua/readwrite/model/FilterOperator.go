@@ -190,11 +190,11 @@ func CastFilterOperator(structType any) FilterOperator {
 	return castFunc(structType)
 }
 
-func (m FilterOperator) GetLengthInBits(ctx context.Context) uint16 {
+func (m FilterOperator) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m FilterOperator) GetLengthInBytes(ctx context.Context) uint16 {
+func (m FilterOperator) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

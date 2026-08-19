@@ -244,8 +244,8 @@ func (m *_ComObjectTableRealisationType2) GetPlx4xTypeName() string {
 	return "ComObjectTableRealisationType2"
 }
 
-func (m *_ComObjectTableRealisationType2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ComObjectTableContract.(*_ComObjectTable).getLengthInBits(ctx))
+func (m *_ComObjectTableRealisationType2) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ComObjectTableContract.(*_ComObjectTable).getLengthInBits(ctx))
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -264,7 +264,7 @@ func (m *_ComObjectTableRealisationType2) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_ComObjectTableRealisationType2) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ComObjectTableRealisationType2) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

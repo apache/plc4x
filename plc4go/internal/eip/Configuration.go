@@ -28,14 +28,19 @@ import (
 )
 
 type Configuration struct {
-	backplane int8
-	slot      int8
+	backplane                 int8
+	slot                      int8
+	bigEndian                 bool
+	forceUnconnectedOperation bool
+	communicationPath         string
+	connectionSerialNumber    uint16 // 0 = pick a random one per connection (test support option)
 }
 
 func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := Configuration{
 		backplane: 1,
 		slot:      0,
+		bigEndian: true,
 	}
 	if localRackString := getFromOptions(localLogger, options, "backplane"); localRackString != "" {
 		parsedBackplane, err := strconv.ParseInt(localRackString, 10, 8)
@@ -51,6 +56,28 @@ func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (
 		}
 		configuration.slot = int8(parsedSlot)
 	}
+	if bigEndianString := getFromOptionsAliases(localLogger, options, "bigEndian", "big-endian"); bigEndianString != "" {
+		parsedBigEndian, err := strconv.ParseBool(bigEndianString)
+		if err != nil {
+			return Configuration{}, errors.Wrap(err, "Error parsing bigEndian")
+		}
+		configuration.bigEndian = parsedBigEndian
+	}
+	if forceUnconnectedString := getFromOptionsAliases(localLogger, options, "forceUnconnectedOperation", "force-unconnected-operation"); forceUnconnectedString != "" {
+		parsedForceUnconnected, err := strconv.ParseBool(forceUnconnectedString)
+		if err != nil {
+			return Configuration{}, errors.Wrap(err, "Error parsing forceUnconnectedOperation")
+		}
+		configuration.forceUnconnectedOperation = parsedForceUnconnected
+	}
+	configuration.communicationPath = getFromOptionsAliases(localLogger, options, "communicationPath", "communication-path")
+	if serialNumberString := getFromOptionsAliases(localLogger, options, "connectionSerialNumber", "connection-serial-number"); serialNumberString != "" {
+		parsedSerialNumber, err := strconv.ParseUint(serialNumberString, 10, 16)
+		if err != nil {
+			return Configuration{}, errors.Wrap(err, "Error parsing connectionSerialNumber")
+		}
+		configuration.connectionSerialNumber = uint16(parsedSerialNumber)
+	}
 	return configuration, nil
 }
 
@@ -63,6 +90,15 @@ func getFromOptions(localLogger zerolog.Logger, options map[string][]string, key
 			localLogger.Warn().Str("key", key).Msg("Options %s must be unique")
 		}
 		return optionValues[0]
+	}
+	return ""
+}
+
+func getFromOptionsAliases(localLogger zerolog.Logger, options map[string][]string, keys ...string) string {
+	for _, key := range keys {
+		if value := getFromOptions(localLogger, options, key); value != "" {
+			return value
+		}
 	}
 	return ""
 }

@@ -23,10 +23,13 @@ import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.nio.ByteBuffer;
 import java.security.KeyPair;
+import java.security.Signature;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -38,7 +41,6 @@ import org.apache.plc4x.java.opcua.TestCertificateGenerator;
 import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
 import org.apache.plc4x.java.opcua.readwrite.ChunkType;
 import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
-import org.apache.plc4x.java.opcua.readwrite.MessageSecurityMode;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageRequest;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenRequest;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
@@ -48,10 +50,9 @@ import org.apache.plc4x.java.opcua.readwrite.PascalString;
 import org.apache.plc4x.java.opcua.readwrite.Payload;
 import org.apache.plc4x.java.opcua.readwrite.SecurityHeader;
 import org.apache.plc4x.java.opcua.readwrite.SequenceHeader;
+import org.apache.plc4x.java.opcua.readwrite.SignatureData;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -140,7 +141,7 @@ class EncryptionHandlerTest {
             conversation = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
                 messageSecurityMode, true, true);
             EncryptionHandler decrypter = new EncryptionHandler(conversation, serverKeyPair.getPrivateKey());
-            MessagePDU decoded = decrypter.decodeMessage(pdus.get(0));
+            MessagePDU decoded = decrypter.decodeMessage(pdus.getFirst());
             assertInstanceOf(OpcuaOpenRequest.class, decoded);
             OpcuaOpenRequest decodedRequest = (OpcuaOpenRequest) decoded;
             SequenceHeader decodedSequenceHeader = decodedRequest.getMessage().getSequenceHeader();
@@ -193,7 +194,7 @@ class EncryptionHandlerTest {
             secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
                 messageSecurityMode, true, true);
             EncryptionHandler decryptHandler = new EncryptionHandler(secureChannel, serverKeyPair.getPrivateKey());
-            MessagePDU decoded = decryptHandler.decodeMessage(pdus.get(0));
+            MessagePDU decoded = decryptHandler.decodeMessage(pdus.getFirst());
             assertInstanceOf(OpcuaOpenRequest.class, decoded);
             OpcuaOpenRequest decodedRequest = (OpcuaOpenRequest) decoded;
             SequenceHeader decodedSequenceHeader = decodedRequest.getMessage().getSequenceHeader();
@@ -241,7 +242,7 @@ class EncryptionHandlerTest {
             secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
                 messageSecurityMode, true, true);
             EncryptionHandler decryptHandler = new EncryptionHandler(secureChannel, serverKeyPair.getPrivateKey());
-            MessagePDU decoded = decryptHandler.decodeMessage(pdus.get(0));
+            MessagePDU decoded = decryptHandler.decodeMessage(pdus.getFirst());
             OpcuaMessageRequest decodedRequest = (OpcuaMessageRequest) decoded;
             SequenceHeader decodedSequenceHeader = decodedRequest.getMessage().getSequenceHeader();
             Payload decodedPayload = decodedRequest.getMessage();
@@ -287,7 +288,7 @@ class EncryptionHandlerTest {
             secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
                 messageSecurityMode, true, true);
             EncryptionHandler decryptHandler = new EncryptionHandler(secureChannel, serverKeyPair.getPrivateKey());
-            MessagePDU decoded = decryptHandler.decodeMessage(pdus.get(0));
+            MessagePDU decoded = decryptHandler.decodeMessage(pdus.getFirst());
             OpcuaMessageRequest decodedRequest = (OpcuaMessageRequest) decoded;
             SequenceHeader decodedSequenceHeader = decodedRequest.getMessage().getSequenceHeader();
             Payload decodedPayload = decodedRequest.getMessage();
@@ -297,8 +298,56 @@ class EncryptionHandlerTest {
         }
     }
 
+    /**
+     * An X509IdentityToken proves possession of the user's private key with a signature over the
+     * server certificate followed by the server nonce (OPC UA Part 4, 5.6.3). The key that signs
+     * it is the user's, not the application instance key that secures the channel - signing with
+     * the latter is what the driver did before GH-1845 and a server rejects it.
+     */
+    @Test
+    void userTokenSignatureIsMadeWithTheUserKeyOverTheServerCertificateAndNonce() throws Exception {
+        Entry<CertificateKeyPair, CertificateKeyPair> keyPairs = initialize(2048, 2048);
+        CertificateKeyPair applicationKeyPair = keyPairs.getKey();
+        CertificateKeyPair serverKeyPair = keyPairs.getValue();
+        Entry<PrivateKey, X509Certificate> user = TestCertificateGenerator.generate(2048, "cn=user", 3600);
+
+        Conversation conversation = createSecureChannel(applicationKeyPair.getCertificate(),
+            serverKeyPair.getCertificate(), SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT, true, true);
+        EncryptionHandler handler = new EncryptionHandler(conversation, applicationKeyPair.getPrivateKey());
+
+        SignatureData signatureData = handler.createUserTokenSignature(user.getKey(), SecurityPolicy.Basic256Sha256);
+
+        assertEquals(SecurityPolicy.Basic256Sha256.getAsymmetricSignatureAlgorithm().getUri(),
+            signatureData.getAlgorithm().getStringValue());
+
+        byte[] serverCertificate = serverKeyPair.getCertificate().getEncoded();
+        byte[] serverNonce = conversation.getRemoteNonce();
+        byte[] signed = ByteBuffer.allocate(serverCertificate.length + serverNonce.length)
+            .put(serverCertificate).put(serverNonce).array();
+
+        Signature verifier = SecurityPolicy.Basic256Sha256.getAsymmetricSignatureAlgorithm().getSignature();
+        verifier.initVerify(user.getValue().getPublicKey());
+        verifier.update(signed);
+        assertTrue(verifier.verify(signatureData.getSignature().getStringValue()),
+            "the signature has to verify with the user certificate's public key");
+
+        Signature applicationVerifier = SecurityPolicy.Basic256Sha256.getAsymmetricSignatureAlgorithm().getSignature();
+        applicationVerifier.initVerify(applicationKeyPair.getCertificate().getPublicKey());
+        applicationVerifier.update(signed);
+        assertFalse(applicationVerifier.verify(signatureData.getSignature().getStringValue()),
+            "the application instance key must not be the one signing the user token");
+    }
+
     private static PascalByteString stringFromBytes(byte[] bytes) {
         return new PascalByteString(bytes.length, bytes);
+    }
+
+    private static int encodedLength(X509Certificate certificate) {
+        try {
+            return certificate == null ? 0 : certificate.getEncoded().length;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static Conversation createSecureChannel(X509Certificate localCertificate, X509Certificate remoteCertificate, SecurityPolicy securityPolicy,
@@ -307,6 +356,8 @@ class EncryptionHandlerTest {
         Conversation conversation = Mockito.mock(Conversation.class);
         when(conversation.getLimits()).thenReturn(limits);
         when(conversation.getLocalCertificate()).thenReturn(localCertificate);
+        // Mirrors production: without a CA chain the header carries just this certificate.
+        when(conversation.getLocalCertificateChainSize()).thenReturn(encodedLength(localCertificate));
         when(conversation.getRemoteCertificate()).thenReturn(remoteCertificate);
         when(conversation.getSecurityPolicy()).thenReturn(securityPolicy);
         when(conversation.getMessageSecurity()).thenReturn(messageSecurity);

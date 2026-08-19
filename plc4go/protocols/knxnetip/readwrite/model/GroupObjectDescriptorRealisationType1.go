@@ -275,8 +275,8 @@ func (m *_GroupObjectDescriptorRealisationType1) GetPlx4xTypeName() string {
 	return "GroupObjectDescriptorRealisationType1"
 }
 
-func (m *_GroupObjectDescriptorRealisationType1) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_GroupObjectDescriptorRealisationType1) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (dataPointer)
 	lengthInBits += 8
@@ -308,7 +308,7 @@ func (m *_GroupObjectDescriptorRealisationType1) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_GroupObjectDescriptorRealisationType1) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_GroupObjectDescriptorRealisationType1) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataScheduleDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScheduleDefault"
 }
 
-func (m *_BACnetConstructedDataScheduleDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataScheduleDefault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (scheduleDefault)
 	lengthInBits += m.ScheduleDefault.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataScheduleDefault) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataScheduleDefault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataScheduleDefault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -231,8 +231,8 @@ func (m *_SALDataAirConditioning) GetPlx4xTypeName() string {
 	return "SALDataAirConditioning"
 }
 
-func (m *_SALDataAirConditioning) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataAirConditioning) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (airConditioningData)
 	lengthInBits += m.AirConditioningData.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_SALDataAirConditioning) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataAirConditioning) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataAirConditioning) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

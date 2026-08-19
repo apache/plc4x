@@ -64,8 +64,8 @@ type BACnetContextTagContract interface {
 
 // BACnetContextTagRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetContextTagRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() BACnetDataType
 }
@@ -434,8 +434,8 @@ func (m *_BACnetContextTag) GetPlx4xTypeName() string {
 	return "BACnetContextTag"
 }
 
-func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -447,11 +447,11 @@ func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetContextTag) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetContextTag) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetContextTag) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTag) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

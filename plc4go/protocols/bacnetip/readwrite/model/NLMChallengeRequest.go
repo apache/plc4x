@@ -241,8 +241,8 @@ func (m *_NLMChallengeRequest) GetPlx4xTypeName() string {
 	return "NLMChallengeRequest"
 }
 
-func (m *_NLMChallengeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMChallengeRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (messageChallenge)
 	lengthInBits += 8
@@ -256,7 +256,7 @@ func (m *_NLMChallengeRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMChallengeRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMChallengeRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

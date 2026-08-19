@@ -130,11 +130,11 @@ func CastJsonNetworkMessageContentMask(structType any) JsonNetworkMessageContent
 	return castFunc(structType)
 }
 
-func (m JsonNetworkMessageContentMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m JsonNetworkMessageContentMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m JsonNetworkMessageContentMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m JsonNetworkMessageContentMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

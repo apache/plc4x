@@ -293,8 +293,8 @@ func (m *_CBusPointToPointCommandIndirect) GetPlx4xTypeName() string {
 	return "CBusPointToPointCommandIndirect"
 }
 
-func (m *_CBusPointToPointCommandIndirect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).getLengthInBits(ctx))
+func (m *_CBusPointToPointCommandIndirect) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).getLengthInBits(ctx))
 
 	// Simple field (bridgeAddress)
 	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
@@ -308,7 +308,7 @@ func (m *_CBusPointToPointCommandIndirect) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

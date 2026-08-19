@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSecurityPDUTimeout"
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (securityPduTimeout)
 	lengthInBits += m.SecurityPduTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

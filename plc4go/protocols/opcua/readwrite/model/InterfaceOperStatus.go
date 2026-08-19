@@ -124,11 +124,11 @@ func CastInterfaceOperStatus(structType any) InterfaceOperStatus {
 	return castFunc(structType)
 }
 
-func (m InterfaceOperStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m InterfaceOperStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m InterfaceOperStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m InterfaceOperStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

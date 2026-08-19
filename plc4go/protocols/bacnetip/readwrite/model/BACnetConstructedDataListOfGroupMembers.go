@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataListOfGroupMembers) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataListOfGroupMembers"
 }
 
-func (m *_BACnetConstructedDataListOfGroupMembers) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataListOfGroupMembers) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ListOfGroupMembers) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataListOfGroupMembers) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataListOfGroupMembers) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataListOfGroupMembers) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

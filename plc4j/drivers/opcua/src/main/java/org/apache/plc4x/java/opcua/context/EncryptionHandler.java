@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua.context;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
+import java.security.Signature;
 import java.security.Security;
 import java.util.List;
 import java.util.function.Supplier;
@@ -67,7 +68,8 @@ public class EncryptionHandler {
         if (message instanceof OpcuaOpenRequest || message instanceof OpcuaOpenResponse) {
             Chunk chunk = new ChunkFactory().create(true, conversation.isSymmetricEncryptionEnabled(), conversation.isSymmetricSigningEnabled(),
                 conversation.getSecurityPolicy(), limits,
-                conversation.getLocalCertificate(), conversation.getRemoteCertificate()
+                conversation.getLocalCertificate(), conversation.getRemoteCertificate(),
+                conversation.getLocalCertificateChainSize()
             );
             return asymmetricEncryptionHandler.encodeMessage(chunk, message, sequenceSupplier);
         }
@@ -111,9 +113,47 @@ public class EncryptionHandler {
         return new SignatureData(new PascalString(securityPolicy.getAsymmetricSignatureAlgorithm().getUri()), new PascalByteString(signed.length, signed));
     }
 
-    public byte[] encryptPassword(byte[] data) {
+    /**
+     * Proof that the client holds the private key of the certificate it presented in an
+     * {@code X509IdentityToken}: a signature over the server certificate followed by the server
+     * nonce (OPC UA Part 4, 5.6.3). Same bytes as {@link #createClientSignature()}, but signed
+     * with the <em>user's</em> key rather than the application instance key, and with the
+     * algorithm of the user token policy - which need not be the one securing the channel.
+     *
+     * @param userPrivateKey the private key belonging to the user certificate that was sent
+     * @param policy         the security policy governing the user token
+     */
+    public SignatureData createUserTokenSignature(PrivateKey userPrivateKey, SecurityPolicy policy)
+        throws GeneralSecurityException {
+        byte[] serverNonce = conversation.getRemoteNonce();
+        byte[] serverCertificate;
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+            serverCertificate = conversation.getRemoteCertificate().getEncoded();
+        } catch (Exception e) {
+            serverCertificate = new byte[0];
+        }
+        byte[] bytes = ByteBuffer.allocate(serverCertificate.length + serverNonce.length)
+            .put(serverCertificate).put(serverNonce).array();
+
+        Signature signature = policy.getAsymmetricSignatureAlgorithm().getSignature();
+        signature.initSign(userPrivateKey);
+        signature.update(bytes);
+        byte[] signed = signature.sign();
+        return new SignatureData(new PascalString(policy.getAsymmetricSignatureAlgorithm().getUri()),
+            new PascalByteString(signed.length, signed));
+    }
+
+    /**
+     * Encrypts a user token password with the server's public key.
+     *
+     * @param data   the encodeable password (length prefix, password, server nonce)
+     * @param policy the security policy of the selected user token policy - it decides the
+     *               algorithm, which is not necessarily the one used for the secure channel
+     * @return the encrypted password, or null if it could not be encrypted
+     */
+    public byte[] encryptPassword(byte[] data, SecurityPolicy policy) {
+        try {
+            Cipher cipher = policy.getAsymmetricEncryptionAlgorithm().getCipher();
             cipher.init(Cipher.ENCRYPT_MODE, this.conversation.getRemoteCertificate().getPublicKey());
             return cipher.doFinal(data);
         } catch (Exception e) {

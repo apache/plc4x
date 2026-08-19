@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataProportionalConstant) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProportionalConstant"
 }
 
-func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (proportionalConstant)
 	lengthInBits += m.ProportionalConstant.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

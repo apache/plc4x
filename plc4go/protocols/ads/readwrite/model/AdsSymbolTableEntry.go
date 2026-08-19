@@ -606,8 +606,8 @@ func (m *_AdsSymbolTableEntry) GetPlx4xTypeName() string {
 	return "AdsSymbolTableEntry"
 }
 
-func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (entryLength)
 	lengthInBits += 32
@@ -703,19 +703,19 @@ func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 16
 
 	// Simple field (name)
-	lengthInBits += uint16(int32(uint16(len(m.GetName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetName()))) * int32(int32(8)))
 
 	// Const Field (nameTerminator)
 	lengthInBits += 8
 
 	// Simple field (dataTypeName)
-	lengthInBits += uint16(int32(uint16(len(m.GetDataTypeName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetDataTypeName()))) * int32(int32(8)))
 
 	// Const Field (dataTypeNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
-	lengthInBits += uint16(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
@@ -727,7 +727,7 @@ func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Guid) > 0 {
-		lengthInBits += 8 * uint16(len(m.Guid))
+		lengthInBits += 8 * uint64(len(m.Guid))
 	}
 
 	// Optional Field (attributes)
@@ -737,13 +737,13 @@ func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Rest) > 0 {
-		lengthInBits += 8 * uint16(len(m.Rest))
+		lengthInBits += 8 * uint64(len(m.Rest))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsSymbolTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsSymbolTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
