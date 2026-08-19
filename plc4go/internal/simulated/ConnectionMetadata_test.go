@@ -25,6 +25,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func testConnection() *Connection {
@@ -37,30 +39,10 @@ func testConnection() *Connection {
 	}
 }
 
-// assertAdvertisedCapabilityHasBuilder checks the direction that actually matters: a connection
-// that advertises a capability has to hand out a working builder for it. The converse is
-// deliberately not asserted - a driver may hand out a builder whose operations report
-// "not implemented" while honestly advertising the capability as absent, which is what the
-// simulated connection does for subscribing.
-func assertAdvertisedCapabilityHasBuilder(t *testing.T, capability string, advertised bool, builder func() any) {
-	t.Helper()
-	if !advertised {
-		return
-	}
-	var handedOut any
-	panicked := func() (panicked bool) {
-		defer func() {
-			if recover() != nil {
-				panicked = true
-			}
-		}()
-		handedOut = builder()
-		return false
-	}()
-	assert.False(t, panicked, "%s is advertised but the builder panicked", capability)
-	assert.NotNil(t, handedOut, "%s is advertised but no builder was handed out", capability)
-}
-
+// TestConnection_AdvertisedCapabilitiesHaveBuilders uses the lenient assertion on purpose: the
+// simulated connection hands out a subscription builder while advertising no subscribing, so only
+// the "advertised implies a builder" direction is a property of this driver. The two tests below
+// pin the other half.
 func TestConnection_AdvertisedCapabilitiesHaveBuilders(t *testing.T) {
 	c := testConnection()
 	metadata := c.GetMetadata()
@@ -70,10 +52,10 @@ func TestConnection_AdvertisedCapabilitiesHaveBuilders(t *testing.T) {
 	assert.False(t, metadata.CanSubscribe(), "the simulated subscriber is a stub")
 	assert.False(t, metadata.CanBrowse(), "the simulated connection has no browser")
 
-	assertAdvertisedCapabilityHasBuilder(t, "reading", metadata.CanRead(), func() any { return c.ReadRequestBuilder() })
-	assertAdvertisedCapabilityHasBuilder(t, "writing", metadata.CanWrite(), func() any { return c.WriteRequestBuilder() })
-	assertAdvertisedCapabilityHasBuilder(t, "subscribing", metadata.CanSubscribe(), func() any { return c.SubscriptionRequestBuilder() })
-	assertAdvertisedCapabilityHasBuilder(t, "browsing", metadata.CanBrowse(), func() any { return c.BrowseRequestBuilder() })
+	testutils.AssertAdvertisedCapabilityHasBuilder(t, "reading", metadata.CanRead(), func() any { return c.ReadRequestBuilder() })
+	testutils.AssertAdvertisedCapabilityHasBuilder(t, "writing", metadata.CanWrite(), func() any { return c.WriteRequestBuilder() })
+	testutils.AssertAdvertisedCapabilityHasBuilder(t, "subscribing", metadata.CanSubscribe(), func() any { return c.SubscriptionRequestBuilder() })
+	testutils.AssertAdvertisedCapabilityHasBuilder(t, "browsing", metadata.CanBrowse(), func() any { return c.BrowseRequestBuilder() })
 }
 
 // TestConnection_UnadvertisedSubscribingDoesNotWork pins the other half of the simulated

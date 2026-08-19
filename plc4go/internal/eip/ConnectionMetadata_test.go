@@ -23,30 +23,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-)
 
-// assertBuilderMatchesCapability checks that a connection hands out a request builder exactly when
-// its metadata advertises the matching capability. An advertised capability has to produce a
-// builder, and an unadvertised one has to refuse rather than hand out a builder that cannot work.
-func assertBuilderMatchesCapability(t *testing.T, capability string, advertised bool, builder func() any) {
-	t.Helper()
-	var handedOut any
-	panicked := func() (panicked bool) {
-		defer func() {
-			if recover() != nil {
-				panicked = true
-			}
-		}()
-		handedOut = builder()
-		return false
-	}()
-	if advertised {
-		assert.False(t, panicked, "%s is advertised but the builder panicked", capability)
-		assert.NotNil(t, handedOut, "%s is advertised but no builder was handed out", capability)
-		return
-	}
-	assert.True(t, panicked, "%s is not advertised but a builder was handed out", capability)
-}
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+)
 
 func TestConnection_MetadataMatchesBuilders(t *testing.T) {
 	c := NewConnection(nil, Configuration{}, DriverContext{}, NewTagHandler(), nil, map[string][]string{})
@@ -57,9 +36,9 @@ func TestConnection_MetadataMatchesBuilders(t *testing.T) {
 	assert.False(t, metadata.CanSubscribe(), "the eip driver has no subscriber")
 	assert.False(t, metadata.CanBrowse(), "the eip driver has no browser")
 
-	assertBuilderMatchesCapability(t, "reading", metadata.CanRead(), func() any { return c.ReadRequestBuilder() })
-	assertBuilderMatchesCapability(t, "writing", metadata.CanWrite(), func() any { return c.WriteRequestBuilder() })
-	assertBuilderMatchesCapability(t, "subscribing", metadata.CanSubscribe(), func() any { return c.SubscriptionRequestBuilder() })
-	assertBuilderMatchesCapability(t, "subscribing", metadata.CanSubscribe(), func() any { return c.UnsubscriptionRequestBuilder() })
-	assertBuilderMatchesCapability(t, "browsing", metadata.CanBrowse(), func() any { return c.BrowseRequestBuilder() })
+	testutils.AssertBuilderMatchesCapability(t, "reading", metadata.CanRead(), func() any { return c.ReadRequestBuilder() })
+	testutils.AssertBuilderMatchesCapability(t, "writing", metadata.CanWrite(), func() any { return c.WriteRequestBuilder() })
+	testutils.AssertBuilderMatchesCapability(t, "subscribing", metadata.CanSubscribe(), func() any { return c.SubscriptionRequestBuilder() })
+	testutils.AssertBuilderMatchesCapability(t, "subscribing", metadata.CanSubscribe(), func() any { return c.UnsubscriptionRequestBuilder() })
+	testutils.AssertBuilderMatchesCapability(t, "browsing", metadata.CanBrowse(), func() any { return c.BrowseRequestBuilder() })
 }
