@@ -174,8 +174,16 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
         this.positionInBits = positionInBits;
     }
 
+    /**
+     * Compare against the bits that remain, never against {@code positionInBits + bitsNeeded}: the
+     * sum wraps negative for bit counts approaching {@link Integer#MAX_VALUE} and the check then
+     * passes for a request the buffer cannot possibly satisfy. Both operands of the subtraction are
+     * non-negative ({@code positionInBits} is kept within {@code [0, sizeInBits]}), so it cannot
+     * overflow for any input. Callers size allocations from {@code bitsNeeded}, so this is the last
+     * point at which an implausible width can be rejected cheaply.
+     */
     protected void ensureAvailable(int bitsNeeded) throws BufferException {
-        if (positionInBits + bitsNeeded > sizeInBits) {
+        if (bitsNeeded < 0 || bitsNeeded > sizeInBits - positionInBits) {
             throw new BufferException("Not enough bits left to read");
         }
     }
