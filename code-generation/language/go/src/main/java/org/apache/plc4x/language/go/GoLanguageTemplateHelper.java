@@ -1354,8 +1354,27 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             if (i > 1) {
                 sb.append(", ");
             }
+            // Unwrapping a unary term reaches its operand, which is what the branches below know how
+            // to render with the STATIC_CALL specific handling. The operator has to be emitted here
+            // instead, or it is simply lost: an argument written as -1 in the mspec came out as 1,
+            // which flipped the umas terminated-string helpers from variable length into a one byte
+            // fixed width. Operators mirror toUnaryTermExpression.
+            String unaryOperator = null;
             if (arg instanceof UnaryTerm) {
-                arg = ((UnaryTerm) arg).getA();
+                UnaryTerm unaryTerm = (UnaryTerm) arg;
+                unaryOperator = unaryTerm.getOperation();
+                switch (unaryOperator) {
+                    case "!":
+                    case "-":
+                        sb.append(unaryOperator).append("(");
+                        break;
+                    case "()":
+                        sb.append("(");
+                        break;
+                    default:
+                        throw new FreemarkerException("Unsupported unary operation type " + unaryOperator);
+                }
+                arg = unaryTerm.getA();
             }
             if (arg instanceof VariableLiteral) {
                 tracer = tracer.dive("VariableLiteral nr." + i);
@@ -1417,6 +1436,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 sb.append(toBinaryTermExpression(field, typeReference, (BinaryTerm) arg, parserArguments, serializerArguments, serialize, tracer));
             } else {
                 throw new FreemarkerException(arg.getClass().getName());
+            }
+            if (unaryOperator != null) {
+                sb.append(")");
             }
         }
         sb.append(")");

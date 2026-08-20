@@ -299,7 +299,7 @@ func (m *_UmasUDTDefinition) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.Unknown4 = unknown4
 
-	value, err := ReadManualField[string](ctx, "value", readBuffer, EnsureType[string](ParseTerminatedString(ctx, readBuffer, 1)), codegen.WithEncoding("UTF8"))
+	value, err := ReadManualField[string](ctx, "value", readBuffer, EnsureType[string](ParseTerminatedString(ctx, readBuffer, -(1))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -345,7 +345,9 @@ func (m *_UmasUDTDefinition) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'unknown4' field")
 	}
 
-	if err := WriteManualField[string](ctx, "value", func(ctx context.Context) error { return SerializeTerminatedString(ctx, writeBuffer, m.GetValue(), 1) }, writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
+	if err := WriteManualField[string](ctx, "value", func(ctx context.Context) error {
+		return SerializeTerminatedString(ctx, writeBuffer, m.GetValue(), -(1))
+	}, writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 

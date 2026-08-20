@@ -311,7 +311,7 @@ func (m *_UmasDatatypeReference) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.reservedField0 = reservedField0
 
-	value, err := ReadManualField[string](ctx, "value", readBuffer, EnsureType[string](ParseTerminatedString(ctx, readBuffer, 1)), codegen.WithEncoding("UTF8"))
+	value, err := ReadManualField[string](ctx, "value", readBuffer, EnsureType[string](ParseTerminatedString(ctx, readBuffer, -(1))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -361,7 +361,9 @@ func (m *_UmasDatatypeReference) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	if err := WriteManualField[string](ctx, "value", func(ctx context.Context) error { return SerializeTerminatedString(ctx, writeBuffer, m.GetValue(), 1) }, writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
+	if err := WriteManualField[string](ctx, "value", func(ctx context.Context) error {
+		return SerializeTerminatedString(ctx, writeBuffer, m.GetValue(), -(1))
+	}, writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
