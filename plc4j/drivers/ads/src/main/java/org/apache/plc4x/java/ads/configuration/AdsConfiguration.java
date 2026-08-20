@@ -64,6 +64,11 @@ public class AdsConfiguration implements Configuration {
     @Description("Default timeout for all types of requests.")
     protected int timeoutRequest;
 
+    @ConfigurationParameter("max-data-type-table-depth")
+    @IntDefaultValue(20)
+    @Description("Maximum nesting depth accepted when parsing the data-type table uploaded from the device. An entry may contain further entries, so without a limit the depth of the tree is dictated by the device rather than by the driver, and a table of well under a megabyte can nest deeply enough to exhaust the parser's stack. Real type hierarchies are only a handful of levels deep, so the default is already generous; raise it for a device that is known to need more. Note that the JVM's own stack imposes a practical ceiling of a few thousand levels regardless of what is configured here.")
+    protected int maxDataTypeTableDepth;
+
     @ConfigurationParameter("load-symbol-and-data-type-tables")
     @BooleanDefaultValue(true)
     @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, reading and writing is limited to direct addresses (`{IndexGroup}/{IndexOffset}:{TYPE}`): symbolic addresses cannot be resolved without the tables and are rejected with a corresponding error. Browsing is unavailable for the same reason. Subscriptions are unaffected, as they resolve symbol handles on the device.")
@@ -107,6 +112,14 @@ public class AdsConfiguration implements Configuration {
 
     public void setTimeoutRequest(int timeoutRequest) {
         this.timeoutRequest = timeoutRequest;
+    }
+
+    public int getMaxDataTypeTableDepth() {
+        return maxDataTypeTableDepth;
+    }
+
+    public void setMaxDataTypeTableDepth(int maxDataTypeTableDepth) {
+        this.maxDataTypeTableDepth = maxDataTypeTableDepth;
     }
 
     public boolean isLoadSymbolAndDataTypeTables() {
