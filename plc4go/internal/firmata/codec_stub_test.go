@@ -36,11 +36,14 @@ import (
 // transport in MessageCodec_test.go; here it would only get in the way, as driving a board means
 // driving both ends of the same transport at once.
 type stubCodec struct {
-	mutex    sync.Mutex
-	sent     []spi.Message
-	sendErr  error
-	requests chan stubRequest
-	incoming chan spi.Message
+	mutex   sync.Mutex
+	sent    []spi.Message
+	sendErr error
+	// remainingSends is how many further sends a failSendsAfter still lets through before sendErr
+	// starts to bite. It is what lets a test fail a batch of messages part-way.
+	remainingSends int
+	requests       chan stubRequest
+	incoming       chan spi.Message
 }
 
 type stubRequest struct {
@@ -66,8 +69,8 @@ func (c *stubCodec) IsRunning() bool { return true }
 func (c *stubCodec) Send(_ context.Context, _ string, message spi.Message) error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	if c.sendErr != nil {
-		return c.sendErr
+	if err := c.sendError(); err != nil {
+		return err
 	}
 	c.sent = append(c.sent, message)
 	return nil
@@ -78,7 +81,7 @@ func (c *stubCodec) Expect(context.Context, string, spi.AcceptsMessage, spi.Hand
 
 func (c *stubCodec) SendRequest(_ context.Context, _ string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	c.mutex.Lock()
-	sendErr := c.sendErr
+	sendErr := c.sendError()
 	if sendErr == nil {
 		c.sent = append(c.sent, message)
 	}
@@ -106,10 +109,31 @@ func (c *stubCodec) getSent() []spi.Message {
 	return append([]spi.Message(nil), c.sent...)
 }
 
+// sendError reports whether this send is to fail, counting down the sends a failSendsAfter still
+// lets through. Callers hold the mutex.
+func (c *stubCodec) sendError() error {
+	if c.sendErr == nil {
+		return nil
+	}
+	if c.remainingSends > 0 {
+		c.remainingSends--
+		return nil
+	}
+	return c.sendErr
+}
+
 // failSends makes every following send fail.
 func (c *stubCodec) failSends() {
+	c.failSendsAfter(0)
+}
+
+// failSendsAfter lets the next n sends through and fails every send after them. It is how a test
+// drives a batch of messages which dies part-way - the case a claim recorded before its messages
+// went out has to survive.
+func (c *stubCodec) failSendsAfter(n int) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+	c.remainingSends = n
 	c.sendErr = errors.New("the transport is gone")
 }
 
@@ -118,6 +142,7 @@ func (c *stubCodec) allowSends() {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.sendErr = nil
+	c.remainingSends = 0
 }
 
 // sentBytesOf serializes everything the connection has sent, which is what would have been on the

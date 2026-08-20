@@ -68,10 +68,11 @@ type Connection struct {
 	connectionId string
 	tracer       tracer.Tracer
 
-	// lifecycleMutex guards the stray-message drain's cancel function so Close can be called
-	// concurrently with, and without, a preceding Connect.
+	// lifecycleMutex guards the stray-message drain's handles so Close can be called concurrently
+	// with, and without, a preceding Connect.
 	lifecycleMutex sync.Mutex
 	drainCancel    context.CancelFunc
+	drainDone      chan struct{}
 
 	wg sync.WaitGroup // use to track spawned go routines
 
@@ -177,6 +178,9 @@ func (c *Connection) Connect(ctx context.Context) error {
 	}
 
 	if err := c.handshake(ctx); err != nil {
+		// The caller gets an error instead of a connection and will never call Close on it, so the
+		// drain has to be reeled back in here or its goroutine outlives the failed attempt.
+		c.stopStrayMessageDrain()
 		if disconnectErr := c.messageCodec.Disconnect(); disconnectErr != nil {
 			c.log.Debug().Err(disconnectErr).Msg("error disconnecting after a failed handshake")
 		}
@@ -217,13 +221,7 @@ func (c *Connection) handshake(ctx context.Context) error {
 // AbEthConnection just closes the socket - so there is nothing to send here.
 func (c *Connection) Close() error {
 	c.log.Trace().Msg("Closing")
-	c.lifecycleMutex.Lock()
-	drainCancel := c.drainCancel
-	c.drainCancel = nil
-	c.lifecycleMutex.Unlock()
-	if drainCancel != nil {
-		drainCancel()
-	}
+	c.stopStrayMessageDrain()
 	if c.subscriber != nil {
 		c.subscriber.Close()
 	}
@@ -240,18 +238,21 @@ func (c *Connection) Close() error {
 // so on a flaky link a handful of late responses turn into permanent log noise. Draining costs one
 // goroutine and turns that into a single debug line per stray packet.
 func (c *Connection) startStrayMessageDrain() {
-	drainCtx, drainCancel := context.WithCancel(context.Background())
-	c.lifecycleMutex.Lock()
-	previous := c.drainCancel
-	c.drainCancel = drainCancel
-	c.lifecycleMutex.Unlock()
 	// A second Connect on the same connection must not leave the first drain running.
-	if previous != nil {
-		previous()
-	}
+	c.stopStrayMessageDrain()
+
+	drainCtx, drainCancel := context.WithCancel(context.Background())
+	drainDone := make(chan struct{})
+	c.lifecycleMutex.Lock()
+	c.drainCancel = drainCancel
+	c.drainDone = drainDone
+	c.lifecycleMutex.Unlock()
 
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 	c.wg.Go(func() {
+		// Closing this last, after the recover below, is what lets stopStrayMessageDrain wait for
+		// the goroutine to really be gone.
+		defer close(drainDone)
 		defer func() {
 			if err := recover(); err != nil {
 				c.log.Error().
@@ -272,6 +273,21 @@ func (c *Connection) startStrayMessageDrain() {
 			}
 		}
 	})
+}
+
+// stopStrayMessageDrain ends the drain and waits for its goroutine to be gone, so that a caller
+// which stops the drain can rely on nothing reading the channel any more. Calling it without a
+// running drain, or twice, is harmless.
+func (c *Connection) stopStrayMessageDrain() {
+	c.lifecycleMutex.Lock()
+	drainCancel, drainDone := c.drainCancel, c.drainDone
+	c.drainCancel, c.drainDone = nil, nil
+	c.lifecycleMutex.Unlock()
+	if drainCancel == nil {
+		return
+	}
+	drainCancel()
+	<-drainDone
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

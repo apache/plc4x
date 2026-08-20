@@ -126,31 +126,3 @@ func TestEndToEnd_ReadThroughTheRunningCodec(t *testing.T) {
 		require.FailNow(t, "the read never completed")
 	}
 }
-
-// A packet no request is waiting for used to sit in the codec's default incoming message channel for
-// the life of the connection: nothing read that channel, so once its 100 slots were full every
-// further stray packet cost a warning. The drain keeps it empty.
-func TestEndToEnd_StrayPacketsAreDrained(t *testing.T) {
-	connection, codec := newTestConnection(t, DefaultConfiguration())
-
-	connectErrors := make(chan error, 1)
-	go func() {
-		connectErrors <- connection.Connect(testutils.TestContext(t))
-	}()
-	connectHandshake(t, codec)
-	require.NoError(t, <-connectErrors)
-
-	// A late read response - its request timed out long ago - for every slot the channel has.
-	incoming := codec.GetDefaultIncomingMessageChannel()
-	for i := 0; i < cap(incoming); i++ {
-		incoming <- readWriteModel.NewCIPEncapsulationReadResponse(
-			testSessionHandle, 0, emptySenderContext, 0,
-			readWriteModel.NewDF1CommandResponseMessageProtectedTypedLogicalRead(
-				df1SourceAddress, DefaultConfiguration().station, 0, uint16(i), []uint8{0}))
-	}
-	assert.Eventually(t, func() bool {
-		return len(incoming) == 0
-	}, 20*time.Second, time.Millisecond, "the stray packets were never drained")
-
-	require.NoError(t, connection.Close())
-}

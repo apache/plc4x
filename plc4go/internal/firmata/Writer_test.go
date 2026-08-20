@@ -249,3 +249,31 @@ func TestWriter_AFailedSendGivesThePinClaimBack(t *testing.T) {
 		0xF5, 0x09, 0x01, // set digital pin value: pin 9, high
 	}, codec.sentBytesOf(t))
 }
+
+// The interesting failure is the partial one: the set-pin-mode makes it onto the wire and the value
+// behind it doesn't. The pin is not usably configured either way - nothing was written to it - so
+// the claim still has to go back, and the retry re-sends both messages.
+func TestWriter_APartialSendGivesThePinClaimBack(t *testing.T) {
+	codec := newStubCodec()
+	connection := NewConnection(DefaultConfiguration(), codec, map[string][]string{}, NewTagHandler())
+	codec.failSendsAfter(1)
+
+	result := executeWrite(t, connection, "led", "digital:9", true)
+	require.NoError(t, result.GetErr())
+	require.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, result.GetResponse().GetResponseCode("led"))
+	func() {
+		connection.pinMutex.Lock()
+		defer connection.pinMutex.Unlock()
+		assert.NotContains(t, connection.digitalPins, uint8(9), "a claim whose batch died part-way has to be given back")
+	}()
+
+	codec.allowSends()
+	result = executeWrite(t, connection, "led", "digital:9", true)
+	require.NoError(t, result.GetErr())
+	assert.Equal(t, apiModel.PlcResponseCode_OK, result.GetResponse().GetResponseCode("led"))
+	assert.Equal(t, []byte{
+		0xF4, 0x09, 0x01, // the set pin mode which did get out the first time
+		0xF4, 0x09, 0x01, // and both messages again from the retry
+		0xF5, 0x09, 0x01,
+	}, codec.sentBytesOf(t))
+}

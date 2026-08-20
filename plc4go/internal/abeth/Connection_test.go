@@ -29,6 +29,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
@@ -392,4 +393,111 @@ func TestConnection_CloseWithoutConnect(t *testing.T) {
 	// Closing a connection that was never connected has to be harmless: the driver closes on every
 	// failed connect attempt.
 	assert.NoError(t, connection.Close())
+}
+
+// strayMessage is a packet no request is waiting for: what the codec hands to its default incoming
+// message channel and what the drain is there to throw away.
+func strayMessage() spi.Message {
+	return readWriteModel.NewCIPEncapsulationReadResponse(
+		testSessionHandle, 0, emptySenderContext, 0,
+		readWriteModel.NewDF1CommandResponseMessageProtectedTypedLogicalRead(
+			df1SourceAddress, DefaultConfiguration().station, 0, 1, []uint8{0}))
+}
+
+// requireNothingDrains insists that nothing is reading the codec's default incoming message channel
+// any more: a message handed to it stays there. Both the close and the failed-connect path stop the
+// drain synchronously, so a single check is enough - there is no goroutine left that could still
+// take the message afterwards.
+func requireNothingDrains(t *testing.T, codec *stubCodec) {
+	t.Helper()
+	incoming := codec.GetDefaultIncomingMessageChannel()
+	require.Empty(t, incoming, "the drain should have emptied the channel while it was running")
+	incoming <- strayMessage()
+	assert.Len(t, incoming, 1, "something is still draining the channel")
+}
+
+// TestConnection_StrayMessageDrainStopsOnClose pins the drain's lifetime to the connection's: it has
+// to be gone once Close returned, rather than sitting on the codec's channel forever.
+func TestConnection_StrayMessageDrainStopsOnClose(t *testing.T) {
+	connection, codec := newTestConnection(t, DefaultConfiguration())
+
+	connectResult := make(chan error, 1)
+	go func() {
+		connectResult <- connection.Connect(testutils.TestContext(t))
+	}()
+	connectHandshake(t, codec)
+	require.NoError(t, <-connectResult)
+
+	// While the connection is up the drain takes everything that lands on the channel.
+	codec.GetDefaultIncomingMessageChannel() <- strayMessage()
+	require.Eventually(t, func() bool {
+		return len(codec.GetDefaultIncomingMessageChannel()) == 0
+	}, 5*time.Second, time.Millisecond, "the stray message was never drained")
+
+	require.NoError(t, connection.Close())
+	requireNothingDrains(t, codec)
+}
+
+// TestConnection_StrayMessageDrainStopsWhenTheHandshakeFails covers the path with no Close in it: the
+// driver hands the caller an error instead of a connection, so nobody will ever close this one and
+// the drain has to have stopped itself.
+func TestConnection_StrayMessageDrainStopsWhenTheHandshakeFails(t *testing.T) {
+	connection, codec := newTestConnection(t, DefaultConfiguration())
+
+	connectResult := make(chan error, 1)
+	go func() {
+		connectResult <- connection.Connect(testutils.TestContext(t))
+	}()
+	request := codec.nextRequest(t)
+	require.NoError(t, request.handleError(assert.AnError))
+	require.Error(t, <-connectResult)
+
+	requireNothingDrains(t, codec)
+}
+
+// TestConnection_StrayMessageDrainIsNotDoubledByASecondConnect makes sure a reconnect replaces the
+// drain instead of stacking a second one on top of it, and that closing still stops all of them.
+func TestConnection_StrayMessageDrainIsNotDoubledByASecondConnect(t *testing.T) {
+	connection, codec := newTestConnection(t, DefaultConfiguration())
+
+	for i := 0; i < 3; i++ {
+		connectResult := make(chan error, 1)
+		go func() {
+			connectResult <- connection.Connect(testutils.TestContext(t))
+		}()
+		connectHandshake(t, codec)
+		require.NoError(t, <-connectResult)
+	}
+
+	require.NoError(t, connection.Close())
+	requireNothingDrains(t, codec)
+}
+
+// TestConnection_StrayMessageDrainKeepsUpWithMoreThanTheChannelHolds is the finding itself: without a
+// drain the channel filled up after its last slot was taken and the codec logged a warning for every
+// further stray packet for the rest of the connection's life. With one, far more packets than the
+// channel can hold go through it without it ever filling up.
+func TestConnection_StrayMessageDrainKeepsUpWithMoreThanTheChannelHolds(t *testing.T) {
+	connection, codec := newTestConnection(t, DefaultConfiguration())
+
+	connectResult := make(chan error, 1)
+	go func() {
+		connectResult <- connection.Connect(testutils.TestContext(t))
+	}()
+	connectHandshake(t, codec)
+	require.NoError(t, <-connectResult)
+
+	incoming := codec.GetDefaultIncomingMessageChannel()
+	for i := 0; i < 5*cap(incoming); i++ {
+		select {
+		case incoming <- strayMessage():
+		case <-time.After(5 * time.Second):
+			require.FailNow(t, "the channel filled up, so the stray messages aren't being drained")
+		}
+	}
+	require.Eventually(t, func() bool {
+		return len(incoming) == 0
+	}, 5*time.Second, time.Millisecond, "the stray messages were never drained")
+
+	require.NoError(t, connection.Close())
 }

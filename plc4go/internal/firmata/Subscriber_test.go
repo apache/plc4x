@@ -420,3 +420,31 @@ func TestSubscriber_SubscribeRefusesEventTags(t *testing.T) {
 	// Only the tag which was accepted was configured on the board.
 	assert.Equal(t, []byte{0xF4, 0x0A, 0x00, 0xD1, 0x01}, sentBytes(t, transportInstance))
 }
+
+// Same for a subscription which dies part-way: the set-pin-mode gets out but the report-digital
+// which actually switches reporting on for the port does not, so the board says nothing about the
+// pin. A claim left standing would make the retry hand out a handle that never delivers.
+func TestSubscriber_APartialSendGivesThePinClaimBack(t *testing.T) {
+	codec := newStubCodec()
+	connection := NewConnection(DefaultConfiguration(), codec, map[string][]string{}, NewTagHandler())
+	codec.failSendsAfter(1)
+
+	handle, responseCode := subscribe(t, connection, "button", "digital:9")
+	require.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, responseCode)
+	assert.Nil(t, handle)
+	func() {
+		connection.pinMutex.Lock()
+		defer connection.pinMutex.Unlock()
+		assert.NotContains(t, connection.digitalPins, uint8(9), "a claim whose batch died part-way has to be given back")
+	}()
+
+	codec.allowSends()
+	handle, responseCode = subscribe(t, connection, "button", "digital:9")
+	require.Equal(t, apiModel.PlcResponseCode_OK, responseCode)
+	require.NotNil(t, handle)
+	assert.Equal(t, []byte{
+		0xF4, 0x09, 0x00, // the set pin mode which did get out the first time
+		0xF4, 0x09, 0x00, // and both messages again from the retry
+		0xD1, 0x01,
+	}, codec.sentBytesOf(t))
+}

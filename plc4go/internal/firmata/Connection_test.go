@@ -155,6 +155,87 @@ func TestConnection_ConnectFailsOnAHandshakeError(t *testing.T) {
 	assert.False(t, connection.IsConnected())
 }
 
+// The firmware report is asked for rather than waited on. StandardFirmata's systemResetCallback
+// only clears the pin state - printFirmwareVersion runs from setup() - so a board volunteers the
+// report only when it really restarts. Over serial that is masked, as opening the port toggles DTR
+// and resets the AVR, but nothing resets a WiFi or Ethernet board when a TCP connection is opened,
+// which is the transport this driver newly speaks. plc4j's onConnect only ever waits.
+func TestConnection_HandshakeAsksForTheFirmwareReport(t *testing.T) {
+	codec := newStubCodec()
+	configuration := DefaultConfiguration()
+	configuration.requestTimeout = 250 * time.Millisecond
+	connection := NewConnection(configuration, codec, map[string][]string{}, NewTagHandler())
+
+	// Nothing is fed back, so the handshake runs into its timeout - what matters is what went out.
+	assert.Error(t, connection.Connect(testutils.TestContext(t)))
+
+	assert.Equal(t, []byte{
+		0xFF,             // system reset
+		0xF0, 0x79, 0xF7, // report firmware: asked for, not waited for
+	}, codec.sentBytesOf(t))
+}
+
+// A board which only answers the request - the TCP case, where the reset never restarts it - still
+// completes the handshake.
+func TestConnection_HandshakeCompletesOnTheAnsweredRequest(t *testing.T) {
+	codec := newStubCodec()
+	connection := NewConnection(DefaultConfiguration(), codec, map[string][]string{}, NewTagHandler())
+
+	connectErrors := make(chan error, 1)
+	go func() {
+		connectErrors <- connection.Connect(testutils.TestContext(t))
+	}()
+
+	var request stubRequest
+	select {
+	case request = <-codec.requests:
+	case <-time.After(20 * time.Second):
+		require.FailNow(t, "no system reset was sent")
+	}
+	// Wait for the request to be out before answering it: it is the request the board reacts to.
+	require.Eventually(t, func() bool { return len(codec.getSent()) == 2 }, 20*time.Second, 10*time.Millisecond)
+
+	report := parseMessage(t, reportFirmwareFrame(0x02, 0x05, "StandardFirmataWiFi.ino"))
+	require.True(t, request.acceptsMessage(report))
+	require.NoError(t, request.handleMessage(report))
+
+	select {
+	case err := <-connectErrors:
+		require.NoError(t, err)
+	case <-time.After(20 * time.Second):
+		require.FailNow(t, "the connect never returned")
+	}
+	require.NoError(t, connection.Close())
+}
+
+// A transport which carries the reset but not the report-firmware request fails the connect right
+// away rather than waiting out the timeout for a report which was never asked for. Both halves of
+// that need pinning: the error has to name the send which failed (a handshake which swallowed it and
+// then timed out would report an error too), and the connect has to be back long before the request
+// timeout - deliberately set far above the bound below - could have expired.
+func TestConnection_ConnectFailsWhenTheFirmwareRequestCantBeSent(t *testing.T) {
+	codec := newStubCodec()
+	// The system reset gets out, the report-firmware request behind it doesn't.
+	codec.failSendsAfter(1)
+	configuration := DefaultConfiguration()
+	configuration.requestTimeout = time.Minute
+	connection := NewConnection(configuration, codec, map[string][]string{}, NewTagHandler())
+
+	started := time.Now()
+	err := connection.Connect(testutils.TestContext(t))
+	elapsed := time.Since(started)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "error requesting the firmware report",
+		"the connect has to fail on the send which failed")
+	assert.ErrorContains(t, err, "the transport is gone", "and it has to carry the transport's error")
+	assert.Less(t, elapsed, 10*time.Second,
+		"the connect has to fail on the failed send instead of waiting out the %s request timeout",
+		configuration.requestTimeout)
+	assert.False(t, connection.IsConnected())
+	assert.Len(t, codec.getSent(), 1)
+}
+
 // A transport which is gone can't even carry the system reset.
 func TestConnection_ConnectFailsWhenTheResetCantBeSent(t *testing.T) {
 	codec := newStubCodec()

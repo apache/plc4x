@@ -44,6 +44,11 @@ import java.math.BigInteger;
  * {@code LITTLE_ENDIAN} a 12 bit write of {@code 123} reads back as {@code 103}. Reversing whole bytes
  * is simply not a meaningful operation on a nibble stream that does not start on a byte boundary; if a
  * protocol ever needs byte-swapped BCD it has to swap complete BCD bytes, not the encoded field.
+ * <p>
+ * Rejecting that combination outright would be preferable to corrupting the value silently, but the
+ * {@code decode*}/{@code encode*} contract passes no byte order down here, so the guard would have to
+ * live in the buffers next to their {@code byteOrder.process} call - a behaviour change (a hard failure
+ * where callers see none today) and hence deliberately not made as part of the alignment fix.
  */
 public class EncodingBCD extends BaseEncodingDefault {
 
