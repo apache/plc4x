@@ -60,6 +60,14 @@ public class ProfinetDeviceContext {
     public static final MacAddress DEFAULT_EMPTY_MAC_ADDRESS;
     public static final Pattern RANGE_PATTERN = Pattern.compile("(?<from>\\d+)(\\.\\.(?<to>\\d+))*");
 
+    /**
+     * Highest slot number a PROFINET device can address: slot numbers live in a 16 bit space, so a
+     * GSDML declaring a range beyond this describes no device that can exist. The range sizes an
+     * array directly, and a GSDML is vendor-supplied - downloaded or handed over by an integrator -
+     * so the bound is what keeps the file from choosing an allocation.
+     */
+    private static final int MAX_SLOT_NUMBER = 0x7FFF;
+
     static {
         try {
             DEFAULT_EMPTY_MAC_ADDRESS = new MacAddress(Hex.decodeHex("000000000000"));
@@ -394,6 +402,29 @@ public class ProfinetDeviceContext {
         extractGSDFileInfo(this.gsdFile);
     }
 
+    /**
+     * Read a slot number out of a GSDML range attribute, refusing anything a device could not
+     * actually have. Both failure modes reported as a connection error naming the file's value: a
+     * number too large for {@code int} would otherwise escape as a {@link NumberFormatException}
+     * from inside the connect path, and one merely too large for the protocol would otherwise size
+     * an array before anything checked it.
+     */
+    private static int parseSlotNumber(String value, String attributeName, String rawRange)
+            throws PlcConnectionException {
+        final int slotNumber;
+        try {
+            slotNumber = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new PlcConnectionException(
+                "GSDML " + attributeName + " value is not a usable slot number: " + rawRange);
+        }
+        if (slotNumber < 0 || slotNumber > MAX_SLOT_NUMBER) {
+            throw new PlcConnectionException("GSDML " + attributeName + " declares slot " + slotNumber
+                + ", outside the addressable slot range 0.." + MAX_SLOT_NUMBER + ": " + rawRange);
+        }
+        return slotNumber;
+    }
+
     private void extractGSDFileInfo(ProfinetISO15745Profile gsdFile) throws PlcConnectionException {
 
         // Find the DeviceAccessPoint specified by the "deviceAccess" parameter
@@ -416,7 +447,9 @@ public class ProfinetDeviceContext {
         if (!matcher.group("from").equals("0")) {
             throw new PlcConnectionException("Physical Slots don't start from 0, instead starts at " + deviceAccessItem.getPhysicalSlots());
         }
-        int numberOfSlots = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : 0;
+        int numberOfSlots = matcher.group("to") != null
+            ? parseSlotNumber(matcher.group("to"), "PhysicalSlots", deviceAccessItem.getPhysicalSlots())
+            : 0;
 
         this.modules = new ProfinetModule[numberOfSlots];
         // The DAP is always in slot 0
@@ -438,8 +471,13 @@ public class ProfinetDeviceContext {
                         if (!matcher.matches()) {
                             throw new PlcConnectionException("Physical Slots Range is not in the correct format " + useableModule.getAllowedInSlots());
                         }
-                        int from = matcher.group("to") != null ? Integer.parseInt(matcher.group("from")) : 0;
-                        int to = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : Integer.parseInt(matcher.group("from"));
+                        String allowedInSlots = useableModule.getAllowedInSlots();
+                        int from = matcher.group("to") != null
+                            ? parseSlotNumber(matcher.group("from"), "AllowedInSlots", allowedInSlots)
+                            : 0;
+                        int to = matcher.group("to") != null
+                            ? parseSlotNumber(matcher.group("to"), "AllowedInSlots", allowedInSlots)
+                            : parseSlotNumber(matcher.group("from"), "AllowedInSlots", allowedInSlots);
                         if (currentSlot < from || currentSlot > to) {
                             throw new PlcConnectionException("Current Submodule Slot " + currentSlot + " is not with the allowable slots" + useableModule.getAllowedInSlots());
                         }
