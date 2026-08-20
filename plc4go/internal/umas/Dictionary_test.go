@@ -193,20 +193,27 @@ func TestDictionaryRecordsNeedALittleEndianBuffer(t *testing.T) {
 	assert.NotEqual(t, littleEndian[0].GetOffset(), bigEndian.GetOffset())
 }
 
-// A datatype record carries a reserved byte the mspec pins to 0x00. The Go spi fails the parse when
-// it is something else, where plc4j's reserved field reader only logs it - so a device that puts
-// anything there loses the whole dictionary rather than the one record. That is a property of the
-// shared field reader, not of this driver, and this test is here so the difference is recorded
-// rather than discovered.
-func TestParseDatatypeNames_ANonZeroReservedByteFailsTheParse(t *testing.T) {
+// A datatype record carries a reserved byte the mspec pins to 0x00. A device that puts something
+// else there must not cost us the rest of the dictionary: the record still parses, and the byte that
+// arrived is kept on the model so serializing the record back out reproduces it. This matches plc4j,
+// whose reserved field reader logs the mismatch and returns the value.
+func TestParseDatatypeNames_ANonZeroReservedByteIsToleratedAndKept(t *testing.T) {
 	payload := datatypeDictionaryPayload(datatypeRecord{name: "MY_STRING", dataSize: 20})
 	records, err := parseDatatypeNames(t.Context(), payload)
 	require.NoError(t, err)
 	require.Len(t, records, 1)
-
 	// The reserved byte sits after dataSize(2) + unknown1(2) + classIdentifier(1) + dataType(1) of
 	// the first record, which itself follows the 6 byte header.
 	payload[6+6] = 0xFF
-	_, err = parseDatatypeNames(t.Context(), payload)
-	assert.Error(t, err)
+	records, err = parseDatatypeNames(t.Context(), payload)
+	require.NoError(t, err, "one unexpected reserved byte must not lose the dictionary")
+	require.Len(t, records, 1)
+	assert.Equal(t, "MY_STRING", records[0].GetValue(), "the rest of the record still decodes")
+
+	// The byte that arrived is not echoed back: the generated serializer writes the constant the
+	// mspec specifies, so a round trip normalizes the field. Pinned because it is the opposite of
+	// what "the reader returns the value it found" suggests.
+	reserialized, err := records[0].Serialize()
+	require.NoError(t, err)
+	assert.Equal(t, byte(0x00), reserialized[6], "serializing normalizes the reserved byte")
 }
