@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.fields.data.reader.DataReaderFactory;
 import org.apache.plc4x.java.spi.fields.data.writer.DataWriterFactory;
+import org.apache.plc4x.java.spi.fields.exceptions.ParseAssertException;
 import org.apache.plc4x.java.spi.fields.fields.reader.FieldReaderFactory;
 import org.apache.plc4x.java.spi.fields.fields.writer.FieldWriterFactory;
 import org.apache.plc4x.java.spi.fields.utils.ThreadLocalHelper;
@@ -496,10 +497,16 @@ public class AdsDataTypeTableEntry implements Message {
     return COMMENTTERMINATOR;
   }
 
-  public static AdsDataTypeTableEntry staticParse(ReadBuffer readBuffer) throws BufferException {
+  public static AdsDataTypeTableEntry staticParse(ReadBuffer readBuffer, int maxDepth) throws
+      BufferException {
     readBuffer.pushContext(WithOption.WithName("AdsDataTypeTableEntry"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Validation Field
+    if(!((maxDepth) > (0))) {
+      throw new ParseAssertException("maximum data type table nesting depth exceeded");
+    }
+
     // Simple Field: entryLength
     long entryLength = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("entryLength"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -546,7 +553,7 @@ public class AdsDataTypeTableEntry implements Message {
     boolean flagDataItem = FieldReaderFactory.readImplicitField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagDataItem"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
-    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 2), (byte) 0x0, WithOption.WithName("AdsDataTypeTableEntry.reserved15"));
+    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 2), (byte) 0x0, WithOption.WithName("AdsDataTypeTableEntry.reserved16"));
 
     // Implicit Field: flagExtendedInfos
     boolean flagExtendedInfos = FieldReaderFactory.readImplicitField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagExtendedInfos"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -594,7 +601,7 @@ public class AdsDataTypeTableEntry implements Message {
     boolean ExtendedFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("ExtendedFlags"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
-    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 1), (byte) 0x0, WithOption.WithName("AdsDataTypeTableEntry.reserved31"));
+    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 1), (byte) 0x0, WithOption.WithName("AdsDataTypeTableEntry.reserved32"));
 
     // Simple Field: flagExtendedEnumInfos
     boolean flagExtendedEnumInfos = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagExtendedEnumInfos"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -651,7 +658,7 @@ public class AdsDataTypeTableEntry implements Message {
     List<AdsDataTypeArrayInfo> arrayInfo = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsDataTypeArrayInfo) AdsDataTypeArrayInfo.staticParse(readBuffer), readBuffer), arrayDimensions, WithOption.WithName("arrayInfo"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: children
-    List<AdsDataTypeTableEntry> children = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsDataTypeTableEntry) AdsDataTypeTableEntry.staticParse(readBuffer), readBuffer), numChildren, WithOption.WithName("children"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<AdsDataTypeTableEntry> children = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsDataTypeTableEntry) AdsDataTypeTableEntry.staticParse(readBuffer, (int) ((maxDepth) - (1))), readBuffer), numChildren, WithOption.WithName("children"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: guid
     byte[] guid = readBuffer.readBits(Math.toIntExact(((((flagTypeGuid) == (true)) ? 16 : 0)) * 8), WithOption.WithName("guid"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -677,6 +684,8 @@ public class AdsDataTypeTableEntry implements Message {
     writeBuffer.pushContext(WithOption.WithName("AdsDataTypeTableEntry"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
     int startPos = writeBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Validation Field (Nothing needed here)
+
     // Simple Field: entryLength
     FieldWriterFactory.writeSimpleField((long) entryLength, DataWriterFactory.writeUnsignedLong(writeBuffer, 32), WithOption.WithName("entryLength"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -873,6 +882,8 @@ public class AdsDataTypeTableEntry implements Message {
     int lengthInBits = 0;
     AdsDataTypeTableEntry _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Validation Field (Nothing needed here)
+
     // Simple Field: entryLength
     lengthInBits += 32;
 

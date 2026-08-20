@@ -935,7 +935,11 @@
 ]
 
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
-[type AdsDataTypeTableEntry byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' stringEncoding='"UTF8"'
+[type AdsDataTypeTableEntry(uint 16 maxDepth) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' stringEncoding='"UTF8"'
+	// An entry may contain further entries, so the nesting depth is dictated by the device. Each
+	// level costs only ~45 bytes of wire input, so the budget is spent on the way down and a table
+	// that nests past it is rejected as a malformed table rather than exhausting the parser stack.
+	[validation                                  'maxDepth > 0'           "maximum data type table nesting depth exceeded"  ]
 	[simple   uint 32                            entryLength                                                           ]
 	[simple   uint 32                            version                                                               ]
 	[simple   uint 32                            hashValue                                                             ]
@@ -994,7 +998,7 @@
 	[simple   vstring 'commentLength * 8'        comment                                                               ]
 	[const    uint 8                             commentTerminator        0x00                                         ]
     [array    AdsDataTypeArrayInfo               arrayInfo                count                     'arrayDimensions'  ]
-   	[array    AdsDataTypeTableEntry              children                 count                     'numChildren'      ]
+   	[array    AdsDataTypeTableEntry('maxDepth - 1') children               count                     'numChildren'      ]
     [array    byte                               guid                     count         'flagTypeGuid == true ? 16 : 0']
 	[optional AdsMethodInfos                     methodInfos              'flagMethodInfos'                            ]
     [optional AdsDataTypeAttributes              attributes               'flagAttributes'                             ]

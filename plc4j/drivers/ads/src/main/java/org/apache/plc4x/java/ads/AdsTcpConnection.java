@@ -275,7 +275,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                 ReadBuffer rb = new ReadBufferByteBased(dataTypeResponse.getData());
                 for (int i = 0; i < sizes.getDataTypeCount(); i++) {
                     try {
-                        AdsDataTypeTableEntry entry = AdsDataTypeTableEntry.staticParse(rb);
+                        AdsDataTypeTableEntry entry = AdsDataTypeTableEntry.staticParse(
+                            rb, getConfiguration().getMaxDataTypeTableDepth());
                         dataTypeTable.put(entry.getMainName(), entry);
                     } catch (BufferException e) {
                         return CompletableFuture.failedFuture(new RuntimeException(e));
