@@ -86,6 +86,16 @@
   <properties>
     <java.version>21</java.version>
 
+    <!-- Declared so ${skipTests} always resolves; surefire reads the same property, so -DskipTests
+         still works exactly as before. -->
+    <skipTests>false</skipTests>
+    <!-- A coverage gate cannot be satisfied by a build that ran no tests: jacoco records nothing,
+         the ratio comes out at zero and the check fails on modules that halt on failure. Defaulting
+         jacoco's own skip property to whatever skipTests says keeps -DskipTests a usable fast build.
+         This is a default, not a hard-coded plugin setting, so -Djacoco.skip=true still overrides it
+         and coverage still runs - and still gates - in any build that executes tests. -->
+    <jacoco.skip>${skipTests}</jacoco.skip>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
