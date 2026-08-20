@@ -25,6 +25,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"math/big"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -195,7 +196,11 @@ func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value 
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, fmt.Sprintf("%16.16f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	// Render the shortest decimal that round-trips back to the same float32, the
+	// way Java's Float.toString does. Printing a fixed 16 fraction digits instead
+	// spells out the full binary expansion (9.87 -> 9.8699998855590820), which no
+	// testsuite reference - all authored against the Java output - can match.
+	return x.encodeElement(logicalName, strconv.FormatFloat(float64(value), 'f', -1, 32), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
