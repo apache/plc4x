@@ -733,9 +733,12 @@
             <!-- Exclude Node related files -->
             <inputExclude>ui/frontend/project/dist/**</inputExclude>
             <inputExclude>ui/frontend/project/node/**</inputExclude>
-            <inputExclude>ui/frontend/project/node_modules/**</inputExclude>
 
-            <inputExclude>website/node_modules/**</inputExclude>
+            <!-- Depth independent, because rat runs per module: from the reactor root the npm trees
+                 are website/node_modules and ui/frontend/project/node_modules, but when the plugin
+                 runs inside those modules their own basedir is the root it reports paths against, so
+                 a path anchored at the reactor root never matches. -->
+            <inputExclude>**/node_modules/**</inputExclude>
 
             <inputExclude>.mvn/**</inputExclude>
 
