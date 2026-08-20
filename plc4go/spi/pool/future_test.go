@@ -205,3 +205,59 @@ func Test_future_complete(t *testing.T) {
 		})
 	}
 }
+
+// Test_future_Cancel_publishesErrorBeforeReleasingTheWaiter guards the store ordering in
+// future.Cancel: settled leaves the poll loop of AwaitCompletion as soon as it observes one of the
+// terminal flags and result reads the error only afterwards, so an error published after those flags
+// can be missed entirely, making the waiter report the Canceled sentinel instead of the error the
+// caller passed in. That used to flake Test_future_AwaitCompletion/completes_canceled_with_particular_error
+// under load.
+//
+// Racing a spinning reader against Cancel does not pin this down: the window between two adjacent
+// atomic stores is a handful of instructions, and a reader loop only lands inside it when the race
+// detector instruments every store (measured on the broken order: zero misses in 20 000 rounds
+// without -race, dozens with it). So instead of racing, this steps Cancel through its stores and
+// checks the invariant after every single one of them - every intermediate state a waiter could ever
+// observe is visited, deterministically and without -race: once the future reports itself settled,
+// result has to be the final answer already.
+func Test_future_Cancel_publishesErrorBeforeReleasingTheWaiter(t *testing.T) {
+	cancelErr := errors.New("Uh oh")
+	tests := []struct {
+		name string
+		err  error
+		want error
+	}{
+		{name: "cancel carrying an error", err: cancelErr, want: cancelErr},
+		{name: "plain cancel", err: nil, want: Canceled},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f := &future{}
+			stores := 0
+			f.cancel(true, tt.err, func() {
+				stores++
+				if !f.settled() {
+					return
+				}
+				assert.Equal(t, tt.want, f.result(),
+					"store %d released AwaitCompletion with the wrong result", stores)
+			})
+			assert.Greater(t, stores, 1, "the observer has to see every store")
+			assert.True(t, f.settled(), "a cancelled future has to be settled")
+			assert.Equal(t, tt.want, f.result())
+			assert.True(t, f.interruptRequested.Load())
+			assert.True(t, f.cancelRequested.Load())
+		})
+	}
+}
+
+// Test_future_Cancel_isSettledWithItsErrorWhenItReturns is the plain end to end shape of the above:
+// whatever Cancel does internally, a waiter which shows up after it returned gets the error.
+func Test_future_Cancel_isSettledWithItsErrorWhenItReturns(t *testing.T) {
+	cancelErr := errors.New("Uh oh")
+	f := &future{}
+	f.Cancel(true, cancelErr)
+	assert.True(t, f.settled())
+	assert.Equal(t, cancelErr, f.result())
+	assert.Equal(t, cancelErr, f.AwaitCompletion(context.Background()))
+}
