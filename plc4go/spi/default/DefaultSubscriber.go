@@ -73,9 +73,11 @@ type DefaultPollingSubscriberRequirements interface {
 type DefaultPollingSubscriber interface {
 	spi.PlcSubscriber
 	// Close stops every running poller, drops all subscriptions and consumer registrations and waits
-	// for the spawned go routines to finish - which includes the consumer callbacks currently being
-	// delivered (see fanOut). It is safe to call more than once and safe to call concurrently with
-	// Subscribe.
+	// for the spawned go routines to finish. That includes the consumer callbacks which are still
+	// running - but only for the grace period of DefaultConsumerCallbackTimeout (see
+	// WithConsumerCallbackTimeout): a callback can't be cancelled from the outside, and waiting for
+	// one without a bound would make Close hang for as long as a misbehaving consumer pleases (see
+	// fanOut). It is safe to call more than once and safe to call concurrently with Subscribe.
 	Close()
 }
 
@@ -100,9 +102,21 @@ type PlcValueComparator func(previous, current apiValues.PlcValue) bool
 // PollingSubscriptionConnectionBase.getDefaultPollingInterval.
 const DefaultPollingInterval = time.Second
 
+// DefaultConsumerCallbackTimeout bounds the two places where the subscriber would otherwise be at
+// the mercy of a consumer callback: how long a poll go routine waits for room in a consumer's event
+// queue, and how long Close waits for the callbacks which are still running. It only ever kicks in
+// for a consumer which blocks, so it is generous on purpose - see fanOut for the details.
+const DefaultConsumerCallbackTimeout = 5 * time.Second
+
+// consumerEventQueueDepth is how many events a consumer may lag behind before the poll go routines
+// start to feel it. The queue is what decouples the pollers from the callbacks: it absorbs the
+// jitter of a consumer which is occasionally slow, and it lets the pollers of *several*
+// subscriptions feed one consumer registration without ever having to wait for each other.
+const consumerEventQueueDepth = 16
+
 // NewDefaultPollingSubscriber is the factory for a DefaultPollingSubscriber. Supported options are
-// WithDefaultPollingInterval, WithPlcValueComparator, WithPollTickerFactory and the generic
-// options.WithCustomLogger.
+// WithDefaultPollingInterval, WithPlcValueComparator, WithPollTickerFactory,
+// WithConsumerCallbackTimeout and the generic options.WithCustomLogger.
 func NewDefaultPollingSubscriber(requirements DefaultPollingSubscriberRequirements, _options ...options.WithOption) DefaultPollingSubscriber {
 	return buildDefaultPollingSubscriber(requirements, _options...)
 }
@@ -121,6 +135,13 @@ func WithPlcValueComparator(comparator PlcValueComparator) options.WithOption {
 // WithPollTickerFactory replaces the time.Ticker backed clock driving the poll cycles.
 func WithPollTickerFactory(factory PollTickerFactory) options.WithOption {
 	return withPollTickerFactory{pollTickerFactory: factory}
+}
+
+// WithConsumerCallbackTimeout overrides DefaultConsumerCallbackTimeout, the time a poll go routine
+// waits for a consumer which fell behind and the grace period Close gives a callback which is still
+// running. Values <= 0 are ignored.
+func WithConsumerCallbackTimeout(timeout time.Duration) options.WithOption {
+	return withConsumerCallbackTimeout{consumerCallbackTimeout: timeout}
 }
 
 ///////////////////////////////////////
@@ -142,6 +163,11 @@ type withPlcValueComparator struct {
 type withPollTickerFactory struct {
 	options.Option
 	pollTickerFactory PollTickerFactory
+}
+
+type withConsumerCallbackTimeout struct {
+	options.Option
+	consumerCallbackTimeout time.Duration
 }
 
 // realPollTicker is the production PollTicker, backed by a time.Ticker.
@@ -300,19 +326,73 @@ func (p *pollingSubscriptionEvent) GetAddress(name string) string {
 	return p.addresses[name]
 }
 
+// registeredConsumer is what the subscriber keeps per consumer registration: the callback plus the
+// queue and the go routine which runs it (see fanOut and deliver).
+type registeredConsumer struct {
+	consumer apiModel.PlcSubscriptionEventConsumer
+	// events is the queue deliver hands the events to. The delivery go routine started along with
+	// the registration is its only reader, which is what keeps the callbacks of one registration
+	// serialized - and their events ordered - even though the pollers of several subscriptions may
+	// feed the very same registration concurrently.
+	events chan apiModel.PlcSubscriptionEvent
+	// stop is closed once the registration is dropped (Unregister, purgeStaleRegistrations or Close)
+	// and makes the delivery go routine return after the callback it may currently be running.
+	stop     chan struct{}
+	stopOnce sync.Once
+}
+
+// stopDelivery tells the delivery go routine of this registration to finish. It never waits for it:
+// a consumer is explicitly allowed to unregister itself from within its own callback, and waiting
+// here would deadlock exactly there. Close is the one which waits (see awaitDeliveries).
+func (r *registeredConsumer) stopDelivery() {
+	r.stopOnce.Do(func() { close(r.stop) })
+}
+
+// run is the delivery go routine of one consumer registration: it runs the queued callbacks one
+// after the other until the registration is dropped. Events still queued at that point are
+// discarded - nobody asked for them anymore.
+func (r *registeredConsumer) run(log zerolog.Logger) {
+	for {
+		select {
+		case <-r.stop:
+			return
+		case event := <-r.events:
+			r.call(log, event)
+		}
+	}
+}
+
+// call invokes the callback, keeping a panicking consumer from taking the process down with it.
+func (r *registeredConsumer) call(log zerolog.Logger, event apiModel.PlcSubscriptionEvent) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed while delivering a subscription event")
+		}
+	}()
+	r.consumer(event)
+}
+
 type defaultPollingSubscriber struct {
 	DefaultPollingSubscriberRequirements
 
-	defaultPollingInterval time.Duration
-	plcValueComparator     PlcValueComparator
-	pollTickerFactory      PollTickerFactory
+	defaultPollingInterval  time.Duration
+	plcValueComparator      PlcValueComparator
+	pollTickerFactory       PollTickerFactory
+	consumerCallbackTimeout time.Duration
 
 	subscriptionIdGenerator atomic.Uint64
 	subscriptionsMutex      sync.Mutex
 	subscriptions           map[uint64]*pollingSubscription
 
 	consumersMutex sync.RWMutex
-	consumers      map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+	consumers      map[*spiModel.DefaultPlcConsumerRegistration]*registeredConsumer
+	// deliveryWg tracks the delivery go routines. It is deliberately separate from wg: the pollers
+	// have to be stopped *before* Close starts waiting for the callbacks, and unlike a poller a
+	// callback is only ever waited for with a timeout.
+	deliveryWg sync.WaitGroup
 
 	// ctx is cancelled by Close, which unblocks in-flight polling reads.
 	ctx    context.Context
@@ -334,6 +414,7 @@ type defaultPollingSubscriber struct {
 
 func buildDefaultPollingSubscriber(requirements DefaultPollingSubscriberRequirements, _options ...options.WithOption) DefaultPollingSubscriber {
 	defaultPollingInterval := DefaultPollingInterval
+	consumerCallbackTimeout := DefaultConsumerCallbackTimeout
 	var plcValueComparator PlcValueComparator
 	var pollTickerFactory PollTickerFactory
 	for _, option := range _options {
@@ -346,6 +427,10 @@ func buildDefaultPollingSubscriber(requirements DefaultPollingSubscriberRequirem
 			plcValueComparator = option.plcValueComparator
 		case withPollTickerFactory:
 			pollTickerFactory = option.pollTickerFactory
+		case withConsumerCallbackTimeout:
+			if option.consumerCallbackTimeout > 0 {
+				consumerCallbackTimeout = option.consumerCallbackTimeout
+			}
 		}
 	}
 	if plcValueComparator == nil {
@@ -360,12 +445,13 @@ func buildDefaultPollingSubscriber(requirements DefaultPollingSubscriberRequirem
 	return &defaultPollingSubscriber{
 		DefaultPollingSubscriberRequirements: requirements,
 
-		defaultPollingInterval: defaultPollingInterval,
-		plcValueComparator:     plcValueComparator,
-		pollTickerFactory:      pollTickerFactory,
+		defaultPollingInterval:  defaultPollingInterval,
+		plcValueComparator:      plcValueComparator,
+		pollTickerFactory:       pollTickerFactory,
+		consumerCallbackTimeout: consumerCallbackTimeout,
 
 		subscriptions: map[uint64]*pollingSubscription{},
-		consumers:     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{},
+		consumers:     map[*spiModel.DefaultPlcConsumerRegistration]*registeredConsumer{},
 
 		ctx:    ctx,
 		cancel: cancel,
@@ -566,8 +652,29 @@ func (d *defaultPollingSubscriber) Register(consumer apiModel.PlcSubscriptionEve
 		d.log.Debug().Msg("subscriber is closed, consumer not registered")
 		return consumerRegistration
 	}
-	d.consumers[consumerRegistration.(*spiModel.DefaultPlcConsumerRegistration)] = consumer
+	d.consumers[consumerRegistration.(*spiModel.DefaultPlcConsumerRegistration)] = d.startDelivery(consumer)
 	return consumerRegistration
+}
+
+// startDelivery sets up the queue and the go routine which runs the callbacks of one registration.
+// It has to be called while holding consumersMutex with the subscriber not yet closed: that is what
+// fences the wait group add off against the wait in awaitDeliveries.
+func (d *defaultPollingSubscriber) startDelivery(consumer apiModel.PlcSubscriptionEventConsumer) *registeredConsumer {
+	registered := &registeredConsumer{
+		consumer: consumer,
+		events:   make(chan apiModel.PlcSubscriptionEvent, consumerEventQueueDepth),
+		stop:     make(chan struct{}),
+	}
+	if consumer == nil {
+		// There is nothing to run, and deliver skips such a registration anyway.
+		return registered
+	}
+	d.deliveryWg.Add(1)
+	go func() {
+		defer d.deliveryWg.Done()
+		registered.run(d.log)
+	}()
+	return registered
 }
 
 // Unregister removes a previously registered consumer.
@@ -579,7 +686,10 @@ func (d *defaultPollingSubscriber) Unregister(registration apiModel.PlcConsumerR
 	}
 	d.consumersMutex.Lock()
 	defer d.consumersMutex.Unlock()
-	delete(d.consumers, defaultRegistration)
+	if registered, ok := d.consumers[defaultRegistration]; ok {
+		registered.stopDelivery()
+		delete(d.consumers, defaultRegistration)
+	}
 }
 
 // Close stops all pollers and waits for the spawned go routines to finish.
@@ -605,10 +715,42 @@ func (d *defaultPollingSubscriber) Close() {
 	//nolint:staticcheck // SA2001: the empty critical section is the point, see above.
 	d.spawnMutex.Unlock()
 	d.wg.Wait()
+	// Nothing feeds the consumers anymore, so tell their delivery go routines to finish. Clearing the
+	// map under the same mutex which guards the closed check in Register is what makes sure no further
+	// delivery go routine can be added behind our back, which in turn is what makes the wait below
+	// legal.
 	d.consumersMutex.Lock()
-	d.consumers = map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{}
+	for registration, registered := range d.consumers {
+		registered.stopDelivery()
+		delete(d.consumers, registration)
+	}
 	d.consumersMutex.Unlock()
+	d.awaitDeliveries()
 	d.log.Trace().Msg("polling subscriber closed")
+}
+
+// awaitDeliveries waits for the consumer callbacks which are still running - but only for
+// consumerCallbackTimeout. Waiting at all is what keeps a well behaved consumer from being called
+// after Close returned, which matters because a driver usually tears its connection down right
+// after closing the subscriber and the event handed to the callback keeps pointing at that
+// connection's state. Waiting with a bound is what keeps a *misbehaving* consumer from hanging the
+// teardown: a running callback can't be cancelled from the outside, so the only way out of one which
+// never returns is to stop waiting for it. Such a callback keeps running as an abandoned go routine.
+func (d *defaultPollingSubscriber) awaitDeliveries() {
+	drained := make(chan struct{})
+	go func() {
+		defer close(drained)
+		d.deliveryWg.Wait()
+	}()
+	timeout := time.NewTimer(d.consumerCallbackTimeout)
+	defer timeout.Stop()
+	select {
+	case <-drained:
+	case <-timeout.C:
+		d.log.Warn().
+			Dur("consumerCallbackTimeout", d.consumerCallbackTimeout).
+			Msg("a consumer callback didn't return in time, closing without it")
+	}
 }
 
 // addSubscription registers a subscription unless the subscriber is already closing.
@@ -649,7 +791,7 @@ func (d *defaultPollingSubscriber) unsubscribeTag(handle *pollingSubscriptionHan
 func (d *defaultPollingSubscriber) purgeStaleRegistrations() {
 	d.consumersMutex.Lock()
 	defer d.consumersMutex.Unlock()
-	for registration := range d.consumers {
+	for registration, registered := range d.consumers {
 		handles := registration.GetSubscriptionHandles()
 		if len(handles) == 0 {
 			continue
@@ -663,6 +805,7 @@ func (d *defaultPollingSubscriber) purgeStaleRegistrations() {
 			}
 		}
 		if stale {
+			registered.stopDelivery()
 			delete(d.consumers, registration)
 			d.log.Trace().Msg("dropped a consumer registration of an unsubscribed tag")
 		}
@@ -814,14 +957,30 @@ func (d *defaultPollingSubscriber) emit(
 // fanOut delivers an event to every consumer registered for a handle of the given subscription. The
 // consumers are snapshotted so a consumer is free to (un)register from within its own callback.
 //
-// Delivery is synchronous on the poll go routine, which keeps the events of one subscription ordered
-// (a consumer sees them in the order they were polled). The price is that a consumer which blocks
-// stalls the polling of its own subscription - and makes Close block until the callback returns,
-// since Close waits for the poll go routines. Consumers doing more than a hand-full of work should
-// therefore queue the event and process it elsewhere.
+// The callbacks are not run on the poll go routine but on one go routine per consumer registration,
+// fed through that registration's event queue (see registeredConsumer). The queue is what keeps the
+// two properties a plain synchronous call gave for free:
+//
+//   - Serialization and ordering: one registration has exactly one reader, so its callback is never
+//     entered twice at the same time and it sees the events of a subscription in the order they were
+//     polled. This has to hold even though one registration can span several subscriptions - Register
+//     takes a slice of handles and one Subscribe is split into one poller per type and interval - so
+//     several poll go routines legitimately fan out to the same registration at the same time.
+//   - Backpressure: a consumer which is slower than its poll interval eventually fills its queue,
+//     from which point on the poller waits for it.
+//
+// What the queue adds is the *bound* which a direct call can never have: a running callback can't be
+// cancelled from the outside, so the only way out of one which never returns is to stop waiting for
+// it. Hence deliver waits for room in the queue for at most consumerCallbackTimeout - and gives up
+// right away once Close cancelled ctx - after which the event is dropped with a warning. Close
+// likewise waits for a callback in flight only for that long (see awaitDeliveries).
+//
+// So the contract stays what it was: consumers doing more than a hand full of work have to queue the
+// event and process it elsewhere, otherwise they lose events. The bounds are the safety net, not the
+// intended mode of operation.
 func (d *defaultPollingSubscriber) fanOut(subscriptionId uint64, event apiModel.PlcSubscriptionEvent) {
 	d.consumersMutex.RLock()
-	interested := make([]apiModel.PlcSubscriptionEventConsumer, 0, len(d.consumers))
+	interested := make([]*registeredConsumer, 0, len(d.consumers))
 	for registration, consumer := range d.consumers {
 		for _, handle := range registration.GetSubscriptionHandles() {
 			if pollingHandle, ok := handle.(*pollingSubscriptionHandle); ok && pollingHandle.subscriptionId == subscriptionId {
@@ -832,9 +991,35 @@ func (d *defaultPollingSubscriber) fanOut(subscriptionId uint64, event apiModel.
 	}
 	d.consumersMutex.RUnlock()
 	for _, consumer := range interested {
-		if consumer == nil {
-			continue
-		}
-		consumer(event)
+		d.deliver(consumer, event)
+	}
+}
+
+// deliver hands one event to the delivery go routine of one consumer registration. See fanOut for the
+// reasoning behind the queue and its bound.
+func (d *defaultPollingSubscriber) deliver(registered *registeredConsumer, event apiModel.PlcSubscriptionEvent) {
+	if registered.consumer == nil {
+		return
+	}
+	select {
+	case registered.events <- event:
+		// The overwhelmingly common case: the consumer keeps up, so this is a plain hand over.
+		return
+	default:
+	}
+	// The queue ran full, so from here on the poller pays for the consumer being slow.
+	d.log.Debug().Msg("the event queue of a consumer is full, waiting for it to catch up")
+	timeout := time.NewTimer(d.consumerCallbackTimeout)
+	defer timeout.Stop()
+	select {
+	case registered.events <- event:
+	case <-timeout.C:
+		d.log.Warn().
+			Dur("consumerCallbackTimeout", d.consumerCallbackTimeout).
+			Msg("a consumer didn't catch up in time, dropping the event")
+	case <-registered.stop:
+		d.log.Trace().Msg("the consumer was unregistered while waiting for it, dropping the event")
+	case <-d.ctx.Done():
+		d.log.Trace().Msg("subscriber is closing, dropping the event")
 	}
 }

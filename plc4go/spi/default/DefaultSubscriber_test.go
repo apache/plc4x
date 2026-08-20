@@ -177,6 +177,21 @@ func (m *manualTicker) tick(t *testing.T) {
 	}
 }
 
+// requireStopped waits until the poll go routine driven by this ticker really returned - it stops
+// its ticker on the way out. Without this wait a tickExpectingNoPoller right after an unsubscribe
+// races the poller's last loop iteration: the poller may still be on its way back to the select and
+// then picks up the tick even though it is about to shut down.
+func (m *manualTicker) requireStopped(t *testing.T) {
+	t.Helper()
+	deadline := time.Now().Add(pollTestTimeout)
+	for !m.stopped.Load() {
+		if time.Now().After(deadline) {
+			t.Fatalf("the poller didn't stop its ticker within %s", pollTestTimeout)
+		}
+		time.Sleep(time.Millisecond)
+	}
+}
+
 // tickExpectingNoPoller tries to deliver a tick and reports whether anybody was listening.
 func (m *manualTicker) tickExpectingNoPoller() bool {
 	select {
@@ -547,6 +562,7 @@ func TestDefaultPollingSubscriberUnsubscribeStopsEmission(t *testing.T) {
 	unsubscribe(t, handleFor(t, response, "tag"))
 
 	// The poll go routine is gone, so nobody picks up a tick anymore and no event is emitted.
+	ticker.requireStopped(t)
 	assert.False(t, ticker.tickExpectingNoPoller(), "the poller has to be gone after unsubscribing")
 	assert.True(t, ticker.stopped.Load(), "the ticker has to be stopped")
 	sink.requireNoEvent(t)
@@ -590,6 +606,7 @@ func TestDefaultPollingSubscriberUnsubscribeSingleTagOfGroup(t *testing.T) {
 	assert.Equal(t, []string{"second"}, event.GetTagNames(), "only the remaining tag stays polled")
 
 	unsubscribe(t, handleFor(t, response, "second"))
+	ticker.requireStopped(t)
 	assert.False(t, ticker.tickExpectingNoPoller(), "the poller has to be gone once the group ran empty")
 
 	closeWithin(t, subscriber)
@@ -1001,15 +1018,21 @@ func TestDefaultPollingSubscriberPreRegisteredConsumerGetsTheFirstPoll(t *testin
 	assertNoPollerLeak(t, baseline)
 }
 
-// TestDefaultPollingSubscriberBlockingConsumerBlocksClose pins the documented delivery contract:
-// consumers are called synchronously on the poll go routine, so Close waits for a callback in flight
-// instead of returning while a consumer is still running (which would let a driver tear the
-// connection down under a running callback).
-func TestDefaultPollingSubscriberBlockingConsumerBlocksClose(t *testing.T) {
+// TestDefaultPollingSubscriberBlockingConsumerDoesNotBlockClose pins the bound on the wait Close does
+// for the callbacks in flight: a consumer which never returns must not be able to keep Close from
+// returning. A callback in flight can't be cancelled, so the only way out is for Close to give up on
+// it once the grace period passed - which also has to hold for a callback which re-enters Subscribe
+// while Close is running (that re-entrant subscribe has to be refused instead of deadlocking, which
+// is why Close only fences on the spawn mutex instead of holding it).
+func TestDefaultPollingSubscriberBlockingConsumerDoesNotBlockClose(t *testing.T) {
 	target := newFakePollTarget()
 	target.setValue("a", spiValues.NewPlcDINT(1))
 	clock := &manualClock{}
-	subscriber := NewDefaultPollingSubscriber(target, WithPollTickerFactory(clock.factory))
+	subscriber := NewDefaultPollingSubscriber(target,
+		WithPollTickerFactory(clock.factory),
+		// Keeps the grace period Close spends on the stuck callback below short.
+		WithConsumerCallbackTimeout(50*time.Millisecond),
+	)
 
 	response := subscribe(t, subscriber, func(builder apiModel.PlcSubscriptionRequestBuilder) {
 		builder.AddCyclicTagAddress("tag", "a", 10*time.Millisecond)
@@ -1026,8 +1049,6 @@ func TestDefaultPollingSubscriberBlockingConsumerBlocksClose(t *testing.T) {
 	registration := handleFor(t, response, "tag").Register(func(_ apiModel.PlcSubscriptionEvent) {
 		close(entered)
 		<-release
-		// Re-entering Subscribe from a callback Close is waiting for has to be refused instead of
-		// deadlocking (which is why Close only fences on the spawn mutex instead of holding it).
 		result := <-subscriber.Subscribe(context.Background(), reentrantRequest)
 		reentrantErrs <- result.GetErr()
 	})
@@ -1041,33 +1062,176 @@ func TestDefaultPollingSubscriberBlockingConsumerBlocksClose(t *testing.T) {
 		t.Fatalf("the consumer wasn't called within %s", pollTestTimeout)
 	}
 
-	closed := make(chan struct{})
-	go func() {
-		defer close(closed)
-		subscriber.Close()
-	}()
-	select {
-	case <-closed:
-		t.Fatal("Close returned while a consumer callback was still running")
-	case <-time.After(pollTestQuietFor):
-	}
+	// The callback is still sitting in its channel receive and will stay there until we let it go -
+	// Close has to come back anyway (after its grace period), and it has to have stopped the poller
+	// while doing so.
+	closeWithin(t, subscriber)
+	assert.True(t, ticker.stopped.Load(), "the ticker has to be stopped once Close returned")
+
 	close(release)
-	select {
-	case <-closed:
-	case <-time.After(pollTestTimeout):
-		buf := make([]byte, 1<<20)
-		n := runtime.Stack(buf, true)
-		t.Fatalf("Close didn't return within %s after the consumer returned\n%s", pollTestTimeout, buf[:n])
-	}
 	select {
 	case reentrantErr := <-reentrantErrs:
 		assert.Error(t, reentrantErr, "the closed subscriber has to refuse the re-entrant subscribe")
 	case <-time.After(pollTestTimeout):
 		t.Fatalf("the re-entrant subscribe didn't return within %s", pollTestTimeout)
 	}
-	// The poll go routine is gone (no assertNoPollerLeak here: the re-entrant subscribe drags process
-	// wide, lazily started go routines in which have nothing to do with this subscriber).
-	assert.True(t, ticker.stopped.Load(), "the ticker has to be stopped once Close returned")
+	// No assertNoPollerLeak here: the re-entrant subscribe drags process wide, lazily started go
+	// routines in which have nothing to do with this subscriber.
+}
+
+// TestDefaultPollingSubscriberBlockingConsumerDoesNotStallPolling pins the other half of that bound:
+// a consumer which never returns must not stall the poller of its subscription, must not keep the
+// other consumers of that subscription from being served, must not be handed a second event while the
+// first one is still in flight, and must not collect one abandoned go routine per poll. Once its
+// event queue ran full the poller waits for it for at most the consumer callback timeout and then
+// drops the event.
+func TestDefaultPollingSubscriberBlockingConsumerDoesNotStallPolling(t *testing.T) {
+	baseline := runtime.NumGoroutine()
+	target := newFakePollTarget()
+	target.setValue("a", spiValues.NewPlcDINT(1))
+	clock := &manualClock{}
+	subscriber := NewDefaultPollingSubscriber(target,
+		WithPollTickerFactory(clock.factory),
+		WithConsumerCallbackTimeout(50*time.Millisecond),
+	)
+
+	response := subscribe(t, subscriber, func(builder apiModel.PlcSubscriptionRequestBuilder) {
+		builder.AddCyclicTagAddress("tag", "a", 10*time.Millisecond)
+	})
+	handle := handleFor(t, response, "tag")
+
+	// The blocking consumer deliberately doesn't use eventSink: its channel is buffered 64 deep, so
+	// it could never block in the first place.
+	entered := make(chan struct{}, 8)
+	release := make(chan struct{})
+	require.NotNil(t, handle.Register(func(_ apiModel.PlcSubscriptionEvent) {
+		entered <- struct{}{}
+		<-release
+	}))
+	sink := newEventSink()
+	require.NotNil(t, handle.Register(sink.consume))
+
+	ticker := clock.only(t)
+	ticker.tick(t)
+	select {
+	case <-entered:
+	case <-time.After(pollTestTimeout):
+		t.Fatalf("the blocking consumer wasn't called within %s", pollTestTimeout)
+	}
+
+	// The poll go routine has to keep picking up ticks although the callback is still stuck. The first
+	// consumerEventQueueDepth events go into the stuck consumer's queue, the ones after that hit the
+	// full queue and are dropped once the callback timeout expires.
+	for tick := 0; tick < consumerEventQueueDepth+2; tick++ {
+		ticker.tick(t)
+	}
+	sink.requireEvent(t)
+	sink.requireEvent(t)
+	assert.Greater(t, target.reads.Load(), int32(1), "the poller has to have kept polling")
+	select {
+	case <-entered:
+		t.Fatal("the stuck consumer must not be handed a second event while the first one is in flight")
+	default:
+	}
+
+	closeWithin(t, subscriber)
+	close(release)
+	assertNoPollerLeak(t, baseline)
+}
+
+// TestDefaultPollingSubscriberConcurrentPollersFeedOneRegistration pins that a registration which
+// spans several subscriptions gets *all* their events: Register takes a slice of handles and one
+// Subscribe is split into one poller per type and interval, so two poll go routines legitimately fan
+// out to the same registration at the same time. Serializing them must not turn into dropping one of
+// them, which is what the second tick below would run into if the in flight guard were a "skip while
+// busy" instead of a queue.
+func TestDefaultPollingSubscriberConcurrentPollersFeedOneRegistration(t *testing.T) {
+	baseline := runtime.NumGoroutine()
+	target := newFakePollTarget()
+	target.setValue("a", spiValues.NewPlcDINT(1))
+	target.setValue("b", spiValues.NewPlcDINT(2))
+	clock := &manualClock{}
+	subscriber := NewDefaultPollingSubscriber(target, WithPollTickerFactory(clock.factory))
+
+	// Two intervals, hence two pollers, both feeding the single registration below.
+	response := subscribe(t, subscriber, func(builder apiModel.PlcSubscriptionRequestBuilder) {
+		builder.AddCyclicTagAddress("first", "a", 10*time.Millisecond)
+		builder.AddCyclicTagAddress("second", "b", 20*time.Millisecond)
+	})
+	entered := make(chan struct{}, 4)
+	gate := make(chan struct{})
+	delivered := make(chan apiModel.PlcSubscriptionEvent, 4)
+	registration := subscriber.Register(func(event apiModel.PlcSubscriptionEvent) {
+		entered <- struct{}{}
+		<-gate
+		delivered <- event
+	}, []apiModel.PlcSubscriptionHandle{handleFor(t, response, "first"), handleFor(t, response, "second")})
+	require.NotNil(t, registration)
+
+	tickers := clock.all()
+	require.Len(t, tickers, 2)
+
+	// The first poller's event puts the callback in flight and keeps it there ...
+	tickers[0].tick(t)
+	select {
+	case <-entered:
+	case <-time.After(pollTestTimeout):
+		t.Fatalf("the consumer wasn't called within %s", pollTestTimeout)
+	}
+	// ... while the second poller hands over its event.
+	tickers[1].tick(t)
+
+	close(gate)
+	var tagNames []string
+	for i := 0; i < 2; i++ {
+		select {
+		case event := <-delivered:
+			tagNames = append(tagNames, event.GetTagNames()...)
+		case <-time.After(pollTestTimeout):
+			t.Fatalf("only %d of the 2 events were delivered within %s", i, pollTestTimeout)
+		}
+	}
+	assert.ElementsMatch(t, []string{"first", "second"}, tagNames,
+		"both pollers' events have to reach the registration")
+
+	closeWithin(t, subscriber)
+	assertNoPollerLeak(t, baseline)
+}
+
+// TestDefaultPollingSubscriberCloseWaitsForARunningCallback pins the other side of the Close bound:
+// Close does wait for a callback which is merely slow. A driver closes its connection right after
+// closing the subscriber, and the event a callback is holding points at that connection's state, so
+// returning from Close while a well behaved consumer is still running would hand it a torn down
+// connection.
+func TestDefaultPollingSubscriberCloseWaitsForARunningCallback(t *testing.T) {
+	baseline := runtime.NumGoroutine()
+	target := newFakePollTarget()
+	target.setValue("a", spiValues.NewPlcDINT(1))
+	clock := &manualClock{}
+	subscriber := NewDefaultPollingSubscriber(target, WithPollTickerFactory(clock.factory))
+
+	response := subscribe(t, subscriber, func(builder apiModel.PlcSubscriptionRequestBuilder) {
+		builder.AddCyclicTagAddress("tag", "a", 10*time.Millisecond)
+	})
+	entered := make(chan struct{})
+	var returned atomic.Bool
+	require.NotNil(t, handleFor(t, response, "tag").Register(func(_ apiModel.PlcSubscriptionEvent) {
+		close(entered)
+		time.Sleep(2 * pollTestQuietFor)
+		returned.Store(true)
+	}))
+
+	ticker := clock.only(t)
+	ticker.tick(t)
+	select {
+	case <-entered:
+	case <-time.After(pollTestTimeout):
+		t.Fatalf("the consumer wasn't called within %s", pollTestTimeout)
+	}
+
+	closeWithin(t, subscriber)
+	assert.True(t, returned.Load(), "Close returned while a consumer callback was still running")
+	assertNoPollerLeak(t, baseline)
 }
 
 // TestDefaultPollingSubscriberUnsubscribeDropsStaleRegistrations pins that unsubscribing also cleans
@@ -1217,11 +1381,13 @@ func TestDefaultPollingSubscriberOptionPassing(t *testing.T) {
 	target := newFakePollTarget()
 	subscriber := NewDefaultPollingSubscriber(target,
 		options.WithCustomLogger(options.ExtractCustomLoggerOrDefaultToGlobal()),
-		WithDefaultPollingInterval(0), // ignored, has to keep the default
+		WithDefaultPollingInterval(0),  // ignored, has to keep the default
+		WithConsumerCallbackTimeout(0), // ignored, has to keep the default
 	)
 	internal, ok := subscriber.(*defaultPollingSubscriber)
 	require.True(t, ok)
 	assert.Equal(t, DefaultPollingInterval, internal.defaultPollingInterval)
+	assert.Equal(t, DefaultConsumerCallbackTimeout, internal.consumerCallbackTimeout)
 	assert.NotNil(t, internal.plcValueComparator)
 	assert.NotNil(t, internal.pollTickerFactory)
 	closeWithin(t, subscriber)
