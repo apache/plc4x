@@ -29,6 +29,8 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 func Test_newExecutor(t *testing.T) {
@@ -491,4 +493,26 @@ func Test_executor_String(t *testing.T) {
 			assert.Equalf(t, tt.want, e.String(), "String()")
 		})
 	}
+}
+
+// Test_executor_Submit_nilRunnableFailsPromptly pins the contract of a rejected submission: the
+// future Submit hands back for a nil runnable is settled already, so a caller which does the normal
+// thing with a CompletionFuture - wait on it - is told "runnable must not be nil" right away.
+//
+// It used to return a future carrying only the error and no terminal flag, so the future never
+// counted as settled: AwaitCompletion waited out the caller's whole context and then reported the
+// context error, hiding the programming mistake behind a timeout.
+func Test_executor_Submit_nilRunnableFailsPromptly(t *testing.T) {
+	e := NewFixedSizeExecutor(1, 1, options.WithCustomLogger(produceTestingLogger(t)))
+	e.Start()
+	t.Cleanup(e.Stop)
+
+	completionFuture := e.Submit(t.Context(), 1, nil)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 30*time.Second)
+	defer cancel()
+	start := time.Now()
+	err := completionFuture.AwaitCompletion(ctx)
+	assert.EqualError(t, err, "runnable must not be nil")
+	assert.Less(t, time.Since(start), time.Second, "a rejected submission has to settle right away")
 }

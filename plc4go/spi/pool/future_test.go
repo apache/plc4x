@@ -22,6 +22,7 @@ package pool
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"sync"
 	"testing"
 	"time"
@@ -206,53 +207,9 @@ func Test_future_complete(t *testing.T) {
 	}
 }
 
-// Test_future_Cancel_publishesErrorBeforeReleasingTheWaiter guards the store ordering in
-// future.Cancel: settled leaves the poll loop of AwaitCompletion as soon as it observes one of the
-// terminal flags and result reads the error only afterwards, so an error published after those flags
-// can be missed entirely, making the waiter report the Canceled sentinel instead of the error the
-// caller passed in. That used to flake Test_future_AwaitCompletion/completes_canceled_with_particular_error
-// under load.
-//
-// Racing a spinning reader against Cancel does not pin this down: the window between two adjacent
-// atomic stores is a handful of instructions, and a reader loop only lands inside it when the race
-// detector instruments every store (measured on the broken order: zero misses in 20 000 rounds
-// without -race, dozens with it). So instead of racing, this steps Cancel through its stores and
-// checks the invariant after every single one of them - every intermediate state a waiter could ever
-// observe is visited, deterministically and without -race: once the future reports itself settled,
-// result has to be the final answer already.
-func Test_future_Cancel_publishesErrorBeforeReleasingTheWaiter(t *testing.T) {
-	cancelErr := errors.New("Uh oh")
-	tests := []struct {
-		name string
-		err  error
-		want error
-	}{
-		{name: "cancel carrying an error", err: cancelErr, want: cancelErr},
-		{name: "plain cancel", err: nil, want: Canceled},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			f := &future{}
-			stores := 0
-			f.cancel(true, tt.err, func() {
-				stores++
-				if !f.settled() {
-					return
-				}
-				assert.Equal(t, tt.want, f.result(),
-					"store %d released AwaitCompletion with the wrong result", stores)
-			})
-			assert.Greater(t, stores, 1, "the observer has to see every store")
-			assert.True(t, f.settled(), "a cancelled future has to be settled")
-			assert.Equal(t, tt.want, f.result())
-			assert.True(t, f.interruptRequested.Load())
-			assert.True(t, f.cancelRequested.Load())
-		})
-	}
-}
-
-// Test_future_Cancel_isSettledWithItsErrorWhenItReturns is the plain end to end shape of the above:
-// whatever Cancel does internally, a waiter which shows up after it returned gets the error.
+// Test_future_Cancel_isSettledWithItsErrorWhenItReturns is the plain end to end shape of a
+// cancellation: whatever Cancel does internally, a waiter which shows up after it returned gets the
+// error.
 func Test_future_Cancel_isSettledWithItsErrorWhenItReturns(t *testing.T) {
 	cancelErr := errors.New("Uh oh")
 	f := &future{}
@@ -260,4 +217,202 @@ func Test_future_Cancel_isSettledWithItsErrorWhenItReturns(t *testing.T) {
 	assert.True(t, f.settled())
 	assert.Equal(t, cancelErr, f.result())
 	assert.Equal(t, cancelErr, f.AwaitCompletion(context.Background()))
+}
+
+// Test_future_settleReleasesEveryWaiter pins the two properties the channel buys us: one settle
+// releases every waiter (a poll loop did that too, each on its own tick), and every one of them sees
+// the state the settling goroutine published, not an intermediate step of it.
+//
+// The second half is what used to break: while AwaitCompletion left its loop on a terminal flag and
+// only then read the error, an error published after that flag was invisible and the waiter reported
+// the Canceled sentinel instead - a real flake, and one that needed the store order of several
+// separate atomics to stay correct. Closing the channel is a single happens-before edge, so a waiter
+// which wakes up at all sees every store that preceded the close. Waiters registered both before and
+// after the settle to cover the lazy channel creation racing with the close.
+func Test_future_settleReleasesEveryWaiter(t *testing.T) {
+	const waiters = 32
+	cancelErr := errors.New("Uh oh")
+
+	f := &future{}
+	results := make(chan error, 2*waiters)
+	waiting := sync.WaitGroup{}
+	for range waiters {
+		waiting.Go(func() {
+			results <- f.AwaitCompletion(t.Context())
+		})
+	}
+
+	f.Cancel(true, cancelErr)
+
+	// The late waiters exercise the same channel after it got closed.
+	for range waiters {
+		waiting.Go(func() {
+			results <- f.AwaitCompletion(t.Context())
+		})
+	}
+	waiting.Wait()
+
+	close(results)
+	seen := 0
+	for err := range results {
+		seen++
+		assert.Same(t, cancelErr, err, "every waiter has to see the error the cancellation carried")
+	}
+	assert.Equal(t, 2*waiters, seen)
+}
+
+// Test_future_settleWakesTheWaiterImmediately guards the reason for the channel: a waiter used to
+// notice a settle only on the next tick of a 10ms poll loop, so a batch of futures paid that latency
+// one after the other. A closed channel hands the waiter back right away, and being generous by two
+// orders of magnitude keeps this from being a benchmark.
+func Test_future_settleWakesTheWaiterImmediately(t *testing.T) {
+	f := &future{}
+	done := make(chan time.Duration, 1)
+	started := make(chan struct{})
+	go func() {
+		close(started)
+		start := time.Now()
+		assert.NoError(t, f.AwaitCompletion(t.Context()))
+		done <- time.Since(start)
+	}()
+	<-started
+	// Give the waiter a moment to actually park on the channel, so we measure the wake up and not the
+	// go routine start up.
+	time.Sleep(20 * time.Millisecond)
+
+	f.complete()
+
+	select {
+	case waited := <-done:
+		assert.Less(t, waited, 100*time.Millisecond, "the waiter has to wake up on the settle")
+	case <-time.After(5 * time.Second):
+		t.Fatal("AwaitCompletion did not return after the future completed")
+	}
+}
+
+// Test_future_settleTwiceDoesNotPanic covers the double settle: Cancel is part of the public
+// CompletionFuture, so a caller outside the pool can cancel a work item which a worker then runs and
+// completes anyway (and the other way round for a future which is completed before somebody cancels
+// it). Closing an already closed channel panics, so both orders have to be no-ops for the second
+// settle.
+func Test_future_settleTwiceDoesNotPanic(t *testing.T) {
+	t.Run("cancel then complete", func(t *testing.T) {
+		cancelErr := errors.New("Uh oh")
+		f := &future{}
+		f.Cancel(true, cancelErr)
+		assert.NotPanics(t, f.complete)
+		assert.True(t, f.completed.Load())
+		assert.Equal(t, cancelErr, f.AwaitCompletion(t.Context()), "the cancellation error survives a late completion")
+	})
+	t.Run("complete then cancel", func(t *testing.T) {
+		f := &future{}
+		f.complete()
+		assert.NoError(t, f.AwaitCompletion(t.Context()))
+		assert.NotPanics(t, func() { f.Cancel(true, errors.New("Uh oh")) })
+	})
+	t.Run("complete twice", func(t *testing.T) {
+		f := &future{}
+		f.complete()
+		assert.NotPanics(t, f.complete)
+	})
+	t.Run("cancel twice", func(t *testing.T) {
+		f := &future{}
+		f.Cancel(false, nil)
+		assert.NotPanics(t, func() { f.Cancel(false, nil) })
+	})
+	t.Run("concurrent settles", func(t *testing.T) {
+		f := &future{}
+		settling := sync.WaitGroup{}
+		for i := range 16 {
+			settling.Go(func() {
+				if i%2 == 0 {
+					f.complete()
+					return
+				}
+				f.Cancel(false, nil)
+			})
+		}
+		settling.Wait()
+		assert.True(t, f.settled())
+	})
+}
+
+// Test_future_AwaitCompletion_ctxCancellationWhileWaiting pins what a waiter gets when its own
+// context goes away while the future is still in flight: the context error, right away, and the
+// future stays unsettled - the work item is still queued, nobody cancelled it.
+func Test_future_AwaitCompletion_ctxCancellationWhileWaiting(t *testing.T) {
+	f := &future{}
+	ctx, cancel := context.WithCancel(t.Context())
+	done := make(chan error, 1)
+	go func() {
+		done <- f.AwaitCompletion(ctx)
+	}()
+	time.Sleep(20 * time.Millisecond)
+
+	cancel()
+
+	select {
+	case err := <-done:
+		assert.ErrorIs(t, err, context.Canceled)
+	case <-time.After(5 * time.Second):
+		t.Fatal("AwaitCompletion did not return after its context was canceled")
+	}
+	assert.False(t, f.settled(), "a waiter giving up must not settle the future")
+
+	// A waiter with a healthy context still gets the result afterwards.
+	f.complete()
+	assert.NoError(t, f.AwaitCompletion(t.Context()))
+}
+
+// Test_future_AwaitCompletion_alreadyDoneCtx keeps the precedence the poll loop had: a context which
+// is already done wins over a settled future, because the caller stopped being interested.
+func Test_future_AwaitCompletion_alreadyDoneCtx(t *testing.T) {
+	f := &future{}
+	f.complete()
+	ctx, cancel := context.WithCancel(t.Context())
+	cancel()
+	assert.ErrorIs(t, f.AwaitCompletion(ctx), context.Canceled)
+}
+
+// Test_future_AwaitCompletion_doesNotLeakWaiters checks that no waiter stays parked on the channel,
+// whichever way it left: released by a settle, or given up on its own context. A nil channel would
+// have parked all of them forever, which is exactly the failure mode the lazy creation has to avoid.
+func Test_future_AwaitCompletion_doesNotLeakWaiters(t *testing.T) {
+	baseline := runtime.NumGoroutine()
+
+	settled := &future{}
+	abandoned := &future{}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	waiting := sync.WaitGroup{}
+	for range 32 {
+		waiting.Go(func() {
+			assert.NoError(t, settled.AwaitCompletion(t.Context()))
+		})
+		waiting.Go(func() {
+			assert.ErrorIs(t, abandoned.AwaitCompletion(ctx), context.Canceled)
+		})
+	}
+
+	settled.complete()
+	cancel()
+	waiting.Wait()
+
+	assertNoWaiterLeak(t, baseline)
+}
+
+// assertNoWaiterLeak checks that the go routine count settles back at (or below) the baseline. Go
+// routines the runtime tears down lazily make a single sample flaky, hence the retries.
+func assertNoWaiterLeak(t *testing.T, baseline int) {
+	t.Helper()
+	current := runtime.NumGoroutine()
+	for i := 0; i < 100 && current > baseline; i++ {
+		time.Sleep(20 * time.Millisecond)
+		current = runtime.NumGoroutine()
+	}
+	if current > baseline {
+		buf := make([]byte, 1<<20)
+		n := runtime.Stack(buf, true)
+		t.Fatalf("goroutine leak detected: baseline %d, now %d\n%s", baseline, current, buf[:n])
+	}
 }
