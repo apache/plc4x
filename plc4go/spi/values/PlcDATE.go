@@ -40,8 +40,11 @@ func NewPlcDATE(value any) PlcDATE {
 	case time.Time:
 		timeValue = value.(time.Time)
 	case uint32:
-		// Interpreted as "seconds since epoch"
-		timeValue = time.Unix(int64(value.(uint32)), 0)
+		// Interpreted as "seconds since epoch". Epoch counts carry no timezone, so
+		// they must be read as UTC - resolving them in the host's local zone shifts
+		// the calendar day (and with it GetDay/GetMonth/GetYear and the
+		// GetDaysSinceEpoch round trip) by the local UTC offset.
+		timeValue = time.Unix(int64(value.(uint32)), 0).UTC()
 	}
 	safeValue := time.Date(timeValue.Year(), timeValue.Month(), timeValue.Day(), 0, 0, 0, 0, timeValue.Location())
 	return PlcDATE{
@@ -50,12 +53,12 @@ func NewPlcDATE(value any) PlcDATE {
 }
 
 func NewPlcDATEFromSecondsSinceEpoch(secondsSinceEpoch uint32) PlcDATE {
-	return NewPlcDATE(time.Unix(int64(secondsSinceEpoch), 0))
+	return NewPlcDATE(time.Unix(int64(secondsSinceEpoch), 0).UTC())
 }
 
 func NewPlcDATEFromDaysSinceEpoch(daysSinceEpoch uint16) PlcDATE {
 	// 86400 = 24 hours x 60 Minutes x 60 Seconds
-	return NewPlcDATE(time.Unix(int64(daysSinceEpoch)*86400, 0))
+	return NewPlcDATE(time.Unix(int64(daysSinceEpoch)*86400, 0).UTC())
 }
 
 func (m PlcDATE) IsRaw() bool {
@@ -79,6 +82,24 @@ func (m PlcDATE) GetDaysSinceEpoch() uint16 {
 func (m PlcDATE) GetDaysSinceSiemensEpoch() uint16 {
 	// Seconds to days to 1990-01-01
 	return uint16((m.value.Unix() / 86400) - 7305)
+}
+
+// GetYear returns the calendar year of this date.
+func (m PlcDATE) GetYear() uint16 {
+	return uint16(m.value.Year())
+}
+
+// GetMonth returns the calendar month of this date: 1 == January .. 12 == December.
+//
+// This matches the numbering used by PlcDATE_AND_TIME.GetMonth and by every wire
+// format that carries a month field, none of which number months from 0.
+func (m PlcDATE) GetMonth() uint8 {
+	return uint8(m.value.Month())
+}
+
+// GetDay returns the day of the month: 1 .. 31.
+func (m PlcDATE) GetDay() uint8 {
+	return uint8(m.value.Day())
 }
 
 func (m PlcDATE) IsDate() bool {

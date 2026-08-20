@@ -42,14 +42,15 @@ func NewPlcTIME_OF_DAY(value any) PlcTIME_OF_DAY {
 		safeValue = time.Date(0, 0, 0, castedValue.Hour(), castedValue.Minute(), castedValue.Second(),
 			castedValue.Nanosecond(), castedValue.Location())
 	case uint32:
-		// Interpreted as milliseconds since midnight
+		// Interpreted as milliseconds since midnight. The offset carries no timezone,
+		// so the components are derived arithmetically instead of by resolving it as
+		// an instant: going through time.Unix resolves in the host's local zone and
+		// shifts GetHours (and GetMillisecondsSinceMidnight) by the local UTC offset.
 		castedValue := value.(uint32)
 		seconds := castedValue / 1000
 		nanoseconds := (castedValue % 1000) * 1000000
-		epochTime := time.Unix(int64(seconds), int64(nanoseconds))
-		safeValue = time.Date(0, 0, 0, epochTime.Hour(),
-			epochTime.Minute(), epochTime.Second(),
-			epochTime.Nanosecond(), epochTime.Location())
+		safeValue = time.Date(0, 0, 0, int(seconds/3600), int(seconds%3600/60),
+			int(seconds%60), int(nanoseconds), time.UTC)
 	}
 
 	return PlcTIME_OF_DAY{
@@ -73,6 +74,31 @@ func (m PlcTIME_OF_DAY) GetRaw() []byte {
 func (m PlcTIME_OF_DAY) GetMillisecondsSinceMidnight() uint32 {
 	midnight := time.Date(0, 0, 0, 0, 0, 0, 0, m.value.Location())
 	return uint32(m.value.UnixMilli() - midnight.UnixMilli())
+}
+
+// GetHours returns the hour of the day: 0 .. 23.
+func (m PlcTIME_OF_DAY) GetHours() uint8 {
+	return uint8(m.value.Hour())
+}
+
+// GetMinutes returns the minute of the hour: 0 .. 59.
+func (m PlcTIME_OF_DAY) GetMinutes() uint8 {
+	return uint8(m.value.Minute())
+}
+
+// GetSeconds returns the second of the minute: 0 .. 59.
+func (m PlcTIME_OF_DAY) GetSeconds() uint8 {
+	return uint8(m.value.Second())
+}
+
+// GetCentiseconds returns the hundredths of a second: 0 .. 99.
+//
+// Protocols that transmit a time-of-day as separate BCD fields use this as the
+// sub-second component (e.g. Schneider UMAS, where TOD is laid out as
+// [centiseconds][seconds][minutes][hours]). It truncates rather than rounds, so
+// it stays consistent with GetSeconds for any sub-second remainder.
+func (m PlcTIME_OF_DAY) GetCentiseconds() uint8 {
+	return uint8(m.value.Nanosecond() / 10_000_000)
 }
 
 func (m PlcTIME_OF_DAY) IsTime() bool {
