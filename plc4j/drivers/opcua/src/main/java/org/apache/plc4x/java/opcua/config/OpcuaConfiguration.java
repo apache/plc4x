@@ -129,6 +129,11 @@ public class OpcuaConfiguration implements Configuration {
     @Description("Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.")
     private long channelLifetime;
 
+    @ConfigurationParameter("min-channel-lifetime")
+    @LongDefaultValue(5000)
+    @Description("Shortest secure-channel lifetime this client will work with, in milliseconds. A server may revise the requested channel-lifetime downwards, and the renewal schedule is derived from whatever it returns - so a very short lifetime means very frequent renewals, on an executor shared by every OPC UA connection in this JVM. A server-supplied lifetime below this value is raised to it and a warning is logged. If a server genuinely needs faster renewal, lower this value to accept it; the default is far below any lifetime a conforming server negotiates.")
+    private long minChannelLifetime;
+
     @ConfigurationParameter("session-timeout")
     @LongDefaultValue(120000)
     @Description("Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.")
@@ -251,6 +256,14 @@ public class OpcuaConfiguration implements Configuration {
 
     public void setServerCertificate(X509Certificate serverCertificate) {
         this.serverCertificate = serverCertificate;
+    }
+
+    public long getMinChannelLifetime() {
+        return minChannelLifetime;
+    }
+
+    public void setMinChannelLifetime(long minChannelLifetime) {
+        this.minChannelLifetime = minChannelLifetime;
     }
 
     public long getChannelLifetime() {

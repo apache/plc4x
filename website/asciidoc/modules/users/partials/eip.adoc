@@ -37,6 +37,8 @@
  - `tcp`
 5+|Config options:
 |`big-endian` |BOOLEAN |true| |Configure if the connection should be set to transport data in Big-Endian format, or not.
+|`connection-serial-number` |INT |0| |Connection serial number to use in Forward_Open. CIP wants this unique per connection, so the default of 0 means 'pick a random one per connection'. Set it explicitly only when the exchange has to be reproducible, e.g. in recorded tests. +
+*Since: 1.0.0*
 |`force-unconnected-operation` |BOOLEAN |false| |Forces the driver to use unconnected requests. +
 *Since: 0.13.0*
 |`request-timeout` |INT |10000| |Default timeout for all types of requests.

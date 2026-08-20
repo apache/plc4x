@@ -67,6 +67,7 @@ This is UNSAFE: it leaves the connection open to man-in-the-middle attacks and d
 guarantees of a signed secure channel. Only enable it for local testing. In production, establish trust with +
 `trust-store-file` (chain validation) or `server-certificate-file` (certificate pinning) instead.
 |`channel-lifetime` |LONG |3600000| |Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.
+|`min-channel-lifetime` |LONG |5000| |Shortest secure-channel lifetime this client will work with, in milliseconds. A server may revise the requested channel-lifetime downwards, and the renewal schedule is derived from whatever it returns - so a very short lifetime means very frequent renewals, on an executor shared by every OPC UA connection in this JVM. A server-supplied lifetime below this value is raised to it and a warning is logged. If a server genuinely needs faster renewal, lower this value to accept it; the default is far below any lifetime a conforming server negotiates.
 |`session-timeout` |LONG |120000| |Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.
 |`negotiation-timeout` |LONG |60000| |Timeout for all negotiation steps prior acceptance of application level operations - this timeout applies to open secure channel, create session and close calls. Defaults to 60 seconds.
 |`request-timeout` |LONG |30000| |Timeout for read/write/subscribe calls. Value in milliseconds.

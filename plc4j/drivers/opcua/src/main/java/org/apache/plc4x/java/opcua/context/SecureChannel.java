@@ -97,6 +97,13 @@ public class SecureChannel {
     private double sessionTimeout;
     private long revisedLifetime;
 
+    /**
+     * Set once the server's lifetime has been raised to the configured minimum, so the warning is
+     * emitted once per channel rather than on every renewal - which, by the nature of the
+     * condition, would be every few seconds.
+     */
+    private boolean shortLifetimeWarned;
+
     public SecureChannel(Conversation conversation, OpcuaDriverContext driverContext, OpcuaConfiguration configuration, PlcAuthentication authentication) {
         this.conversation = conversation;
         this.configuration = configuration;
@@ -230,7 +237,7 @@ public class SecureChannel {
                 conversation.setRemoteNonce(openSecureChannelResponse.getServerNonce().getStringValue());
                 conversation.setLocalNonce(localNonce);
                 conversation.setSecurityHeader(new SecurityHeader(securityToken.getChannelId(), securityToken.getTokenId()));
-                revisedLifetime = securityToken.getRevisedLifetime();
+                revisedLifetime = adoptChannelLifetime(securityToken.getRevisedLifetime());
                 return openSecureChannelResponse;
             });
     }
@@ -466,12 +473,73 @@ public class SecureChannel {
         }
     }
 
+    /**
+     * Apply {@link #effectiveChannelLifetime(long, long, long)} to a server-supplied lifetime and
+     * tell the operator when their configured minimum overruled the server - including what to
+     * change if they would rather honour it.
+     */
+    private long adoptChannelLifetime(long revisedLifetime) {
+        long requested = configuration.getChannelLifetime();
+        long minimum = configuration.getMinChannelLifetime();
+        long effective = effectiveChannelLifetime(revisedLifetime, requested, minimum);
+
+        if (revisedLifetime > 0 && revisedLifetime < effective && !shortLifetimeWarned) {
+            shortLifetimeWarned = true;
+            LOGGER.warn("Server asked for a secure channel lifetime of {} ms; using {} ms instead, "
+                    + "because min-channel-lifetime is {} ms. Renewals share one executor with every "
+                    + "OPC UA connection in this JVM, which is what that minimum protects. The server "
+                    + "may treat the channel as expired before the first renewal - if this server "
+                    + "genuinely needs renewal that often, lower min-channel-lifetime to {} or less.",
+                revisedLifetime, effective, minimum, revisedLifetime);
+        }
+        return effective;
+    }
+
+    /**
+     * Reconcile the lifetime the server came back with against the one we asked for.
+     *
+     * <p>Two different situations, deliberately handled differently:</p>
+     * <ul>
+     *   <li><strong>Not a lifetime at all</strong> - zero, negative, or longer than we offered.
+     *       OPC UA lets a server revise the requested lifetime <em>downwards</em>; none of these
+     *       is a revision, so what we requested stands. Nothing is lost by ignoring them.</li>
+     *   <li><strong>A lifetime shorter than {@code minimumLifetime}</strong> - a real answer, but
+     *       one that would put the renewal schedule on a treadmill. It is raised to the minimum
+     *       and the caller warns. Note the consequence: the server considers the channel expired
+     *       before our first renewal is due, so the connection may fail at that point. That is the
+     *       trade being made - the renewals run on an executor shared by every OPC UA connection
+     *       in the JVM, so one peer does not get to set the pace for all of them. An operator who
+     *       needs such a server lowers {@code min-channel-lifetime} and accepts the cost
+     *       knowingly.</li>
+     * </ul>
+     *
+     * <p>The minimum is bounded by the requested lifetime, so a deliberately short
+     * {@code channel-lifetime} is still honoured: this only ever declines to go <em>below</em>
+     * what the operator asked for, never above it.</p>
+     */
+    static long effectiveChannelLifetime(long revisedLifetime, long requestedLifetime, long minimumLifetime) {
+        if (revisedLifetime <= 0 || revisedLifetime > requestedLifetime) {
+            return requestedLifetime;
+        }
+        return Math.max(revisedLifetime, Math.min(minimumLifetime, requestedLifetime));
+    }
+
+    /**
+     * Renewal interval for a channel lifetime: three quarters of it, leaving a quarter of the
+     * lifetime as margin for the renewal exchange itself. Never returns a non-positive period -
+     * {@code scheduleAtFixedRate} rejects those, and it would do so from inside a completion stage
+     * where the failure is easy to lose.
+     */
+    static long keepAliveInterval(long channelLifetime) {
+        return Math.max(1L, (long) Math.ceil(channelLifetime * 0.75f));
+    }
+
     private void renewToken() {
         if (keepAlive != null) {
             // cancel earlier renew feature
             keepAlive.cancel(true);
         }
-        long keepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
+        long keepAliveTime = keepAliveInterval(revisedLifetime);
         LOGGER.debug("Scheduling session keep alive to happen within {}s", TimeUnit.MILLISECONDS.toSeconds(keepAliveTime));
         keepAlive = KEEP_ALIVE_EXECUTOR.scheduleAtFixedRate(() -> {
             int securityChannelId = this.conversation.getSecurityChannelId();
@@ -484,7 +552,7 @@ public class SecureChannel {
                     }
                     // Honor any new lifetime the server gave us — if it differs
                     // from what's currently scheduled, reschedule the next renew.
-                    long newKeepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
+                    long newKeepAliveTime = keepAliveInterval(revisedLifetime);
                     if (newKeepAliveTime != keepAliveTime) {
                         renewToken();
                     }
