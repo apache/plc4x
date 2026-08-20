@@ -118,6 +118,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			<#assign valueDefined=true>
 		</#if>
 		<#list case.fields as field>
+			<#assign fieldDeclared=true>
 			<#switch field.typeName>
 				<#case "array">
 					<#assign arrayField = field.asArrayField().orElseThrow()>
@@ -126,21 +127,21 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			// Array Field (${arrayField.name})
                         <#if arrayElementType.isByteBased()>
 							<#if !field.isCountArrayField() && !field.isLengthArrayField()>
-			return nil, errors.Wrap(_${arrayField.name}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
+			return nil, errors.Wrap(_${helper.getGoSafeName(arrayField.name)}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 							</#if>
-			${arrayField.name}Raw, _${arrayField.name}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
-			if _${arrayField.name}Err != nil {
-				return nil, errors.Wrap(_${arrayField.name}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
+			${helper.getGoSafeName(arrayField.name)}Raw, _${helper.getGoSafeName(arrayField.name)}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
+			if _${helper.getGoSafeName(arrayField.name)}Err != nil {
+				return nil, errors.Wrap(_${helper.getGoSafeName(arrayField.name)}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
-			${arrayField.name} := []api.PlcValue{values.NewPlcRawByteArray(${arrayField.name}Raw)}
+			${helper.getGoSafeName(arrayField.name)} := []api.PlcValue{values.NewPlcRawByteArray(${helper.getGoSafeName(arrayField.name)}Raw)}
                         <#else>
-			var ${arrayField.name} []api.PlcValue
+			var ${helper.getGoSafeName(arrayField.name)} []api.PlcValue
 			for i := 0; i < int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
 				_item, _itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.name, arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
 				if _itemErr != nil {
 					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 				}
-				${arrayField.name} = append(${arrayField.name}, ${helper.getPlcValueTypeForTypeReference(arrayElementType)}(_item))
+				${helper.getGoSafeName(arrayField.name)} = append(${helper.getGoSafeName(arrayField.name)}, ${helper.getPlcValueTypeForTypeReference(arrayElementType)}(_item))
 			}
 						</#if>
 					<#if arrayField.name == "value">
@@ -151,9 +152,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 			// Manual Field (${manualField.name})
-			${manualField.name}, _${manualField.name}Err := ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)}
-			if _${manualField.name}Err != nil {
-				return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
+			${helper.getGoSafeName(manualField.name)}, _${helper.getGoSafeName(manualField.name)}Err := ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)}
+			if _${helper.getGoSafeName(manualField.name)}Err != nil {
+				return nil, errors.Wrap(_${helper.getGoSafeName(manualField.name)}Err, "Error parsing '${manualField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#if manualField.name == "value">
 						<#assign valueDefined=true>
@@ -171,7 +172,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
-			<#if
+			<#assign fieldDeclared=
 			(case.name == "Struct")
 			|| ((case.name == "TIME") && (simpleField.name == "milliseconds"))
 			|| ((case.name == "LTIME") && (simpleField.name == "nanoseconds"))
@@ -214,19 +215,20 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				|| (simpleField.name == "dayOfWeek")
 			  )
 			)
-			|| (simpleField.name == "value")>${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
-			if _${simpleField.name}Err != nil {
-				return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
+			|| (simpleField.name == "value")>
+			<#if fieldDeclared>${helper.getGoSafeName(simpleField.name)}<#else>_</#if>, _${helper.getGoSafeName(simpleField.name)}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+			if _${helper.getGoSafeName(simpleField.name)}Err != nil {
+				return nil, errors.Wrap(_${helper.getGoSafeName(simpleField.name)}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#if case.name == "Struct">
-			_map["${case.name}"] = ${helper.getPlcValueTypeForTypeReference(simpleField.type)}(${simpleField.name})
+			_map["${case.name}"] = ${helper.getPlcValueTypeForTypeReference(simpleField.type)}(${helper.getGoSafeName(simpleField.name)})
 					</#if>
 					<#assign valueDefined=true>
 					<#break>
 			</#switch>
-			<#if field.isNamedField()>
+			<#if field.isNamedField() && fieldDeclared>
 				<#assign namedField=field.asNamedField().orElseThrow()/>
-				_ = ${namedField.name} // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+				_ = ${helper.getGoSafeName(namedField.name)} // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 			</#if>
 		</#list>
         <#switch case.name>
@@ -388,9 +390,9 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			// Array Field (${arrayField.name})
 			for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
 					<#if case.name = "Struct">
-				${arrayField.name} := value.GetValue("${arrayField.name}")
+				${helper.getGoSafeName(arrayField.name)} := value.GetValue("${arrayField.name}")
 					</#if>
-				_itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getWriteBufferWriteMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayElementType)?cap_first + "()", arrayField)}<#else>Complex type array in data-io serialization currently not implemented</#if>
+				_itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getWriteBufferWriteMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), helper.getGoSafeName(arrayField.name) + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayElementType)?cap_first + "()", arrayField)}<#else>Complex type array in data-io serialization currently not implemented</#if>
 				if _itemErr != nil {
 					return errors.Wrap(_itemErr, "Error serializing 'value' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 				}
@@ -400,9 +402,9 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 			// Manual Field (${manualField.name})
-			_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}
-			if _${manualField.name}Err != nil {
-				return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
+			_${helper.getGoSafeName(manualField.name)}Err := ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}
+			if _${helper.getGoSafeName(manualField.name)}Err != nil {
+				return errors.Wrap(_${helper.getGoSafeName(manualField.name)}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#break>
 				<#case "reserved">

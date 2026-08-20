@@ -78,6 +78,29 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return sanitizedName;
     }
 
+    /**
+     * The Go keywords, which cannot be used as an identifier. A field whose mspec name is one of
+     * these has to be renamed wherever Go expects an identifier rather than a title-cased property
+     * name - a parameter, a struct field declaration, a local. Two mspec fields hit this today:
+     * "range" in the umas protocol and "select" in IEC 60870-5-104.
+     */
+    private static final Set<String> GO_KEYWORDS = new HashSet<>(Arrays.asList(
+        "break", "case", "chan", "const", "continue", "default", "defer", "else", "fallthrough",
+        "for", "func", "go", "goto", "if", "import", "interface", "map", "package", "range",
+        "return", "select", "struct", "switch", "type", "var"));
+
+    /**
+     * Returns a name that is safe to emit where Go expects an identifier, by suffixing an
+     * underscore when the name collides with a keyword. Title-cased property names never collide,
+     * because Go keywords are all lower case, so only the lower case form needs this.
+     * <p>
+     * Deliberately not applied to names that end up inside a string literal, where the mspec name
+     * is what a reader should see.
+     */
+    public String getGoSafeName(String name) {
+        return GO_KEYWORDS.contains(name) ? name + "_" : name;
+    }
+
     public String packageName(String languageFlavorName) {
         return String.join("", languageFlavorName.split("\\-"));
     }
@@ -1153,13 +1176,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
                         .findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
-                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Get" + capitalize(childProperty) + "()";
+                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + getGoSafeName(variableLiteralName) + ").Get" + capitalize(childProperty) + "()";
                     }
                     // TODO: is this really meant to fall through?
                     tracer = tracer.dive("we fell through the complex complex");
                 } else if (typeDefinition instanceof EnumTypeDefinition) {
                     tracer = tracer.dive("enum");
-                    String variableAccess = variableLiteralName;
+                    String variableAccess = getGoSafeName(variableLiteralName);
                     if (isChild) {
                         variableAccess = "Get" + capitalize(variableLiteralName) + "()";
                     }
@@ -1176,7 +1199,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 final ImplicitField referencedImplicitField = getReferencedImplicitField(variableLiteral);
                 return tracer + toSerializationExpression(referencedImplicitField, referencedImplicitField.getType(), getReferencedImplicitField(variableLiteral).getSerializeExpression(), serializerArguments);
             } else {
-                return tracer + variableLiteralName;
+                return tracer + getGoSafeName(variableLiteralName);
                 //return toParseExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
             }
         }
@@ -1213,9 +1236,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         tracer = tracer.dive("else");
         Tracer tracer2 = tracer;
-        String variableAccess = variableLiteralName;
+        String variableAccess = getGoSafeName(variableLiteralName);
         if (isChild) {
-            variableAccess = "Get" + capitalize(variableAccess) + "()";
+            variableAccess = "Get" + capitalize(variableLiteralName) + "()";
         }
         return tracer + (serialize ? "m.Get" + capitalize(variableLiteralName) + "()" : variableAccess) + indexCall +
             variableLiteral.getChild()
@@ -1426,7 +1449,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toOptionalVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("optional fields");
-        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + variableLiteral.getName() + ")" +
+        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + getGoSafeName(variableLiteral.getName()) + ")" +
             variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
     }
 
@@ -1451,7 +1474,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("length");
-        return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("(" + variableLiteral.getName() + ")"));
+        return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("(" + getGoSafeName(variableLiteral.getName()) + ")"));
     }
 
     private String toValueVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
