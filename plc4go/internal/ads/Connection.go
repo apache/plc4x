@@ -62,7 +62,16 @@ type Connection struct {
 	passLogToModel bool
 	log            zerolog.Logger
 	_options       []options.WithOption // Used to pass them downstream
+
+	// Nesting budget for parsing the data-type table uploaded from the device. An entry may
+	// contain further entries, so without a budget the depth of the tree is the device's choice.
+	// Mirrors the Java driver's "max-data-type-table-depth" connection option.
+	maxDataTypeTableDepth uint16
 }
+
+// defaultMaxDataTypeTableDepth matches the default of the Java driver's
+// "max-data-type-table-depth" option. Real type hierarchies are only a handful of levels deep.
+const defaultMaxDataTypeTableDepth uint16 = 20
 
 var (
 	_ spi.TransportInstanceExposer = (*Connection)(nil)
@@ -89,6 +98,14 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 			// TODO: Connection Id is probably "" all the time.
 			connection.tracer = tracer.NewTracer(driverContext.connectionId, _options...)
 		}
+	}
+	connection.maxDataTypeTableDepth = defaultMaxDataTypeTableDepth
+	if depthOption, ok := connectionOptions["max-data-type-table-depth"]; ok && len(depthOption) == 1 {
+		depth, err := strconv.ParseUint(depthOption[0], 10, 16)
+		if err != nil {
+			return nil, fmt.Errorf("invalid max-data-type-table-depth %q: %v", depthOption[0], err)
+		}
+		connection.maxDataTypeTableDepth = uint16(depth)
 	}
 	tagHandler := NewTagHandlerWithDriverContext(driverContext)
 	valueHandler := NewValueHandlerWithDriverContext(driverContext, tagHandler, _options...)
@@ -288,7 +305,7 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	dataTypes := map[string]readWriteModel.AdsDataTypeTableEntry{}
 	for range numDataTypes {
-		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
+		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer, m.maxDataTypeTableDepth)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
 		}

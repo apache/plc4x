@@ -1008,25 +1008,25 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDataTypeTableEntryParse(ctx context.Context, theBytes []byte) (AdsDataTypeTableEntry, error) {
-	return AdsDataTypeTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsDataTypeTableEntryParse(ctx context.Context, theBytes []byte, maxDepth uint16) (AdsDataTypeTableEntry, error) {
+	return AdsDataTypeTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), maxDepth)
 }
 
-func AdsDataTypeTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
+func AdsDataTypeTableEntryParseWithBufferProducer(maxDepth uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
-		return AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
+		return AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer, maxDepth)
 	}
 }
 
-func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
-	v, err := (new(_AdsDataTypeTableEntry)).parse(ctx, readBuffer)
+func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, maxDepth uint16) (AdsDataTypeTableEntry, error) {
+	v, err := (new(_AdsDataTypeTableEntry)).parse(ctx, readBuffer, maxDepth)
 	if err != nil {
 		return nil, err
 	}
 	return v, nil
 }
 
-func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDataTypeTableEntry AdsDataTypeTableEntry, err error) {
+func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer, maxDepth uint16) (__adsDataTypeTableEntry AdsDataTypeTableEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeTableEntry"); pullErr != nil {
@@ -1036,6 +1036,11 @@ func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
+
+	// Validation
+	if !(bool((maxDepth) > (0))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "maximum data type table nesting depth exceeded"})
+	}
 
 	entryLength, err := ReadSimpleField(ctx, "entryLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
@@ -1337,7 +1342,7 @@ func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.ArrayInfo = arrayInfo
 
-	children, err := ReadCountArrayField[AdsDataTypeTableEntry](ctx, "children", ReadComplex[AdsDataTypeTableEntry](AdsDataTypeTableEntryParseWithBuffer, readBuffer), uint64(numChildren), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	children, err := ReadCountArrayField[AdsDataTypeTableEntry](ctx, "children", ReadComplex[AdsDataTypeTableEntry](AdsDataTypeTableEntryParseWithBufferProducer((uint16)(uint16(maxDepth)-uint16(uint16(1)))), readBuffer), uint64(numChildren), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'children' field"))
 	}
