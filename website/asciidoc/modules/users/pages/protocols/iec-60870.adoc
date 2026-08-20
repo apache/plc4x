@@ -24,9 +24,64 @@
 IMPORTANT: This driver supports *subscriptions only* - reading, writing and browsing are not
 implemented and a request for any of them is rejected.
 
-Tag addresses are currently not interpreted: any address string is accepted without error, and the
-subscription receives all incoming ASDUs rather than those matching the address. Consumers have to
-filter the incoming events themselves.
+== Tag Addresses
+
+A tag address names one information object of one station and is written as `<asdu>/<ioa>`:
+
+* `<asdu>` is the 2 octet *common address of ASDU* (the station address). Write it either as one
+  decimal number `0..65535` or octet by octet as `<low>/<high>`, each `0..255`.
+* `<ioa>` is the 3 octet *information object address*. Write it either as one decimal number
+  `0..16777215` or octet by octet as `<low>.<middle>.<high>`, each `0..255`.
+
+[WARNING]
+====
+The octet-wise forms are written *least significant octet first*, the order the octets appear in on
+the wire. So `1/2` as an ASDU address means `1 + 2 * 256 = 513`, not 258.
+
+This is the *opposite* order of the identically shaped `a/b/c` address of the KNX driver, where the
+most significant part (main group) comes first. A KNX-style reading of an IEC-60870 address is
+silently a valid address of a different station, so double-check the order when porting addresses or
+copying examples between the two drivers.
+====
+
+A `+*+` may take the place of any number and makes that position a wildcard, so that one subscription
+can cover a whole station, a whole octet range, or everything the connection reports.
+
+.Examples
+[cols="1,3"]
+|===
+| Address | Meaning
+
+| `1/2`            | ASDU 1, information object 2
+| `65535/16777215` | the widest address both fields can carry
+| `1/2/3`          | ASDU 513 (low octet 1, high octet 2), information object 3
+| `1/2.3.4`        | ASDU 1, information object 262914 (low 2, middle 3, high 4)
+| `1/2/3.4.5`      | ASDU 513, information object 328707
+| `+*/*+`            | every information object of every station
+| `+1/*+`            | every information object of ASDU 1
+| `+*/3.4.5+`        | information object 328707 of every station
+| `+1/2/3.*.5+`      | low and high octet pinned, middle octet wildcarded
+|===
+
+Surrounding whitespace is trimmed and leading zeros are accepted, up to the number of digits the
+maximum of that component has (3 for an octet, 5 for a whole ASDU address, 8 for a whole information
+object address). So `007/002.03.004` is accepted while `000007/2` is not. Whitespace *inside* an
+address is not accepted.
+
+Every incoming information object is matched against the address of each subscription and only
+delivered to the subscriptions that cover it - the station itself reports everything it has, the
+filtering happens in the driver.
+
+[IMPORTANT]
+====
+Malformed and out-of-range addresses are rejected when the request is built, with a
+`PlcInvalidTagException`.
+
+Earlier versions of this driver ignored the address entirely: any string was accepted and every
+subscription received every incoming ASDU, leaving the filtering to the consumer. Existing code
+therefore needs its addresses reviewed - in particular a bare `+*+` is no longer an address, the
+"everything" address is `+*/*+` - and consumer-side filtering can now be dropped.
+====
 
 == Connection String Options
 

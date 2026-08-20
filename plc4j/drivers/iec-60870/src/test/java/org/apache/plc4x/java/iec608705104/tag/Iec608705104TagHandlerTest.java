@@ -18,29 +18,52 @@
  */
 package org.apache.plc4x.java.iec608705104.tag;
 
-import org.apache.plc4x.java.iec608705104.tag.Iec608705104Tag;
-import org.apache.plc4x.java.iec608705104.tag.Iec608705104TagHandler;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Iec608705104TagHandlerTest {
 
-    @Test
-    void parseTagYieldsPlaceholderTagUntilGrammarLands() {
-        Iec608705104TagHandler handler = new Iec608705104TagHandler();
-        Iec608705104Tag tag = assertInstanceOf(Iec608705104Tag.class, handler.parseTag("1/0/2"));
-        assertEquals(0, tag.getAdsuAddress());
-        assertEquals(0, tag.getObjectAddress());
+    private final Iec608705104TagHandler handler = new Iec608705104TagHandler();
+
+    @ParameterizedTest
+    @CsvSource({
+        "1/2,       1,     2",
+        "1/2/3,     513,   3",
+        "1/2.3.4,   1,     262914",
+        "1/2/3.4.5, 513,   328707",
+    })
+    void parseTagResolvesTheRealAddresses(String address, int expectedAdsuAddress, int expectedObjectAddress) {
+        Iec608705104Tag tag = assertInstanceOf(Iec608705104Tag.class, handler.parseTag(address));
+        assertEquals(expectedAdsuAddress, tag.getAdsuAddress());
+        assertEquals(expectedObjectAddress, tag.getObjectAddress());
+        assertEquals(address, tag.getAddressString());
     }
 
     @Test
-    void parseQueryIsNotSupported() {
-        // PlcBrowseRequest doesn't apply to push-only IEC-60870 — the handler
-        // returns null to signal "no query syntax".
-        assertNull(new Iec608705104TagHandler().parseQuery("anything"));
+    void parseTagKeepsWildcards() {
+        Iec608705104Tag tag = assertInstanceOf(Iec608705104Tag.class, handler.parseTag("1/*"));
+        assertEquals(1, tag.getAdsuAddress());
+        assertEquals(Iec608705104Tag.WILDCARD_ADDRESS, tag.getObjectAddress());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "1", "1/2/3/4", "1/2.3", "nope", "65536/0"})
+    void parseTagRejectsMalformedAddresses(String address) {
+        assertThrows(PlcInvalidTagException.class, () -> handler.parseTag(address));
+    }
+
+    @Test
+    void parseQueryFailsLoudlyBecauseIec60870CannotBeBrowsed() {
+        // Returning null here used to make PlcBrowseRequest builders NPE far
+        // away from the cause.
+        assertThrows(UnsupportedOperationException.class, () -> handler.parseQuery("1/*"));
     }
 
 }

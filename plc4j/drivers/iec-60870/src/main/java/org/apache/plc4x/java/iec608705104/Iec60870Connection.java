@@ -332,7 +332,7 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
             Iec608705104Tag tag = new Iec608705104Tag(asduAddress, objectAddress);
             PlcValue plcValue = Iec608705104TagParser.parseTag(informationObject, asdu.getTypeIdentification());
             LocalDateTime eventTime = extractEventTime(informationObject);
-            publishEvent(eventTime, tag, plcValue);
+            publishEvent(eventTime, tag, plcValue, asduAddress, objectAddress);
         }
     }
 
@@ -380,20 +380,49 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
             .minus(localTimeZoneOffsetFromUtc);
     }
 
-    private void publishEvent(LocalDateTime eventTime, Iec608705104Tag tag, PlcValue plcValue) {
+    /**
+     * Hands one information object to every subscription that covers it.
+     *
+     * @param tag          the address of the information object, as it goes into the event.
+     * @param asduAddress  the ASDU address of the information object, matched against the
+     *                     subscriptions. Passed separately rather than read back off
+     *                     {@code tag}, whose getters report {@link Iec608705104Tag#WILDCARD_ADDRESS}
+     *                     instead of a value for a wildcarded address.
+     * @param objectAddress the information object address, matched the same way.
+     */
+    private void publishEvent(LocalDateTime eventTime, Iec608705104Tag tag, PlcValue plcValue,
+                              int asduAddress, int objectAddress) {
         Instant timestamp = eventTime.atZone(ZoneId.systemDefault()).toInstant();
-        String tagKey = tag.toString();
+        String tagKey = tag.getAddressString();
         Iec608705104PlcSubscriptionEvent event = new Iec608705104PlcSubscriptionEvent(
             timestamp,
             Collections.singletonMap(tagKey, tag),
             Collections.singletonMap(tagKey, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
 
-        // IEC-104 doesn't support per-tag filtering on the wire — every
-        // consumer that registered for *any* tag receives every incoming
-        // event. (A future enhancement could match on tag.matches(tagKey).)
-        for (Consumer<PlcSubscriptionEvent> consumer : consumers.values()) {
-            consumer.accept(event);
+        // IEC-104 has no per-tag filtering on the wire: the station simply
+        // reports everything it has. So the filtering happens here, by
+        // matching the address of the incoming information object against the
+        // (possibly wildcarded) tag of every registered subscription handle.
+        for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
+            if (matchesAnyHandle(entry.getKey(), asduAddress, objectAddress)) {
+                entry.getValue().accept(event);
+            }
         }
+    }
+
+    /**
+     * @return {@code true} if any subscription handle of {@code registration}
+     * covers the given information object. Registrations without a single
+     * IEC 60870-5-104 handle never match — there is no tag to match against.
+     */
+    static boolean matchesAnyHandle(PlcConsumerRegistration registration, int adsuAddress, int objectAddress) {
+        for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
+            if ((handle instanceof Iec608705104SubscriptionHandle iecHandle)
+                && iecHandle.getTag().matches(adsuAddress, objectAddress)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

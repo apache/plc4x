@@ -37,7 +37,7 @@ public class ManualTest {
                 throw new RuntimeException("Subscription not supported");
             }
 
-            plcConnection.subscriptionRequestBuilder().addChangeOfStateTagAddress("all", "*").setConsumer(plcSubscriptionEvent -> {
+            plcConnection.subscriptionRequestBuilder().addChangeOfStateTagAddress("all", "*/*").setConsumer(plcSubscriptionEvent -> {
                 for (String tagName : plcSubscriptionEvent.getTagNames()) {
                     Iec608705104Tag tag = (Iec608705104Tag) plcSubscriptionEvent.getTag(tagName);
                     System.out.printf("TS: %s, Addr: %d:%d, Value; %s%n", plcSubscriptionEvent.getTimestamp().toString(), tag.getAdsuAddress(), tag.getObjectAddress(), plcSubscriptionEvent.getPlcValue(tagName).toString());
