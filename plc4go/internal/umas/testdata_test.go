@@ -28,8 +28,8 @@ import (
 // fields of its type in mspec order, little endian, and terminates the names with a NUL byte the way
 // the 'parseTerminatedString' manual field does.
 //
-// These builders are what makes the driver's own hand-written dictionary parsers testable: build a
-// payload from the declared layout, parse it, and the two have to agree.
+// These builders are what makes the dictionary parsing testable: build a payload from the declared
+// layout, parse it through the generated model, and the two have to agree.
 
 // symbolRecord is one entry of the project's symbol table.
 type symbolRecord struct {
@@ -131,8 +131,8 @@ type arrayDimension struct {
 //
 //	classId(1) = 0x04 + elementTypeId(2) + numberOfDimensions(1) + dimensions
 //
-// where a dimension is startIndex(4) + upperBound(4). This one is parsed by the generated
-// UmasArrayTypeDefinition, whose mspec type pins the byte order itself.
+// where a dimension is startIndex(4) + upperBound(4). This is the one dictionary payload whose mspec
+// type pins LITTLE_ENDIAN on its own fields, so it needs no byte order from the buffer.
 func arrayTypeDefinitionPayload(elementTypeId uint16, dimensions ...arrayDimension) []byte {
 	payload := []byte{arrayClassId}
 	payload = binary.LittleEndian.AppendUint16(payload, elementTypeId)

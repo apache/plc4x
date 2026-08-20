@@ -574,7 +574,7 @@ func (c *Connection) downloadDatatypeNames(ctx context.Context) ([]readWriteMode
 	if len(response.GetBlock()) == 0 {
 		return nil, nil
 	}
-	return parseDatatypeNames(response.GetBlock())
+	return parseDatatypeNames(ctx, response.GetBlock())
 }
 
 // resolveCustomType fetches the definition of one of the project's own types. The first byte of the
@@ -606,7 +606,7 @@ func (c *Connection) resolveCustomType(ctx context.Context, typeId uint16, refer
 			arrayDefinition.GetElementTypeId(), arrayDefinition.GetDimensions())
 		return nil
 	}
-	fields, err := parseUdtDefinition(block)
+	fields, err := parseUdtDefinition(ctx, block)
 	if err != nil {
 		return errors.Wrapf(err, "%s: error parsing the struct definition", name)
 	}
@@ -630,7 +630,7 @@ func (c *Connection) downloadSymbolTable(ctx context.Context) ([]readWriteModel.
 	if len(response.GetBlock()) == 0 {
 		return nil, nil
 	}
-	return parseSymbolTable(response.GetBlock())
+	return parseSymbolTable(ctx, response.GetBlock())
 }
 
 // ensureDataDictionary downloads the dictionary if the handshake couldn't. plc4j's browse does the

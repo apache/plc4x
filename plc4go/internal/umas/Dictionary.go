@@ -20,145 +20,60 @@
 package umas
 
 import (
-	"bytes"
+	"context"
 	"encoding/binary"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/umas/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-// The three data-dictionary payloads are parsed here by hand instead of through the generated
-// UmasPDUReadUnlocatedVariableNamesResponse / UmasPDUReadDatatypeNamesResponse /
-// UmasPDUReadUmasUDTDefinitionResponse parsers.
+// The three data-dictionary payloads are parsed by the generated model, the same way plc4j's
+// UmasConnection parses them: the payload of the enclosing UmasPDUReadUnlocatedVariableResponse is
+// handed to the response type that matches the request, and its records come back already decoded.
 //
-// Why: each of their record types ends in a NUL terminated name, which the mspec spells as
-//
-//	[manual vstring value 'STATIC_CALL("parseTerminatedString", readBuffer, -1)' ...]
-//
-// where -1 selects the helper's variable length mode ("read until the terminator"). The Go code
-// generator drops the unary minus and emits ParseTerminatedString(ctx, readBuffer, 1), which is
-// fixed width mode over a single byte: every name would come back as at most one character and the
-// record stream would desynchronize on the very first entry. plc4j's generated code passes -(1) and
-// parses these payloads correctly, so this is a Go-side generator defect, not a protocol question.
-// Since the generated model may not be edited, the driver reads the records itself and hands them to
-// the generated constructors, so everything downstream keeps working against the model types.
-//
-// The layouts below are the mspec's, read little endian - which is also the byte order plc4j's
-// UmasConnection passes to the ReadBufferByteBased it parses these payloads with.
+// The one thing that has to be supplied from here is the byte order. None of these mspec types pins
+// a byte order on its fields, so it is the buffer that decides, and UMAS is little endian throughout.
+// That rules out the convenience parsers (UmasPDUReadDatatypeNamesResponseParse and friends): they
+// build a utils.NewReadBufferByteBased with no options, which is big endian, and every multi-byte
+// field of these records - dataType, block, offset, dataSize, unknown1 - would come back
+// byte-swapped. plc4j passes LITTLE_ENDIAN explicitly at the equivalent call, and so does
+// dictionaryReadBuffer below.
 
-const (
-	// unlocatedVariableNamesHeaderSize is range(1) + nextAddress(2) + unknown1(2) + noOfRecords(2).
-	unlocatedVariableNamesHeaderSize = 7
-	// datatypeNamesHeaderSize is range(1) + nextAddress(2) + unknown1(1) + noOfRecords(2).
-	datatypeNamesHeaderSize = 6
-	// udtDefinitionHeaderSize is range(1) + unknown1(4) + noOfRecords(2).
-	udtDefinitionHeaderSize = 7
-
-	// unlocatedVariableReferenceFixedSize is dataType(2) + block(2) + offset(4) + flags(1) +
-	// unknown4(1), everything of a symbol record that comes before its name.
-	unlocatedVariableReferenceFixedSize = 10
-	// datatypeReferenceFixedSize is dataSize(2) + unknown1(2) + classIdentifier(1) + dataType(1) +
-	// one reserved byte the mspec pins to 0x00.
-	datatypeReferenceFixedSize = 7
-	// udtDefinitionFixedSize is dataType(2) + offset(2) + unknown5(2) + unknown4(2).
-	udtDefinitionFixedSize = 8
-)
+// dictionaryReadBuffer wraps a data-dictionary payload in the little endian buffer its records are
+// encoded in.
+func dictionaryReadBuffer(block []byte) utils.ReadBufferByteBased {
+	return utils.NewReadBufferByteBased(block, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+}
 
 // parseSymbolTable reads the payload of a DD02 request for block 0xFFFF: the project's symbols.
-func parseSymbolTable(block []byte) ([]readWriteModel.UmasUnlocatedVariableReference, error) {
-	if len(block) < unlocatedVariableNamesHeaderSize {
-		return nil, errors.Errorf("A symbol table needs at least %d header bytes, got %d", unlocatedVariableNamesHeaderSize, len(block))
+func parseSymbolTable(ctx context.Context, block []byte) ([]readWriteModel.UmasUnlocatedVariableReference, error) {
+	response, err := readWriteModel.UmasPDUReadUnlocatedVariableNamesResponseParseWithBuffer(ctx, dictionaryReadBuffer(block))
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing a symbol table out of %d bytes", len(block))
 	}
-	numberOfRecords := binary.LittleEndian.Uint16(block[5:7])
-	rest := block[unlocatedVariableNamesHeaderSize:]
-	records := make([]readWriteModel.UmasUnlocatedVariableReference, 0, numberOfRecords)
-	for i := uint16(0); i < numberOfRecords; i++ {
-		if len(rest) < unlocatedVariableReferenceFixedSize {
-			return nil, errors.Errorf("Symbol record %d is truncated: %d bytes left", i, len(rest))
-		}
-		dataType := binary.LittleEndian.Uint16(rest[0:2])
-		blockNumber := binary.LittleEndian.Uint16(rest[2:4])
-		offset := binary.LittleEndian.Uint32(rest[4:8])
-		flags := rest[8]
-		unknown4 := rest[9]
-		name, remainder, err := readTerminatedString(rest[unlocatedVariableReferenceFixedSize:])
-		if err != nil {
-			return nil, errors.Wrapf(err, "Error reading the name of symbol record %d", i)
-		}
-		records = append(records, readWriteModel.NewUmasUnlocatedVariableReference(
-			dataType, blockNumber, offset, flags, unknown4, name))
-		rest = remainder
-	}
-	return records, nil
+	return response.GetRecords(), nil
 }
 
 // parseDatatypeNames reads the payload of a DD03 request: the project's datatype dictionary.
-func parseDatatypeNames(block []byte) ([]readWriteModel.UmasDatatypeReference, error) {
-	if len(block) < datatypeNamesHeaderSize {
-		return nil, errors.Errorf("A datatype dictionary needs at least %d header bytes, got %d", datatypeNamesHeaderSize, len(block))
+//
+// Note that the reserved byte each record carries is stricter here than it was when this was parsed
+// by hand: the Go spi's ReadReservedField fails the parse when the byte is not 0x00, where plc4j's
+// only logs it. A device that puts something else there loses its whole dictionary rather than one
+// record, which is a difference in the shared field reader and not something this driver can decide.
+func parseDatatypeNames(ctx context.Context, block []byte) ([]readWriteModel.UmasDatatypeReference, error) {
+	response, err := readWriteModel.UmasPDUReadDatatypeNamesResponseParseWithBuffer(ctx, dictionaryReadBuffer(block))
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing a datatype dictionary out of %d bytes", len(block))
 	}
-	numberOfRecords := binary.LittleEndian.Uint16(block[4:6])
-	rest := block[datatypeNamesHeaderSize:]
-	records := make([]readWriteModel.UmasDatatypeReference, 0, numberOfRecords)
-	for i := uint16(0); i < numberOfRecords; i++ {
-		if len(rest) < datatypeReferenceFixedSize {
-			return nil, errors.Errorf("Datatype record %d is truncated: %d bytes left", i, len(rest))
-		}
-		dataSize := binary.LittleEndian.Uint16(rest[0:2])
-		unknown1 := binary.LittleEndian.Uint16(rest[2:4])
-		classIdentifier := rest[4]
-		dataType := rest[5]
-		// rest[6] is the reserved byte the mspec pins to 0x00. A device which puts something else
-		// there isn't a reason to give up on the whole dictionary, so it is skipped rather than
-		// checked - the same thing the generated reserved-field reader does (it logs and carries on).
-		name, remainder, err := readTerminatedString(rest[datatypeReferenceFixedSize:])
-		if err != nil {
-			return nil, errors.Wrapf(err, "Error reading the name of datatype record %d", i)
-		}
-		records = append(records, readWriteModel.NewUmasDatatypeReference(
-			dataSize, unknown1, classIdentifier, dataType, name))
-		rest = remainder
-	}
-	return records, nil
+	return response.GetRecords(), nil
 }
 
 // parseUdtDefinition reads the payload of a DD02 request for a struct type: the type's members.
-func parseUdtDefinition(block []byte) ([]readWriteModel.UmasUDTDefinition, error) {
-	if len(block) < udtDefinitionHeaderSize {
-		return nil, errors.Errorf("A UDT definition needs at least %d header bytes, got %d", udtDefinitionHeaderSize, len(block))
+func parseUdtDefinition(ctx context.Context, block []byte) ([]readWriteModel.UmasUDTDefinition, error) {
+	response, err := readWriteModel.UmasPDUReadUmasUDTDefinitionResponseParseWithBuffer(ctx, dictionaryReadBuffer(block))
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing a UDT definition out of %d bytes", len(block))
 	}
-	numberOfRecords := binary.LittleEndian.Uint16(block[5:7])
-	rest := block[udtDefinitionHeaderSize:]
-	records := make([]readWriteModel.UmasUDTDefinition, 0, numberOfRecords)
-	for i := uint16(0); i < numberOfRecords; i++ {
-		if len(rest) < udtDefinitionFixedSize {
-			return nil, errors.Errorf("UDT member %d is truncated: %d bytes left", i, len(rest))
-		}
-		dataType := binary.LittleEndian.Uint16(rest[0:2])
-		offset := binary.LittleEndian.Uint16(rest[2:4])
-		unknown5 := binary.LittleEndian.Uint16(rest[4:6])
-		unknown4 := binary.LittleEndian.Uint16(rest[6:8])
-		name, remainder, err := readTerminatedString(rest[udtDefinitionFixedSize:])
-		if err != nil {
-			return nil, errors.Wrapf(err, "Error reading the name of UDT member %d", i)
-		}
-		records = append(records, readWriteModel.NewUmasUDTDefinition(
-			dataType, offset, unknown5, unknown4, name))
-		rest = remainder
-	}
-	return records, nil
+	return response.GetRecords(), nil
 }
-
-// readTerminatedString takes the NUL terminated string off the front of data and hands back what
-// follows it. A run without a terminator is an error rather than a string, because it means the
-// record stream is out of step and every following record would be nonsense.
-func readTerminatedString(data []byte) (string, []byte, error) {
-	terminator := bytes.IndexByte(data, terminatorByte)
-	if terminator < 0 {
-		return "", nil, errors.New("no NUL terminator in the remaining bytes")
-	}
-	return string(data[:terminator]), data[terminator+1:], nil
-}
-
-// terminatorByte is the NUL byte a UMAS name ends with.
-const terminatorByte = byte(0x00)

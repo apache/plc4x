@@ -40,6 +40,9 @@ import (
 // therefore reads its first four bytes.
 const unknownDataTypeSizeIndex = uint8(3)
 
+// terminatorByte is the NUL byte a UMAS string ends with.
+const terminatorByte = byte(0x00)
+
 // resolveDataType turns the type id of a symbol into a primitive UMAS data type. A custom type of
 // the project (id customTypeIdBase and up) is not one, which is what the second return value says.
 func resolveDataType(dataTypeId uint16) (readWriteModel.UmasDataType, bool) {
