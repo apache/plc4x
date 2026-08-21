@@ -92,6 +92,60 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
         return dynamicTests;
     }
 
+    /**
+     * Parses every prefix of every reference message and requires each one to fail, if it fails, with
+     * a {@link BufferException} rather than with an unchecked exception.
+     * <p>
+     * The remote end decides where a message ends: a datagram can arrive short and a stream can be
+     * closed mid-message, so every prefix of a well formed message is something a driver can be
+     * handed. Truncation is worth exercising in particular because a field read that runs out of
+     * bytes is reported as an absent optional rather than as a failure, so anything deriving a value
+     * from that field sees it unset in a case the surrounding condition says cannot happen. An
+     * unchecked exception from there escapes the receive path's error handling entirely.
+     * <p>
+     * Whether a prefix parses is left open - a truncated message may legitimately parse into a
+     * smaller one. Only the manner of failure is asserted.
+     */
+    @TestFactory
+    public Iterable<DynamicTest> getTruncationTests() throws ParserSerializerTestsuiteException {
+        ParserSerializerTestsuite testSuite = parseTestsuite();
+        List<DynamicTest> dynamicTests = new LinkedList<>();
+        for (Testcase testcase : testSuite.testcases()) {
+            String testcaseName = testcase.getName();
+            String testcaseLabel = testSuite.name() + ": " + testcaseName + " truncated";
+            dynamicTests.add(DynamicTest.dynamicTest(testcaseLabel, getSourceUri(testcase), () -> {
+                    Assumptions.assumeFalse(() -> ignoredTestCases.contains(testcaseName), "Testcase " + testcaseName + " ignored");
+                    runTruncations(testSuite, testcase);
+                }
+            ));
+        }
+        return dynamicTests;
+    }
+
+    private void runTruncations(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
+        byte[] testcaseRaw = testcase.getRaw();
+        MessageInput<?> messageInput = MessageResolver.getMessageIOStaticLinked(
+            testSuite.options(),
+            testcase.getRootType(),
+            testcase.getParserArguments()
+        );
+
+        // Up to and including the whole message, so the untruncated case is covered too.
+        for (int length = 0; length <= testcaseRaw.length; length++) {
+            byte[] truncated = Arrays.copyOf(testcaseRaw, length);
+            ReadBufferByteBased readBuffer = new ReadBufferByteBased(truncated, WithByteOrder(testSuite.byteOrderName()));
+            try {
+                messageInput.parse(readBuffer);
+            } catch (BufferException e) {
+                // A message we cannot parse is allowed to be rejected.
+            } catch (Exception | StackOverflowError e) {
+                throw new ParserSerializerTestsuiteException(String.format(
+                    "Parsing %s truncated to %d of %d bytes (%s) failed with %s",
+                    testcase.getName(), length, testcaseRaw.length, ENCODE_HEX(truncated), e), e);
+            }
+        }
+    }
+
     private ParserSerializerTestsuite parseTestsuite() throws ParserSerializerTestsuiteException {
         try {
             SAXReader reader = new LocationAwareSAXReader();
