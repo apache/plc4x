@@ -116,7 +116,9 @@
         ]
     ]
     [optional S7Parameter ('messageType')              parameter 'parameterLength > 0']
-    [optional S7Payload   ('messageType', 'parameter') payload   'payloadLength > 0'  ]
+    // The payload's type switch discriminates on the parameter, so it can only be read when the
+    // parameter was: a message announcing a parameter it then does not carry leaves it unset.
+    [optional S7Payload   ('messageType', 'parameter') payload   'payloadLength > 0 && parameter != null'  ]
 ]
 
 ////////////////////////////////////////////////////////////////

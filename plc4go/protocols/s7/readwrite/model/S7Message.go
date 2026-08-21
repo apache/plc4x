@@ -58,6 +58,8 @@ type S7MessageContract interface {
 	// GetParameter returns Parameter (property field)
 	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
+	// The payload's type switch discriminates on the parameter, so it can only be read when the
+	// parameter was: a message announcing a parameter it then does not carry leaves it unset.
 	GetPayload() S7Payload
 	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
@@ -487,7 +489,7 @@ func (m *_S7Message) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	}
 
 	var payload S7Payload
-	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](S7PayloadParseWithBufferProducer[S7Payload]((uint8)(messageType), (S7Parameter)((parameter))), readBuffer), bool((payloadLength) > (0)))
+	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](S7PayloadParseWithBufferProducer[S7Payload]((uint8)(messageType), (S7Parameter)((parameter))), readBuffer), bool(bool((payloadLength) > (0))) && bool(bool((parameter) != (nil))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
