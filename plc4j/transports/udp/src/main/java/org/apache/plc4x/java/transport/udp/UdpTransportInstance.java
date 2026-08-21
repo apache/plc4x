@@ -424,6 +424,23 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
     private void runSelectorLoop() {
         LOGGER.debug("UDP selector loop started");
 
+        try {
+            runSelectorLoopInternal();
+        } catch (Throwable t) {
+            // This loop is the only thing reading the channel. If it ever exits abnormally
+            // there is nobody left to notice, so the transport must stop claiming to be open
+            // instead of leaving callers waiting on a connection that can no longer receive.
+            LOGGER.error("UDP selector loop failed", t);
+            if (open) {
+                open = false;
+                notifyDisconnect(t);
+            }
+        }
+
+        LOGGER.debug("UDP selector loop stopped");
+    }
+
+    private void runSelectorLoopInternal() {
         while (open && !Thread.currentThread().isInterrupted()) {
             try {
                 // Block until events are available (no CPU waste!)
@@ -459,6 +476,12 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
                             if (open) {
                                 LOGGER.error("Error receiving packet", e);
                             }
+                        } catch (RuntimeException e) {
+                            // Any host can send a datagram to a UDP port, so one we cannot
+                            // handle costs us this receive cycle and nothing more.
+                            if (open) {
+                                LOGGER.error("Error handling received packet", e);
+                            }
                         } finally {
                             readLock.unlock();
                         }
@@ -474,8 +497,6 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
                 break;
             }
         }
-
-        LOGGER.debug("UDP selector loop stopped");
     }
 
 }

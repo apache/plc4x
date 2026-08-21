@@ -120,7 +120,15 @@ public abstract class MessageCodecBase<M extends Message> {
                 }
 
                 ReadBufferByteBased readBuffer = createReadBuffer(messageBytes);
-                M message = parseMessage(readBuffer);
+                M message;
+                try {
+                    message = parseMessage(readBuffer);
+                } catch (RuntimeException e) {
+                    // Adversarial input can trip an unchecked failure inside a generated parser.
+                    // Report it as the parse failure it is, rather than letting it escape past
+                    // the caller's error handling and out of whatever thread we are running on.
+                    throw new MessageCodecException("Failed to parse " + protocolName + " message", e);
+                }
                 messageHandler.accept(message);
             }
         } catch (TransportException e) {

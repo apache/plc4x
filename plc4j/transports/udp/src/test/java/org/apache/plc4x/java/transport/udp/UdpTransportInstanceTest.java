@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -250,6 +251,33 @@ class UdpTransportInstanceTest {
             byte[] received = transportInstance.read(expected.length);
             assertArrayEquals(expected, received);
         }
+    }
+
+    /**
+     * The selector loop is the only thing reading the channel, so a data listener that fails on one
+     * datagram must not cost us the loop - any host can send a datagram to a UDP port.
+     */
+    @Test
+    void testDataListener_throwing_keepsTransportReceiving() throws Exception {
+        AtomicInteger notifications = new AtomicInteger();
+        transportInstance.registerDataListener(() -> {
+            if (notifications.incrementAndGet() == 1) {
+                throw new IllegalStateException("simulated parse failure");
+            }
+        });
+
+        serverChannel.send(ByteBuffer.wrap("First".getBytes()), clientAddress);
+        Thread.sleep(50);
+
+        assertTrue(transportInstance.isOpen(), "a failed listener must not close the transport");
+
+        // The loop is still running, so the next datagram still arrives.
+        serverChannel.send(ByteBuffer.wrap("Second".getBytes()), clientAddress);
+        Thread.sleep(50);
+
+        assertEquals(2, notifications.get());
+        assertTrue(transportInstance.isOpen());
+        assertArrayEquals("FirstSecond".getBytes(), transportInstance.read(11));
     }
 
     @Test
