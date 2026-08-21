@@ -184,10 +184,6 @@ jobs:
             **/surefire-reports/go-junit-report.xml
             **/reports/test-out-verbose.log
 
-      - name: Run mvnv without BacNet regression tests
-        if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test,update-generated-code' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
-
       - name: Upload Test Report
         uses: actions/upload-artifact@v7
         if: success() || failure()

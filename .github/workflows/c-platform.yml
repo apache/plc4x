@@ -125,7 +125,3 @@ jobs:
       - name: Run mvnw
         run: |
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-c,enable-all-checks,update-generated-code' -pl :plc4c -am ${{ steps.platform_opts.outputs.platform_opts }} install
-
-      - name: Run mvnv without BacNet regression tests
-        if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-c,skip-bacnet-regression-test,update-generated-code' -pl :plc4c -am ${{ steps.platform_opts.outputs.platform_opts }} install

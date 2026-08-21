@@ -137,10 +137,6 @@ jobs:
             **/surefire-reports/TEST-*.xml
             **/failsafe-reports/TEST-*.xml
 
-      - name: Run mvnv without BacNet regression tests
-        if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-java,skip-bacnet-regression-test,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
-
       - name: Upload Test Report
         uses: actions/upload-artifact@v7
         if: success() || failure()
