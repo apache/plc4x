@@ -126,7 +126,16 @@ func (rb *byteReadBuffer) HasMore(bitLength uint8) bool {
 }
 
 func (rb *byteReadBuffer) PeekByte(offset uint8) uint8 {
-	return rb.data[rb.GetPos()+uint32(offset)]
+	// Peeking past the end must not be fatal. The termination predicates of manual arrays peek
+	// ahead speculatively for a delimiter, so a message that ends before that delimiter arrives
+	// would otherwise index out of range - and the peer decides where a message ends. Declining
+	// with a zero lets the predicate not match and leaves the following read to report the
+	// truncation, which is the failure the caller can actually handle.
+	index := uint64(rb.GetPos()) + uint64(offset)
+	if index >= uint64(len(rb.data)) {
+		return 0
+	}
+	return rb.data[index]
 }
 
 func (rb *byteReadBuffer) PullContext(logicalName string, _ ...WithReaderArgs) error {
