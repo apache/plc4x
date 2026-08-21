@@ -3297,6 +3297,20 @@ public enum BACnetVendorId {
 
   IVIVA_PTE_LTD((int) 1646, (int) 1646, "Iviva Pte Ltd"),
 
+  WITCONAB((int) 1647, (int) 1647, "Witcon AB"),
+
+  PIVOTAL_TECHNOLOGIES_PTY_LTD((int) 1648, (int) 1648, "Pivotal Technologies Pty Ltd"),
+
+  OTC_INDUSTRIAL_TECHNOLOGIES((int) 1649, (int) 1649, "OTC Industrial Technologies"),
+
+  LAPLACE_SOFTWARELLC((int) 1650, (int) 1650, "Laplace Software LLC"),
+
+  LOGICALLY_US_LTD((int) 1651, (int) 1651, "Logically Us Ltd"),
+
+  SOLABORATE_INCDBAHELLOCAREAI((int) 1652, (int) 1652, "Solaborate, Inc. d/b/a hellocare.ai"),
+
+  LUMEN_RADIOAB((int) 1653, (int) 1653, "Lumen Radio AB"),
+
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
   private static final Map<Integer, BACnetVendorId> map;

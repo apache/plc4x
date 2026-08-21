@@ -1657,6 +1657,13 @@
   ['1644' BMSOS_TECHNOLOGY_INC ['1644', '"bmsOS Technology Inc."']]
   ['1645' VOSSLOH_SCHWABE_DEUTSCHAND_GMBH ['1645', '"Vossloh-Schwabe Deutschand GmbH"']]
   ['1646' IVIVA_PTE_LTD ['1646', '"Iviva Pte Ltd"']]
+  ['1647' WITCONAB ['1647', '"Witcon AB"']]
+  ['1648' PIVOTAL_TECHNOLOGIES_PTY_LTD ['1648', '"Pivotal Technologies Pty Ltd"']]
+  ['1649' OTC_INDUSTRIAL_TECHNOLOGIES ['1649', '"OTC Industrial Technologies"']]
+  ['1650' LAPLACE_SOFTWARELLC ['1650', '"Laplace Software LLC"']]
+  ['1651' LOGICALLY_US_LTD ['1651', '"Logically Us Ltd"']]
+  ['1652' SOLABORATE_INCDBAHELLOCAREAI ['1652', '"Solaborate, Inc. d/b/a hellocare.ai"']]
+  ['1653' LUMEN_RADIOAB ['1653', '"Lumen Radio AB"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

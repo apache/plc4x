@@ -1679,6 +1679,13 @@ const (
 	BACnetVendorId_BMSOS_TECHNOLOGY_INC                                                         BACnetVendorId = 1644
 	BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH                                              BACnetVendorId = 1645
 	BACnetVendorId_IVIVA_PTE_LTD                                                                BACnetVendorId = 1646
+	BACnetVendorId_WITCONAB                                                                     BACnetVendorId = 1647
+	BACnetVendorId_PIVOTAL_TECHNOLOGIES_PTY_LTD                                                 BACnetVendorId = 1648
+	BACnetVendorId_OTC_INDUSTRIAL_TECHNOLOGIES                                                  BACnetVendorId = 1649
+	BACnetVendorId_LAPLACE_SOFTWARELLC                                                          BACnetVendorId = 1650
+	BACnetVendorId_LOGICALLY_US_LTD                                                             BACnetVendorId = 1651
+	BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI                                                 BACnetVendorId = 1652
+	BACnetVendorId_LUMEN_RADIOAB                                                                BACnetVendorId = 1653
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3323,6 +3330,13 @@ func init() {
 		BACnetVendorId_BMSOS_TECHNOLOGY_INC,
 		BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH,
 		BACnetVendorId_IVIVA_PTE_LTD,
+		BACnetVendorId_WITCONAB,
+		BACnetVendorId_PIVOTAL_TECHNOLOGIES_PTY_LTD,
+		BACnetVendorId_OTC_INDUSTRIAL_TECHNOLOGIES,
+		BACnetVendorId_LAPLACE_SOFTWARELLC,
+		BACnetVendorId_LOGICALLY_US_LTD,
+		BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI,
+		BACnetVendorId_LUMEN_RADIOAB,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6197,9 +6211,37 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1646' */
 			return 1646
 		}
+	case 1647:
+		{ /* '1647' */
+			return 1647
+		}
+	case 1648:
+		{ /* '1648' */
+			return 1648
+		}
+	case 1649:
+		{ /* '1649' */
+			return 1649
+		}
 	case 165:
 		{ /* '165' */
 			return 165
+		}
+	case 1650:
+		{ /* '1650' */
+			return 1650
+		}
+	case 1651:
+		{ /* '1651' */
+			return 1651
+		}
+	case 1652:
+		{ /* '1652' */
+			return 1652
+		}
+	case 1653:
+		{ /* '1653' */
+			return 1653
 		}
 	case 166:
 		{ /* '166' */
@@ -12763,9 +12805,37 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1646' */
 			return "Iviva Pte Ltd"
 		}
+	case 1647:
+		{ /* '1647' */
+			return "Witcon AB"
+		}
+	case 1648:
+		{ /* '1648' */
+			return "Pivotal Technologies Pty Ltd"
+		}
+	case 1649:
+		{ /* '1649' */
+			return "OTC Industrial Technologies"
+		}
 	case 165:
 		{ /* '165' */
 			return "Smart Temp Australia Pty. Ltd."
+		}
+	case 1650:
+		{ /* '1650' */
+			return "Laplace Software LLC"
+		}
+	case 1651:
+		{ /* '1651' */
+			return "Logically Us Ltd"
+		}
+	case 1652:
+		{ /* '1652' */
+			return "Solaborate, Inc. d/b/a hellocare.ai"
+		}
+	case 1653:
+		{ /* '1653' */
+			return "Lumen Radio AB"
 		}
 	case 166:
 		{ /* '166' */
@@ -17894,8 +17964,22 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH, true
 	case 1646:
 		return BACnetVendorId_IVIVA_PTE_LTD, true
+	case 1647:
+		return BACnetVendorId_WITCONAB, true
+	case 1648:
+		return BACnetVendorId_PIVOTAL_TECHNOLOGIES_PTY_LTD, true
+	case 1649:
+		return BACnetVendorId_OTC_INDUSTRIAL_TECHNOLOGIES, true
 	case 165:
 		return BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD, true
+	case 1650:
+		return BACnetVendorId_LAPLACE_SOFTWARELLC, true
+	case 1651:
+		return BACnetVendorId_LOGICALLY_US_LTD, true
+	case 1652:
+		return BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI, true
+	case 1653:
+		return BACnetVendorId_LUMEN_RADIOAB, true
 	case 166:
 		return BACnetVendorId_COOPER_CONTROLS, true
 	case 167:
@@ -21174,8 +21258,22 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_VOSSLOH_SCHWABE_DEUTSCHAND_GMBH, true
 	case "IVIVA_PTE_LTD":
 		return BACnetVendorId_IVIVA_PTE_LTD, true
+	case "WITCONAB":
+		return BACnetVendorId_WITCONAB, true
+	case "PIVOTAL_TECHNOLOGIES_PTY_LTD":
+		return BACnetVendorId_PIVOTAL_TECHNOLOGIES_PTY_LTD, true
+	case "OTC_INDUSTRIAL_TECHNOLOGIES":
+		return BACnetVendorId_OTC_INDUSTRIAL_TECHNOLOGIES, true
 	case "SMART_TEMP_AUSTRALIA_PTY_LTD":
 		return BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD, true
+	case "LAPLACE_SOFTWARELLC":
+		return BACnetVendorId_LAPLACE_SOFTWARELLC, true
+	case "LOGICALLY_US_LTD":
+		return BACnetVendorId_LOGICALLY_US_LTD, true
+	case "SOLABORATE_INCDBAHELLOCAREAI":
+		return BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI, true
+	case "LUMEN_RADIOAB":
+		return BACnetVendorId_LUMEN_RADIOAB, true
 	case "COOPER_CONTROLS":
 		return BACnetVendorId_COOPER_CONTROLS, true
 	case "DUKSAN_MECASYS_CO_LTD":
@@ -24526,8 +24624,22 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "VOSSLOH_SCHWABE_DEUTSCHAND_GMBH"
 	case BACnetVendorId_IVIVA_PTE_LTD:
 		return "IVIVA_PTE_LTD"
+	case BACnetVendorId_WITCONAB:
+		return "WITCONAB"
+	case BACnetVendorId_PIVOTAL_TECHNOLOGIES_PTY_LTD:
+		return "PIVOTAL_TECHNOLOGIES_PTY_LTD"
+	case BACnetVendorId_OTC_INDUSTRIAL_TECHNOLOGIES:
+		return "OTC_INDUSTRIAL_TECHNOLOGIES"
 	case BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD:
 		return "SMART_TEMP_AUSTRALIA_PTY_LTD"
+	case BACnetVendorId_LAPLACE_SOFTWARELLC:
+		return "LAPLACE_SOFTWARELLC"
+	case BACnetVendorId_LOGICALLY_US_LTD:
+		return "LOGICALLY_US_LTD"
+	case BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI:
+		return "SOLABORATE_INCDBAHELLOCAREAI"
+	case BACnetVendorId_LUMEN_RADIOAB:
+		return "LUMEN_RADIOAB"
 	case BACnetVendorId_COOPER_CONTROLS:
 		return "COOPER_CONTROLS"
 	case BACnetVendorId_DUKSAN_MECASYS_CO_LTD:
