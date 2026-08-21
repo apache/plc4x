@@ -142,7 +142,7 @@ func (m *Reader) readSingleTag(ctx context.Context, tagName string, tag PlcTag) 
 		})
 	if err != nil {
 		m.log.Warn().Err(err).Str("tagName", tagName).Msg("error reading tag")
-		if utils.IsTimeoutError(err) && ctx.Err() == nil {
+		if utils.IsTimeoutError(err) && !errors.Is(ctx.Err(), context.Canceled) {
 			return apiModel.PlcResponseCode_REQUEST_TIMEOUT, nil
 		}
 		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil

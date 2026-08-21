@@ -108,7 +108,7 @@ func (m *Writer) writeSingleTag(ctx context.Context, tagName string, tag PlcTag,
 	response, err := sendTransactedRequestAndWait(requestCtx, m.log, m.messageCodec, m.tm, "write", frame)
 	if err != nil {
 		m.log.Warn().Err(err).Str("tagName", tagName).Msg("error writing tag")
-		if utils.IsTimeoutError(err) && ctx.Err() == nil {
+		if utils.IsTimeoutError(err) && !errors.Is(ctx.Err(), context.Canceled) {
 			// A write that timed out may still have been applied by the device - the driver cannot
 			// tell, because a 3E frame has no correlation id - so a caller that retries it can
 			// apply it twice. plc4j carries the same caveat.

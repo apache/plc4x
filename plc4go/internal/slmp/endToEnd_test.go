@@ -24,6 +24,7 @@ package slmp
 // codec, real transport, bytes in and a plc4x value out.
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -151,6 +152,65 @@ func TestEndToEnd_StrayResponseIsDrained(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 	assert.Empty(t, incomingMessageChannel, "a frame no request was waiting for has to be drained")
 	assert.True(t, connection.IsConnected(), "a stray frame must not take the connection down")
+}
+
+// TestEndToEnd_HowAReadEndsWithoutAnAnswer pins the three ways a read can end with no answer from
+// the device, which have to be told apart because a caller retries on one of them and not on the
+// others. The request running out of time is a timeout however that time was set - by the driver's
+// own requestTimeout or by the deadline on the caller's context - whereas a caller that abandons
+// the request was not told anything by the device at all.
+func TestEndToEnd_HowAReadEndsWithoutAnAnswer(t *testing.T) {
+	read := func(t *testing.T, requestTimeout time.Duration, callerCtx func(context.Context) (context.Context, context.CancelFunc)) apiModel.PlcResponseCode {
+		t.Helper()
+		configuration := DefaultConfiguration()
+		configuration.requestTimeout = requestTimeout
+		connection, _ := newRunningConnectionWith(t, configuration)
+
+		ctx, cancel := callerCtx(testutils.TestContext(t))
+		defer cancel()
+		readRequest, err := connection.ReadRequestBuilder().AddTagAddress("hurz", "D350").Build()
+		require.NoError(t, err)
+		results := readRequest.Execute(ctx)
+
+		select {
+		case result := <-results:
+			require.NoError(t, result.GetErr())
+			require.NotNil(t, result.GetResponse())
+			return result.GetResponse().GetResponseCode("hurz")
+		case <-time.After(20 * time.Second):
+			require.FailNow(t, "the read never completed")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR
+		}
+	}
+
+	t.Run("the driver's own request timeout expires", func(t *testing.T) {
+		code := read(t, 250*time.Millisecond, func(ctx context.Context) (context.Context, context.CancelFunc) {
+			return context.WithCancel(ctx)
+		})
+		assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, code)
+	})
+
+	t.Run("the caller's own deadline expires first", func(t *testing.T) {
+		// A deadline the caller set is still the request running out of time, not a driver fault.
+		code := read(t, 10*time.Second, func(ctx context.Context) (context.Context, context.CancelFunc) {
+			return context.WithTimeout(ctx, 200*time.Millisecond)
+		})
+		assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, code)
+	})
+
+	t.Run("the caller abandons the request", func(t *testing.T) {
+		// Nothing timed out - the caller walked away - so this must not read as a device timeout.
+		code := read(t, 10*time.Second, func(ctx context.Context) (context.Context, context.CancelFunc) {
+			cancellable, cancel := context.WithCancel(ctx)
+			go func() {
+				time.Sleep(100 * time.Millisecond)
+				cancel()
+			}()
+			return cancellable, func() {}
+		})
+		assert.NotEqual(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, code,
+			"an abandoned request was not answered late, it was never waited for")
+	})
 }
 
 // TestEndToEnd_ATimedOutReadDoesNotWedgeTheNextOne is the one thing the one-request-at-a-time design
