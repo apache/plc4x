@@ -79,6 +79,11 @@ env:
   PLC4X_TEST_TRACE_EXECUTOR_WORKERS: ${{ github.event.inputs.traceExecutorWorkers }}
   PLC4X_TEST_TEST_TRANSPORT_INSTANCE: ${{ github.event.inputs.traceTestTransportInstance }}
   DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+  # Pinned into the workspace so one cache step covers all three runners: the default
+  # locations differ per OS, and the Go SDK here comes from the maven wrapper plugin
+  # rather than setup-go, so there is nothing else caching them.
+  GOCACHE: ${{ github.workspace }}/.gocache
+  GOMODCACHE: ${{ github.workspace }}/.gomodcache
 
 jobs:
   test:
@@ -118,6 +123,25 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+
+      - name: Cache Go build and module cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ${{ github.workspace }}/.gocache
+            ${{ github.workspace }}/.gomodcache
+          # Without this every run compiles the whole generated tree from cold, which the
+          # macos runner takes about 100 minutes over against 23 for linux.
+          #
+          # Keyed on go.sum alone rather than per commit: these caches run to a couple of
+          # gigabytes each, and the repository only gets 10 for everything including the
+          # maven caches above, so an entry per commit would evict itself immediately. The
+          # cost is that the entry is written once per go.sum and not refreshed after, which
+          # suits this tree - the expensive part to compile is the generated code, and that
+          # changes far less often than the code that uses it.
+          key: ${{ runner.os }}-go-${{ hashFiles('plc4go/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Set Platform options
         id: platform_opts
