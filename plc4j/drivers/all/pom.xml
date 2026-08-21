@@ -75,7 +75,17 @@
   </build>
 
   <dependencies>
-    <!-- Include all non-mock drivers to produce a meta-package -->
+    <!--
+      Meta-package of the drivers that are ready to be used.
+
+      A driver belongs here only if it is marked with a green check in the Java column of the
+      driver matrix in website/asciidoc/modules/users/pages/protocols/index.adoc ("Current
+      language support for protocols"). That table is the authoritative statement of what is
+      supported, and it is what the security threat model (THREAT-MODEL.md, section 3 item 6)
+      keys off. Drivers that are unfinished or only partially implemented are deliberately left
+      out and have to be depended on explicitly: bacnet, c-bus, ctrlx, open-protocol, profinet,
+      profinet-ng.
+    -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
@@ -85,18 +95,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-bacnet</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-c-bus</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -138,12 +136,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-open-protocol</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <scope>runtime</scope>
@@ -157,12 +149,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-plc4x</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-profinet-ng</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>

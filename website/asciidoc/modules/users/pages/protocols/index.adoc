@@ -22,14 +22,17 @@ The tables below list the drivers that actually ship with each language implemen
 A protocol only appears as supported where a driver exists and is registered with that
 implementation's driver manager - a protocol specification on its own is not enough.
 
+The first table is also the project's *definition of which drivers are supported*: see
+<<scope-of-support>> below before relying on a driver or reporting a security issue against one.
+
 |===
 |Protocol | C | C# | Go | Java | Python
 
 |AB-Ethernet
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |ADS /AMS
@@ -42,15 +45,15 @@ implementation's driver manager - a protocol specification on its own is not eno
 |BACnet/IP
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |CAN (raw)
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |CANopen
@@ -64,14 +67,14 @@ implementation's driver manager - a protocol specification on its own is not eno
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:check[role="green"]
-|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |ctrlX
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |DF1
@@ -98,8 +101,8 @@ implementation's driver manager - a protocol specification on its own is not eno
 |Firmata
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |IEC-60870
@@ -134,7 +137,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |PLC4X (Proxy-Protocol)
@@ -144,11 +147,18 @@ implementation's driver manager - a protocol specification on its own is not eno
 |icon:check[role="green"]
 |icon:times[role="red"]
 
-|Profinet
+|Profinet (`profinet`)
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+
+|Profinet (`profinet-ng`)
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |S7
@@ -184,40 +194,90 @@ implementation's driver manager - a protocol specification on its own is not eno
 |===
 |Legend:
 
-- icon:check[role="green"] Implemented and usable
-- icon:exclamation[role="yellow"] Partially implemented - see the notes below
-- icon:times[role="red"] Not implemented
+- icon:check[role="green"] Supported - ready to be used. Not every supported driver implements
+every operation: some protocols have no meaningful read, or the driver covers a deliberate subset.
+What it does implement works. See <<features,Features>> for the per-operation breakdown and
+<<notes-on-driver-coverage,Notes on driver coverage>> for the scope of each.
+- icon:exclamation[role="yellow"] Partially implemented and not supported - see the notes below
+- icon:times[role="red"] Not usable. Either no driver exists for that language, or one exists but is
+unfinished and nothing can be built on it - see <<unfinished-drivers,Unfinished drivers>> for which
+is which. Either way it is not supported.
 
 |===
 
-Notes on the partially implemented drivers:
+[#scope-of-support]
+== Scope of support
 
-* *AB-Ethernet* reads and offers polled subscriptions in both Java and Go; neither writes.
-* *BACnet/IP* passively receives broadcast traffic and exposes it as subscriptions. It does not read or write properties.
-* *CAN (raw)* (Java) writes and subscribes; there is no read support.
-* *CBus* (Java) is a skeleton that connects but implements no operations. The Go driver is the complete one.
-* *ctrlX* (Java) answers pings; that is the only operation it completes. Discovery is offered by
-the driver, but `CtrlXPlcDiscoverer.discoverWithHandler` is an unimplemented TODO that returns
-`null` instead of a future, so a discovery request fails rather than finding anything. Its read,
-write and subscribe builders are not implemented either, and although the connection carries
-browse code, browsing does not work yet.
-* *Firmata* writes and subscribes in both Java and Go; neither reads. A board is driven and
-monitored, never polled.
+The table above is the authoritative statement of what this project supports, per language:
+
+* A driver marked icon:check[role="green"] in a language's column is *ready to be used*. It is a
+supported part of the release and is in scope of the project's security threat model
+(`THREAT-MODEL.md`).
+* Every other marking - icon:exclamation[role="yellow"] or icon:times[role="red"] - means the driver
+is *not declared ready*. It is not supported, and it is
+*out of scope of the threat model*: a vulnerability report against a driver that is not marked with
+a green check will be declined, citing this table. Findings in such a driver are treated as
+code-quality issues rather than as vulnerabilities.
+
+This is decided *per language*: the same protocol can be supported in one language and not in
+another. C-Bus is the standing example - the Go driver is green and supported, the Java driver is an
+unfinished skeleton and is not.
+
+This rule deliberately does not depend on the second table on this page (<<features,Features>>),
+which records which operations a driver implements in plc4j and is descriptive only.
+
+For plc4j the rule is also enforced by the build: `plc4j-driver-all` bundles exactly the drivers
+that are green in the Java column, and nothing else. A driver that is not green has to be depended
+on explicitly, by its own artifact - it will not arrive on your classpath through the meta package.
+
+The way to move a driver into scope is to finish it and change its cell to a green check - a change
+to this table changes the threat model's coverage, with no edit to `THREAT-MODEL.md` needed.
+
+[#notes-on-driver-coverage]
+== Notes on driver coverage
+
+What the drivers marked icon:exclamation[role="yellow"] above do and do not do, plus the scope of
+the green ones that cover only part of the operation set. A green driver that appears here is
+supported - the entry describes what it is for, not a defect:
+
+* *AB-Ethernet* reads and offers polled subscriptions, and both drivers are supported. In Java
+`onRead` is a complete implementation (sequential single-flight reads with a transaction counter,
+request timeout and per-tag response codes) and subscriptions come from
+`PollingSubscriptionConnectionBase`; Go mirrors it exactly, with `DefaultPollingSubscriber` as the
+counterpart. Neither writes, and neither advertises the capability, so a write request is refused
+rather than silently dropped - DF1 does define write commands, so this is an unimplemented feature
+rather than a protocol limit. The Go reader decodes the `Integer`, `Word`, `Dword` and `Singlebit`
+file types and answers `UNSUPPORTED` for anything else, which is one better than plc4j, where the
+same case returns OK with a null value.
+* *BACnet/IP* has two drivers that are not the same driver, and only the Go one is supported. *Go*
+does `ReadProperty` (with segmentation and complex-ack decoding), `WriteProperty`, and real COV
+subscriptions via `SubscribeCOV` with a lifetime. *Java* is an experiment and is not supported: it
+is passive, receiving broadcast traffic and exposing it as subscriptions, and it does not read or
+write properties. Its code is honest about what it declares - it advertises only `canSubscribe` and
+implements that - but it does not hold up at scale, so it is not something to build on.
+* *CAN (raw)* (Java) writes and subscribes, and is supported. Writes for one node id are packed into
+a single frame and serialized per tag with individual response codes; subscriptions register a
+consumer per node and every inbound frame is dispatched as a `PlcSubscriptionEvent`. There is no
+read, and there cannot meaningfully be one: a raw CAN bus is broadcast, with no request/response
+exchange to address.
+* *Firmata* writes and subscribes, and both drivers are supported. Writes are built into Firmata
+messages and shipped (the protocol has no write acknowledgement, so the response is OK once the
+bytes are out); a subscription sets the pin modes and enables reporting, and pin updates are
+dispatched as subscription events. Neither driver reads - a board is driven and monitored, never
+polled, which is how Firmata works.
 * *IEC 60870-5-104* subscribes only, in both Java and Go, because the protocol is push driven: the
 RTU sends unsolicited ASDUs once the session is started, so there is nothing to read or write. The Go
 driver keeps the IEC quality descriptors alongside each value, so a reading the RTU marked invalid,
 blocked, substituted or not-topical does not arrive looking like a good one.
-* *KNXnet/IP* (C#) is the only driver in plc4net and has not kept pace with the other implementations.
-* *Open-Protocol* (Java) is a skeleton that connects but implements no operations.
-* *Profinet* (Java) discovers devices and browses the submodules of a connected device; neither of
-the two Java drivers has read or write support. Only the newer `profinet-ng` driver is part of
-`plc4j-driver-all`; the older `profinet` driver is still in the code base but is not bundled. In
-`profinet-ng` a subscription request completes the PROFINET connect handshake, but the subscription
-response future is deliberately left incomplete and `onRegisterConsumer` throws
-`UnsupportedOperationException`, so no cyclic data ever reaches an application. The unbundled
-`profinet` driver does implement that path - it completes the subscription response, registers
-consumers per subscription handle and dispatches a `PlcSubscriptionEvent` for every incoming cyclic
-frame - so the subscribe entry below, which describes what ships, does not apply to it.
+* *KNXnet/IP* (C#) is the only driver in plc4net and has not kept pace with the other
+implementations. plc4net is flagged "not ready for usage - abandoned" in the README, so the whole
+implementation is unsupported, not just this driver.
+* *OPC-UA* and *CBus* (Go) both implement `Subscribe` fully but leave `Unsubscribe` returning
+"Not Implemented" - an active subscription ends when the connection closes. Everything else in both
+drivers works, which is why they are supported.
+* *CBus* (Go) additionally carries `TODO: implement me` gaps for several CAL command types in its
+tag handler and for some data types in its value handler. The mainstream lighting/status paths -
+read, write, browse and subscribe - are implemented.
 * *SLMP* addresses the word devices `D`, `W` and `R` only, in both Java and Go. That is the scope
 the driver was written to rather than a port gap - the bit devices and the wider MELSEC command set
 are not implemented in either language.
@@ -231,6 +291,58 @@ message model for it, but no language implementation has a driver: there is noth
 DF1 connection. DF1 command messages also appear inside the AB-Ethernet model, which is where that
 protocol is actually used today.
 
+[#unfinished-drivers]
+== Unfinished drivers
+
+The drivers below are in the code base but are *not usable*: each one connects, and then completes
+nothing an application could be built on - at most a connectivity ping, a discovery scan or a
+browse, never a read, a write or a delivered subscription. They are marked icon:times[role="red"] in
+the table above, the same as a protocol with no driver at all - from an application's point of view
+the two are equivalent, and this section is what tells them apart. All of them are Java-only - no other language ships a driver for these protocols.
+
+* *CBus* (Java) is a shell. It connects and starts a receive loop, but `getTagHandler()` returns
+`null` - no tag syntax is defined, so nothing can be addressed - and the incoming-message handler
+only writes a trace log, so received frames are discarded. No read, write, subscribe or browse
+builder exists anywhere in its 376 lines, yet `CBusDriver.canRead()` returns `true`, so the driver
+advertises a capability it does not have. *C-Bus is effectively a Go-only protocol*: the Go driver
+is a complete ~25,000-line implementation with read, write, browse and subscribe, and is supported.
+* *ctrlX* (Java) answers pings; that is the only operation it completes. Discovery is offered by
+the driver, but `CtrlXPlcDiscoverer.discoverWithHandler` is an unimplemented TODO that returns
+`null` instead of a future, so a discovery request fails rather than finding anything. Its read,
+write and subscribe builders are not implemented either, and although the connection carries
+browse code, browsing does not work yet.
+* *Open-Protocol* (Java) is a skeleton that connects but implements no operations.
+* *Profinet* - there are *two* Java drivers, `profinet` and `profinet-ng`, and *neither is
+supported*. Both discover devices and browse the submodules of a connected device, and neither has
+read or write support.
++
+--
+** `profinet-ng` is the newer one. A subscription request completes the PROFINET connect handshake,
+but the subscription response future is deliberately left incomplete and `onRegisterConsumer` throws
+`UnsupportedOperationException`, so no cyclic data ever reaches an application.
+** `profinet` is the older one. It does implement the cyclic path that `profinet-ng` does not - it
+completes the subscription response, registers consumers per subscription handle and dispatches a
+`PlcSubscriptionEvent` for every incoming frame - but it is superseded and still has no read or
+write, and it is not supported either.
+--
+
+None of these are bundled in `plc4j-driver-all` - it carries only the drivers that are green in the
+Java column - so an application picks one up only by depending on its artifact deliberately.
+
+NOTE: The Go column has now been audited to the same depth as the Java one. Every Go driver
+declares its capabilities through `PlcConnectionMetadata`, and in each case the declaration matches
+what the code implements - `simulated` is the clearest illustration: it hands out a subscription
+request builder but deliberately reports `ProvidesSubscribing: false`, because the `Subscriber`
+behind it is a stub, and the code says so in a comment. No Go driver was found advertising a
+capability it does not have, which is the failure that puts the Java C-Bus driver out of support.
+The remaining yellow cell is C# KNXnet/IP, and that whole implementation (plc4net) is abandoned.
+
+These drivers are unsupported and out of scope of the threat model under the general rule in
+<<scope-of-support>> - not because of a carve-out specific to them, but simply because they are not
+marked with a green check. The same applies to the icon:exclamation[role="yellow"] drivers listed
+further up: partial implementation is not readiness either.
+
+[#features]
 == Features
 
 The table below lists which operations each driver actually implements. It describes *plc4j*,
@@ -281,7 +393,7 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:check[role="green"]
 |icon:times[role="red"]
 
-|CBus
+|CBus (unsupported)
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
@@ -289,7 +401,7 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:times[role="red"]
 |icon:times[role="red"]
 
-|ctrlX
+|ctrlX (unsupported)
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
@@ -361,7 +473,7 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:check[role="green"]
 |icon:times[role="red"]
 
-|Open-Protocol (Torque-Tools)
+|Open-Protocol (Torque-Tools, unsupported)
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
@@ -377,12 +489,20 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:times[role="red"]
 |icon:times[role="red"]
 
-|Profinet (`profinet-ng`)
+|Profinet (`profinet-ng`, unsupported)
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
+|icon:times[role="red"]
+
+|Profinet (`profinet`, unsupported, not bundled)
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |S7
