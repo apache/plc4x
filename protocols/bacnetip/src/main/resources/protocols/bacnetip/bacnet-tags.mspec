@@ -22,14 +22,14 @@
     [simple        TagClass tagClass                                                                                    ]
     [simple        uint 3   lengthValueType                                                                             ]
     [optional      uint 8   extTagNumber    'tagNumber == 15'                                                           ]
-    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                                 ]
+    [virtual       uint 8   actualTagNumber 'tagNumber < 15 || extTagNumber == null ? tagNumber : extTagNumber'         ]
     [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                   ]
     [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'        ]
     [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                     ]
     [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                          ]
-    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'      ]
-    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'      ]
-    [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
+    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 254'    ]
+    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 255'    ]
+    [virtual       uint 32  actualLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 255 && extExtExtLength != null ? extExtExtLength : (isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 254 && extExtLength != null ? extExtLength : (isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null ? extLength : lengthValueType))']
 ]
 
 [discriminatedType BACnetApplicationTag

@@ -259,7 +259,7 @@ func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 	_ = extExtLength
 	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
-	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() any { return uint8(m.GetTagNumber()) }, func() any { return uint8((*m.GetExtTagNumber())) }).(uint8))
+	return uint8(utils.InlineIf(bool(bool((m.GetTagNumber()) < (15))) || bool(bool((m.GetExtTagNumber()) == (nil))), func() any { return uint8(m.GetTagNumber()) }, func() any { return uint8((*m.GetExtTagNumber())) }).(uint8))
 }
 
 func (m *_BACnetTagHeader) GetIsBoolean() bool {
@@ -315,9 +315,9 @@ func (m *_BACnetTagHeader) GetActualLength() uint32 {
 	_ = extExtLength
 	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
-	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() any { return uint32((*m.GetExtExtExtLength())) }, func() any {
-		return uint32((utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() any { return uint32((*m.GetExtExtLength())) }, func() any {
-			return uint32((utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() any { return uint32((*m.GetExtLength())) }, func() any { return uint32(m.GetLengthValueType()) }).(uint32)))
+	return uint32(utils.InlineIf(bool(bool(bool(bool(m.GetIsPrimitiveAndNotBoolean()) && bool(bool((m.GetLengthValueType()) == (5)))) && bool(bool((m.GetExtLength()) != (nil)))) && bool(bool((*m.GetExtLength()) == (255)))) && bool(bool((m.GetExtExtExtLength()) != (nil))), func() any { return uint32((*m.GetExtExtExtLength())) }, func() any {
+		return uint32((utils.InlineIf(bool(bool(bool(bool(m.GetIsPrimitiveAndNotBoolean()) && bool(bool((m.GetLengthValueType()) == (5)))) && bool(bool((m.GetExtLength()) != (nil)))) && bool(bool((*m.GetExtLength()) == (254)))) && bool(bool((m.GetExtExtLength()) != (nil))), func() any { return uint32((*m.GetExtExtLength())) }, func() any {
+			return uint32((utils.InlineIf(bool(bool(m.GetIsPrimitiveAndNotBoolean()) && bool(bool((m.GetLengthValueType()) == (5)))) && bool(bool((m.GetExtLength()) != (nil))), func() any { return uint32((*m.GetExtLength())) }, func() any { return uint32(m.GetLengthValueType()) }).(uint32)))
 		}).(uint32)))
 	}).(uint32))
 }
@@ -443,7 +443,7 @@ func (m *_BACnetTagHeader) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	m.ExtTagNumber = extTagNumber
 
-	actualTagNumber, err := ReadVirtualField[uint8](ctx, "actualTagNumber", (*uint8)(nil), utils.InlineIf(bool((tagNumber) < (15)), func() any { return uint8(tagNumber) }, func() any { return uint8((*extTagNumber)) }).(uint8))
+	actualTagNumber, err := ReadVirtualField[uint8](ctx, "actualTagNumber", (*uint8)(nil), utils.InlineIf(bool(bool((tagNumber) < (15))) || bool(bool((extTagNumber) == (nil))), func() any { return uint8(tagNumber) }, func() any { return uint8((*extTagNumber)) }).(uint8))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualTagNumber' field"))
 	}
@@ -475,22 +475,22 @@ func (m *_BACnetTagHeader) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	m.ExtLength = extLength
 
 	var extExtLength *uint16
-	extExtLength, err = ReadOptionalField[uint16](ctx, "extExtLength", ReadUnsignedShort(readBuffer, uint8(16)), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))))
+	extExtLength, err = ReadOptionalField[uint16](ctx, "extExtLength", ReadUnsignedShort(readBuffer, uint8(16)), bool(bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((extLength) != (nil)))) && bool(bool((*extLength) == (254))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtLength' field"))
 	}
 	m.ExtExtLength = extExtLength
 
 	var extExtExtLength *uint32
-	extExtExtLength, err = ReadOptionalField[uint32](ctx, "extExtExtLength", ReadUnsignedInt(readBuffer, uint8(32)), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))))
+	extExtExtLength, err = ReadOptionalField[uint32](ctx, "extExtExtLength", ReadUnsignedInt(readBuffer, uint8(32)), bool(bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((extLength) != (nil)))) && bool(bool((*extLength) == (255))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtExtLength' field"))
 	}
 	m.ExtExtExtLength = extExtExtLength
 
-	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() any { return uint32((*extExtExtLength)) }, func() any {
-		return uint32((utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() any { return uint32((*extExtLength)) }, func() any {
-			return uint32((utils.InlineIf(bool((lengthValueType) == (5)), func() any { return uint32((*extLength)) }, func() any { return uint32(lengthValueType) }).(uint32)))
+	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), utils.InlineIf(bool(bool(bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((extLength) != (nil)))) && bool(bool((*extLength) == (255)))) && bool(bool((extExtExtLength) != (nil))), func() any { return uint32((*extExtExtLength)) }, func() any {
+		return uint32((utils.InlineIf(bool(bool(bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((extLength) != (nil)))) && bool(bool((*extLength) == (254)))) && bool(bool((extExtLength) != (nil))), func() any { return uint32((*extExtLength)) }, func() any {
+			return uint32((utils.InlineIf(bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((extLength) != (nil))), func() any { return uint32((*extLength)) }, func() any { return uint32(lengthValueType) }).(uint32)))
 		}).(uint32)))
 	}).(uint32))
 	if err != nil {
