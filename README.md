@@ -73,12 +73,18 @@ And brings stand-alone (Java) utils such as:
 * OPC-UA Server: Enables you to communicate with legacy devices using PLC4X with OPC-UA.
 * PLC4X Server: Enables you to communicate with a central PLC4X Server which then communicates with devices via PLC4X.
 
-It also provides (Java) tools for usage inside an application:
 Both the integration modules as also the OPC-UA Server and PLC4X Server are being released as part of the plc4x-extras release.
+
+It also provides (Java) tools for usage inside an application:
 
 * Connection Cache: New implementation of our framework for re-using and sharing PLC connections
 * OPM: Object-Plc-Mapping: Allows binding PLC fields to properties in java POJOs similar to JPA
-* Scraper: Utility to do scheduled and repeated data collection.
+* Event Pump: Utility to do scheduled and repeated data collection. You describe what to read and
+  when, and it delivers each response to a listener, handling the scheduling, connection leasing and
+  slow-response back-pressure for you. It replaces the `Scraper` from PLC4X 0.13 and earlier - see
+  the Event-Pump page on the website for a migration guide.
+* Capture Replay: Development helper that replays recorded network traffic, so passive-mode drivers
+  can be worked on away from the plant.
 
 ## Getting started
 
