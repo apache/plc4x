@@ -88,13 +88,19 @@ class BACnetTagHeaderTest {
     }
 
     /**
-     * A header that announces a field the datagram is too short to hold is rejected, rather than
-     * being completed with a missing field that the derived values would then trip over.
+     * A read that runs out of bytes leaves an optional field absent, so a header announcing a field
+     * the datagram is too short to hold parses without it. The derived values then have to fall back
+     * rather than reach for what was never read.
      */
     @Test
-    void headerTruncatedBeforeAnAnnouncedFieldIsRejected() {
-        assertThrows(BufferException.class, () -> parse(0x05), "extended length announced but absent");
-        assertThrows(BufferException.class, () -> parse(0xF0), "extended tag number announced but absent");
+    void headerTruncatedBeforeAnAnnouncedFieldFallsBack() throws Exception {
+        BACnetTagHeader withoutExtendedLength = parse(0x05);
+        assertNull(withoutExtendedLength.getExtLength(), "the extended length was cut off");
+        assertEquals(5, withoutExtendedLength.getActualLength(), "falls back to the length-value-type");
+
+        BACnetTagHeader withoutExtendedTagNumber = parse(0xF0);
+        assertNull(withoutExtendedTagNumber.getExtTagNumber(), "the extended tag number was cut off");
+        assertEquals(15, withoutExtendedTagNumber.getActualTagNumber(), "falls back to the tag number");
     }
 
     /**

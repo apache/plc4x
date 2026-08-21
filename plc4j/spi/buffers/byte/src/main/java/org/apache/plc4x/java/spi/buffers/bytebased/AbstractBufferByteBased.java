@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.buffers.bytebased;
 import org.apache.plc4x.java.spi.buffers.api.AbstractBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferUnderflowException;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrder;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderBigEndian;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderManager;
@@ -183,8 +184,15 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
      * point at which an implausible width can be rejected cheaply.
      */
     protected void ensureAvailable(int bitsNeeded) throws BufferException {
-        if (bitsNeeded < 0 || bitsNeeded > sizeInBits - positionInBits) {
-            throw new BufferException("Not enough bits left to read");
+        // An implausible or negative width is a malformed length, not a short message: callers size
+        // allocations from it, so it stays a plain failure that nothing is entitled to interpret.
+        if (bitsNeeded < 0) {
+            throw new BufferException("Implausible number of bits to read: " + bitsNeeded);
+        }
+        // Running out of data says nothing is wrong with the data that is there, only that it ended,
+        // which is the one case an optional field may read as the field being absent.
+        if (bitsNeeded > sizeInBits - positionInBits) {
+            throw new BufferUnderflowException("Not enough bits left to read");
         }
     }
 

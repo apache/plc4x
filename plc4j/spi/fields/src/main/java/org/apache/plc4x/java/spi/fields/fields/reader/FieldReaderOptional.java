@@ -22,6 +22,7 @@ package org.apache.plc4x.java.spi.fields.fields.reader;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferUnderflowException;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferValueException;
 import org.apache.plc4x.java.spi.fields.data.reader.DataReader;
 import org.apache.plc4x.java.spi.fields.exceptions.ParseAssertException;
@@ -87,7 +88,9 @@ public class FieldReaderOptional<T> implements FieldCommons {
             LOGGER.debug("Assertion doesn't match for field {}. Resetting read position to {}", getName(options), curPosInBits, e);
             dataReader.setPositionInBits(curPosInBits);
             return null;
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (BufferUnderflowException e) {
+            // The message ended before the field. Absent is the answer the caller can work with, and
+            // it is only ever given for data that ran out - never for data that made no sense.
             LOGGER.debug("Not enough bytes for {}. Resetting read position to {}", getName(options), curPosInBits, e);
             dataReader.setPositionInBits(curPosInBits);
             return null;
