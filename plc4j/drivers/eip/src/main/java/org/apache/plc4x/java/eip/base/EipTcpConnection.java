@@ -908,7 +908,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                 String tagName = it.next();
                 EipTag tag = (EipTag) readRequest.getTag(tagName);
                 if (arr.get(i) instanceof CipReadResponse rr) {
-                    PlcResponseCode code = rr.getStatus() == 0 ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
+                    PlcResponseCode code = decodeResponseCode(rr.getStatus());
                     PlcValue plcValue = null;
                     if (code == PlcResponseCode.OK) {
                         plcValue = parsePlcValue(tag, rr.getData().getData(), rr.getData().getDataType());
@@ -1129,7 +1129,15 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     }
 
     private PlcResponseCode decodeResponseCode(int status) {
-        return status == 0 ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
+        if (status == CIPStatus.Success.getValue()) {
+            return PlcResponseCode.OK;
+        }
+        if (status == CIPStatus.PathDestinationUnknown.getValue() ||
+            status == CIPStatus.PathSegmentError.getValue() ||
+            status == CIPStatus.InvalidParameterValue.getValue()) {
+            return PlcResponseCode.INVALID_ADDRESS;
+        }
+        return PlcResponseCode.INTERNAL_ERROR;
     }
 
 }
