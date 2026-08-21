@@ -20,6 +20,8 @@
 package utils
 
 import (
+	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -220,6 +222,30 @@ func TestTimeoutError_Is(t1 *testing.T) {
 				timeout: tt.fields.timeout,
 			}
 			assert.Equalf(t1, tt.want, t.Is(tt.args.target), "Is(%v)", tt.args.target)
+		})
+	}
+}
+
+// A request that runs out of time reports it either as the codec's expectation expiring or as the
+// request context reaching its deadline, and which of the two a caller sees is a race. Both have to
+// read as a timeout, and nothing else may.
+func TestIsTimeoutError(t *testing.T) {
+	tests := []struct {
+		name string
+		err  error
+		want bool
+	}{
+		{"the codec's expectation expiring", NewTimeoutError(250 * time.Millisecond), true},
+		{"the request context's deadline", context.DeadlineExceeded, true},
+		{"either one, wrapped by a caller", fmt.Errorf("error waiting for read response: %w", NewTimeoutError(time.Second)), true},
+		{"a deadline wrapped by a caller", fmt.Errorf("read aborted: %w", context.DeadlineExceeded), true},
+		{"a cancelled request is not a timeout", context.Canceled, false},
+		{"an unrelated failure is not a timeout", fmt.Errorf("connection reset"), false},
+		{"no error at all", nil, false},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert.Equal(t, test.want, IsTimeoutError(test.err))
 		})
 	}
 }

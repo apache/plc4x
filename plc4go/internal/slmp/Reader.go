@@ -108,7 +108,7 @@ func (m *Reader) readSingleTag(ctx context.Context, tagName string, tag PlcTag) 
 	response, err := sendTransactedRequestAndWait(requestCtx, m.log, m.messageCodec, m.tm, "read", frame)
 	if err != nil {
 		m.log.Warn().Err(err).Str("tagName", tagName).Msg("error reading tag")
-		if requestCtx.Err() != nil && ctx.Err() == nil {
+		if utils.IsTimeoutError(err) && ctx.Err() == nil {
 			// plc4j reports a timeout as REMOTE_ERROR because its PlcResponseCode enum is what it
 			// is; plc4go has a code that says what actually happened.
 			return apiModel.PlcResponseCode_REQUEST_TIMEOUT, nil

@@ -20,6 +20,8 @@
 package utils
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -71,4 +73,15 @@ func (t TimeoutError) Error() string {
 func (t TimeoutError) Is(target error) bool {
 	_, ok := target.(TimeoutError)
 	return ok
+}
+
+// IsTimeoutError reports whether a request failed because it ran out of time.
+//
+// A request that times out has two ways of saying so, and they say it at the same moment: the
+// request context reaches its deadline, and the codec's expectation for the response expires - the
+// expectation's time to live is derived from that very deadline. Whichever of the two a caller
+// happens to observe is therefore a race, so the outcome has to be read off the error rather than
+// off whether the context has got round to marking itself done.
+func IsTimeoutError(err error) bool {
+	return errors.Is(err, TimeoutError{}) || errors.Is(err, context.DeadlineExceeded)
 }
