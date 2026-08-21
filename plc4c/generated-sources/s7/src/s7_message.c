@@ -186,7 +186,7 @@ if( messageType == 0x07 ) { /* S7MessageUserData */
 
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_payload* payload = NULL;
-  if((payloadLength) > (0)) {
+  if(((payloadLength) > (0)) && ((parameter) != (NULL))) {
     _res = plc4c_s7_read_write_s7_payload_parse(ctx, readBuffer, messageType, parameter, &payload);
     if(_res != OK) {
       return _res;
