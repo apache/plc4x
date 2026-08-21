@@ -62,9 +62,11 @@ func (f *FieldReaderManualArray[T]) ReadManualByteArrayField(ctx context.Context
 		}
 		result = append(result, elems)
 		// The loop ends only when the termination sequence turns up, so a parse supplier that
-		// stops consuming input would spin forever on data that never contains it.
-		if readBuffer.GetPos() == positionBefore {
-			return nil, errors.Errorf("no progress reading %s after %d items", logicalName, len(result))
+		// reports the end of the data as a value would spin forever on data that never contains it.
+		// Termination by count is legitimate and consumes nothing, so only give up once there is
+		// also nothing left to read.
+		if readBuffer.GetPos() == positionBefore && !readBuffer.HasMore(1) {
+			return nil, errors.Errorf("ran out of data reading %s after %d items", logicalName, len(result))
 		}
 	}
 	if err := readBuffer.CloseContext(logicalName, readerArgs...); err != nil {
@@ -96,9 +98,11 @@ func (f *FieldReaderManualArray[T]) ReadManualArrayField(ctx context.Context, lo
 		}
 		result = append(result, elems)
 		// The loop ends only when the termination sequence turns up, so a parse supplier that
-		// stops consuming input would spin forever on data that never contains it.
-		if readBuffer.GetPos() == positionBefore {
-			return nil, errors.Errorf("no progress reading %s after %d items", logicalName, len(result))
+		// reports the end of the data as a value would spin forever on data that never contains it.
+		// Termination by count is legitimate and consumes nothing, so only give up once there is
+		// also nothing left to read.
+		if readBuffer.GetPos() == positionBefore && !readBuffer.HasMore(1) {
+			return nil, errors.Errorf("ran out of data reading %s after %d items", logicalName, len(result))
 		}
 	}
 	if err := readBuffer.CloseContext(logicalName, readerArgs...); err != nil {

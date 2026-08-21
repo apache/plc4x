@@ -36,21 +36,20 @@ public class StaticHelper {
         }
     }
 
-    public static byte parseSysexString(ReadBuffer io) {
-        try {
-            // Each "sysex string" byte is followed by a zero padding byte (Firmata
-            // 7-bit MIDI framing). Read both via readBits so the WriteBufferXmlBased
-            // counterpart renders them with the matching dataType="byte" form.
-            byte[] valueBytes = io.readBits(8);
-            byte[] padBytes = io.readBits(8);
-            // padding byte intentionally discarded
-            if (padBytes.length == 1) {
-                // no-op
-            }
-            return valueBytes.length == 1 ? valueBytes[0] : 0;
-        } catch (BufferException e) {
-            return 0;
+    public static byte parseSysexString(ReadBuffer io) throws BufferException {
+        // Each "sysex string" byte is followed by a zero padding byte (Firmata
+        // 7-bit MIDI framing). Read both via readBits so the WriteBufferXmlBased
+        // counterpart renders them with the matching dataType="byte" form.
+        //
+        // A failed read has to be reported: the manual array reading this runs until isSysexEnd
+        // finds the end marker, so returning a value for the end of the data would never end.
+        byte[] valueBytes = io.readBits(8);
+        byte[] padBytes = io.readBits(8);
+        // padding byte intentionally discarded
+        if (padBytes.length == 1) {
+            // no-op
         }
+        return valueBytes.length == 1 ? valueBytes[0] : 0;
     }
 
     public static void serializeSysexString(WriteBuffer io, byte data) {

@@ -22,6 +22,7 @@ package org.apache.plc4x.java.spi.fields.fields.reader;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferUnderflowException;
 import org.apache.plc4x.java.spi.fields.data.reader.ParseSupplier;
 import org.apache.plc4x.java.spi.fields.fields.FieldCommons;
 import org.slf4j.Logger;
@@ -44,9 +45,17 @@ public class FieldReaderManualArray<T> implements FieldCommons {
         List<Byte> result = new ArrayList<>();
         while (!termination.apply(result)) {
             //TODO: maybe switch to iterator here
+            int positionBefore = readBuffer.getPositionInBits();
             Byte element = (Byte) parse.get();
             LOGGER.debug("Adding element {}", element);
             result.add(element);
+            // The loop ends only when the termination sequence turns up, so a parse supplier that
+            // reports the end of the data as a value would spin forever on data that never contains
+            // it. Termination by count is legitimate and consumes nothing, so only give up once
+            // there is also nothing left to read.
+            if (readBuffer.getPositionInBits() == positionBefore && readBuffer.getRemainingBits() <= 0) {
+                throw new BufferUnderflowException("ran out of data reading " + getName(options) + " after " + result.size() + " items");
+            }
         }
         readBuffer.popContext(newOptions);
         LOGGER.debug("done reading field {}", getName(options));
@@ -66,9 +75,17 @@ public class FieldReaderManualArray<T> implements FieldCommons {
         List<T> result = new ArrayList<>();
         while (!termination.apply(Collections.unmodifiableList(result))) {
             //TODO: maybe switch to iterator here
+            int positionBefore = readBuffer.getPositionInBits();
             T element = parse.get();
             LOGGER.debug("Adding element {}", element);
             result.add(element);
+            // The loop ends only when the termination sequence turns up, so a parse supplier that
+            // reports the end of the data as a value would spin forever on data that never contains
+            // it. Termination by count is legitimate and consumes nothing, so only give up once
+            // there is also nothing left to read.
+            if (readBuffer.getPositionInBits() == positionBefore && readBuffer.getRemainingBits() <= 0) {
+                throw new BufferUnderflowException("ran out of data reading " + getName(options) + " after " + result.size() + " items");
+            }
         }
         readBuffer.popContext(newOptions);
         LOGGER.debug("done reading field {}", getName(options));
