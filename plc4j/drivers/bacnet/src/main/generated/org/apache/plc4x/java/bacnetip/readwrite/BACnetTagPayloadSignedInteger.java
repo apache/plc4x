@@ -244,8 +244,8 @@ public class BACnetTagPayloadSignedInteger implements Message {
     Long valueInt64 = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedLong(readBuffer, 64), isInt64, WithOption.WithName("valueInt64"));
 
     // Validation Field
-    if(!((((((((isInt8) || (isInt16)) || (isInt24)) || (isInt32)) || (isInt40)) || (isInt48)) || (isInt56)) || (isInt64))) {
-      throw new ParseAssertException("unmapped integer length");
+    if(!((((((((((isInt8) && ((valueInt8) != (null)))) || (((isInt16) && ((valueInt16) != (null))))) || (((isInt24) && ((valueInt24) != (null))))) || (((isInt32) && ((valueInt32) != (null))))) || (((isInt40) && ((valueInt40) != (null))))) || (((isInt48) && ((valueInt48) != (null))))) || (((isInt56) && ((valueInt56) != (null))))) || (((isInt64) && ((valueInt64) != (null)))))) {
+      throw new ParseAssertException("unmapped or truncated integer length");
     }
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)

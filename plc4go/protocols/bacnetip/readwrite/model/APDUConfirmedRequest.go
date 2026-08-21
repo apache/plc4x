@@ -561,7 +561,7 @@ func (m *_APDUConfirmedRequest) parse(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Validation
-	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool(segmentedMessage)) {
+	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool((bool(bool(segmentedMessage) && bool(bool((sequenceNumber) != (nil)))) && bool(bool((proposedWindowSize) != (nil)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service request should be set"})
 	}
 

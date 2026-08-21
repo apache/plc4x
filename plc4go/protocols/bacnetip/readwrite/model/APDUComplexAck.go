@@ -489,7 +489,7 @@ func (m *_APDUComplexAck) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Validation
-	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool(segmentedMessage)) {
+	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool((bool(bool(segmentedMessage) && bool(bool((sequenceNumber) != (nil)))) && bool(bool((proposedWindowSize) != (nil)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service ack should be set"})
 	}
 

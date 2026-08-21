@@ -226,7 +226,9 @@
     [optional   uint 56     valueUint56     'isUint56'           ]
     [virtual    bit         isUint64        'actualLength == 8'  ]
     [optional   uint 64     valueUint64     'isUint64'           ]
-    [validation 'isUint8 || isUint16 || isUint24 || isUint32 || isUint40 || isUint48 || isUint56 || isUint64' "unmapped integer length"]
+    [validation '(isUint8 && valueUint8 != null) || (isUint16 && valueUint16 != null) || (isUint24 && valueUint24 != null)
+              || (isUint32 && valueUint32 != null) || (isUint40 && valueUint40 != null) || (isUint48 && valueUint48 != null)
+              || (isUint56 && valueUint56 != null) || (isUint64 && valueUint64 != null)' "unmapped or truncated integer length"]
     [virtual    uint 64     actualValue     'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:(isUint40?valueUint40:(isUint48?valueUint48:(isUint56?valueUint56:valueUint64))))))']
 ]
 
@@ -248,7 +250,9 @@
     [optional   int 56      valueInt56      'isInt56'            ]
     [virtual    bit         isInt64         'actualLength == 8'  ]
     [optional   int 64      valueInt64      'isInt64'            ]
-    [validation 'isInt8 || isInt16 || isInt24 || isInt32 || isInt40 || isInt48 || isInt56 || isInt64' "unmapped integer length"]
+    [validation '(isInt8 && valueInt8 != null) || (isInt16 && valueInt16 != null) || (isInt24 && valueInt24 != null)
+              || (isInt32 && valueInt32 != null) || (isInt40 && valueInt40 != null) || (isInt48 && valueInt48 != null)
+              || (isInt56 && valueInt56 != null) || (isInt64 && valueInt64 != null)' "unmapped or truncated integer length"]
     [virtual    int 64      actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
 ]
 

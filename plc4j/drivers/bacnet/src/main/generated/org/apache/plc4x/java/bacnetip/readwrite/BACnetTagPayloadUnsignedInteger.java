@@ -250,8 +250,8 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
     BigInteger valueUint64 = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedBigInteger(readBuffer, 64), isUint64, WithOption.WithName("valueUint64"));
 
     // Validation Field
-    if(!((((((((isUint8) || (isUint16)) || (isUint24)) || (isUint32)) || (isUint40)) || (isUint48)) || (isUint56)) || (isUint64))) {
-      throw new ParseAssertException("unmapped integer length");
+    if(!((((((((((isUint8) && ((valueUint8) != (null)))) || (((isUint16) && ((valueUint16) != (null))))) || (((isUint24) && ((valueUint24) != (null))))) || (((isUint32) && ((valueUint32) != (null))))) || (((isUint40) && ((valueUint40) != (null))))) || (((isUint48) && ((valueUint48) != (null))))) || (((isUint56) && ((valueUint56) != (null))))) || (((isUint64) && ((valueUint64) != (null)))))) {
+      throw new ParseAssertException("unmapped or truncated integer length");
     }
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)

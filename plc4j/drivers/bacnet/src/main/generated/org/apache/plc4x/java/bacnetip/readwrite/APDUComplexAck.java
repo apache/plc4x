@@ -171,7 +171,7 @@ public class APDUComplexAck extends APDU implements Message {
     BACnetServiceAck serviceAck = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetServiceAck.class, BACnetServiceAck.staticParse(readBuffer, (long) ((apduLength) - (apduHeaderReduction)))), readBuffer), !(segmentedMessage), WithOption.WithName("serviceAck"));
 
     // Validation Field
-    if(!((((!(segmentedMessage)) && ((serviceAck) != (null)))) || (segmentedMessage))) {
+    if(!((((!(segmentedMessage)) && ((serviceAck) != (null)))) || ((((segmentedMessage) && ((sequenceNumber) != (null))) && ((proposedWindowSize) != (null)))))) {
       throw new ParseAssertException("service ack should be set");
     }
 

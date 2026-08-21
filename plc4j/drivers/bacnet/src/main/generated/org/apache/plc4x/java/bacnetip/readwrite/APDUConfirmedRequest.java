@@ -212,7 +212,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     BACnetConfirmedServiceRequest serviceRequest = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequest.class, BACnetConfirmedServiceRequest.staticParse(readBuffer, (long) ((apduLength) - (apduHeaderReduction)))), readBuffer), !(segmentedMessage), WithOption.WithName("serviceRequest"));
 
     // Validation Field
-    if(!((((!(segmentedMessage)) && ((serviceRequest) != (null)))) || (segmentedMessage))) {
+    if(!((((!(segmentedMessage)) && ((serviceRequest) != (null)))) || ((((segmentedMessage) && ((sequenceNumber) != (null))) && ((proposedWindowSize) != (null)))))) {
       throw new ParseAssertException("service request should be set");
     }
 

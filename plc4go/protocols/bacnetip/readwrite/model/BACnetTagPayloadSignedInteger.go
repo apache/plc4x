@@ -715,8 +715,8 @@ func (m *_BACnetTagPayloadSignedInteger) parse(ctx context.Context, readBuffer u
 	m.ValueInt64 = valueInt64
 
 	// Validation
-	if !(bool(bool(bool(bool(bool(bool(bool(isInt8) || bool(isInt16)) || bool(isInt24)) || bool(isInt32)) || bool(isInt40)) || bool(isInt48)) || bool(isInt56)) || bool(isInt64)) {
-		return nil, errors.WithStack(utils.ParseValidationError{Message: "unmapped integer length"})
+	if !(bool(bool(bool(bool(bool(bool(bool((bool(isInt8) && bool(bool((valueInt8) != (nil))))) || bool((bool(isInt16) && bool(bool((valueInt16) != (nil)))))) || bool((bool(isInt24) && bool(bool((valueInt24) != (nil)))))) || bool((bool(isInt32) && bool(bool((valueInt32) != (nil)))))) || bool((bool(isInt40) && bool(bool((valueInt40) != (nil)))))) || bool((bool(isInt48) && bool(bool((valueInt48) != (nil)))))) || bool((bool(isInt56) && bool(bool((valueInt56) != (nil)))))) || bool((bool(isInt64) && bool(bool((valueInt64) != (nil)))))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "unmapped or truncated integer length"})
 	}
 
 	actualValue, err := ReadVirtualField[int64](ctx, "actualValue", (*int64)(nil), utils.InlineIf(isInt8, func() any { return int64((*valueInt8)) }, func() any {
