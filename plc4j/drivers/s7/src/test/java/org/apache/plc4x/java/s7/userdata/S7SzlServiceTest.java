@@ -38,6 +38,8 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -305,6 +307,50 @@ class S7SzlServiceTest {
         S7SzlService.S7DeviceIdentification id = S7SzlService.parseComponentIdentification(
             szlResponse(0x001C, 0x0000, 34, componentRecord(2, "PLC_1")));
         assertEquals("PLC_1", id.mergedWith(null).moduleName());
+    }
+
+    // ------------------------------------------------------------------------
+    // Why a list was not answered
+    // ------------------------------------------------------------------------
+
+    @Test
+    void szlDataOf_rejectionCarriesTheErrorCode() {
+        S7SzlService.SzlRejectedException rejected = assertThrows(
+            S7SzlService.SzlRejectedException.class,
+            () -> S7SzlService.szlDataOf(szlResponseWithErrorCode(0xD401)));
+        assertEquals(0xD401, rejected.getErrorCode());
+    }
+
+    @Test
+    void describeFailure_callsAnUnknownSzlIdNotImplemented() {
+        // 0xD401 is what a CPU answers for an SZL-ID it doesn't have - the S7-1200/1500
+        // reply for the protection-status list. That is not the same as being refused.
+        assertEquals("not implemented (0xD401)",
+            S7SzlService.describeFailure(new S7SzlService.SzlRejectedException(0xD401)));
+    }
+
+    @Test
+    void describeFailure_callsAnUnknownIndexNotImplemented() {
+        assertEquals("not implemented (0xD402)",
+            S7SzlService.describeFailure(new S7SzlService.SzlRejectedException(0xD402)));
+    }
+
+    @Test
+    void describeFailure_reportsAnyOtherRejectionWithItsCode() {
+        assertEquals("rejected (0xD406)",
+            S7SzlService.describeFailure(new S7SzlService.SzlRejectedException(0xD406)));
+    }
+
+    @Test
+    void describeFailure_reportsNoAnswerForATimeout() {
+        assertEquals("no answer", S7SzlService.describeFailure(new TimeoutException()));
+    }
+
+    @Test
+    void describeFailure_unwrapsTheCompletionStageWrapper() {
+        // Failures arrive at the driver's handle() wrapped in a CompletionException.
+        assertEquals("not implemented (0xD401)", S7SzlService.describeFailure(
+            new CompletionException(new S7SzlService.SzlRejectedException(0xD401))));
     }
 
     // ------------------------------------------------------------------------

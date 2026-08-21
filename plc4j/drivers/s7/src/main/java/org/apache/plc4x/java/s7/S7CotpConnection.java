@@ -294,8 +294,11 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
     private CompletableFuture<byte[]> readSzlData(SzlId szlId, int szlIndex,
             Function<S7Message, CompletableFuture<S7Message>> sender) {
         S7Message request = S7SzlService.buildRequest(getTpduId(), szlId, szlIndex);
-        return sender.apply(request).thenCompose(response ->
-            appendSzlChunks(szlId, szlIndex, response, S7SzlService.szlDataOf(response), 0, sender));
+        return sender.apply(request).thenCompose(response -> {
+            failOnHeaderError(response);
+            return appendSzlChunks(szlId, szlIndex, response,
+                S7SzlService.szlDataOf(response), 0, sender);
+        });
     }
 
     private CompletableFuture<byte[]> appendSzlChunks(SzlId szlId, int szlIndex, S7Message response,
@@ -317,6 +320,30 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         return sender.apply(next).thenCompose(chunk ->
             appendSzlChunks(szlId, szlIndex, chunk, concat(soFar, S7SzlService.szlDataOf(chunk)),
                 continuations + 1, sender));
+    }
+
+    /**
+     * A controller that refuses the request outright answers at the S7 header level rather
+     * than with an SZL error - the same refusal path reads and writes take. Class 0x81 code
+     * 0x04 is a CPU with PUT/GET communication disabled.
+     */
+    private static void failOnHeaderError(S7Message response) {
+        short errorClass = 0;
+        short errorCode = 0;
+        if (response instanceof S7MessageResponseData md) {
+            errorClass = md.getErrorClass();
+            errorCode = md.getErrorCode();
+        } else if (response instanceof S7MessageResponse mr) {
+            errorClass = mr.getErrorClass();
+            errorCode = mr.getErrorCode();
+        }
+        if (errorClass == 0 && errorCode == 0) {
+            return;
+        }
+        String label = mapPlcErrorCode(errorClass, errorCode) == PlcResponseCode.ACCESS_DENIED
+            ? "access denied" : "refused by PLC";
+        throw new IllegalStateException(
+            String.format("%s (0x%02X/0x%02X)", label, errorClass, errorCode));
     }
 
     private static byte[] concat(byte[] first, byte[] second) {
@@ -342,12 +369,18 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
      */
     public CompletableFuture<S7DeviceIdentification> readDeviceIdentification() {
         return readSzl(S7SzlService.MODULE_IDENTIFICATION, 0x0000,
-            S7SzlService::parseModuleIdentification)
+            S7SzlService::parseModuleIdentification,
+            // A refusal here is what a CPU that won't serve unauthenticated callers looks
+            // like, so the reason is worth keeping rather than collapsing to "nothing".
+            S7DeviceIdentification::identificationUnavailable)
             .thenCompose(module -> readSzl(S7SzlService.COMPONENT_IDENTIFICATION, 0x0000,
                 S7SzlService::parseComponentIdentification)
                 .thenApply(module::mergedWith))
             .thenCompose(identification -> readSzl(S7SzlService.PROTECTION_STATUS, 0x0004,
-                S7SzlService::parseProtectionStatus)
+                S7SzlService::parseProtectionStatus,
+                // Record why the level is missing. "Not implemented" (what S7-1200/1500 say)
+                // must not be presented as "no protection configured".
+                S7DeviceIdentification::protectionUnavailable)
                 .thenApply(identification::mergedWith));
     }
 
@@ -359,20 +392,33 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
      */
     private CompletableFuture<S7DeviceIdentification> readSzl(
             SzlId szlId, int szlIndex, Function<byte[], S7DeviceIdentification> parser) {
+        return readSzl(szlId, szlIndex, parser, reason -> S7DeviceIdentification.EMPTY);
+    }
+
+    /**
+     * @param onFailure builds the result from a human-readable reason when the list could not
+     *                  be read, for callers that need to distinguish "not implemented" from
+     *                  "refused" rather than just seeing nothing.
+     */
+    private CompletableFuture<S7DeviceIdentification> readSzl(
+            SzlId szlId, int szlIndex, Function<byte[], S7DeviceIdentification> parser,
+            Function<String, S7DeviceIdentification> onFailure) {
         return readSzlData(szlId, szlIndex, request -> executeThrottled(() -> sendInternal(request))
                 .orTimeout(driverContext.getReadTimeout(), TimeUnit.MILLISECONDS))
             .handle((szlData, error) -> {
                 if (error != null) {
+                    String reason = S7SzlService.describeFailure(error);
                     LOGGER.debug("SZL {}/{} read failed: {}",
-                        szlId.getSublistList(), szlIndex, error.getMessage());
-                    return S7DeviceIdentification.EMPTY;
+                        szlId.getSublistList(), szlIndex, reason);
+                    return onFailure.apply(reason);
                 }
                 try {
                     return parser.apply(szlData);
                 } catch (Exception e) {
+                    String reason = S7SzlService.describeFailure(e);
                     LOGGER.debug("SZL {}/{} response could not be parsed: {}",
-                        szlId.getSublistList(), szlIndex, e.getMessage());
-                    return S7DeviceIdentification.EMPTY;
+                        szlId.getSublistList(), szlIndex, reason);
+                    return onFailure.apply(reason);
                 }
             });
     }

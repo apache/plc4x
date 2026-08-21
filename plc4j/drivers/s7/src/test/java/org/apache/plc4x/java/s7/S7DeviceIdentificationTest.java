@@ -77,9 +77,58 @@ class S7DeviceIdentificationTest {
     }
 
     @Test
-    void returnsAnEmptyIdentificationWhenEverySzlIsRefused() throws Exception {
+    void reportsWhyEveryListWasUnavailableWhenAllAreRefused() throws Exception {
         S7DeviceIdentification id = identificationFrom(new SzlScript(false, false, false));
-        assertEquals(S7DeviceIdentification.EMPTY, id);
+        // Nothing was learned about the device - only why each list is missing.
+        assertNull(id.orderCode());
+        assertNull(id.protectionLevel());
+        assertEquals("not implemented (0xD401)", id.identificationFailureReason());
+        assertEquals("not implemented (0xD401)", id.protectionUnavailableReason());
+    }
+
+    /**
+     * A CPU with PUT/GET communication disabled refuses the read at the S7 header level
+     * (class 0x81 code 0x04) rather than answering the list. That is a different statement
+     * from "the list is empty", and an inventory has to be able to say which it saw.
+     */
+    @Test
+    void reportsWhenIdentificationIsRefusedOutright() throws Exception {
+        ScriptedS7Transport transport = new ScriptedS7Transport();
+        S7CotpConnection connection = S7ScriptedConnectionHarness.newConnectedConnection(transport);
+        transport.resetCounters();
+
+        CompletableFuture<S7DeviceIdentification> future = connection.readDeviceIdentification();
+        answerWith(transport, future, request -> S7ScriptedConnectionHarness.headerErrorResponse(
+            S7ScriptedConnectionHarness.tpduReferenceOfFrame(request), 0x81, 0x04));
+
+        S7DeviceIdentification id = future.get(20, TimeUnit.SECONDS);
+        connection.close();
+        assertNull(id.orderCode());
+        assertEquals("access denied (0x81/0x04)", id.identificationFailureReason());
+    }
+
+    @Test
+    void reportsNoIdentificationFailureWhenTheListWasAnswered() throws Exception {
+        S7DeviceIdentification id = identificationFrom(new SzlScript(true, true, true));
+        assertNull(id.identificationFailureReason());
+    }
+
+    /**
+     * "No protection level" and "this CPU has no such list" are different statements, and only
+     * one of them is about security. The S7-1200/1500 answer the protection-status list with
+     * 0xD401 - not implemented - so the caller has to be able to tell that from a refusal.
+     */
+    @Test
+    void reportsThatTheProtectionListIsNotImplemented() throws Exception {
+        S7DeviceIdentification id = identificationFrom(new SzlScript(true, true, false));
+        assertNull(id.protectionLevel());
+        assertEquals("not implemented (0xD401)", id.protectionUnavailableReason());
+    }
+
+    @Test
+    void reportsNoReasonWhenTheProtectionListWasAnswered() throws Exception {
+        S7DeviceIdentification id = identificationFrom(new SzlScript(true, true, true));
+        assertNull(id.protectionUnavailableReason());
     }
 
     /**

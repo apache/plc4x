@@ -56,6 +56,12 @@ import java.util.concurrent.TimeUnit;
  * raw socket access). On macOS, run with {@code sudo}; on Windows, run as Administrator with
  * Npcap installed.
  *
+ * <p>The UNAUTHENTICATED column records whether the device handed its identification to a
+ * caller that presented no credentials at all. That is the finding behind the CISA/NSA
+ * guidance on securing S7 devices: anything reachable on port 102 that answers is talking to
+ * whoever asks. Note the limit of the claim - it covers identification data only. This tool
+ * never reads process data, so it cannot tell you whether memory or blocks are readable.
+ *
  * <p>Usage: {@code ManualS7Inventory [output.csv]} — with an argument, the inventory is also
  * written to that file as CSV.
  */
@@ -134,9 +140,11 @@ public class ManualS7Inventory {
                     .get(4 * READ_TIMEOUT_MS, TimeUnit.MILLISECONDS);
                 // Connected, but every SZL was rejected — typical of LOGO and other low-end
                 // devices that don't implement the system status lists at all.
-                String note = S7DeviceIdentification.EMPTY.equals(id)
-                    ? "connected on slot " + slot + " but answered no identification SZL" : null;
-                return new InventoryEntry(ipAddress, stationName, deviceType, slot, id, note);
+                InventoryEntry entry = new InventoryEntry(
+                    ipAddress, stationName, deviceType, slot, id, null);
+                return entry.wasIdentified() ? entry : new InventoryEntry(
+                    ipAddress, stationName, deviceType, slot, id,
+                    "connected on slot " + slot + " but answered no identification SZL");
             } catch (Exception e) {
                 // Wrong rack/slot is the common case — the CPU refuses the COTP connection
                 // request. Try the next candidate before giving up on the device.
@@ -178,24 +186,32 @@ public class ManualS7Inventory {
     // ------------------------------------------------------------------------
 
     private static void printTable(List<InventoryEntry> inventory) {
-        String format = "%-15s  %-20s  %-22s  %-10s  %-10s  %-18s  %-12s%n";
+        String format = "%-15s  %-18s  %-22s  %-10s  %-16s  %-24s  %-22s%n";
         System.out.printf(format,
-            "IP", "STATION", "ORDER CODE", "FIRMWARE", "HARDWARE", "SERIAL", "PROTECTION");
-        System.out.println("-".repeat(120));
+            "IP", "STATION", "ORDER CODE", "FIRMWARE", "SERIAL", "UNAUTHENTICATED", "PROTECTION");
+        System.out.println("-".repeat(140));
         for (InventoryEntry entry : inventory) {
             System.out.printf(format,
                 nvl(entry.ipAddress()),
-                truncate(nvl(entry.stationName()), 20),
+                truncate(nvl(entry.stationName()), 18),
                 truncate(entry.orderCode(), 22),
                 entry.firmwareVersion(),
-                entry.hardwareVersion(),
-                truncate(entry.serialNumber(), 18),
+                truncate(entry.serialNumber(), 16),
+                entry.unauthenticatedAccess(),
                 entry.protection());
         }
 
         long identified = inventory.stream().filter(InventoryEntry::wasIdentified).count();
-        System.out.printf("%n%d of %d device(s) answered the identification lists.%n",
-            identified, inventory.size());
+        System.out.printf("%n%d of %d device(s) disclosed identification to an unauthenticated "
+            + "session.%n", identified, inventory.size());
+        long refused = inventory.stream()
+            .filter(e -> e.identification() != null)
+            .filter(e -> e.identification().identificationFailureReason() != null)
+            .filter(e -> e.identification().identificationFailureReason().startsWith("access denied"))
+            .count();
+        if (refused > 0) {
+            System.out.printf("%d refused an unauthenticated caller.%n", refused);
+        }
         long unprotected = inventory.stream()
             .filter(InventoryEntry::wasIdentified)
             .filter(e -> Boolean.FALSE.equals(e.identification().passwordProtected()))
@@ -214,7 +230,9 @@ public class ManualS7Inventory {
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(path,
                 StandardCharsets.UTF_8))) {
             writer.println("ip,station,device_type,slot,order_code,module_type,firmware,"
-                + "hardware,serial,plant,protection_level,password_protected,key_switch,status");
+                + "hardware,serial,plant,protection_level,password_protected,key_switch,"
+                + "protection_unavailable_reason,unauthenticated_access,"
+                + "identification_failure_reason,status");
             for (InventoryEntry entry : inventory) {
                 S7DeviceIdentification id = entry.identification();
                 writer.println(String.join(",",
@@ -233,6 +251,9 @@ public class ManualS7Inventory {
                     id == null || id.passwordProtected() == null
                         ? "" : Boolean.toString(id.passwordProtected()),
                     csv(id == null ? null : id.keySwitchPosition()),
+                    csv(id == null ? null : id.protectionUnavailableReason()),
+                    csv(entry.unauthenticatedAccess()),
+                    csv(id == null ? null : id.identificationFailureReason()),
                     csv(entry.failure() == null ? "ok" : entry.failure())));
             }
         }
@@ -264,9 +285,18 @@ public class ManualS7Inventory {
             return new InventoryEntry(ipAddress, stationName, deviceType, -1, null, reason);
         }
 
-        /** A device that connected but answered no SZL at all hasn't been identified. */
+        /**
+         * A device that connected but answered no SZL at all hasn't been identified. Judged on
+         * the data itself: an identification can carry nothing but the reason its protection
+         * list was unavailable, and that alone isn't an answer.
+         */
         boolean wasIdentified() {
-            return identification != null && !S7DeviceIdentification.EMPTY.equals(identification);
+            return identification != null
+                && (identification.orderCode() != null
+                    || identification.firmwareVersion() != null
+                    || identification.moduleName() != null
+                    || identification.serialNumber() != null
+                    || identification.protectionLevel() != null);
         }
 
         String orderCode() {
@@ -290,9 +320,38 @@ public class ManualS7Inventory {
          * backs it. Devices that don't implement the protection SZL report {@code "n/a"} —
          * absence of an answer is not evidence of an unprotected CPU.
          */
+        /**
+         * What an unauthenticated caller got out of this device. "disclosed" is the finding
+         * the CISA/NSA advisories care about: order number, firmware and serial handed over
+         * with no credentials, which means S7 communication is open to any host that can
+         * reach port 102.
+         *
+         * <p>It is a statement about identification only. It does not say whether process
+         * data could be read or written - this tool never attempts that.
+         */
+        String unauthenticatedAccess() {
+            if (identification == null) {
+                return "no session";
+            }
+            if (wasIdentified()) {
+                return "disclosed";
+            }
+            String reason = identification.identificationFailureReason();
+            if (reason != null && reason.startsWith("access denied")) {
+                return "refused";
+            }
+            return reason == null ? "nothing disclosed" : reason;
+        }
+
         String protection() {
-            if (identification == null || identification.protectionLevel() == null) {
-                return "n/a";
+            if (identification == null) {
+                return "-";
+            }
+            if (identification.protectionLevel() == null) {
+                // Say which it is. "not implemented" is the S7-1200/1500 answer and says
+                // nothing about access rights; a refusal would show its own error code here.
+                String reason = identification.protectionUnavailableReason();
+                return reason == null ? "-" : reason;
             }
             return "level " + identification.protectionLevel()
                 + (Boolean.TRUE.equals(identification.passwordProtected()) ? " (pwd)" : " (no pwd)");

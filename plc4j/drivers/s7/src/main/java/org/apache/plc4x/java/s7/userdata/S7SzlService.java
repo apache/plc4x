@@ -159,6 +159,59 @@ public final class S7SzlService {
         return null;
     }
 
+    /**
+     * Thrown when the PLC answers an SZL request with a non-zero error code. The code says
+     * *why*, which matters to callers: {@code 0xD401} means the CPU has no such list at all,
+     * which is a different statement from a refusal.
+     */
+    public static class SzlRejectedException extends IllegalStateException {
+        private final int errorCode;
+
+        public SzlRejectedException(int errorCode) {
+            super("SZL request rejected by PLC, errorCode=0x" + Integer.toHexString(errorCode));
+            this.errorCode = errorCode;
+        }
+
+        public int getErrorCode() {
+            return errorCode;
+        }
+    }
+
+    /** SZL-ID is not implemented on this module. */
+    private static final int ERROR_SZL_ID_NOT_AVAILABLE = 0xD401;
+
+    /** SZL index is not implemented on this module. */
+    private static final int ERROR_SZL_INDEX_NOT_AVAILABLE = 0xD402;
+
+    /**
+     * Turn the reason an SZL read failed into something worth showing a user.
+     *
+     * <p>The distinction that matters: {@code 0xD401}/{@code 0xD402} mean the CPU doesn't
+     * implement that list — the answer S7-1200/1500 give for the protection-status list — and
+     * say nothing about access rights. Anything else is reported with its raw code rather than
+     * being guessed at.
+     */
+    public static String describeFailure(Throwable error) {
+        Throwable cause = error;
+        // Failures reach the driver wrapped by the CompletionStage machinery.
+        while ((cause instanceof java.util.concurrent.CompletionException
+            || cause instanceof java.util.concurrent.ExecutionException)
+            && cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        if (cause instanceof SzlRejectedException rejected) {
+            int code = rejected.getErrorCode();
+            String label = (code == ERROR_SZL_ID_NOT_AVAILABLE || code == ERROR_SZL_INDEX_NOT_AVAILABLE)
+                ? "not implemented" : "rejected";
+            return String.format("%s (0x%04X)", label, code);
+        }
+        if (cause instanceof java.util.concurrent.TimeoutException) {
+            return "no answer";
+        }
+        String message = cause.getMessage();
+        return message == null ? cause.getClass().getSimpleName() : message;
+    }
+
     /** Probe result: identifying information and derived capability flags. */
     public record ProbeResult(String articleNumber, ControllerType controllerType) {
     }
@@ -354,10 +407,30 @@ public final class S7SzlService {
                                          String serialNumber,
                                          Integer protectionLevel,
                                          String keySwitchPosition,
-                                         Boolean passwordProtected) {
+                                         Boolean passwordProtected,
+                                         String protectionUnavailableReason,
+                                         String identificationFailureReason) {
 
         public static final S7DeviceIdentification EMPTY = new S7DeviceIdentification(
-            null, null, null, null, null, null, null, null, null, null, null);
+            null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+        /**
+         * The device told us nothing about its protection level, and this is why. Kept apart
+         * from the level itself so callers never have to read "unknown" as "unprotected".
+         */
+        public static S7DeviceIdentification protectionUnavailable(String reason) {
+            return new S7DeviceIdentification(null, null, null, null, null, null, null, null,
+                null, null, null, reason, null);
+        }
+
+        /**
+         * The device disclosed no identification, and this is why. A refusal here is the
+         * interesting case: it means the CPU would not talk to an unauthenticated caller.
+         */
+        public static S7DeviceIdentification identificationUnavailable(String reason) {
+            return new S7DeviceIdentification(null, null, null, null, null, null, null, null,
+                null, null, null, null, reason);
+        }
 
         /**
          * Combine two partial identifications. Fields set on {@code this} win; {@code null}
@@ -379,7 +452,11 @@ public final class S7SzlService {
                 serialNumber       != null ? serialNumber       : other.serialNumber,
                 protectionLevel    != null ? protectionLevel    : other.protectionLevel,
                 keySwitchPosition  != null ? keySwitchPosition  : other.keySwitchPosition,
-                passwordProtected  != null ? passwordProtected  : other.passwordProtected);
+                passwordProtected  != null ? passwordProtected  : other.passwordProtected,
+                protectionUnavailableReason != null
+                    ? protectionUnavailableReason : other.protectionUnavailableReason,
+                identificationFailureReason != null
+                    ? identificationFailureReason : other.identificationFailureReason);
         }
     }
 
@@ -440,7 +517,7 @@ public final class S7SzlService {
             }
         }
         return new S7DeviceIdentification(orderCode, hardwareVersion, firmwareVersion,
-            null, null, null, null, null, null, null, null);
+            null, null, null, null, null, null, null, null, null, null);
     }
 
     /**
@@ -467,7 +544,7 @@ public final class S7SzlService {
             }
         }
         return new S7DeviceIdentification(null, null, null, moduleName, moduleTypeName,
-            systemName, plantDesignation, serialNumber, null, null, null);
+            systemName, plantDesignation, serialNumber, null, null, null, null, null);
     }
 
     /**
@@ -492,7 +569,7 @@ public final class S7SzlService {
         int effectiveLevel = readWord(record, 6);       // sch_rel
         int keySwitch = readWord(record, 8);            // bart_sch
         return new S7DeviceIdentification(null, null, null, null, null, null, null, null,
-            effectiveLevel, decodeKeySwitchPosition(keySwitch), parameterisedLevel != 0);
+            effectiveLevel, decodeKeySwitchPosition(keySwitch), parameterisedLevel != 0, null, null);
     }
 
     /**
@@ -525,8 +602,7 @@ public final class S7SzlService {
         for (S7ParameterUserDataItem pItem : param.getItems()) {
             if (pItem instanceof S7ParameterUserDataItemCPUFunctions cpu
                 && cpu.getErrorCode() != null && cpu.getErrorCode() != 0) {
-                throw new IllegalStateException("SZL request rejected by PLC, errorCode=0x"
-                    + Integer.toHexString(cpu.getErrorCode()));
+                throw new SzlRejectedException(cpu.getErrorCode());
             }
         }
     }

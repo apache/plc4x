@@ -225,7 +225,7 @@ class S7HCotpConnectionTest {
 
     private static S7SzlService.S7DeviceIdentification identificationWithFirmware(String firmware) {
         return new S7SzlService.S7DeviceIdentification(null, null, firmware,
-            null, null, null, null, null, null, null, null);
+            null, null, null, null, null, null, null, null, null, null);
     }
 
     private static TestableS7HCotpConnection newWrapper(S7CotpConnection primary, S7CotpConnection secondary) {
