@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.apache.plc4x.java.s7.userdata.S7SzlService;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -185,6 +187,46 @@ class S7HCotpConnectionTest {
     // ------------------------------------------------------------------------------------
     // Test fixture helpers
     // ------------------------------------------------------------------------------------
+
+    @Test
+    void readDeviceIdentification_readsFromTheActiveInner() throws Exception {
+        S7CotpConnection primary = mock(S7CotpConnection.class);
+        S7CotpConnection secondary = mock(S7CotpConnection.class);
+        when(primary.isConnected()).thenReturn(true);
+        when(secondary.isConnected()).thenReturn(true);
+        when(primary.readDeviceIdentification())
+            .thenReturn(CompletableFuture.completedFuture(identificationWithFirmware("V 2.6.0")));
+
+        TestableS7HCotpConnection wrapper = newWrapper(primary, secondary);
+        wrapper.markActiveAsPrimaryForTest();
+
+        assertEquals("V 2.6.0",
+            wrapper.readDeviceIdentification().get(5, TimeUnit.SECONDS).firmwareVersion());
+        verify(secondary, never()).readDeviceIdentification();
+    }
+
+    @Test
+    void readDeviceIdentification_failsOverToTheSurvivingInner() throws Exception {
+        S7CotpConnection primary = mock(S7CotpConnection.class);
+        S7CotpConnection secondary = mock(S7CotpConnection.class);
+        when(primary.isConnected()).thenReturn(false);
+        when(secondary.isConnected()).thenReturn(true);
+        when(secondary.readDeviceIdentification())
+            .thenReturn(CompletableFuture.completedFuture(identificationWithFirmware("V 4.2.1")));
+
+        TestableS7HCotpConnection wrapper = newWrapper(primary, secondary);
+        // A wrapper only reaches this call after onConnect() has picked an active slot, so
+        // the failover under test is "active inner went down", not "never connected".
+        wrapper.markActiveAsPrimaryForTest();
+
+        assertEquals("V 4.2.1",
+            wrapper.readDeviceIdentification().get(5, TimeUnit.SECONDS).firmwareVersion());
+    }
+
+    private static S7SzlService.S7DeviceIdentification identificationWithFirmware(String firmware) {
+        return new S7SzlService.S7DeviceIdentification(null, null, firmware,
+            null, null, null, null, null, null, null, null);
+    }
 
     private static TestableS7HCotpConnection newWrapper(S7CotpConnection primary, S7CotpConnection secondary) {
         S7Configuration config = new S7Configuration();

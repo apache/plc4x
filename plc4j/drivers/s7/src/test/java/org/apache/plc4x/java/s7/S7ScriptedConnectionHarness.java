@@ -22,7 +22,17 @@ import org.apache.plc4x.java.s7.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.ControllerType;
 import org.apache.plc4x.java.s7.readwrite.S7Message;
 import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
+import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
+import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
+import org.apache.plc4x.java.s7.readwrite.SzlId;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
@@ -152,6 +162,82 @@ public final class S7ScriptedConnectionHarness {
     public static byte[] headerErrorResponse(int tpduReference, int errorClass, int errorCode) throws Exception {
         return wireBytes(new S7MessageResponseData(tpduReference, null, null,
             (short) errorClass, (short) errorCode));
+    }
+
+    /**
+     * The SZL-ID an outgoing ReadSZL request asks for, as the 16-bit value Siemens documents
+     * it by (type class, partial-list extension, partial list) — so a test can answer each
+     * request according to which list it is.
+     */
+    public static int szlIdOfRequest(byte[] frame) throws Exception {
+        S7Message message = S7Message.staticParse(readBuffer(frame));
+        S7PayloadUserData payload = (S7PayloadUserData) message.getPayload();
+        for (Object item : payload.getItems()) {
+            if (item instanceof S7PayloadUserDataItemCpuFunctionReadSzlRequest request) {
+                SzlId szlId = request.getSzlId();
+                return ((szlId.getTypeClass().getValue() & 0x0F) << 12)
+                    | ((szlId.getSublistExtract() & 0x0F) << 8)
+                    | (szlId.getSublistList().getValue() & 0xFF);
+            }
+        }
+        throw new IllegalStateException("frame is not a ReadSZL request");
+    }
+
+    /** A ReadSZL response carrying the given raw data section, complete in one PDU. */
+    public static byte[] szlResponse(int tpduReference, byte[] szlData) throws Exception {
+        return szlResponse(tpduReference, szlData, 0, 0);
+    }
+
+    /**
+     * A ReadSZL response chunk. {@code lastDataUnit} non-zero is how a CPU says it still holds
+     * the rest of the list; {@code sequenceNumber} is the sequence the client has to echo to
+     * fetch the next chunk.
+     */
+    public static byte[] szlResponse(int tpduReference, byte[] szlData, int sequenceNumber,
+                                     int lastDataUnit) throws Exception {
+        return wireBytes(new S7MessageUserData(tpduReference,
+            new S7ParameterUserData(List.of(
+                cpuFunctionsResponseParameter(0, sequenceNumber, lastDataUnit))),
+            new S7PayloadUserData(List.of(new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
+                DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING,
+                szlData.length, szlData)))));
+    }
+
+    /**
+     * The sequence number on an outgoing ReadSZL request. Zero on a first request; a
+     * continuation echoes the sequence the PLC assigned.
+     */
+    public static int sequenceNumberOfRequest(byte[] frame) throws Exception {
+        S7Message message = S7Message.staticParse(readBuffer(frame));
+        for (S7ParameterUserDataItem item
+                : ((S7ParameterUserData) message.getParameter()).getItems()) {
+            if (item instanceof S7ParameterUserDataItemCPUFunctions cpu) {
+                return cpu.getSequenceNumber();
+            }
+        }
+        throw new IllegalStateException("frame carries no CPU-functions parameter");
+    }
+
+    /**
+     * What a controller sends when it does not implement the requested SZL-ID: a ReadSZL
+     * response whose CPU-functions parameter carries a non-zero error code and no payload.
+     */
+    public static byte[] szlErrorResponse(int tpduReference, int errorCode) throws Exception {
+        return wireBytes(new S7MessageUserData(tpduReference,
+            new S7ParameterUserData(List.of(cpuFunctionsResponseParameter(errorCode, 0, 0))),
+            new S7PayloadUserData(List.of())));
+    }
+
+    private static S7ParameterUserDataItem cpuFunctionsResponseParameter(int errorCode,
+                                                                        int sequenceNumber,
+                                                                        int lastDataUnit) {
+        return new S7ParameterUserDataItemCPUFunctions(
+            (short) 0x12,               // method
+            (byte) 0x08,                // cpuFunctionType: response
+            (byte) 0x04,                // cpuFunctionGroup: CPU
+            (short) 0x01,               // cpuSubfunction: ReadSZL
+            (short) sequenceNumber,
+            (short) 0x00, (short) lastDataUnit, errorCode);
     }
 
     private static byte[] s7SetupCommunicationResponse(int tpduReference) throws Exception {
