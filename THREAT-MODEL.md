@@ -214,10 +214,11 @@ any of these will be closed with the cited disposition.
    > *"Current language support for protocols"* table is a green check
    > (`icon:check[role="green"]`, "Implemented and usable").**
    >
-   > Every other marking — yellow `icon:exclamation` (partially
-   > implemented) or red `icon:times` (not usable: either no driver
-   > exists, or one exists but is unfinished) — puts that language's
-   > driver **out of scope**. A vulnerability report against
+   > The table has exactly two states. Anything that is not a green
+   > check is red `icon:times` — no driver exists, or one exists but is
+   > unfinished, only partially implemented, or judged by the
+   > maintainers not to be ready — and puts that language's driver
+   > **out of scope**. A vulnerability report against
    > a driver that is not green is declined with
    > `OUT-OF-MODEL: unsupported-component`, citing the matrix cell.
 
@@ -390,6 +391,12 @@ follows.
   files describing the target devices are loaded from
   operator-configured paths *(documented:
   `plc4j/drivers/bacnet/.../configuration/BacNetIpConfiguration.java`)*.
+  **Out of scope**: EDE parsing exists only in the Java BACnet/IP
+  driver (`.../bacnetip/ede/EdeParser.java`), which is not green in the
+  §3 item 6 matrix; the Go BACnet/IP driver has no EDE support at all.
+  This whole input therefore falls outside the model — the KNX
+  `.knxproj` path in the row above is the only offline-file surface
+  that remains in it.
 - **What PLC4X does NOT do to its host** (negative claims, awaiting
   maintainer ratification — these are predominantly *(inferred)*,
   see §14 Q13):
@@ -428,7 +435,7 @@ collected here.
 | OPC UA `username` / `password`                                                         | unset *(documented)*                                                                                                                                                                                                                                                       | operator-supplied                                                                                                                                                                                                          | Forwarded as the OPC UA `UserIdentityToken`; carried inside the secure channel when one exists, in cleartext otherwise.                                                                                                                                                                           |
 | OPC UA `channel-lifetime`, `session-timeout`, `negotiation-timeout`, `request-timeout` | 1 h / 2 min / 60 s / 30 s *(documented)*                                                                                                                                                                                                                                   | reasonable defaults                                                                                                                                                                                                        | DoS / timeout-tuning surface; not a security boundary.                                                                                                                                                                                                                                            |
 | ADS `PlcUsernamePasswordAuthentication` (when supplied)                                | unset (no AMS-route setup)                                                                                                                                                                                                                                                 | operator-supplied                                                                                                                                                                                                          | When supplied, drives an AMS-route registration against the TwinCAT system using HTTP-style credentials *(documented: `plc4j/drivers/ads/.../AdsProtocolLogic.java`)*. The credentials are not protected by PLC4X on the wire; TwinCAT-side TLS is the device's responsibility.                   |
-| BACnet/IP `ede-file-path` / `ede-directory-path`                                       | unset                                                                                                                                                                                                                                                                      | operator-supplied                                                                                                                                                                                                          | If set, points at filesystem paths; standard file-permission rules apply.                                                                                                                                                                                                                         |
+| BACnet/IP `ede-file-path` / `ede-directory-path` *(out of scope — Java-only driver, not green; see §3 item 6)* | unset                                                                                                                                                                                                                                                                      | operator-supplied                                                                                                                                                                                                          | If set, points at filesystem paths; standard file-permission rules apply.                                                                                                                                                                                                                         |
 | KNX `.knxproj` parser                                                                  | XXE / external-DTD / external-schema **disabled** *(documented: `EtsParser.java`)*                                                                                                                                                                                         | hardened — this is the safe defaults case                                                                                                                                                                                  | Reports of the shape "XXE in `.knxproj` parsing" are `KNOWN-NON-FINDING`.                                                                                                                                                                                                                         |
 | S7 `controller-type`                                                                   | unset (auto-discover via SZL)                                                                                                                                                                                                                                              | operator-supplied for Siemens LOGO compatibility                                                                                                                                                                           | Functional knob; not a security boundary.                                                                                                                                                                                                                                                         |
 | Modbus connection options (`unit-id`, byte order)                                      | per spec                                                                                                                                                                                                                                                                   | functional knobs                                                                                                                                                                                                           | not security boundaries.                                                                                                                                                                                                                                                                          |
@@ -480,7 +487,7 @@ hypothesis (b)** and will need adjustment if the maintainer chooses
 | Serial-line frames                                                                                                                                                     | every byte                         | yes if the serial channel is attacker-reachable                              | memory safety on malformed framing *(inferred — §14 Q11)*                                                                                                                                          |
 | libpcap capture / replay frames                                                                                                                                        | every byte                         | yes if the capture file is attacker-controlled                               | the pcap-replay transport is a **dev/test tool**; if it's running in production, the integrator has put it there                                                                                   |
 | ETS `.knxproj` XML                                                                                                                                                     | as XML                             | yes if the file is attacker-supplied                                         | XXE disabled *(documented)*; ZIP slip protection — *(inferred — §14 Q18)*                                                                                                                          |
-| BACnet EDE file                                                                                                                                                        | as text                            | yes if the file is attacker-supplied                                         | parser robustness *(inferred — §14 Q18)*                                                                                                                                                           |
+| BACnet EDE file — **out of scope**: Java-only driver, not green (§3 item 6)                                                                                            | as text                            | n/a — the driver carrying this parser is not in the model                    | **none** — previously "parser robustness"; struck when Java BACnet/IP was declared not ready *(maintainer: chrisdutz, 2026-08-21)*                                                                 |
 
 ### Size / shape / rate
 
@@ -504,7 +511,7 @@ hypothesis (b)** and will need adjustment if the maintainer chooses
 | **Network peer with reachability to the PLC** (the OT network)                                                                                                   | **yes — primary adversary for B2**         | can read, modify, drop, replay, or inject frames on the cleartext protocols. For the OPC UA protocol with a configured trust store, the peer is bounded by the cryptographic primitives. For OPC UA with the default `PermissiveCertificateVerifier`, the peer can MITM the channel. |
 | **Network peer between the driver and an OPC UA discovery endpoint**                                                                                             | **yes**                                    | the discovery handshake is unencrypted by spec *(documented)*; the peer can swap the advertised endpoint URL, certificate, or set of supported policies.                                                                                                                             |
 | **Author of a malformed-but-parseable response from a real PLC firmware** (buggy or compromised device firmware sending bytes a well-behaved firmware would not) | **yes — wire-parser robustness must hold** | causes the driver to parse adversarial bytes; in-model for memory safety, hang, unbounded allocation.                                                                                                                                                                                |
-| **Author of a malformed `.knxproj` or BACnet EDE file**                                                                                                          | **yes for parser robustness**              | causes the offline-file parser to crash, hang, or escape from its expected sandbox (XXE blocked per §5a).                                                                                                                                                                            |
+| **Author of a malformed `.knxproj` file** (the BACnet EDE parser is out of scope — Java-only driver, not green per §3 item 6)                                     | **yes for parser robustness**              | causes the offline-file parser to crash, hang, or escape from its expected sandbox (XXE blocked per §5a).                                                                                                                                                                            |
 | **Embedding application itself**                                                                                                                                 | **out of scope** — see §3 item 3           | trusted by construction.                                                                                                                                                                                                                                                             |
 | **End user of the embedding application**                                                                                                                        | **out of scope** — see §3 item 4           | PLC4X has no concept of an end user.                                                                                                                                                                                                                                                 |
 | **Operator of the PLC device**                                                                                                                                   | **out of scope**                           | the physical device the driver talks to is the device; PLC4X has no opinion on its operator.                                                                                                                                                                                         |
@@ -666,10 +673,11 @@ important one for an integrator.**
   it — deferring the check to the target PLC and relaying any
   permission error back to the client — but provides no permission
   system of its own *(maintainer — chrisdutz)*.
-- **No defense against malformed `.knxproj` ZIP slip, BACnet EDE
-  malformed-file robustness, or path-traversal in operator-supplied
-  file paths.** The file paths are caller-supplied; XML XXE is the only
-  attack class explicitly hardened *(inferred — §14 Q18)*.
+- **No defense against malformed `.knxproj` ZIP slip or path-traversal
+  in operator-supplied file paths.** The file paths are caller-supplied;
+  XML XXE is the only attack class explicitly hardened *(inferred —
+  §14 Q18)*. BACnet EDE files are no longer named here: that parser is
+  Java-BACnet-only and out of scope per §3 item 6.
 - **No DoS protection at the API surface.** The embedding application
   is trusted to call the API at a reasonable rate
   *(inferred — §14 Q19)*.
@@ -1139,8 +1147,10 @@ only manually at version-bump time? Are there OPC UA test vectors
 *(maps to §8 P1, P2, P7)*
 
 **Q18.** `.knxproj` (ZIP) handling: confirm ZIP-slip protection in the
-unzip step. BACnet EDE files: confirm parser robustness against
-malformed files.
+unzip step. ~~BACnet EDE files: confirm parser robustness against
+malformed files.~~ — the EDE half is moot: EDE parsing exists only in
+the Java BACnet/IP driver, which is not green in the §3 item 6 matrix,
+so it is out of scope *(maintainer: chrisdutz, 2026-08-21)*.
 
 **Answered (maintainer — chrisdutz):** the SPI3 rewrite addresses the
 ETS-parser issues and hardens XML parsing. *(maps to §6, §9, §11a)*
