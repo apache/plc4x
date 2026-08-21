@@ -75,7 +75,7 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_SHORT_FLOATING_POINT
     float value = FieldReaderFactory.readSimpleField(DataReaderFactory.readFloat(readBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: qos
-    QualifierOfSetPointCommand qos = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfSetPointCommand) QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("qos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfSetPointCommand qos = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfSetPointCommand.class, QualifierOfSetPointCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("qos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(value, qos);

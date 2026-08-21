@@ -77,10 +77,10 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: securityHeader
-    SecurityHeader securityHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SecurityHeader) SecurityHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("securityHeader"));
+    SecurityHeader securityHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SecurityHeader.class, SecurityHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("securityHeader"));
 
     // Simple Field: message
-    Payload message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Payload) Payload.staticParse(readBuffer, (boolean) (binary), (long) (0L)), readBuffer), WithOption.WithName("message"));
+    Payload message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Payload.class, Payload.staticParse(readBuffer, (boolean) (binary), (long) (0L))), readBuffer), WithOption.WithName("message"));
 
     readBuffer.popContext();
     return new MessagePDUBuilderImpl(securityHeader, message);

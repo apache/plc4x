@@ -160,16 +160,16 @@ public class DeviceDescriptorType2 implements Message {
     byte logicalTagBase = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 6), WithOption.WithName("logicalTagBase"));
 
     // Simple Field: channelInfo1
-    ChannelInformation channelInfo1 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ChannelInformation) ChannelInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("channelInfo1"));
+    ChannelInformation channelInfo1 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ChannelInformation.class, ChannelInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("channelInfo1"));
 
     // Simple Field: channelInfo2
-    ChannelInformation channelInfo2 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ChannelInformation) ChannelInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("channelInfo2"));
+    ChannelInformation channelInfo2 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ChannelInformation.class, ChannelInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("channelInfo2"));
 
     // Simple Field: channelInfo3
-    ChannelInformation channelInfo3 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ChannelInformation) ChannelInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("channelInfo3"));
+    ChannelInformation channelInfo3 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ChannelInformation.class, ChannelInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("channelInfo3"));
 
     // Simple Field: channelInfo4
-    ChannelInformation channelInfo4 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ChannelInformation) ChannelInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("channelInfo4"));
+    ChannelInformation channelInfo4 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ChannelInformation.class, ChannelInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("channelInfo4"));
 
     readBuffer.popContext();
     return new DeviceDescriptorType2(manufacturerId, deviceType, version, readSupported, writeSupported, logicalTagBase, channelInfo1, channelInfo2, channelInfo3, channelInfo4);

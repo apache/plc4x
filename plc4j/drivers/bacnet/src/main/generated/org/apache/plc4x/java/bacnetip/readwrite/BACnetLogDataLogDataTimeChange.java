@@ -53,7 +53,7 @@ public class BACnetLogDataLogDataTimeChange extends BACnetLogData implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeChange
-    BACnetContextTagReal timeChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("timeChange"));
+    BACnetContextTagReal timeChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("timeChange"));
 
     readBuffer.popContext();
     return new BACnetLogDataBuilderImpl(timeChange);

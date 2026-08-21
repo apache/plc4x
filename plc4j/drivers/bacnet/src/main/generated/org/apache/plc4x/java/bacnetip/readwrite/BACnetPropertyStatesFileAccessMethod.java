@@ -52,7 +52,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileAccessMethod
-    BACnetFileAccessMethodTagged fileAccessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetFileAccessMethodTagged) BACnetFileAccessMethodTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("fileAccessMethod"));
+    BACnetFileAccessMethodTagged fileAccessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetFileAccessMethodTagged.class, BACnetFileAccessMethodTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("fileAccessMethod"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(fileAccessMethod);

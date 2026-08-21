@@ -68,7 +68,7 @@ public class TlvProfibusSubTypeMrpPortStatus extends TlvOrgSpecificProfibusUnit 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: macAddress
-    Uuid macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), WithOption.WithName("macAddress"));
+    Uuid macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("macAddress"));
 
     // Simple Field: Status
     int Status = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("Status"));

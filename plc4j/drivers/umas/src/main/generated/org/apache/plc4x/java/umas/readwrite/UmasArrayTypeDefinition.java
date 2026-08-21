@@ -91,7 +91,7 @@ public class UmasArrayTypeDefinition implements Message {
     short numberOfDimensions = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfDimensions"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     // Array Field: dimensions
-    List<UmasArrayDimension> dimensions = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (UmasArrayDimension) UmasArrayDimension.staticParse(readBuffer), readBuffer), numberOfDimensions, WithOption.WithName("dimensions"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+    List<UmasArrayDimension> dimensions = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UmasArrayDimension.class, UmasArrayDimension.staticParse(readBuffer)), readBuffer), numberOfDimensions, WithOption.WithName("dimensions"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     readBuffer.popContext();
     return new UmasArrayTypeDefinition(classId, elementTypeId, numberOfDimensions, dimensions);

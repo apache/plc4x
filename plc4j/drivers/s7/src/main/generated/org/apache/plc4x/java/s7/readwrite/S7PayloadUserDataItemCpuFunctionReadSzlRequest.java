@@ -87,7 +87,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: szlId
-    SzlId szlId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SzlId) SzlId.staticParse(readBuffer), readBuffer), WithOption.WithName("szlId"));
+    SzlId szlId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SzlId.class, SzlId.staticParse(readBuffer)), readBuffer), WithOption.WithName("szlId"));
 
     // Simple Field: szlIndex
     int szlIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("szlIndex"));

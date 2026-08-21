@@ -246,10 +246,10 @@ public class CipConnectionManagerRequest extends CipServiceRequest implements Me
     short requestPathSize = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("requestPathSize"));
 
     // Simple Field: classSegment
-    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("classSegment"));
+    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("classSegment"));
 
     // Simple Field: instanceSegment
-    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("instanceSegment"));
+    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("instanceSegment"));
 
     // Simple Field: priority
     byte priority = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 4), WithOption.WithName("priority"));
@@ -285,22 +285,22 @@ public class CipConnectionManagerRequest extends CipServiceRequest implements Me
     long otRpi = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("otRpi"));
 
     // Simple Field: otConnectionParameters
-    NetworkConnectionParameters otConnectionParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NetworkConnectionParameters) NetworkConnectionParameters.staticParse(readBuffer), readBuffer), WithOption.WithName("otConnectionParameters"));
+    NetworkConnectionParameters otConnectionParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NetworkConnectionParameters.class, NetworkConnectionParameters.staticParse(readBuffer)), readBuffer), WithOption.WithName("otConnectionParameters"));
 
     // Simple Field: toRpi
     long toRpi = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("toRpi"));
 
     // Simple Field: toConnectionParameters
-    NetworkConnectionParameters toConnectionParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NetworkConnectionParameters) NetworkConnectionParameters.staticParse(readBuffer), readBuffer), WithOption.WithName("toConnectionParameters"));
+    NetworkConnectionParameters toConnectionParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NetworkConnectionParameters.class, NetworkConnectionParameters.staticParse(readBuffer)), readBuffer), WithOption.WithName("toConnectionParameters"));
 
     // Simple Field: transportType
-    TransportType transportType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TransportType) TransportType.staticParse(readBuffer), readBuffer), WithOption.WithName("transportType"));
+    TransportType transportType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TransportType.class, TransportType.staticParse(readBuffer)), readBuffer), WithOption.WithName("transportType"));
 
     // Simple Field: connectionPathSize
     short connectionPathSize = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("connectionPathSize"));
 
     // Array Field: connectionPaths
-    List<PathSegment> connectionPaths = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.noMorePathSegments(readBuffer), WithOption.WithName("connectionPaths"));
+    List<PathSegment> connectionPaths = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.noMorePathSegments(readBuffer), WithOption.WithName("connectionPaths"));
 
     readBuffer.popContext();
     return new CipServiceRequestBuilderImpl(classSegment, instanceSegment, priority, tickTime, timeoutTicks, otConnectionId, toConnectionId, connectionSerialNumber, originatorVendorId, originatorSerialNumber, timeoutMultiplier, otRpi, otConnectionParameters, toRpi, toConnectionParameters, transportType, connectionPathSize, connectionPaths);

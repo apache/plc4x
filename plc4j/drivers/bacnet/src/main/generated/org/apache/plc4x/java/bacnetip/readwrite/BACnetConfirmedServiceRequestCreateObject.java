@@ -71,10 +71,10 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectSpecifier
-    BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("objectSpecifier"));
+    BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.class, BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("objectSpecifier"));
 
     // Optional Field: listOfValues
-    BACnetPropertyValues listOfValues = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetPropertyValues) BACnetPropertyValues.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (((objectSpecifier.getIsObjectType()) ? objectSpecifier.getObjectType() : objectSpecifier.getObjectIdentifier().getObjectType()))), readBuffer), WithOption.WithName("listOfValues"));
+    BACnetPropertyValues listOfValues = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPropertyValues.class, BACnetPropertyValues.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (((objectSpecifier.getIsObjectType()) ? objectSpecifier.getObjectType() : objectSpecifier.getObjectIdentifier().getObjectType())))), readBuffer), WithOption.WithName("listOfValues"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(objectSpecifier, listOfValues);

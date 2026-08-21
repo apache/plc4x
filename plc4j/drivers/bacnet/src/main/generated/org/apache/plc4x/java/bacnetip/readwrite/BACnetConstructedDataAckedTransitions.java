@@ -78,7 +78,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ackedTransitions
-    BACnetEventTransitionBitsTagged ackedTransitions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventTransitionBitsTagged) BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("ackedTransitions"));
+    BACnetEventTransitionBitsTagged ackedTransitions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventTransitionBitsTagged.class, BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("ackedTransitions"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetEventTransitionBitsTagged actualValue = FieldReaderFactory.readVirtualField(BACnetEventTransitionBitsTagged.class, ackedTransitions, WithOption.WithName("actualValue"));

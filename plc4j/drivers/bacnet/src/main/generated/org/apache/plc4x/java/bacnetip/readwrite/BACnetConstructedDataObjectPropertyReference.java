@@ -78,7 +78,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: propertyReference
-    BACnetDeviceObjectPropertyReference propertyReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReference) BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer), WithOption.WithName("propertyReference"));
+    BACnetDeviceObjectPropertyReference propertyReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReference.class, BACnetDeviceObjectPropertyReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("propertyReference"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectPropertyReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectPropertyReference.class, propertyReference, WithOption.WithName("actualValue"));

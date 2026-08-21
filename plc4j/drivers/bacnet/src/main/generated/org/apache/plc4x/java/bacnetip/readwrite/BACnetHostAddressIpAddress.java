@@ -52,7 +52,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ipAddress
-    BACnetContextTagOctetString ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagOctetString) BACnetContextTagOctetString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING)), readBuffer), WithOption.WithName("ipAddress"));
+    BACnetContextTagOctetString ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagOctetString.class, BACnetContextTagOctetString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING))), readBuffer), WithOption.WithName("ipAddress"));
 
     readBuffer.popContext();
     return new BACnetHostAddressBuilderImpl(ipAddress);

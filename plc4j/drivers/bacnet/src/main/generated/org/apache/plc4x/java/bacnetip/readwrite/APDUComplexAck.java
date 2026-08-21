@@ -168,7 +168,7 @@ public class APDUComplexAck extends APDU implements Message {
     int apduHeaderReduction = FieldReaderFactory.readVirtualField(int.class, (2) + ((((segmentedMessage) ? 2 : 0))), WithOption.WithName("apduHeaderReduction"));
 
     // Optional Field (conditional): serviceAck
-    BACnetServiceAck serviceAck = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetServiceAck) BACnetServiceAck.staticParse(readBuffer, (long) ((apduLength) - (apduHeaderReduction))), readBuffer), !(segmentedMessage), WithOption.WithName("serviceAck"));
+    BACnetServiceAck serviceAck = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetServiceAck.class, BACnetServiceAck.staticParse(readBuffer, (long) ((apduLength) - (apduHeaderReduction)))), readBuffer), !(segmentedMessage), WithOption.WithName("serviceAck"));
 
     // Validation Field
     if(!((((!(segmentedMessage)) && ((serviceAck) != (null)))) || (segmentedMessage))) {

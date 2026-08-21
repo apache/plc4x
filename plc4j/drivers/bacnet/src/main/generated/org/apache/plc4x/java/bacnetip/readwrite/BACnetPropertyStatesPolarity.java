@@ -52,7 +52,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: polarity
-    BACnetPolarityTagged polarity = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPolarityTagged) BACnetPolarityTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("polarity"));
+    BACnetPolarityTagged polarity = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPolarityTagged.class, BACnetPolarityTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("polarity"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(polarity);

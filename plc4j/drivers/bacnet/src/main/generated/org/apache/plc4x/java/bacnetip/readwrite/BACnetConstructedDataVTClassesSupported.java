@@ -72,7 +72,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: vtClassesSupported
-    List<BACnetVTClassTagged> vtClassesSupported = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetVTClassTagged) BACnetVTClassTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("vtClassesSupported"));
+    List<BACnetVTClassTagged> vtClassesSupported = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVTClassTagged.class, BACnetVTClassTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("vtClassesSupported"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(vtClassesSupported);

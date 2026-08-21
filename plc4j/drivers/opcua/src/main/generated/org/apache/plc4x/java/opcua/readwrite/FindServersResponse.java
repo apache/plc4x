@@ -70,13 +70,13 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: responseHeader
-    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ResponseHeader) ResponseHeader.staticParse(readBuffer, (int) (394)), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ResponseHeader.class, ResponseHeader.staticParse(readBuffer, (int) (394))), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfServers
     int noOfServers = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfServers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: servers
-    List<ApplicationDescription> servers = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ApplicationDescription) ApplicationDescription.staticParse(readBuffer, (int) (310)), readBuffer), noOfServers, WithOption.WithName("servers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ApplicationDescription> servers = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ApplicationDescription.class, ApplicationDescription.staticParse(readBuffer, (int) (310))), readBuffer), noOfServers, WithOption.WithName("servers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(responseHeader, servers);

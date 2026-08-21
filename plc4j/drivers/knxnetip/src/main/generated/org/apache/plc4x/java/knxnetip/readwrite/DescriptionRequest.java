@@ -59,7 +59,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: hpaiControlEndpoint
-    HPAIControlEndpoint hpaiControlEndpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HPAIControlEndpoint) HPAIControlEndpoint.staticParse(readBuffer), readBuffer), WithOption.WithName("hpaiControlEndpoint"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    HPAIControlEndpoint hpaiControlEndpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HPAIControlEndpoint.class, HPAIControlEndpoint.staticParse(readBuffer)), readBuffer), WithOption.WithName("hpaiControlEndpoint"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(hpaiControlEndpoint);

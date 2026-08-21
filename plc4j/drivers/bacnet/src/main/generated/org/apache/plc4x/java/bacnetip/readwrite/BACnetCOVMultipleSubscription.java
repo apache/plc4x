@@ -95,19 +95,19 @@ public class BACnetCOVMultipleSubscription implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: recipient
-    BACnetRecipientProcessEnclosed recipient = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRecipientProcessEnclosed) BACnetRecipientProcessEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("recipient"));
+    BACnetRecipientProcessEnclosed recipient = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRecipientProcessEnclosed.class, BACnetRecipientProcessEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("recipient"));
 
     // Simple Field: issueConfirmedNotifications
-    BACnetContextTagBoolean issueConfirmedNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBoolean) BACnetContextTagBoolean.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN)), readBuffer), WithOption.WithName("issueConfirmedNotifications"));
+    BACnetContextTagBoolean issueConfirmedNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBoolean.class, BACnetContextTagBoolean.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN))), readBuffer), WithOption.WithName("issueConfirmedNotifications"));
 
     // Simple Field: timeRemaining
-    BACnetContextTagUnsignedInteger timeRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("timeRemaining"));
+    BACnetContextTagUnsignedInteger timeRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("timeRemaining"));
 
     // Simple Field: maxNotificationDelay
-    BACnetContextTagUnsignedInteger maxNotificationDelay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("maxNotificationDelay"));
+    BACnetContextTagUnsignedInteger maxNotificationDelay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("maxNotificationDelay"));
 
     // Simple Field: listOfCovSubscriptionSpecification
-    BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification listOfCovSubscriptionSpecification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.staticParse(readBuffer, (short) (4)), readBuffer), WithOption.WithName("listOfCovSubscriptionSpecification"));
+    BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification listOfCovSubscriptionSpecification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.class, BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.staticParse(readBuffer, (short) (4))), readBuffer), WithOption.WithName("listOfCovSubscriptionSpecification"));
 
     readBuffer.popContext();
     return new BACnetCOVMultipleSubscription(recipient, issueConfirmedNotifications, timeRemaining, maxNotificationDelay, listOfCovSubscriptionSpecification);

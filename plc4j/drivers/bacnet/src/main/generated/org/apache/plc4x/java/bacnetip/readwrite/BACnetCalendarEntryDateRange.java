@@ -52,7 +52,7 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateRange
-    BACnetDateRangeEnclosed dateRange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateRangeEnclosed) BACnetDateRangeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("dateRange"));
+    BACnetDateRangeEnclosed dateRange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateRangeEnclosed.class, BACnetDateRangeEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("dateRange"));
 
     readBuffer.popContext();
     return new BACnetCalendarEntryBuilderImpl(dateRange);

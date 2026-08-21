@@ -72,7 +72,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: virtualMacAddressTable
-    List<BACnetVMACEntry> virtualMacAddressTable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetVMACEntry) BACnetVMACEntry.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("virtualMacAddressTable"));
+    List<BACnetVMACEntry> virtualMacAddressTable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVMACEntry.class, BACnetVMACEntry.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("virtualMacAddressTable"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(virtualMacAddressTable);

@@ -53,7 +53,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: anyValue
-    BACnetConstructedData anyValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetConstructedData) BACnetConstructedData.staticParse(readBuffer, (short) (10), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null)), readBuffer), WithOption.WithName("anyValue"));
+    BACnetConstructedData anyValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedData.class, BACnetConstructedData.staticParse(readBuffer, (short) (10), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null))), readBuffer), WithOption.WithName("anyValue"));
 
     readBuffer.popContext();
     return new BACnetLogRecordLogDatumBuilderImpl(anyValue);

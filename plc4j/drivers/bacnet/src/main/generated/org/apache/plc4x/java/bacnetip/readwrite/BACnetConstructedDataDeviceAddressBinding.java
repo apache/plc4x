@@ -72,7 +72,7 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: deviceAddressBinding
-    List<BACnetAddressBinding> deviceAddressBinding = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetAddressBinding) BACnetAddressBinding.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("deviceAddressBinding"));
+    List<BACnetAddressBinding> deviceAddressBinding = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddressBinding.class, BACnetAddressBinding.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("deviceAddressBinding"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(deviceAddressBinding);

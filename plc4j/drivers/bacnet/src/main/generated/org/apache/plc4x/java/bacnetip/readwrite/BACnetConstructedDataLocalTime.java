@@ -78,7 +78,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: localTime
-    BACnetApplicationTagTime localTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("localTime"));
+    BACnetApplicationTagTime localTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("localTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagTime actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagTime.class, localTime, WithOption.WithName("actualValue"));

@@ -52,7 +52,7 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: shedState
-    BACnetShedStateTagged shedState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetShedStateTagged) BACnetShedStateTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("shedState"));
+    BACnetShedStateTagged shedState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetShedStateTagged.class, BACnetShedStateTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("shedState"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(shedState);

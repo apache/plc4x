@@ -119,10 +119,10 @@ public class CipUnconnectedRequest extends CipServiceRequest implements Message 
     short requestPathSize = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("requestPathSize"));
 
     // Simple Field: classSegment
-    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("classSegment"));
+    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("classSegment"));
 
     // Simple Field: instanceSegment
-    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("instanceSegment"));
+    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("instanceSegment"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedInt(readBuffer, 16), (int) 0x9D05, WithOption.WithName("CipUnconnectedRequest.reserved3"));
@@ -131,7 +131,7 @@ public class CipUnconnectedRequest extends CipServiceRequest implements Message 
     int messageSize = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("messageSize"));
 
     // Simple Field: unconnectedService
-    CipService unconnectedService = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CipService) CipService.staticParse(readBuffer, (boolean) (false), (int) (messageSize)), readBuffer), WithOption.WithName("unconnectedService"));
+    CipService unconnectedService = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CipService.class, CipService.staticParse(readBuffer, (boolean) (false), (int) (messageSize))), readBuffer), WithOption.WithName("unconnectedService"));
 
     // Const Field: route
     int route = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedInt(readBuffer, 16), ROUTE, WithOption.WithName("route"));

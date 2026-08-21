@@ -78,7 +78,7 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestedShedLevel
-    BACnetShedLevel requestedShedLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetShedLevel) BACnetShedLevel.staticParse(readBuffer), readBuffer), WithOption.WithName("requestedShedLevel"));
+    BACnetShedLevel requestedShedLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetShedLevel.class, BACnetShedLevel.staticParse(readBuffer)), readBuffer), WithOption.WithName("requestedShedLevel"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetShedLevel actualValue = FieldReaderFactory.readVirtualField(BACnetShedLevel.class, requestedShedLevel, WithOption.WithName("actualValue"));

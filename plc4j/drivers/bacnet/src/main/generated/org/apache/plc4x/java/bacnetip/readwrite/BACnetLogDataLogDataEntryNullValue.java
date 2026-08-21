@@ -52,7 +52,7 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nullValue
-    BACnetContextTagNull nullValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagNull) BACnetContextTagNull.staticParse(readBuffer, (short) (6), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.NULL)), readBuffer), WithOption.WithName("nullValue"));
+    BACnetContextTagNull nullValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagNull.class, BACnetContextTagNull.staticParse(readBuffer, (short) (6), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.NULL))), readBuffer), WithOption.WithName("nullValue"));
 
     readBuffer.popContext();
     return new BACnetLogDataLogDataEntryBuilderImpl(nullValue);

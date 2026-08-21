@@ -77,10 +77,10 @@ public class Confirmation implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: alpha
-    Alpha alpha = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Alpha) Alpha.staticParse(readBuffer), readBuffer), WithOption.WithName("alpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    Alpha alpha = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Alpha.class, Alpha.staticParse(readBuffer)), readBuffer), WithOption.WithName("alpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Optional Field: secondAlpha
-    Alpha secondAlpha = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (Alpha) Alpha.staticParse(readBuffer), readBuffer), WithOption.WithName("secondAlpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    Alpha secondAlpha = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Alpha.class, Alpha.staticParse(readBuffer)), readBuffer), WithOption.WithName("secondAlpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field (enum): confirmationType
     ConfirmationType confirmationType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(ConfirmationType::enumForValue, DataReaderFactory.readByte(readBuffer, 8)), WithOption.WithName("confirmationType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

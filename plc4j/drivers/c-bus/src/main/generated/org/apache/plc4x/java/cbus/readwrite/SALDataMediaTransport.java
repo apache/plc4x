@@ -61,7 +61,7 @@ public class SALDataMediaTransport extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: mediaTransportControlData
-    MediaTransportControlData mediaTransportControlData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MediaTransportControlData) MediaTransportControlData.staticParse(readBuffer), readBuffer), WithOption.WithName("mediaTransportControlData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    MediaTransportControlData mediaTransportControlData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MediaTransportControlData.class, MediaTransportControlData.staticParse(readBuffer)), readBuffer), WithOption.WithName("mediaTransportControlData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(mediaTransportControlData);

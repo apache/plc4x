@@ -60,10 +60,10 @@ public class BACnetReadAccessResult implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectIdentifier
-    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("objectIdentifier"));
+    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("objectIdentifier"));
 
     // Optional Field: listOfResults
-    BACnetReadAccessResultListOfResults listOfResults = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetReadAccessResultListOfResults) BACnetReadAccessResultListOfResults.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectIdentifier.getObjectType())), readBuffer), WithOption.WithName("listOfResults"));
+    BACnetReadAccessResultListOfResults listOfResults = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetReadAccessResultListOfResults.class, BACnetReadAccessResultListOfResults.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectIdentifier.getObjectType()))), readBuffer), WithOption.WithName("listOfResults"));
 
     readBuffer.popContext();
     return new BACnetReadAccessResult(objectIdentifier, listOfResults);

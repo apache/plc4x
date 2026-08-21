@@ -78,7 +78,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: vendorIdentifier
-    BACnetVendorIdTagged vendorIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetVendorIdTagged) BACnetVendorIdTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("vendorIdentifier"));
+    BACnetVendorIdTagged vendorIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVendorIdTagged.class, BACnetVendorIdTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("vendorIdentifier"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetVendorIdTagged actualValue = FieldReaderFactory.readVirtualField(BACnetVendorIdTagged.class, vendorIdentifier, WithOption.WithName("actualValue"));

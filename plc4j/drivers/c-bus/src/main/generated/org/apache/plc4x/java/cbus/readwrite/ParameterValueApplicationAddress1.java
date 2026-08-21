@@ -75,7 +75,7 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
     }
 
     // Simple Field: value
-    ApplicationAddress1 value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ApplicationAddress1) ApplicationAddress1.staticParse(readBuffer), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ApplicationAddress1 value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ApplicationAddress1.class, ApplicationAddress1.staticParse(readBuffer)), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: data
     byte[] data = readBuffer.readBits(Math.toIntExact(((numBytes) - (1)) * 8), WithOption.WithName("data"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

@@ -71,10 +71,10 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileIdentifier
-    BACnetApplicationTagObjectIdentifier fileIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("fileIdentifier"));
+    BACnetApplicationTagObjectIdentifier fileIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileIdentifier"));
 
     // Simple Field: accessMethod
-    BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.staticParse(readBuffer), readBuffer), WithOption.WithName("accessMethod"));
+    BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.class, BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.staticParse(readBuffer)), readBuffer), WithOption.WithName("accessMethod"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(fileIdentifier, accessMethod);

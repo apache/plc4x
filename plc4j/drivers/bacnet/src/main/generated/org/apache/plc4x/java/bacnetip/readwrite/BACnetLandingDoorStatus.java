@@ -49,7 +49,7 @@ public class BACnetLandingDoorStatus implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: landingDoors
-    BACnetLandingDoorStatusLandingDoorsList landingDoors = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusLandingDoorsList.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("landingDoors"));
+    BACnetLandingDoorStatusLandingDoorsList landingDoors = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLandingDoorStatusLandingDoorsList.class, BACnetLandingDoorStatusLandingDoorsList.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("landingDoors"));
 
     readBuffer.popContext();
     return new BACnetLandingDoorStatus(landingDoors);

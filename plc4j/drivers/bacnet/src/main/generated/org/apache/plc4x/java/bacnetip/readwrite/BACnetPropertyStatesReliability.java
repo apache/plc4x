@@ -52,7 +52,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reliability
-    BACnetReliabilityTagged reliability = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetReliabilityTagged) BACnetReliabilityTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("reliability"));
+    BACnetReliabilityTagged reliability = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetReliabilityTagged.class, BACnetReliabilityTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("reliability"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(reliability);

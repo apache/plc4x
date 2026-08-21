@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastStateChange
-    BACnetTimerTransitionTagged lastStateChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimerTransitionTagged) BACnetTimerTransitionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("lastStateChange"));
+    BACnetTimerTransitionTagged lastStateChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimerTransitionTagged.class, BACnetTimerTransitionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("lastStateChange"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimerTransitionTagged actualValue = FieldReaderFactory.readVirtualField(BACnetTimerTransitionTagged.class, lastStateChange, WithOption.WithName("actualValue"));

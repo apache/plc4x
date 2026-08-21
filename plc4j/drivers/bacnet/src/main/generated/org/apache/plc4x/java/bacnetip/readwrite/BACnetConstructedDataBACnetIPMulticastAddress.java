@@ -78,7 +78,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ipMulticastAddress
-    BACnetApplicationTagOctetString ipMulticastAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("ipMulticastAddress"));
+    BACnetApplicationTagOctetString ipMulticastAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipMulticastAddress"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagOctetString.class, ipMulticastAddress, WithOption.WithName("actualValue"));

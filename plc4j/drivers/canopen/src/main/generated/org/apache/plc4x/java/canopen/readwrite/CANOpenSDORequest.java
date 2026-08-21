@@ -72,7 +72,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
     SDORequestCommand command = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(SDORequestCommand::enumForValue, DataReaderFactory.readUnsignedByte(readBuffer, 3)), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: request
-    SDORequest request = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SDORequest) SDORequest.staticParse(readBuffer, (org.apache.plc4x.java.canopen.readwrite.SDORequestCommand) (command)), readBuffer), WithOption.WithName("request"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    SDORequest request = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SDORequest.class, SDORequest.staticParse(readBuffer, (org.apache.plc4x.java.canopen.readwrite.SDORequestCommand) (command))), readBuffer), WithOption.WithName("request"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CANOpenPayloadBuilderImpl(command, request);

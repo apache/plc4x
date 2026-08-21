@@ -119,10 +119,10 @@ public abstract class S7Message implements Message {
     }
 
     // Optional Field (conditional): parameter
-    S7Parameter parameter = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (S7Parameter) S7Parameter.staticParse(readBuffer, (short) (messageType)), readBuffer), (parameterLength) > (0), WithOption.WithName("parameter"));
+    S7Parameter parameter = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7Parameter.class, S7Parameter.staticParse(readBuffer, (short) (messageType))), readBuffer), (parameterLength) > (0), WithOption.WithName("parameter"));
 
     // Optional Field (conditional): payload
-    S7Payload payload = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (S7Payload) S7Payload.staticParse(readBuffer, (short) (messageType), (org.apache.plc4x.java.s7.readwrite.S7Parameter) (parameter)), readBuffer), (payloadLength) > (0), WithOption.WithName("payload"));
+    S7Payload payload = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7Payload.class, S7Payload.staticParse(readBuffer, (short) (messageType), (org.apache.plc4x.java.s7.readwrite.S7Parameter) (parameter))), readBuffer), (payloadLength) > (0), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return builder.build(tpduReference, parameter, payload);

@@ -71,7 +71,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
     short numItems = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numItems"));
 
     // Array Field: items
-    List<S7ParameterUserDataItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (S7ParameterUserDataItem) S7ParameterUserDataItem.staticParse(readBuffer), readBuffer), numItems, WithOption.WithName("items"));
+    List<S7ParameterUserDataItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7ParameterUserDataItem.class, S7ParameterUserDataItem.staticParse(readBuffer)), readBuffer), numItems, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new S7ParameterBuilderImpl(items);

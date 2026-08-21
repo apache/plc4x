@@ -74,7 +74,7 @@ public class ConnectedDataItem extends TypeId implements Message {
     int sequenceCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sequenceCount"));
 
     // Simple Field: service
-    CipService service = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CipService) CipService.staticParse(readBuffer, (boolean) (true), (int) ((packetSize) - (2))), readBuffer), WithOption.WithName("service"));
+    CipService service = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CipService.class, CipService.staticParse(readBuffer, (boolean) (true), (int) ((packetSize) - (2)))), readBuffer), WithOption.WithName("service"));
 
     readBuffer.popContext();
     return new TypeIdBuilderImpl(sequenceCount, service);

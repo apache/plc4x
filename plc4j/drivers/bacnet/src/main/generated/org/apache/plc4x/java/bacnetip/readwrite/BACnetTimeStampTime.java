@@ -51,7 +51,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeValue
-    BACnetContextTagTime timeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagTime) BACnetContextTagTime.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.TIME)), readBuffer), WithOption.WithName("timeValue"));
+    BACnetContextTagTime timeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagTime.class, BACnetContextTagTime.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.TIME))), readBuffer), WithOption.WithName("timeValue"));
 
     readBuffer.popContext();
     return new BACnetTimeStampBuilderImpl(timeValue);

@@ -60,10 +60,10 @@ public class BACnetVMACEntry implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: virtualMacAddress
-    BACnetContextTagOctetString virtualMacAddress = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagOctetString) BACnetContextTagOctetString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING)), readBuffer), WithOption.WithName("virtualMacAddress"));
+    BACnetContextTagOctetString virtualMacAddress = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagOctetString.class, BACnetContextTagOctetString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING))), readBuffer), WithOption.WithName("virtualMacAddress"));
 
     // Optional Field: nativeMacAddress
-    BACnetContextTagOctetString nativeMacAddress = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagOctetString) BACnetContextTagOctetString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING)), readBuffer), WithOption.WithName("nativeMacAddress"));
+    BACnetContextTagOctetString nativeMacAddress = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagOctetString.class, BACnetContextTagOctetString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING))), readBuffer), WithOption.WithName("nativeMacAddress"));
 
     readBuffer.popContext();
     return new BACnetVMACEntry(virtualMacAddress, nativeMacAddress);

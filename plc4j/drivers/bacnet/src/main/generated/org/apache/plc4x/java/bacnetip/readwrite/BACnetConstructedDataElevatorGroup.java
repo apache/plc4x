@@ -78,7 +78,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: elevatorGroup
-    BACnetApplicationTagObjectIdentifier elevatorGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("elevatorGroup"));
+    BACnetApplicationTagObjectIdentifier elevatorGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("elevatorGroup"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagObjectIdentifier.class, elevatorGroup, WithOption.WithName("actualValue"));

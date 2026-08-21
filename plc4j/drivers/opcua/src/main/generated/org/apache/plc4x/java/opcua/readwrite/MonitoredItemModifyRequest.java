@@ -72,7 +72,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     long monitoredItemId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("monitoredItemId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: requestedParameters
-    MonitoringParameters requestedParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MonitoringParameters) MonitoringParameters.staticParse(readBuffer, (int) (742)), readBuffer), WithOption.WithName("requestedParameters"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    MonitoringParameters requestedParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MonitoringParameters.class, MonitoringParameters.staticParse(readBuffer, (int) (742))), readBuffer), WithOption.WithName("requestedParameters"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(monitoredItemId, requestedParameters);

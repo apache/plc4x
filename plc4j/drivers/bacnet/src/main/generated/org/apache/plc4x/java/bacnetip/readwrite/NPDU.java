@@ -177,7 +177,7 @@ public class NPDU implements Message {
     short protocolVersionNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("protocolVersionNumber"));
 
     // Simple Field: control
-    NPDUControl control = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NPDUControl) NPDUControl.staticParse(readBuffer), readBuffer), WithOption.WithName("control"));
+    NPDUControl control = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NPDUControl.class, NPDUControl.staticParse(readBuffer)), readBuffer), WithOption.WithName("control"));
 
     // Optional Field (conditional): destinationNetworkAddress
     Integer destinationNetworkAddress = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedInt(readBuffer, 16), control.getDestinationSpecified(), WithOption.WithName("destinationNetworkAddress"));
@@ -220,10 +220,10 @@ public class NPDU implements Message {
     int payloadSubtraction = FieldReaderFactory.readVirtualField(int.class, (2) + ((((sourceLengthAddon) + (destinationLengthAddon)) + (((((control.getDestinationSpecified())) ? 1 : 0))))), WithOption.WithName("payloadSubtraction"));
 
     // Optional Field (conditional): nlm
-    NLM nlm = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (NLM) NLM.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction))), readBuffer), control.getMessageTypeFieldPresent(), WithOption.WithName("nlm"));
+    NLM nlm = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLM.class, NLM.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction)))), readBuffer), control.getMessageTypeFieldPresent(), WithOption.WithName("nlm"));
 
     // Optional Field (conditional): apdu
-    APDU apdu = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (APDU) APDU.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction))), readBuffer), !(control.getMessageTypeFieldPresent()), WithOption.WithName("apdu"));
+    APDU apdu = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(APDU.class, APDU.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction)))), readBuffer), !(control.getMessageTypeFieldPresent()), WithOption.WithName("apdu"));
 
     // Validation Field
     if(!(((nlm) != (null)) || ((apdu) != (null)))) {

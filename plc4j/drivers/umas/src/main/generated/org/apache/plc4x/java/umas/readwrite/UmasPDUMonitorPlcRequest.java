@@ -109,7 +109,7 @@ public class UmasPDUMonitorPlcRequest extends UmasPDUItem implements Message {
     short numberOfSubOperations = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfSubOperations"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     // Array Field: subOperations
-    List<MonitorPlcSubOperation> subOperations = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (MonitorPlcSubOperation) MonitorPlcSubOperation.staticParse(readBuffer), readBuffer), numberOfSubOperations, WithOption.WithName("subOperations"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+    List<MonitorPlcSubOperation> subOperations = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MonitorPlcSubOperation.class, MonitorPlcSubOperation.staticParse(readBuffer)), readBuffer), numberOfSubOperations, WithOption.WithName("subOperations"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     readBuffer.popContext();
     return new UmasPDUItemBuilderImpl(subCommand, unknown, numberOfSubOperations, subOperations);

@@ -74,13 +74,13 @@ public class HistoryModifiedEvent extends ExtensionObjectDefinition implements M
     int noOfEvents = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfEvents"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: events
-    List<HistoryEventFieldList> events = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (HistoryEventFieldList) HistoryEventFieldList.staticParse(readBuffer, (int) (922)), readBuffer), noOfEvents, WithOption.WithName("events"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<HistoryEventFieldList> events = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HistoryEventFieldList.class, HistoryEventFieldList.staticParse(readBuffer, (int) (922))), readBuffer), noOfEvents, WithOption.WithName("events"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfModificationInfos
     int noOfModificationInfos = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfModificationInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: modificationInfos
-    List<ModificationInfo> modificationInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ModificationInfo) ModificationInfo.staticParse(readBuffer, (int) (11218)), readBuffer), noOfModificationInfos, WithOption.WithName("modificationInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ModificationInfo> modificationInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ModificationInfo.class, ModificationInfo.staticParse(readBuffer, (int) (11218))), readBuffer), noOfModificationInfos, WithOption.WithName("modificationInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(events, modificationInfos);

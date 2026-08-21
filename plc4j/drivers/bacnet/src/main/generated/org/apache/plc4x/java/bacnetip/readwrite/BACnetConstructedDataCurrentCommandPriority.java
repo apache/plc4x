@@ -78,7 +78,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: currentCommandPriority
-    BACnetOptionalUnsigned currentCommandPriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOptionalUnsigned) BACnetOptionalUnsigned.staticParse(readBuffer), readBuffer), WithOption.WithName("currentCommandPriority"));
+    BACnetOptionalUnsigned currentCommandPriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOptionalUnsigned.class, BACnetOptionalUnsigned.staticParse(readBuffer)), readBuffer), WithOption.WithName("currentCommandPriority"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetOptionalUnsigned actualValue = FieldReaderFactory.readVirtualField(BACnetOptionalUnsigned.class, currentCommandPriority, WithOption.WithName("actualValue"));

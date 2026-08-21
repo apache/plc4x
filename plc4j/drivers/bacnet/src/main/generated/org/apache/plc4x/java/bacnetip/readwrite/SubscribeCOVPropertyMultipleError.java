@@ -69,10 +69,10 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: errorType
-    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("errorType"));
+    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("errorType"));
 
     // Simple Field: firstFailedSubscription
-    SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("firstFailedSubscription"));
+    SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.class, SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("firstFailedSubscription"));
 
     readBuffer.popContext();
     return new BACnetErrorBuilderImpl(errorType, firstFailedSubscription);

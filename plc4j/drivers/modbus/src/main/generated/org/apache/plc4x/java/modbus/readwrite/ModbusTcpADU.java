@@ -100,7 +100,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
     short unitIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("unitIdentifier"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: pdu
-    ModbusPDU pdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ModbusPDU) ModbusPDU.staticParse(readBuffer, (boolean) (response)), readBuffer), WithOption.WithName("pdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ModbusPDU pdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ModbusPDU.class, ModbusPDU.staticParse(readBuffer, (boolean) (response))), readBuffer), WithOption.WithName("pdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ModbusADUBuilderImpl(transactionIdentifier, unitIdentifier, pdu);

@@ -53,7 +53,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue exten
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: changedValue
-    BACnetContextTagReal changedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("changedValue"));
+    BACnetContextTagReal changedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("changedValue"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersChangeOfValueNewValueBuilderImpl(changedValue);

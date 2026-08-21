@@ -72,10 +72,10 @@ public class InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION extends 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: diq
-    DoublePointInformation diq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DoublePointInformation) DoublePointInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("diq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DoublePointInformation diq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DoublePointInformation.class, DoublePointInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("diq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: cp24Time2a
-    ThreeOctetBinaryTime cp24Time2a = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ThreeOctetBinaryTime) ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer), WithOption.WithName("cp24Time2a"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ThreeOctetBinaryTime cp24Time2a = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ThreeOctetBinaryTime.class, ThreeOctetBinaryTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("cp24Time2a"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithTreeByteTimeBuilderImpl(diq, cp24Time2a);

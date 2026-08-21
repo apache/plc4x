@@ -86,7 +86,7 @@ public class ComObjectTableRealisationType1 extends ComObjectTable implements Me
     short ramFlagsTablePointer = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("ramFlagsTablePointer"));
 
     // Array Field: comObjectDescriptors
-    List<GroupObjectDescriptorRealisationType1> comObjectDescriptors = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (GroupObjectDescriptorRealisationType1) GroupObjectDescriptorRealisationType1.staticParse(readBuffer), readBuffer), numEntries, WithOption.WithName("comObjectDescriptors"));
+    List<GroupObjectDescriptorRealisationType1> comObjectDescriptors = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(GroupObjectDescriptorRealisationType1.class, GroupObjectDescriptorRealisationType1.staticParse(readBuffer)), readBuffer), numEntries, WithOption.WithName("comObjectDescriptors"));
 
     readBuffer.popContext();
     return new ComObjectTableBuilderImpl(numEntries, ramFlagsTablePointer, comObjectDescriptors);

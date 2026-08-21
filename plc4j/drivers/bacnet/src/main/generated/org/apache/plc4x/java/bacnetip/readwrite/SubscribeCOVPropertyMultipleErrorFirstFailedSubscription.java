@@ -93,19 +93,19 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: monitoredObjectIdentifier
-    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
+    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
 
     // Simple Field: monitoredPropertyReference
-    BACnetPropertyReferenceEnclosed monitoredPropertyReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPropertyReferenceEnclosed) BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("monitoredPropertyReference"));
+    BACnetPropertyReferenceEnclosed monitoredPropertyReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPropertyReferenceEnclosed.class, BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("monitoredPropertyReference"));
 
     // Simple Field: errorType
-    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("errorType"));
+    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("errorType"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new SubscribeCOVPropertyMultipleErrorFirstFailedSubscription(openingTag, monitoredObjectIdentifier, monitoredPropertyReference, errorType, closingTag);

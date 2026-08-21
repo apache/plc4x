@@ -58,7 +58,7 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: pdu
-    PnDcp_Pdu pdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PnDcp_Pdu) PnDcp_Pdu.staticParse(readBuffer), readBuffer), WithOption.WithName("pdu"));
+    PnDcp_Pdu pdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnDcp_Pdu.class, PnDcp_Pdu.staticParse(readBuffer)), readBuffer), WithOption.WithName("pdu"));
 
     readBuffer.popContext();
     return new Ethernet_FramePayloadBuilderImpl(pdu);

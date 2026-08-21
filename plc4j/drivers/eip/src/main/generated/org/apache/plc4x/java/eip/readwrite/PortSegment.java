@@ -58,7 +58,7 @@ public class PortSegment extends PathSegment implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: segmentType
-    PortSegmentType segmentType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PortSegmentType) PortSegmentType.staticParse(readBuffer), readBuffer), WithOption.WithName("segmentType"));
+    PortSegmentType segmentType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PortSegmentType.class, PortSegmentType.staticParse(readBuffer)), readBuffer), WithOption.WithName("segmentType"));
 
     readBuffer.popContext();
     return new PathSegmentBuilderImpl(segmentType);

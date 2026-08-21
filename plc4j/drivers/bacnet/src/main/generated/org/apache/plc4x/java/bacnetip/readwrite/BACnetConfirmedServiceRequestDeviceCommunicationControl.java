@@ -83,13 +83,13 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl extends BAC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: timeDuration
-    BACnetContextTagUnsignedInteger timeDuration = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("timeDuration"));
+    BACnetContextTagUnsignedInteger timeDuration = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("timeDuration"));
 
     // Simple Field: enableDisable
-    BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("enableDisable"));
+    BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.class, BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("enableDisable"));
 
     // Optional Field: password
-    BACnetContextTagCharacterString password = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("password"));
+    BACnetContextTagCharacterString password = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("password"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(timeDuration, enableDisable, password);

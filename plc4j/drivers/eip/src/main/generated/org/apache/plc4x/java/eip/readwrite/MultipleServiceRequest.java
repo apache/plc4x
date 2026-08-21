@@ -90,7 +90,7 @@ public class MultipleServiceRequest extends CipServiceRequest implements Message
     long requestPath = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedLong(readBuffer, 32), REQUESTPATH, WithOption.WithName("requestPath"));
 
     // Simple Field: data
-    Services data = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Services) Services.staticParse(readBuffer, (int) ((serviceLen) - (6))), readBuffer), WithOption.WithName("data"));
+    Services data = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Services.class, Services.staticParse(readBuffer, (int) ((serviceLen) - (6)))), readBuffer), WithOption.WithName("data"));
 
     readBuffer.popContext();
     return new CipServiceRequestBuilderImpl(data);

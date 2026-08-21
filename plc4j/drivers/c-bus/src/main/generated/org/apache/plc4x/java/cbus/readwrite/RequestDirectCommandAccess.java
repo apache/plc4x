@@ -90,7 +90,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
     CALData calDataDecoded = FieldReaderFactory.readVirtualField(CALData.class, calData, WithOption.WithName("calDataDecoded"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Optional Field: alpha
-    Alpha alpha = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (Alpha) Alpha.staticParse(readBuffer), readBuffer), WithOption.WithName("alpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    Alpha alpha = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Alpha.class, Alpha.staticParse(readBuffer)), readBuffer), WithOption.WithName("alpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new RequestBuilderImpl(calData, alpha);

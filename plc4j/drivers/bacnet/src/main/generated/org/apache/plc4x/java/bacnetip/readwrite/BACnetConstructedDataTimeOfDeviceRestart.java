@@ -78,7 +78,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeOfDeviceRestart
-    BACnetTimeStamp timeOfDeviceRestart = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("timeOfDeviceRestart"));
+    BACnetTimeStamp timeOfDeviceRestart = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeOfDeviceRestart"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimeStamp actualValue = FieldReaderFactory.readVirtualField(BACnetTimeStamp.class, timeOfDeviceRestart, WithOption.WithName("actualValue"));

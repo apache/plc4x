@@ -78,7 +78,7 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: autoSlaveDiscovery
-    BACnetApplicationTagBoolean autoSlaveDiscovery = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("autoSlaveDiscovery"));
+    BACnetApplicationTagBoolean autoSlaveDiscovery = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("autoSlaveDiscovery"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, autoSlaveDiscovery, WithOption.WithName("actualValue"));

@@ -78,7 +78,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: feedbackValue
-    BACnetBinaryLightingPVTagged feedbackValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetBinaryLightingPVTagged) BACnetBinaryLightingPVTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("feedbackValue"));
+    BACnetBinaryLightingPVTagged feedbackValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetBinaryLightingPVTagged.class, BACnetBinaryLightingPVTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("feedbackValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetBinaryLightingPVTagged actualValue = FieldReaderFactory.readVirtualField(BACnetBinaryLightingPVTagged.class, feedbackValue, WithOption.WithName("actualValue"));

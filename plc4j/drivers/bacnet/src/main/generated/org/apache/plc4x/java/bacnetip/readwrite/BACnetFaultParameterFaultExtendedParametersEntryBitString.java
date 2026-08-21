@@ -52,7 +52,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString extends B
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bitStringValue
-    BACnetApplicationTagBitString bitStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBitString) BACnetApplicationTagBitString.staticParse(readBuffer), readBuffer), WithOption.WithName("bitStringValue"));
+    BACnetApplicationTagBitString bitStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBitString.class, BACnetApplicationTagBitString.staticParse(readBuffer)), readBuffer), WithOption.WithName("bitStringValue"));
 
     readBuffer.popContext();
     return new BACnetFaultParameterFaultExtendedParametersEntryBuilderImpl(bitStringValue);

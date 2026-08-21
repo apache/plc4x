@@ -78,7 +78,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: applicationSoftwareVersion
-    BACnetApplicationTagCharacterString applicationSoftwareVersion = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("applicationSoftwareVersion"));
+    BACnetApplicationTagCharacterString applicationSoftwareVersion = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("applicationSoftwareVersion"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagCharacterString.class, applicationSoftwareVersion, WithOption.WithName("actualValue"));

@@ -63,10 +63,10 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reply
-    Reply reply = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Reply) Reply.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions), (org.apache.plc4x.java.cbus.readwrite.RequestContext) (requestContext)), readBuffer), WithOption.WithName("reply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    Reply reply = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Reply.class, Reply.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions), (org.apache.plc4x.java.cbus.readwrite.RequestContext) (requestContext))), readBuffer), WithOption.WithName("reply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: termination
-    ResponseTermination termination = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ResponseTermination) ResponseTermination.staticParse(readBuffer), readBuffer), WithOption.WithName("termination"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ResponseTermination termination = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ResponseTermination.class, ResponseTermination.staticParse(readBuffer)), readBuffer), WithOption.WithName("termination"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ReplyOrConfirmationBuilderImpl(reply, termination);

@@ -174,10 +174,10 @@ public class CipConnectionManagerCloseRequest extends CipServiceRequest implemen
     short requestPathSize = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("requestPathSize"));
 
     // Simple Field: classSegment
-    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("classSegment"));
+    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("classSegment"));
 
     // Simple Field: instanceSegment
-    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("instanceSegment"));
+    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("instanceSegment"));
 
     // Simple Field: priority
     byte priority = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 4), WithOption.WithName("priority"));
@@ -204,7 +204,7 @@ public class CipConnectionManagerCloseRequest extends CipServiceRequest implemen
     FieldReaderFactory.readReservedField(DataReaderFactory.readByte(readBuffer, 8), (byte) 0x00, WithOption.WithName("CipConnectionManagerCloseRequest.reserved10"));
 
     // Array Field: connectionPaths
-    List<PathSegment> connectionPaths = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.noMorePathSegments(readBuffer), WithOption.WithName("connectionPaths"));
+    List<PathSegment> connectionPaths = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.noMorePathSegments(readBuffer), WithOption.WithName("connectionPaths"));
 
     readBuffer.popContext();
     return new CipServiceRequestBuilderImpl(requestPathSize, classSegment, instanceSegment, priority, tickTime, timeoutTicks, connectionSerialNumber, originatorVendorId, originatorSerialNumber, connectionPathSize, connectionPaths);

@@ -89,7 +89,7 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     short blockVersionLow = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("blockVersionLow"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: stationName
-    PascalString16BitLength stationName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString16BitLength) PascalString16BitLength.staticParse(readBuffer), readBuffer), WithOption.WithName("stationName"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    PascalString16BitLength stationName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString16BitLength.class, PascalString16BitLength.staticParse(readBuffer)), readBuffer), WithOption.WithName("stationName"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Padding Field: padding4
     FieldReaderFactory.readPaddingField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (int) ((20) - (6)) - ((stationName.getStringLength())));

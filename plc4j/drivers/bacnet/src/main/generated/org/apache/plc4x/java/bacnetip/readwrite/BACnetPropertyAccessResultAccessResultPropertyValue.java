@@ -54,7 +54,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue extends BACnetP
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: propertyValue
-    BACnetConstructedData propertyValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConstructedData) BACnetConstructedData.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (propertyArrayIndexArgument)), readBuffer), WithOption.WithName("propertyValue"));
+    BACnetConstructedData propertyValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedData.class, BACnetConstructedData.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (propertyArrayIndexArgument))), readBuffer), WithOption.WithName("propertyValue"));
 
     readBuffer.popContext();
     return new BACnetPropertyAccessResultAccessResultBuilderImpl(propertyValue);

@@ -60,10 +60,10 @@ public class ReplyNetwork implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkRoute
-    NetworkRoute networkRoute = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NetworkRoute) NetworkRoute.staticParse(readBuffer), readBuffer), WithOption.WithName("networkRoute"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NetworkRoute networkRoute = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NetworkRoute.class, NetworkRoute.staticParse(readBuffer)), readBuffer), WithOption.WithName("networkRoute"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: unitAddress
-    UnitAddress unitAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (UnitAddress) UnitAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("unitAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    UnitAddress unitAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UnitAddress.class, UnitAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("unitAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ReplyNetwork(networkRoute, unitAddress);

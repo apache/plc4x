@@ -52,7 +52,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: securityLevel
-    BACnetSecurityLevelTagged securityLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSecurityLevelTagged) BACnetSecurityLevelTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("securityLevel"));
+    BACnetSecurityLevelTagged securityLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSecurityLevelTagged.class, BACnetSecurityLevelTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("securityLevel"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(securityLevel);

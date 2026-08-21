@@ -78,7 +78,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: eventAlgorithmInhibitRef
-    BACnetObjectPropertyReference eventAlgorithmInhibitRef = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetObjectPropertyReference) BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer), WithOption.WithName("eventAlgorithmInhibitRef"));
+    BACnetObjectPropertyReference eventAlgorithmInhibitRef = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetObjectPropertyReference.class, BACnetObjectPropertyReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("eventAlgorithmInhibitRef"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetObjectPropertyReference actualValue = FieldReaderFactory.readVirtualField(BACnetObjectPropertyReference.class, eventAlgorithmInhibitRef, WithOption.WithName("actualValue"));

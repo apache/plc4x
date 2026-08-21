@@ -77,10 +77,10 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openRequest
-    OpenChannelMessage openRequest = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (OpenChannelMessage) OpenChannelMessage.staticParse(readBuffer, (boolean) (response)), readBuffer), WithOption.WithName("openRequest"));
+    OpenChannelMessage openRequest = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(OpenChannelMessage.class, OpenChannelMessage.staticParse(readBuffer, (boolean) (response))), readBuffer), WithOption.WithName("openRequest"));
 
     // Simple Field: message
-    Payload message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Payload) Payload.staticParse(readBuffer, (boolean) (binary), (long) (((totalLength) - (openRequest.getLengthInBytes())) - (16L))), readBuffer), WithOption.WithName("message"));
+    Payload message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Payload.class, Payload.staticParse(readBuffer, (boolean) (binary), (long) (((totalLength) - (openRequest.getLengthInBytes())) - (16L)))), readBuffer), WithOption.WithName("message"));
 
     readBuffer.popContext();
     return new MessagePDUBuilderImpl(openRequest, message);

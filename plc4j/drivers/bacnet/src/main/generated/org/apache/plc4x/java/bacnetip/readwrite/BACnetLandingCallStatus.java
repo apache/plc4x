@@ -70,13 +70,13 @@ public class BACnetLandingCallStatus implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: floorNumber
-    BACnetContextTagUnsignedInteger floorNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("floorNumber"));
+    BACnetContextTagUnsignedInteger floorNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("floorNumber"));
 
     // Simple Field: command
-    BACnetLandingCallStatusCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLandingCallStatusCommand) BACnetLandingCallStatusCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("command"));
+    BACnetLandingCallStatusCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLandingCallStatusCommand.class, BACnetLandingCallStatusCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("command"));
 
     // Optional Field: floorText
-    BACnetContextTagCharacterString floorText = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("floorText"));
+    BACnetContextTagCharacterString floorText = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("floorText"));
 
     readBuffer.popContext();
     return new BACnetLandingCallStatus(floorNumber, command, floorText);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ipv6DefaultGateway
-    BACnetApplicationTagOctetString ipv6DefaultGateway = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("ipv6DefaultGateway"));
+    BACnetApplicationTagOctetString ipv6DefaultGateway = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipv6DefaultGateway"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagOctetString.class, ipv6DefaultGateway, WithOption.WithName("actualValue"));

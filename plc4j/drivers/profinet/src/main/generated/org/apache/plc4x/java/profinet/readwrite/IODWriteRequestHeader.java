@@ -172,7 +172,7 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
     int sequenceNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sequenceNumber"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: arUuid
-    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: api
     long api = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("api"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
@@ -196,7 +196,7 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
     FieldReaderFactory.readPaddingField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (int) (((((((((64) - (6)) - (2)) - (16)) - (4)) - (2)) - (2)) - (2)) - (2)) - (4));
 
     // Optional Field (conditional): userData
-    UserData userData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (UserData) UserData.staticParse(readBuffer, (long) (recordDataLength)), readBuffer), (index) < (0x8000), WithOption.WithName("userData"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    UserData userData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UserData.class, UserData.staticParse(readBuffer, (long) (recordDataLength))), readBuffer), (index) < (0x8000), WithOption.WithName("userData"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, sequenceNumber, arUuid, api, slotNumber, subSlotNumber, index, recordDataLength, userData);

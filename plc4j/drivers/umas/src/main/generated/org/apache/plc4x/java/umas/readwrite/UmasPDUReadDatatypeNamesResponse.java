@@ -104,7 +104,7 @@ public class UmasPDUReadDatatypeNamesResponse implements Message {
     int noOfRecords = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("noOfRecords"));
 
     // Array Field: records
-    List<UmasDatatypeReference> records = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (UmasDatatypeReference) UmasDatatypeReference.staticParse(readBuffer), readBuffer), noOfRecords, WithOption.WithName("records"));
+    List<UmasDatatypeReference> records = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UmasDatatypeReference.class, UmasDatatypeReference.staticParse(readBuffer)), readBuffer), noOfRecords, WithOption.WithName("records"));
 
     readBuffer.popContext();
     return new UmasPDUReadDatatypeNamesResponse(range, nextAddress, unknown1, noOfRecords, records);

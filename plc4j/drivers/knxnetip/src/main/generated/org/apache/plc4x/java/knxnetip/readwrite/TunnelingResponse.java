@@ -59,7 +59,7 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: tunnelingResponseDataBlock
-    TunnelingResponseDataBlock tunnelingResponseDataBlock = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TunnelingResponseDataBlock) TunnelingResponseDataBlock.staticParse(readBuffer), readBuffer), WithOption.WithName("tunnelingResponseDataBlock"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    TunnelingResponseDataBlock tunnelingResponseDataBlock = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TunnelingResponseDataBlock.class, TunnelingResponseDataBlock.staticParse(readBuffer)), readBuffer), WithOption.WithName("tunnelingResponseDataBlock"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(tunnelingResponseDataBlock);

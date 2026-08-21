@@ -71,13 +71,13 @@ public class BACnetSpecialEvent implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: period
-    BACnetSpecialEventPeriod period = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSpecialEventPeriod) BACnetSpecialEventPeriod.staticParse(readBuffer), readBuffer), WithOption.WithName("period"));
+    BACnetSpecialEventPeriod period = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSpecialEventPeriod.class, BACnetSpecialEventPeriod.staticParse(readBuffer)), readBuffer), WithOption.WithName("period"));
 
     // Simple Field: listOfTimeValues
-    BACnetSpecialEventListOfTimeValues listOfTimeValues = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSpecialEventListOfTimeValues) BACnetSpecialEventListOfTimeValues.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("listOfTimeValues"));
+    BACnetSpecialEventListOfTimeValues listOfTimeValues = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSpecialEventListOfTimeValues.class, BACnetSpecialEventListOfTimeValues.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("listOfTimeValues"));
 
     // Simple Field: eventPriority
-    BACnetContextTagUnsignedInteger eventPriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("eventPriority"));
+    BACnetContextTagUnsignedInteger eventPriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("eventPriority"));
 
     readBuffer.popContext();
     return new BACnetSpecialEvent(period, listOfTimeValues, eventPriority);

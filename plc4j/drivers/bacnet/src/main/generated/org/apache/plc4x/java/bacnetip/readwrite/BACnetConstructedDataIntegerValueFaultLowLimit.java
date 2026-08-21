@@ -78,7 +78,7 @@ public class BACnetConstructedDataIntegerValueFaultLowLimit extends BACnetConstr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: faultLowLimit
-    BACnetApplicationTagSignedInteger faultLowLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("faultLowLimit"));
+    BACnetApplicationTagSignedInteger faultLowLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("faultLowLimit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagSignedInteger.class, faultLowLimit, WithOption.WithName("actualValue"));

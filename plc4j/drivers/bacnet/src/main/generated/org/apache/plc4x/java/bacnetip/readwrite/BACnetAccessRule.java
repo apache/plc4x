@@ -92,19 +92,19 @@ public class BACnetAccessRule implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeRangeSpecifier
-    BACnetAccessRuleTimeRangeSpecifierTagged timeRangeSpecifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessRuleTimeRangeSpecifierTagged) BACnetAccessRuleTimeRangeSpecifierTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("timeRangeSpecifier"));
+    BACnetAccessRuleTimeRangeSpecifierTagged timeRangeSpecifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessRuleTimeRangeSpecifierTagged.class, BACnetAccessRuleTimeRangeSpecifierTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("timeRangeSpecifier"));
 
     // Optional Field (conditional): timeRange
-    BACnetDeviceObjectPropertyReferenceEnclosed timeRange = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReferenceEnclosed) BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), (timeRangeSpecifier) != (null), WithOption.WithName("timeRange"));
+    BACnetDeviceObjectPropertyReferenceEnclosed timeRange = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReferenceEnclosed.class, BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), (timeRangeSpecifier) != (null), WithOption.WithName("timeRange"));
 
     // Simple Field: locationSpecifier
-    BACnetAccessRuleLocationSpecifierTagged locationSpecifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessRuleLocationSpecifierTagged) BACnetAccessRuleLocationSpecifierTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("locationSpecifier"));
+    BACnetAccessRuleLocationSpecifierTagged locationSpecifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessRuleLocationSpecifierTagged.class, BACnetAccessRuleLocationSpecifierTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("locationSpecifier"));
 
     // Optional Field (conditional): location
-    BACnetDeviceObjectReferenceEnclosed location = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReferenceEnclosed) BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (3)), readBuffer), (locationSpecifier) != (null), WithOption.WithName("location"));
+    BACnetDeviceObjectReferenceEnclosed location = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReferenceEnclosed.class, BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (3))), readBuffer), (locationSpecifier) != (null), WithOption.WithName("location"));
 
     // Simple Field: enable
-    BACnetContextTagBoolean enable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBoolean) BACnetContextTagBoolean.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN)), readBuffer), WithOption.WithName("enable"));
+    BACnetContextTagBoolean enable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBoolean.class, BACnetContextTagBoolean.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN))), readBuffer), WithOption.WithName("enable"));
 
     readBuffer.popContext();
     return new BACnetAccessRule(timeRangeSpecifier, timeRange, locationSpecifier, location, enable);

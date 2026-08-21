@@ -77,7 +77,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fDBBMDAddress
-    BACnetHostNPort fDBBMDAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetHostNPort) BACnetHostNPort.staticParse(readBuffer), readBuffer), WithOption.WithName("fDBBMDAddress"));
+    BACnetHostNPort fDBBMDAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetHostNPort.class, BACnetHostNPort.staticParse(readBuffer)), readBuffer), WithOption.WithName("fDBBMDAddress"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetHostNPort actualValue = FieldReaderFactory.readVirtualField(BACnetHostNPort.class, fDBBMDAddress, WithOption.WithName("actualValue"));

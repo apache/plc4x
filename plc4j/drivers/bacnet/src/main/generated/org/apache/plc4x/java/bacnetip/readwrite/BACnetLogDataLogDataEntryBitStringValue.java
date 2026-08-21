@@ -52,7 +52,7 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bitStringValue
-    BACnetContextTagBitString bitStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBitString) BACnetContextTagBitString.staticParse(readBuffer, (short) (5), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BIT_STRING)), readBuffer), WithOption.WithName("bitStringValue"));
+    BACnetContextTagBitString bitStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBitString.class, BACnetContextTagBitString.staticParse(readBuffer, (short) (5), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BIT_STRING))), readBuffer), WithOption.WithName("bitStringValue"));
 
     readBuffer.popContext();
     return new BACnetLogDataLogDataEntryBuilderImpl(bitStringValue);

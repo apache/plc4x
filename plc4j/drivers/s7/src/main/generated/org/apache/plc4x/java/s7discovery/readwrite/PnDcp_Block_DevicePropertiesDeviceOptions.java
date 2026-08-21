@@ -72,7 +72,7 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedInt(readBuffer, 16), (int) 0x0000, WithOption.WithName("PnDcp_Block_DevicePropertiesDeviceOptions.reserved0"));
 
     // Array Field: supportedOptions
-    List<PnDcp_SupportedDeviceOption> supportedOptions = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (PnDcp_SupportedDeviceOption) PnDcp_SupportedDeviceOption.staticParse(readBuffer), readBuffer), (blockLength) - (2), WithOption.WithName("supportedOptions"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnDcp_SupportedDeviceOption> supportedOptions = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnDcp_SupportedDeviceOption.class, PnDcp_SupportedDeviceOption.staticParse(readBuffer)), readBuffer), (blockLength) - (2), WithOption.WithName("supportedOptions"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnDcp_BlockBuilderImpl(supportedOptions);

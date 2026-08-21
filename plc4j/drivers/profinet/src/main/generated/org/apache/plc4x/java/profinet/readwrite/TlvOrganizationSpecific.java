@@ -60,7 +60,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: organizationSpecificUnit
-    TlvOrganizationSpecificUnit organizationSpecificUnit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TlvOrganizationSpecificUnit) TlvOrganizationSpecificUnit.staticParse(readBuffer), readBuffer), WithOption.WithName("organizationSpecificUnit"));
+    TlvOrganizationSpecificUnit organizationSpecificUnit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TlvOrganizationSpecificUnit.class, TlvOrganizationSpecificUnit.staticParse(readBuffer)), readBuffer), WithOption.WithName("organizationSpecificUnit"));
 
     readBuffer.popContext();
     return new LldpUnitBuilderImpl(organizationSpecificUnit);

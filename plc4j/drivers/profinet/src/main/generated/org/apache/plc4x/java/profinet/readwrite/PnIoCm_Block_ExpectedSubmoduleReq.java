@@ -94,7 +94,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     int numberOfApis = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numberOfApis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: apis
-    List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_ExpectedSubmoduleBlockReqApi) PnIoCm_ExpectedSubmoduleBlockReqApi.staticParse(readBuffer), readBuffer), numberOfApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_ExpectedSubmoduleBlockReqApi.class, PnIoCm_ExpectedSubmoduleBlockReqApi.staticParse(readBuffer)), readBuffer), numberOfApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, apis);

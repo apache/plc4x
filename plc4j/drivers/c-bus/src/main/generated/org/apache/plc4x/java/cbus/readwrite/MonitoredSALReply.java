@@ -53,7 +53,7 @@ public class MonitoredSALReply extends EncodedReply implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: monitoredSAL
-    MonitoredSAL monitoredSAL = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MonitoredSAL) MonitoredSAL.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions)), readBuffer), WithOption.WithName("monitoredSAL"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    MonitoredSAL monitoredSAL = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MonitoredSAL.class, MonitoredSAL.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions))), readBuffer), WithOption.WithName("monitoredSAL"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new EncodedReplyBuilderImpl(monitoredSAL);

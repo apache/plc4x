@@ -78,7 +78,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: maintenanceRequired
-    BACnetApplicationTagBoolean maintenanceRequired = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("maintenanceRequired"));
+    BACnetApplicationTagBoolean maintenanceRequired = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("maintenanceRequired"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, maintenanceRequired, WithOption.WithName("actualValue"));

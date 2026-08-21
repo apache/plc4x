@@ -83,16 +83,16 @@ public class BACnetEventNotificationSubscription implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: recipient
-    BACnetRecipientEnclosed recipient = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRecipientEnclosed) BACnetRecipientEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("recipient"));
+    BACnetRecipientEnclosed recipient = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRecipientEnclosed.class, BACnetRecipientEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("recipient"));
 
     // Simple Field: processIdentifier
-    BACnetContextTagUnsignedInteger processIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("processIdentifier"));
+    BACnetContextTagUnsignedInteger processIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("processIdentifier"));
 
     // Optional Field: issueConfirmedNotifications
-    BACnetContextTagBoolean issueConfirmedNotifications = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagBoolean) BACnetContextTagBoolean.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN)), readBuffer), WithOption.WithName("issueConfirmedNotifications"));
+    BACnetContextTagBoolean issueConfirmedNotifications = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBoolean.class, BACnetContextTagBoolean.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN))), readBuffer), WithOption.WithName("issueConfirmedNotifications"));
 
     // Simple Field: timeRemaining
-    BACnetContextTagUnsignedInteger timeRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("timeRemaining"));
+    BACnetContextTagUnsignedInteger timeRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("timeRemaining"));
 
     readBuffer.popContext();
     return new BACnetEventNotificationSubscription(recipient, processIdentifier, issueConfirmedNotifications, timeRemaining);

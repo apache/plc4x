@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lifeSafetyState
-    BACnetLifeSafetyStateTagged lifeSafetyState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLifeSafetyStateTagged) BACnetLifeSafetyStateTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("lifeSafetyState"));
+    BACnetLifeSafetyStateTagged lifeSafetyState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLifeSafetyStateTagged.class, BACnetLifeSafetyStateTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("lifeSafetyState"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(lifeSafetyState);

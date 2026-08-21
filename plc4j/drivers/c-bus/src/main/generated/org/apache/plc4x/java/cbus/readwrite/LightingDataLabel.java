@@ -85,7 +85,7 @@ public class LightingDataLabel extends LightingData implements Message {
     byte group = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("group"));
 
     // Simple Field: labelOptions
-    LightingLabelOptions labelOptions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LightingLabelOptions) LightingLabelOptions.staticParse(readBuffer), readBuffer), WithOption.WithName("labelOptions"));
+    LightingLabelOptions labelOptions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LightingLabelOptions.class, LightingLabelOptions.staticParse(readBuffer)), readBuffer), WithOption.WithName("labelOptions"));
 
     // Optional Field (conditional): language
     Language language = FieldReaderFactory.readOptionalField(DataReaderFactory.readEnum(Language::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), (labelOptions.getLabelType()) != (LightingLabelType.LOAD_DYNAMIC_ICON), WithOption.WithName("language"));

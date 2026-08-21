@@ -69,10 +69,10 @@ public class VTCloseError extends BACnetError implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: errorType
-    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("errorType"));
+    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("errorType"));
 
     // Optional Field: listOfVtSessionIdentifiers
-    VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (VTCloseErrorListOfVTSessionIdentifiers) VTCloseErrorListOfVTSessionIdentifiers.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("listOfVtSessionIdentifiers"));
+    VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(VTCloseErrorListOfVTSessionIdentifiers.class, VTCloseErrorListOfVTSessionIdentifiers.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("listOfVtSessionIdentifiers"));
 
     readBuffer.popContext();
     return new BACnetErrorBuilderImpl(errorType, listOfVtSessionIdentifiers);

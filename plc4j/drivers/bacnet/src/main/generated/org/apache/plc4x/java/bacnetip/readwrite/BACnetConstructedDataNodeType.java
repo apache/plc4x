@@ -77,7 +77,7 @@ public class BACnetConstructedDataNodeType extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nodeType
-    BACnetNodeTypeTagged nodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNodeTypeTagged) BACnetNodeTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("nodeType"));
+    BACnetNodeTypeTagged nodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNodeTypeTagged.class, BACnetNodeTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("nodeType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetNodeTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetNodeTypeTagged.class, nodeType, WithOption.WithName("actualValue"));

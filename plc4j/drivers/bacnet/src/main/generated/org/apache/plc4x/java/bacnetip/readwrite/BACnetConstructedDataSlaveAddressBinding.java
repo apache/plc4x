@@ -72,7 +72,7 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: slaveAddressBinding
-    List<BACnetAddressBinding> slaveAddressBinding = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetAddressBinding) BACnetAddressBinding.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("slaveAddressBinding"));
+    List<BACnetAddressBinding> slaveAddressBinding = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddressBinding.class, BACnetAddressBinding.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("slaveAddressBinding"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(slaveAddressBinding);

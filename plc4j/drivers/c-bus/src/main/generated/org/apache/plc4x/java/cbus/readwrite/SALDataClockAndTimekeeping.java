@@ -61,7 +61,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: clockAndTimekeepingData
-    ClockAndTimekeepingData clockAndTimekeepingData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ClockAndTimekeepingData) ClockAndTimekeepingData.staticParse(readBuffer), readBuffer), WithOption.WithName("clockAndTimekeepingData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ClockAndTimekeepingData clockAndTimekeepingData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ClockAndTimekeepingData.class, ClockAndTimekeepingData.staticParse(readBuffer)), readBuffer), WithOption.WithName("clockAndTimekeepingData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(clockAndTimekeepingData);

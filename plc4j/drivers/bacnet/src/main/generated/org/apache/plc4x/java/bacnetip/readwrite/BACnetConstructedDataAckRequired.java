@@ -78,7 +78,7 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ackRequired
-    BACnetEventTransitionBitsTagged ackRequired = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventTransitionBitsTagged) BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("ackRequired"));
+    BACnetEventTransitionBitsTagged ackRequired = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventTransitionBitsTagged.class, BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("ackRequired"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetEventTransitionBitsTagged actualValue = FieldReaderFactory.readVirtualField(BACnetEventTransitionBitsTagged.class, ackRequired, WithOption.WithName("actualValue"));

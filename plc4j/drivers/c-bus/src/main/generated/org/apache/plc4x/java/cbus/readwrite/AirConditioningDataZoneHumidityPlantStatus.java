@@ -97,13 +97,13 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     byte zoneGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("zoneGroup"));
 
     // Simple Field: zoneList
-    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACZoneList) HVACZoneList.staticParse(readBuffer), readBuffer), WithOption.WithName("zoneList"));
+    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACZoneList.class, HVACZoneList.staticParse(readBuffer)), readBuffer), WithOption.WithName("zoneList"));
 
     // Simple Field (enum): humidityType
     HVACHumidityType humidityType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(HVACHumidityType::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("humidityType"));
 
     // Simple Field: humidityStatus
-    HVACHumidityStatusFlags humidityStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACHumidityStatusFlags) HVACHumidityStatusFlags.staticParse(readBuffer), readBuffer), WithOption.WithName("humidityStatus"));
+    HVACHumidityStatusFlags humidityStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACHumidityStatusFlags.class, HVACHumidityStatusFlags.staticParse(readBuffer)), readBuffer), WithOption.WithName("humidityStatus"));
 
     // Simple Field (enum): humidityErrorCode
     HVACHumidityError humidityErrorCode = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(HVACHumidityError::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("humidityErrorCode"));

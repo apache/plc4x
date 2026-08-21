@@ -78,7 +78,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: priorityArray
-    BACnetPriorityArray priorityArray = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPriorityArray) BACnetPriorityArray.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (short) (tagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (arrayIndexArgument)), readBuffer), WithOption.WithName("priorityArray"));
+    BACnetPriorityArray priorityArray = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPriorityArray.class, BACnetPriorityArray.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (short) (tagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (arrayIndexArgument))), readBuffer), WithOption.WithName("priorityArray"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetPriorityArray actualValue = FieldReaderFactory.readVirtualField(BACnetPriorityArray.class, priorityArray, WithOption.WithName("actualValue"));

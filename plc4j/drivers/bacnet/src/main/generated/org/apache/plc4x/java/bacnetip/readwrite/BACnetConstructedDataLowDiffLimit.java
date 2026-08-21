@@ -78,7 +78,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lowDiffLimit
-    BACnetOptionalREAL lowDiffLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOptionalREAL) BACnetOptionalREAL.staticParse(readBuffer), readBuffer), WithOption.WithName("lowDiffLimit"));
+    BACnetOptionalREAL lowDiffLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOptionalREAL.class, BACnetOptionalREAL.staticParse(readBuffer)), readBuffer), WithOption.WithName("lowDiffLimit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetOptionalREAL actualValue = FieldReaderFactory.readVirtualField(BACnetOptionalREAL.class, lowDiffLimit, WithOption.WithName("actualValue"));

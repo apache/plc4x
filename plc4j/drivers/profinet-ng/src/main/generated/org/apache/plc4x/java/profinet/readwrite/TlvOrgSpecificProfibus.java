@@ -58,7 +58,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: specificUnit
-    TlvOrgSpecificProfibusUnit specificUnit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TlvOrgSpecificProfibusUnit) TlvOrgSpecificProfibusUnit.staticParse(readBuffer), readBuffer), WithOption.WithName("specificUnit"));
+    TlvOrgSpecificProfibusUnit specificUnit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TlvOrgSpecificProfibusUnit.class, TlvOrgSpecificProfibusUnit.staticParse(readBuffer)), readBuffer), WithOption.WithName("specificUnit"));
 
     readBuffer.popContext();
     return new TlvOrganizationSpecificUnitBuilderImpl(specificUnit);

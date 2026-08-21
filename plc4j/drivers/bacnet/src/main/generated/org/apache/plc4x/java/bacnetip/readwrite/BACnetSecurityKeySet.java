@@ -81,16 +81,16 @@ public class BACnetSecurityKeySet implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: keyRevision
-    BACnetContextTagUnsignedInteger keyRevision = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("keyRevision"));
+    BACnetContextTagUnsignedInteger keyRevision = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("keyRevision"));
 
     // Simple Field: activationTime
-    BACnetDateTimeEnclosed activationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("activationTime"));
+    BACnetDateTimeEnclosed activationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("activationTime"));
 
     // Simple Field: expirationTime
-    BACnetDateTimeEnclosed expirationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("expirationTime"));
+    BACnetDateTimeEnclosed expirationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("expirationTime"));
 
     // Simple Field: keyIds
-    BACnetSecurityKeySetKeyIds keyIds = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSecurityKeySetKeyIds) BACnetSecurityKeySetKeyIds.staticParse(readBuffer, (short) (3)), readBuffer), WithOption.WithName("keyIds"));
+    BACnetSecurityKeySetKeyIds keyIds = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSecurityKeySetKeyIds.class, BACnetSecurityKeySetKeyIds.staticParse(readBuffer, (short) (3))), readBuffer), WithOption.WithName("keyIds"));
 
     readBuffer.popContext();
     return new BACnetSecurityKeySet(keyRevision, activationTime, expirationTime, keyIds);

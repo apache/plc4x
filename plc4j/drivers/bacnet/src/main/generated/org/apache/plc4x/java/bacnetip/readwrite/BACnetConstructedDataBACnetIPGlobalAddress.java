@@ -78,7 +78,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bacnetIpGlobalAddress
-    BACnetHostNPort bacnetIpGlobalAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetHostNPort) BACnetHostNPort.staticParse(readBuffer), readBuffer), WithOption.WithName("bacnetIpGlobalAddress"));
+    BACnetHostNPort bacnetIpGlobalAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetHostNPort.class, BACnetHostNPort.staticParse(readBuffer)), readBuffer), WithOption.WithName("bacnetIpGlobalAddress"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetHostNPort actualValue = FieldReaderFactory.readVirtualField(BACnetHostNPort.class, bacnetIpGlobalAddress, WithOption.WithName("actualValue"));

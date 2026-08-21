@@ -82,13 +82,13 @@ public class InformationObjectWithoutTime_FILE_READY extends InformationObjectWi
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nof
-    NameOfFile nof = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NameOfFile) NameOfFile.staticParse(readBuffer), readBuffer), WithOption.WithName("nof"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NameOfFile nof = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NameOfFile.class, NameOfFile.staticParse(readBuffer)), readBuffer), WithOption.WithName("nof"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: lof
-    LengthOfFile lof = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LengthOfFile) LengthOfFile.staticParse(readBuffer), readBuffer), WithOption.WithName("lof"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    LengthOfFile lof = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LengthOfFile.class, LengthOfFile.staticParse(readBuffer)), readBuffer), WithOption.WithName("lof"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: frq
-    FileReadyQualifier frq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (FileReadyQualifier) FileReadyQualifier.staticParse(readBuffer), readBuffer), WithOption.WithName("frq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    FileReadyQualifier frq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(FileReadyQualifier.class, FileReadyQualifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("frq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(nof, lof, frq);

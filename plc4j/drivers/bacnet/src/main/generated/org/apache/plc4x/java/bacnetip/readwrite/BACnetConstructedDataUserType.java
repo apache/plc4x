@@ -77,7 +77,7 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: userType
-    BACnetAccessUserTypeTagged userType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessUserTypeTagged) BACnetAccessUserTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("userType"));
+    BACnetAccessUserTypeTagged userType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessUserTypeTagged.class, BACnetAccessUserTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("userType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccessUserTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAccessUserTypeTagged.class, userType, WithOption.WithName("actualValue"));

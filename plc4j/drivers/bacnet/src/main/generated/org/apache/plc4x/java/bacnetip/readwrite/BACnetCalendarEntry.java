@@ -59,7 +59,7 @@ public abstract class BACnetCalendarEntry implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Peek Field: peekedTagHeader
-    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("peekedTagHeader"));
+    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("peekedTagHeader"));
 
     // Virtual Field: peekedTagNumber (doesn't parse anything, just makes the value available)
     short peekedTagNumber = FieldReaderFactory.readVirtualField(short.class, peekedTagHeader.getActualTagNumber(), WithOption.WithName("peekedTagNumber"));

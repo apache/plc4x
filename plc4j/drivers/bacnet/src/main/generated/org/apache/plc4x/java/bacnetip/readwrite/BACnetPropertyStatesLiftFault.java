@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: liftFault
-    BACnetLiftFaultTagged liftFault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftFaultTagged) BACnetLiftFaultTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("liftFault"));
+    BACnetLiftFaultTagged liftFault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftFaultTagged.class, BACnetLiftFaultTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("liftFault"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(liftFault);

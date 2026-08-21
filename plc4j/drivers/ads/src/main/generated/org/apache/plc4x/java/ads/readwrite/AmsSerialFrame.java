@@ -125,7 +125,7 @@ public class AmsSerialFrame implements Message {
     byte length = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedByte(readBuffer, 8), WithOption.WithName("length"));
 
     // Simple Field: userdata
-    AmsPacket userdata = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsPacket) AmsPacket.staticParse(readBuffer), readBuffer), WithOption.WithName("userdata"));
+    AmsPacket userdata = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsPacket.class, AmsPacket.staticParse(readBuffer)), readBuffer), WithOption.WithName("userdata"));
 
     // Simple Field: crc
     int crc = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("crc"));

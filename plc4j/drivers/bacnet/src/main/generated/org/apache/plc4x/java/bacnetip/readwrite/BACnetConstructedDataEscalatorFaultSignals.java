@@ -72,7 +72,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: faultSignals
-    List<BACnetEscalatorFaultTagged> faultSignals = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetEscalatorFaultTagged) BACnetEscalatorFaultTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("faultSignals"));
+    List<BACnetEscalatorFaultTagged> faultSignals = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEscalatorFaultTagged.class, BACnetEscalatorFaultTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("faultSignals"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(faultSignals);

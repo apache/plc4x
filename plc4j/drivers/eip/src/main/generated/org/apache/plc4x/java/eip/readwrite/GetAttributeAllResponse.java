@@ -61,7 +61,7 @@ public class GetAttributeAllResponse extends CipServiceResponse implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field (conditional): attributes
-    CIPAttributes attributes = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (CIPAttributes) CIPAttributes.staticParse(readBuffer, (int) (((serviceLen) - (4)) - (((2) * (extStatusSize))))), readBuffer), ((((serviceLen) - (4)) - (((2) * (extStatusSize))))) > (0), WithOption.WithName("attributes"));
+    CIPAttributes attributes = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CIPAttributes.class, CIPAttributes.staticParse(readBuffer, (int) (((serviceLen) - (4)) - (((2) * (extStatusSize)))))), readBuffer), ((((serviceLen) - (4)) - (((2) * (extStatusSize))))) > (0), WithOption.WithName("attributes"));
 
     readBuffer.popContext();
     return new CipServiceResponseBuilderImpl(attributes);

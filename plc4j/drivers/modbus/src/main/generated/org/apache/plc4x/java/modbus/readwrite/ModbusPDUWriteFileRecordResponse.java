@@ -79,7 +79,7 @@ public class ModbusPDUWriteFileRecordResponse extends ModbusPDU implements Messa
     short byteCount = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("byteCount"));
 
     // Array Field: items
-    List<ModbusPDUWriteFileRecordResponseItem> items = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (ModbusPDUWriteFileRecordResponseItem) ModbusPDUWriteFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount, WithOption.WithName("items"));
+    List<ModbusPDUWriteFileRecordResponseItem> items = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ModbusPDUWriteFileRecordResponseItem.class, ModbusPDUWriteFileRecordResponseItem.staticParse(readBuffer)), readBuffer), byteCount, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new ModbusPDUBuilderImpl(items);

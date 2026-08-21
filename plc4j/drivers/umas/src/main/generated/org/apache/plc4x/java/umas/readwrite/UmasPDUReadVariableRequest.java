@@ -96,7 +96,7 @@ public class UmasPDUReadVariableRequest extends UmasPDUItem implements Message {
     short variableCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("variableCount"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     // Array Field: variables
-    List<VariableReadRequestReference> variables = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (VariableReadRequestReference) VariableReadRequestReference.staticParse(readBuffer), readBuffer), variableCount, WithOption.WithName("variables"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+    List<VariableReadRequestReference> variables = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(VariableReadRequestReference.class, VariableReadRequestReference.staticParse(readBuffer)), readBuffer), variableCount, WithOption.WithName("variables"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     readBuffer.popContext();
     return new UmasPDUItemBuilderImpl(crc, variableCount, variables);

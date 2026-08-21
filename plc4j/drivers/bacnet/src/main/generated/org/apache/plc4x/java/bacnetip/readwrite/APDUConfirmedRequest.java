@@ -209,7 +209,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     int apduHeaderReduction = FieldReaderFactory.readVirtualField(int.class, (3) + ((((segmentedMessage) ? 2 : 0))), WithOption.WithName("apduHeaderReduction"));
 
     // Optional Field (conditional): serviceRequest
-    BACnetConfirmedServiceRequest serviceRequest = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequest) BACnetConfirmedServiceRequest.staticParse(readBuffer, (long) ((apduLength) - (apduHeaderReduction))), readBuffer), !(segmentedMessage), WithOption.WithName("serviceRequest"));
+    BACnetConfirmedServiceRequest serviceRequest = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequest.class, BACnetConfirmedServiceRequest.staticParse(readBuffer, (long) ((apduLength) - (apduHeaderReduction)))), readBuffer), !(segmentedMessage), WithOption.WithName("serviceRequest"));
 
     // Validation Field
     if(!((((!(segmentedMessage)) && ((serviceRequest) != (null)))) || (segmentedMessage))) {

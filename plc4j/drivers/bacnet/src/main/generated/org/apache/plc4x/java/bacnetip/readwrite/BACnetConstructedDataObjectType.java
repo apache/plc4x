@@ -78,7 +78,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectType
-    BACnetObjectTypeTagged objectType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetObjectTypeTagged) BACnetObjectTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("objectType"));
+    BACnetObjectTypeTagged objectType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetObjectTypeTagged.class, BACnetObjectTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("objectType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetObjectTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetObjectTypeTagged.class, objectType, WithOption.WithName("actualValue"));

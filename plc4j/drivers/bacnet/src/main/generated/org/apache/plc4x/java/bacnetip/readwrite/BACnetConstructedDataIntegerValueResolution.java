@@ -78,7 +78,7 @@ public class BACnetConstructedDataIntegerValueResolution extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: resolution
-    BACnetApplicationTagSignedInteger resolution = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("resolution"));
+    BACnetApplicationTagSignedInteger resolution = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("resolution"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagSignedInteger.class, resolution, WithOption.WithName("actualValue"));

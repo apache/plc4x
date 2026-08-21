@@ -78,7 +78,7 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: threatAuthority
-    BACnetAccessThreatLevel threatAuthority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessThreatLevel) BACnetAccessThreatLevel.staticParse(readBuffer), readBuffer), WithOption.WithName("threatAuthority"));
+    BACnetAccessThreatLevel threatAuthority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessThreatLevel.class, BACnetAccessThreatLevel.staticParse(readBuffer)), readBuffer), WithOption.WithName("threatAuthority"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccessThreatLevel actualValue = FieldReaderFactory.readVirtualField(BACnetAccessThreatLevel.class, threatAuthority, WithOption.WithName("actualValue"));

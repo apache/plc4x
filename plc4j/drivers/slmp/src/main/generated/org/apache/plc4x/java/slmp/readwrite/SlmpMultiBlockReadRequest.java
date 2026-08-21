@@ -96,10 +96,10 @@ public class SlmpMultiBlockReadRequest extends SlmpRequestData implements Messag
     short numberOfBitDeviceBlocks = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfBitDeviceBlocks"));
 
     // Array Field: wordDeviceBlocks
-    List<SlmpDeviceBlock> wordDeviceBlocks = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SlmpDeviceBlock) SlmpDeviceBlock.staticParse(readBuffer), readBuffer), numberOfWordDeviceBlocks, WithOption.WithName("wordDeviceBlocks"));
+    List<SlmpDeviceBlock> wordDeviceBlocks = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SlmpDeviceBlock.class, SlmpDeviceBlock.staticParse(readBuffer)), readBuffer), numberOfWordDeviceBlocks, WithOption.WithName("wordDeviceBlocks"));
 
     // Array Field: bitDeviceBlocks
-    List<SlmpDeviceBlock> bitDeviceBlocks = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SlmpDeviceBlock) SlmpDeviceBlock.staticParse(readBuffer), readBuffer), numberOfBitDeviceBlocks, WithOption.WithName("bitDeviceBlocks"));
+    List<SlmpDeviceBlock> bitDeviceBlocks = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SlmpDeviceBlock.class, SlmpDeviceBlock.staticParse(readBuffer)), readBuffer), numberOfBitDeviceBlocks, WithOption.WithName("bitDeviceBlocks"));
 
     readBuffer.popContext();
     return new SlmpRequestDataBuilderImpl(numberOfWordDeviceBlocks, numberOfBitDeviceBlocks, wordDeviceBlocks, bitDeviceBlocks);

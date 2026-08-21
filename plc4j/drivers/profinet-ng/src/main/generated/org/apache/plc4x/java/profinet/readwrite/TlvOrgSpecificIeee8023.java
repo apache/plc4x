@@ -58,7 +58,7 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: specificUnit
-    TlvOrgSpecificIeee8023Unit specificUnit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TlvOrgSpecificIeee8023Unit) TlvOrgSpecificIeee8023Unit.staticParse(readBuffer), readBuffer), WithOption.WithName("specificUnit"));
+    TlvOrgSpecificIeee8023Unit specificUnit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TlvOrgSpecificIeee8023Unit.class, TlvOrgSpecificIeee8023Unit.staticParse(readBuffer)), readBuffer), WithOption.WithName("specificUnit"));
 
     readBuffer.popContext();
     return new TlvOrganizationSpecificUnitBuilderImpl(specificUnit);

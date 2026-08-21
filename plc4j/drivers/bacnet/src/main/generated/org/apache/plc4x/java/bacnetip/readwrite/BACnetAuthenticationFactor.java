@@ -71,13 +71,13 @@ public class BACnetAuthenticationFactor implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: formatType
-    BACnetAuthenticationFactorTypeTagged formatType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("formatType"));
+    BACnetAuthenticationFactorTypeTagged formatType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationFactorTypeTagged.class, BACnetAuthenticationFactorTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("formatType"));
 
     // Simple Field: formatClass
-    BACnetContextTagUnsignedInteger formatClass = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("formatClass"));
+    BACnetContextTagUnsignedInteger formatClass = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("formatClass"));
 
     // Simple Field: value
-    BACnetContextTagOctetString value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagOctetString) BACnetContextTagOctetString.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING)), readBuffer), WithOption.WithName("value"));
+    BACnetContextTagOctetString value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagOctetString.class, BACnetContextTagOctetString.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING))), readBuffer), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new BACnetAuthenticationFactor(formatType, formatClass, value);

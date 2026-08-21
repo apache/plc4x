@@ -52,7 +52,7 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: programChange
-    BACnetProgramRequestTagged programChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProgramRequestTagged) BACnetProgramRequestTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("programChange"));
+    BACnetProgramRequestTagged programChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProgramRequestTagged.class, BACnetProgramRequestTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("programChange"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(programChange);

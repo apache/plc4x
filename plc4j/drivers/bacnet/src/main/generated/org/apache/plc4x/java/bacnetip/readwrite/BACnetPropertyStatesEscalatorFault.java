@@ -52,7 +52,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: escalatorFault
-    BACnetEscalatorFaultTagged escalatorFault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEscalatorFaultTagged) BACnetEscalatorFaultTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("escalatorFault"));
+    BACnetEscalatorFaultTagged escalatorFault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEscalatorFaultTagged.class, BACnetEscalatorFaultTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("escalatorFault"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(escalatorFault);

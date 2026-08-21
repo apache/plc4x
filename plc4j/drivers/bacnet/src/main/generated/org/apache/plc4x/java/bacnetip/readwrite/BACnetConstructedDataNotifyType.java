@@ -78,7 +78,7 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: notifyType
-    BACnetNotifyTypeTagged notifyType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNotifyTypeTagged) BACnetNotifyTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("notifyType"));
+    BACnetNotifyTypeTagged notifyType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNotifyTypeTagged.class, BACnetNotifyTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("notifyType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetNotifyTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetNotifyTypeTagged.class, notifyType, WithOption.WithName("actualValue"));

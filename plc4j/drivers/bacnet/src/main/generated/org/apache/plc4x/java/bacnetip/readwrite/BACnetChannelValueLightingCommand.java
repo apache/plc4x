@@ -52,7 +52,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ligthingCommandValue
-    BACnetLightingCommandEnclosed ligthingCommandValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingCommandEnclosed) BACnetLightingCommandEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("ligthingCommandValue"));
+    BACnetLightingCommandEnclosed ligthingCommandValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingCommandEnclosed.class, BACnetLightingCommandEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("ligthingCommandValue"));
 
     readBuffer.popContext();
     return new BACnetChannelValueBuilderImpl(ligthingCommandValue);

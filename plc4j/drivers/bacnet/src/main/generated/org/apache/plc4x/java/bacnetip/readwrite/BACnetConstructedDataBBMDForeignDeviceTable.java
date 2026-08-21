@@ -72,7 +72,7 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: bbmdForeignDeviceTable
-    List<BACnetBDTEntry> bbmdForeignDeviceTable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetBDTEntry) BACnetBDTEntry.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("bbmdForeignDeviceTable"));
+    List<BACnetBDTEntry> bbmdForeignDeviceTable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetBDTEntry.class, BACnetBDTEntry.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("bbmdForeignDeviceTable"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(bbmdForeignDeviceTable);

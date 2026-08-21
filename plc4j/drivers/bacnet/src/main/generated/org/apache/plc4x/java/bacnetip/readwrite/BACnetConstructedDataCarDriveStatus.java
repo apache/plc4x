@@ -78,7 +78,7 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: carDriveStatus
-    BACnetLiftCarDriveStatusTagged carDriveStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftCarDriveStatusTagged) BACnetLiftCarDriveStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("carDriveStatus"));
+    BACnetLiftCarDriveStatusTagged carDriveStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarDriveStatusTagged.class, BACnetLiftCarDriveStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("carDriveStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLiftCarDriveStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLiftCarDriveStatusTagged.class, carDriveStatus, WithOption.WithName("actualValue"));

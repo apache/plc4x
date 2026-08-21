@@ -228,7 +228,7 @@ public class UmasPDUPlcIdentResponse extends UmasPDUItem implements Message {
     short numberOfMemoryBanks = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfMemoryBanks"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     // Array Field: memoryIdents
-    List<PlcMemoryBlockIdent> memoryIdents = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PlcMemoryBlockIdent) PlcMemoryBlockIdent.staticParse(readBuffer), readBuffer), numberOfMemoryBanks, WithOption.WithName("memoryIdents"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+    List<PlcMemoryBlockIdent> memoryIdents = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PlcMemoryBlockIdent.class, PlcMemoryBlockIdent.staticParse(readBuffer)), readBuffer), numberOfMemoryBanks, WithOption.WithName("memoryIdents"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     readBuffer.popContext();
     return new UmasPDUItemBuilderImpl(range, ident, model, comVersion, comPatch, intVersion, hardwareVersion, crashCode, unknown1, hostnameLength, hostname, numberOfMemoryBanks, memoryIdents);

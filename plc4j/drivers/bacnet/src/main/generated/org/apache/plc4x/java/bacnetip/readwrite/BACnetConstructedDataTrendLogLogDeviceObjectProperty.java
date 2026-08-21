@@ -78,7 +78,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: logDeviceObjectProperty
-    BACnetDeviceObjectPropertyReference logDeviceObjectProperty = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReference) BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer), WithOption.WithName("logDeviceObjectProperty"));
+    BACnetDeviceObjectPropertyReference logDeviceObjectProperty = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReference.class, BACnetDeviceObjectPropertyReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("logDeviceObjectProperty"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectPropertyReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectPropertyReference.class, logDeviceObjectProperty, WithOption.WithName("actualValue"));

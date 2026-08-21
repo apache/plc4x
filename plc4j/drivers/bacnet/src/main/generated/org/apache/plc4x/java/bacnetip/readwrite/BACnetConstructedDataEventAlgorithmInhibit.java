@@ -78,7 +78,7 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: eventAlgorithmInhibit
-    BACnetApplicationTagBoolean eventAlgorithmInhibit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("eventAlgorithmInhibit"));
+    BACnetApplicationTagBoolean eventAlgorithmInhibit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("eventAlgorithmInhibit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, eventAlgorithmInhibit, WithOption.WithName("actualValue"));

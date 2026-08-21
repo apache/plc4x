@@ -157,19 +157,19 @@ public class AlarmMessageObjectPushType implements Message {
     long eventId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("eventId"));
 
     // Simple Field: eventState
-    State eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("eventState"));
+    State eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("eventState"));
 
     // Simple Field: localState
-    State localState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("localState"));
+    State localState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("localState"));
 
     // Simple Field: ackStateGoing
-    State ackStateGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("ackStateGoing"));
+    State ackStateGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("ackStateGoing"));
 
     // Simple Field: ackStateComing
-    State ackStateComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("ackStateComing"));
+    State ackStateComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("ackStateComing"));
 
     // Array Field: AssociatedValues
-    List<AssociatedValueType> AssociatedValues = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AssociatedValueType) AssociatedValueType.staticParse(readBuffer), readBuffer), numberOfValues, WithOption.WithName("AssociatedValues"));
+    List<AssociatedValueType> AssociatedValues = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AssociatedValueType.class, AssociatedValueType.staticParse(readBuffer)), readBuffer), numberOfValues, WithOption.WithName("AssociatedValues"));
 
     readBuffer.popContext();
     return new AlarmMessageObjectPushType(lengthSpec, syntaxId, numberOfValues, eventId, eventState, localState, ackStateGoing, ackStateComing, AssociatedValues);

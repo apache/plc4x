@@ -150,7 +150,7 @@ public class SlmpRequestFrame3E extends SlmpMessage implements Message {
     int subCommand = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("subCommand"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: requestData
-    SlmpRequestData requestData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SlmpRequestData) SlmpRequestData.staticParse(readBuffer, (int) (command)), readBuffer), WithOption.WithName("requestData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    SlmpRequestData requestData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SlmpRequestData.class, SlmpRequestData.staticParse(readBuffer, (int) (command))), readBuffer), WithOption.WithName("requestData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SlmpMessageBuilderImpl(monitoringTimer, command, subCommand, requestData);

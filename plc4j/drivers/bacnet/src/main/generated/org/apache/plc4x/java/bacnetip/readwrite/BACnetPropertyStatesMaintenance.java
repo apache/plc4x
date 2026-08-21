@@ -52,7 +52,7 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: maintenance
-    BACnetMaintenanceTagged maintenance = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetMaintenanceTagged) BACnetMaintenanceTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("maintenance"));
+    BACnetMaintenanceTagged maintenance = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetMaintenanceTagged.class, BACnetMaintenanceTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("maintenance"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(maintenance);

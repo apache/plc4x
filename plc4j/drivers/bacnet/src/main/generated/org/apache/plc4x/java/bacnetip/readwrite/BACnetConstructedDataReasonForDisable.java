@@ -72,7 +72,7 @@ public class BACnetConstructedDataReasonForDisable extends BACnetConstructedData
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: reasonForDisable
-    List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetAccessCredentialDisableReasonTagged) BACnetAccessCredentialDisableReasonTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("reasonForDisable"));
+    List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessCredentialDisableReasonTagged.class, BACnetAccessCredentialDisableReasonTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("reasonForDisable"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(reasonForDisable);

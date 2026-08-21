@@ -78,7 +78,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bbmdAcceptFDRegistrations
-    BACnetApplicationTagBoolean bbmdAcceptFDRegistrations = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("bbmdAcceptFDRegistrations"));
+    BACnetApplicationTagBoolean bbmdAcceptFDRegistrations = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("bbmdAcceptFDRegistrations"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, bbmdAcceptFDRegistrations, WithOption.WithName("actualValue"));

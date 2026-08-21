@@ -59,7 +59,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: value
-    CustomManufacturer value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CustomManufacturer) CustomManufacturer.staticParse(readBuffer, (short) (numBytes)), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CustomManufacturer value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CustomManufacturer.class, CustomManufacturer.staticParse(readBuffer, (short) (numBytes))), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ParameterValueBuilderImpl(value);

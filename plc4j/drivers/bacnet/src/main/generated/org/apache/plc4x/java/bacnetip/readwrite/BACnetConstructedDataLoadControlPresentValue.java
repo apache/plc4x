@@ -78,7 +78,7 @@ public class BACnetConstructedDataLoadControlPresentValue extends BACnetConstruc
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetShedStateTagged presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetShedStateTagged) BACnetShedStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("presentValue"));
+    BACnetShedStateTagged presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetShedStateTagged.class, BACnetShedStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetShedStateTagged actualValue = FieldReaderFactory.readVirtualField(BACnetShedStateTagged.class, presentValue, WithOption.WithName("actualValue"));

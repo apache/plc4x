@@ -52,7 +52,7 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: zoneStatus
-    List<ZoneStatus> zoneStatus = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ZoneStatus) ZoneStatus.staticParse(readBuffer), readBuffer), 48, WithOption.WithName("zoneStatus"));
+    List<ZoneStatus> zoneStatus = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ZoneStatus.class, ZoneStatus.staticParse(readBuffer)), readBuffer), 48, WithOption.WithName("zoneStatus"));
 
     readBuffer.popContext();
     return new SecurityDataBuilderImpl(zoneStatus);

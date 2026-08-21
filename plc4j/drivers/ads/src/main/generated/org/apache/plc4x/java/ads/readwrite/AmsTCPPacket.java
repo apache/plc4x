@@ -56,7 +56,7 @@ public class AmsTCPPacket implements Message {
     long length = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("length"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: userdata
-    AmsPacket userdata = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsPacket) AmsPacket.staticParse(readBuffer), readBuffer), WithOption.WithName("userdata"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    AmsPacket userdata = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsPacket.class, AmsPacket.staticParse(readBuffer)), readBuffer), WithOption.WithName("userdata"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new AmsTCPPacket(userdata);

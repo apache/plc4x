@@ -69,10 +69,10 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization extends BACne
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: synchronizedDate
-    BACnetApplicationTagDate synchronizedDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), WithOption.WithName("synchronizedDate"));
+    BACnetApplicationTagDate synchronizedDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("synchronizedDate"));
 
     // Simple Field: synchronizedTime
-    BACnetApplicationTagTime synchronizedTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("synchronizedTime"));
+    BACnetApplicationTagTime synchronizedTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("synchronizedTime"));
 
     readBuffer.popContext();
     return new BACnetUnconfirmedServiceRequestBuilderImpl(synchronizedDate, synchronizedTime);

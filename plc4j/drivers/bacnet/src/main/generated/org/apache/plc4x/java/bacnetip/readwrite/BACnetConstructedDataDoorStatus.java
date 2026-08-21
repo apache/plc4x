@@ -78,7 +78,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: doorStatus
-    BACnetDoorStatusTagged doorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDoorStatusTagged) BACnetDoorStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("doorStatus"));
+    BACnetDoorStatusTagged doorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDoorStatusTagged.class, BACnetDoorStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("doorStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDoorStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetDoorStatusTagged.class, doorStatus, WithOption.WithName("actualValue"));

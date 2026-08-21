@@ -63,7 +63,7 @@ public class TargetVariablesDataType extends ExtensionObjectDefinition implement
     int noOfTargetVariables = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfTargetVariables"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: targetVariables
-    List<FieldTargetDataType> targetVariables = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (FieldTargetDataType) FieldTargetDataType.staticParse(readBuffer, (int) (14746)), readBuffer), noOfTargetVariables, WithOption.WithName("targetVariables"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<FieldTargetDataType> targetVariables = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(FieldTargetDataType.class, FieldTargetDataType.staticParse(readBuffer, (int) (14746))), readBuffer), noOfTargetVariables, WithOption.WithName("targetVariables"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(targetVariables);

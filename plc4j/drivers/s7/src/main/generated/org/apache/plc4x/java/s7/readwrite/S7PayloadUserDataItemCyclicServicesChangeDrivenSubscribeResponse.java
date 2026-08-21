@@ -92,7 +92,7 @@ public class S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse ex
     int itemsCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("itemsCount"));
 
     // Array Field: items
-    List<AssociatedQueryValueType> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AssociatedQueryValueType) AssociatedQueryValueType.staticParse(readBuffer), readBuffer), itemsCount, WithOption.WithName("items"));
+    List<AssociatedQueryValueType> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AssociatedQueryValueType.class, AssociatedQueryValueType.staticParse(readBuffer)), readBuffer), itemsCount, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(itemsCount, items);

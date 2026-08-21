@@ -77,7 +77,7 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: silenced
-    BACnetSilencedStateTagged silenced = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSilencedStateTagged) BACnetSilencedStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("silenced"));
+    BACnetSilencedStateTagged silenced = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSilencedStateTagged.class, BACnetSilencedStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("silenced"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetSilencedStateTagged actualValue = FieldReaderFactory.readVirtualField(BACnetSilencedStateTagged.class, silenced, WithOption.WithName("actualValue"));

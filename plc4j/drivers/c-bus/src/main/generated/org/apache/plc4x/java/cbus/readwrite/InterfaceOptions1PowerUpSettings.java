@@ -51,7 +51,7 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: interfaceOptions1
-    InterfaceOptions1 interfaceOptions1 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (InterfaceOptions1) InterfaceOptions1.staticParse(readBuffer), readBuffer), WithOption.WithName("interfaceOptions1"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    InterfaceOptions1 interfaceOptions1 = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(InterfaceOptions1.class, InterfaceOptions1.staticParse(readBuffer)), readBuffer), WithOption.WithName("interfaceOptions1"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InterfaceOptions1PowerUpSettings(interfaceOptions1);

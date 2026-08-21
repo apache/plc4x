@@ -124,7 +124,7 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
     long writeLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("writeLength"));
 
     // Array Field: items
-    List<AdsMultiRequestItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsMultiRequestItem) AdsMultiRequestItem.staticParse(readBuffer, (long) (indexGroup)), readBuffer), (((((((indexGroup) == (61568))) || (((indexGroup) == (61569)))) || (((indexGroup) == (61570))))) ? indexOffset : 0), WithOption.WithName("items"));
+    List<AdsMultiRequestItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsMultiRequestItem.class, AdsMultiRequestItem.staticParse(readBuffer, (long) (indexGroup))), readBuffer), (((((((indexGroup) == (61568))) || (((indexGroup) == (61569)))) || (((indexGroup) == (61570))))) ? indexOffset : 0), WithOption.WithName("items"));
 
     // Array Field: data
     byte[] data = readBuffer.readBits(Math.toIntExact(((writeLength) - (((StaticHelper.COUNT(items)) * (12)))) * 8), WithOption.WithName("data"));

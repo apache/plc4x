@@ -65,7 +65,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
     }
 
     // Simple Field: value
-    InterfaceOptions1PowerUpSettings value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (InterfaceOptions1PowerUpSettings) InterfaceOptions1PowerUpSettings.staticParse(readBuffer), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    InterfaceOptions1PowerUpSettings value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(InterfaceOptions1PowerUpSettings.class, InterfaceOptions1PowerUpSettings.staticParse(readBuffer)), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ParameterValueBuilderImpl(value);

@@ -54,7 +54,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError extends B
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: propertyAccessError
-    ErrorEnclosed propertyAccessError = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer), WithOption.WithName("propertyAccessError"));
+    ErrorEnclosed propertyAccessError = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (5))), readBuffer), WithOption.WithName("propertyAccessError"));
 
     readBuffer.popContext();
     return new BACnetPropertyAccessResultAccessResultBuilderImpl(propertyAccessError);

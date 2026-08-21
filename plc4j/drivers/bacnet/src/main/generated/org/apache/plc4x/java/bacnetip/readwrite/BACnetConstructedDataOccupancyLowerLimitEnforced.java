@@ -78,7 +78,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: occupancyLowerLimitEnforced
-    BACnetApplicationTagBoolean occupancyLowerLimitEnforced = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("occupancyLowerLimitEnforced"));
+    BACnetApplicationTagBoolean occupancyLowerLimitEnforced = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("occupancyLowerLimitEnforced"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, occupancyLowerLimitEnforced, WithOption.WithName("actualValue"));

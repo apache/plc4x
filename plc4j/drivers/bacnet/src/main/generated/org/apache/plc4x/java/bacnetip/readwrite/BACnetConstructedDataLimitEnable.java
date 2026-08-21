@@ -78,7 +78,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: limitEnable
-    BACnetLimitEnableTagged limitEnable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLimitEnableTagged) BACnetLimitEnableTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("limitEnable"));
+    BACnetLimitEnableTagged limitEnable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLimitEnableTagged.class, BACnetLimitEnableTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("limitEnable"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLimitEnableTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLimitEnableTagged.class, limitEnable, WithOption.WithName("actualValue"));

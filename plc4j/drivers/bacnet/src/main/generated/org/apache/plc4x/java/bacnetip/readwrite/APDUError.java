@@ -90,7 +90,7 @@ public class APDUError extends APDU implements Message {
     BACnetConfirmedServiceChoice errorChoice = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(BACnetConfirmedServiceChoice::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("errorChoice"));
 
     // Simple Field: error
-    BACnetError error = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetError) BACnetError.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceChoice) (errorChoice)), readBuffer), WithOption.WithName("error"));
+    BACnetError error = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetError.class, BACnetError.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceChoice) (errorChoice))), readBuffer), WithOption.WithName("error"));
 
     readBuffer.popContext();
     return new APDUBuilderImpl(originalInvokeId, errorChoice, error);

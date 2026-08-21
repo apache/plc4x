@@ -75,7 +75,7 @@ public class ErrorReportingSystemCategory implements Message {
     ErrorReportingSystemCategoryClass systemCategoryClass = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(ErrorReportingSystemCategoryClass::enumForValue, DataReaderFactory.readUnsignedByte(readBuffer, 4)), WithOption.WithName("systemCategoryClass"));
 
     // Simple Field: systemCategoryType
-    ErrorReportingSystemCategoryType systemCategoryType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorReportingSystemCategoryType) ErrorReportingSystemCategoryType.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.ErrorReportingSystemCategoryClass) (systemCategoryClass)), readBuffer), WithOption.WithName("systemCategoryType"));
+    ErrorReportingSystemCategoryType systemCategoryType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorReportingSystemCategoryType.class, ErrorReportingSystemCategoryType.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.ErrorReportingSystemCategoryClass) (systemCategoryClass))), readBuffer), WithOption.WithName("systemCategoryType"));
 
     // Simple Field (enum): systemCategoryVariant
     ErrorReportingSystemCategoryVariant systemCategoryVariant = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(ErrorReportingSystemCategoryVariant::enumForValue, DataReaderFactory.readUnsignedByte(readBuffer, 2)), WithOption.WithName("systemCategoryVariant"));

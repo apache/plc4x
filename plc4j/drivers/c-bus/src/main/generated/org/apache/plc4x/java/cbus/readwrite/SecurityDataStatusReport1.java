@@ -84,16 +84,16 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: armCodeType
-    SecurityArmCode armCodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SecurityArmCode) SecurityArmCode.staticParse(readBuffer), readBuffer), WithOption.WithName("armCodeType"));
+    SecurityArmCode armCodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SecurityArmCode.class, SecurityArmCode.staticParse(readBuffer)), readBuffer), WithOption.WithName("armCodeType"));
 
     // Simple Field: tamperStatus
-    TamperStatus tamperStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TamperStatus) TamperStatus.staticParse(readBuffer), readBuffer), WithOption.WithName("tamperStatus"));
+    TamperStatus tamperStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TamperStatus.class, TamperStatus.staticParse(readBuffer)), readBuffer), WithOption.WithName("tamperStatus"));
 
     // Simple Field: panicStatus
-    PanicStatus panicStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PanicStatus) PanicStatus.staticParse(readBuffer), readBuffer), WithOption.WithName("panicStatus"));
+    PanicStatus panicStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PanicStatus.class, PanicStatus.staticParse(readBuffer)), readBuffer), WithOption.WithName("panicStatus"));
 
     // Array Field: zoneStatus
-    List<ZoneStatus> zoneStatus = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ZoneStatus) ZoneStatus.staticParse(readBuffer), readBuffer), 32, WithOption.WithName("zoneStatus"));
+    List<ZoneStatus> zoneStatus = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ZoneStatus.class, ZoneStatus.staticParse(readBuffer)), readBuffer), 32, WithOption.WithName("zoneStatus"));
 
     readBuffer.popContext();
     return new SecurityDataBuilderImpl(armCodeType, tamperStatus, panicStatus, zoneStatus);

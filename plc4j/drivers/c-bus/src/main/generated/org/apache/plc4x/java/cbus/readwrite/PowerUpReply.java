@@ -52,7 +52,7 @@ public class PowerUpReply extends Reply implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: powerUpIndicator
-    PowerUp powerUpIndicator = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PowerUp) PowerUp.staticParse(readBuffer), readBuffer), WithOption.WithName("powerUpIndicator"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    PowerUp powerUpIndicator = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PowerUp.class, PowerUp.staticParse(readBuffer)), readBuffer), WithOption.WithName("powerUpIndicator"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ReplyBuilderImpl(powerUpIndicator);

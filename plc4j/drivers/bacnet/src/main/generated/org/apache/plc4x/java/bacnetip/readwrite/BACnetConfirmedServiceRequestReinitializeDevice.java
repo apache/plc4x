@@ -72,10 +72,10 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reinitializedStateOfDevice
-    BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged reinitializedStateOfDevice = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("reinitializedStateOfDevice"));
+    BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged reinitializedStateOfDevice = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged.class, BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("reinitializedStateOfDevice"));
 
     // Optional Field: password
-    BACnetContextTagCharacterString password = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("password"));
+    BACnetContextTagCharacterString password = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("password"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(reinitializedStateOfDevice, password);

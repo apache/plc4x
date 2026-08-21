@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: booleanValue
-    BACnetApplicationTagBoolean booleanValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("booleanValue"));
+    BACnetApplicationTagBoolean booleanValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("booleanValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(booleanValue);

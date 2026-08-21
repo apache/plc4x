@@ -78,7 +78,7 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: protocolLevel
-    BACnetProtocolLevelTagged protocolLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProtocolLevelTagged) BACnetProtocolLevelTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("protocolLevel"));
+    BACnetProtocolLevelTagged protocolLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProtocolLevelTagged.class, BACnetProtocolLevelTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("protocolLevel"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetProtocolLevelTagged actualValue = FieldReaderFactory.readVirtualField(BACnetProtocolLevelTagged.class, protocolLevel, WithOption.WithName("actualValue"));

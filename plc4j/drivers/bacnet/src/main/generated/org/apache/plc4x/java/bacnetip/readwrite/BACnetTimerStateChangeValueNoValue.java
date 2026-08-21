@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: noValue
-    BACnetContextTagNull noValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagNull) BACnetContextTagNull.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.NULL)), readBuffer), WithOption.WithName("noValue"));
+    BACnetContextTagNull noValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagNull.class, BACnetContextTagNull.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.NULL))), readBuffer), WithOption.WithName("noValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(noValue);

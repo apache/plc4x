@@ -78,7 +78,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: credentialDisable
-    BACnetAccessCredentialDisableTagged credentialDisable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessCredentialDisableTagged) BACnetAccessCredentialDisableTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("credentialDisable"));
+    BACnetAccessCredentialDisableTagged credentialDisable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessCredentialDisableTagged.class, BACnetAccessCredentialDisableTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("credentialDisable"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccessCredentialDisableTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAccessCredentialDisableTagged.class, credentialDisable, WithOption.WithName("actualValue"));

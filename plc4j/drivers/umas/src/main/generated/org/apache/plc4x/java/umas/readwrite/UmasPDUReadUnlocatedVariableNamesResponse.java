@@ -104,7 +104,7 @@ public class UmasPDUReadUnlocatedVariableNamesResponse implements Message {
     int noOfRecords = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("noOfRecords"));
 
     // Array Field: records
-    List<UmasUnlocatedVariableReference> records = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (UmasUnlocatedVariableReference) UmasUnlocatedVariableReference.staticParse(readBuffer), readBuffer), noOfRecords, WithOption.WithName("records"));
+    List<UmasUnlocatedVariableReference> records = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UmasUnlocatedVariableReference.class, UmasUnlocatedVariableReference.staticParse(readBuffer)), readBuffer), noOfRecords, WithOption.WithName("records"));
 
     readBuffer.popContext();
     return new UmasPDUReadUnlocatedVariableNamesResponse(range, nextAddress, unknown1, noOfRecords, records);

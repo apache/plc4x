@@ -49,7 +49,7 @@ public class BACnetSetpointReference implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: setPointReference
-    BACnetObjectPropertyReferenceEnclosed setPointReference = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetObjectPropertyReferenceEnclosed) BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("setPointReference"));
+    BACnetObjectPropertyReferenceEnclosed setPointReference = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetObjectPropertyReferenceEnclosed.class, BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("setPointReference"));
 
     readBuffer.popContext();
     return new BACnetSetpointReference(setPointReference);

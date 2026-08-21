@@ -93,19 +93,19 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (9)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (9))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: vendorId
-    BACnetVendorIdTagged vendorId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetVendorIdTagged) BACnetVendorIdTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("vendorId"));
+    BACnetVendorIdTagged vendorId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVendorIdTagged.class, BACnetVendorIdTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("vendorId"));
 
     // Simple Field: extendedEventType
-    BACnetContextTagUnsignedInteger extendedEventType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("extendedEventType"));
+    BACnetContextTagUnsignedInteger extendedEventType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("extendedEventType"));
 
     // Simple Field: parameters
-    BACnetEventParameterExtendedParameters parameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventParameterExtendedParameters) BACnetEventParameterExtendedParameters.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("parameters"));
+    BACnetEventParameterExtendedParameters parameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventParameterExtendedParameters.class, BACnetEventParameterExtendedParameters.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("parameters"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (9)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (9))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetEventParameterBuilderImpl(openingTag, vendorId, extendedEventType, parameters, closingTag);

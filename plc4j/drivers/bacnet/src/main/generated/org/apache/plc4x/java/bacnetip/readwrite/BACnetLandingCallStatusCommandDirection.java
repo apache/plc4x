@@ -52,7 +52,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: direction
-    BACnetLiftCarDirectionTagged direction = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftCarDirectionTagged) BACnetLiftCarDirectionTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("direction"));
+    BACnetLiftCarDirectionTagged direction = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarDirectionTagged.class, BACnetLiftCarDirectionTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("direction"));
 
     readBuffer.popContext();
     return new BACnetLandingCallStatusCommandBuilderImpl(direction);

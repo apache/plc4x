@@ -85,16 +85,16 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (3))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: listOfFaultValues
-    BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetFaultParameterFaultLifeSafetyListOfFaultValues) BACnetFaultParameterFaultLifeSafetyListOfFaultValues.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("listOfFaultValues"));
+    BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetFaultParameterFaultLifeSafetyListOfFaultValues.class, BACnetFaultParameterFaultLifeSafetyListOfFaultValues.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("listOfFaultValues"));
 
     // Simple Field: modePropertyReference
-    BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReferenceEnclosed) BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("modePropertyReference"));
+    BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReferenceEnclosed.class, BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("modePropertyReference"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (3))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetFaultParameterBuilderImpl(openingTag, listOfFaultValues, modePropertyReference, closingTag);

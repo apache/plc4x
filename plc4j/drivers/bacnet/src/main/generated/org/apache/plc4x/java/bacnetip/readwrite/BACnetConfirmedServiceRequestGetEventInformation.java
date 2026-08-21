@@ -60,7 +60,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: lastReceivedObjectIdentifier
-    BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("lastReceivedObjectIdentifier"));
+    BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("lastReceivedObjectIdentifier"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(lastReceivedObjectIdentifier);

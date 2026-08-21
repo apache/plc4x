@@ -58,7 +58,7 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: password
-    AmsString password = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsString) AmsString.staticParse(readBuffer), readBuffer), WithOption.WithName("password"));
+    AmsString password = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsString.class, AmsString.staticParse(readBuffer)), readBuffer), WithOption.WithName("password"));
 
     readBuffer.popContext();
     return new AdsDiscoveryBlockBuilderImpl(password);

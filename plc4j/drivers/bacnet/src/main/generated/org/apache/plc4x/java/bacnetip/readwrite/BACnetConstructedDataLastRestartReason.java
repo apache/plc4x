@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastRestartReason
-    BACnetRestartReasonTagged lastRestartReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRestartReasonTagged) BACnetRestartReasonTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("lastRestartReason"));
+    BACnetRestartReasonTagged lastRestartReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRestartReasonTagged.class, BACnetRestartReasonTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("lastRestartReason"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetRestartReasonTagged actualValue = FieldReaderFactory.readVirtualField(BACnetRestartReasonTagged.class, lastRestartReason, WithOption.WithName("actualValue"));

@@ -76,7 +76,7 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("ConnectionStateRequest.reserved1"));
 
     // Simple Field: hpaiControlEndpoint
-    HPAIControlEndpoint hpaiControlEndpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HPAIControlEndpoint) HPAIControlEndpoint.staticParse(readBuffer), readBuffer), WithOption.WithName("hpaiControlEndpoint"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    HPAIControlEndpoint hpaiControlEndpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HPAIControlEndpoint.class, HPAIControlEndpoint.staticParse(readBuffer)), readBuffer), WithOption.WithName("hpaiControlEndpoint"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(communicationChannelId, hpaiControlEndpoint);

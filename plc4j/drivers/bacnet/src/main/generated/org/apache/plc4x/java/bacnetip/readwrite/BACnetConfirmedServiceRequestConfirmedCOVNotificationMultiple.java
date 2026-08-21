@@ -103,19 +103,19 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple exten
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: subscriberProcessIdentifier
-    BACnetContextTagUnsignedInteger subscriberProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("subscriberProcessIdentifier"));
+    BACnetContextTagUnsignedInteger subscriberProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("subscriberProcessIdentifier"));
 
     // Simple Field: initiatingDeviceIdentifier
-    BACnetContextTagObjectIdentifier initiatingDeviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("initiatingDeviceIdentifier"));
+    BACnetContextTagObjectIdentifier initiatingDeviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("initiatingDeviceIdentifier"));
 
     // Simple Field: timeRemaining
-    BACnetContextTagUnsignedInteger timeRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("timeRemaining"));
+    BACnetContextTagUnsignedInteger timeRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("timeRemaining"));
 
     // Optional Field: timestamp
-    BACnetTimeStampEnclosed timestamp = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetTimeStampEnclosed) BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer), WithOption.WithName("timestamp"));
+    BACnetTimeStampEnclosed timestamp = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStampEnclosed.class, BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3))), readBuffer), WithOption.WithName("timestamp"));
 
     // Simple Field: listOfCovNotifications
-    ListOfCovNotificationsList listOfCovNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ListOfCovNotificationsList) ListOfCovNotificationsList.staticParse(readBuffer, (short) (4)), readBuffer), WithOption.WithName("listOfCovNotifications"));
+    ListOfCovNotificationsList listOfCovNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ListOfCovNotificationsList.class, ListOfCovNotificationsList.staticParse(readBuffer, (short) (4))), readBuffer), WithOption.WithName("listOfCovNotifications"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(subscriberProcessIdentifier, initiatingDeviceIdentifier, timeRemaining, timestamp, listOfCovNotifications);

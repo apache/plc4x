@@ -52,7 +52,7 @@ public class ParameterChangeReply extends Reply implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: parameterChange
-    ParameterChange parameterChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ParameterChange) ParameterChange.staticParse(readBuffer), readBuffer), WithOption.WithName("parameterChange"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ParameterChange parameterChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ParameterChange.class, ParameterChange.staticParse(readBuffer)), readBuffer), WithOption.WithName("parameterChange"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ReplyBuilderImpl(parameterChange);

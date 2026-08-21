@@ -93,16 +93,16 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage extends BACne
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: textMessageSourceDevice
-    BACnetContextTagObjectIdentifier textMessageSourceDevice = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("textMessageSourceDevice"));
+    BACnetContextTagObjectIdentifier textMessageSourceDevice = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("textMessageSourceDevice"));
 
     // Optional Field: messageClass
-    BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("messageClass"));
+    BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.class, BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("messageClass"));
 
     // Simple Field: messagePriority
-    BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("messagePriority"));
+    BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.class, BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("messagePriority"));
 
     // Simple Field: message
-    BACnetContextTagCharacterString message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("message"));
+    BACnetContextTagCharacterString message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("message"));
 
     readBuffer.popContext();
     return new BACnetUnconfirmedServiceRequestBuilderImpl(textMessageSourceDevice, messageClass, messagePriority, message);

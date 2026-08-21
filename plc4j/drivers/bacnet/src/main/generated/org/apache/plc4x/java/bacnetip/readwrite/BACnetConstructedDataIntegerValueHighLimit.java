@@ -78,7 +78,7 @@ public class BACnetConstructedDataIntegerValueHighLimit extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: highLimit
-    BACnetApplicationTagSignedInteger highLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("highLimit"));
+    BACnetApplicationTagSignedInteger highLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("highLimit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagSignedInteger.class, highLimit, WithOption.WithName("actualValue"));

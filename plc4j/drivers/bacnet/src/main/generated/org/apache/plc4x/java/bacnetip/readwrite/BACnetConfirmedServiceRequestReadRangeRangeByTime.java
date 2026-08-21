@@ -63,10 +63,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: referenceTime
-    BACnetDateTime referenceTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTime) BACnetDateTime.staticParse(readBuffer), readBuffer), WithOption.WithName("referenceTime"));
+    BACnetDateTime referenceTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTime.class, BACnetDateTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("referenceTime"));
 
     // Simple Field: count
-    BACnetApplicationTagSignedInteger count = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("count"));
+    BACnetApplicationTagSignedInteger count = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("count"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestReadRangeRangeBuilderImpl(referenceTime, count);

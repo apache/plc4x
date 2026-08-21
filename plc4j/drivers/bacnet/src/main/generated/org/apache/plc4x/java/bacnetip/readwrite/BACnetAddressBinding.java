@@ -60,10 +60,10 @@ public class BACnetAddressBinding implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: deviceIdentifier
-    BACnetApplicationTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("deviceIdentifier"));
+    BACnetApplicationTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("deviceIdentifier"));
 
     // Simple Field: deviceAddress
-    BACnetAddress deviceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAddress) BACnetAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("deviceAddress"));
+    BACnetAddress deviceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddress.class, BACnetAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("deviceAddress"));
 
     readBuffer.popContext();
     return new BACnetAddressBinding(deviceIdentifier, deviceAddress);

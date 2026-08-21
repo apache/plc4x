@@ -61,7 +61,7 @@ public class BACnetConfirmedServiceRequestVTClose extends BACnetConfirmedService
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: listOfRemoteVtSessionIdentifiers
-    List<BACnetApplicationTagUnsignedInteger> listOfRemoteVtSessionIdentifiers = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), serviceRequestPayloadLength, WithOption.WithName("listOfRemoteVtSessionIdentifiers"));
+    List<BACnetApplicationTagUnsignedInteger> listOfRemoteVtSessionIdentifiers = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), serviceRequestPayloadLength, WithOption.WithName("listOfRemoteVtSessionIdentifiers"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(listOfRemoteVtSessionIdentifiers);

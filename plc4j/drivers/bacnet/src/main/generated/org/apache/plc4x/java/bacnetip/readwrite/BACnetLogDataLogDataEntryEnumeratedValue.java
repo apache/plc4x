@@ -52,7 +52,7 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: enumeratedValue
-    BACnetContextTagEnumerated enumeratedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagEnumerated) BACnetContextTagEnumerated.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.ENUMERATED)), readBuffer), WithOption.WithName("enumeratedValue"));
+    BACnetContextTagEnumerated enumeratedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagEnumerated.class, BACnetContextTagEnumerated.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.ENUMERATED))), readBuffer), WithOption.WithName("enumeratedValue"));
 
     readBuffer.popContext();
     return new BACnetLogDataLogDataEntryBuilderImpl(enumeratedValue);

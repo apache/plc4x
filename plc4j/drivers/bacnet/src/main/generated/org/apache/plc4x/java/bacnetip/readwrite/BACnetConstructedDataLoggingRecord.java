@@ -78,7 +78,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: loggingRecord
-    BACnetAccumulatorRecord loggingRecord = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccumulatorRecord) BACnetAccumulatorRecord.staticParse(readBuffer), readBuffer), WithOption.WithName("loggingRecord"));
+    BACnetAccumulatorRecord loggingRecord = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccumulatorRecord.class, BACnetAccumulatorRecord.staticParse(readBuffer)), readBuffer), WithOption.WithName("loggingRecord"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccumulatorRecord actualValue = FieldReaderFactory.readVirtualField(BACnetAccumulatorRecord.class, loggingRecord, WithOption.WithName("actualValue"));

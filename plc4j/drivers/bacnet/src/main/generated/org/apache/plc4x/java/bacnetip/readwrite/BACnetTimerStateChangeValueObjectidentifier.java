@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectidentifierValue
-    BACnetApplicationTagObjectIdentifier objectidentifierValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("objectidentifierValue"));
+    BACnetApplicationTagObjectIdentifier objectidentifierValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("objectidentifierValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(objectidentifierValue);

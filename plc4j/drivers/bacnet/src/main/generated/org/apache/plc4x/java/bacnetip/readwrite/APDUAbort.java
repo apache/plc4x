@@ -89,7 +89,7 @@ public class APDUAbort extends APDU implements Message {
     short originalInvokeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("originalInvokeId"));
 
     // Simple Field: abortReason
-    BACnetAbortReasonTagged abortReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAbortReasonTagged) BACnetAbortReasonTagged.staticParse(readBuffer, (long) (1L)), readBuffer), WithOption.WithName("abortReason"));
+    BACnetAbortReasonTagged abortReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAbortReasonTagged.class, BACnetAbortReasonTagged.staticParse(readBuffer, (long) (1L))), readBuffer), WithOption.WithName("abortReason"));
 
     readBuffer.popContext();
     return new APDUBuilderImpl(server, originalInvokeId, abortReason);

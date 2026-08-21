@@ -78,7 +78,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: landingCallControl
-    BACnetLandingCallStatus landingCallControl = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLandingCallStatus) BACnetLandingCallStatus.staticParse(readBuffer), readBuffer), WithOption.WithName("landingCallControl"));
+    BACnetLandingCallStatus landingCallControl = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLandingCallStatus.class, BACnetLandingCallStatus.staticParse(readBuffer)), readBuffer), WithOption.WithName("landingCallControl"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLandingCallStatus actualValue = FieldReaderFactory.readVirtualField(BACnetLandingCallStatus.class, landingCallControl, WithOption.WithName("actualValue"));

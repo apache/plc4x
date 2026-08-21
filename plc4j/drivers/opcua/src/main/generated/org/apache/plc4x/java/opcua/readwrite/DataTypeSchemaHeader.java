@@ -95,25 +95,25 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     int noOfNamespaces = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfNamespaces"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: namespaces
-    List<PascalString> namespaces = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfNamespaces, WithOption.WithName("namespaces"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> namespaces = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfNamespaces, WithOption.WithName("namespaces"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfStructureDataTypes
     int noOfStructureDataTypes = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfStructureDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: structureDataTypes
-    List<StructureDescription> structureDataTypes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (StructureDescription) StructureDescription.staticParse(readBuffer, (int) (15489)), readBuffer), noOfStructureDataTypes, WithOption.WithName("structureDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<StructureDescription> structureDataTypes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StructureDescription.class, StructureDescription.staticParse(readBuffer, (int) (15489))), readBuffer), noOfStructureDataTypes, WithOption.WithName("structureDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfEnumDataTypes
     int noOfEnumDataTypes = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfEnumDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: enumDataTypes
-    List<EnumDescription> enumDataTypes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (EnumDescription) EnumDescription.staticParse(readBuffer, (int) (15490)), readBuffer), noOfEnumDataTypes, WithOption.WithName("enumDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<EnumDescription> enumDataTypes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(EnumDescription.class, EnumDescription.staticParse(readBuffer, (int) (15490))), readBuffer), noOfEnumDataTypes, WithOption.WithName("enumDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfSimpleDataTypes
     int noOfSimpleDataTypes = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfSimpleDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: simpleDataTypes
-    List<SimpleTypeDescription> simpleDataTypes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SimpleTypeDescription) SimpleTypeDescription.staticParse(readBuffer, (int) (15007)), readBuffer), noOfSimpleDataTypes, WithOption.WithName("simpleDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<SimpleTypeDescription> simpleDataTypes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SimpleTypeDescription.class, SimpleTypeDescription.staticParse(readBuffer, (int) (15007))), readBuffer), noOfSimpleDataTypes, WithOption.WithName("simpleDataTypes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(namespaces, structureDataTypes, enumDataTypes, simpleDataTypes);

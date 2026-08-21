@@ -78,7 +78,7 @@ public class BACnetConstructedDataCredentialDataInputPresentValue extends BACnet
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetAuthenticationFactor presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationFactor) BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer), WithOption.WithName("presentValue"));
+    BACnetAuthenticationFactor presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationFactor.class, BACnetAuthenticationFactor.staticParse(readBuffer)), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAuthenticationFactor actualValue = FieldReaderFactory.readVirtualField(BACnetAuthenticationFactor.class, presentValue, WithOption.WithName("actualValue"));

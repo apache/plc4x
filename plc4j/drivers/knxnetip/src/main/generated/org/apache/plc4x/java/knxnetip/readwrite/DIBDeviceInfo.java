@@ -141,22 +141,22 @@ public class DIBDeviceInfo implements Message {
     KnxMedium knxMedium = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(KnxMedium::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("knxMedium"));
 
     // Simple Field: deviceStatus
-    DeviceStatus deviceStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DeviceStatus) DeviceStatus.staticParse(readBuffer), readBuffer), WithOption.WithName("deviceStatus"));
+    DeviceStatus deviceStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DeviceStatus.class, DeviceStatus.staticParse(readBuffer)), readBuffer), WithOption.WithName("deviceStatus"));
 
     // Simple Field: knxAddress
-    KnxAddress knxAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (KnxAddress) KnxAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("knxAddress"));
+    KnxAddress knxAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(KnxAddress.class, KnxAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("knxAddress"));
 
     // Simple Field: projectInstallationIdentifier
-    ProjectInstallationIdentifier projectInstallationIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ProjectInstallationIdentifier) ProjectInstallationIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("projectInstallationIdentifier"));
+    ProjectInstallationIdentifier projectInstallationIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ProjectInstallationIdentifier.class, ProjectInstallationIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("projectInstallationIdentifier"));
 
     // Array Field: knxNetIpDeviceSerialNumber
     byte[] knxNetIpDeviceSerialNumber = readBuffer.readBits(Math.toIntExact((6) * 8), WithOption.WithName("knxNetIpDeviceSerialNumber"));
 
     // Simple Field: knxNetIpDeviceMulticastAddress
-    IPAddress knxNetIpDeviceMulticastAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IPAddress) IPAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("knxNetIpDeviceMulticastAddress"));
+    IPAddress knxNetIpDeviceMulticastAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IPAddress.class, IPAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("knxNetIpDeviceMulticastAddress"));
 
     // Simple Field: knxNetIpDeviceMacAddress
-    MACAddress knxNetIpDeviceMacAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MACAddress) MACAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("knxNetIpDeviceMacAddress"));
+    MACAddress knxNetIpDeviceMacAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MACAddress.class, MACAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("knxNetIpDeviceMacAddress"));
 
     // Array Field: deviceFriendlyName
     byte[] deviceFriendlyName = readBuffer.readBits(Math.toIntExact((30) * 8), WithOption.WithName("deviceFriendlyName"));

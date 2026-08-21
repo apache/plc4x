@@ -106,7 +106,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
     ManagementAddressSubType addressSubType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(ManagementAddressSubType::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("addressSubType"));
 
     // Simple Field: ipAddress
-    IpAddress ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IpAddress) IpAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("ipAddress"));
+    IpAddress ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IpAddress.class, IpAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipAddress"));
 
     // Simple Field: interfaceSubType
     short interfaceSubType = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("interfaceSubType"));

@@ -72,7 +72,7 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: activeCOVSubscriptions
-    List<BACnetCOVSubscription> activeCOVSubscriptions = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetCOVSubscription) BACnetCOVSubscription.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("activeCOVSubscriptions"));
+    List<BACnetCOVSubscription> activeCOVSubscriptions = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCOVSubscription.class, BACnetCOVSubscription.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("activeCOVSubscriptions"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(activeCOVSubscriptions);

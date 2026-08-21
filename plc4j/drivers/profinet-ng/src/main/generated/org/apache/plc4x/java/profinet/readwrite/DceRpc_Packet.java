@@ -358,13 +358,13 @@ public class DceRpc_Packet implements Message {
     short serialHigh = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 8), SERIALHIGH, WithOption.WithName("serialHigh"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: objectUuid
-    DceRpc_ObjectUuid objectUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DceRpc_ObjectUuid) DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer), WithOption.WithName("objectUuid"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
+    DceRpc_ObjectUuid objectUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DceRpc_ObjectUuid.class, DceRpc_ObjectUuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("objectUuid"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
 
     // Simple Field: interfaceUuid
-    DceRpc_InterfaceUuid interfaceUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DceRpc_InterfaceUuid) DceRpc_InterfaceUuid.staticParse(readBuffer), readBuffer), WithOption.WithName("interfaceUuid"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
+    DceRpc_InterfaceUuid interfaceUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DceRpc_InterfaceUuid.class, DceRpc_InterfaceUuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("interfaceUuid"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
 
     // Simple Field: activityUuid
-    DceRpc_ActivityUuid activityUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DceRpc_ActivityUuid) DceRpc_ActivityUuid.staticParse(readBuffer), readBuffer), WithOption.WithName("activityUuid"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
+    DceRpc_ActivityUuid activityUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DceRpc_ActivityUuid.class, DceRpc_ActivityUuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("activityUuid"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
 
     // Simple Field: serverBootTime
     long serverBootTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("serverBootTime"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
@@ -397,7 +397,7 @@ public class DceRpc_Packet implements Message {
     short serialLow = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("serialLow"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: payload
-    PnIoCm_Packet payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PnIoCm_Packet) PnIoCm_Packet.staticParse(readBuffer, (org.apache.plc4x.java.profinet.readwrite.DceRpc_PacketType) (packetType)), readBuffer), WithOption.WithName("payload"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
+    PnIoCm_Packet payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_Packet.class, PnIoCm_Packet.staticParse(readBuffer, (org.apache.plc4x.java.profinet.readwrite.DceRpc_PacketType) (packetType))), readBuffer), WithOption.WithName("payload"), WithByteBasedOption.WithByteOrder((((integerEncoding) == (IntegerEncoding.BIG_ENDIAN)) ? "BIG_ENDIAN" : "LITTLE_ENDIAN")));
 
     readBuffer.popContext();
     return new DceRpc_Packet(packetType, idempotent, noFragmentAcknowledgeRequested, lastFragment, integerEncoding, characterEncoding, floatingPointEncoding, objectUuid, interfaceUuid, activityUuid, serverBootTime, sequenceNumber, operation, serialLow, payload);

@@ -122,10 +122,10 @@ public class BACnetConstructedDataEventTimeStamps extends BACnetConstructedData 
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: eventTimeStamps
-    List<BACnetTimeStamp> eventTimeStamps = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), () -> (boolean) org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("eventTimeStamps"));
+    List<BACnetTimeStamp> eventTimeStamps = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), () -> (boolean) org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("eventTimeStamps"));
 
     // Virtual Field: toOffnormal (doesn't parse anything, just makes the value available)
     BACnetTimeStamp toOffnormal = FieldReaderFactory.readVirtualField(BACnetTimeStamp.class, (((StaticHelper.COUNT(eventTimeStamps)) == (3)) ? eventTimeStamps.get(0) : null), WithOption.WithName("toOffnormal"));

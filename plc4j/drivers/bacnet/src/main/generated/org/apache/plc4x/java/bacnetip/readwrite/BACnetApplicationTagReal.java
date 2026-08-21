@@ -58,7 +58,7 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadReal payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadReal) BACnetTagPayloadReal.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadReal payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadReal.class, BACnetTagPayloadReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     float actualValue = FieldReaderFactory.readVirtualField(float.class, payload.getValue(), WithOption.WithName("actualValue"));

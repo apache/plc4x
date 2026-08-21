@@ -72,7 +72,7 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: alarmValues
-    List<BACnetApplicationTagUnsignedInteger> alarmValues = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("alarmValues"));
+    List<BACnetApplicationTagUnsignedInteger> alarmValues = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("alarmValues"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(alarmValues);

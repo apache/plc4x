@@ -49,7 +49,7 @@ public class BACnetLiftCarCallList implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: floorNumbers
-    BACnetLiftCarCallListFloorList floorNumbers = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftCarCallListFloorList) BACnetLiftCarCallListFloorList.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("floorNumbers"));
+    BACnetLiftCarCallListFloorList floorNumbers = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarCallListFloorList.class, BACnetLiftCarCallListFloorList.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("floorNumbers"));
 
     readBuffer.popContext();
     return new BACnetLiftCarCallList(floorNumbers);

@@ -59,7 +59,7 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeOfDay
-    CANOpenTime timeOfDay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CANOpenTime) CANOpenTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeOfDay"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CANOpenTime timeOfDay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CANOpenTime.class, CANOpenTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeOfDay"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CANOpenPayloadBuilderImpl(timeOfDay);

@@ -80,7 +80,7 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1 extends OpenProtocolMes
     int numberOfParameterDataFields = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 24), WithOption.WithName("numberOfParameterDataFields"), WithOption.WithEncoding("ASCII"));
 
     // Array Field: dataFields
-    List<VariableDataField> dataFields = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (VariableDataField) VariableDataField.staticParse(readBuffer), readBuffer), numberOfParameterDataFields, WithOption.WithName("dataFields"), WithOption.WithEncoding("ASCII"));
+    List<VariableDataField> dataFields = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(VariableDataField.class, VariableDataField.staticParse(readBuffer)), readBuffer), numberOfParameterDataFields, WithOption.WithName("dataFields"), WithOption.WithEncoding("ASCII"));
 
     readBuffer.popContext();
     return new OpenProtocolMessageDynamicPsetSelectionBuilderImpl(parameterSetId, dataFields);

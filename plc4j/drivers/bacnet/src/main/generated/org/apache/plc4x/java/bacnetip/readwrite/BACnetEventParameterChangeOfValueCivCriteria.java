@@ -82,10 +82,10 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Peek Field: peekedTagHeader
-    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("peekedTagHeader"));
+    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("peekedTagHeader"));
 
     // Virtual Field: peekedTagNumber (doesn't parse anything, just makes the value available)
     short peekedTagNumber = FieldReaderFactory.readVirtualField(short.class, peekedTagHeader.getActualTagNumber(), WithOption.WithName("peekedTagNumber"));
@@ -102,7 +102,7 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
     }
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return builder.build(openingTag, peekedTagHeader, closingTag);

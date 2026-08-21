@@ -64,10 +64,10 @@ public class BACnetServiceAckAtomicReadFileStream extends BACnetServiceAckAtomic
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileStartPosition
-    BACnetApplicationTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("fileStartPosition"));
+    BACnetApplicationTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileStartPosition"));
 
     // Simple Field: fileData
-    BACnetApplicationTagOctetString fileData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("fileData"));
+    BACnetApplicationTagOctetString fileData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileData"));
 
     readBuffer.popContext();
     return new BACnetServiceAckAtomicReadFileStreamOrRecordBuilderImpl(fileStartPosition, fileData);

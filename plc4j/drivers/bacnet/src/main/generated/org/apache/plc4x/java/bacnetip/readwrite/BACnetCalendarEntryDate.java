@@ -51,7 +51,7 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateValue
-    BACnetContextTagDate dateValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagDate) BACnetContextTagDate.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.DATE)), readBuffer), WithOption.WithName("dateValue"));
+    BACnetContextTagDate dateValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagDate.class, BACnetContextTagDate.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.DATE))), readBuffer), WithOption.WithName("dateValue"));
 
     readBuffer.popContext();
     return new BACnetCalendarEntryBuilderImpl(dateValue);

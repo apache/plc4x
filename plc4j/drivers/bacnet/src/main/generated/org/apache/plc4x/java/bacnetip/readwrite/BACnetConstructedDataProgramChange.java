@@ -78,7 +78,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: programChange
-    BACnetProgramRequestTagged programChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProgramRequestTagged) BACnetProgramRequestTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("programChange"));
+    BACnetProgramRequestTagged programChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProgramRequestTagged.class, BACnetProgramRequestTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("programChange"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetProgramRequestTagged actualValue = FieldReaderFactory.readVirtualField(BACnetProgramRequestTagged.class, programChange, WithOption.WithName("actualValue"));

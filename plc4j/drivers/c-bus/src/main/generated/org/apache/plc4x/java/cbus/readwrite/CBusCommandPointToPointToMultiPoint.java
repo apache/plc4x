@@ -53,7 +53,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: command
-    CBusPointToPointToMultiPointCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CBusPointToPointToMultiPointCommand) CBusPointToPointToMultiPointCommand.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions)), readBuffer), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CBusPointToPointToMultiPointCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CBusPointToPointToMultiPointCommand.class, CBusPointToPointToMultiPointCommand.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions))), readBuffer), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CBusCommandBuilderImpl(command);

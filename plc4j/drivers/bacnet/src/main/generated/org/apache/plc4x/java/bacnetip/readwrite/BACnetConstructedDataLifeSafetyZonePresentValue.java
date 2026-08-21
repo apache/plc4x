@@ -78,7 +78,7 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetLifeSafetyStateTagged presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLifeSafetyStateTagged) BACnetLifeSafetyStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("presentValue"));
+    BACnetLifeSafetyStateTagged presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLifeSafetyStateTagged.class, BACnetLifeSafetyStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLifeSafetyStateTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLifeSafetyStateTagged.class, presentValue, WithOption.WithName("actualValue"));

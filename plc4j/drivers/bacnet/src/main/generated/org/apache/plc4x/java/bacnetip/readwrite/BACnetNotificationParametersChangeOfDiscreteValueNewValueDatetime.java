@@ -53,7 +53,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime e
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateTimeValue
-    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("dateTimeValue"));
+    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("dateTimeValue"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilderImpl(dateTimeValue);

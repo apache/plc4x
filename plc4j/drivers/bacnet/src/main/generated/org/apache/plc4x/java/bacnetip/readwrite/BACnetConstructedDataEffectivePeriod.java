@@ -77,7 +77,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateRange
-    BACnetDateRange dateRange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateRange) BACnetDateRange.staticParse(readBuffer), readBuffer), WithOption.WithName("dateRange"));
+    BACnetDateRange dateRange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateRange.class, BACnetDateRange.staticParse(readBuffer)), readBuffer), WithOption.WithName("dateRange"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDateRange actualValue = FieldReaderFactory.readVirtualField(BACnetDateRange.class, dateRange, WithOption.WithName("actualValue"));

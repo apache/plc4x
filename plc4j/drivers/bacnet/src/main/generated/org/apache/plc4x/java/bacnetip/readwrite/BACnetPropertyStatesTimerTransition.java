@@ -52,7 +52,7 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timerTransition
-    BACnetTimerTransitionTagged timerTransition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimerTransitionTagged) BACnetTimerTransitionTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("timerTransition"));
+    BACnetTimerTransitionTagged timerTransition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimerTransitionTagged.class, BACnetTimerTransitionTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("timerTransition"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(timerTransition);

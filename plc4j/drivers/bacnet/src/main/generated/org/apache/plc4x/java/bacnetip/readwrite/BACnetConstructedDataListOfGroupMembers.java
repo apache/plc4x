@@ -72,7 +72,7 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: listOfGroupMembers
-    List<BACnetReadAccessSpecification> listOfGroupMembers = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetReadAccessSpecification) BACnetReadAccessSpecification.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("listOfGroupMembers"));
+    List<BACnetReadAccessSpecification> listOfGroupMembers = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetReadAccessSpecification.class, BACnetReadAccessSpecification.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("listOfGroupMembers"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(listOfGroupMembers);

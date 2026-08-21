@@ -61,7 +61,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: command
-    DF1RequestCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DF1RequestCommand) DF1RequestCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DF1RequestCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DF1RequestCommand.class, DF1RequestCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new DF1RequestMessageBuilderImpl(command);

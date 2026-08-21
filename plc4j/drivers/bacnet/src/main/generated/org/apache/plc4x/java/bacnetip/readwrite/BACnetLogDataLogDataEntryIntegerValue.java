@@ -52,7 +52,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: integerValue
-    BACnetContextTagSignedInteger integerValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagSignedInteger) BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER)), readBuffer), WithOption.WithName("integerValue"));
+    BACnetContextTagSignedInteger integerValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagSignedInteger.class, BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER))), readBuffer), WithOption.WithName("integerValue"));
 
     readBuffer.popContext();
     return new BACnetLogDataLogDataEntryBuilderImpl(integerValue);

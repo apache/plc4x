@@ -60,7 +60,7 @@ public class SALDataErrorReporting extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: errorReportingData
-    ErrorReportingData errorReportingData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorReportingData) ErrorReportingData.staticParse(readBuffer), readBuffer), WithOption.WithName("errorReportingData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ErrorReportingData errorReportingData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorReportingData.class, ErrorReportingData.staticParse(readBuffer)), readBuffer), WithOption.WithName("errorReportingData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(errorReportingData);

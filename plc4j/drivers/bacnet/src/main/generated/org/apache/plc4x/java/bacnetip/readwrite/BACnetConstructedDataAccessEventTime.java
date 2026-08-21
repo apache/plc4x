@@ -78,7 +78,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: accessEventTime
-    BACnetTimeStamp accessEventTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("accessEventTime"));
+    BACnetTimeStamp accessEventTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("accessEventTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimeStamp actualValue = FieldReaderFactory.readVirtualField(BACnetTimeStamp.class, accessEventTime, WithOption.WithName("actualValue"));

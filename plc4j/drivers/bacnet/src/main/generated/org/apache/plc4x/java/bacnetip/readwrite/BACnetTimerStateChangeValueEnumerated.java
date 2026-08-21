@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: enumeratedValue
-    BACnetApplicationTagEnumerated enumeratedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagEnumerated) BACnetApplicationTagEnumerated.staticParse(readBuffer), readBuffer), WithOption.WithName("enumeratedValue"));
+    BACnetApplicationTagEnumerated enumeratedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagEnumerated.class, BACnetApplicationTagEnumerated.staticParse(readBuffer)), readBuffer), WithOption.WithName("enumeratedValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(enumeratedValue);

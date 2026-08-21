@@ -62,10 +62,10 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: credentialDataInput
-    BACnetDeviceObjectReferenceEnclosed credentialDataInput = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReferenceEnclosed) BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("credentialDataInput"));
+    BACnetDeviceObjectReferenceEnclosed credentialDataInput = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReferenceEnclosed.class, BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("credentialDataInput"));
 
     // Simple Field: index
-    BACnetContextTagUnsignedInteger index = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("index"));
+    BACnetContextTagUnsignedInteger index = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("index"));
 
     readBuffer.popContext();
     return new BACnetAuthenticationPolicyListEntry(credentialDataInput, index);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataChannelPresentValue extends BACnetConstructedD
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetChannelValue presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetChannelValue) BACnetChannelValue.staticParse(readBuffer), readBuffer), WithOption.WithName("presentValue"));
+    BACnetChannelValue presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetChannelValue.class, BACnetChannelValue.staticParse(readBuffer)), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetChannelValue actualValue = FieldReaderFactory.readVirtualField(BACnetChannelValue.class, presentValue, WithOption.WithName("actualValue"));

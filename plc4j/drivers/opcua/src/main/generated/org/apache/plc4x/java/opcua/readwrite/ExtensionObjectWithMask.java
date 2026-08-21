@@ -71,7 +71,7 @@ public abstract class ExtensionObjectWithMask extends ExtensionObject implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: encodingMask
-    ExtensionObjectEncodingMask encodingMask = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExtensionObjectEncodingMask) ExtensionObjectEncodingMask.staticParse(readBuffer), readBuffer), WithOption.WithName("encodingMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExtensionObjectEncodingMask encodingMask = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObjectEncodingMask.class, ExtensionObjectEncodingMask.staticParse(readBuffer)), readBuffer), WithOption.WithName("encodingMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Virtual Field: bodyKind (doesn't parse anything, just makes the value available)
     byte bodyKind = FieldReaderFactory.readVirtualField(byte.class, ((encodingMask.getBinaryBody()) ? (((standardEncoding) ? 1 : 2)) : 0), WithOption.WithName("bodyKind"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

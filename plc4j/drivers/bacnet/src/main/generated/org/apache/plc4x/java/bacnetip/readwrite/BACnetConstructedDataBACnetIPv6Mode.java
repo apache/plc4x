@@ -78,7 +78,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bacnetIpv6Mode
-    BACnetIPModeTagged bacnetIpv6Mode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetIPModeTagged) BACnetIPModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("bacnetIpv6Mode"));
+    BACnetIPModeTagged bacnetIpv6Mode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetIPModeTagged.class, BACnetIPModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("bacnetIpv6Mode"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetIPModeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetIPModeTagged.class, bacnetIpv6Mode, WithOption.WithName("actualValue"));

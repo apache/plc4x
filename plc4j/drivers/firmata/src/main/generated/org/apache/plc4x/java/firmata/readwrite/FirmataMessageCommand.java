@@ -59,7 +59,7 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: command
-    FirmataCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (FirmataCommand) FirmataCommand.staticParse(readBuffer, (boolean) (response)), readBuffer), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF16LE"));
+    FirmataCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(FirmataCommand.class, FirmataCommand.staticParse(readBuffer, (boolean) (response))), readBuffer), WithOption.WithName("command"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF16LE"));
 
     readBuffer.popContext();
     return new FirmataMessageBuilderImpl(command);

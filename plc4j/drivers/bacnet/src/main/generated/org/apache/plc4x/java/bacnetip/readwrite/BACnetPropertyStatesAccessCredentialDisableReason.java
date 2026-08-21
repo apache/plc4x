@@ -52,7 +52,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: accessCredentialDisableReason
-    BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessCredentialDisableReasonTagged) BACnetAccessCredentialDisableReasonTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("accessCredentialDisableReason"));
+    BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessCredentialDisableReasonTagged.class, BACnetAccessCredentialDisableReasonTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("accessCredentialDisableReason"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(accessCredentialDisableReason);

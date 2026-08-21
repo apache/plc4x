@@ -51,7 +51,7 @@ public class OpcuaAPU implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: message
-    MessagePDU message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MessagePDU) MessagePDU.staticParse(readBuffer, (boolean) (response), (boolean) (binaryEncoding)), readBuffer), WithOption.WithName("message"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+    MessagePDU message = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MessagePDU.class, MessagePDU.staticParse(readBuffer, (boolean) (response), (boolean) (binaryEncoding))), readBuffer), WithOption.WithName("message"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
 
     readBuffer.popContext();
     return new OpcuaAPU(message);

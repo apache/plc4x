@@ -94,7 +94,7 @@ public class PnIoCm_Block_RealIdentificationData extends PnIoCm_Block implements
     int numApis = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numApis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: apis
-    List<PnIoCm_RealIdentificationApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_RealIdentificationApi) PnIoCm_RealIdentificationApi.staticParse(readBuffer), readBuffer), numApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_RealIdentificationApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_RealIdentificationApi.class, PnIoCm_RealIdentificationApi.staticParse(readBuffer)), readBuffer), numApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, apis);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: accessEvent
-    BACnetAccessEventTagged accessEvent = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessEventTagged) BACnetAccessEventTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("accessEvent"));
+    BACnetAccessEventTagged accessEvent = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessEventTagged.class, BACnetAccessEventTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("accessEvent"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccessEventTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAccessEventTagged.class, accessEvent, WithOption.WithName("actualValue"));

@@ -86,7 +86,7 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
     int port = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("port"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: npdu
-    NPDU npdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NPDU) NPDU.staticParse(readBuffer, (int) ((bvlcPayloadLength) - (6))), readBuffer), WithOption.WithName("npdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NPDU npdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NPDU.class, NPDU.staticParse(readBuffer, (int) ((bvlcPayloadLength) - (6)))), readBuffer), WithOption.WithName("npdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new BVLCBuilderImpl(ip, port, npdu);

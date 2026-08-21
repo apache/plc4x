@@ -78,7 +78,7 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: securedStatus
-    BACnetDoorSecuredStatusTagged securedStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDoorSecuredStatusTagged) BACnetDoorSecuredStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("securedStatus"));
+    BACnetDoorSecuredStatusTagged securedStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDoorSecuredStatusTagged.class, BACnetDoorSecuredStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("securedStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDoorSecuredStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetDoorSecuredStatusTagged.class, securedStatus, WithOption.WithName("actualValue"));

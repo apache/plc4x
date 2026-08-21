@@ -59,7 +59,7 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadDate payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadDate) BACnetTagPayloadDate.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadDate payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadDate.class, BACnetTagPayloadDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new BACnetContextTagBuilderImpl(payload);

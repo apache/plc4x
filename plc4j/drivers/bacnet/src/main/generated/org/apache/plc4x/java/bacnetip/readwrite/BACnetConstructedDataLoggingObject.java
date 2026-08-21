@@ -78,7 +78,7 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: loggingObject
-    BACnetApplicationTagObjectIdentifier loggingObject = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("loggingObject"));
+    BACnetApplicationTagObjectIdentifier loggingObject = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("loggingObject"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagObjectIdentifier.class, loggingObject, WithOption.WithName("actualValue"));

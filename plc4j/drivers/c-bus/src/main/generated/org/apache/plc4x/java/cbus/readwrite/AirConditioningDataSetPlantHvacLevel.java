@@ -117,22 +117,22 @@ public class AirConditioningDataSetPlantHvacLevel extends AirConditioningData im
     byte zoneGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("zoneGroup"));
 
     // Simple Field: zoneList
-    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACZoneList) HVACZoneList.staticParse(readBuffer), readBuffer), WithOption.WithName("zoneList"));
+    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACZoneList.class, HVACZoneList.staticParse(readBuffer)), readBuffer), WithOption.WithName("zoneList"));
 
     // Simple Field: hvacModeAndFlags
-    HVACModeAndFlags hvacModeAndFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACModeAndFlags) HVACModeAndFlags.staticParse(readBuffer), readBuffer), WithOption.WithName("hvacModeAndFlags"));
+    HVACModeAndFlags hvacModeAndFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACModeAndFlags.class, HVACModeAndFlags.staticParse(readBuffer)), readBuffer), WithOption.WithName("hvacModeAndFlags"));
 
     // Simple Field (enum): hvacType
     HVACType hvacType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(HVACType::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("hvacType"));
 
     // Optional Field (conditional): level
-    HVACTemperature level = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (HVACTemperature) HVACTemperature.staticParse(readBuffer), readBuffer), hvacModeAndFlags.getIsLevelTemperature(), WithOption.WithName("level"));
+    HVACTemperature level = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACTemperature.class, HVACTemperature.staticParse(readBuffer)), readBuffer), hvacModeAndFlags.getIsLevelTemperature(), WithOption.WithName("level"));
 
     // Optional Field (conditional): rawLevel
-    HVACRawLevels rawLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (HVACRawLevels) HVACRawLevels.staticParse(readBuffer), readBuffer), hvacModeAndFlags.getIsLevelRaw(), WithOption.WithName("rawLevel"));
+    HVACRawLevels rawLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACRawLevels.class, HVACRawLevels.staticParse(readBuffer)), readBuffer), hvacModeAndFlags.getIsLevelRaw(), WithOption.WithName("rawLevel"));
 
     // Optional Field (conditional): auxLevel
-    HVACAuxiliaryLevel auxLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (HVACAuxiliaryLevel) HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer), hvacModeAndFlags.getIsAuxLevelUsed(), WithOption.WithName("auxLevel"));
+    HVACAuxiliaryLevel auxLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACAuxiliaryLevel.class, HVACAuxiliaryLevel.staticParse(readBuffer)), readBuffer), hvacModeAndFlags.getIsAuxLevelUsed(), WithOption.WithName("auxLevel"));
 
     readBuffer.popContext();
     return new AirConditioningDataBuilderImpl(zoneGroup, zoneList, hvacModeAndFlags, hvacType, level, rawLevel, auxLevel);

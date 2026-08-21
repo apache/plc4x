@@ -185,13 +185,13 @@ public abstract class AmsPacket implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: targetAmsNetId
-    AmsNetId targetAmsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsNetId) AmsNetId.staticParse(readBuffer), readBuffer), WithOption.WithName("targetAmsNetId"));
+    AmsNetId targetAmsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsNetId.class, AmsNetId.staticParse(readBuffer)), readBuffer), WithOption.WithName("targetAmsNetId"));
 
     // Simple Field: targetAmsPort
     int targetAmsPort = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("targetAmsPort"));
 
     // Simple Field: sourceAmsNetId
-    AmsNetId sourceAmsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsNetId) AmsNetId.staticParse(readBuffer), readBuffer), WithOption.WithName("sourceAmsNetId"));
+    AmsNetId sourceAmsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsNetId.class, AmsNetId.staticParse(readBuffer)), readBuffer), WithOption.WithName("sourceAmsNetId"));
 
     // Simple Field: sourceAmsPort
     int sourceAmsPort = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sourceAmsPort"));

@@ -79,13 +79,13 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: itemToMonitor
-    ReadValueId itemToMonitor = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ReadValueId) ReadValueId.staticParse(readBuffer, (int) (628)), readBuffer), WithOption.WithName("itemToMonitor"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ReadValueId itemToMonitor = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ReadValueId.class, ReadValueId.staticParse(readBuffer, (int) (628))), readBuffer), WithOption.WithName("itemToMonitor"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field (enum): monitoringMode
     MonitoringMode monitoringMode = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(MonitoringMode::enumForValue, DataReaderFactory.readUnsignedLong(readBuffer, 32)), WithOption.WithName("monitoringMode"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: requestedParameters
-    MonitoringParameters requestedParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MonitoringParameters) MonitoringParameters.staticParse(readBuffer, (int) (742)), readBuffer), WithOption.WithName("requestedParameters"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    MonitoringParameters requestedParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MonitoringParameters.class, MonitoringParameters.staticParse(readBuffer, (int) (742))), readBuffer), WithOption.WithName("requestedParameters"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(itemToMonitor, monitoringMode, requestedParameters);

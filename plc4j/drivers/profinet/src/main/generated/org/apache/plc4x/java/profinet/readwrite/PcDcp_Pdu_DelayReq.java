@@ -141,7 +141,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     short parameterLength = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 9), PARAMETERLENGTH, WithOption.WithName("parameterLength"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: portMacAddress
-    MacAddress portMacAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MacAddress) MacAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("portMacAddress"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    MacAddress portMacAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MacAddress.class, MacAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("portMacAddress"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Const Field: endType
     byte endType = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedByte(readBuffer, 7), ENDTYPE, WithOption.WithName("endType"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));

@@ -62,7 +62,7 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 5), (byte) 0x00, WithOption.WithName("SDOInitiateDownloadResponse.reserved0"));
 
     // Simple Field: address
-    IndexAddress address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IndexAddress) IndexAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("address"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    IndexAddress address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IndexAddress.class, IndexAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("address"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readSignedInt(readBuffer, 32), (int) 0x00, WithOption.WithName("SDOInitiateDownloadResponse.reserved2"));

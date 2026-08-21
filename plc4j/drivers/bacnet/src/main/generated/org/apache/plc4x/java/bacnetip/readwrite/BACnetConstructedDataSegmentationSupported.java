@@ -78,7 +78,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: segmentationSupported
-    BACnetSegmentationTagged segmentationSupported = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSegmentationTagged) BACnetSegmentationTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("segmentationSupported"));
+    BACnetSegmentationTagged segmentationSupported = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSegmentationTagged.class, BACnetSegmentationTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("segmentationSupported"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetSegmentationTagged actualValue = FieldReaderFactory.readVirtualField(BACnetSegmentationTagged.class, segmentationSupported, WithOption.WithName("actualValue"));

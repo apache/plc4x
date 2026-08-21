@@ -63,7 +63,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     int noOfDataValues = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfDataValues"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: dataValues
-    List<DataValue> dataValues = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (DataValue) DataValue.staticParse(readBuffer), readBuffer), noOfDataValues, WithOption.WithName("dataValues"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<DataValue> dataValues = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DataValue.class, DataValue.staticParse(readBuffer)), readBuffer), noOfDataValues, WithOption.WithName("dataValues"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(dataValues);

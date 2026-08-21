@@ -78,7 +78,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lockStatus
-    BACnetLockStatusTagged lockStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLockStatusTagged) BACnetLockStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("lockStatus"));
+    BACnetLockStatusTagged lockStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLockStatusTagged.class, BACnetLockStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("lockStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLockStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLockStatusTagged.class, lockStatus, WithOption.WithName("actualValue"));

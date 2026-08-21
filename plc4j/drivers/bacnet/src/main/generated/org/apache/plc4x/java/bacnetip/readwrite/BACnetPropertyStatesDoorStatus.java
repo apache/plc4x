@@ -52,7 +52,7 @@ public class BACnetPropertyStatesDoorStatus extends BACnetPropertyStates impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: doorStatus
-    BACnetDoorStatusTagged doorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDoorStatusTagged) BACnetDoorStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("doorStatus"));
+    BACnetDoorStatusTagged doorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDoorStatusTagged.class, BACnetDoorStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("doorStatus"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(doorStatus);

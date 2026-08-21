@@ -52,7 +52,7 @@ public class BACnetPropertyStatesNodeType extends BACnetPropertyStates implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nodeType
-    BACnetNodeTypeTagged nodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNodeTypeTagged) BACnetNodeTypeTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("nodeType"));
+    BACnetNodeTypeTagged nodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNodeTypeTagged.class, BACnetNodeTypeTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("nodeType"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(nodeType);

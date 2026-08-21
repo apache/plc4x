@@ -81,7 +81,7 @@ public class Plc4xTagValueResponse implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: tag
-    Plc4xTag tag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Plc4xTag) Plc4xTag.staticParse(readBuffer), readBuffer), WithOption.WithName("tag"));
+    Plc4xTag tag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Plc4xTag.class, Plc4xTag.staticParse(readBuffer)), readBuffer), WithOption.WithName("tag"));
 
     // Simple Field (enum): responseCode
     Plc4xResponseCode responseCode = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(Plc4xResponseCode::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("responseCode"));
@@ -90,7 +90,7 @@ public class Plc4xTagValueResponse implements Message {
     Plc4xValueType valueType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(Plc4xValueType::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("valueType"));
 
     // Optional Field (conditional): value
-    PlcValue value = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (PlcValue) Plc4xValue.staticParse(readBuffer, (org.apache.plc4x.java.plc4x.readwrite.Plc4xValueType) (valueType)), readBuffer), (valueType) != (Plc4xValueType.NULL), WithOption.WithName("value"));
+    PlcValue value = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PlcValue.class, Plc4xValue.staticParse(readBuffer, (org.apache.plc4x.java.plc4x.readwrite.Plc4xValueType) (valueType))), readBuffer), (valueType) != (Plc4xValueType.NULL), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new Plc4xTagValueResponse(tag, responseCode, valueType, value);

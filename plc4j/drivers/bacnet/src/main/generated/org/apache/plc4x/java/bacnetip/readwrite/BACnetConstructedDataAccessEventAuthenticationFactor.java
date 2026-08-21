@@ -78,7 +78,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: accessEventAuthenticationFactor
-    BACnetAuthenticationFactor accessEventAuthenticationFactor = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationFactor) BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer), WithOption.WithName("accessEventAuthenticationFactor"));
+    BACnetAuthenticationFactor accessEventAuthenticationFactor = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationFactor.class, BACnetAuthenticationFactor.staticParse(readBuffer)), readBuffer), WithOption.WithName("accessEventAuthenticationFactor"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAuthenticationFactor actualValue = FieldReaderFactory.readVirtualField(BACnetAuthenticationFactor.class, accessEventAuthenticationFactor, WithOption.WithName("actualValue"));

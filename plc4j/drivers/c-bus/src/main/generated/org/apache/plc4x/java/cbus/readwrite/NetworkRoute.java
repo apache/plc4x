@@ -62,10 +62,10 @@ public class NetworkRoute implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkPCI
-    NetworkProtocolControlInformation networkPCI = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NetworkProtocolControlInformation) NetworkProtocolControlInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("networkPCI"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NetworkProtocolControlInformation networkPCI = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NetworkProtocolControlInformation.class, NetworkProtocolControlInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("networkPCI"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: additionalBridgeAddresses
-    List<BridgeAddress> additionalBridgeAddresses = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (BridgeAddress) BridgeAddress.staticParse(readBuffer), readBuffer), (networkPCI.getStackDepth()) - (1), WithOption.WithName("additionalBridgeAddresses"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<BridgeAddress> additionalBridgeAddresses = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BridgeAddress.class, BridgeAddress.staticParse(readBuffer)), readBuffer), (networkPCI.getStackDepth()) - (1), WithOption.WithName("additionalBridgeAddresses"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new NetworkRoute(networkPCI, additionalBridgeAddresses);

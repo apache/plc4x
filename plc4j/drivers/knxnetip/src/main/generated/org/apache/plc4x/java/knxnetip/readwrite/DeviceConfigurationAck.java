@@ -59,7 +59,7 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: deviceConfigurationAckDataBlock
-    DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DeviceConfigurationAckDataBlock) DeviceConfigurationAckDataBlock.staticParse(readBuffer), readBuffer), WithOption.WithName("deviceConfigurationAckDataBlock"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DeviceConfigurationAckDataBlock.class, DeviceConfigurationAckDataBlock.staticParse(readBuffer)), readBuffer), WithOption.WithName("deviceConfigurationAckDataBlock"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(deviceConfigurationAckDataBlock);

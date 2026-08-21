@@ -122,10 +122,10 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: eventMessageTexts
-    List<BACnetOptionalCharacterString> eventMessageTexts = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetOptionalCharacterString) BACnetOptionalCharacterString.staticParse(readBuffer), readBuffer), () -> (boolean) org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("eventMessageTexts"));
+    List<BACnetOptionalCharacterString> eventMessageTexts = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOptionalCharacterString.class, BACnetOptionalCharacterString.staticParse(readBuffer)), readBuffer), () -> (boolean) org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("eventMessageTexts"));
 
     // Virtual Field: toOffnormalText (doesn't parse anything, just makes the value available)
     BACnetOptionalCharacterString toOffnormalText = FieldReaderFactory.readVirtualField(BACnetOptionalCharacterString.class, (((StaticHelper.COUNT(eventMessageTexts)) == (3)) ? eventMessageTexts.get(0) : null), WithOption.WithName("toOffnormalText"));

@@ -52,7 +52,7 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: calReply
-    CALReply calReply = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CALReply) CALReply.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions), (org.apache.plc4x.java.cbus.readwrite.RequestContext) (requestContext)), readBuffer), WithOption.WithName("calReply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CALReply calReply = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CALReply.class, CALReply.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions), (org.apache.plc4x.java.cbus.readwrite.RequestContext) (requestContext))), readBuffer), WithOption.WithName("calReply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new EncodedReplyBuilderImpl(calReply);

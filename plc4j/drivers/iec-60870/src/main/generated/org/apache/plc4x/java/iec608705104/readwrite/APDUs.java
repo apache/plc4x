@@ -50,7 +50,7 @@ public class APDUs implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: apdus
-    List<APDU> apdus = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (APDU) APDU.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.finished(readBuffer), WithOption.WithName("apdus"));
+    List<APDU> apdus = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(APDU.class, APDU.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.finished(readBuffer), WithOption.WithName("apdus"));
 
     readBuffer.popContext();
     return new APDUs(apdus);

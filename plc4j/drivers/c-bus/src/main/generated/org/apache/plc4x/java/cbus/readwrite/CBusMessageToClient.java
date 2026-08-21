@@ -60,7 +60,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reply
-    ReplyOrConfirmation reply = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ReplyOrConfirmation) ReplyOrConfirmation.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions), (org.apache.plc4x.java.cbus.readwrite.RequestContext) (requestContext)), readBuffer), WithOption.WithName("reply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ReplyOrConfirmation reply = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ReplyOrConfirmation.class, ReplyOrConfirmation.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.CBusOptions) (cBusOptions), (org.apache.plc4x.java.cbus.readwrite.RequestContext) (requestContext))), readBuffer), WithOption.WithName("reply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CBusMessageBuilderImpl(reply);

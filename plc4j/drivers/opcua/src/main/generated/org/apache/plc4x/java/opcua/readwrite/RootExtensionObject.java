@@ -59,7 +59,7 @@ public class RootExtensionObject extends ExtensionObject implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: body
-    ExtensionObjectDefinition body = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExtensionObjectDefinition) ExtensionObjectDefinition.staticParse(readBuffer, (int) (extensionId)), readBuffer), WithOption.WithName("body"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExtensionObjectDefinition body = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObjectDefinition.class, ExtensionObjectDefinition.staticParse(readBuffer, (int) (extensionId))), readBuffer), WithOption.WithName("body"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectBuilderImpl(body);

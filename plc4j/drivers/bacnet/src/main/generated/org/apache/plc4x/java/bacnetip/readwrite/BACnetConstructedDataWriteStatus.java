@@ -78,7 +78,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: writeStatus
-    BACnetWriteStatusTagged writeStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetWriteStatusTagged) BACnetWriteStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("writeStatus"));
+    BACnetWriteStatusTagged writeStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetWriteStatusTagged.class, BACnetWriteStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("writeStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetWriteStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetWriteStatusTagged.class, writeStatus, WithOption.WithName("actualValue"));

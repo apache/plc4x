@@ -72,7 +72,7 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: floorText
-    List<BACnetEventLogRecord> floorText = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetEventLogRecord) BACnetEventLogRecord.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("floorText"));
+    List<BACnetEventLogRecord> floorText = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventLogRecord.class, BACnetEventLogRecord.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("floorText"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(floorText);

@@ -70,7 +70,7 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
     short len = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 8), LEN, WithOption.WithName("len"));
 
     // Simple Field: relativeTimestamp
-    RelativeTimestamp relativeTimestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RelativeTimestamp) RelativeTimestamp.staticParse(readBuffer), readBuffer), WithOption.WithName("relativeTimestamp"));
+    RelativeTimestamp relativeTimestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RelativeTimestamp.class, RelativeTimestamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("relativeTimestamp"));
 
     readBuffer.popContext();
     return new CEMIAdditionalInformationBuilderImpl(relativeTimestamp);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: passbackMode
-    BACnetAccessPassbackModeTagged passbackMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessPassbackModeTagged) BACnetAccessPassbackModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("passbackMode"));
+    BACnetAccessPassbackModeTagged passbackMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessPassbackModeTagged.class, BACnetAccessPassbackModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("passbackMode"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccessPassbackModeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAccessPassbackModeTagged.class, passbackMode, WithOption.WithName("actualValue"));

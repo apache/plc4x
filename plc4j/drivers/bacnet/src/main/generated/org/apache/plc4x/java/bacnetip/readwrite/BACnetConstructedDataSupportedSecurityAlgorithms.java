@@ -72,7 +72,7 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: supportedSecurityAlgorithms
-    List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("supportedSecurityAlgorithms"));
+    List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("supportedSecurityAlgorithms"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(supportedSecurityAlgorithms);

@@ -93,10 +93,10 @@ public abstract class COTPPacket implements Message {
     }
 
     // Array Field: parameters
-    List<COTPParameter> parameters = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (COTPParameter) COTPParameter.staticParse(readBuffer, (short) ((((headerLength) + (1))) - ((readBuffer.getPositionInBits() - startPos)))), readBuffer), (((headerLength) + (1))) - ((readBuffer.getPositionInBits() - startPos)), WithOption.WithName("parameters"));
+    List<COTPParameter> parameters = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(COTPParameter.class, COTPParameter.staticParse(readBuffer, (short) ((((headerLength) + (1))) - ((readBuffer.getPositionInBits() - startPos))))), readBuffer), (((headerLength) + (1))) - ((readBuffer.getPositionInBits() - startPos)), WithOption.WithName("parameters"));
 
     // Optional Field (conditional): payload
-    S7Message payload = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (S7Message) S7Message.staticParse(readBuffer), readBuffer), ((readBuffer.getPositionInBits() - startPos)) < (cotpLen), WithOption.WithName("payload"));
+    S7Message payload = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7Message.class, S7Message.staticParse(readBuffer)), readBuffer), ((readBuffer.getPositionInBits() - startPos)) < (cotpLen), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return builder.build(parameters, payload);

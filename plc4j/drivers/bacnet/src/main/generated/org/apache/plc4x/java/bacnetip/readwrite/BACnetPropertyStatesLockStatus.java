@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lockStatus
-    BACnetLockStatusTagged lockStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLockStatusTagged) BACnetLockStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("lockStatus"));
+    BACnetLockStatusTagged lockStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLockStatusTagged.class, BACnetLockStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("lockStatus"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(lockStatus);

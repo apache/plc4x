@@ -62,7 +62,7 @@ public class CBusPointToMultiPointCommandStatus extends CBusPointToMultiPointCom
     FieldReaderFactory.readReservedField(DataReaderFactory.readByte(readBuffer, 8), (byte) 0x00, WithOption.WithName("CBusPointToMultiPointCommandStatus.reserved1"));
 
     // Simple Field: statusRequest
-    StatusRequest statusRequest = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (StatusRequest) StatusRequest.staticParse(readBuffer), readBuffer), WithOption.WithName("statusRequest"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    StatusRequest statusRequest = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusRequest.class, StatusRequest.staticParse(readBuffer)), readBuffer), WithOption.WithName("statusRequest"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CBusPointToMultiPointCommandBuilderImpl(statusRequest);

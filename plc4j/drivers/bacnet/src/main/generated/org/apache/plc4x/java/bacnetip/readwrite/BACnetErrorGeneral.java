@@ -58,7 +58,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: error
-    Error error = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Error) Error.staticParse(readBuffer), readBuffer), WithOption.WithName("error"));
+    Error error = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Error.class, Error.staticParse(readBuffer)), readBuffer), WithOption.WithName("error"));
 
     readBuffer.popContext();
     return new BACnetErrorBuilderImpl(error);

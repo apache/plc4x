@@ -79,10 +79,10 @@ public class GetAttributeAllRequest extends CipServiceRequest implements Message
     short requestPathSize = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("requestPathSize"));
 
     // Simple Field: classSegment
-    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("classSegment"));
+    PathSegment classSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("classSegment"));
 
     // Simple Field: instanceSegment
-    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PathSegment) PathSegment.staticParse(readBuffer), readBuffer), WithOption.WithName("instanceSegment"));
+    PathSegment instanceSegment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PathSegment.class, PathSegment.staticParse(readBuffer)), readBuffer), WithOption.WithName("instanceSegment"));
 
     readBuffer.popContext();
     return new CipServiceRequestBuilderImpl(classSegment, instanceSegment);

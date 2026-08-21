@@ -84,13 +84,13 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     int noOfPublishedDataSets = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfPublishedDataSets"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: publishedDataSets
-    List<PublishedDataSetDataType> publishedDataSets = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PublishedDataSetDataType) PublishedDataSetDataType.staticParse(readBuffer, (int) (15580)), readBuffer), noOfPublishedDataSets, WithOption.WithName("publishedDataSets"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PublishedDataSetDataType> publishedDataSets = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PublishedDataSetDataType.class, PublishedDataSetDataType.staticParse(readBuffer, (int) (15580))), readBuffer), noOfPublishedDataSets, WithOption.WithName("publishedDataSets"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfConnections
     int noOfConnections = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfConnections"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: connections
-    List<PubSubConnectionDataType> connections = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PubSubConnectionDataType) PubSubConnectionDataType.staticParse(readBuffer, (int) (15619)), readBuffer), noOfConnections, WithOption.WithName("connections"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PubSubConnectionDataType> connections = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PubSubConnectionDataType.class, PubSubConnectionDataType.staticParse(readBuffer, (int) (15619))), readBuffer), noOfConnections, WithOption.WithName("connections"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 7), (byte) 0x00, WithOption.WithName("PubSubConfigurationDataType.reserved4"));

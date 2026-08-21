@@ -74,7 +74,7 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadObjectIdentifier payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadObjectIdentifier) BACnetTagPayloadObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadObjectIdentifier payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadObjectIdentifier.class, BACnetTagPayloadObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: objectType (doesn't parse anything, just makes the value available)
     BACnetObjectType objectType = FieldReaderFactory.readVirtualField(BACnetObjectType.class, payload.getObjectType(), WithOption.WithName("objectType"));

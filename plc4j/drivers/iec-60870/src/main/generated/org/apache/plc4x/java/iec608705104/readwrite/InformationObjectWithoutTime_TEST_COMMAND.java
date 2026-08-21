@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_TEST_COMMAND extends InformationObject
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fbp
-    FixedTestBitPatternTwoOctet fbp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (FixedTestBitPatternTwoOctet) FixedTestBitPatternTwoOctet.staticParse(readBuffer), readBuffer), WithOption.WithName("fbp"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    FixedTestBitPatternTwoOctet fbp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(FixedTestBitPatternTwoOctet.class, FixedTestBitPatternTwoOctet.staticParse(readBuffer)), readBuffer), WithOption.WithName("fbp"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(fbp);

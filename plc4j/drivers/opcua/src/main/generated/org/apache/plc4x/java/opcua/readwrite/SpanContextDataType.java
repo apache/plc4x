@@ -69,7 +69,7 @@ public class SpanContextDataType extends ExtensionObjectDefinition implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: traceId
-    GuidValue traceId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (GuidValue) GuidValue.staticParse(readBuffer), readBuffer), WithOption.WithName("traceId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    GuidValue traceId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(GuidValue.class, GuidValue.staticParse(readBuffer)), readBuffer), WithOption.WithName("traceId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: spanId
     BigInteger spanId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedBigInteger(readBuffer, 64), WithOption.WithName("spanId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

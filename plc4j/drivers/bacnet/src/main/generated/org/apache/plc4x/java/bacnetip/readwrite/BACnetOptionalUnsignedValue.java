@@ -52,7 +52,7 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: unsignedValue
-    BACnetApplicationTagUnsignedInteger unsignedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("unsignedValue"));
+    BACnetApplicationTagUnsignedInteger unsignedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("unsignedValue"));
 
     readBuffer.popContext();
     return new BACnetOptionalUnsignedBuilderImpl(unsignedValue);

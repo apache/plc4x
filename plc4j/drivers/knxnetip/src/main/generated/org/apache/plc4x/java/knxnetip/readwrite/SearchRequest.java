@@ -59,7 +59,7 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: hpaiIDiscoveryEndpoint
-    HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HPAIDiscoveryEndpoint) HPAIDiscoveryEndpoint.staticParse(readBuffer), readBuffer), WithOption.WithName("hpaiIDiscoveryEndpoint"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HPAIDiscoveryEndpoint.class, HPAIDiscoveryEndpoint.staticParse(readBuffer)), readBuffer), WithOption.WithName("hpaiIDiscoveryEndpoint"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(hpaiIDiscoveryEndpoint);

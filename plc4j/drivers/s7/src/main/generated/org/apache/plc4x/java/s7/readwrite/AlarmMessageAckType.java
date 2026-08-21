@@ -77,7 +77,7 @@ public class AlarmMessageAckType implements Message {
     short numberOfObjects = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfObjects"));
 
     // Array Field: messageObjects
-    List<AlarmMessageObjectAckType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AlarmMessageObjectAckType) AlarmMessageObjectAckType.staticParse(readBuffer), readBuffer), numberOfObjects, WithOption.WithName("messageObjects"));
+    List<AlarmMessageObjectAckType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AlarmMessageObjectAckType.class, AlarmMessageObjectAckType.staticParse(readBuffer)), readBuffer), numberOfObjects, WithOption.WithName("messageObjects"));
 
     readBuffer.popContext();
     return new AlarmMessageAckType(functionId, numberOfObjects, messageObjects);

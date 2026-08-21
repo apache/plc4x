@@ -56,7 +56,7 @@ public class BinaryExtensionObjectWithMask extends ExtensionObjectWithMask imple
     int bodyLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("bodyLength"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: body
-    ExtensionObjectDefinition body = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExtensionObjectDefinition) ExtensionObjectDefinition.staticParse(readBuffer, (int) (extensionId)), readBuffer), WithOption.WithName("body"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExtensionObjectDefinition body = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObjectDefinition.class, ExtensionObjectDefinition.staticParse(readBuffer, (int) (extensionId))), readBuffer), WithOption.WithName("body"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectWithMaskBuilderImpl(body);

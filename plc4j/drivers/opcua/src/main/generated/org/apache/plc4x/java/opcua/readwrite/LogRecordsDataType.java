@@ -63,7 +63,7 @@ public class LogRecordsDataType extends ExtensionObjectDefinition implements Mes
     int noOfLogRecordArray = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfLogRecordArray"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: logRecordArray
-    List<LogRecord> logRecordArray = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (LogRecord) LogRecord.staticParse(readBuffer, (int) (19363)), readBuffer), noOfLogRecordArray, WithOption.WithName("logRecordArray"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<LogRecord> logRecordArray = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LogRecord.class, LogRecord.staticParse(readBuffer, (int) (19363))), readBuffer), noOfLogRecordArray, WithOption.WithName("logRecordArray"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(logRecordArray);

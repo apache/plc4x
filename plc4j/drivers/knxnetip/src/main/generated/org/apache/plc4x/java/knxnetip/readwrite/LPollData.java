@@ -89,7 +89,7 @@ public class LPollData extends LDataFrame implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: sourceAddress
-    KnxAddress sourceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (KnxAddress) KnxAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("sourceAddress"));
+    KnxAddress sourceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(KnxAddress.class, KnxAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("sourceAddress"));
 
     // Array Field: targetAddress
     byte[] targetAddress = readBuffer.readBits(Math.toIntExact((2) * 8), WithOption.WithName("targetAddress"));

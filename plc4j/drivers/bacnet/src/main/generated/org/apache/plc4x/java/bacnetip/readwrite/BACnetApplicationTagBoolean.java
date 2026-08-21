@@ -58,7 +58,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadBoolean payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadBoolean) BACnetTagPayloadBoolean.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadBoolean payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadBoolean.class, BACnetTagPayloadBoolean.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     boolean actualValue = FieldReaderFactory.readVirtualField(boolean.class, payload.getValue(), WithOption.WithName("actualValue"));

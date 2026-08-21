@@ -118,7 +118,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
     short timeFactor = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("timeFactor"));
 
     // Array Field: item
-    List<CycServiceItemType> item = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (CycServiceItemType) CycServiceItemType.staticParse(readBuffer), readBuffer), itemsCount, WithOption.WithName("item"));
+    List<CycServiceItemType> item = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CycServiceItemType.class, CycServiceItemType.staticParse(readBuffer)), readBuffer), itemsCount, WithOption.WithName("item"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(itemsCount, timeBase, timeFactor, item);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataMultiStateInputInterfaceValue extends BACnetCo
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: interfaceValue
-    BACnetOptionalBinaryPV interfaceValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOptionalBinaryPV) BACnetOptionalBinaryPV.staticParse(readBuffer), readBuffer), WithOption.WithName("interfaceValue"));
+    BACnetOptionalBinaryPV interfaceValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOptionalBinaryPV.class, BACnetOptionalBinaryPV.staticParse(readBuffer)), readBuffer), WithOption.WithName("interfaceValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetOptionalBinaryPV actualValue = FieldReaderFactory.readVirtualField(BACnetOptionalBinaryPV.class, interfaceValue, WithOption.WithName("actualValue"));

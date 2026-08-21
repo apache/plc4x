@@ -240,10 +240,10 @@ public class BACnetEventParameterExtendedParameters implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Peek Field: peekedTagHeader
-    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("peekedTagHeader"));
+    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("peekedTagHeader"));
 
     // Virtual Field: peekedTagNumber (doesn't parse anything, just makes the value available)
     short peekedTagNumber = FieldReaderFactory.readVirtualField(short.class, peekedTagHeader.getActualTagNumber(), WithOption.WithName("peekedTagNumber"));
@@ -255,49 +255,49 @@ public class BACnetEventParameterExtendedParameters implements Message {
     boolean isClosingTag = FieldReaderFactory.readVirtualField(boolean.class, (peekedTagHeader.getLengthValueType()) == (0x7), WithOption.WithName("isClosingTag"));
 
     // Optional Field (conditional): nullValue
-    BACnetApplicationTagNull nullValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagNull) BACnetApplicationTagNull.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x0)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("nullValue"));
+    BACnetApplicationTagNull nullValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagNull.class, BACnetApplicationTagNull.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x0)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("nullValue"));
 
     // Optional Field (conditional): realValue
-    BACnetApplicationTagReal realValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x4)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("realValue"));
+    BACnetApplicationTagReal realValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x4)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("realValue"));
 
     // Optional Field (conditional): unsignedValue
-    BACnetApplicationTagUnsignedInteger unsignedValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x2)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("unsignedValue"));
+    BACnetApplicationTagUnsignedInteger unsignedValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x2)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("unsignedValue"));
 
     // Optional Field (conditional): booleanValue
-    BACnetApplicationTagBoolean booleanValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x1)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("booleanValue"));
+    BACnetApplicationTagBoolean booleanValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x1)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("booleanValue"));
 
     // Optional Field (conditional): integerValue
-    BACnetApplicationTagSignedInteger integerValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x3)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("integerValue"));
+    BACnetApplicationTagSignedInteger integerValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x3)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("integerValue"));
 
     // Optional Field (conditional): doubleValue
-    BACnetApplicationTagDouble doubleValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDouble) BACnetApplicationTagDouble.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x5)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("doubleValue"));
+    BACnetApplicationTagDouble doubleValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDouble.class, BACnetApplicationTagDouble.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x5)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("doubleValue"));
 
     // Optional Field (conditional): octetStringValue
-    BACnetApplicationTagOctetString octetStringValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x6)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("octetStringValue"));
+    BACnetApplicationTagOctetString octetStringValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x6)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("octetStringValue"));
 
     // Optional Field (conditional): characterStringValue
-    BACnetApplicationTagCharacterString characterStringValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x7)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("characterStringValue"));
+    BACnetApplicationTagCharacterString characterStringValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x7)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("characterStringValue"));
 
     // Optional Field (conditional): bitStringValue
-    BACnetApplicationTagBitString bitStringValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBitString) BACnetApplicationTagBitString.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x8)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("bitStringValue"));
+    BACnetApplicationTagBitString bitStringValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBitString.class, BACnetApplicationTagBitString.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x8)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("bitStringValue"));
 
     // Optional Field (conditional): enumeratedValue
-    BACnetApplicationTagEnumerated enumeratedValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagEnumerated) BACnetApplicationTagEnumerated.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0x9)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("enumeratedValue"));
+    BACnetApplicationTagEnumerated enumeratedValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagEnumerated.class, BACnetApplicationTagEnumerated.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0x9)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("enumeratedValue"));
 
     // Optional Field (conditional): dateValue
-    BACnetApplicationTagDate dateValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0xA)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("dateValue"));
+    BACnetApplicationTagDate dateValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0xA)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("dateValue"));
 
     // Optional Field (conditional): timeValue
-    BACnetApplicationTagTime timeValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), (((peekedTagNumber) == (0xB)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("timeValue"));
+    BACnetApplicationTagTime timeValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), (((peekedTagNumber) == (0xB)) && (!(isOpeningTag))) && (!(isClosingTag)), WithOption.WithName("timeValue"));
 
     // Optional Field (conditional): objectIdentifier
-    BACnetApplicationTagObjectIdentifier objectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), ((peekedTagNumber) == (0xC)) && (!(isOpeningTag)), WithOption.WithName("objectIdentifier"));
+    BACnetApplicationTagObjectIdentifier objectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), ((peekedTagNumber) == (0xC)) && (!(isOpeningTag)), WithOption.WithName("objectIdentifier"));
 
     // Optional Field (conditional): reference
-    BACnetDeviceObjectPropertyReferenceEnclosed reference = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReferenceEnclosed) BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), (isOpeningTag) && (!(isClosingTag)), WithOption.WithName("reference"));
+    BACnetDeviceObjectPropertyReferenceEnclosed reference = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReferenceEnclosed.class, BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), (isOpeningTag) && (!(isClosingTag)), WithOption.WithName("reference"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetEventParameterExtendedParameters(openingTag, peekedTagHeader, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag);

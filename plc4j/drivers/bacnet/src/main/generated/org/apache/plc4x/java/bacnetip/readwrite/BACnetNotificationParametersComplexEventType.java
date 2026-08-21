@@ -54,7 +54,7 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: listOfValues
-    BACnetPropertyValues listOfValues = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPropertyValues) BACnetPropertyValues.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument)), readBuffer), WithOption.WithName("listOfValues"));
+    BACnetPropertyValues listOfValues = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPropertyValues.class, BACnetPropertyValues.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument))), readBuffer), WithOption.WithName("listOfValues"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersBuilderImpl(listOfValues);

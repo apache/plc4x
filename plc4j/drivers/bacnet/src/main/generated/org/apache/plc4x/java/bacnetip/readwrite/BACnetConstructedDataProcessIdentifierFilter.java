@@ -78,7 +78,7 @@ public class BACnetConstructedDataProcessIdentifierFilter extends BACnetConstruc
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: processIdentifierFilter
-    BACnetProcessIdSelection processIdentifierFilter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProcessIdSelection) BACnetProcessIdSelection.staticParse(readBuffer), readBuffer), WithOption.WithName("processIdentifierFilter"));
+    BACnetProcessIdSelection processIdentifierFilter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProcessIdSelection.class, BACnetProcessIdSelection.staticParse(readBuffer)), readBuffer), WithOption.WithName("processIdentifierFilter"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetProcessIdSelection actualValue = FieldReaderFactory.readVirtualField(BACnetProcessIdSelection.class, processIdentifierFilter, WithOption.WithName("actualValue"));

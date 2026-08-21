@@ -108,7 +108,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     int numSubmodules = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numSubmodules"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: submodules
-    List<PnIoCm_Submodule> submodules = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_Submodule) PnIoCm_Submodule.staticParse(readBuffer), readBuffer), numSubmodules, WithOption.WithName("submodules"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_Submodule> submodules = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_Submodule.class, PnIoCm_Submodule.staticParse(readBuffer)), readBuffer), numSubmodules, WithOption.WithName("submodules"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_ExpectedSubmoduleBlockReqApi(slotNumber, moduleIdentNumber, moduleProperties, submodules);

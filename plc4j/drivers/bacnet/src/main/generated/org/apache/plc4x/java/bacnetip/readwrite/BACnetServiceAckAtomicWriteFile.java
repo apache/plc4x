@@ -60,7 +60,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileStartPosition
-    BACnetContextTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagSignedInteger) BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER)), readBuffer), WithOption.WithName("fileStartPosition"));
+    BACnetContextTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagSignedInteger.class, BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER))), readBuffer), WithOption.WithName("fileStartPosition"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(fileStartPosition);

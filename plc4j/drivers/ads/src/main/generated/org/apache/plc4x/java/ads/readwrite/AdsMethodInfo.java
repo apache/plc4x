@@ -257,7 +257,7 @@ public class AdsMethodInfo implements Message {
     short commentTerminator = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 8), COMMENTTERMINATOR, WithOption.WithName("commentTerminator"));
 
     // Array Field: parameters
-    List<AdsMethodParam> parameters = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsMethodParam) AdsMethodParam.staticParse(readBuffer), readBuffer), parameterCount, WithOption.WithName("parameters"));
+    List<AdsMethodParam> parameters = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsMethodParam.class, AdsMethodParam.staticParse(readBuffer)), readBuffer), parameterCount, WithOption.WithName("parameters"));
 
     // Array Field: rest
     byte[] rest = readBuffer.readBits(Math.toIntExact(((methodInfoLength) - ((((readBuffer.getPositionInBits() - startPos)) / (8)))) * 8), WithOption.WithName("rest"));

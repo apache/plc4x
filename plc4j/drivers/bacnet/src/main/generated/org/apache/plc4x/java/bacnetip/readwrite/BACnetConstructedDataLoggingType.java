@@ -78,7 +78,7 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: loggingType
-    BACnetLoggingTypeTagged loggingType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLoggingTypeTagged) BACnetLoggingTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("loggingType"));
+    BACnetLoggingTypeTagged loggingType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLoggingTypeTagged.class, BACnetLoggingTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("loggingType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLoggingTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLoggingTypeTagged.class, loggingType, WithOption.WithName("actualValue"));

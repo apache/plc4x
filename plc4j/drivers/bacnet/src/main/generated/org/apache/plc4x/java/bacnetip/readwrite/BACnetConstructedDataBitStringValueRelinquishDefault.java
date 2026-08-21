@@ -78,7 +78,7 @@ public class BACnetConstructedDataBitStringValueRelinquishDefault extends BACnet
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: relinquishDefault
-    BACnetApplicationTagBitString relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBitString) BACnetApplicationTagBitString.staticParse(readBuffer), readBuffer), WithOption.WithName("relinquishDefault"));
+    BACnetApplicationTagBitString relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBitString.class, BACnetApplicationTagBitString.staticParse(readBuffer)), readBuffer), WithOption.WithName("relinquishDefault"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBitString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBitString.class, relinquishDefault, WithOption.WithName("actualValue"));

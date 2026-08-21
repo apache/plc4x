@@ -68,7 +68,7 @@ public class Services implements Message {
     List<Integer> offsets = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedInt(readBuffer, 16), serviceNb, WithOption.WithName("offsets"));
 
     // Array Field: services
-    List<CipService> services = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (CipService) CipService.staticParse(readBuffer, (boolean) (false), (int) ((servicesLen) / (serviceNb))), readBuffer), serviceNb, WithOption.WithName("services"));
+    List<CipService> services = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CipService.class, CipService.staticParse(readBuffer, (boolean) (false), (int) ((servicesLen) / (serviceNb)))), readBuffer), serviceNb, WithOption.WithName("services"));
 
     readBuffer.popContext();
     return new Services(offsets, services);

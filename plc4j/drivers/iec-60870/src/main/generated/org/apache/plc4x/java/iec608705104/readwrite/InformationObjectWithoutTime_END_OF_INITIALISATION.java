@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_END_OF_INITIALISATION extends Informat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: coi
-    CauseOfInitialization coi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CauseOfInitialization) CauseOfInitialization.staticParse(readBuffer), readBuffer), WithOption.WithName("coi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CauseOfInitialization coi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CauseOfInitialization.class, CauseOfInitialization.staticParse(readBuffer)), readBuffer), WithOption.WithName("coi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(coi);

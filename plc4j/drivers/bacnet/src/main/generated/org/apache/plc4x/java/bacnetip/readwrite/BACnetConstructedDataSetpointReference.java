@@ -78,7 +78,7 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: setpointReference
-    BACnetSetpointReference setpointReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSetpointReference) BACnetSetpointReference.staticParse(readBuffer), readBuffer), WithOption.WithName("setpointReference"));
+    BACnetSetpointReference setpointReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSetpointReference.class, BACnetSetpointReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("setpointReference"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetSetpointReference actualValue = FieldReaderFactory.readVirtualField(BACnetSetpointReference.class, setpointReference, WithOption.WithName("actualValue"));

@@ -60,7 +60,7 @@ public class RegulatingStepCommand implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: qoc
-    QualifierOfCommand qoc = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfCommand) QualifierOfCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("qoc"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfCommand qoc = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfCommand.class, QualifierOfCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("qoc"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: rcs
     byte rcs = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 2), WithOption.WithName("rcs"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

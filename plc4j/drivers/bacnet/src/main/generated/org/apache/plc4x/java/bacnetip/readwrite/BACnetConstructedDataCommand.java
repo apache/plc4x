@@ -77,7 +77,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: command
-    BACnetNetworkPortCommandTagged command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNetworkPortCommandTagged) BACnetNetworkPortCommandTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("command"));
+    BACnetNetworkPortCommandTagged command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNetworkPortCommandTagged.class, BACnetNetworkPortCommandTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("command"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetNetworkPortCommandTagged actualValue = FieldReaderFactory.readVirtualField(BACnetNetworkPortCommandTagged.class, command, WithOption.WithName("actualValue"));

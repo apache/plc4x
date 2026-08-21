@@ -128,7 +128,7 @@ public class LDataExtended extends LDataFrame implements Message {
     byte extendedFrameFormat = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 4), WithOption.WithName("extendedFrameFormat"));
 
     // Simple Field: sourceAddress
-    KnxAddress sourceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (KnxAddress) KnxAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("sourceAddress"));
+    KnxAddress sourceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(KnxAddress.class, KnxAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("sourceAddress"));
 
     // Array Field: destinationAddress
     byte[] destinationAddress = readBuffer.readBits(Math.toIntExact((2) * 8), WithOption.WithName("destinationAddress"));
@@ -137,7 +137,7 @@ public class LDataExtended extends LDataFrame implements Message {
     short dataLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("dataLength"));
 
     // Simple Field: apdu
-    Apdu apdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Apdu) Apdu.staticParse(readBuffer, (short) (dataLength)), readBuffer), WithOption.WithName("apdu"));
+    Apdu apdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Apdu.class, Apdu.staticParse(readBuffer, (short) (dataLength))), readBuffer), WithOption.WithName("apdu"));
 
     readBuffer.popContext();
     return new LDataFrameBuilderImpl(groupAddress, hopCount, extendedFrameFormat, sourceAddress, destinationAddress, apdu);

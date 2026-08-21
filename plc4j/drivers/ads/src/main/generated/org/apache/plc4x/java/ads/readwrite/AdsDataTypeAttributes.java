@@ -54,7 +54,7 @@ public class AdsDataTypeAttributes implements Message {
     int numAttributes = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numAttributes"));
 
     // Array Field: attributes
-    List<AdsAttributeEntry> attributes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsAttributeEntry) AdsAttributeEntry.staticParse(readBuffer), readBuffer), numAttributes, WithOption.WithName("attributes"));
+    List<AdsAttributeEntry> attributes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsAttributeEntry.class, AdsAttributeEntry.staticParse(readBuffer)), readBuffer), numAttributes, WithOption.WithName("attributes"));
 
     readBuffer.popContext();
     return new AdsDataTypeAttributes(attributes);

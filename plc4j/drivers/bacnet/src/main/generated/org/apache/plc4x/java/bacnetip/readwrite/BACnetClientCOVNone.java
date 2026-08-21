@@ -52,7 +52,7 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: defaultIncrement
-    BACnetApplicationTagNull defaultIncrement = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagNull) BACnetApplicationTagNull.staticParse(readBuffer), readBuffer), WithOption.WithName("defaultIncrement"));
+    BACnetApplicationTagNull defaultIncrement = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagNull.class, BACnetApplicationTagNull.staticParse(readBuffer)), readBuffer), WithOption.WithName("defaultIncrement"));
 
     readBuffer.popContext();
     return new BACnetClientCOVBuilderImpl(defaultIncrement);

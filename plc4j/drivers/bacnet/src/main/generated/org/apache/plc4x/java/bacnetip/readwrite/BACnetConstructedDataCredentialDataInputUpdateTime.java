@@ -77,7 +77,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: updateTime
-    BACnetTimeStamp updateTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("updateTime"));
+    BACnetTimeStamp updateTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("updateTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimeStamp actualValue = FieldReaderFactory.readVirtualField(BACnetTimeStamp.class, updateTime, WithOption.WithName("actualValue"));

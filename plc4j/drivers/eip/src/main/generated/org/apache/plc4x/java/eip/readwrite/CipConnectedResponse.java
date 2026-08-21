@@ -61,7 +61,7 @@ public class CipConnectedResponse extends CipServiceResponse implements Message 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field (conditional): data
-    CIPDataConnected data = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (CIPDataConnected) CIPDataConnected.staticParse(readBuffer), readBuffer), ((((serviceLen) - (4)) - (((2) * (extStatusSize))))) > (0), WithOption.WithName("data"));
+    CIPDataConnected data = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CIPDataConnected.class, CIPDataConnected.staticParse(readBuffer)), readBuffer), ((((serviceLen) - (4)) - (((2) * (extStatusSize))))) > (0), WithOption.WithName("data"));
 
     readBuffer.popContext();
     return new CipServiceResponseBuilderImpl(data);

@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueTime extends BACnetTimerStateChangeValue
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeValue
-    BACnetApplicationTagTime timeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeValue"));
+    BACnetApplicationTagTime timeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(timeValue);

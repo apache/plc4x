@@ -52,7 +52,7 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: weekNDay
-    BACnetWeekNDayTagged weekNDay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetWeekNDayTagged) BACnetWeekNDayTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("weekNDay"));
+    BACnetWeekNDayTagged weekNDay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetWeekNDayTagged.class, BACnetWeekNDayTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("weekNDay"));
 
     readBuffer.popContext();
     return new BACnetCalendarEntryBuilderImpl(weekNDay);

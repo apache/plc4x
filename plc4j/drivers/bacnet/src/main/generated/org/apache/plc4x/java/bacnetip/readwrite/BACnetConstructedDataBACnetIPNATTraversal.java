@@ -78,7 +78,7 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bacnetIPNATTraversal
-    BACnetApplicationTagBoolean bacnetIPNATTraversal = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("bacnetIPNATTraversal"));
+    BACnetApplicationTagBoolean bacnetIPNATTraversal = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("bacnetIPNATTraversal"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, bacnetIPNATTraversal, WithOption.WithName("actualValue"));

@@ -59,7 +59,7 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadSignedInteger payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadSignedInteger) BACnetTagPayloadSignedInteger.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadSignedInteger payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadSignedInteger.class, BACnetTagPayloadSignedInteger.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     long actualValue = FieldReaderFactory.readVirtualField(long.class, payload.getActualValue(), WithOption.WithName("actualValue"));

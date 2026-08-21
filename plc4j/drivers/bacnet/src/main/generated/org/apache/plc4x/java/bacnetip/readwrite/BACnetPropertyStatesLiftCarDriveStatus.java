@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: liftCarDriveStatus
-    BACnetLiftCarDriveStatusTagged liftCarDriveStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftCarDriveStatusTagged) BACnetLiftCarDriveStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("liftCarDriveStatus"));
+    BACnetLiftCarDriveStatusTagged liftCarDriveStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarDriveStatusTagged.class, BACnetLiftCarDriveStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("liftCarDriveStatus"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(liftCarDriveStatus);

@@ -123,7 +123,7 @@ public class RequestCommand extends Request implements Message {
     Checksum chksumDecoded = FieldReaderFactory.readVirtualField(Checksum.class, chksum, WithOption.WithName("chksumDecoded"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Optional Field: alpha
-    Alpha alpha = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (Alpha) Alpha.staticParse(readBuffer), readBuffer), WithOption.WithName("alpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    Alpha alpha = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Alpha.class, Alpha.staticParse(readBuffer)), readBuffer), WithOption.WithName("alpha"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new RequestBuilderImpl(cBusOptions, cbusCommand, chksum, alpha);

@@ -52,7 +52,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: binaryPv
-    BACnetBinaryPVTagged binaryPv = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetBinaryPVTagged) BACnetBinaryPVTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("binaryPv"));
+    BACnetBinaryPVTagged binaryPv = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetBinaryPVTagged.class, BACnetBinaryPVTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("binaryPv"));
 
     readBuffer.popContext();
     return new BACnetOptionalBinaryPVBuilderImpl(binaryPv);

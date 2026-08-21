@@ -58,7 +58,7 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadDouble payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadDouble) BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadDouble payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadDouble.class, BACnetTagPayloadDouble.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     double actualValue = FieldReaderFactory.readVirtualField(double.class, payload.getValue(), WithOption.WithName("actualValue"));

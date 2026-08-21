@@ -59,10 +59,10 @@ public class BACnetHostNPort implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: host
-    BACnetHostAddressEnclosed host = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetHostAddressEnclosed) BACnetHostAddressEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("host"));
+    BACnetHostAddressEnclosed host = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetHostAddressEnclosed.class, BACnetHostAddressEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("host"));
 
     // Simple Field: port
-    BACnetContextTagUnsignedInteger port = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("port"));
+    BACnetContextTagUnsignedInteger port = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("port"));
 
     readBuffer.popContext();
     return new BACnetHostNPort(host, port);

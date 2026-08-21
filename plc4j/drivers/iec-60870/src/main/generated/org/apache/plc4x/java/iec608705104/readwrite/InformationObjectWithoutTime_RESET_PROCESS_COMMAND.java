@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_RESET_PROCESS_COMMAND extends Informat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: qrp
-    QualifierOfResetProcessCommand qrp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfResetProcessCommand) QualifierOfResetProcessCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("qrp"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfResetProcessCommand qrp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfResetProcessCommand.class, QualifierOfResetProcessCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("qrp"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(qrp);

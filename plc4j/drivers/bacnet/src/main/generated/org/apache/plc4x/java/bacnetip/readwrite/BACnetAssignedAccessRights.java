@@ -61,10 +61,10 @@ public class BACnetAssignedAccessRights implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: assignedAccessRights
-    BACnetDeviceObjectReferenceEnclosed assignedAccessRights = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReferenceEnclosed) BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("assignedAccessRights"));
+    BACnetDeviceObjectReferenceEnclosed assignedAccessRights = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReferenceEnclosed.class, BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("assignedAccessRights"));
 
     // Simple Field: enable
-    BACnetContextTagBoolean enable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBoolean) BACnetContextTagBoolean.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN)), readBuffer), WithOption.WithName("enable"));
+    BACnetContextTagBoolean enable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBoolean.class, BACnetContextTagBoolean.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN))), readBuffer), WithOption.WithName("enable"));
 
     readBuffer.popContext();
     return new BACnetAssignedAccessRights(assignedAccessRights, enable);
