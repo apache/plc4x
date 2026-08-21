@@ -260,7 +260,7 @@ public class AdsMethodInfo implements Message {
     List<AdsMethodParam> parameters = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsMethodParam.class, AdsMethodParam.staticParse(readBuffer)), readBuffer), parameterCount, WithOption.WithName("parameters"));
 
     // Array Field: rest
-    byte[] rest = readBuffer.readBits(Math.toIntExact(((methodInfoLength) - ((((readBuffer.getPositionInBits() - startPos)) / (8)))) * 8), WithOption.WithName("rest"));
+    byte[] rest = readBuffer.readBits(Math.toIntExact(((methodInfoLength) - (((readBuffer.getPositionInBits() - startPos) / 8))) * 8), WithOption.WithName("rest"));
 
     readBuffer.popContext();
     return new AdsMethodInfo(header1, header2, header3, header4, header5, guid, methodId, methodFlags, name, typeName, comment, parameters, rest);

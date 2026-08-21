@@ -94,10 +94,10 @@ public abstract class COTPPacket implements Message {
     }
 
     // Array Field: parameters
-    List<COTPParameter> parameters = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(COTPParameter.class, COTPParameter.staticParse(readBuffer, (short) ((((headerLength) + (1))) - ((((readBuffer.getPositionInBits() - startPos)) / (8)))))), readBuffer), (((headerLength) + (1))) - ((((readBuffer.getPositionInBits() - startPos)) / (8))), WithOption.WithName("parameters"));
+    List<COTPParameter> parameters = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(COTPParameter.class, COTPParameter.staticParse(readBuffer, (short) ((((headerLength) + (1))) - (((readBuffer.getPositionInBits() - startPos) / 8))))), readBuffer), (((headerLength) + (1))) - (((readBuffer.getPositionInBits() - startPos) / 8)), WithOption.WithName("parameters"));
 
     // Array Field: payload
-    byte[] payload = readBuffer.readBits(Math.toIntExact(((cotpLen) - ((((readBuffer.getPositionInBits() - startPos)) / (8)))) * 8), WithOption.WithName("payload"));
+    byte[] payload = readBuffer.readBits(Math.toIntExact(((cotpLen) - (((readBuffer.getPositionInBits() - startPos) / 8))) * 8), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return builder.build(parameters, payload);

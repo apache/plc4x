@@ -1021,7 +1021,7 @@ func (m *_AdsSymbolTableEntry) parse(ctx context.Context, readBuffer utils.ReadB
 		m.Attributes = attributes
 	}
 
-	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((int32((positionAware.GetPos()-startPos))/int32(int32(8))))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((positionAware.GetPos()-startPos))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rest' field"))
 	}

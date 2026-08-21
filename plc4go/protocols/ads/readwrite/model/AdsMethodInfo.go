@@ -594,7 +594,7 @@ func (m *_AdsMethodInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	m.Parameters = parameters
 
-	rest, err := readBuffer.ReadByteArray("rest", int(int32(methodInfoLength)-int32((int32((positionAware.GetPos()-startPos))/int32(int32(8))))))
+	rest, err := readBuffer.ReadByteArray("rest", int(int32(methodInfoLength)-int32((positionAware.GetPos()-startPos))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rest' field"))
 	}

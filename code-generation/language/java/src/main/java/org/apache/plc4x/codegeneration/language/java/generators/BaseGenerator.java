@@ -661,10 +661,15 @@ public abstract class BaseGenerator<T> {
             }
             case VariableLiteral variableLiteral -> {
                 if ("curPos".equals(variableLiteral.getName())) {
+                    // curPos counts bytes, as it does in the Go and C generators, and as every
+                    // mspec using it assumes: it is compared against byte lengths taken off the
+                    // wire. Emitting the bit position instead made those comparisons wrong by a
+                    // factor of eight, which for a subtraction went negative and silently produced
+                    // an empty array.
                     if (isParse) {
-                        return CodeBlock.of("(readBuffer.getPositionInBits() - startPos)");
+                        return CodeBlock.of("((readBuffer.getPositionInBits() - startPos) / 8)");
                     } else {
-                        return CodeBlock.of("(writeBuffer.getPositionInBits() - startPos)");
+                        return CodeBlock.of("((writeBuffer.getPositionInBits() - startPos) / 8)");
                     }
                 }
                 // If this literal references an Enum type, then we have to output it differently.

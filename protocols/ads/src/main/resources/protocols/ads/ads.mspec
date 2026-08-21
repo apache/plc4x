@@ -931,7 +931,7 @@
     [array    byte                             guid                       count         'flagTypeGuid == true ? 16 : 0']
     [optional AdsDataTypeAttributes            attributes                 'flagAttributes'                             ]
     // Gobbling up the rest, but it seems there is only empty padding bytes in it.
-	[array    byte                             rest                       count            'entryLength - (curPos / 8)']
+	[array    byte                             rest                       count            'entryLength - curPos']
 ]
 
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
@@ -1004,7 +1004,7 @@
     [optional AdsDataTypeAttributes              attributes               'flagAttributes'                             ]
     [optional AdsExtendedInfos('dataType')       extendedInfos            'flagExtendedInfos'                          ]
 	// This only consumes the rest in cased of both methodInfos and extendedInfos not being set.
-	[array    byte                               rest                     count            'entryLength - (curPos / 8)']
+	[array    byte                               rest                     count            'entryLength - curPos']
 ]
 
 [type AdsDataTypeArrayInfo byteOrder='"LITTLE_ENDIAN"'
@@ -1043,7 +1043,7 @@
 	[const    uint 8                       commentTerminator  0x00                                                     ]
     [array    AdsMethodParam               parameters         count         'parameterCount'                           ]
 	// This only consumes the rest in cases, where we haven't quite figgured out the full structure of this type.
-	[array    byte                         rest               count         'methodInfoLength - (curPos / 8)'          ]
+	[array    byte                         rest               count         'methodInfoLength - curPos'          ]
 ]
 
 // A single parameter descriptor. Matches your “tail”: length + 5 headers + GUID +

@@ -64,8 +64,8 @@
             [simple uint 8            rejectCause                                                                      ]
         ]
     ]
-    [array    COTPParameter ('(headerLength + 1) - (curPos / 8)') parameters length '(headerLength + 1) - (curPos / 8)']
-    [array    byte                                                payload    count 'cotpLen - (curPos / 8)'            ]
+    [array    COTPParameter ('(headerLength + 1) - curPos') parameters length '(headerLength + 1) - curPos']
+    [array    byte                                                payload    count 'cotpLen - curPos'            ]
 ]
 
 [discriminatedType COTPParameter (uint 8 restSizeInBytes)
