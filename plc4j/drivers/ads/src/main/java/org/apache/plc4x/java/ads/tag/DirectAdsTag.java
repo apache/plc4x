@@ -80,32 +80,26 @@ public class DirectAdsTag implements AdsTag {
 
     /**
      * The count is multiplied by the size of one element to give the request's length, so it has
-     * to be a count that could be counted. Anything wider is refused as an invalid tag rather
-     * than narrowed into a negative and reported as something else.
+     * to be a count that could be counted, rather than something narrowed into a negative and
+     * then reported as a different complaint. The pattern caps how many digits reach here and
+     * every value it admits fits a long, so the range is all that is left to check.
      */
     protected static int parseElementCount(String count) {
-        try {
-            long parsed = Long.parseLong(count);
-            if (parsed < 1 || parsed > Integer.MAX_VALUE) {
-                throw new PlcInvalidTagException("The number of elements " + parsed +
-                    " is not a count of elements that could be read.");
-            }
-            return (int) parsed;
-        } catch (NumberFormatException e) {
-            throw new PlcInvalidTagException("The number of elements is not a number.", e);
+        long parsed = Long.parseLong(count);
+        if (parsed < 1 || parsed > Integer.MAX_VALUE) {
+            throw new PlcInvalidTagException("The number of elements " + parsed +
+                " is not a count of elements that could be read.");
         }
+        return (int) parsed;
     }
 
     /**
-     * Reads one of the address' numbers, refusing a value too wide for ADS rather than letting
-     * it arrive as an unchecked NumberFormatException from somewhere inside the parse.
+     * Reads one of the address' numbers. The pattern admits at most ten decimal or eight hex
+     * digits, and all of those fit a long, so a number too wide to parse never reaches here - it
+     * fails to match the address at all and is reported as the invalid address it is.
      */
     protected static long parseUint32(String what, String decimal, String hex) {
-        try {
-            return checkUint32(what, hex != null ? Long.parseLong(hex, 16) : Long.parseLong(decimal));
-        } catch (NumberFormatException e) {
-            throw new PlcInvalidTagException("The " + what + " is not a number ADS could carry.", e);
-        }
+        return checkUint32(what, hex != null ? Long.parseLong(hex, 16) : Long.parseLong(decimal));
     }
 
     public static DirectAdsTag of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {

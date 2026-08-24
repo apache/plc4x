@@ -69,6 +69,52 @@ public class DirectAdsTagBoundTest {
     }
 
     @Test
+    void aCountOfZeroIsNotACountOfElements() {
+        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2:INT[0]"));
+    }
+
+    @Test
+    void aNegativeIndexGroupHandedInDirectlyIsAlsoRefused() {
+        // The address parser cannot produce this, but the factory taking numbers can.
+        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of(-1L, 2L, "INT", 1));
+    }
+
+    @Test
+    void anIndexOffsetPastFourBytesHandedInDirectlyIsAlsoRefused() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> DirectAdsTag.of(1L, 0x100000000L, "INT", 1));
+    }
+
+    @Test
+    void hexAddressesAreReadAsHex() {
+        DirectAdsTag tag = DirectAdsTag.of("0x10/0xFF:INT[2]");
+        assertEquals(0x10, tag.getIndexGroup());
+        assertEquals(0xFF, tag.getIndexOffset());
+        assertEquals(2, tag.getNumberOfElements());
+    }
+
+    @Test
+    void aStringTagSharesTheSameChecks() {
+        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/2:STRING(80)[3]");
+        assertEquals(0x10, tag.getIndexGroup());
+        assertEquals(2, tag.getIndexOffset());
+        assertEquals(3, tag.getNumberOfElements());
+        assertEquals(80, tag.getStringLength());
+    }
+
+    @Test
+    void aStringTagCountOfZeroIsAlsoRefused() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> DirectAdsStringTag.of("1/2:STRING(80)[0]"));
+    }
+
+    @Test
+    void aCountThatWouldNotFitAnIntIsRefused() {
+        // Ten digits match the pattern but do not fit the int the count is kept in.
+        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2:INT[3000000000]"));
+    }
+
+    @Test
     void aPlausibleTagStillParses() {
         DirectAdsTag tag = DirectAdsTag.of("1/2:INT[4]");
         assertEquals(4, tag.getNumberOfElements());
