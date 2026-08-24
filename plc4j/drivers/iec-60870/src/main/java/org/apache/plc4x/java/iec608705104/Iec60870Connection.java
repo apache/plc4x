@@ -328,14 +328,32 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
     private void processAsdu(ASDU asdu) {
         int asduAddress = asdu.getAsduAddressField();
         for (InformationObject informationObject : asdu.getInformationObjects()) {
-            int objectAddress = informationObject.getAddress();
-            Iec608705104Tag tag = new Iec608705104Tag(asduAddress, objectAddress);
-            PlcValue plcValue = Iec608705104TagParser.parseTag(informationObject, asdu.getTypeIdentification());
-            LocalDateTime eventTime = extractEventTime(informationObject);
-            publishEvent(eventTime, tag, plcValue, asduAddress, objectAddress);
+            try {
+                int objectAddress = informationObject.getAddress();
+                Iec608705104Tag tag = new Iec608705104Tag(asduAddress, objectAddress);
+                PlcValue plcValue = Iec608705104TagParser.parseTag(informationObject, asdu.getTypeIdentification());
+                LocalDateTime deviceTime = extractEventTime(informationObject);
+                // A timestamp we could not make sense of makes the item invalid, not the pass. The
+                // event still needs a time to carry, so it gets the time it arrived - what the
+                // objects that carry no timestamp of their own have always been given.
+                publishEvent(
+                    deviceTime != null ? deviceTime : LocalDateTime.now(),
+                    tag, plcValue,
+                    deviceTime != null ? PlcResponseCode.OK : PlcResponseCode.INVALID_DATA,
+                    asduAddress, objectAddress);
+            } catch (RuntimeException e) {
+                // One object of an ASDU we cannot handle costs that object. The objects behind it
+                // in the same frame were sent by the same station and are no less valid for it.
+                LOGGER.warn("Ignoring an information object that could not be handled", e);
+            }
         }
     }
 
+    /**
+     * @return the time the station says the event happened, or {@code null} if it sent one that
+     * cannot be a time. Objects that carry no timestamp report the time they arrived, which is not
+     * the same thing as a timestamp we could not read.
+     */
     private static LocalDateTime extractEventTime(InformationObject informationObject) {
         if (informationObject instanceof InformationObjectWithTreeByteTime threeByte) {
             return convertCp24Time2aToCalendar(threeByte.getCp24Time2a());
@@ -351,12 +369,24 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
      * current host clock for the year/month/day/hour fields.
      */
     static LocalDateTime convertCp24Time2aToCalendar(ThreeOctetBinaryTime cp24Time2) {
+        // The station chooses these, and a minute of 62 is not a minute. Checked before they reach
+        // LocalDateTime, which answers an impossible date with an exception rather than a value.
+        if (outOfRange(cp24Time2.getMinutes(), 0, 59)
+            || outOfRange(cp24Time2.getMilliseconds(), 0, 59_999)) {
+            LOGGER.warn("Ignoring a CP24Time2a of {} minutes and {} ms, which is not a time",
+                cp24Time2.getMinutes(), cp24Time2.getMilliseconds());
+            return null;
+        }
         LocalDateTime now = LocalDateTime.now();
         return LocalDateTime.of(
             now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(),
             cp24Time2.getMinutes(),
             cp24Time2.getMilliseconds() / 1000,
             (cp24Time2.getMilliseconds() % 1000) * 1_000_000);
+    }
+
+    private static boolean outOfRange(int value, int min, int max) {
+        return value < min || value > max;
     }
 
     /**
@@ -368,6 +398,19 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
         Duration localTimeZoneOffsetFromUtc = Duration.ofMillis(localTimeZone.getRawOffset());
         if (cp56Time2.getDaylightSaving()) {
             localTimeZoneOffsetFromUtc = localTimeZoneOffsetFromUtc.plus(Duration.ofMillis(localTimeZone.getDSTSavings()));
+        }
+        // Same reasoning as CP24: a month of 0 is the case the report named, and a day of 0, an
+        // hour of 25 and a minute of 61 are all equally sendable.
+        if (outOfRange(cp56Time2.getYear(), 0, 99)
+            || outOfRange(cp56Time2.getMonth(), 1, 12)
+            || outOfRange(cp56Time2.getDay(), 1, 31)
+            || outOfRange(cp56Time2.getHour(), 0, 23)
+            || outOfRange(cp56Time2.getMinutes(), 0, 59)
+            || outOfRange(cp56Time2.getMilliseconds(), 0, 59_999)) {
+            LOGGER.warn("Ignoring a CP56Time2a of {}-{}-{} {}:{} +{}ms, which is not a time",
+                cp56Time2.getYear(), cp56Time2.getMonth(), cp56Time2.getDay(),
+                cp56Time2.getHour(), cp56Time2.getMinutes(), cp56Time2.getMilliseconds());
+            return null;
         }
         return LocalDateTime.of(
                 2000 + cp56Time2.getYear(),
@@ -391,13 +434,13 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
      * @param objectAddress the information object address, matched the same way.
      */
     private void publishEvent(LocalDateTime eventTime, Iec608705104Tag tag, PlcValue plcValue,
-                              int asduAddress, int objectAddress) {
+                              PlcResponseCode responseCode, int asduAddress, int objectAddress) {
         Instant timestamp = eventTime.atZone(ZoneId.systemDefault()).toInstant();
         String tagKey = tag.getAddressString();
         Iec608705104PlcSubscriptionEvent event = new Iec608705104PlcSubscriptionEvent(
             timestamp,
             Collections.singletonMap(tagKey, tag),
-            Collections.singletonMap(tagKey, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap(tagKey, new DefaultPlcResponseItem<>(responseCode, plcValue)));
 
         // IEC-104 has no per-tag filtering on the wire: the station simply
         // reports everything it has. So the filtering happens here, by
