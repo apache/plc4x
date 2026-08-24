@@ -955,91 +955,66 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     /** Whether the type is stored as a flat sequence of equally sized elements. */
     private static boolean isFixedSize(CIPDataTypeCode type) {
         return switch (type) {
-            case SINT, INT, DINT, LINT, REAL, LREAL, BOOL -> true;
+            case SINT, INT, DINT, DWORD, LINT, REAL, LREAL, BOOL -> true;
             default -> false;
         };
     }
 
     // Package-private and static so the decoding can be tested without a connection.
     static PlcValue parsePlcValue(EipTag tag, byte[] rawData, CIPDataTypeCode type) {
-        final int STRING_LEN_OFFSET = 2;
-        final int STRING_DATA_OFFSET = 6;
         ByteBuffer data = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
         int nb = elementCount(tag);
-        if (nb > 1) {
-            // Never read past what the device actually sent - a short reply must not blow up
-            // the whole response with an IndexOutOfBoundsException. Only the fixed-size types
-            // below are laid out element by element; STRING/STRUCTURED carry their own length.
-            int elementSize = isFixedSize(type) ? type.getSize() : 0;
-            if (elementSize > 0 && rawData.length < nb * elementSize) {
-                LOGGER.warn("Device returned {} bytes for tag '{}', expected {} for {} elements of {}.",
-                    rawData.length, tag.getTag(), nb * elementSize, nb, type);
+        if (nb == 1) {
+            return extractPlcValue(rawData, type, data, 0);
+        }
+        // Never read past what the device actually sent - a short reply must not blow up
+        // the whole response with an IndexOutOfBoundsException. Only the fixed-size types
+        // below are laid out element by element; STRING/STRUCTURED carry their own length.
+        int elementSize = isFixedSize(type) ? type.getSize() : 0;
+        if (elementSize > 0 && rawData.length < nb * elementSize) {
+            LOGGER.warn("Device returned {} bytes for tag '{}', expected {} for {} elements of {}.",
+                rawData.length, tag.getTag(), nb * elementSize, nb, type);
+            return null;
+        }
+        List<PlcValue> list = new ArrayList<>();
+        int index = 0;
+        for (int i = 0; i < nb; i++) {
+            PlcValue plcValue = extractPlcValue(rawData, type, data, index);
+            if (plcValue == null) {
                 return null;
             }
-            List<PlcValue> list = new ArrayList<>();
-            int index = 0;
-            for (int i = 0; i < nb; i++) {
-                switch (type) {
-                    case DINT:
-                        list.add(new PlcDINT(data.getInt(index)));
-                        index += type.getSize();
-                        break;
-                    case INT:
-                        list.add(new PlcINT(data.getShort(index)));
-                        index += type.getSize();
-                        break;
-                    case SINT:
-                        list.add(new PlcSINT(data.get(index)));
-                        index += type.getSize();
-                        break;
-                    case REAL:
-                        list.add(new PlcREAL(data.getFloat(index)));
-                        index += type.getSize();
-                        break;
-                    case LREAL:
-                        list.add(new PlcLREAL(data.getDouble(index)));
-                        index += type.getSize();
-                        break;
-                    case LINT:
-                        list.add(new PlcLINT(data.getLong(index)));
-                        index += type.getSize();
-                        break;
-                    case BOOL:
-                        list.add(new PlcBOOL(data.get(index) != 0));
-                        index += type.getSize();
-                        break;
-                    case STRING:
-                    case STRUCTURED:
-                        short structuredType = data.getShort(0);
-                        short structuredLen = data.getShort(STRING_LEN_OFFSET);
-                        if (structuredType == CIPStructTypeCode.STRING.getValue()) {
-                            list.add(new PlcSTRING(new String(rawData, STRING_DATA_OFFSET, structuredLen, StandardCharsets.UTF_8)));
-                        }
-                        return list.isEmpty() ? null : new PlcList(list);
-                    default:
-                        return null;
-                }
+            list.add(plcValue);
+            index += type.getSize();
+            if (plcValue instanceof PlcSTRING) {
+                return new PlcList(list);
             }
-            return new PlcList(list);
         }
+        return new PlcList(list);
+    }
+
+    private static PlcValue extractPlcValue(byte[] rawData, CIPDataTypeCode type, ByteBuffer data, int index) {
+        final int STRING_LEN_OFFSET = 2;
+        final int STRING_DATA_OFFSET = 6;
         switch (type) {
             case SINT:
-                return new PlcSINT(data.get(0));
+                return new PlcSINT(data.get(index));
             case INT:
-                return new PlcINT(data.getShort(0));
+                return new PlcINT(data.getShort(index));
             case DINT:
-                return new PlcDINT(data.getInt(0));
+                return new PlcDINT(data.getInt(index));
+            case DWORD:
+                return new PlcDWORD(data.getInt(index));
             case LINT:
-                return new PlcLINT(data.getLong(0));
+                return new PlcLINT(data.getLong(index));
             case REAL:
-                return new PlcREAL(data.getFloat(0));
+                return new PlcREAL(data.getFloat(index));
             case LREAL:
-                return new PlcLREAL(data.getDouble(0));
+                return new PlcLREAL(data.getDouble(index));
             case BOOL:
-                return new PlcBOOL(data.get(0) != 0);
+                return new PlcBOOL(data.get(index) != 0);
             case STRING:
             case STRUCTURED:
-                short structuredType = data.getShort(0);
+                short structuredType = data.getShort(index);
                 short structuredLen = data.getShort(STRING_LEN_OFFSET);
                 if (structuredType == CIPStructTypeCode.STRING.getValue()) {
                     return new PlcSTRING(new String(rawData, STRING_DATA_OFFSET, structuredLen, StandardCharsets.UTF_8));
@@ -1106,6 +1081,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                 buffer.putShort(value.getShort());
                 break;
             case DINT:
+            case DWORD:
                 buffer.putInt(value.getInteger());
                 break;
             case LINT:
