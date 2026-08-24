@@ -245,6 +245,38 @@ Incompatible changes
   checks acknowledgements will see different (correct) values, and
   one that had adapted to the old behaviour may need attention.
   The frame format itself is unchanged.
+- Tag addresses naming an implausible number of elements are now
+  rejected as invalid addresses rather than acted on. An element
+  count is a request to allocate, and it was taken at face value:
+  in the s7 driver a count is now measured against the 2097151
+  bytes an S7 address can reach (for the string forms, against
+  what one string of the declared length costs, which is the same
+  arithmetic the optimizer does in an int and where an unbounded
+  count overflowed); in the ads driver an index group, index
+  offset and element count must each fit the four bytes ADS
+  carries them in; in the firmata driver a digital tag must stay
+  within the 256 pins the protocol can name, having previously
+  turned its count into that many set bits at parse time. In all
+  three, a count too wide to be a number used to escape as a
+  NumberFormatException instead of the PlcInvalidTagException the
+  tag parsers promise.
+- The OPC UA driver bounds a browse, which previously walked
+  whatever tree the server described for as long as it described
+  one. "browse-max-references-per-node" (default 65536) limits the
+  references collected for one node and is now also asked of the
+  server, "browse-max-total-nodes" (default 1000000) limits how
+  many nodes one browse expands, and "browse-max-depth" (default
+  64) limits how deep it recurses. Set any of them to 0 for no
+  limit. Reaching one warns and returns what was found rather
+  than failing, so an address space within these sizes is
+  unaffected.
+- The ctrlX driver bounds a browse the same way, with
+  "browse-max-total-nodes" (default 1000000) and
+  "browse-max-depth" (default 64). Its browse also now always
+  completes its future: a node answering with no child list used
+  to throw inside the executor's task, where nothing caught it and
+  the caller was left waiting on a future that was never
+  completed. Such a node is now read as the leaf it says it is.
 
 Changed Maven Coordinates
 -------------------------
