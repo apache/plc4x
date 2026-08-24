@@ -856,11 +856,25 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         if (length < 0) {
             return new PlcList(Collections.emptyList());
         }
+        // The count is the server's claim about what follows, and it arrives four bytes ahead of
+        // the elements themselves. Not one of the built-ins reads less than a byte, so a count
+        // past the bytes still in the buffer describes an array that cannot be there - and
+        // reserving room for it first would hand over the memory before the claim is tested.
+        int remainingBytes = buffer.getRemainingBits() / 8;
+        if (length > remainingBytes) {
+            throw new PlcRuntimeException("Struct field declares " + length + " elements but only "
+                + remainingBytes + " bytes remain");
+        }
         List<PlcValue> elements = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
             elements.add(decodeScalar(buffer, dataTypeId));
         }
         return new PlcList(elements);
+    }
+
+    /** Test seam for {@link #decodeField(ReadBuffer, StructureField)}. */
+    static PlcValue decodeFieldForTest(ReadBuffer buffer, StructureField field) throws Exception {
+        return decodeField(buffer, field);
     }
 
     /** Decodes one scalar value of the given OPC UA built-in data type from the buffer. */
@@ -1134,7 +1148,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             // is never expanded twice) and keeps a well-formed tree from being duplicated.
             Set<String> visited = ConcurrentHashMap.newKeySet();
             queryFutures.add(
-                browseNode(startNodeId, visited, queryName, query, interceptor)
+                browseNode(startNodeId, visited, queryName, query, interceptor, 0)
                     .handle((items, error) -> {
                         if (error != null) {
                             LOGGER.warn("Browsing failed for query '{}'", queryName, error);
@@ -1158,7 +1172,17 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
      * sub-tree is returned. {@code visited} guards against reference cycles.
      */
     private CompletableFuture<List<PlcBrowseItem>> browseNode(NodeId nodeId, Set<String> visited, String queryName,
-                                                              PlcQuery query, PlcBrowseRequestInterceptor interceptor) {
+                                                              PlcQuery query, PlcBrowseRequestInterceptor interceptor,
+                                                              int depth) {
+        // Already-visited nodes are never expanded twice, so a reference cycle ends by itself. A
+        // server naming a node it has not named before at every level describes a tree with no
+        // bottom, and that is what the depth is for.
+        int maxDepth = configuration.getBrowseMaxDepth();
+        if (maxDepth > 0 && depth >= maxDepth) {
+            LOGGER.warn("Stopped browsing '{}' at depth {}, the configured browse-max-depth; "
+                + "raise it if the tree is legitimately deeper", queryName, maxDepth);
+            return CompletableFuture.completedFuture(Collections.emptyList());
+        }
         return browseReferences(nodeId, null, new ArrayList<>()).thenCompose(references ->
             // Resolve the server-side type/access attributes of all variable children in one
             // batched Read before turning the references into browse items.
@@ -1171,9 +1195,16 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                         continue;
                     }
                     CompletableFuture<Map<String, PlcBrowseItem>> childrenFuture;
-                    if (visited.add(childAddress)) {
+                    int maxTotalNodes = configuration.getBrowseMaxTotalNodes();
+                    if (maxTotalNodes > 0 && visited.size() >= maxTotalNodes && !visited.contains(childAddress)) {
+                        // The budget is spent. List what was found rather than failing the whole
+                        // browse, and say so once per node that runs into it.
+                        LOGGER.warn("Stopped expanding '{}' after {} nodes, the configured "
+                            + "browse-max-total-nodes", queryName, maxTotalNodes);
+                        childrenFuture = CompletableFuture.completedFuture(Collections.emptyMap());
+                    } else if (visited.add(childAddress)) {
                         childrenFuture = browseNode(generateNodeId(OpcuaTag.of(childAddress)),
-                            visited, queryName, query, interceptor)
+                            visited, queryName, query, interceptor, depth + 1)
                             .thenApply(childItems -> childItems.stream()
                                 .collect(Collectors.toMap(PlcBrowseItem::getName, item -> item,
                                     (a, b) -> a, LinkedHashMap::new)));
@@ -1211,7 +1242,9 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             BrowseRequest request = new BrowseRequest(
                 conversation.createRequestHeader(),
                 new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L),
-                0L,                 // requestedMaxReferencesPerNode 0 -> server decides
+                // Ask the server for the same ceiling the driver enforces, so it can stop before
+                // the driver has to. 0 still means "server decides", which is what no limit means.
+                (long) Math.max(0, configuration.getBrowseMaxReferencesPerNode()),
                 Collections.singletonList(description));
             resultFuture = conversation.submit(request, BrowseResponse.class)
                 .thenApply(response -> response.getResults().getFirst());
@@ -1223,11 +1256,20 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             resultFuture = conversation.submit(request, BrowseNextResponse.class)
                 .thenApply(response -> response.getResults().getFirst());
         }
+        int maxReferences = configuration.getBrowseMaxReferencesPerNode();
         return resultFuture.thenCompose(result -> {
             if (result.getReferences() != null) {
                 accumulator.addAll(result.getReferences());
             }
             PascalByteString nextContinuationPoint = result.getContinuationPoint();
+            // Each batch hands back a continuation point for the next one, and following them is
+            // the only way to see every reference. Nothing in that says the server ever stops, so
+            // the driver stops instead, with what it has.
+            if (maxReferences > 0 && accumulator.size() >= maxReferences) {
+                LOGGER.warn("Stopped collecting references for a node at {}, the configured "
+                    + "browse-max-references-per-node", maxReferences);
+                return CompletableFuture.completedFuture(accumulator);
+            }
             if (nextContinuationPoint != null && nextContinuationPoint.getStringLength() > 0) {
                 return browseReferences(nodeId, nextContinuationPoint, accumulator);
             }

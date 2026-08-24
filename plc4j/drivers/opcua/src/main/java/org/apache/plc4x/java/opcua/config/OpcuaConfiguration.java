@@ -124,6 +124,30 @@ public class OpcuaConfiguration implements Configuration {
         "than putting the password on the wire where anything on the path can read it. Setting it warns.")
     private boolean allowInsecureCredentials;
 
+    @ConfigurationParameter("browse-max-references-per-node")
+    @IntDefaultValue(65536)
+    @Description("Largest number of references the driver will collect for a single node while browsing.\n" +
+        "A Browse is answered in batches, each batch handing back a continuation point for the next, and\n" +
+        "the driver follows them until the server stops. A server that never stops would otherwise grow\n" +
+        "the collected list without limit. The same number is asked of the server as its per-node maximum,\n" +
+        "so it can stop before the driver has to. Set to 0 for no limit.")
+    private int browseMaxReferencesPerNode;
+
+    @ConfigurationParameter("browse-max-total-nodes")
+    @IntDefaultValue(1000000)
+    @Description("Largest number of nodes a single browse will expand. A browse walks whatever tree the\n" +
+        "server describes, and the driver has no way to know how large that is before walking it, so this\n" +
+        "bounds a tree that turns out to be unreasonable - or endless, if the server keeps naming nodes it\n" +
+        "has not named before. Set to 0 for no limit.")
+    private int browseMaxTotalNodes;
+
+    @ConfigurationParameter("browse-max-depth")
+    @IntDefaultValue(64)
+    @Description("How deep a browse will recurse into the node tree. Already-visited nodes are never\n" +
+        "expanded twice, so a reference cycle terminates on its own, but a server naming a fresh node at\n" +
+        "every level describes a tree with no bottom. Set to 0 for no limit.")
+    private int browseMaxDepth;
+
     @ConfigurationParameter("insecure-certificate-verification")
     @BooleanDefaultValue(false)
     @Description("Disables verification of the OPC UA server certificate, trusting any certificate the server presents.\n" +
@@ -234,6 +258,30 @@ public class OpcuaConfiguration implements Configuration {
 
     public boolean isAllowInsecureCredentials() {
         return allowInsecureCredentials;
+    }
+
+    public int getBrowseMaxReferencesPerNode() {
+        return browseMaxReferencesPerNode;
+    }
+
+    public int getBrowseMaxTotalNodes() {
+        return browseMaxTotalNodes;
+    }
+
+    public int getBrowseMaxDepth() {
+        return browseMaxDepth;
+    }
+
+    public void setBrowseMaxReferencesPerNode(int browseMaxReferencesPerNode) {
+        this.browseMaxReferencesPerNode = browseMaxReferencesPerNode;
+    }
+
+    public void setBrowseMaxTotalNodes(int browseMaxTotalNodes) {
+        this.browseMaxTotalNodes = browseMaxTotalNodes;
+    }
+
+    public void setBrowseMaxDepth(int browseMaxDepth) {
+        this.browseMaxDepth = browseMaxDepth;
     }
 
     public boolean isInsecureCertificateVerification() {

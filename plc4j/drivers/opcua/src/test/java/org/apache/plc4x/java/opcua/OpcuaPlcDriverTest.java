@@ -345,6 +345,29 @@ public class OpcuaPlcDriverTest {
         }
     }
 
+    /**
+     * A browse walks whatever tree the server describes, and the driver cannot know how large that
+     * is before walking it. With the depth held at one level, the folder is still discovered but
+     * nothing below it is expanded - the same folder that carries children when the depth is left
+     * at its default.
+     */
+    @Test
+    void browseDepthLimitStopsTheRecursion() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager()
+            .getConnection(tcpConnectionAddress + "&browse-max-depth=1")) {
+            org.apache.plc4x.java.api.messages.PlcBrowseResponse response = connection.browseRequestBuilder()
+                .addQuery("hw", "ns=2;s=HelloWorld")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("hw")).isEqualTo(PlcResponseCode.OK);
+
+            org.apache.plc4x.java.api.messages.PlcBrowseItem scalarTypes = response.getValues("hw").stream()
+                .filter(i -> "ScalarTypes".equals(i.getName())).findFirst().orElse(null);
+            assertThat(scalarTypes).as("ScalarTypes folder").isNotNull();
+            assertThat(scalarTypes.getChildren())
+                .as("nothing below the first level is expanded").isEmpty();
+        }
+    }
+
     @Test
     void browseDiscoversAddressSpace() throws Exception {
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
