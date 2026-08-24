@@ -73,6 +73,35 @@ public class DriverBaseTest {
         }
 
         @Test
+        @DisplayName("masks the pre-shared key")
+        void masksPreSharedKey() {
+            // The key itself is the credential for a TLS-PSK connection, and nothing in the
+            // pattern reached it: it carries none of password, passwd, secret or token.
+            assertEquals(
+                "plc4x:tls-psk://host?tls-psk.psk-identity=plc4x&tls-psk.psk-key=***",
+                DriverBase.redactSecrets(
+                    "plc4x:tls-psk://host?tls-psk.psk-identity=plc4x&tls-psk.psk-key=0011deadbeef"));
+        }
+
+        @Test
+        @DisplayName("masks a passphrase")
+        void masksPassphrase() {
+            assertEquals("plc4x://host?passphrase=***",
+                DriverBase.redactSecrets("plc4x://host?passphrase=open sesame"));
+        }
+
+        @Test
+        @DisplayName("leaves the things named like keys that are not keys")
+        void leavesKeyShapedNonSecretsUntouched() {
+            // Masking these would cost an operator the diagnosis and protect nothing: a path, a
+            // store type, a key size, a boolean, and the identity that says *which* key failed.
+            String url = "plc4x:tls://host?key-store-file=/etc/plc4x/client.p12"
+                + "&key-store-type=pkcs12&generated-key-size=2048&log-session-keys=false"
+                + "&tls-psk.psk-identity=plc4x&allow-insecure-credentials=false";
+            assertEquals(url, DriverBase.redactSecrets(url));
+        }
+
+        @Test
         @DisplayName("leaves a connection string without parameters untouched")
         void leavesNoParamStringUntouched() {
             String url = "plc4x:tls://host:59837";
