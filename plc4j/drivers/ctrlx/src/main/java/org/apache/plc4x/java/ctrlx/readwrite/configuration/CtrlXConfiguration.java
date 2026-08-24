@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ctrlx.readwrite.configuration;
 
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
@@ -76,6 +77,39 @@ public class CtrlXConfiguration implements Configuration {
     @BooleanDefaultValue(false)
     @Description("Accept a device certificate issued for a different host than the one connected to")
     public boolean ignoreCommonName;
+
+    /**
+     * How many nodes a single browse will read.
+     *
+     * <p>A browse asks the device for the children of a node and then asks the same of each child,
+     * so how much work it is depends entirely on the tree the device describes. Nothing in the
+     * answer says how large that tree is, or that it ends.</p>
+     */
+    @ConfigurationParameter("browse-max-total-nodes")
+    @IntDefaultValue(1000000)
+    @Description("Largest number of nodes a single browse will read; 0 for no limit")
+    public int browseMaxTotalNodes;
+
+    /**
+     * How deep a browse will follow children.
+     *
+     * <p>Each child is addressed by its parent's path with the child's name appended, so a device
+     * naming a child that leads back to a node already passed produces a longer path every time
+     * and never repeats one. Depth is what ends that, not a record of where the browse has
+     * been.</p>
+     */
+    @ConfigurationParameter("browse-max-depth")
+    @IntDefaultValue(64)
+    @Description("How deep a browse will follow children; 0 for no limit")
+    public int browseMaxDepth;
+
+    public int getBrowseMaxTotalNodes() {
+        return browseMaxTotalNodes;
+    }
+
+    public int getBrowseMaxDepth() {
+        return browseMaxDepth;
+    }
 
     public String getTrustStoreFile() {
         return trustStoreFile;
