@@ -155,6 +155,12 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
     };
 
     private UmasMessageCodec messageCodec;
+
+    /**
+     * This connection's request function keys. One per connection, because a transaction id is a
+     * counter belonging to a connection and means nothing outside it.
+     */
+    private final UmasFunctionKeyTracker functionKeyTracker = new UmasFunctionKeyTracker();
     private final short unitIdentifier;
     private final long requestTimeoutMs;
 
@@ -218,7 +224,7 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
 
     @Override
     protected void onConnect() throws PlcConnectionException {
-        messageCodec = new UmasMessageCodec(transportInstance, this::handleIncomingMessage);
+        messageCodec = new UmasMessageCodec(transportInstance, this::handleIncomingMessage, functionKeyTracker);
         startReceiving(() -> {
             try {
                 messageCodec.processIncomingData();
@@ -380,6 +386,7 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
         PlcRuntimeException closed = new PlcRuntimeException("Connection closed");
         pendingResponses.values().forEach(f -> f.completeExceptionally(closed));
         pendingResponses.clear();
+        functionKeyTracker.clear();
         super.close();
         LOGGER.info("UMAS connection closed");
         fireConnectionStateChanged(ConnectionStateChangeType.DISCONNECTED, null);
@@ -423,7 +430,7 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
      */
     private CompletableFuture<UmasPDUItem> sendRequest(UmasPDUItem item, String stepName) {
         int transactionId = nextTransactionId();
-        UmasFunctionKeyTracker.trackRequest(transactionId, item.getUmasFunctionKey());
+        functionKeyTracker.trackRequest(transactionId, item.getUmasFunctionKey());
         UmasPDU pdu = new UmasPDU(item);
         ModbusTcpADU adu = new ModbusTcpADU(transactionId, unitIdentifier, pdu);
 
@@ -433,6 +440,9 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
             messageCodec.send(adu);
         } catch (MessageCodecException e) {
             pendingResponses.remove(transactionId);
+            // Nothing was sent, so nothing will answer: the function key would sit here until a
+            // later request reached the same id and found it.
+            functionKeyTracker.forget(transactionId);
             return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to send " + stepName, e));
         }
 
@@ -441,6 +451,9 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
             .whenComplete((r, e) -> {
                 if (e != null) {
                     pendingResponses.remove(transactionId);
+                    // A request that gave up leaves its function key behind otherwise, and the
+                    // transaction id counter comes round again.
+                    functionKeyTracker.forget(transactionId);
                 }
             })
             .thenApply(response -> extractUmasResponse(response, stepName));

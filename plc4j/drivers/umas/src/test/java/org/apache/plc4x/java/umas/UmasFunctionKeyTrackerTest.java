@@ -26,14 +26,52 @@ class UmasFunctionKeyTrackerTest {
 
     @Test
     void trackedFunctionKeyIsConsumedOnce() {
-        UmasFunctionKeyTracker.trackRequest(42, (short) 0x59);
-        assertThat(UmasFunctionKeyTracker.consumeFunctionKey(42)).isEqualTo((short) 0x59);
+        UmasFunctionKeyTracker tracker = new UmasFunctionKeyTracker();
+        tracker.trackRequest(42, (short) 0x59);
+        assertThat(tracker.consumeFunctionKey(42)).isEqualTo((short) 0x59);
         // Second consume returns 0 — the entry is removed on first consume.
-        assertThat(UmasFunctionKeyTracker.consumeFunctionKey(42)).isZero();
+        assertThat(tracker.consumeFunctionKey(42)).isZero();
     }
 
     @Test
     void unsolicitedMessagesReturnZero() {
-        assertThat(UmasFunctionKeyTracker.consumeFunctionKey(99999)).isZero();
+        assertThat(new UmasFunctionKeyTracker().consumeFunctionKey(99999)).isZero();
+    }
+
+    /**
+     * A transaction id is a counter belonging to one connection, so two connections reach the same
+     * id in the ordinary course of things. While one map was shared across the process, the second
+     * to arrive overwrote the first and a response was then parsed under the other conversation's
+     * function key - which is what decides the response subtype.
+     */
+    @Test
+    void twoConnectionsUsingTheSameTransactionIdDoNotOverwriteEachOther() {
+        UmasFunctionKeyTracker first = new UmasFunctionKeyTracker();
+        UmasFunctionKeyTracker second = new UmasFunctionKeyTracker();
+
+        first.trackRequest(7, (short) 0x59);
+        second.trackRequest(7, (short) 0x21);
+
+        assertThat(first.consumeFunctionKey(7)).isEqualTo((short) 0x59);
+        assertThat(second.consumeFunctionKey(7)).isEqualTo((short) 0x21);
+    }
+
+    @Test
+    void aRequestThatWillNotBeAnsweredIsForgotten() {
+        UmasFunctionKeyTracker tracker = new UmasFunctionKeyTracker();
+        tracker.trackRequest(11, (short) 0x59);
+        tracker.forget(11);
+        assertThat(tracker.trackedCount()).isZero();
+        // And a later request reaching the same id does not find the old key.
+        assertThat(tracker.consumeFunctionKey(11)).isZero();
+    }
+
+    @Test
+    void closingForgetsEverythingStillTracked() {
+        UmasFunctionKeyTracker tracker = new UmasFunctionKeyTracker();
+        tracker.trackRequest(1, (short) 0x59);
+        tracker.trackRequest(2, (short) 0x21);
+        tracker.clear();
+        assertThat(tracker.trackedCount()).isZero();
     }
 }
