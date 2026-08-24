@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.security.GeneralSecurityException;
 import java.security.Signature;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Comparator;
@@ -331,7 +332,22 @@ public class SecureChannel {
 
     private CompletableFuture<ActivateSessionResponse> onConnectActivateSessionRequest(CreateSessionResponse sessionResponse) {
         LOGGER.debug("Sending activate session request to {}", this.driverContext.getEndpoint());
-        conversation.setRemoteCertificate(getX509Certificate(sessionResponse.getServerCertificate().getStringValue()));
+        // Adopted whatever the channel policy says, because a user token can be encrypted to this
+        // even when the channel itself is not - the token carries a security policy of its own.
+        List<X509Certificate> serverChain =
+            getX509CertificateChain(sessionResponse.getServerCertificate().getStringValue());
+        if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
+            // Judged before it is adopted, since this becomes what we encrypt to and check
+            // signatures against. The issuers the server sent with it go into the check too:
+            // without them a chain reaching the anchor through intermediates cannot be validated.
+            try {
+                driverContext.getCertificateVerifier().checkCertificateChainTrusted(serverChain);
+            } catch (CertificateException e) {
+                throw new PlcRuntimeException(
+                    "The certificate in the create-session response is not trusted", e);
+            }
+        }
+        conversation.setRemoteCertificate(serverChain.get(0));
         conversation.setRemoteNonce(sessionResponse.getServerNonce().getStringValue());
 
         Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint = selectEndpoint(sessionResponse.getServerEndpoints(),
@@ -587,7 +603,11 @@ public class SecureChannel {
                 boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(securityPolicy.getSecurityPolicyUri());
                 boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(effectiveMessageSecurity);
 
-                if (!policyMatch && !msgSecurityMatch) {
+                // Both, not either. Skipping only when both failed meant an endpoint offering the
+                // right message security under a weaker policy - or the right policy without the
+                // message security asked for - was treated as a match, and the connection came up
+                // with less protection than the configuration asked for.
+                if (!policyMatch || !msgSecurityMatch) {
                     continue;
                 }
 
@@ -603,8 +623,51 @@ public class SecureChannel {
             return null;
         }
 
-        serverEndpoints.sort(Comparator.comparing(e -> e.getKey().getSecurityLevel()));
-        return serverEndpoints.getFirst();
+        // The strongest of the endpoints that match, not the weakest. Sorting ascending and taking
+        // the first picked the lowest security level a server offered - and a server that offers a
+        // level 0 endpoint alongside a good one is the normal case, not an unusual one.
+        //
+        // Among the token policies of an equally strong endpoint, prefer one that protects the
+        // token: matching on token type alone would bind a password to a policy of None and send it
+        // in the clear.
+        return strongestOf(serverEndpoints);
+    }
+
+    /**
+     * Picks the endpoint that protects the connection best out of those that matched.
+     *
+     * <p>Sorting by security level and taking the first picked the <em>lowest</em> level the server
+     * offered, and a server offering a level 0 endpoint alongside a good one is the ordinary case.
+     * Where two are equally strong, the one that also protects the user token wins.</p>
+     */
+    static Entry<EndpointDescription, UserTokenPolicy> strongestOf(
+        List<Entry<EndpointDescription, UserTokenPolicy>> candidates) {
+        if (candidates == null || candidates.isEmpty()) {
+            return null;
+        }
+        List<Entry<EndpointDescription, UserTokenPolicy>> ranked = new ArrayList<>(candidates);
+        ranked.sort(Comparator
+            .comparingInt((Entry<EndpointDescription, UserTokenPolicy> e) -> e.getKey().getSecurityLevel())
+            .thenComparingInt(e -> protectsUserToken(e) ? 1 : 0));
+        return ranked.getLast();
+    }
+
+    /**
+     * Whether the user token policy of this endpoint protects the token it carries.
+     *
+     * <p>A token policy names its own security policy, separately from the channel's. One naming
+     * None leaves the token unprotected by the channel's own encryption - which matters most for a
+     * password.</p>
+     */
+    static boolean protectsUserToken(Entry<EndpointDescription, UserTokenPolicy> candidate) {
+        PascalString tokenPolicyUri = candidate.getValue().getSecurityPolicyUri();
+        if (tokenPolicyUri == null || tokenPolicyUri.getStringValue() == null
+            || tokenPolicyUri.getStringValue().isEmpty()) {
+            // Nothing said, so the channel's policy governs the token as well.
+            return !SecurityPolicy.NONE.getSecurityPolicyUri()
+                .equals(candidate.getKey().getSecurityPolicyUri().getStringValue());
+        }
+        return !SecurityPolicy.NONE.getSecurityPolicyUri().equals(tokenPolicyUri.getStringValue());
     }
 
     private boolean isMatchingEndpointDescription(EndpointDescription endpointDescription) {
@@ -838,12 +901,35 @@ public class SecureChannel {
     }
 
     public static X509Certificate getX509Certificate(byte[] certificate) {
+        return getX509CertificateChain(certificate).get(0);
+    }
+
+    /**
+     * Reads every certificate out of an OPC UA certificate blob: the peer's own first, then the
+     * issuers it sent with it. Only the first used to be read, so a chain reaching an anchor
+     * through intermediates could not be validated even when it was entirely trustworthy.
+     *
+     * <p>An unreadable blob fails here rather than coming back as null. What this is used for is
+     * deciding whether to trust the peer and encrypting to its key, and neither has a sensible
+     * answer for "no certificate".</p>
+     */
+    public static List<X509Certificate> getX509CertificateChain(byte[] certificate) {
+        if (certificate == null || certificate.length == 0) {
+            throw new PlcRuntimeException("The peer sent no certificate where one was required");
+        }
         try {
             CertificateFactory factory = CertificateFactory.getInstance("X.509");
-            return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(certificate));
-        } catch (Exception e) {
-            LOGGER.error("Unable to get certificate from String {}", certificate);
-            return null;
+            List<X509Certificate> chain = factory
+                .generateCertificates(new ByteArrayInputStream(certificate)).stream()
+                .filter(X509Certificate.class::isInstance)
+                .map(X509Certificate.class::cast)
+                .collect(Collectors.toList());
+            if (chain.isEmpty()) {
+                throw new PlcRuntimeException("The peer's certificate blob held no X.509 certificate");
+            }
+            return chain;
+        } catch (GeneralSecurityException e) {
+            throw new PlcRuntimeException("Could not read the certificate the peer sent", e);
         }
     }
 

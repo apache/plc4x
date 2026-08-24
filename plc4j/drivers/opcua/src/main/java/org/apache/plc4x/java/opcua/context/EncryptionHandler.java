@@ -25,6 +25,8 @@ import java.security.Signature;
 import java.security.Security;
 import java.util.List;
 import java.util.function.Supplier;
+import java.security.cert.X509Certificate;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import javax.crypto.Cipher;
 import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
 import org.apache.plc4x.java.opcua.protocol.chunk.ChunkFactory;
@@ -152,13 +154,24 @@ public class EncryptionHandler {
      * @return the encrypted password, or null if it could not be encrypted
      */
     public byte[] encryptPassword(byte[] data, SecurityPolicy policy) {
+        X509Certificate remoteCertificate = this.conversation.getRemoteCertificate();
+        if (remoteCertificate == null) {
+            // Without the server's certificate there is no key to encrypt to. Returning null here
+            // used to leave the caller measuring the length of nothing, so a missing certificate
+            // arrived as a NullPointerException from somewhere unrelated.
+            throw new PlcRuntimeException(
+                "Cannot encrypt the password: the server sent no certificate to encrypt it to");
+        }
         try {
             Cipher cipher = policy.getAsymmetricEncryptionAlgorithm().getCipher();
-            cipher.init(Cipher.ENCRYPT_MODE, this.conversation.getRemoteCertificate().getPublicKey());
+            cipher.init(Cipher.ENCRYPT_MODE, remoteCertificate.getPublicKey());
             return cipher.doFinal(data);
-        } catch (Exception e) {
-            logger.error("Unable to encrypt Data", e);
-            return null;
+        } catch (GeneralSecurityException e) {
+            // Reported rather than swallowed. The password is about to go on the wire and the only
+            // alternative to encrypting it is not sending it, so this cannot end in a null that
+            // the caller discovers by dereferencing it.
+            throw new PlcRuntimeException(
+                "Could not encrypt the password with " + policy + " for the server's certificate", e);
         }
     }
 
