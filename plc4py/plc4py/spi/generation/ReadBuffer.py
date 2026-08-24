@@ -15,6 +15,8 @@
 #  specific language governing permissions and limitations
 #  under the License.
 import struct
+import logging
+import os
 import types
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -27,6 +29,46 @@ from bitarray.util import ba2base, ba2int, zeros
 from plc4py.api.exceptions.exceptions import SerializationException, ParseException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware
+
+# How deeply a message may nest its types. Every type opens a context on the way in
+# and closes it on the way out, so the depth of that stack is the depth of the
+# message, and a type that contains itself turns the sender's byte count into our
+# call depth. Several mspec types do contain themselves - BACnet constructed data,
+# an OPC UA variant, the ADS data type table - so the bound keeps the nesting a
+# parse error rather than a RecursionError raised from somewhere arbitrary.
+DEFAULT_MAX_NESTING_DEPTH = 1024
+
+# Names the environment variable that moves the bound for the device whose messages
+# genuinely nest deeper than anything we have seen. It carries the same meaning as
+# in plc4j and plc4go: a positive depth, and anything else leaves the default in
+# place.
+MAX_NESTING_DEPTH_ENV = "PLC4X_MAX_NESTING_DEPTH"
+
+_logger = logging.getLogger(__name__)
+
+
+def resolve_max_nesting_depth(configured: Union[str, None]) -> int:
+    if configured is None or not configured.strip():
+        return DEFAULT_MAX_NESTING_DEPTH
+    try:
+        depth = int(configured.strip())
+    except ValueError:
+        _logger.warning(
+            "%s is not a number (%s), keeping the maximum nesting depth of %d",
+            MAX_NESTING_DEPTH_ENV,
+            configured,
+            DEFAULT_MAX_NESTING_DEPTH,
+        )
+        return DEFAULT_MAX_NESTING_DEPTH
+    if depth < 1:
+        _logger.warning(
+            "%s must be positive but was %d, keeping the maximum nesting depth of %d",
+            MAX_NESTING_DEPTH_ENV,
+            depth,
+            DEFAULT_MAX_NESTING_DEPTH,
+        )
+        return DEFAULT_MAX_NESTING_DEPTH
+    return depth
 
 
 class PositionAware:
@@ -171,6 +213,10 @@ class ReadBufferByteBased(ReadBuffer):
         )
         self.byte_order = byte_order
         self.position = 0
+        self.depth = 0
+        self.max_depth = resolve_max_nesting_depth(
+            os.environ.get(MAX_NESTING_DEPTH_ENV)
+        )
 
     def get_bytes(self) -> memoryview:
         return memoryview(self.bb)
@@ -179,12 +225,20 @@ class ReadBufferByteBased(ReadBuffer):
         return self.position
 
     def push_context(self, logical_name: str, **kwargs) -> None:
-        # byte buffer need no context handling
-        pass
+        # A byte buffer needs no context of its own, but this is the one place every
+        # generated parser passes on its way into a type, so it is where the nesting
+        # gets counted.
+        if self.depth >= self.max_depth:
+            raise ParseException(
+                f"Maximum nesting depth of {self.max_depth} exceeded at {logical_name}"
+            )
+        self.depth += 1
 
     def pop_context(self, logical_name: str, **kwargs) -> None:
-        # Byte buffer doesn't need context handling
-        pass
+        # Byte buffer doesn't need context handling beyond releasing the nesting
+        # budget the matching push_context took.
+        if self.depth > 0:
+            self.depth -= 1
 
     def read_bit(self, logical_name: str = "", **kwargs) -> bool:
         result: bool = bool(self.bb[self.position])
