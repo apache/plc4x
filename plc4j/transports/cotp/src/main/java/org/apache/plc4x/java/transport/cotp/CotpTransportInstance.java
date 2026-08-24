@@ -57,6 +57,16 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
     private static final Logger LOGGER = LoggerFactory.getLogger(CotpTransportInstance.class);
 
     private static final int TPKT_HEADER_SIZE = 4;
+
+    /**
+     * The shortest thing a TPKT length field can honestly describe: its own header plus the three
+     * bytes of a COTP data packet. Anything less names no packet, and since reading it would consume
+     * nothing, framing on it would repeat for as long as the peer left it there.
+     */
+    private static final int MIN_TPKT_PACKET_SIZE = TPKT_HEADER_SIZE + 3;
+
+    /** Every TPKT packet starts with this, followed by a reserved zero. */
+    private static final byte TPKT_VERSION = 0x03;
     private static final int DEFAULT_BUFFER_SIZE = 8192;
 
     private final TcpTransportInstance tcpTransport;
@@ -150,10 +160,17 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
             long startTime = System.currentTimeMillis();
             while (System.currentTimeMillis() - startTime < getConfiguration().cotpConnectionTimeout) {
                 int available = tcpTransport.getNumBytesAvailable();
-                if (available >= TPKT_HEADER_SIZE + 1) {
+                if (available < TPKT_HEADER_SIZE + 1) {
+                    // Wait for the confirm rather than asking about it as fast as the CPU allows.
+                    Thread.sleep(5);
+                    continue;
+                }
+                {
                     // Peek at TPKT header to get full packet length
                     byte[] headerBytes = tcpTransport.peekReadableBytes(TPKT_HEADER_SIZE + 1);
-                    int packetLength = TPKT_HEADER_SIZE + 1 + headerBytes[4];
+                    // & 0xFF: the byte is unsigned on the wire, and a COTP length of 0x80 or
+                    // more read as a negative number framed the confirm short.
+                    int packetLength = TPKT_HEADER_SIZE + 1 + (headerBytes[4] & 0xFF);
 
                     if (available >= packetLength) {
                         // Read a complete packet
@@ -268,6 +285,31 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
      * - From async callbacks (TCP already filled by selector)
      * - From fillBuffer() (after explicit TCP fillBuffer call)
      */
+    /**
+     * Moves past bytes that cannot begin a packet, up to the next thing that looks like the start of
+     * one.
+     *
+     * <p>A byte at a time is not enough here. Stepping through "03 00 00 00" one byte at a time
+     * lands on "00 00 03 00", which reads as a length of 768 and leaves us waiting for bytes that
+     * were never coming. A TPKT header always begins with its version and a reserved zero, so that
+     * pair is what to look for.</p>
+     */
+    private void resynchronize(int available) throws TransportException {
+        byte[] data = tcpTransport.peekReadableBytes(available);
+        for (int i = 1; i < data.length - 1; i++) {
+            if (data[i] == TPKT_VERSION && data[i + 1] == 0x00) {
+                LOGGER.warn("Discarding {} bytes to resynchronise on the next TPKT header", i);
+                tcpTransport.read(i);
+                return;
+            }
+        }
+        // Nothing in what we hold begins a packet. Keep the last byte, since the pair we are looking
+        // for may straddle what has arrived and what has not.
+        int discard = Math.max(1, data.length - 1);
+        LOGGER.warn("Discarding {} bytes: nothing in the buffer begins a TPKT packet", discard);
+        tcpTransport.read(discard);
+    }
+
     private void parseCotpPackets() throws TransportException {
         if (!isOpen()) {
             return;
@@ -286,38 +328,60 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
                 byte[] headerBytes = tcpTransport.peekReadableBytes(TPKT_HEADER_SIZE);
                 int packetLength = ((headerBytes[2] & 0xFF) << 8) | (headerBytes[3] & 0xFF);
 
+                if (headerBytes[0] != TPKT_VERSION || packetLength < MIN_TPKT_PACKET_SIZE) {
+                    // Either it does not start like a TPKT header or it names a length no packet
+                    // could have. More bytes cannot fix the bytes already here, and reading the
+                    // length it named would consume nothing, so the same header would be framed
+                    // again for as long as the peer left it there.
+                    LOGGER.warn("TPKT header (version 0x{}, declared length {}) describes no packet; "
+                        + "resynchronising", String.format("%02X", headerBytes[0]), packetLength);
+                    resynchronize(available);
+                    continue;
+                }
+
                 if (available < packetLength) {
                     // Not enough data for a complete packet
+                    break;
+                }
+
+                // The payload cannot be longer than the packet carrying it, so this is enough to
+                // know it will fit. Checking before the read matters: the packet used to be taken
+                // off the TCP stream and its payload then dropped for want of room, which loses
+                // data that was already ours.
+                if (payloadBuffer.remainingForWriting() < packetLength) {
+                    LOGGER.trace("Payload buffer has {} bytes free, leaving the {} byte packet queued",
+                        payloadBuffer.remainingForWriting(), packetLength);
                     break;
                 }
 
                 // Read and consume the complete TPKT packet from TCP
                 byte[] packetBytes = tcpTransport.read(packetLength);
 
-                // Parse using generated code
-                ReadBuffer readBuffer = new ReadBufferByteBased(packetBytes);
-                TPKTPacket tpktPacket = TPKTPacket.staticParse(readBuffer);
-                COTPPacket cotpPacket = tpktPacket.getPayload();
+                try {
+                    // Parse using generated code
+                    ReadBuffer readBuffer = new ReadBufferByteBased(packetBytes);
+                    TPKTPacket tpktPacket = TPKTPacket.staticParse(readBuffer);
+                    COTPPacket cotpPacket = tpktPacket.getPayload();
 
-                // Extract the payload and write to our buffer
-                byte[] payload = cotpPacket.getPayload();
-                if (payload != null && payload.length > 0) {
-                    // Check if we have space in the buffer
-                    if (payloadBuffer.remainingForWriting() >= payload.length) {
+                    // Extract the payload and write to our buffer
+                    byte[] payload = cotpPacket.getPayload();
+                    if (payload != null && payload.length > 0) {
                         payloadBuffer.write(payload);
                         LOGGER.trace("Extracted {} bytes of payload from COTP packet ({} bytes total)",
                             payload.length, packetLength);
-                    } else {
-                        // Buffer full, can't process more packets right now
-                        LOGGER.trace("Payload buffer full, {} bytes remaining",
-                            payloadBuffer.remainingForWriting());
-                        break;
                     }
+                } catch (Exception e) {
+                    // The packet is already off the stream, so the loop has moved forward and the
+                    // next one deserves its turn. Losing the connection over one packet we could
+                    // not read would hand that power to whoever sent it.
+                    LOGGER.warn("Discarding a {} byte COTP packet that could not be parsed", packetLength, e);
                 }
 
+            } catch (TransportException e) {
+                throw e;
             } catch (Exception e) {
-                LOGGER.error("Error parsing COTP packet", e);
-                throw new TransportException("Failed to parse COTP packet", e);
+                LOGGER.error("Error handling COTP packet", e);
+                throw new TransportException("Failed to handle COTP packet", e);
             }
         }
     }
