@@ -160,6 +160,23 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- The TLS transport now checks that the server's certificate was
+  issued for the host it connected to. The "ignore-common-name"
+  parameter was declared but never consulted, so this check did
+  not happen at all: with "verify-ssl" on, any certificate from a
+  trusted issuer was accepted for any host, which is what a
+  machine in the middle needs. Setting "ignore-common-name=true"
+  restores the old behaviour and logs a warning saying so.
+  A connection to a device whose certificate names something other
+  than the address it is reached at will now fail where it
+  previously succeeded.
+  Two new parameters make the check usable where a device carries
+  its own certificate: "trust-store-file" (with
+  "trust-store-password" and "trust-store-type") names the
+  certificates to trust instead of the public authorities the JVM
+  ships with. Previously the only way past a private CA was
+  "verify-ssl=false", which turns off both the chain check and
+  this one.
 - The IEC 60870-5-104 driver now derives its S-format
   acknowledgements from the send sequence number of the frames it
   received, counted modulo 2^15 and encoded in the upper fifteen

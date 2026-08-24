@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -160,6 +161,22 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
                 Arrays.toString(enabledProtocols),
                 Arrays.toString(sslSocket.getEnabledCipherSuites())));
 
+            // Say who we expect to be talking to, before the handshake rather than after it.
+            // Chain validation establishes that a certificate was issued by someone trusted; it
+            // says nothing about who it was issued to, so without this a certificate trusted for
+            // any host is accepted for every host.
+            if (configuration.ignoreCommonName) {
+                LOGGER.warn("ignore-common-name is set: a certificate issued for any other host "
+                    + "will be accepted for {}, which is what a machine in the middle needs",
+                    remoteAddress.getHostName());
+                auditLog.write(AuditLogEventType.SYSTEM,
+                    "TLS host verification disabled by ignore-common-name");
+            } else {
+                SSLParameters sslParameters = sslSocket.getSSLParameters();
+                sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+                sslSocket.setSSLParameters(sslParameters);
+            }
+
             // Perform TLS handshake
             LOGGER.debug("Starting TLS handshake with {}", remoteAddress);
             sslSocket.startHandshake();
@@ -217,7 +234,13 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
         }
 
         TrustManager[] trustManagers = null;
-        if (!configuration.isVerifySsl()) {
+        if (configuration.isVerifySsl()
+            && configuration.trustStoreFile != null && !configuration.trustStoreFile.isEmpty()) {
+            // Trust what the operator named rather than the public authorities the JVM ships with.
+            // A device carrying its own certificate is not signed by any of those, and without a
+            // way to say so the only route to a connection is to stop verifying altogether.
+            trustManagers = loadTrustManagers(configuration);
+        } else if (!configuration.isVerifySsl()) {
             // Use trust-all TrustManager for self-signed certificates
             LOGGER.warn("SSL certificate verification is DISABLED. Connection is encrypted but NOT protected against MITM attacks.");
             trustManagers = new TrustManager[]{
@@ -242,6 +265,36 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
 
         sslContext.init(keyManagers, trustManagers, new SecureRandom());
         return sslContext;
+    }
+
+    /**
+     * Loads the trust managers for the certificates named by {@code trust-store-file}.
+     */
+    private TrustManager[] loadTrustManagers(TlsTransportConfiguration configuration)
+            throws TransportException {
+        String trustStoreType = configuration.trustStoreType != null
+            ? configuration.trustStoreType : "PKCS12";
+        char[] password = configuration.trustStorePassword != null
+            ? configuration.trustStorePassword.toCharArray() : null;
+        try {
+            KeyStore trustStore = KeyStore.getInstance(trustStoreType);
+            try (FileInputStream fis = new FileInputStream(configuration.trustStoreFile)) {
+                trustStore.load(fis, password);
+            }
+            TrustManagerFactory factory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            factory.init(trustStore);
+            LOGGER.info("Trusting the {} certificates in {}", trustStore.size(),
+                configuration.trustStoreFile);
+            getAuditLog().write(AuditLogEventType.SYSTEM, String.format(
+                "Trust store loaded: type=%s, path=%s, entries=%d",
+                trustStoreType, configuration.trustStoreFile, trustStore.size()));
+            return factory.getTrustManagers();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new TransportException(String.format(
+                "Failed to load trust store '%s' (type=%s): %s",
+                configuration.trustStoreFile, trustStoreType, e.getMessage()), e);
+        }
     }
 
     /**
