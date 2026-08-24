@@ -34,6 +34,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -51,14 +53,18 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class EtsParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EtsParser.class);
 
     private static boolean isEts6Schema(String schemaVersion) {
         if (schemaVersion == null) {
@@ -82,8 +88,10 @@ public class EtsParser {
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
 
+            // Unpacked beside the process rather than held in memory, because zip4j needs a file
+            // to open the archive that password-protected projects keep inside the archive.
+            Path tempDir = Files.createTempDirectory(null);
             try (ZipFile zipFile = new ZipFile(knxprojFile)) {
-                Path tempDir = Files.createTempDirectory(null);
 
                 final FileHeader knxMasterFileHeader = zipFile.getFileHeader("knx_master.xml");
                 if(knxMasterFileHeader == null) {
@@ -259,10 +267,38 @@ public class EtsParser {
                     }
                 }
                 return new EtsModel(groupAddressStyleCode, groupAddresses, topologyNames);
+            } finally {
+                // What we unpacked goes again whether we got a model out of it or not. A read that
+                // failed is the case that repeats - an operator pointing the driver at the wrong
+                // file does it until they find the right one.
+                deleteRecursively(tempDir);
             }
         } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
             // Zip and Xml Stuff
             throw new PlcRuntimeException(e);
+        }
+    }
+
+    /**
+     * Removes a directory and everything below it, reporting what it could not remove rather than
+     * failing the read over it - by the time this runs the model is either built or lost already,
+     * and neither outcome is improved by a second error.
+     */
+    private static void deleteRecursively(Path directory) {
+        if (directory == null || !Files.exists(directory)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(directory)) {
+            // Deepest first, since a directory only goes once it is empty.
+            paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    LOGGER.warn("Could not remove {} while cleaning up after reading a knxproj", path, e);
+                }
+            });
+        } catch (IOException e) {
+            LOGGER.warn("Could not clean up {} after reading a knxproj", directory, e);
         }
     }
 
