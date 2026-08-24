@@ -32,6 +32,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import javax.security.auth.x500.X500Principal;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -53,6 +57,48 @@ public class TestCertificateGenerator {
      */
     private static BigInteger serialNumber() {
         return new BigInteger(62, new SecureRandom()).setBit(62);
+    }
+
+    /**
+     * Generates a certificate that can sign others and act as a trust anchor.
+     *
+     * <p>Path validation refuses to treat a certificate without basic constraints as a certificate
+     * authority, so without this a test cannot build a chain at all - and the chain is the case
+     * worth testing, since a leaf on its own tells you nothing about how intermediates are
+     * handled.</p>
+     *
+     * @param issuerKey         the key of the issuer, or null for a self-signed root
+     * @param issuerCertificate the issuer's certificate, or null for a self-signed root
+     */
+    public static Entry<PrivateKey, X509Certificate> generateCa(int keySize, String dn, long validitySec,
+        PrivateKey issuerKey, X509Certificate issuerCertificate) {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(keySize, new SecureRandom());
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            boolean selfSigned = issuerCertificate == null;
+            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+                selfSigned ? new X500Principal(dn) : issuerCertificate.getSubjectX500Principal(),
+                serialNumber(),
+                new Date(),
+                new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(validitySec)),
+                new X500Principal(dn),
+                keyPair.getPublic()
+            );
+            certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+            certGen.addExtension(Extension.keyUsage, true,
+                new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign | KeyUsage.digitalSignature));
+
+            X509CertificateHolder cert = certGen.build(new JcaContentSignerBuilder("SHA256withRSA")
+                .build(selfSigned ? keyPair.getPrivate() : issuerKey));
+
+            X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(cert);
+            return Map.entry(keyPair.getPrivate(), certificate);
+        } catch (CertificateException | CertIOException | NoSuchAlgorithmException
+                 | OperatorCreationException e) {
+            throw new RuntimeException("Could not initialize test - CA generation failed", e);
+        }
     }
 
     /**
