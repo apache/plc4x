@@ -621,10 +621,41 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
     }
 
     /**
+     * Runs a listener so that a failure inside it costs the frame it was handling and nothing more.
+     * The reader loop is the only thing reading the socket, and the peer decides what arrives, so
+     * one frame the codec cannot make sense of must not end the loop that would have read the next.
+     */
+    private void safeRun(Runnable listener) {
+        if (listener == null) {
+            return;
+        }
+        try {
+            listener.run();
+        } catch (Throwable t) {
+            LOGGER.error("Data listener failed", t);
+        }
+    }
+
+    /**
      * Reader loop that continuously reads from the TLS socket and populates the ring buffer.
      * Notifies listeners when data arrives.
      */
     private void runReaderLoop() {
+        try {
+            runReaderLoopInternal();
+        } catch (Throwable t) {
+            // Nothing else reads this socket. If the loop ever leaves by an unexpected route the
+            // transport must stop claiming to be open, rather than leave callers waiting on a
+            // connection that can no longer receive.
+            LOGGER.error("Reader loop failed", t);
+        }
+        if (open) {
+            open = false;
+            notifyDisconnect(null);
+        }
+    }
+
+    private void runReaderLoopInternal() {
         LOGGER.debug("TLS reader loop started");
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
@@ -642,10 +673,7 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
                         }
 
                         // Notify listener
-                        Runnable listener = dataListener;
-                        if (listener != null) {
-                            listener.run();
-                        }
+                        safeRun(dataListener);
                     } finally {
                         readLock.unlock();
                     }

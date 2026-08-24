@@ -374,6 +374,80 @@ class TlsTransportInstanceTest {
         }
     }
 
+    /**
+     * The reader loop is the only thing reading the socket, so a data listener that fails on one
+     * frame must cost that frame and nothing else - the peer chooses what arrives, and a frame the
+     * codec cannot parse is a frame the peer can send again.
+     */
+    @Test
+    void testDataListenerThrowingKeepsTransportReceiving() throws Exception {
+        Future<SSLSocket> serverFuture = acceptConnection();
+
+        TlsTransportInstance instance = new TlsTransportInstance(
+            new InetSocketAddress("127.0.0.1", serverPort),
+            createConfig(), AuditLog.builder().build());
+
+        try {
+            SSLSocket serverSocket = serverFuture.get(5, TimeUnit.SECONDS);
+
+            CountDownLatch secondNotification = new CountDownLatch(2);
+            java.util.concurrent.atomic.AtomicInteger notifications =
+                new java.util.concurrent.atomic.AtomicInteger();
+            instance.registerDataListener(() -> {
+                secondNotification.countDown();
+                if (notifications.incrementAndGet() == 1) {
+                    throw new IllegalStateException("simulated parse failure");
+                }
+            });
+
+            OutputStream serverOut = serverSocket.getOutputStream();
+            serverOut.write(new byte[]{0x01});
+            serverOut.flush();
+            Thread.sleep(200);
+            serverOut.write(new byte[]{0x02});
+            serverOut.flush();
+
+            assertTrue(secondNotification.await(5, TimeUnit.SECONDS),
+                "the reader loop must survive a listener that threw and deliver the next frame");
+            assertTrue(instance.isOpen(), "one unparseable frame must not close the transport");
+
+            instance.removeDataListener();
+            serverSocket.close();
+        } finally {
+            instance.close();
+        }
+    }
+
+    /**
+     * If the loop ever does stop while the transport still believes it is open, whoever is waiting
+     * on a response has to be told - otherwise they wait on a connection that can no longer
+     * receive.
+     */
+    @Test
+    void testReaderLoopExitingWhileOpenReportsDisconnect() throws Exception {
+        Future<SSLSocket> serverFuture = acceptConnection();
+
+        TlsTransportInstance instance = new TlsTransportInstance(
+            new InetSocketAddress("127.0.0.1", serverPort),
+            createConfig(), AuditLog.builder().build());
+
+        try {
+            SSLSocket serverSocket = serverFuture.get(5, TimeUnit.SECONDS);
+
+            CountDownLatch disconnected = new CountDownLatch(1);
+            instance.registerDisconnectListener(cause -> disconnected.countDown());
+
+            // The server going away ends the loop; the transport must not stay "open".
+            serverSocket.close();
+
+            assertTrue(disconnected.await(5, TimeUnit.SECONDS),
+                "a reader loop that stops must report the disconnection");
+            assertFalse(instance.isOpen());
+        } finally {
+            instance.close();
+        }
+    }
+
     @Test
     void testDisconnectListenerOnServerClose() throws Exception {
         Future<SSLSocket> serverFuture = acceptConnection();
