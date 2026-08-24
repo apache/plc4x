@@ -174,6 +174,15 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
     }
 
     @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
+
+    @Override
     public int getNumBytesAvailable() {
         readLock.lock();
         try {

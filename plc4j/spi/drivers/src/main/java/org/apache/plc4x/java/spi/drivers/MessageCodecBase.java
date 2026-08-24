@@ -161,6 +161,17 @@ public abstract class MessageCodecBase<M extends Message> {
                     continue;
                 }
 
+                int receiveCapacity = transportInstance.getReceiveCapacity();
+                if (totalMessageSize > receiveCapacity) {
+                    // Waiting for this would be waiting forever: the transport cannot hold that
+                    // many bytes at once, so they will never all be here together however long we
+                    // wait. A length we can never satisfy is not a message we are part way through.
+                    logger.warn("Skipping a byte of {} data framed as {} bytes, more than the {} "
+                        + "the transport can hold", protocolName, totalMessageSize, receiveCapacity);
+                    resynchronize();
+                    continue;
+                }
+
                 if (availableBytes < totalMessageSize) {
                     if (logger.isTraceEnabled()) {
                         logger.trace("Waiting for complete message: have {} bytes, need {} bytes",
@@ -185,7 +196,15 @@ public abstract class MessageCodecBase<M extends Message> {
                     // the caller's error handling and out of whatever thread we are running on.
                     throw new MessageCodecException("Failed to parse " + protocolName + " message", e);
                 }
-                messageHandler.accept(message);
+                try {
+                    messageHandler.accept(message);
+                } catch (RuntimeException e) {
+                    // The handler is driver code reacting to a message the peer chose to send. Name
+                    // it for what it is rather than letting it travel on as whatever it happened to
+                    // be, so a caller can tell handling a message from receiving one.
+                    throw new MessageCodecException(
+                        "Failed to handle " + protocolName + " message", e);
+                }
             }
         } catch (TransportException e) {
             throw new MessageCodecException("Failed to receive " + protocolName + " message", e);

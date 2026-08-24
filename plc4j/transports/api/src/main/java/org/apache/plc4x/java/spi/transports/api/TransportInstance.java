@@ -84,6 +84,18 @@ public interface TransportInstance<T extends TransportConfiguration> {
     byte[] read(int numBytes) throws TransportException;
 
     /**
+     * @return the most bytes this transport can hold at once, or {@link Integer#MAX_VALUE} if it has
+     * no such limit or does not know it.
+     *
+     * <p>A codec frames on a length the peer chose. A length larger than this can never be
+     * satisfied - the bytes it asks for will not all be here at the same time however long we wait -
+     * so knowing the limit is what lets waiting be told apart from waiting forever.</p>
+     */
+    default int getReceiveCapacity() {
+        return Integer.MAX_VALUE;
+    }
+
+    /**
      * Simply writes the given bytes to the transport.
      *
      * @param bytes byte array to write

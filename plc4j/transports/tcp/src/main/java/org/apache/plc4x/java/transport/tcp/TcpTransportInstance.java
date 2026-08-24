@@ -156,6 +156,15 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
     }
 
     @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
+
+    @Override
     public int getNumBytesAvailable() throws TransportException {
         readLock.lock();
         try {

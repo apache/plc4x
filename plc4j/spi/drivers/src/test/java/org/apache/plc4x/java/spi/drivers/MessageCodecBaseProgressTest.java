@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -172,5 +174,51 @@ class MessageCodecBaseProgressTest {
         codec.processIncomingData();
         assertEquals(1, received.size(), "a well-framed message must still arrive");
         assertEquals(0, transport.getNumBytesAvailable());
+    }
+
+    /**
+     * A length larger than the transport can ever hold at once cannot be waited for: those bytes
+     * will never be present together however long we wait. Telling that apart from an ordinary
+     * partial message is what the capacity is for.
+     */
+    @Test
+    void aLengthLargerThanTheTransportCanHoldDoesNotStall() throws Exception {
+        FakeTransport transport = new FakeTransport() {
+            @Override
+            public int getReceiveCapacity() {
+                return 64;
+            }
+        };
+        transport.feed((byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04);
+        SizeCodec codec = new SizeCodec(transport, new ArrayList<>(), h -> 100_000);
+
+        assertTrue(bytesConsumedOverRepeatedCycles(transport, codec) > 0,
+            "a length the transport can never satisfy must cost a byte, not be waited on forever");
+    }
+
+    /**
+     * A handler is driver code reacting to a message the peer chose to send, so what it throws
+     * belongs to handling rather than to the transport underneath.
+     */
+    @Test
+    void aFailingHandlerIsReportedAsACodecFailure() {
+        FakeTransport transport = new FakeTransport();
+        transport.feed((byte) 0x02, (byte) 0x09);
+        MessageCodecBase<TestMessage> codec = new MessageCodecBase<>("TEST", transport, m -> {
+            throw new IllegalStateException("the driver could not use this");
+        }) {
+            @Override protected int getMinimumHeaderSize() { return 2; }
+            @Override protected int calculateTotalMessageSize(byte[] header, int availableBytes) {
+                return header[0] & 0xFF;
+            }
+            @Override protected TestMessage parseMessage(ReadBufferByteBased readBuffer) {
+                return new TestMessage(1);
+            }
+        };
+
+        MessageCodecException e = assertThrows(MessageCodecException.class, codec::processIncomingData);
+        assertInstanceOf(IllegalStateException.class, e.getCause());
+        assertTrue(e.getMessage().contains("handle"),
+            "the failure should say it was handling rather than receiving, but was: " + e.getMessage());
     }
 }

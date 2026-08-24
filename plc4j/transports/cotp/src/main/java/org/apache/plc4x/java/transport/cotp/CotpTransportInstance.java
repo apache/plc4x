@@ -387,6 +387,15 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
     }
 
     @Override
+
+    public int getReceiveCapacity() {
+
+        return payloadBuffer.capacity();
+
+    }
+
+
+    @Override
     public int getNumBytesAvailable() {
         if (!isOpen()) {
             return 0;

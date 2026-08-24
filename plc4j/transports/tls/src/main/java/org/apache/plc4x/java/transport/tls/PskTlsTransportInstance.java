@@ -301,6 +301,15 @@ public class PskTlsTransportInstance extends BaseTransportInstance<PskTlsTranspo
     }
 
     @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
+
+    @Override
     public int getNumBytesAvailable() throws TransportException {
         readLock.lock();
         try {

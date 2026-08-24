@@ -426,6 +426,15 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
     }
 
     @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
+
+    @Override
     public int getNumBytesAvailable() throws TransportException {
         readLock.lock();
         try {
