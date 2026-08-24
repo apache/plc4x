@@ -64,9 +64,13 @@ public class OpcuaConfiguration implements Configuration {
     private String password;
 
     @ConfigurationParameter("security-policy")
-    @StringDefaultValue("NONE")
+    @StringDefaultValue("Basic256Sha256")
     @Description("The security policy applied to communication channel between driver and OPC UA server.\n" +
-        "Default value assumes. Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.")
+        "Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.\n" +
+        "`NONE` means the channel is neither signed nor encrypted, so anything on the path can read and\n" +
+        "change what is exchanged; it also leaves the server unauthenticated. A policy that signs and\n" +
+        "encrypts needs a trust anchor for the server's certificate - see `trust-store-file` and\n" +
+        "`server-certificate-file`.")
     private SecurityPolicy securityPolicy;
 
     @ConfigurationParameter("message-security")
@@ -112,6 +116,13 @@ public class OpcuaConfiguration implements Configuration {
     @ConfigurationParameter("trust-store-password")
     @Description("Password used to open trust store.")
     private String trustStorePassword;
+
+    @ConfigurationParameter("allow-insecure-credentials")
+    @BooleanDefaultValue(false)
+    @Description("Allows a username and password to be sent over a channel that neither signs nor encrypts.\n" +
+        "Without this, a connection configured with credentials over an unprotected channel fails rather\n" +
+        "than putting the password on the wire where anything on the path can read it. Setting it warns.")
+    private boolean allowInsecureCredentials;
 
     @ConfigurationParameter("insecure-certificate-verification")
     @BooleanDefaultValue(false)
@@ -221,6 +232,10 @@ public class OpcuaConfiguration implements Configuration {
         return trustStorePassword == null ? null : trustStorePassword.toCharArray();
     }
 
+    public boolean isAllowInsecureCredentials() {
+        return allowInsecureCredentials;
+    }
+
     public boolean isInsecureCertificateVerification() {
         return insecureCertificateVerification;
     }
@@ -252,6 +267,11 @@ public class OpcuaConfiguration implements Configuration {
             }
         }
         return serverCertificate;
+    }
+
+    /** Visible for tests that cover how a token is built rather than whether sending it is wise. */
+    public void setAllowInsecureCredentials(boolean allowInsecureCredentials) {
+        this.allowInsecureCredentials = allowInsecureCredentials;
     }
 
     public void setServerCertificate(X509Certificate serverCertificate) {

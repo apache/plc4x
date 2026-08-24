@@ -213,6 +213,9 @@ class SecureChannelUserIdentityTest {
      */
     @Test
     void leavesUsernameAuthenticationUntouched() throws Exception {
+        // This covers how the token is built, not whether sending it is wise: the endpoint below
+        // protects nothing, which the driver otherwise refuses for a password.
+        configuration.setAllowInsecureCredentials(true);
         SecureChannel channel = new SecureChannel(conversation, driverContext, configuration,
             new PlcUsernamePasswordAuthentication("user", "secret"));
 
@@ -222,6 +225,36 @@ class SecureChannelUserIdentityTest {
         assertInstanceOf(org.apache.plc4x.java.opcua.readwrite.UserNameIdentityToken.class,
             ((BinaryExtensionObjectWithMask) request.getUserIdentityToken()).getBody());
         assertEquals(request.getClientSignature(), request.getUserTokenSignature());
+    }
+
+    /**
+     * A password sent over a channel that neither signs nor encrypts is readable by anything on the
+     * path, and unlike a value it stays useful long after it was read.
+     */
+    @Test
+    void refusesToSendAPasswordOverAnUnprotectedChannel() {
+        SecureChannel channel = new SecureChannel(conversation, driverContext, configuration,
+            new PlcUsernamePasswordAuthentication("user", "secret"));
+
+        PlcRuntimeException thrown = assertThrows(PlcRuntimeException.class,
+            () -> channel.createActivateSessionRequest(usernameEndpoint()));
+        assertTrue(thrown.getMessage().contains("allow-insecure-credentials"),
+            "the refusal should name the way out, but was: " + thrown.getMessage());
+    }
+
+    /**
+     * The way out has to work, or the message above is telling operators to do something that does
+     * not help them.
+     */
+    @Test
+    void sendsThePasswordAnywayWhenExplicitlyAllowed() throws Exception {
+        configuration.setAllowInsecureCredentials(true);
+        SecureChannel channel = new SecureChannel(conversation, driverContext, configuration,
+            new PlcUsernamePasswordAuthentication("user", "secret"));
+
+        assertInstanceOf(org.apache.plc4x.java.opcua.readwrite.UserNameIdentityToken.class,
+            ((BinaryExtensionObjectWithMask) channel.createActivateSessionRequest(usernameEndpoint())
+                .getUserIdentityToken()).getBody());
     }
 
     private PlcCertificateAuthentication certificateAuthentication(String alias) throws Exception {

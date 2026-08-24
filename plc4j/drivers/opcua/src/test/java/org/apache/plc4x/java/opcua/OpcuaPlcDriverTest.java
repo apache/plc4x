@@ -228,6 +228,7 @@ public class OpcuaPlcDriverTest {
     private final String discoveryCorruptedParamWrongName = "diskovery=false";
 
     private String tcpConnectionAddress;
+    private String untrustedTcpConnectionAddress;
     private List<String> connectionStringValidSet;
 
     final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
@@ -235,7 +236,23 @@ public class OpcuaPlcDriverTest {
 
     @BeforeEach
     public void startUp() throws Exception {
-        tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686)) + "?endpoint-port=12686";
+        // The test server is a container with a self-signed certificate and no anchor we could
+        // trust, so these connections say so. The driver's default policy signs and encrypts, and
+        // that needs the server's certificate to be trusted one way or another.
+        // The driver's default policy signs and encrypts, which needs both a client key pair to
+        // sign with and a way to trust the server's certificate. The test server is a container
+        // with a self-signed certificate, hence pinning it rather than a trust store.
+        //
+        // Kept separate from the address itself, because a test that asserts what happens without
+        // a trust anchor has to be able to leave the anchor out.
+        untrustedTcpConnectionAddress =
+            String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686))
+                + "?endpoint-port=12686"
+                + "&key-store-file=" + CLIENT_KEY_STORE.getAbsoluteFile().toString().replace("\\", "/")
+                + "&key-store-password=changeit"
+                + "&key-store-type=pkcs12";
+        tcpConnectionAddress = untrustedTcpConnectionAddress
+            + "&server-certificate-file=" + SERVER_CERTIFICATE.toString().replace("\\", "/");
         connectionStringValidSet = List.of(tcpConnectionAddress);
     }
 
@@ -941,7 +958,8 @@ public class OpcuaPlcDriverTest {
                 entry("message-security", MessageSecurity.SIGN.name())
             );
             assertThatThrownBy(() ->
-                new DefaultPlcDriverManager().getConnection(tcpConnectionAddress + PARAM_DIVIDER + options))
+                new DefaultPlcDriverManager().getConnection(
+                    untrustedTcpConnectionAddress + PARAM_DIVIDER + options))
                 .isInstanceOf(Exception.class);
         }
 

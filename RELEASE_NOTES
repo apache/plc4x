@@ -160,6 +160,35 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- The OPC UA driver's "security-policy" now defaults to
+  Basic256Sha256 instead of NONE. NONE means the channel is
+  neither signed nor encrypted, so anything on the network path
+  can read and alter what is exchanged, and the server is not
+  authenticated at all. A signing and encrypting channel needs the
+  server's certificate to be trusted, so a connection that
+  configured neither "trust-store-file" nor
+  "server-certificate-file" will now fail where it previously came
+  up unprotected. Set one of those, or "security-policy=NONE" to
+  keep the old behaviour, or "insecure-certificate-verification=true"
+  to accept whatever certificate the server presents.
+  Note that a signing channel also needs a client key pair: supply
+  one with "key-store-file", or the driver generates a throwaway
+  self-signed certificate, which a server that authenticates its
+  clients will not accept.
+- The OPC UA driver refuses to send a username and password over a
+  channel that neither signs nor encrypts, because the password is
+  then readable by anything on the path and stays useful long after
+  it is read. The new "allow-insecure-credentials" parameter sends
+  them anyway, with a warning.
+- The OPC UA driver now requires an endpoint to match both the
+  requested security policy and the requested message security
+  mode, and selects the strongest endpoint that matches rather than
+  the weakest. It previously accepted an endpoint matching either
+  one and then chose the lowest security level on offer, so a
+  server publishing a wide-open endpoint beside a protected one was
+  usually reached over the wide-open one. Where two endpoints are
+  equally strong, one whose user token policy protects the token is
+  preferred.
 - The ctrlX driver no longer trusts the Bosch factory default
   certificate that ships inside the driver jar, and no longer
   accepts a certificate for any host regardless of the name it was

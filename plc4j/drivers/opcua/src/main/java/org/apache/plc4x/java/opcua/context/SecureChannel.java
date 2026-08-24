@@ -740,6 +740,18 @@ public class SecureChannel {
         PascalString policyId = selectedEndpoint.getValue().getPolicyId();
         UserTokenType tokenType = selectedEndpoint.getValue().getTokenType();
         SecurityPolicy tokenSecurityPolicy = userTokenSecurityPolicy(selectedEndpoint);
+        if (tokenType == UserTokenType.userTokenTypeUserName
+            && tokenSecurityPolicy == SecurityPolicy.NONE) {
+            // Nothing signs or encrypts this, so the password goes out in the clear where anything
+            // on the path can read it - and unlike data, a password read once is useful forever.
+            if (!configuration.isAllowInsecureCredentials()) {
+                throw new PlcRuntimeException("Refusing to send the username and password over a "
+                    + "channel that neither signs nor encrypts. Configure a security-policy that "
+                    + "does, or set allow-insecure-credentials=true to send them anyway.");
+            }
+            LOGGER.warn("allow-insecure-credentials is set: sending the username and password over "
+                + "a channel that neither signs nor encrypts");
+        }
         ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue(), tokenSecurityPolicy);
         RequestHeader requestHeader = conversation.createRequestHeader();
 
