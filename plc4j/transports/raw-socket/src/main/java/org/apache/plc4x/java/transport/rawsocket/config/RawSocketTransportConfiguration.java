@@ -91,6 +91,19 @@ public class RawSocketTransportConfiguration implements TransportConfiguration {
     public int bufferSize;
 
     /**
+     * How many bytes of captured frames may wait for a consumer.
+     *
+     * <p>A raw socket accepts whatever matches its filter, and nothing obliges anything to drain
+     * what it captures. Counted in bytes rather than frames because frames are not one size and
+     * memory is what runs out. Frames arriving past this are dropped whole, and the count of what
+     * was dropped is logged.</p>
+     */
+    @ConfigurationParameter("receive-queue-size")
+    @Description("Bytes of captured frames that may wait for a consumer before frames are dropped.")
+    @IntDefaultValue(1048576)
+    public int receiveQueueSize;
+
+    /**
      * VLAN ID (0 means no VLAN tag). Range: 0-4095
      */
     @ConfigurationParameter( "vlan-id")
