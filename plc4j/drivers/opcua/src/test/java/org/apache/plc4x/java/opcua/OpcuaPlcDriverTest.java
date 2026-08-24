@@ -945,6 +945,31 @@ public class OpcuaPlcDriverTest {
             }
         }
 
+        /**
+         * Discovery runs unprotected, because the certificate a protected channel needs is what
+         * discovery fetches. Carrying on from there gives a session with neither signing nor
+         * encryption while the configuration asked for both - so it has to stop, and say how to
+         * proceed. A certificate learned from the peer it authenticates cannot establish trust in
+         * that peer, so discovery cannot be the answer either.
+         */
+        @Test
+        void securedConnectionRelyingOnDiscoveryIsRejected() {
+            String options = params(
+                entry("discovery", "true"),
+                entry("key-store-file", CLIENT_KEY_STORE.toString().replace("\\", "/")),
+                entry("key-store-password", "changeit"),
+                entry("key-store-type", "pkcs12"),
+                entry("security-policy", SecurityPolicy.Basic256Sha256.name()),
+                entry("message-security", MessageSecurity.SIGN_ENCRYPT.name())
+            );
+            assertThatThrownBy(() ->
+                new DefaultPlcDriverManager().getConnection(
+                    untrustedTcpConnectionAddress + PARAM_DIVIDER + options))
+                // Distinctive to the refusal itself: rejecting the discovered certificate for want
+                // of an anchor names 'server-certificate-file' too, so that would prove nothing.
+                .hasStackTraceContaining("would fall back to an unprotected channel");
+        }
+
         @Test
         void securedConnectionWithoutTrustAnchorIsRejected() {
             // No trust-store-file and no server-certificate-file: the driver must fail

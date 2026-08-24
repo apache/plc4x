@@ -26,6 +26,8 @@ import java.time.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
@@ -196,8 +198,36 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 LOGGER.debug("Discovering endpoints before connecting");
                 EndpointDescription endpoint = channel.onDiscover()
                     .get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
-                configuration.setServerCertificate(
-                    getX509Certificate(endpoint.getServerCertificate().getStringValue()));
+
+                // Discovery runs unprotected, because the certificate a protected channel would
+                // need is the thing discovery is for. The conversation was therefore built for an
+                // unprotected channel - and it is the conversation the session is established on.
+                // Carrying on here would give a session with neither signing nor encryption while
+                // the configuration asked for both, and nothing would say so.
+                //
+                // Learning the certificate here does not help: a certificate learned from the peer
+                // it authenticates cannot establish trust in that peer. It has to be known in
+                // advance, which is what the remedies below amount to.
+                if (conversation.getSecurityPolicy() != configuration.getSecurityPolicy()) {
+                    throw new PlcConnectionException(String.format(
+                        "Cannot establish a %s channel: the server's certificate is not known in "
+                            + "advance, so the connection would fall back to an unprotected channel. "
+                            + "Name the certificate with 'server-certificate-file' or a trust store "
+                            + "with 'trust-store-file', or set 'discovery=false' if the endpoint "
+                            + "needs no discovery, or ask for 'security-policy=NONE' to accept an "
+                            + "unprotected channel.",
+                        configuration.getSecurityPolicy()));
+                }
+
+                X509Certificate discovered =
+                    getX509Certificate(endpoint.getServerCertificate().getStringValue());
+                try {
+                    driverContext.getCertificateVerifier().checkCertificateTrusted(discovered);
+                } catch (CertificateException e) {
+                    throw new PlcConnectionException(
+                        "The certificate the server presented during discovery is not trusted", e);
+                }
+                configuration.setServerCertificate(discovered);
                 // onDiscover() already performed Hello + OpenSecureChannel on this TCP
                 // connection, so the secure channel is open. Reuse it and only establish the
                 // session — a second Hello on the same connection would stall (Hello is a

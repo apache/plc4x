@@ -164,17 +164,26 @@ Incompatible changes
   Basic256Sha256 instead of NONE. NONE means the channel is
   neither signed nor encrypted, so anything on the network path
   can read and alter what is exchanged, and the server is not
-  authenticated at all. A signing and encrypting channel needs the
-  server's certificate to be trusted, so a connection that
-  configured neither "trust-store-file" nor
-  "server-certificate-file" will now fail where it previously came
-  up unprotected. Set one of those, or "security-policy=NONE" to
-  keep the old behaviour, or "insecure-certificate-verification=true"
-  to accept whatever certificate the server presents.
-  Note that a signing channel also needs a client key pair: supply
-  one with "key-store-file", or the driver generates a throwaway
-  self-signed certificate, which a server that authenticates its
-  clients will not accept.
+  authenticated at all.
+  A protected channel needs the server's certificate to be known
+  before the channel is opened. The discovery phase that would
+  otherwise fetch it runs unprotected by necessity, and a
+  certificate learned from the peer it is meant to authenticate
+  establishes nothing - so the driver no longer proceeds from
+  discovery onto a channel weaker than the one configured. It used
+  to do exactly that, silently: a connection asking for
+  Basic256Sha256 got a session with neither signing nor encryption
+  and no indication of it.
+  Together this means a connection that names no certificate now
+  fails where it previously came up unprotected. Name one with
+  "server-certificate-file", or a trust store with
+  "trust-store-file"; or set "discovery=false" if the endpoint needs
+  no discovery; or ask for "security-policy=NONE" to accept an
+  unprotected channel as before.
+  Note that a protected channel also needs a client key pair:
+  supply one with "key-store-file", or the driver generates a
+  throwaway self-signed certificate, which a server that
+  authenticates its clients will not accept.
 - The OPC UA driver refuses to send a username and password over a
   channel that neither signs nor encrypts, because the password is
   then readable by anything on the path and stays useful long after
