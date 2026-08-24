@@ -87,7 +87,7 @@ public abstract class APDU implements Message {
     } else if (EvaluationHelper.equals(command, (int) (0x01))) {
       builder = APDUSFormat.staticParseAPDUBuilder(readBuffer);
     } else if (true) {
-      builder = APDUIFormat.staticParseAPDUBuilder(readBuffer);
+      builder = APDUIFormat.staticParseAPDUBuilder(readBuffer, command);
     }
     if (builder == null) {
       throw new BufferException("Unsupported case for discriminated type parameters parameters [command]");

@@ -92,6 +92,11 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
     /** Send an S-format acknowledgement every N unconfirmed I-format frames. */
     private static final int ACK_EVERY_N_FRAMES = 8;
 
+    /**
+     * Sequence numbers are fifteen bits wide and wrap, so they are counted modulo this.
+     */
+    private static final int SEQUENCE_NUMBER_MODULUS = 1 << 15;
+
     private Iec60870MessageCodec messageCodec;
 
     /** Single-flight pending response future for the handshake. */
@@ -101,6 +106,13 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
 
     private volatile boolean handshakeComplete = false;
     private int unconfirmedPackets;
+
+    /**
+     * V(R) - the sequence number we expect the station to send next, which is one past the last one
+     * it did send. This is what an acknowledgement carries: it tells the station how far we have
+     * read, so it can release what it was holding in case it had to send it again.
+     */
+    private int expectedSendSequenceNumber;
 
     public Iec60870Connection(Iec608705014Configuration configuration,
                               TransportInstance<?> transportInstance,
@@ -266,13 +278,14 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
 
         // Real telemetry: I-format ASDUs.
         if (apdu instanceof APDUIFormat apduiFormat) {
+            // One past what the station just sent, wrapped - that is what we have read up to, and
+            // what an acknowledgement is for. It used to be built from the frame's *receive*
+            // sequence number, which is the station telling us how much of ours it had read: a
+            // different number entirely, and one that says nothing about what we have taken in.
+            expectedSendSequenceNumber = nextExpectedAfter(apduiFormat.getSendSequenceNumber());
             unconfirmedPackets++;
             if (unconfirmedPackets >= ACK_EVERY_N_FRAMES) {
-                try {
-                    messageCodec.send(new APDUSFormat(0x01, apduiFormat.getReceiveSequenceNo() + 1));
-                } catch (MessageCodecException e) {
-                    LOGGER.error("Failed to send S-format acknowledgement", e);
-                }
+                sendAcknowledgement();
                 unconfirmedPackets = 0;
             }
             processAsdu(apduiFormat.getAsdu());
@@ -324,6 +337,37 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ASDU → PlcSubscriptionEvent dispatch
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return the sequence number we expect next after receiving {@code sendSequenceNumber}, which
+     * is one past it - fifteen bits wide, so it wraps rather than growing.
+     */
+    static int nextExpectedAfter(int sendSequenceNumber) {
+        return (sendSequenceNumber + 1) % SEQUENCE_NUMBER_MODULUS;
+    }
+
+    /**
+     * @return the control-field value carrying {@code sequenceNumber}. The number lives in the upper
+     * fifteen bits, the lowest being what tells the frame formats apart, so it goes out shifted up
+     * by one.
+     */
+    static int encodeSequenceNumber(int sequenceNumber) {
+        return (sequenceNumber % SEQUENCE_NUMBER_MODULUS) << 1;
+    }
+
+    /**
+     * Tells the station how far we have read, so it can let go of what it was keeping in case it
+     * needed to send it again.
+     */
+    private void sendAcknowledgement() {
+        try {
+            // The number sits in the upper fifteen bits of the control field, the lowest bit being
+            // what tells the frame formats apart - so it goes on the wire shifted up by one.
+            messageCodec.send(new APDUSFormat(0x01, encodeSequenceNumber(expectedSendSequenceNumber)));
+        } catch (MessageCodecException e) {
+            LOGGER.error("Failed to send S-format acknowledgement", e);
+        }
+    }
 
     private void processAsdu(ASDU asdu) {
         int asduAddress = asdu.getAsduAddressField();

@@ -160,6 +160,18 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- The IEC 60870-5-104 driver now derives its S-format
+  acknowledgements from the send sequence number of the frames it
+  received, counted modulo 2^15 and encoded in the upper fifteen
+  bits of the control field, as the standard requires. It
+  previously sent the received frame's receive sequence number
+  plus one, which is the station reporting how much of our traffic
+  it had taken in - a different number, and one that said nothing
+  about how far we had read. This changes what the driver puts on
+  the wire in response to received telemetry, so a station that
+  checks acknowledgements will see different (correct) values, and
+  one that had adapted to the old behaviour may need attention.
+  The frame format itself is unchanged.
 
 Changed Maven Coordinates
 -------------------------

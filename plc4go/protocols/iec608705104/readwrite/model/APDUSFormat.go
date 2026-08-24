@@ -45,7 +45,13 @@ type APDUSFormat interface {
 	utils.Copyable
 	APDU
 	// GetReceiveSequenceNo returns ReceiveSequenceNo (property field)
+	// Both control fields carry their sequence number in the upper fifteen bits, with the
+	// lowest bit reserved to tell the frame formats apart. The number is therefore the
+	// field shifted down by one, and the field stays as it is on the wire so that writing
+	// one back out needs no special case.
 	GetReceiveSequenceNo() uint16
+	// GetReceiveSequenceNumber returns ReceiveSequenceNumber (virtual field)
+	GetReceiveSequenceNumber() uint16
 	// IsAPDUSFormat is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUSFormat()
 	// CreateBuilder creates a APDUSFormatBuilder
@@ -194,6 +200,21 @@ func (m *_APDUSFormat) GetReceiveSequenceNo() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_APDUSFormat) GetReceiveSequenceNumber() uint16 {
+	ctx := context.Background()
+	_ = ctx
+	return uint16(m.GetReceiveSequenceNo() >> uint16(1))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAPDUSFormat(structType any) APDUSFormat {
@@ -215,6 +236,8 @@ func (m *_APDUSFormat) GetLengthInBits(ctx context.Context) uint64 {
 
 	// Simple field (receiveSequenceNo)
 	lengthInBits += 16
+
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -239,6 +262,12 @@ func (m *_APDUSFormat) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiveSequenceNo' field"))
 	}
 	m.ReceiveSequenceNo = receiveSequenceNo
+
+	receiveSequenceNumber, err := ReadVirtualField[uint16](ctx, "receiveSequenceNumber", (*uint16)(nil), receiveSequenceNo>>uint16(1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiveSequenceNumber' field"))
+	}
+	_ = receiveSequenceNumber
 
 	if closeErr := readBuffer.CloseContext("APDUSFormat"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUSFormat")
@@ -267,6 +296,12 @@ func (m *_APDUSFormat) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		if err := WriteSimpleField[uint16](ctx, "receiveSequenceNo", m.GetReceiveSequenceNo(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'receiveSequenceNo' field")
+		}
+		// Virtual field
+		receiveSequenceNumber := m.GetReceiveSequenceNumber()
+		_ = receiveSequenceNumber
+		if _receiveSequenceNumberErr := writeBuffer.WriteVirtual(ctx, "receiveSequenceNumber", m.GetReceiveSequenceNumber()); _receiveSequenceNumberErr != nil {
+			return errors.Wrap(_receiveSequenceNumberErr, "Error serializing 'receiveSequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSFormat"); popErr != nil {

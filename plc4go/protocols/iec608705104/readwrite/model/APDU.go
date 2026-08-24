@@ -446,7 +446,7 @@ func (m *_APDU) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__aPDU 
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUSFormat for type-switch of APDU")
 		}
 	case 0 == 0: // APDUIFormat
-		if _child, err = new(_APDUIFormat).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_APDUIFormat).parse(ctx, readBuffer, m, uint16(command)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUIFormat for type-switch of APDU")
 		}
 	default:
