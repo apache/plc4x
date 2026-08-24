@@ -574,4 +574,82 @@ class UdpTransportInstanceTest {
         assertTrue(local.getPort() > 0);
     }
 
+
+    /**
+     * A datagram is all-or-nothing: it has no framing of its own, so half of one written into the
+     * stream is indistinguishable from a whole one and the codec reads it as a message that was
+     * never sent. When there is no room, the datagram goes - not the tail of it.
+     */
+    @Test
+    void testFullRingDropsWholeDatagramsOnly() throws Exception {
+        UdpTransportConfiguration config = new UdpTransportConfiguration();
+        // Room for one datagram and a bit, so the next one cannot fit whole.
+        config.receiveBufferSize = 600;
+        config.maxPacketSize = 512;
+
+        DatagramChannel server = DatagramChannel.open();
+        server.bind(new InetSocketAddress("localhost", 0));
+        int port = ((InetSocketAddress) server.getLocalAddress()).getPort();
+        UdpTransportInstance instance = new UdpTransportInstance(
+            new InetSocketAddress("localhost", port), config, new SharedUdpSocketManager(),
+            AuditLog.builder().build());
+
+        try {
+            InetSocketAddress target = instance.getLocalAddress().orElseThrow();
+            // Every datagram is the same size, so whatever survives must be a whole number of them.
+            // Deliberately not a divisor of any ring size in play, so a partial write would show
+            // up as a remainder rather than hiding behind an exact fit.
+            int datagramSize = 500;
+            byte[] payload = new byte[datagramSize];
+            for (int i = 0; i < 40; i++) {
+                java.util.Arrays.fill(payload, (byte) i);
+                server.send(ByteBuffer.wrap(payload.clone()), target);
+            }
+            Thread.sleep(500);
+
+            int available = instance.getNumBytesAvailable();
+            assertTrue(available > 0, "no datagram arrived at all, so this proves nothing");
+            assertEquals(0, available % datagramSize,
+                "what survived must be whole datagrams, but " + available
+                    + " bytes is not a multiple of " + datagramSize);
+        } finally {
+            instance.close();
+            server.close();
+        }
+    }
+
+    /**
+     * The receive buffer the caller configured is the one they expect to get.
+     */
+    @Test
+    void testRingBufferHonoursConfiguredReceiveBufferSize() throws Exception {
+        UdpTransportConfiguration config = new UdpTransportConfiguration();
+        config.receiveBufferSize = 65536;
+        config.maxPacketSize = 1024;
+
+        DatagramChannel server = DatagramChannel.open();
+        server.bind(new InetSocketAddress("localhost", 0));
+        int port = ((InetSocketAddress) server.getLocalAddress()).getPort();
+        UdpTransportInstance instance = new UdpTransportInstance(
+            new InetSocketAddress("localhost", port), config, new SharedUdpSocketManager(),
+            AuditLog.builder().build());
+
+        try {
+            InetSocketAddress target = instance.getLocalAddress().orElseThrow();
+            byte[] payload = new byte[1024];
+            // More than the old hardcoded 8192 could ever hold.
+            for (int i = 0; i < 16; i++) {
+                java.util.Arrays.fill(payload, (byte) i);
+                server.send(ByteBuffer.wrap(payload.clone()), target);
+            }
+            Thread.sleep(500);
+
+            assertTrue(instance.getNumBytesAvailable() > 8192,
+                "a configured 64k receive buffer must hold more than the old hardcoded 8192, but held "
+                    + instance.getNumBytesAvailable());
+        } finally {
+            instance.close();
+            server.close();
+        }
+    }
 }
