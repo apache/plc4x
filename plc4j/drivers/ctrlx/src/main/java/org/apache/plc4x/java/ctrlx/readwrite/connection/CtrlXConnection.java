@@ -42,6 +42,7 @@ import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model.ReadNode200Res
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXQuery;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
+import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseRequest;
@@ -66,6 +67,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     private static final Logger logger = LoggerFactory.getLogger(CtrlXConnection.class);
 
     private final String baseUrl;
+    private final CtrlXConfiguration configuration;
     private final String username;
     private final String password;
 
@@ -78,10 +80,12 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     private final CtrlXTagHandler controlXTagHandler = new CtrlXTagHandler();
 
-    public CtrlXConnection(String baseUrl, String username, String password) {
+    public CtrlXConnection(String baseUrl, String username, String password,
+                           CtrlXConfiguration configuration) {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
+        this.configuration = configuration;
         this.executorService = Executors.newFixedThreadPool(10);
         this.valueHandler = new DefaultPlcValueHandler();
     }
@@ -102,7 +106,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         if (apiClient != null) {
             throw new PlcConnectionException("Already connected");
         }
-        apiClient = ApiClientFactory.getApiClient(baseUrl, username, password);
+        apiClient = ApiClientFactory.getApiClient(baseUrl, username, password, configuration);
         nodesApi = new NodesApi(apiClient);
         dataLayerApi = new DataLayerInformationAndSettingsApi(apiClient);
     }

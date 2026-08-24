@@ -160,6 +160,24 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- The ctrlX driver no longer trusts the Bosch factory default
+  certificate that ships inside the driver jar, and no longer
+  accepts a certificate for any host regardless of the name it was
+  issued for. It also asks for a TLS context rather than the
+  legacy "SSL" one. That certificate identifies nobody - anything
+  presenting it and its key was trusted - and because it was the
+  only trust anchor, a device carrying a properly issued
+  certificate could not be reached at all. The credentials for the
+  connection travel over that channel.
+  Connections to a device still on its factory certificate will
+  now fail. The new "allow-factory-default-certificate" parameter
+  restores the old behaviour, with a warning; alternatively
+  "server-certificate-file" names a single PEM certificate to
+  trust, or "trust-store-file" (with "trust-store-password" and
+  "trust-store-type") a key store of them, matching the names used
+  by the OPC UA driver and the TLS transport.
+  "ignore-common-name" is also available if the certificate is
+  trusted but names a different host.
 - The TLS transport now checks that the server's certificate was
   issued for the host it connected to. The "ignore-common-name"
   parameter was declared but never consulted, so this check did

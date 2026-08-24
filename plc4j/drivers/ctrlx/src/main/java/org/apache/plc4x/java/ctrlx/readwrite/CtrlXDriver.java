@@ -93,7 +93,8 @@ public class CtrlXDriver implements PlcDriver {
         return new CtrlXConnection(
             String.format("%s://%s", transportCode, transportConfig),
             usernamePasswordAuthentication.getUsername(),
-            usernamePasswordAuthentication.getPassword());
+            usernamePasswordAuthentication.getPassword(),
+            configuration);
     }
 
     @Override
