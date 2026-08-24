@@ -39,6 +39,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
@@ -529,14 +530,29 @@ public class PskTlsTransportInstance extends BaseTransportInstance<PskTlsTranspo
 
         while (open && !Thread.currentThread().isInterrupted()) {
             try {
-                int bytesRead = inputStream.read(buffer);
+                int free = ringBuffer.remainingForWriting();
+                if (free == 0) {
+                    // The ring is full and whoever consumes it has not caught up. Park briefly and
+                    // look again rather than reading bytes we would have to throw away: only the
+                    // codec knows where a frame ends, so a byte dropped here takes the middle out
+                    // of somebody's message. Never a disconnect - a consumer is allowed to lag.
+                    LockSupport.parkNanos(200_000L);
+                    continue;
+                }
+
+                // Bound the read to the room actually available, so the ring cannot overflow.
+                int bytesRead = inputStream.read(buffer, 0, Math.min(buffer.length, free));
 
                 if (bytesRead > 0) {
                     readLock.lock();
                     try {
                         int written = ringBuffer.write(buffer, 0, bytesRead);
                         if (written < bytesRead) {
-                            LOGGER.warn("Ring buffer full, lost {} bytes", bytesRead - written);
+                            // The read was bounded to the free space, so this cannot happen unless
+                            // that reasoning is wrong somewhere - say so loudly rather than
+                            // shrugging off lost bytes.
+                            LOGGER.error("Wrote only {} of {} bytes into a ring buffer that reported room",
+                                written, bytesRead);
                         }
 
                         safeRun(dataListener);

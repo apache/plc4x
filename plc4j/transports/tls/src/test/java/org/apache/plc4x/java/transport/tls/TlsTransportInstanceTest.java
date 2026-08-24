@@ -448,6 +448,68 @@ class TlsTransportInstanceTest {
         }
     }
 
+    /**
+     * More bytes can arrive than the ring buffer has room for, and the codec is the only thing that
+     * knows where a frame ends - so a byte read off the socket and then dropped takes the middle out
+     * of somebody's message. Every byte the peer sent has to turn up, in the order it was sent.
+     */
+    @Test
+    void testReadingMoreThanTheRingHoldsLosesNothing() throws Exception {
+        Future<SSLSocket> serverFuture = acceptConnection();
+
+        TlsTransportConfiguration config = createConfig();
+        // Small enough that a single send cannot fit, so the loop has to wait for room.
+        config.receiveBufferSize = 2048;
+
+        TlsTransportInstance instance = new TlsTransportInstance(
+            new InetSocketAddress("127.0.0.1", serverPort), config, AuditLog.builder().build());
+
+        try {
+            SSLSocket serverSocket = serverFuture.get(5, TimeUnit.SECONDS);
+
+            int total = 16384;
+            byte[] sent = new byte[total];
+            for (int i = 0; i < total; i++) {
+                sent[i] = (byte) (i % 251);
+            }
+
+            java.io.ByteArrayOutputStream drained = new java.io.ByteArrayOutputStream();
+            instance.registerDataListener(() -> { });
+
+            OutputStream serverOut = serverSocket.getOutputStream();
+            Thread sender = new Thread(() -> {
+                try {
+                    serverOut.write(sent);
+                    serverOut.flush();
+                } catch (IOException e) {
+                    // the assertions below report what actually arrived
+                }
+            });
+            sender.start();
+
+            long deadline = System.currentTimeMillis() + 15000;
+            while (drained.size() < total && System.currentTimeMillis() < deadline) {
+                int available = instance.getNumBytesAvailable();
+                if (available > 0) {
+                    drained.write(instance.read(available));
+                } else {
+                    Thread.sleep(5);
+                }
+            }
+            sender.join(5000);
+
+            assertEquals(total, drained.size(),
+                "every byte the peer sent must be delivered, not dropped when the ring filled");
+            assertArrayEquals(sent, drained.toByteArray(),
+                "the bytes must arrive in the order they were sent");
+
+            instance.removeDataListener();
+            serverSocket.close();
+        } finally {
+            instance.close();
+        }
+    }
+
     @Test
     void testDisconnectListenerOnServerClose() throws Exception {
         Future<SSLSocket> serverFuture = acceptConnection();
