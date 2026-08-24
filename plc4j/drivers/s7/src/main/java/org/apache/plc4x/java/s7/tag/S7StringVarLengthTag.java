@@ -32,10 +32,10 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 public class S7StringVarLengthTag extends S7Tag {
     
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d{1,7})])?");
 
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d{1,7})])?");
      
 
     protected S7StringVarLengthTag(TransportSize dataType, MemoryArea memoryArea,
@@ -81,6 +81,13 @@ public class S7StringVarLengthTag extends S7Tag {
         writeBuffer.popContext();
     }
     
+    /**
+     * The length of one of these is only known once it has been read, so the optimizer sizes the
+     * request assuming the largest an S7 string can be. The count has to be bounded against the
+     * same assumption, or the size it computes overflows before anyone looks at it.
+     */
+    private static final int ASSUMED_MAX_LENGTH = 254 + 2;
+
     public static S7StringVarLengthTag of(String address) {
         Matcher matcher;
         
@@ -98,7 +105,9 @@ public class S7StringVarLengthTag extends S7Tag {
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+                numElements = checkNumElements(Integer.parseInt(matcher.group(NUM_ELEMENTS)),
+                    ASSUMED_MAX_LENGTH * (dataType == TransportSize.WSTRING ? 2 : 1),
+                    dataType.name());
             }
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -115,7 +124,9 @@ public class S7StringVarLengthTag extends S7Tag {
             byte bitOffset = 0;
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+                numElements = checkNumElements(Integer.parseInt(matcher.group(NUM_ELEMENTS)),
+                    ASSUMED_MAX_LENGTH * (dataType == TransportSize.WSTRING ? 2 : 1),
+                    dataType.name());
             }
 
             return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
