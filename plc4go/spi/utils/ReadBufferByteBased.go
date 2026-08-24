@@ -24,6 +24,11 @@ import (
 	"math"
 	"math/big"
 	"math/bits"
+	"os"
+	"strconv"
+	"strings"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
 )
@@ -38,9 +43,41 @@ type ReadBufferByteBased interface {
 // DefaultMaxReadBufferDepth is the default bound for nested PullContext calls.
 // Generated parsers are plain recursive-descent, so wire-controlled recursion
 // (e.g. self-nesting mspec types) would otherwise exhaust the goroutine stack,
-// which is fatal and cannot be recovered. 255 is far beyond any legitimate
-// message nesting.
-const DefaultMaxReadBufferDepth = 255
+// which is fatal and cannot be recovered. The deepest message in the project's
+// own test suites nests 36 levels, so this is far beyond anything a real device
+// sends. It is the same number the other bindings use, so that one setting of
+// MaxNestingDepthEnv means the same thing whichever of them is reading.
+const DefaultMaxReadBufferDepth = 1024
+
+// MaxNestingDepthEnv names the environment variable that moves the bound for the
+// device whose messages genuinely nest deeper than anything we have seen. It
+// carries the same meaning here as it does in plc4j: a positive depth, and
+// anything else leaves the default in place. Switching the check off altogether
+// stays a deliberate choice in code, via WithMaxDepthForReadBufferByteBased.
+const MaxNestingDepthEnv = "PLC4X_MAX_NESTING_DEPTH"
+
+// The bound in force for a buffer that was not given one of its own. Resolved
+// once at load, since the environment cannot change under a running process.
+var maxReadBufferDepth = resolveMaxReadBufferDepth(os.Getenv(MaxNestingDepthEnv))
+
+func resolveMaxReadBufferDepth(configured string) int {
+	configured = strings.TrimSpace(configured)
+	if configured == "" {
+		return DefaultMaxReadBufferDepth
+	}
+	depth, err := strconv.Atoi(configured)
+	if err != nil {
+		log.Warn().Str("value", configured).Msgf(
+			"%s is not a number, keeping the maximum nesting depth of %d", MaxNestingDepthEnv, DefaultMaxReadBufferDepth)
+		return DefaultMaxReadBufferDepth
+	}
+	if depth < 1 {
+		log.Warn().Int("value", depth).Msgf(
+			"%s must be positive, keeping the maximum nesting depth of %d", MaxNestingDepthEnv, DefaultMaxReadBufferDepth)
+		return DefaultMaxReadBufferDepth
+	}
+	return depth
+}
 
 func NewReadBufferByteBased(data []byte, options ...ReadBufferByteBasedOptions) ReadBufferByteBased {
 	b := &byteReadBuffer{
@@ -64,9 +101,9 @@ func WithByteOrderForReadBufferByteBased(byteOrder binary.ByteOrder) ReadBufferB
 }
 
 // WithMaxDepthForReadBufferByteBased overrides the maximum nesting depth of
-// PullContext calls (default DefaultMaxReadBufferDepth, applied when left at the
-// zero value). A negative value disables the check entirely — only do that for
-// trusted input.
+// PullContext calls (default DefaultMaxReadBufferDepth, or whatever
+// MaxNestingDepthEnv asks for, applied when left at the zero value). A negative
+// value disables the check entirely — only do that for trusted input.
 func WithMaxDepthForReadBufferByteBased(maxDepth int) ReadBufferByteBasedOptions {
 	return func(b *byteReadBuffer) {
 		b.maxDepth = maxDepth
@@ -145,7 +182,7 @@ func (rb *byteReadBuffer) PullContext(logicalName string, _ ...WithReaderArgs) e
 	rb.depth++
 	maxDepth := rb.maxDepth
 	if maxDepth == 0 {
-		maxDepth = DefaultMaxReadBufferDepth
+		maxDepth = maxReadBufferDepth
 	}
 	if maxDepth > 0 && rb.depth > maxDepth {
 		return errors.Errorf("nesting depth %d at context %s exceeds the maximum of %d (use WithMaxDepthForReadBufferByteBased to raise it for trusted input)", rb.depth, logicalName, maxDepth)
