@@ -39,7 +39,13 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsTag implements AdsTag {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile(
+        "^((0[xX](?<indexGroupHex>[0-9a-fA-F]{1,8}))|(?<indexGroup>\\d{1,10}))" +
+            "/((0[xX](?<indexOffsetHex>[0-9a-fA-F]{1,8}))|(?<indexOffset>\\d{1,10}))" +
+            ":(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d{1,10})])?");
+
+    /** An index group, an index offset and a length all travel ADS as four bytes. */
+    private static final long MAX_UINT32 = 0xFFFFFFFFL;
 
     private final long indexGroup;
 
@@ -50,14 +56,55 @@ public class DirectAdsTag implements AdsTag {
     private final int numberOfElements;
 
     public DirectAdsTag(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
-        //ByteValue.checkUnsignedBounds(indexGroup, 4);
-        this.indexGroup = indexGroup;
-        //ByteValue.checkUnsignedBounds(indexOffset, 4);
-        this.indexOffset = indexOffset;
+        this.indexGroup = checkUint32("indexGroup", indexGroup);
+        this.indexOffset = checkUint32("indexOffset", indexOffset);
         this.adsDataTypeName = Objects.requireNonNull(adsDataTypeName);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
+        }
+    }
+
+    /**
+     * An address that cannot be put on the wire is not an address. ADS carries each of these as
+     * four bytes, so a value past that would be silently narrowed on serialisation and address
+     * something other than what was asked for.
+     */
+    private static long checkUint32(String what, long value) {
+        if (value < 0 || value > MAX_UINT32) {
+            throw new PlcInvalidTagException("The " + what + " " + value +
+                " does not fit the four bytes ADS carries it in.");
+        }
+        return value;
+    }
+
+    /**
+     * The count is multiplied by the size of one element to give the request's length, so it has
+     * to be a count that could be counted. Anything wider is refused as an invalid tag rather
+     * than narrowed into a negative and reported as something else.
+     */
+    protected static int parseElementCount(String count) {
+        try {
+            long parsed = Long.parseLong(count);
+            if (parsed < 1 || parsed > Integer.MAX_VALUE) {
+                throw new PlcInvalidTagException("The number of elements " + parsed +
+                    " is not a count of elements that could be read.");
+            }
+            return (int) parsed;
+        } catch (NumberFormatException e) {
+            throw new PlcInvalidTagException("The number of elements is not a number.", e);
+        }
+    }
+
+    /**
+     * Reads one of the address' numbers, refusing a value too wide for ADS rather than letting
+     * it arrive as an unchecked NumberFormatException from somewhere inside the parse.
+     */
+    protected static long parseUint32(String what, String decimal, String hex) {
+        try {
+            return checkUint32(what, hex != null ? Long.parseLong(hex, 16) : Long.parseLong(decimal));
+        } catch (NumberFormatException e) {
+            throw new PlcInvalidTagException("The " + what + " is not a number ADS could carry.", e);
         }
     }
 
@@ -77,24 +124,14 @@ public class DirectAdsTag implements AdsTag {
         String indexOffsetStringHex = matcher.group("indexOffsetHex");
         String indexOffsetString = matcher.group("indexOffset");
 
-        long indexGroup;
-        if (indexGroupStringHex != null) {
-            indexGroup = Long.parseLong(indexGroupStringHex, 16);
-        } else {
-            indexGroup = Long.parseLong(indexGroupString);
-        }
-
-        long indexOffset;
-        if (indexOffsetStringHex != null) {
-            indexOffset = Long.parseLong(indexOffsetStringHex, 16);
-        } else {
-            indexOffset = Long.parseLong(indexOffsetString);
-        }
+        long indexGroup = parseUint32("indexGroup", indexGroupString, indexGroupStringHex);
+        long indexOffset = parseUint32("indexOffset", indexOffsetString, indexOffsetStringHex);
 
         String adsDataTypeString = matcher.group("adsDataType");
 
         String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
+        Integer numberOfElements = numberOfElementsString != null
+            ? parseElementCount(numberOfElementsString) : null;
 
         return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeString, numberOfElements);
     }
