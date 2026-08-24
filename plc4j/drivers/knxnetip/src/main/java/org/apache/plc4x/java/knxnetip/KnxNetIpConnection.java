@@ -1055,6 +1055,14 @@ public class KnxNetIpConnection extends ConnectionBase<KnxNetIpConfiguration> {
         for (String queryName : browseRequest.getQueryNames()) {
             PlcQuery query = browseRequest.getQuery(queryName);
             String queryString = query != null ? query.getQueryString() : "*";
+            if (!isSupportedBrowseQuery(queryString)) {
+                // One query the driver cannot answer is that query's answer, not the whole
+                // request's - the other queries in the same request are still worth serving.
+                LOGGER.warn("Ignoring browse query '{}': not a group address pattern", queryName);
+                codes.put(queryName, PlcResponseCode.INVALID_ADDRESS);
+                emptyValues.put(queryName, Collections.emptyList());
+                continue;
+            }
             Pattern pattern = compileQueryPattern(queryString);
             for (GroupAddress info : etsModel.getGroupAddresses().values()) {
                 String addressString = info.getGroupAddress();
@@ -1075,21 +1083,62 @@ public class KnxNetIpConnection extends ConnectionBase<KnxNetIpConfiguration> {
      * {@code 1/2/3}) into a regex. Returns {@code null} for "match all" so the
      * caller can skip pattern matching entirely on the hot path.
      */
-    private static Pattern compileQueryPattern(String queryString) {
+    static Pattern compileQueryPattern(String queryString) {
         if (queryString == null || queryString.isEmpty()
             || "*".equals(queryString) || "**".equals(queryString) || "*/*/*".equals(queryString)) {
             return null;
         }
-        String[] parts = queryString.split("/");
-        String regex;
-        if (parts.length == 2 && "*".equals(parts[1])) {
-            regex = parts[0] + "/\\d+/\\d+";
-        } else if (parts.length == 3 && "*".equals(parts[2])) {
-            regex = parts[0] + "/" + parts[1] + "/\\d+";
-        } else {
-            regex = queryString.replace("*", "\\d+");
+        String[] parts = queryString.split("/", -1);
+        StringBuilder regex = new StringBuilder("^");
+        for (int i = 0; i < parts.length; i++) {
+            if (i > 0) {
+                regex.append('/');
+            }
+            // Every part has been checked to be a number or a star, so what goes in is either a
+            // number we wrote out ourselves or a class we chose - never anything from the caller.
+            regex.append("*".equals(parts[i]) ? "\\d+" : parts[i]);
         }
-        return Pattern.compile("^" + regex + "$");
+        if (parts.length == 2 && "*".equals(parts[1])) {
+            // "1/*" has always meant every address under the main group, not the middle group
+            // alone, so the star stands for the two levels below it.
+            regex.append("/\\d+");
+        }
+        return Pattern.compile(regex.append('$').toString());
+    }
+
+    /**
+     * Whether a browse query is one this driver knows how to answer.
+     *
+     * <p>A query names group addresses, with {@code *} standing in for a level - it is a pattern in
+     * that small language and nothing else. It used to be pasted into a regular expression, which
+     * gave a caller two things it should never have had: a query the regex engine rejects failed
+     * the whole browse with an exception nothing on the path expected, and a query carrying an
+     * alternation matched addresses the caller had not named, quietly widening its own scope past
+     * whatever the code around it thought it had asked for.</p>
+     */
+    static boolean isSupportedBrowseQuery(String queryString) {
+        if (queryString == null || queryString.isEmpty()
+            || "*".equals(queryString) || "**".equals(queryString)) {
+            return true;
+        }
+        String[] parts = queryString.split("/", -1);
+        if (parts.length < 1 || parts.length > 3) {
+            return false;
+        }
+        for (String part : parts) {
+            if ("*".equals(part)) {
+                continue;
+            }
+            if (part.isEmpty()) {
+                return false;
+            }
+            for (int i = 0; i < part.length(); i++) {
+                if (part.charAt(i) < '0' || part.charAt(i) > '9') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private PlcBrowseItem createBrowseItem(GroupAddress info) {
