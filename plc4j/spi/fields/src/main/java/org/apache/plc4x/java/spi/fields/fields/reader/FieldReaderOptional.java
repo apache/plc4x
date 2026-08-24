@@ -70,6 +70,11 @@ public class FieldReaderOptional<T> implements FieldCommons {
         }
 
         int curPosInBits = dataReader.getPositionInBits();
+        // A complex field opens a context on the way in and only closes it on the way out, so a
+        // read that fails part-way has to have its nesting budget given back along with its
+        // position - otherwise a message full of absent optional fields spends the budget of one
+        // that nests deeply.
+        int curContextDepth = dataReader.getReadBuffer().getContextDepth();
         try {
             T field = dataReader.read(options);
             LOGGER.debug("done reading field {}. Value: {}", getName(options), field);
@@ -87,12 +92,14 @@ public class FieldReaderOptional<T> implements FieldCommons {
         } catch (ParseAssertException e) {
             LOGGER.debug("Assertion doesn't match for field {}. Resetting read position to {}", getName(options), curPosInBits, e);
             dataReader.setPositionInBits(curPosInBits);
+            dataReader.getReadBuffer().resetContextDepth(curContextDepth);
             return null;
         } catch (BufferUnderflowException e) {
             // The message ended before the field. Absent is the answer the caller can work with, and
             // it is only ever given for data that ran out - never for data that made no sense.
             LOGGER.debug("Not enough bytes for {}. Resetting read position to {}", getName(options), curPosInBits, e);
             dataReader.setPositionInBits(curPosInBits);
+            dataReader.getReadBuffer().resetContextDepth(curContextDepth);
             return null;
         }
     }

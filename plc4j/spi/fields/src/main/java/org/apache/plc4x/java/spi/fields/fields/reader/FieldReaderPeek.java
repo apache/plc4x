@@ -33,6 +33,10 @@ public class FieldReaderPeek<T> implements FieldCommons {
 
     public T readPeekField(DataReader<T> dataReader, int offset, WithOption... options) throws BufferException {
         int curPosInBits = dataReader.getPositionInBits();
+        // A peek is undone whatever happens, so the nesting budget goes back with the position. A
+        // peeked complex type that failed left its context open, since only a read that finishes
+        // pops what it pushed.
+        int curContextDepth = dataReader.getReadBuffer().getContextDepth();
         try {
             // TODO: implement offset. We either need to pass the readBuffer or add a instruction to the dataReader
             T field = dataReader.read(options);
@@ -43,6 +47,7 @@ public class FieldReaderPeek<T> implements FieldCommons {
             return null;
         } finally {
             dataReader.setPositionInBits(curPosInBits);
+            dataReader.getReadBuffer().resetContextDepth(curContextDepth);
         }
     }
 }
