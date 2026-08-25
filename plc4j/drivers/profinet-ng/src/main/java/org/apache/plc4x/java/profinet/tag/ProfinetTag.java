@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class ProfinetTag implements PlcTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<slot>\\d+).(?<subSlot>\\d+).(?<direction>INPUT|OUTPUT)(.(?<index>\\d+))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<slot>\\d{1,5}).(?<subSlot>\\d{1,5}).(?<direction>INPUT|OUTPUT)(.(?<index>\\d{1,5}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d{1,5})])?");
     private final int slot;
     private final int subSlot;
     private final Direction direction;

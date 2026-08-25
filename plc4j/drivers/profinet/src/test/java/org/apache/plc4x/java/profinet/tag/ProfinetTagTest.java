@@ -79,4 +79,10 @@ class ProfinetTagTest {
             return new ProfinetTagWithExposedCtor(address, quantity, PlcValueType.INT);
         }
     }
+
+    @Test
+    void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
+        assertThatThrownBy(() -> ProfinetTag.of("foo:BOOL[99999999999]"))
+            .isInstanceOf(PlcInvalidTagException.class);
+    }
 }

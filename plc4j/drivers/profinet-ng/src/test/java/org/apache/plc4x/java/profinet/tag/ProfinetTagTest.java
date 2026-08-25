@@ -71,4 +71,16 @@ class ProfinetTagTest {
         assertThat(handler.parseTag("1.2.INPUT.3:INT")).isInstanceOf(ProfinetTag.class);
         assertThat(handler.parseQuery("anything")).isNull();
     }
+
+    @Test
+    void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
+        assertThatThrownBy(() -> ProfinetTag.of("1.1.INPUT.1:BOOL[99999999999]"))
+            .isInstanceOf(PlcInvalidTagException.class);
+    }
+
+    @Test
+    void aSlotTooWideToBeANumberIsAlsoAnInvalidTag() {
+        assertThatThrownBy(() -> ProfinetTag.of("99999999999.1.INPUT.1:BOOL"))
+            .isInstanceOf(PlcInvalidTagException.class);
+    }
 }
