@@ -26,8 +26,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"uuid"
 
-	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -382,7 +382,7 @@ func (m *defaultCodec) ExpireWork() {
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
-	workerLog = workerLog.With().Str("workerId", uuid.NewString()).Logger()
+	workerLog = workerLog.With().Str("workerId", uuid.New().String()).Logger()
 	workerLog.Trace().Msg("Starting expire work")
 	defer workerLog.Trace().Msg("expire work ended")
 
@@ -448,7 +448,7 @@ func (m *defaultCodec) ReceiveWork() {
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
-	workerLog = workerLog.With().Str("workerId", uuid.NewString()).Logger()
+	workerLog = workerLog.With().Str("workerId", uuid.New().String()).Logger()
 	workerLog.Trace().Msg("Starting work")
 	defer workerLog.Trace().Msg("work ended")
 

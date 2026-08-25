@@ -23,8 +23,8 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"uuid"
 
-	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -53,10 +53,7 @@ func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "error parsing guid")
 		}
-		guidBytes, err := guid.MarshalBinary() // TODO: do we need to do flip it here?
-		if err != nil {
-			return nil, errors.Wrap(err, "error marshaling guid")
-		}
+		guidBytes := guid[:] // TODO: do we need to do flip it here?
 		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdGuid( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), guidBytes))
 	} else if tag.GetIdentifierType() == readWriteModel.OpcuaIdentifierType_STRING_IDENTIFIER {
 		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(new(tag.GetIdentifier()))))

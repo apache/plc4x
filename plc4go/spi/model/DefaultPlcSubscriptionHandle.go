@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/google/uuid"
+	"uuid"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -35,9 +35,8 @@ type DefaultPlcSubscriptionHandle struct {
 
 // NewDefaultPlcSubscriptionHandle can be used when the DefaultPlcSubscriptionHandle is sufficient
 func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) apiModel.PlcSubscriptionHandle {
-	uuid, _ := uuid.NewUUID()
 	handle := &DefaultPlcSubscriptionHandle{
-		uuid:          uuid,
+		uuid:          uuid.NewV7(),
 		plcSubscriber: plcSubscriber,
 	}
 	handle.handleToRegister = handle
