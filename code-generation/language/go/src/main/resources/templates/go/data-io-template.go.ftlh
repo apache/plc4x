@@ -136,7 +136,13 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			${helper.getGoSafeName(arrayField.name)} := []api.PlcValue{values.NewPlcRawByteArray(${helper.getGoSafeName(arrayField.name)}Raw)}
                         <#else>
 			var ${helper.getGoSafeName(arrayField.name)} []api.PlcValue
-			for i := 0; i < int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
+					<#assign loopExpr = helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)>
+					<#-- See the note on the serialization loop below: range only when the bound is a literal. -->
+					<#if loopExpr?matches(r"^[( ]*[0-9]+[) ]*$")>
+			for i := range int(${loopExpr}) {
+					<#else>
+			for i := 0; i < int(${loopExpr}); i++ {
+					</#if>
 				_item, _itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.name, arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
 				if _itemErr != nil {
 					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
@@ -388,7 +394,15 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
                     <#assign arrayElementType = arrayField.type.elementTypeReference>
 
 			// Array Field (${arrayField.name})
-			for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
+					<#assign loopExpr = helper.toSerializationExpression(null, null, arrayField.loopExpression, parserArguments)>
+					<#-- A range-over-int evaluates its bound once; the 3-clause form re-evaluates
+					     it every iteration. Those are only equivalent when the bound is a literal,
+					     so emit range there and keep the C-style loop for anything else. -->
+					<#if loopExpr?matches(r"^[( ]*[0-9]+[) ]*$")>
+			for i := range uint32(${loopExpr}) {
+					<#else>
+			for i := uint32(0); i < uint32(${loopExpr}); i++ {
+					</#if>
 					<#if case.name = "Struct">
 				${helper.getGoSafeName(arrayField.name)} := value.GetValue("${arrayField.name}")
 					</#if>
