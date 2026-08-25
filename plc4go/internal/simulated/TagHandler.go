@@ -93,15 +93,19 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			}
 		}
 		tagNumElementsText, ok := match["numElements"]
-		var tagNumElements uint16
+		tagNumElements := uint16(1)
 		if ok && len(tagNumElementsText) > 0 {
-			num, err := strconv.Atoi(tagNumElementsText)
+			// The count is carried as a uint16 from here on, so parse it as one: an Atoi followed by a
+			// cast turned a count above 65535 into whatever the low two bytes happened to be, handing
+			// back a tag of 4464 elements for a request of 70000 and an empty one for 65536.
+			num, err := strconv.ParseUint(tagNumElementsText, 10, 16)
 			if err != nil {
-				return nil, errors.New("invalid size '" + tagNumElementsText + "'")
+				return nil, errors.Wrapf(err, "invalid size '%s'", tagNumElementsText)
+			}
+			if num == 0 {
+				return nil, errors.New("the number of elements must be greater than zero")
 			}
 			tagNumElements = uint16(num)
-		} else {
-			tagNumElements = 1
 		}
 		return NewSimulatedTag(tagType, tagName, tagDataType, tagNumElements), nil
 	}
