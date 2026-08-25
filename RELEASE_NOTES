@@ -277,6 +277,19 @@ Incompatible changes
   to throw inside the executor's task, where nothing caught it and
   the caller was left waiting on a future that was never
   completed. Such a node is now read as the leaf it says it is.
+- The simulated driver bounds how much data one tag may ask it to
+  make up. The count in the address was multiplied by the size of
+  one element in an int to size the array it fills, so a large
+  enough count asked for a negative array rather than a large one,
+  and anything below that got what it asked for - three hundred
+  million doubles being 2.4 GB. The product is now measured
+  against a budget of 16 MiB per tag.
+- The modbus, profinet and profinet-ng tag parsers now report a
+  count, address or slot too wide to be a number as an invalid
+  tag. All three already bounded these values, but the checks ran
+  after the number was read, so anything too wide to read left as
+  a NumberFormatException instead. The digit widths are capped in
+  the address patterns, at what each field can hold.
 
 Changed Maven Coordinates
 -------------------------
