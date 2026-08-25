@@ -284,12 +284,37 @@ Incompatible changes
   and anything below that got what it asked for - three hundred
   million doubles being 2.4 GB. The product is now measured
   against a budget of 16 MiB per tag.
+  The Go driver carries that count as a uint16, where a count
+  above it used to be truncated to its low two bytes rather than
+  refused - a request for 70000 elements handing back a tag of
+  4464, and one for 65536 handing back a tag of none. Both are
+  now invalid addresses, as is a count of zero, which the Java
+  driver already refused.
 - The modbus, profinet and profinet-ng tag parsers now report a
   count, address or slot too wide to be a number as an invalid
   tag. All three already bounded these values, but the checks ran
   after the number was read, so anything too wide to read left as
   a NumberFormatException instead. The digit widths are capped in
   the address patterns, at what each field can hold.
+- Every generated parser now refuses a message that nests its
+  types deeper than 1024 levels, in both the Java and the Go
+  bindings. Several types contain themselves - BACnet constructed
+  data holds further constructed data, an OPC UA variant of type
+  24 holds further variants - so the depth of the value tree is
+  the sender's to choose and one level costs a single byte on the
+  wire. Deep enough, that ran the parser out of stack: in Java a
+  StackOverflowError, which is neither a parse failure the driver
+  can report nor an error the receive path contains, so a frame
+  that should have cost one frame ended the connection; in Go a
+  goroutine out of stack takes the process with it rather than
+  the request. Set PLC4X_MAX_NESTING_DEPTH for a device whose
+  messages genuinely nest deeper - it means the same thing in
+  both bindings, and a value that is not a positive number leaves
+  the default in place with a warning. The deepest message in the
+  project's own testsuites nests 36 levels, so this bounds only
+  what no real device sends. Note for Go consumers that the
+  default rose from 255 to 1024 in the process, so one setting of
+  the variable now means one depth whichever binding reads it.
 
 Changed Maven Coordinates
 -------------------------
