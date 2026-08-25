@@ -52,6 +52,7 @@
 |`raw-socket.capture-timeout` |INT |1000| |Packet capture timeout in milliseconds.
 |`raw-socket.snapshot-length` |INT |65536| |Snapshot length - maximum bytes to capture per packet. 0 means capture entire packet.
 |`raw-socket.buffer-size` |INT |1048576| |Buffer size for packet capture in bytes.
+|`raw-socket.receive-queue-size` |INT |1048576| |Bytes of captured frames that may wait for a consumer before frames are dropped.
 |`raw-socket.vlan-id` |INT |0| |VLAN ID (0 means no VLAN tag). Range: 0-4095
 |`raw-socket.vlan-priority` |INT |0| |VLAN priority (0-7). Only used if vlanId > 0.
 |`raw-socket.reuse-interface` |BOOLEAN |false| |Reuse the underlying network interface across multiple transport instances. When true, instances with the same interface and protocol will share a pcap handle. This is useful for protocols where multiple logical connections share one Ethernet type.

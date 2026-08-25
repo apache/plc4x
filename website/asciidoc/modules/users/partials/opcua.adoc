@@ -47,8 +47,12 @@ configuring it with a `false` value. +
 The discovery phase is always conducted using `NONE` security policy.
 |`username` |STRING | | |A username to authenticate to the OPCUA server with.
 |`password` |STRING | | |A password to authenticate to the OPCUA server with.
-|`security-policy` |STRING |NONE| |The security policy applied to communication channel between driver and OPC UA server. +
-Default value assumes. Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.
+|`security-policy` |STRING |Basic256Sha256| |The security policy applied to communication channel between driver and OPC UA server. +
+Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`. +
+`NONE` means the channel is neither signed nor encrypted, so anything on the path can read and +
+change what is exchanged; it also leaves the server unauthenticated. A policy that signs and +
+encrypts needs a trust anchor for the server's certificate - see `trust-store-file` and +
+`server-certificate-file`.
 |`message-security` |STRING |SIGN_ENCRYPT| |The security policy applied to messages exchanged after handshake phase. +
 Possible options are `NONE`, `SIGN`, `SIGN_ENCRYPT`. +
 This option is effective only when `securityPolicy` turns encryption (anything beyond `NONE`).
@@ -62,6 +66,21 @@ Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`trust-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +
 Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`trust-store-password` |STRING | | |Password used to open trust store.
+|`allow-insecure-credentials` |BOOLEAN |false| |Allows a username and password to be sent over a channel that neither signs nor encrypts. +
+Without this, a connection configured with credentials over an unprotected channel fails rather +
+than putting the password on the wire where anything on the path can read it. Setting it warns.
+|`browse-max-references-per-node` |INT |65536| |Largest number of references the driver will collect for a single node while browsing. +
+A Browse is answered in batches, each batch handing back a continuation point for the next, and +
+the driver follows them until the server stops. A server that never stops would otherwise grow +
+the collected list without limit. The same number is asked of the server as its per-node maximum, +
+so it can stop before the driver has to. Set to 0 for no limit.
+|`browse-max-total-nodes` |INT |1000000| |Largest number of nodes a single browse will expand. A browse walks whatever tree the +
+server describes, and the driver has no way to know how large that is before walking it, so this +
+bounds a tree that turns out to be unreasonable - or endless, if the server keeps naming nodes it +
+has not named before. Set to 0 for no limit.
+|`browse-max-depth` |INT |64| |How deep a browse will recurse into the node tree. Already-visited nodes are never +
+expanded twice, so a reference cycle terminates on its own, but a server naming a fresh node at +
+every level describes a tree with no bottom. Set to 0 for no limit.
 |`insecure-certificate-verification` |BOOLEAN |false| |Disables verification of the OPC UA server certificate, trusting any certificate the server presents. +
 This is UNSAFE: it leaves the connection open to man-in-the-middle attacks and defeats the integrity/authenticity +
 guarantees of a signed secure channel. Only enable it for local testing. In production, establish trust with +
