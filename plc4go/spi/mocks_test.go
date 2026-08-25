@@ -108,7 +108,7 @@ type MockCompletableFuture_Complete_Call[T any] struct {
 
 // Complete is a helper method to define mock.On call
 //   - value T
-func (_e *MockCompletableFuture_Expecter[T]) Complete(value interface{}) *MockCompletableFuture_Complete_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) Complete(value any) *MockCompletableFuture_Complete_Call[T] {
 	return &MockCompletableFuture_Complete_Call[T]{Call: _e.mock.On("Complete", value)}
 }
 
@@ -148,7 +148,7 @@ type MockCompletableFuture_CompleteWithError_Call[T any] struct {
 
 // CompleteWithError is a helper method to define mock.On call
 //   - err error
-func (_e *MockCompletableFuture_Expecter[T]) CompleteWithError(err interface{}) *MockCompletableFuture_CompleteWithError_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) CompleteWithError(err any) *MockCompletableFuture_CompleteWithError_Call[T] {
 	return &MockCompletableFuture_CompleteWithError_Call[T]{Call: _e.mock.On("CompleteWithError", err)}
 }
 
@@ -247,7 +247,7 @@ type MockCompletableFuture_GetNow_Call[T any] struct {
 
 // GetNow is a helper method to define mock.On call
 //   - valueIfAbsent T
-func (_e *MockCompletableFuture_Expecter[T]) GetNow(valueIfAbsent interface{}) *MockCompletableFuture_GetNow_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) GetNow(valueIfAbsent any) *MockCompletableFuture_GetNow_Call[T] {
 	return &MockCompletableFuture_GetNow_Call[T]{Call: _e.mock.On("GetNow", valueIfAbsent)}
 }
 
@@ -300,7 +300,7 @@ type MockCompletableFuture_GetWithTimeout_Call[T any] struct {
 
 // GetWithTimeout is a helper method to define mock.On call
 //   - timeout time.Duration
-func (_e *MockCompletableFuture_Expecter[T]) GetWithTimeout(timeout interface{}) *MockCompletableFuture_GetWithTimeout_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) GetWithTimeout(timeout any) *MockCompletableFuture_GetWithTimeout_Call[T] {
 	return &MockCompletableFuture_GetWithTimeout_Call[T]{Call: _e.mock.On("GetWithTimeout", timeout)}
 }
 
@@ -340,7 +340,7 @@ type MockCompletableFuture_HandleAsync_Call[T any] struct {
 
 // HandleAsync is a helper method to define mock.On call
 //   - fn func(value T, err error)
-func (_e *MockCompletableFuture_Expecter[T]) HandleAsync(fn interface{}) *MockCompletableFuture_HandleAsync_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) HandleAsync(fn any) *MockCompletableFuture_HandleAsync_Call[T] {
 	return &MockCompletableFuture_HandleAsync_Call[T]{Call: _e.mock.On("HandleAsync", fn)}
 }
 
@@ -512,7 +512,7 @@ type MockCompletableFuture_ThenApply_Call[T any] struct {
 
 // ThenApply is a helper method to define mock.On call
 //   - fn func(value T)
-func (_e *MockCompletableFuture_Expecter[T]) ThenApply(fn interface{}) *MockCompletableFuture_ThenApply_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) ThenApply(fn any) *MockCompletableFuture_ThenApply_Call[T] {
 	return &MockCompletableFuture_ThenApply_Call[T]{Call: _e.mock.On("ThenApply", fn)}
 }
 
@@ -552,7 +552,7 @@ type MockCompletableFuture_WhenComplete_Call[T any] struct {
 
 // WhenComplete is a helper method to define mock.On call
 //   - fn func(value T, err error)
-func (_e *MockCompletableFuture_Expecter[T]) WhenComplete(fn interface{}) *MockCompletableFuture_WhenComplete_Call[T] {
+func (_e *MockCompletableFuture_Expecter[T]) WhenComplete(fn any) *MockCompletableFuture_WhenComplete_Call[T] {
 	return &MockCompletableFuture_WhenComplete_Call[T]{Call: _e.mock.On("WhenComplete", fn)}
 }
 
@@ -749,7 +749,7 @@ type MockMessage_GetLengthInBits_Call struct {
 
 // GetLengthInBits is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMessage_Expecter) GetLengthInBits(ctx interface{}) *MockMessage_GetLengthInBits_Call {
+func (_e *MockMessage_Expecter) GetLengthInBits(ctx any) *MockMessage_GetLengthInBits_Call {
 	return &MockMessage_GetLengthInBits_Call{Call: _e.mock.On("GetLengthInBits", ctx)}
 }
 
@@ -800,7 +800,7 @@ type MockMessage_GetLengthInBytes_Call struct {
 
 // GetLengthInBytes is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMessage_Expecter) GetLengthInBytes(ctx interface{}) *MockMessage_GetLengthInBytes_Call {
+func (_e *MockMessage_Expecter) GetLengthInBytes(ctx any) *MockMessage_GetLengthInBytes_Call {
 	return &MockMessage_GetLengthInBytes_Call{Call: _e.mock.On("GetLengthInBytes", ctx)}
 }
 
@@ -907,7 +907,7 @@ type MockMessage_SerializeWithWriteBuffer_Call struct {
 // SerializeWithWriteBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeBuffer utils.WriteBuffer
-func (_e *MockMessage_Expecter) SerializeWithWriteBuffer(ctx interface{}, writeBuffer interface{}) *MockMessage_SerializeWithWriteBuffer_Call {
+func (_e *MockMessage_Expecter) SerializeWithWriteBuffer(ctx any, writeBuffer any) *MockMessage_SerializeWithWriteBuffer_Call {
 	return &MockMessage_SerializeWithWriteBuffer_Call{Call: _e.mock.On("SerializeWithWriteBuffer", ctx, writeBuffer)}
 }
 
@@ -1023,7 +1023,7 @@ type MockExpectation_Cancel_Call struct {
 
 // Cancel is a helper method to define mock.On call
 //   - cause error
-func (_e *MockExpectation_Expecter) Cancel(cause interface{}) *MockExpectation_Cancel_Call {
+func (_e *MockExpectation_Expecter) Cancel(cause any) *MockExpectation_Cancel_Call {
 	return &MockExpectation_Cancel_Call{Call: _e.mock.On("Cancel", cause)}
 }
 
@@ -1417,7 +1417,7 @@ type MockMessageCodec_Connect_Call struct {
 
 // Connect is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMessageCodec_Expecter) Connect(ctx interface{}) *MockMessageCodec_Connect_Call {
+func (_e *MockMessageCodec_Expecter) Connect(ctx any) *MockMessageCodec_Connect_Call {
 	return &MockMessageCodec_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
@@ -1505,7 +1505,7 @@ type MockMessageCodec_Expect_Call struct {
 //   - acceptsMessage AcceptsMessage
 //   - handleMessage HandleMessage
 //   - handleError HandleError
-func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, interactionInfo interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_Expect_Call {
+func (_e *MockMessageCodec_Expecter) Expect(ctx any, interactionInfo any, acceptsMessage any, handleMessage any, handleError any) *MockMessageCodec_Expect_Call {
 	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, interactionInfo, acceptsMessage, handleMessage, handleError)}
 }
 
@@ -1668,7 +1668,7 @@ type MockMessageCodec_Send_Call struct {
 //   - ctx context.Context
 //   - interactionInfo string
 //   - message Message
-func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, interactionInfo interface{}, message interface{}) *MockMessageCodec_Send_Call {
+func (_e *MockMessageCodec_Expecter) Send(ctx any, interactionInfo any, message any) *MockMessageCodec_Send_Call {
 	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, interactionInfo, message)}
 }
 
@@ -1734,7 +1734,7 @@ type MockMessageCodec_SendRequest_Call struct {
 //   - acceptsMessage AcceptsMessage
 //   - handleMessage HandleMessage
 //   - handleError HandleError
-func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, interactionInfo interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_SendRequest_Call {
+func (_e *MockMessageCodec_Expecter) SendRequest(ctx any, interactionInfo any, message any, acceptsMessage any, handleMessage any, handleError any) *MockMessageCodec_SendRequest_Call {
 	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)}
 }
 
@@ -1840,7 +1840,7 @@ type MockPlcBrowser_Browse_Call struct {
 // Browse is a helper method to define mock.On call
 //   - ctx context.Context
 //   - browseRequest model.PlcBrowseRequest
-func (_e *MockPlcBrowser_Expecter) Browse(ctx interface{}, browseRequest interface{}) *MockPlcBrowser_Browse_Call {
+func (_e *MockPlcBrowser_Expecter) Browse(ctx any, browseRequest any) *MockPlcBrowser_Browse_Call {
 	return &MockPlcBrowser_Browse_Call{Call: _e.mock.On("Browse", ctx, browseRequest)}
 }
 
@@ -1900,7 +1900,7 @@ type MockPlcBrowser_BrowseWithInterceptor_Call struct {
 //   - ctx context.Context
 //   - browseRequest model.PlcBrowseRequest
 //   - interceptor func(result model.PlcBrowseItem) bool
-func (_e *MockPlcBrowser_Expecter) BrowseWithInterceptor(ctx interface{}, browseRequest interface{}, interceptor interface{}) *MockPlcBrowser_BrowseWithInterceptor_Call {
+func (_e *MockPlcBrowser_Expecter) BrowseWithInterceptor(ctx any, browseRequest any, interceptor any) *MockPlcBrowser_BrowseWithInterceptor_Call {
 	return &MockPlcBrowser_BrowseWithInterceptor_Call{Call: _e.mock.On("BrowseWithInterceptor", ctx, browseRequest, interceptor)}
 }
 
@@ -1996,9 +1996,9 @@ type MockPlcDiscoverer_Discover_Call struct {
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockPlcDiscoverer_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDiscoverer_Discover_Call {
+func (_e *MockPlcDiscoverer_Expecter) Discover(ctx any, callback any, discoveryOptions ...any) *MockPlcDiscoverer_Discover_Call {
 	return &MockPlcDiscoverer_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
+		append([]any{ctx, callback}, discoveryOptions...)...)}
 }
 
 func (_c *MockPlcDiscoverer_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDiscoverer_Discover_Call {
@@ -2090,7 +2090,7 @@ type MockPlcReader_Read_Call struct {
 // Read is a helper method to define mock.On call
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
-func (_e *MockPlcReader_Expecter) Read(ctx interface{}, readRequest interface{}) *MockPlcReader_Read_Call {
+func (_e *MockPlcReader_Expecter) Read(ctx any, readRequest any) *MockPlcReader_Read_Call {
 	return &MockPlcReader_Read_Call{Call: _e.mock.On("Read", ctx, readRequest)}
 }
 
@@ -2176,7 +2176,7 @@ type MockPlcSubscriber_Register_Call struct {
 // Register is a helper method to define mock.On call
 //   - consumer model.PlcSubscriptionEventConsumer
 //   - handles []model.PlcSubscriptionHandle
-func (_e *MockPlcSubscriber_Expecter) Register(consumer interface{}, handles interface{}) *MockPlcSubscriber_Register_Call {
+func (_e *MockPlcSubscriber_Expecter) Register(consumer any, handles any) *MockPlcSubscriber_Register_Call {
 	return &MockPlcSubscriber_Register_Call{Call: _e.mock.On("Register", consumer, handles)}
 }
 
@@ -2235,7 +2235,7 @@ type MockPlcSubscriber_Subscribe_Call struct {
 // Subscribe is a helper method to define mock.On call
 //   - ctx context.Context
 //   - subscriptionRequest model.PlcSubscriptionRequest
-func (_e *MockPlcSubscriber_Expecter) Subscribe(ctx interface{}, subscriptionRequest interface{}) *MockPlcSubscriber_Subscribe_Call {
+func (_e *MockPlcSubscriber_Expecter) Subscribe(ctx any, subscriptionRequest any) *MockPlcSubscriber_Subscribe_Call {
 	return &MockPlcSubscriber_Subscribe_Call{Call: _e.mock.On("Subscribe", ctx, subscriptionRequest)}
 }
 
@@ -2280,7 +2280,7 @@ type MockPlcSubscriber_Unregister_Call struct {
 
 // Unregister is a helper method to define mock.On call
 //   - registration model.PlcConsumerRegistration
-func (_e *MockPlcSubscriber_Expecter) Unregister(registration interface{}) *MockPlcSubscriber_Unregister_Call {
+func (_e *MockPlcSubscriber_Expecter) Unregister(registration any) *MockPlcSubscriber_Unregister_Call {
 	return &MockPlcSubscriber_Unregister_Call{Call: _e.mock.On("Unregister", registration)}
 }
 
@@ -2334,7 +2334,7 @@ type MockPlcSubscriber_Unsubscribe_Call struct {
 // Unsubscribe is a helper method to define mock.On call
 //   - ctx context.Context
 //   - unsubscriptionRequest model.PlcUnsubscriptionRequest
-func (_e *MockPlcSubscriber_Expecter) Unsubscribe(ctx interface{}, unsubscriptionRequest interface{}) *MockPlcSubscriber_Unsubscribe_Call {
+func (_e *MockPlcSubscriber_Expecter) Unsubscribe(ctx any, unsubscriptionRequest any) *MockPlcSubscriber_Unsubscribe_Call {
 	return &MockPlcSubscriber_Unsubscribe_Call{Call: _e.mock.On("Unsubscribe", ctx, unsubscriptionRequest)}
 }
 
@@ -2428,7 +2428,7 @@ type MockPlcTagHandler_ParseQuery_Call struct {
 
 // ParseQuery is a helper method to define mock.On call
 //   - query string
-func (_e *MockPlcTagHandler_Expecter) ParseQuery(query interface{}) *MockPlcTagHandler_ParseQuery_Call {
+func (_e *MockPlcTagHandler_Expecter) ParseQuery(query any) *MockPlcTagHandler_ParseQuery_Call {
 	return &MockPlcTagHandler_ParseQuery_Call{Call: _e.mock.On("ParseQuery", query)}
 }
 
@@ -2490,7 +2490,7 @@ type MockPlcTagHandler_ParseTag_Call struct {
 
 // ParseTag is a helper method to define mock.On call
 //   - tagAddress string
-func (_e *MockPlcTagHandler_Expecter) ParseTag(tagAddress interface{}) *MockPlcTagHandler_ParseTag_Call {
+func (_e *MockPlcTagHandler_Expecter) ParseTag(tagAddress any) *MockPlcTagHandler_ParseTag_Call {
 	return &MockPlcTagHandler_ParseTag_Call{Call: _e.mock.On("ParseTag", tagAddress)}
 }
 
@@ -2580,7 +2580,7 @@ type MockPlcValueHandler_NewPlcValue_Call struct {
 // NewPlcValue is a helper method to define mock.On call
 //   - tag model.PlcTag
 //   - value any
-func (_e *MockPlcValueHandler_Expecter) NewPlcValue(tag interface{}, value interface{}) *MockPlcValueHandler_NewPlcValue_Call {
+func (_e *MockPlcValueHandler_Expecter) NewPlcValue(tag any, value any) *MockPlcValueHandler_NewPlcValue_Call {
 	return &MockPlcValueHandler_NewPlcValue_Call{Call: _e.mock.On("NewPlcValue", tag, value)}
 }
 
@@ -2666,7 +2666,7 @@ type MockPlcWriter_Write_Call struct {
 // Write is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
-func (_e *MockPlcWriter_Expecter) Write(ctx interface{}, writeRequest interface{}) *MockPlcWriter_Write_Call {
+func (_e *MockPlcWriter_Expecter) Write(ctx any, writeRequest any) *MockPlcWriter_Write_Call {
 	return &MockPlcWriter_Write_Call{Call: _e.mock.On("Write", ctx, writeRequest)}
 }
 
@@ -2762,7 +2762,7 @@ type MockTransportAware_GetTransport_Call struct {
 //   - transportName string
 //   - connectionString string
 //   - options1 map[string][]string
-func (_e *MockTransportAware_Expecter) GetTransport(transportName interface{}, connectionString interface{}, options1 interface{}) *MockTransportAware_GetTransport_Call {
+func (_e *MockTransportAware_Expecter) GetTransport(transportName any, connectionString any, options1 any) *MockTransportAware_GetTransport_Call {
 	return &MockTransportAware_GetTransport_Call{Call: _e.mock.On("GetTransport", transportName, connectionString, options1)}
 }
 
@@ -2858,7 +2858,7 @@ type MockTransportAware_RegisterTransport_Call struct {
 
 // RegisterTransport is a helper method to define mock.On call
 //   - transport transports.Transport
-func (_e *MockTransportAware_Expecter) RegisterTransport(transport interface{}) *MockTransportAware_RegisterTransport_Call {
+func (_e *MockTransportAware_Expecter) RegisterTransport(transport any) *MockTransportAware_RegisterTransport_Call {
 	return &MockTransportAware_RegisterTransport_Call{Call: _e.mock.On("RegisterTransport", transport)}
 }
 
@@ -2925,7 +2925,7 @@ type MockTransportErrorHandlerSetter_SetTransportErrorHandler_Call struct {
 
 // SetTransportErrorHandler is a helper method to define mock.On call
 //   - handler transports.TransportErrorHandler
-func (_e *MockTransportErrorHandlerSetter_Expecter) SetTransportErrorHandler(handler interface{}) *MockTransportErrorHandlerSetter_SetTransportErrorHandler_Call {
+func (_e *MockTransportErrorHandlerSetter_Expecter) SetTransportErrorHandler(handler any) *MockTransportErrorHandlerSetter_SetTransportErrorHandler_Call {
 	return &MockTransportErrorHandlerSetter_SetTransportErrorHandler_Call{Call: _e.mock.On("SetTransportErrorHandler", handler)}
 }
 
@@ -3076,7 +3076,7 @@ type MockCompletionFuture_AwaitCompletion_Call struct {
 
 // AwaitCompletion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCompletionFuture_Expecter) AwaitCompletion(ctx interface{}) *MockCompletionFuture_AwaitCompletion_Call {
+func (_e *MockCompletionFuture_Expecter) AwaitCompletion(ctx any) *MockCompletionFuture_AwaitCompletion_Call {
 	return &MockCompletionFuture_AwaitCompletion_Call{Call: _e.mock.On("AwaitCompletion", ctx)}
 }
 
@@ -3117,7 +3117,7 @@ type MockCompletionFuture_Cancel_Call struct {
 // Cancel is a helper method to define mock.On call
 //   - interrupt bool
 //   - err error
-func (_e *MockCompletionFuture_Expecter) Cancel(interrupt interface{}, err interface{}) *MockCompletionFuture_Cancel_Call {
+func (_e *MockCompletionFuture_Expecter) Cancel(interrupt any, err any) *MockCompletionFuture_Cancel_Call {
 	return &MockCompletionFuture_Cancel_Call{Call: _e.mock.On("Cancel", interrupt, err)}
 }
 

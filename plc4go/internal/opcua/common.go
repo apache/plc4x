@@ -23,9 +23,9 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-	"uuid"
 
 	"github.com/rs/zerolog"
+	"uuid"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"

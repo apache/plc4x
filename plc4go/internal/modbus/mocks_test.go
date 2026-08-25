@@ -81,7 +81,7 @@ type mockaduFactory_acceptsResponse_Call struct {
 // acceptsResponse is a helper method to define mock.On call
 //   - request spi.Message
 //   - response spi.Message
-func (_e *mockaduFactory_Expecter) acceptsResponse(request interface{}, response interface{}) *mockaduFactory_acceptsResponse_Call {
+func (_e *mockaduFactory_Expecter) acceptsResponse(request any, response any) *mockaduFactory_acceptsResponse_Call {
 	return &mockaduFactory_acceptsResponse_Call{Call: _e.mock.On("acceptsResponse", request, response)}
 }
 
@@ -141,7 +141,7 @@ type mockaduFactory_buildRequest_Call struct {
 //   - transactionIdentifier uint16
 //   - unitIdentifier uint8
 //   - pdu model.ModbusPDU
-func (_e *mockaduFactory_Expecter) buildRequest(transactionIdentifier interface{}, unitIdentifier interface{}, pdu interface{}) *mockaduFactory_buildRequest_Call {
+func (_e *mockaduFactory_Expecter) buildRequest(transactionIdentifier any, unitIdentifier any, pdu any) *mockaduFactory_buildRequest_Call {
 	return &mockaduFactory_buildRequest_Call{Call: _e.mock.On("buildRequest", transactionIdentifier, unitIdentifier, pdu)}
 }
 
@@ -213,7 +213,7 @@ type mockaduFactory_extractPdu_Call struct {
 
 // extractPdu is a helper method to define mock.On call
 //   - message spi.Message
-func (_e *mockaduFactory_Expecter) extractPdu(message interface{}) *mockaduFactory_extractPdu_Call {
+func (_e *mockaduFactory_Expecter) extractPdu(message any) *mockaduFactory_extractPdu_Call {
 	return &mockaduFactory_extractPdu_Call{Call: _e.mock.On("extractPdu", message)}
 }
 

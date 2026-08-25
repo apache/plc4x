@@ -26,9 +26,9 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"uuid"
 
 	"github.com/rs/zerolog"
+	"uuid"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"

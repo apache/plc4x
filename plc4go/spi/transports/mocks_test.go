@@ -137,7 +137,7 @@ type MockExtendedReader_Peek_Call struct {
 
 // Peek is a helper method to define mock.On call
 //   - n int
-func (_e *MockExtendedReader_Expecter) Peek(n interface{}) *MockExtendedReader_Peek_Call {
+func (_e *MockExtendedReader_Expecter) Peek(n any) *MockExtendedReader_Peek_Call {
 	return &MockExtendedReader_Peek_Call{Call: _e.mock.On("Peek", n)}
 }
 
@@ -197,7 +197,7 @@ type MockExtendedReader_Read_Call struct {
 
 // Read is a helper method to define mock.On call
 //   - p []byte
-func (_e *MockExtendedReader_Expecter) Read(p interface{}) *MockExtendedReader_Read_Call {
+func (_e *MockExtendedReader_Expecter) Read(p any) *MockExtendedReader_Read_Call {
 	return &MockExtendedReader_Read_Call{Call: _e.mock.On("Read", p)}
 }
 
@@ -391,9 +391,9 @@ type MockTransport_CreateTransportInstance_Call struct {
 //   - transportUrl url.URL
 //   - options1 map[string][]string
 //   - _options ...options.WithOption
-func (_e *MockTransport_Expecter) CreateTransportInstance(transportUrl interface{}, options1 interface{}, _options ...interface{}) *MockTransport_CreateTransportInstance_Call {
+func (_e *MockTransport_Expecter) CreateTransportInstance(transportUrl any, options1 any, _options ...any) *MockTransport_CreateTransportInstance_Call {
 	return &MockTransport_CreateTransportInstance_Call{Call: _e.mock.On("CreateTransportInstance",
-		append([]interface{}{transportUrl, options1}, _options...)...)}
+		append([]any{transportUrl, options1}, _options...)...)}
 }
 
 func (_c *MockTransport_CreateTransportInstance_Call) Run(run func(transportUrl url.URL, options1 map[string][]string, _options ...options.WithOption)) *MockTransport_CreateTransportInstance_Call {
@@ -570,7 +570,7 @@ type MockTransportInstance_ClassifyError_Call struct {
 
 // ClassifyError is a helper method to define mock.On call
 //   - err error
-func (_e *MockTransportInstance_Expecter) ClassifyError(err interface{}) *MockTransportInstance_ClassifyError_Call {
+func (_e *MockTransportInstance_Expecter) ClassifyError(err any) *MockTransportInstance_ClassifyError_Call {
 	return &MockTransportInstance_ClassifyError_Call{Call: _e.mock.On("ClassifyError", err)}
 }
 
@@ -665,7 +665,7 @@ type MockTransportInstance_Connect_Call struct {
 
 // Connect is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockTransportInstance_Expecter) Connect(ctx interface{}) *MockTransportInstance_Connect_Call {
+func (_e *MockTransportInstance_Expecter) Connect(ctx any) *MockTransportInstance_Connect_Call {
 	return &MockTransportInstance_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
@@ -717,7 +717,7 @@ type MockTransportInstance_FillBuffer_Call struct {
 // FillBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - until func(pos uint, currentByte byte, reader ExtendedReader) (keepGoing bool)
-func (_e *MockTransportInstance_Expecter) FillBuffer(ctx interface{}, until interface{}) *MockTransportInstance_FillBuffer_Call {
+func (_e *MockTransportInstance_Expecter) FillBuffer(ctx any, until any) *MockTransportInstance_FillBuffer_Call {
 	return &MockTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", ctx, until)}
 }
 
@@ -882,7 +882,7 @@ type MockTransportInstance_PeekReadableBytes_Call struct {
 // PeekReadableBytes is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-func (_e *MockTransportInstance_Expecter) PeekReadableBytes(ctx interface{}, numBytes interface{}) *MockTransportInstance_PeekReadableBytes_Call {
+func (_e *MockTransportInstance_Expecter) PeekReadableBytes(ctx any, numBytes any) *MockTransportInstance_PeekReadableBytes_Call {
 	return &MockTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", ctx, numBytes)}
 }
 
@@ -950,7 +950,7 @@ type MockTransportInstance_Read_Call struct {
 // Read is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-func (_e *MockTransportInstance_Expecter) Read(ctx interface{}, numBytes interface{}) *MockTransportInstance_Read_Call {
+func (_e *MockTransportInstance_Expecter) Read(ctx any, numBytes any) *MockTransportInstance_Read_Call {
 	return &MockTransportInstance_Read_Call{Call: _e.mock.On("Read", ctx, numBytes)}
 }
 
@@ -1084,7 +1084,7 @@ type MockTransportInstance_Write_Call struct {
 // Write is a helper method to define mock.On call
 //   - ctx context.Context
 //   - data []byte
-func (_e *MockTransportInstance_Expecter) Write(ctx interface{}, data interface{}) *MockTransportInstance_Write_Call {
+func (_e *MockTransportInstance_Expecter) Write(ctx any, data any) *MockTransportInstance_Write_Call {
 	return &MockTransportInstance_Write_Call{Call: _e.mock.On("Write", ctx, data)}
 }
 

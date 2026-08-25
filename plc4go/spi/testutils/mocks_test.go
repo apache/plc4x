@@ -101,9 +101,9 @@ type MockXmlParser_Parse_Call struct {
 //   - typeName string
 //   - xmlString string
 //   - parserArguments ...string
-func (_e *MockXmlParser_Expecter) Parse(typeName interface{}, xmlString interface{}, parserArguments ...interface{}) *MockXmlParser_Parse_Call {
+func (_e *MockXmlParser_Expecter) Parse(typeName any, xmlString any, parserArguments ...any) *MockXmlParser_Parse_Call {
 	return &MockXmlParser_Parse_Call{Call: _e.mock.On("Parse",
-		append([]interface{}{typeName, xmlString}, parserArguments...)...)}
+		append([]any{typeName, xmlString}, parserArguments...)...)}
 }
 
 func (_c *MockXmlParser_Parse_Call) Run(run func(typeName string, xmlString string, parserArguments ...string)) *MockXmlParser_Parse_Call {
@@ -131,8 +131,8 @@ func (_c *MockXmlParser_Parse_Call) Run(run func(typeName string, xmlString stri
 	return _c
 }
 
-func (_c *MockXmlParser_Parse_Call) Return(v any, err error) *MockXmlParser_Parse_Call {
-	_c.Call.Return(v, err)
+func (_c *MockXmlParser_Parse_Call) Return(anyMoqParam any, err error) *MockXmlParser_Parse_Call {
+	_c.Call.Return(anyMoqParam, err)
 	return _c
 }
 
@@ -192,7 +192,7 @@ type MockTestTransportInstance_ClassifyError_Call struct {
 
 // ClassifyError is a helper method to define mock.On call
 //   - err error
-func (_e *MockTestTransportInstance_Expecter) ClassifyError(err interface{}) *MockTestTransportInstance_ClassifyError_Call {
+func (_e *MockTestTransportInstance_Expecter) ClassifyError(err any) *MockTestTransportInstance_ClassifyError_Call {
 	return &MockTestTransportInstance_ClassifyError_Call{Call: _e.mock.On("ClassifyError", err)}
 }
 
@@ -287,7 +287,7 @@ type MockTestTransportInstance_Connect_Call struct {
 
 // Connect is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockTestTransportInstance_Expecter) Connect(ctx interface{}) *MockTestTransportInstance_Connect_Call {
+func (_e *MockTestTransportInstance_Expecter) Connect(ctx any) *MockTestTransportInstance_Connect_Call {
 	return &MockTestTransportInstance_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
@@ -340,7 +340,7 @@ type MockTestTransportInstance_DrainWriteBuffer_Call struct {
 
 // DrainWriteBuffer is a helper method to define mock.On call
 //   - numBytes uint32
-func (_e *MockTestTransportInstance_Expecter) DrainWriteBuffer(numBytes interface{}) *MockTestTransportInstance_DrainWriteBuffer_Call {
+func (_e *MockTestTransportInstance_Expecter) DrainWriteBuffer(numBytes any) *MockTestTransportInstance_DrainWriteBuffer_Call {
 	return &MockTestTransportInstance_DrainWriteBuffer_Call{Call: _e.mock.On("DrainWriteBuffer", numBytes)}
 }
 
@@ -392,7 +392,7 @@ type MockTestTransportInstance_FillBuffer_Call struct {
 // FillBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
-func (_e *MockTestTransportInstance_Expecter) FillBuffer(ctx interface{}, until interface{}) *MockTestTransportInstance_FillBuffer_Call {
+func (_e *MockTestTransportInstance_Expecter) FillBuffer(ctx any, until any) *MockTestTransportInstance_FillBuffer_Call {
 	return &MockTestTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", ctx, until)}
 }
 
@@ -437,7 +437,7 @@ type MockTestTransportInstance_FillReadBuffer_Call struct {
 
 // FillReadBuffer is a helper method to define mock.On call
 //   - data []byte
-func (_e *MockTestTransportInstance_Expecter) FillReadBuffer(data interface{}) *MockTestTransportInstance_FillReadBuffer_Call {
+func (_e *MockTestTransportInstance_Expecter) FillReadBuffer(data any) *MockTestTransportInstance_FillReadBuffer_Call {
 	return &MockTestTransportInstance_FillReadBuffer_Call{Call: _e.mock.On("FillReadBuffer", data)}
 }
 
@@ -641,7 +641,7 @@ type MockTestTransportInstance_PeekReadableBytes_Call struct {
 // PeekReadableBytes is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-func (_e *MockTestTransportInstance_Expecter) PeekReadableBytes(ctx interface{}, numBytes interface{}) *MockTestTransportInstance_PeekReadableBytes_Call {
+func (_e *MockTestTransportInstance_Expecter) PeekReadableBytes(ctx any, numBytes any) *MockTestTransportInstance_PeekReadableBytes_Call {
 	return &MockTestTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", ctx, numBytes)}
 }
 
@@ -709,7 +709,7 @@ type MockTestTransportInstance_Read_Call struct {
 // Read is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-func (_e *MockTestTransportInstance_Expecter) Read(ctx interface{}, numBytes interface{}) *MockTestTransportInstance_Read_Call {
+func (_e *MockTestTransportInstance_Expecter) Read(ctx any, numBytes any) *MockTestTransportInstance_Read_Call {
 	return &MockTestTransportInstance_Read_Call{Call: _e.mock.On("Read", ctx, numBytes)}
 }
 
@@ -843,7 +843,7 @@ type MockTestTransportInstance_Write_Call struct {
 // Write is a helper method to define mock.On call
 //   - ctx context.Context
 //   - data []byte
-func (_e *MockTestTransportInstance_Expecter) Write(ctx interface{}, data interface{}) *MockTestTransportInstance_Write_Call {
+func (_e *MockTestTransportInstance_Expecter) Write(ctx any, data any) *MockTestTransportInstance_Write_Call {
 	return &MockTestTransportInstance_Write_Call{Call: _e.mock.On("Write", ctx, data)}
 }
 
@@ -915,7 +915,7 @@ type MockConnectionConnectAwaiter_SetAwaitDisconnectComplete_Call struct {
 
 // SetAwaitDisconnectComplete is a helper method to define mock.On call
 //   - awaitComplete bool
-func (_e *MockConnectionConnectAwaiter_Expecter) SetAwaitDisconnectComplete(awaitComplete interface{}) *MockConnectionConnectAwaiter_SetAwaitDisconnectComplete_Call {
+func (_e *MockConnectionConnectAwaiter_Expecter) SetAwaitDisconnectComplete(awaitComplete any) *MockConnectionConnectAwaiter_SetAwaitDisconnectComplete_Call {
 	return &MockConnectionConnectAwaiter_SetAwaitDisconnectComplete_Call{Call: _e.mock.On("SetAwaitDisconnectComplete", awaitComplete)}
 }
 
@@ -955,7 +955,7 @@ type MockConnectionConnectAwaiter_SetAwaitSetupComplete_Call struct {
 
 // SetAwaitSetupComplete is a helper method to define mock.On call
 //   - awaitComplete bool
-func (_e *MockConnectionConnectAwaiter_Expecter) SetAwaitSetupComplete(awaitComplete interface{}) *MockConnectionConnectAwaiter_SetAwaitSetupComplete_Call {
+func (_e *MockConnectionConnectAwaiter_Expecter) SetAwaitSetupComplete(awaitComplete any) *MockConnectionConnectAwaiter_SetAwaitSetupComplete_Call {
 	return &MockConnectionConnectAwaiter_SetAwaitSetupComplete_Call{Call: _e.mock.On("SetAwaitSetupComplete", awaitComplete)}
 }
 
@@ -1046,7 +1046,7 @@ type MockParser_Parse_Call struct {
 //   - typeName string
 //   - arguments []string
 //   - io utils.ReadBuffer
-func (_e *MockParser_Expecter) Parse(typeName interface{}, arguments interface{}, io interface{}) *MockParser_Parse_Call {
+func (_e *MockParser_Expecter) Parse(typeName any, arguments any, io any) *MockParser_Parse_Call {
 	return &MockParser_Parse_Call{Call: _e.mock.On("Parse", typeName, arguments, io)}
 }
 
@@ -1073,8 +1073,8 @@ func (_c *MockParser_Parse_Call) Run(run func(typeName string, arguments []strin
 	return _c
 }
 
-func (_c *MockParser_Parse_Call) Return(v any, err error) *MockParser_Parse_Call {
-	_c.Call.Return(v, err)
+func (_c *MockParser_Parse_Call) Return(anyMoqParam any, err error) *MockParser_Parse_Call {
+	_c.Call.Return(anyMoqParam, err)
 	return _c
 }
 
@@ -1161,9 +1161,9 @@ type MockTestingLog_Log_Call struct {
 
 // Log is a helper method to define mock.On call
 //   - args ...any
-func (_e *MockTestingLog_Expecter) Log(args ...interface{}) *MockTestingLog_Log_Call {
+func (_e *MockTestingLog_Expecter) Log(args ...any) *MockTestingLog_Log_Call {
 	return &MockTestingLog_Log_Call{Call: _e.mock.On("Log",
-		append([]interface{}{}, args...)...)}
+		append([]any{}, args...)...)}
 }
 
 func (_c *MockTestingLog_Log_Call) Run(run func(args ...any)) *MockTestingLog_Log_Call {
@@ -1210,9 +1210,9 @@ type MockTestingLog_Logf_Call struct {
 // Logf is a helper method to define mock.On call
 //   - format string
 //   - args ...any
-func (_e *MockTestingLog_Expecter) Logf(format interface{}, args ...interface{}) *MockTestingLog_Logf_Call {
+func (_e *MockTestingLog_Expecter) Logf(format any, args ...any) *MockTestingLog_Logf_Call {
 	return &MockTestingLog_Logf_Call{Call: _e.mock.On("Logf",
-		append([]interface{}{format}, args...)...)}
+		append([]any{format}, args...)...)}
 }
 
 func (_c *MockTestingLog_Logf_Call) Run(run func(format string, args ...any)) *MockTestingLog_Logf_Call {

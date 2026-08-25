@@ -90,9 +90,9 @@ type MockContextReader_CloseContext_Call struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockContextReader_Expecter) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockContextReader_CloseContext_Call {
+func (_e *MockContextReader_Expecter) CloseContext(logicalName any, readerArgs ...any) *MockContextReader_CloseContext_Call {
 	return &MockContextReader_CloseContext_Call{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockContextReader_CloseContext_Call) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockContextReader_CloseContext_Call {
@@ -156,9 +156,9 @@ type MockContextReader_PullContext_Call struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockContextReader_Expecter) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockContextReader_PullContext_Call {
+func (_e *MockContextReader_Expecter) PullContext(logicalName any, readerArgs ...any) *MockContextReader_PullContext_Call {
 	return &MockContextReader_PullContext_Call{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockContextReader_PullContext_Call) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockContextReader_PullContext_Call {
@@ -249,9 +249,9 @@ type MockContextWriter_PopContext_Call struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockContextWriter_Expecter) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockContextWriter_PopContext_Call {
+func (_e *MockContextWriter_Expecter) PopContext(logicalName any, writerArgs ...any) *MockContextWriter_PopContext_Call {
 	return &MockContextWriter_PopContext_Call{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockContextWriter_PopContext_Call) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockContextWriter_PopContext_Call {
@@ -315,9 +315,9 @@ type MockContextWriter_PushContext_Call struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockContextWriter_Expecter) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockContextWriter_PushContext_Call {
+func (_e *MockContextWriter_Expecter) PushContext(logicalName any, writerArgs ...any) *MockContextWriter_PushContext_Call {
 	return &MockContextWriter_PushContext_Call{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockContextWriter_PushContext_Call) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockContextWriter_PushContext_Call {
@@ -402,7 +402,7 @@ type MockDataIoSerializerFunction_Apply_Call[T any] struct {
 // Apply is a helper method to define mock.On call
 //   - v T
 //   - plcValue values.PlcValue
-func (_e *MockDataIoSerializerFunction_Expecter[T]) Apply(v interface{}, plcValue interface{}) *MockDataIoSerializerFunction_Apply_Call[T] {
+func (_e *MockDataIoSerializerFunction_Expecter[T]) Apply(v any, plcValue any) *MockDataIoSerializerFunction_Apply_Call[T] {
 	return &MockDataIoSerializerFunction_Apply_Call[T]{Call: _e.mock.On("Apply", v, plcValue)}
 }
 
@@ -492,9 +492,9 @@ type MockDataReader_CloseContext_Call[T any] struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReader_Expecter[T]) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReader_CloseContext_Call[T] {
+func (_e *MockDataReader_Expecter[T]) CloseContext(logicalName any, readerArgs ...any) *MockDataReader_CloseContext_Call[T] {
 	return &MockDataReader_CloseContext_Call[T]{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReader_CloseContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReader_CloseContext_Call[T] {
@@ -694,9 +694,9 @@ type MockDataReader_PullContext_Call[T any] struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReader_Expecter[T]) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReader_PullContext_Call[T] {
+func (_e *MockDataReader_Expecter[T]) PullContext(logicalName any, readerArgs ...any) *MockDataReader_PullContext_Call[T] {
 	return &MockDataReader_PullContext_Call[T]{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReader_PullContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReader_PullContext_Call[T] {
@@ -772,9 +772,9 @@ type MockDataReader_Read_Call[T any] struct {
 //   - ctx context.Context
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReader_Expecter[T]) Read(ctx interface{}, logicalName interface{}, readerArgs ...interface{}) *MockDataReader_Read_Call[T] {
+func (_e *MockDataReader_Expecter[T]) Read(ctx any, logicalName any, readerArgs ...any) *MockDataReader_Read_Call[T] {
 	return &MockDataReader_Read_Call[T]{Call: _e.mock.On("Read",
-		append([]interface{}{ctx, logicalName}, readerArgs...)...)}
+		append([]any{ctx, logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReader_Read_Call[T]) Run(run func(ctx context.Context, logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReader_Read_Call[T] {
@@ -825,7 +825,7 @@ type MockDataReader_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataReader_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataReader_SetByteOrder_Call[T] {
+func (_e *MockDataReader_Expecter[T]) SetByteOrder(byteOrder any) *MockDataReader_SetByteOrder_Call[T] {
 	return &MockDataReader_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -865,7 +865,7 @@ type MockDataReader_SetPos_Call[T any] struct {
 
 // SetPos is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockDataReader_Expecter[T]) SetPos(pos interface{}) *MockDataReader_SetPos_Call[T] {
+func (_e *MockDataReader_Expecter[T]) SetPos(pos any) *MockDataReader_SetPos_Call[T] {
 	return &MockDataReader_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
@@ -950,9 +950,9 @@ type MockDataReaderComplex_CloseContext_Call[T any] struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderComplex_Expecter[T]) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReaderComplex_CloseContext_Call[T] {
+func (_e *MockDataReaderComplex_Expecter[T]) CloseContext(logicalName any, readerArgs ...any) *MockDataReaderComplex_CloseContext_Call[T] {
 	return &MockDataReaderComplex_CloseContext_Call[T]{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderComplex_CloseContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderComplex_CloseContext_Call[T] {
@@ -1152,9 +1152,9 @@ type MockDataReaderComplex_PullContext_Call[T any] struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderComplex_Expecter[T]) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReaderComplex_PullContext_Call[T] {
+func (_e *MockDataReaderComplex_Expecter[T]) PullContext(logicalName any, readerArgs ...any) *MockDataReaderComplex_PullContext_Call[T] {
 	return &MockDataReaderComplex_PullContext_Call[T]{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderComplex_PullContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderComplex_PullContext_Call[T] {
@@ -1230,9 +1230,9 @@ type MockDataReaderComplex_Read_Call[T any] struct {
 //   - ctx context.Context
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderComplex_Expecter[T]) Read(ctx interface{}, logicalName interface{}, readerArgs ...interface{}) *MockDataReaderComplex_Read_Call[T] {
+func (_e *MockDataReaderComplex_Expecter[T]) Read(ctx any, logicalName any, readerArgs ...any) *MockDataReaderComplex_Read_Call[T] {
 	return &MockDataReaderComplex_Read_Call[T]{Call: _e.mock.On("Read",
-		append([]interface{}{ctx, logicalName}, readerArgs...)...)}
+		append([]any{ctx, logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderComplex_Read_Call[T]) Run(run func(ctx context.Context, logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderComplex_Read_Call[T] {
@@ -1314,9 +1314,9 @@ type MockDataReaderComplex_ReadComplex_Call[T any] struct {
 //   - logicalName string
 //   - supplier func(context.Context, utils.ReadBuffer) (T, error)
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderComplex_Expecter[T]) ReadComplex(ctx interface{}, logicalName interface{}, supplier interface{}, readerArgs ...interface{}) *MockDataReaderComplex_ReadComplex_Call[T] {
+func (_e *MockDataReaderComplex_Expecter[T]) ReadComplex(ctx any, logicalName any, supplier any, readerArgs ...any) *MockDataReaderComplex_ReadComplex_Call[T] {
 	return &MockDataReaderComplex_ReadComplex_Call[T]{Call: _e.mock.On("ReadComplex",
-		append([]interface{}{ctx, logicalName, supplier}, readerArgs...)...)}
+		append([]any{ctx, logicalName, supplier}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderComplex_ReadComplex_Call[T]) Run(run func(ctx context.Context, logicalName string, supplier func(context.Context, utils.ReadBuffer) (T, error), readerArgs ...utils.WithReaderArgs)) *MockDataReaderComplex_ReadComplex_Call[T] {
@@ -1372,7 +1372,7 @@ type MockDataReaderComplex_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataReaderComplex_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataReaderComplex_SetByteOrder_Call[T] {
+func (_e *MockDataReaderComplex_Expecter[T]) SetByteOrder(byteOrder any) *MockDataReaderComplex_SetByteOrder_Call[T] {
 	return &MockDataReaderComplex_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -1412,7 +1412,7 @@ type MockDataReaderComplex_SetPos_Call[T any] struct {
 
 // SetPos is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockDataReaderComplex_Expecter[T]) SetPos(pos interface{}) *MockDataReaderComplex_SetPos_Call[T] {
+func (_e *MockDataReaderComplex_Expecter[T]) SetPos(pos any) *MockDataReaderComplex_SetPos_Call[T] {
 	return &MockDataReaderComplex_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
@@ -1497,9 +1497,9 @@ type MockDataReaderEnum_CloseContext_Call[T any] struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderEnum_Expecter[T]) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReaderEnum_CloseContext_Call[T] {
+func (_e *MockDataReaderEnum_Expecter[T]) CloseContext(logicalName any, readerArgs ...any) *MockDataReaderEnum_CloseContext_Call[T] {
 	return &MockDataReaderEnum_CloseContext_Call[T]{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderEnum_CloseContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderEnum_CloseContext_Call[T] {
@@ -1699,9 +1699,9 @@ type MockDataReaderEnum_PullContext_Call[T any] struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderEnum_Expecter[T]) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReaderEnum_PullContext_Call[T] {
+func (_e *MockDataReaderEnum_Expecter[T]) PullContext(logicalName any, readerArgs ...any) *MockDataReaderEnum_PullContext_Call[T] {
 	return &MockDataReaderEnum_PullContext_Call[T]{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderEnum_PullContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderEnum_PullContext_Call[T] {
@@ -1777,9 +1777,9 @@ type MockDataReaderEnum_Read_Call[T any] struct {
 //   - ctx context.Context
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderEnum_Expecter[T]) Read(ctx interface{}, logicalName interface{}, readerArgs ...interface{}) *MockDataReaderEnum_Read_Call[T] {
+func (_e *MockDataReaderEnum_Expecter[T]) Read(ctx any, logicalName any, readerArgs ...any) *MockDataReaderEnum_Read_Call[T] {
 	return &MockDataReaderEnum_Read_Call[T]{Call: _e.mock.On("Read",
-		append([]interface{}{ctx, logicalName}, readerArgs...)...)}
+		append([]any{ctx, logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderEnum_Read_Call[T]) Run(run func(ctx context.Context, logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderEnum_Read_Call[T] {
@@ -1830,7 +1830,7 @@ type MockDataReaderEnum_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataReaderEnum_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataReaderEnum_SetByteOrder_Call[T] {
+func (_e *MockDataReaderEnum_Expecter[T]) SetByteOrder(byteOrder any) *MockDataReaderEnum_SetByteOrder_Call[T] {
 	return &MockDataReaderEnum_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -1870,7 +1870,7 @@ type MockDataReaderEnum_SetPos_Call[T any] struct {
 
 // SetPos is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockDataReaderEnum_Expecter[T]) SetPos(pos interface{}) *MockDataReaderEnum_SetPos_Call[T] {
+func (_e *MockDataReaderEnum_Expecter[T]) SetPos(pos any) *MockDataReaderEnum_SetPos_Call[T] {
 	return &MockDataReaderEnum_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
@@ -1955,9 +1955,9 @@ type MockDataReaderSimpleBaseContract_CloseContext_Call[T any] struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReaderSimpleBaseContract_CloseContext_Call[T] {
+func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) CloseContext(logicalName any, readerArgs ...any) *MockDataReaderSimpleBaseContract_CloseContext_Call[T] {
 	return &MockDataReaderSimpleBaseContract_CloseContext_Call[T]{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderSimpleBaseContract_CloseContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderSimpleBaseContract_CloseContext_Call[T] {
@@ -2157,9 +2157,9 @@ type MockDataReaderSimpleBaseContract_PullContext_Call[T any] struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...utils.WithReaderArgs
-func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockDataReaderSimpleBaseContract_PullContext_Call[T] {
+func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) PullContext(logicalName any, readerArgs ...any) *MockDataReaderSimpleBaseContract_PullContext_Call[T] {
 	return &MockDataReaderSimpleBaseContract_PullContext_Call[T]{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockDataReaderSimpleBaseContract_PullContext_Call[T]) Run(run func(logicalName string, readerArgs ...utils.WithReaderArgs)) *MockDataReaderSimpleBaseContract_PullContext_Call[T] {
@@ -2205,7 +2205,7 @@ type MockDataReaderSimpleBaseContract_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataReaderSimpleBaseContract_SetByteOrder_Call[T] {
+func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) SetByteOrder(byteOrder any) *MockDataReaderSimpleBaseContract_SetByteOrder_Call[T] {
 	return &MockDataReaderSimpleBaseContract_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -2245,7 +2245,7 @@ type MockDataReaderSimpleBaseContract_SetPos_Call[T any] struct {
 
 // SetPos is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) SetPos(pos interface{}) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
+func (_e *MockDataReaderSimpleBaseContract_Expecter[T]) SetPos(pos any) *MockDataReaderSimpleBaseContract_SetPos_Call[T] {
 	return &MockDataReaderSimpleBaseContract_SetPos_Call[T]{Call: _e.mock.On("SetPos", pos)}
 }
 
@@ -2422,9 +2422,9 @@ type MockDataWriter_PopContext_Call[T any] struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriter_Expecter[T]) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockDataWriter_PopContext_Call[T] {
+func (_e *MockDataWriter_Expecter[T]) PopContext(logicalName any, writerArgs ...any) *MockDataWriter_PopContext_Call[T] {
 	return &MockDataWriter_PopContext_Call[T]{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriter_PopContext_Call[T]) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockDataWriter_PopContext_Call[T] {
@@ -2488,9 +2488,9 @@ type MockDataWriter_PushContext_Call[T any] struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriter_Expecter[T]) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockDataWriter_PushContext_Call[T] {
+func (_e *MockDataWriter_Expecter[T]) PushContext(logicalName any, writerArgs ...any) *MockDataWriter_PushContext_Call[T] {
 	return &MockDataWriter_PushContext_Call[T]{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriter_PushContext_Call[T]) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockDataWriter_PushContext_Call[T] {
@@ -2536,7 +2536,7 @@ type MockDataWriter_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataWriter_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataWriter_SetByteOrder_Call[T] {
+func (_e *MockDataWriter_Expecter[T]) SetByteOrder(byteOrder any) *MockDataWriter_SetByteOrder_Call[T] {
 	return &MockDataWriter_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -2596,9 +2596,9 @@ type MockDataWriter_Write_Call[T any] struct {
 //   - logicalName string
 //   - value T
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriter_Expecter[T]) Write(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockDataWriter_Write_Call[T] {
+func (_e *MockDataWriter_Expecter[T]) Write(ctx any, logicalName any, value any, writerArgs ...any) *MockDataWriter_Write_Call[T] {
 	return &MockDataWriter_Write_Call[T]{Call: _e.mock.On("Write",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriter_Write_Call[T]) Run(run func(ctx context.Context, logicalName string, value T, writerArgs ...utils.WithWriterArgs)) *MockDataWriter_Write_Call[T] {
@@ -2791,9 +2791,9 @@ type MockDataWriterComplex_PopContext_Call[T any] struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriterComplex_Expecter[T]) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockDataWriterComplex_PopContext_Call[T] {
+func (_e *MockDataWriterComplex_Expecter[T]) PopContext(logicalName any, writerArgs ...any) *MockDataWriterComplex_PopContext_Call[T] {
 	return &MockDataWriterComplex_PopContext_Call[T]{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriterComplex_PopContext_Call[T]) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockDataWriterComplex_PopContext_Call[T] {
@@ -2857,9 +2857,9 @@ type MockDataWriterComplex_PushContext_Call[T any] struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriterComplex_Expecter[T]) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockDataWriterComplex_PushContext_Call[T] {
+func (_e *MockDataWriterComplex_Expecter[T]) PushContext(logicalName any, writerArgs ...any) *MockDataWriterComplex_PushContext_Call[T] {
 	return &MockDataWriterComplex_PushContext_Call[T]{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriterComplex_PushContext_Call[T]) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockDataWriterComplex_PushContext_Call[T] {
@@ -2905,7 +2905,7 @@ type MockDataWriterComplex_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataWriterComplex_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataWriterComplex_SetByteOrder_Call[T] {
+func (_e *MockDataWriterComplex_Expecter[T]) SetByteOrder(byteOrder any) *MockDataWriterComplex_SetByteOrder_Call[T] {
 	return &MockDataWriterComplex_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -2965,9 +2965,9 @@ type MockDataWriterComplex_Write_Call[T any] struct {
 //   - logicalName string
 //   - value T
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriterComplex_Expecter[T]) Write(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockDataWriterComplex_Write_Call[T] {
+func (_e *MockDataWriterComplex_Expecter[T]) Write(ctx any, logicalName any, value any, writerArgs ...any) *MockDataWriterComplex_Write_Call[T] {
 	return &MockDataWriterComplex_Write_Call[T]{Call: _e.mock.On("Write",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriterComplex_Write_Call[T]) Run(run func(ctx context.Context, logicalName string, value T, writerArgs ...utils.WithWriterArgs)) *MockDataWriterComplex_Write_Call[T] {
@@ -3070,9 +3070,9 @@ type MockDataWriterEnum_Write_Call[T any] struct {
 //   - logicalName string
 //   - value T
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriterEnum_Expecter[T]) Write(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockDataWriterEnum_Write_Call[T] {
+func (_e *MockDataWriterEnum_Expecter[T]) Write(ctx any, logicalName any, value any, writerArgs ...any) *MockDataWriterEnum_Write_Call[T] {
 	return &MockDataWriterEnum_Write_Call[T]{Call: _e.mock.On("Write",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriterEnum_Write_Call[T]) Run(run func(ctx context.Context, logicalName string, value T, writerArgs ...utils.WithWriterArgs)) *MockDataWriterEnum_Write_Call[T] {
@@ -3265,9 +3265,9 @@ type MockDataWriterSimpleBaseContract_PopContext_Call[T any] struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriterSimpleBaseContract_Expecter[T]) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockDataWriterSimpleBaseContract_PopContext_Call[T] {
+func (_e *MockDataWriterSimpleBaseContract_Expecter[T]) PopContext(logicalName any, writerArgs ...any) *MockDataWriterSimpleBaseContract_PopContext_Call[T] {
 	return &MockDataWriterSimpleBaseContract_PopContext_Call[T]{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriterSimpleBaseContract_PopContext_Call[T]) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockDataWriterSimpleBaseContract_PopContext_Call[T] {
@@ -3331,9 +3331,9 @@ type MockDataWriterSimpleBaseContract_PushContext_Call[T any] struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...utils.WithWriterArgs
-func (_e *MockDataWriterSimpleBaseContract_Expecter[T]) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockDataWriterSimpleBaseContract_PushContext_Call[T] {
+func (_e *MockDataWriterSimpleBaseContract_Expecter[T]) PushContext(logicalName any, writerArgs ...any) *MockDataWriterSimpleBaseContract_PushContext_Call[T] {
 	return &MockDataWriterSimpleBaseContract_PushContext_Call[T]{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockDataWriterSimpleBaseContract_PushContext_Call[T]) Run(run func(logicalName string, writerArgs ...utils.WithWriterArgs)) *MockDataWriterSimpleBaseContract_PushContext_Call[T] {
@@ -3379,7 +3379,7 @@ type MockDataWriterSimpleBaseContract_SetByteOrder_Call[T any] struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockDataWriterSimpleBaseContract_Expecter[T]) SetByteOrder(byteOrder interface{}) *MockDataWriterSimpleBaseContract_SetByteOrder_Call[T] {
+func (_e *MockDataWriterSimpleBaseContract_Expecter[T]) SetByteOrder(byteOrder any) *MockDataWriterSimpleBaseContract_SetByteOrder_Call[T] {
 	return &MockDataWriterSimpleBaseContract_SetByteOrder_Call[T]{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 

@@ -82,7 +82,7 @@ type MockRequestTransaction_AwaitCompletion_Call struct {
 
 // AwaitCompletion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockRequestTransaction_Expecter) AwaitCompletion(ctx interface{}) *MockRequestTransaction_AwaitCompletion_Call {
+func (_e *MockRequestTransaction_Expecter) AwaitCompletion(ctx any) *MockRequestTransaction_AwaitCompletion_Call {
 	return &MockRequestTransaction_AwaitCompletion_Call{Call: _e.mock.On("AwaitCompletion", ctx)}
 }
 
@@ -177,7 +177,7 @@ type MockRequestTransaction_FailRequest_Call struct {
 
 // FailRequest is a helper method to define mock.On call
 //   - err error
-func (_e *MockRequestTransaction_Expecter) FailRequest(err interface{}) *MockRequestTransaction_FailRequest_Call {
+func (_e *MockRequestTransaction_Expecter) FailRequest(err any) *MockRequestTransaction_FailRequest_Call {
 	return &MockRequestTransaction_FailRequest_Call{Call: _e.mock.On("FailRequest", err)}
 }
 
@@ -306,7 +306,7 @@ type MockRequestTransaction_Submit_Call struct {
 // Submit is a helper method to define mock.On call
 //   - operationInfo string
 //   - operation RequestTransactionRunnable
-func (_e *MockRequestTransaction_Expecter) Submit(operationInfo interface{}, operation interface{}) *MockRequestTransaction_Submit_Call {
+func (_e *MockRequestTransaction_Expecter) Submit(operationInfo any, operation any) *MockRequestTransaction_Submit_Call {
 	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operationInfo, operation)}
 }
 
@@ -433,7 +433,7 @@ type MockRequestTransactionManager_CloseGraceful_Call struct {
 
 // CloseGraceful is a helper method to define mock.On call
 //   - timeout time.Duration
-func (_e *MockRequestTransactionManager_Expecter) CloseGraceful(timeout interface{}) *MockRequestTransactionManager_CloseGraceful_Call {
+func (_e *MockRequestTransactionManager_Expecter) CloseGraceful(timeout any) *MockRequestTransactionManager_CloseGraceful_Call {
 	return &MockRequestTransactionManager_CloseGraceful_Call{Call: _e.mock.On("CloseGraceful", timeout)}
 }
 
@@ -473,7 +473,7 @@ type MockRequestTransactionManager_SetNumberOfConcurrentRequests_Call struct {
 
 // SetNumberOfConcurrentRequests is a helper method to define mock.On call
 //   - numberOfConcurrentRequests int
-func (_e *MockRequestTransactionManager_Expecter) SetNumberOfConcurrentRequests(numberOfConcurrentRequests interface{}) *MockRequestTransactionManager_SetNumberOfConcurrentRequests_Call {
+func (_e *MockRequestTransactionManager_Expecter) SetNumberOfConcurrentRequests(numberOfConcurrentRequests any) *MockRequestTransactionManager_SetNumberOfConcurrentRequests_Call {
 	return &MockRequestTransactionManager_SetNumberOfConcurrentRequests_Call{Call: _e.mock.On("SetNumberOfConcurrentRequests", numberOfConcurrentRequests)}
 }
 
@@ -526,7 +526,7 @@ type MockRequestTransactionManager_StartTransaction_Call struct {
 
 // StartTransaction is a helper method to define mock.On call
 //   - transactionInfo string
-func (_e *MockRequestTransactionManager_Expecter) StartTransaction(transactionInfo interface{}) *MockRequestTransactionManager_StartTransaction_Call {
+func (_e *MockRequestTransactionManager_Expecter) StartTransaction(transactionInfo any) *MockRequestTransactionManager_StartTransaction_Call {
 	return &MockRequestTransactionManager_StartTransaction_Call{Call: _e.mock.On("StartTransaction", transactionInfo)}
 }
 
@@ -604,7 +604,7 @@ type MockCompletionFuture_AwaitCompletion_Call struct {
 
 // AwaitCompletion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCompletionFuture_Expecter) AwaitCompletion(ctx interface{}) *MockCompletionFuture_AwaitCompletion_Call {
+func (_e *MockCompletionFuture_Expecter) AwaitCompletion(ctx any) *MockCompletionFuture_AwaitCompletion_Call {
 	return &MockCompletionFuture_AwaitCompletion_Call{Call: _e.mock.On("AwaitCompletion", ctx)}
 }
 
@@ -645,7 +645,7 @@ type MockCompletionFuture_Cancel_Call struct {
 // Cancel is a helper method to define mock.On call
 //   - interrupt bool
 //   - err error
-func (_e *MockCompletionFuture_Expecter) Cancel(interrupt interface{}, err interface{}) *MockCompletionFuture_Cancel_Call {
+func (_e *MockCompletionFuture_Expecter) Cancel(interrupt any, err any) *MockCompletionFuture_Cancel_Call {
 	return &MockCompletionFuture_Cancel_Call{Call: _e.mock.On("Cancel", interrupt, err)}
 }
 
@@ -886,7 +886,7 @@ type MockExecutor_Submit_Call struct {
 //   - ctx context.Context
 //   - workItemId int32
 //   - runnable pool.Runnable
-func (_e *MockExecutor_Expecter) Submit(ctx interface{}, workItemId interface{}, runnable interface{}) *MockExecutor_Submit_Call {
+func (_e *MockExecutor_Expecter) Submit(ctx any, workItemId any, runnable any) *MockExecutor_Submit_Call {
 	return &MockExecutor_Submit_Call{Call: _e.mock.On("Submit", ctx, workItemId, runnable)}
 }
 

@@ -80,7 +80,7 @@ type MockCompletionFuture_AwaitCompletion_Call struct {
 
 // AwaitCompletion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCompletionFuture_Expecter) AwaitCompletion(ctx interface{}) *MockCompletionFuture_AwaitCompletion_Call {
+func (_e *MockCompletionFuture_Expecter) AwaitCompletion(ctx any) *MockCompletionFuture_AwaitCompletion_Call {
 	return &MockCompletionFuture_AwaitCompletion_Call{Call: _e.mock.On("AwaitCompletion", ctx)}
 }
 
@@ -121,7 +121,7 @@ type MockCompletionFuture_Cancel_Call struct {
 // Cancel is a helper method to define mock.On call
 //   - interrupt bool
 //   - err error
-func (_e *MockCompletionFuture_Expecter) Cancel(interrupt interface{}, err interface{}) *MockCompletionFuture_Cancel_Call {
+func (_e *MockCompletionFuture_Expecter) Cancel(interrupt any, err any) *MockCompletionFuture_Cancel_Call {
 	return &MockCompletionFuture_Cancel_Call{Call: _e.mock.On("Cancel", interrupt, err)}
 }
 
@@ -362,7 +362,7 @@ type MockExecutor_Submit_Call struct {
 //   - ctx context.Context
 //   - workItemId int32
 //   - runnable Runnable
-func (_e *MockExecutor_Expecter) Submit(ctx interface{}, workItemId interface{}, runnable interface{}) *MockExecutor_Submit_Call {
+func (_e *MockExecutor_Expecter) Submit(ctx any, workItemId any, runnable any) *MockExecutor_Submit_Call {
 	return &MockExecutor_Submit_Call{Call: _e.mock.On("Submit", ctx, workItemId, runnable)}
 }
 

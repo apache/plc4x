@@ -582,7 +582,7 @@ type MockPlcTag_SerializeWithWriteBuffer_Call struct {
 // SerializeWithWriteBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeBuffer utils.WriteBuffer
-func (_e *MockPlcTag_Expecter) SerializeWithWriteBuffer(ctx interface{}, writeBuffer interface{}) *MockPlcTag_SerializeWithWriteBuffer_Call {
+func (_e *MockPlcTag_Expecter) SerializeWithWriteBuffer(ctx any, writeBuffer any) *MockPlcTag_SerializeWithWriteBuffer_Call {
 	return &MockPlcTag_SerializeWithWriteBuffer_Call{Call: _e.mock.On("SerializeWithWriteBuffer", ctx, writeBuffer)}
 }
 
