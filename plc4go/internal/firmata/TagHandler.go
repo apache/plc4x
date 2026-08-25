@@ -89,8 +89,8 @@ func (m TagHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
 }
 
 // parseAddressAndQuantity turns the numbers out of an address into a pin and a run length, refusing
-// runs which reach past the last pin the wire format can address. plc4j doesn't range-check at all,
-// which lets an out-of-range pin be silently truncated on the wire.
+// runs which reach past the last pin the wire format can address, since a pin beyond that one is
+// silently truncated to something else when it goes onto the wire.
 func parseAddressAndQuantity(match map[string]string, maxPin uint64) (uint8, uint8, error) {
 	address, err := strconv.ParseUint(match["address"], 10, 32)
 	if err != nil {
