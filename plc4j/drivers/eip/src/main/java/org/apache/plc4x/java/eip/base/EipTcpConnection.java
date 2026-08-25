@@ -422,10 +422,17 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
      * that request's, nothing is lost. When it was the next request's, that request times out -
      * which is a failure someone is told about, rather than a number they trust.</p>
      *
-     * <p>Telling the two apart needs a correlation value the device echoes back. The senderContext
-     * field exists for exactly that and is currently the same eight bytes on every request; using
-     * it properly means changing what goes on the wire, and the scripted driver testsuites assert
-     * those bytes.</p>
+     * <p>Telling the two apart needs a value that comes back with the response, and there are two
+     * candidates, both of which this driver sends and then ignores. Connected sends carry a
+     * sequence count in their ConnectedDataItem, incremented per request; the response's count is
+     * never looked at. Unconnected sends have only the eight-byte senderContext, which is the same
+     * bytes on every request - and whether a device returns it unmodified is not something anything
+     * here has ever relied on, so it would want confirming before correlation is keyed on it.</p>
+     *
+     * <p>Both would be needed to cover this: reads and writes run unconnected in two of their three
+     * modes, so the connected sequence count alone would leave the other two as they are. Either
+     * way it changes what goes on the wire, and the scripted driver testsuites assert those bytes
+     * with no way to exempt a single field.</p>
      */
     static final class Correlator {
 
