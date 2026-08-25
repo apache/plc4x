@@ -78,6 +78,67 @@ PlcConnection connection = new DefaultPlcDriverManager()
         new PlcUsernamePasswordAuthentication("boschrexroth", "boschrexroth"));
 ----
 
+== Connection Options
+
+[cols="3,1,2,5a"]
+|===
+|Name |Type |Default |Description
+
+|`trust-store-file`
+|STRING
+|
+|Key store of certificates to trust, instead of the JVM's public authorities.
+
+|`trust-store-password`
+|STRING
+|
+|Password of the trust store named by `trust-store-file`.
+
+|`trust-store-type`
+|STRING
+|`PKCS12`
+|Type of the trust store named by `trust-store-file`.
+
+|`server-certificate-file`
+|STRING
+|
+|PEM certificate of the device to trust, for a device carrying its own certificate rather than one
+issued by an authority the JVM already knows.
+
+|`allow-factory-default-certificate`
+|BOOLEAN
+|`false`
+|Trust the factory default certificate that ships inside this driver's jar, for any host. See the
+warning below. Setting it logs a warning.
+
+|`ignore-common-name`
+|BOOLEAN
+|`false`
+|Accept a device certificate issued for a different host than the one connected to.
+
+|`browse-max-total-nodes`
+|INT
+|`1000000`
+|Largest number of nodes a single browse will read; `0` for no limit.
+
+|`browse-max-depth`
+|INT
+|`64`
+|How deep a browse will follow children; `0` for no limit.
+|===
+
+WARNING: The driver used to trust the Bosch factory default certificate bundled in its own jar, and
+to trust it *instead of* the platform's authorities rather than in addition to them. That
+certificate identifies nobody - anything holding it and its key was trusted, for any host - and the
+username and password travel over that channel. Because it was also the only trust anchor, a device
+with a properly issued certificate could not be reached at all. A device still on its factory
+certificate now needs `allow-factory-default-certificate=true`, and the better answer is to give the
+device a certificate of its own and name it with `server-certificate-file` or a trust store.
+
+A browse walks whatever tree the device describes, and nothing in the answer says how large that
+tree is or that it ends, so `browse-max-total-nodes` and `browse-max-depth` bound it. Reaching
+either one warns and returns what was found rather than failing.
+
 == Browsing
 
 NOTE: Browsing does not work yet. What follows describes how the existing implementation is meant
