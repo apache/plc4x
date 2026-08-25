@@ -186,10 +186,7 @@ func findArticleNumber(data []byte) string {
 			continue
 		}
 		end := start
-		maxEnd := start + 32
-		if maxEnd > len(data) {
-			maxEnd = len(data)
-		}
+		maxEnd := min(start+32, len(data))
 		for end < maxEnd && data[end] >= 0x20 && data[end] < 0x7F {
 			end++
 		}
@@ -211,10 +208,7 @@ func findCpuModelName(data []byte) string {
 			continue
 		}
 		end := start
-		maxEnd := start + 32
-		if maxEnd > len(data) {
-			maxEnd = len(data)
-		}
+		maxEnd := min(start+32, len(data))
 		for end < maxEnd && data[end] >= 0x20 && data[end] < 0x7F {
 			end++
 		}
@@ -363,10 +357,7 @@ func (c cyclicInterval) toDuration() time.Duration {
 func pickCyclicInterval(requested time.Duration) cyclicInterval {
 	ms := int64(1000)
 	if requested > 0 {
-		ms = requested.Milliseconds()
-		if ms < 100 {
-			ms = 100
-		}
+		ms = max(requested.Milliseconds(), 100)
 	}
 	if ms >= 10_000 && ms <= 2_550_000 && ms%10_000 == 0 {
 		return cyclicInterval{readWriteModel.TimeBase_B10SEC, uint8(ms / 10_000)}
@@ -377,25 +368,16 @@ func pickCyclicInterval(requested time.Duration) cyclicInterval {
 	// Round near-second cadences to full seconds rather than using the often-rejected
 	// 100ms base when the cadence changes by less than ~10%.
 	if ms >= 900 && ms <= 255_000 {
-		factor := (ms + 500) / 1_000
-		if factor < 1 {
-			factor = 1
-		}
+		factor := max((ms+500)/1_000, 1)
 		return cyclicInterval{readWriteModel.TimeBase_B1SEC, uint8(factor)}
 	}
 	if ms >= 9_000 && ms <= 2_550_000 {
-		factor := (ms + 5_000) / 10_000
-		if factor < 1 {
-			factor = 1
-		}
+		factor := max((ms+5_000)/10_000, 1)
 		return cyclicInterval{readWriteModel.TimeBase_B10SEC, uint8(factor)}
 	}
 	// Genuine sub-second request - only the 100ms base can express it; some firmwares
 	// reject this with 0xD804, callers should treat that as "not supported".
-	factor := (ms + 50) / 100
-	if factor < 1 {
-		factor = 1
-	}
+	factor := max((ms+50)/100, 1)
 	if factor > 255 {
 		factor = 255
 	}

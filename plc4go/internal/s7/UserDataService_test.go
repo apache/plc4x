@@ -73,7 +73,7 @@ func TestParseSzlProbeResponse(t *testing.T) {
 			readWriteModel.NewS7ParameterUserData([]readWriteModel.S7ParameterUserDataItem{
 				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
 					0x12, 0x08, 0x04, 0x01, 0x00,
-					ptr(uint8(0)), ptr(uint8(1)), errorCode,
+					new(uint8(0)), new(uint8(1)), errorCode,
 				),
 			}),
 			readWriteModel.NewS7PayloadUserData([]readWriteModel.S7PayloadUserDataItem{
@@ -90,17 +90,17 @@ func TestParseSzlProbeResponse(t *testing.T) {
 	t.Run("successful identification", func(t *testing.T) {
 		// SZL header (8 bytes) followed by an item starting with a 2 byte index and the MLFB
 		items := append([]byte{0x00, 0x11, 0x00, 0x01, 0x00, 0x1C, 0x00, 0x01, 0x00, 0x01}, []byte("6ES7 512-1DK01-0AB0 ")...)
-		article, controllerType, err := parseSzlProbeResponse(makeResponse(items, ptr(uint16(0))))
+		article, controllerType, err := parseSzlProbeResponse(makeResponse(items, new(uint16(0))))
 		require.NoError(t, err)
 		assert.Equal(t, "6ES7 512-1DK01-0AB0", article)
 		assert.Equal(t, readWriteModel.ControllerType_S7_1500, controllerType)
 	})
 	t.Run("plc rejects the szl id", func(t *testing.T) {
-		_, _, err := parseSzlProbeResponse(makeResponse([]byte{0x00, 0x00, 0x00, 0x00}, ptr(uint16(0xD401))))
+		_, _, err := parseSzlProbeResponse(makeResponse([]byte{0x00, 0x00, 0x00, 0x00}, new(uint16(0xD401))))
 		assert.Error(t, err)
 	})
 	t.Run("too short payload", func(t *testing.T) {
-		_, _, err := parseSzlProbeResponse(makeResponse([]byte{0x00}, ptr(uint16(0))))
+		_, _, err := parseSzlProbeResponse(makeResponse([]byte{0x00}, new(uint16(0))))
 		assert.Error(t, err)
 	})
 }
@@ -120,7 +120,7 @@ func TestParseListBlocksOfTypeResponse(t *testing.T) {
 			readWriteModel.NewS7ParameterUserData([]readWriteModel.S7ParameterUserDataItem{
 				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
 					0x12, 0x08, 0x03, 0x02, 0x00,
-					ptr(uint8(0)), ptr(uint8(1)), errorCode,
+					new(uint8(0)), new(uint8(1)), errorCode,
 				),
 			}),
 			readWriteModel.NewS7PayloadUserData([]readWriteModel.S7PayloadUserDataItem{
@@ -138,16 +138,17 @@ func TestParseListBlocksOfTypeResponse(t *testing.T) {
 		blockNumbers, err := parseListBlocksOfTypeResponse(makeResponse([]byte{
 			0x00, 0x01, 0x22, 0x01, // DB1
 			0x00, 0x45, 0x22, 0x01, // DB69
-		}, ptr(uint16(0))))
+		}, new(uint16(0))))
 		require.NoError(t, err)
 		assert.Equal(t, []uint16{1, 69}, blockNumbers)
 	})
 	t.Run("rejected request", func(t *testing.T) {
-		_, err := parseListBlocksOfTypeResponse(makeResponse([]byte{}, ptr(uint16(0xD401))))
+		_, err := parseListBlocksOfTypeResponse(makeResponse([]byte{}, new(uint16(0xD401))))
 		assert.Error(t, err)
 	})
 }
 
+//go:fix inline
 func ptr[T any](value T) *T {
-	return &value
+	return new(value)
 }

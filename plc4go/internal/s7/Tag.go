@@ -73,15 +73,13 @@ type PlcStringTag struct {
 
 func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringTag {
 	return PlcStringTag{
-		plcTag: plcTag{
-			TagType:     S7StringTag,
-			MemoryArea:  memoryArea,
-			BlockNumber: blockNumber,
-			ByteOffset:  byteOffset,
-			BitOffset:   bitOffset,
-			NumElements: numElements,
-			Datatype:    datatype,
-		},
+		TagType:      S7StringTag,
+		MemoryArea:   memoryArea,
+		BlockNumber:  blockNumber,
+		ByteOffset:   byteOffset,
+		BitOffset:    bitOffset,
+		NumElements:  numElements,
+		Datatype:     datatype,
 		stringLength: stringLength,
 	}
 }

@@ -88,7 +88,7 @@ func TestTransportInstance_WriteHonorsContextDeadline(t *testing.T) {
 	errCh := make(chan error, 1)
 	start := time.Now()
 	go func() {
-		for i := 0; i < 16; i++ {
+		for range 16 {
 			if err := ti.Write(writeCtx, payload); err != nil {
 				errCh <- err
 				return

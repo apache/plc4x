@@ -164,7 +164,7 @@ func TestEndToEnd_AcknowledgementReachesTheWire(t *testing.T) {
 	_, transportInstance := newRunningConnection(t)
 
 	var stream []byte
-	for sendSequenceNo := uint16(0); sendSequenceNo < defaultAckThreshold; sendSequenceNo++ {
+	for sendSequenceNo := range uint16(defaultAckThreshold) {
 		stream = append(stream, iFormatFrame(sendSequenceNo, 0, singlePointAsdu(13, 0x01))...)
 	}
 	transportInstance.FillReadBuffer(stream)

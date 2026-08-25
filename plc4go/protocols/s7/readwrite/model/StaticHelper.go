@@ -59,10 +59,7 @@ func ParseS5Time(ctx context.Context, io utils.ReadBuffer) (uint32, error) {
 	for i := uint16(0); i < (s5time&0xF000)>>12; i++ {
 		timeBase *= 10
 	}
-	totalMs := timeValue * timeBase
-	if totalMs > 9990000 {
-		totalMs = 9990000
-	}
+	totalMs := min(timeValue*timeBase, 9990000)
 	return totalMs, nil
 }
 
@@ -223,10 +220,7 @@ func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32,
 func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	switch {
 	case strings.EqualFold(encoding, "UTF8"):
-		maxStringLength := int(stringLength)
-		if maxStringLength > 254 {
-			maxStringLength = 254
-		}
+		maxStringLength := min(int(stringLength), 254)
 		data := []byte(value.GetString())
 		if len(data) > maxStringLength {
 			data = data[:maxStringLength]
@@ -241,10 +235,7 @@ func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.P
 		copy(padded, data)
 		return io.WriteByteArray("chars", padded)
 	case strings.EqualFold(encoding, "UTF16") || strings.EqualFold(encoding, "UTF16BE"):
-		maxStringLength := int(stringLength)
-		if maxStringLength > 16382 {
-			maxStringLength = 16382
-		}
+		maxStringLength := min(int(stringLength), 16382)
 		units := utf16.Encode([]rune(value.GetString()))
 		if len(units) > maxStringLength {
 			units = units[:maxStringLength]

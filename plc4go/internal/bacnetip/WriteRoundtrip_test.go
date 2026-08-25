@@ -253,7 +253,7 @@ func TestNativeBacnetWrite_AfterReads(t *testing.T) {
 	conn := newWriteTestConnection(t, log, device.port())
 
 	// Several reads first (mirrors discovery) so the write uses a later invoke id.
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		code, val, ok := readPresentValue(t, conn)
 		require.True(t, ok, "read %d hung", i)
 		assert.Equal(t, apiModel.PlcResponseCode_OK, code)

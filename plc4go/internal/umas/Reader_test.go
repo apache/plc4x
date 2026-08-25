@@ -240,7 +240,7 @@ func TestReader_ReadsSeveralTagsOneAfterTheOther(t *testing.T) {
 	results := readTags(t, connection, map[string]string{"real": "g_r32", "int": "g_b16"})
 
 	// Two requests, one per tag, each answered with a payload of the right width for its type.
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		request := codec.nextRequest(t)
 		readRequest := request.item(t).(readWriteModel.UmasPDUReadVariableRequest)
 		require.Len(t, readRequest.GetVariables(), 1, "one variable per request")

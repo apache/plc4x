@@ -79,7 +79,7 @@ func TestNativeBacnetWrite_LeaseResetOnLiveSocket(t *testing.T) {
 	// live socket while the receive worker polls — every iteration is one
 	// spin of the race wheel.
 	time.Sleep(500 * time.Millisecond)
-	for i := 0; i < 50; i++ {
+	for i := range 50 {
 		ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
 		conn, err := connCache.GetConnection(ctx, connStr)
 		cancel()
@@ -123,7 +123,7 @@ func TestNativeBacnetWrite_LeaseResetWithIdleGap(t *testing.T) {
 		require.NoError(t, conn.Close())
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		time.Sleep(1500 * time.Millisecond) // idle gap on the returned lease
 		ctx, cancel := context.WithTimeout(t.Context(), 15*time.Second)
 		conn, err := connCache.GetConnection(ctx, connStr)

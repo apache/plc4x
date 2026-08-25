@@ -2198,7 +2198,7 @@ func Test_resolveMaxReadBufferDepth(t *testing.T) {
 func Test_byteReadBuffer_PullContext_boundsNesting(t *testing.T) {
 	t.Run("nesting past the bound is reported as a parse error", func(t *testing.T) {
 		rb := NewReadBufferByteBased(nil, WithMaxDepthForReadBufferByteBased(8))
-		for i := 0; i < 8; i++ {
+		for range 8 {
 			assert.NoError(t, rb.PullContext("level"))
 		}
 		err := rb.PullContext("oneTooDeep")
@@ -2207,7 +2207,7 @@ func Test_byteReadBuffer_PullContext_boundsNesting(t *testing.T) {
 	})
 	t.Run("leaving a context makes room again", func(t *testing.T) {
 		rb := NewReadBufferByteBased(nil, WithMaxDepthForReadBufferByteBased(8))
-		for i := 0; i < 8; i++ {
+		for range 8 {
 			assert.NoError(t, rb.PullContext("level"))
 		}
 		assert.NoError(t, rb.CloseContext("level"))
@@ -2215,7 +2215,7 @@ func Test_byteReadBuffer_PullContext_boundsNesting(t *testing.T) {
 	})
 	t.Run("the environment sets the bound when no option does", func(t *testing.T) {
 		rb := NewReadBufferByteBased(nil)
-		for i := 0; i < maxReadBufferDepth; i++ {
+		for range maxReadBufferDepth {
 			assert.NoError(t, rb.PullContext("level"))
 		}
 		assert.Error(t, rb.PullContext("oneTooDeep"))

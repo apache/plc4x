@@ -441,7 +441,6 @@ func TestCombinations(t *testing.T) {
 					PlcValueType := reflect.TypeFor[apiValues.PlcValue]()
 					methods := make(map[string]reflect.Method)
 					for method := range PlcValueType.Methods() {
-						method := method
 						methods[method.Name] = method
 					}
 

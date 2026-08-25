@@ -57,18 +57,16 @@ func TestSession_TransactionIdentifiersAreUniqueUnderConcurrency(t *testing.T) {
 	var mutex sync.Mutex
 	seen := map[uint16]bool{}
 	var waitGroup sync.WaitGroup
-	for worker := 0; worker < workers; worker++ {
-		waitGroup.Add(1)
-		go func() {
-			defer waitGroup.Done()
-			for i := 0; i < perWorker; i++ {
+	for range workers {
+		waitGroup.Go(func() {
+			for range perWorker {
 				identifier := session.nextTransactionIdentifier()
 				mutex.Lock()
 				assert.False(t, seen[identifier], "the identifier %d was handed out twice", identifier)
 				seen[identifier] = true
 				mutex.Unlock()
 			}
-		}()
+		})
 	}
 	waitGroup.Wait()
 	assert.Len(t, seen, workers*perWorker)
@@ -126,7 +124,7 @@ func TestSession_SymbolsAreHandedOutInAStableOrder(t *testing.T) {
 	})
 
 	// Go randomizes map iteration, so a browse would answer in a different order every time.
-	for attempt := 0; attempt < 5; attempt++ {
+	for range 5 {
 		var names []string
 		for _, symbol := range session.symbols() {
 			names = append(names, symbol.GetValue())

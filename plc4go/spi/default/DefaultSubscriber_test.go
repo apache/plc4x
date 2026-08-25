@@ -437,7 +437,7 @@ func TestDefaultPollingSubscriberCyclicUsesRealClock(t *testing.T) {
 	registerConsumer(t, subscriber, response, sink, "tag")
 
 	start := time.Now()
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		event := sink.requireEvent(t)
 		assert.Equal(t, int32(7), event.GetValue("tag").GetInt32())
 	}
@@ -669,7 +669,7 @@ func TestDefaultPollingSubscriberConcurrentRegisterUnregister(t *testing.T) {
 	var deliveries atomic.Int64
 	var churn sync.WaitGroup
 	stop := make(chan struct{})
-	for worker := 0; worker < 8; worker++ {
+	for range 8 {
 		churn.Go(func() {
 			for {
 				select {
@@ -936,7 +936,7 @@ func TestDefaultPollingSubscriberCloseRacingSubscribe(t *testing.T) {
 	// No assertNoPollerLeak here: the hundreds of thousands of request executions below make the
 	// shared spi/pool executor scale up a worker of its own, which has nothing to do with this
 	// subscriber. The state assertions after every Close cover what this test is about.
-	for iteration := 0; iteration < 20; iteration++ {
+	for range 20 {
 		target := newFakePollTarget()
 		target.setValue("a", spiValues.NewPlcDINT(1))
 		subscriber := NewDefaultPollingSubscriber(target, WithPollTickerFactory(newSlowStopTicker))
@@ -958,7 +958,7 @@ func TestDefaultPollingSubscriberCloseRacingSubscribe(t *testing.T) {
 
 		var subscribes atomic.Int64
 		var hammers sync.WaitGroup
-		for hammer := 0; hammer < 8; hammer++ {
+		for range 8 {
 			hammers.Go(func() {
 				for {
 					select {
@@ -1000,7 +1000,7 @@ func TestDefaultPollingSubscriberCloseRacingSubscribe(t *testing.T) {
 // therefore never observe this race.
 func TestDefaultPollingSubscriberPreRegisteredConsumerGetsTheFirstPoll(t *testing.T) {
 	baseline := runtime.NumGoroutine()
-	for iteration := 0; iteration < 50; iteration++ {
+	for iteration := range 50 {
 		target := newFakePollTarget()
 		target.setValue("a", spiValues.NewPlcDINT(int32(iteration)))
 		subscriber := NewDefaultPollingSubscriber(target, WithDefaultPollingInterval(time.Nanosecond))
@@ -1122,7 +1122,7 @@ func TestDefaultPollingSubscriberBlockingConsumerDoesNotStallPolling(t *testing.
 	// The poll go routine has to keep picking up ticks although the callback is still stuck. The first
 	// consumerEventQueueDepth events go into the stuck consumer's queue, the ones after that hit the
 	// full queue and are dropped once the callback timeout expires.
-	for tick := 0; tick < consumerEventQueueDepth+2; tick++ {
+	for range consumerEventQueueDepth + 2 {
 		ticker.tick(t)
 	}
 	sink.requireEvent(t)
@@ -1183,7 +1183,7 @@ func TestDefaultPollingSubscriberConcurrentPollersFeedOneRegistration(t *testing
 
 	close(gate)
 	var tagNames []string
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		select {
 		case event := <-delivered:
 			tagNames = append(tagNames, event.GetTagNames()...)
@@ -1248,7 +1248,7 @@ func TestDefaultPollingSubscriberUnsubscribeDropsStaleRegistrations(t *testing.T
 	internal, ok := subscriber.(*defaultPollingSubscriber)
 	require.True(t, ok)
 
-	for round := 0; round < 5; round++ {
+	for range 5 {
 		response := subscribe(t, subscriber, func(builder apiModel.PlcSubscriptionRequestBuilder) {
 			builder.AddCyclicTagAddress("tag", "a", 10*time.Millisecond)
 		})

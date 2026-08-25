@@ -99,9 +99,7 @@ func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentData
 			ValueType:    m.getDataTypeForDataTypeTableEntry(currentDatatype),
 			StringLength: m.getStringLengthForDataTypeTableEntry(currentDatatype),
 			DataType:     currentDatatype,
-			PlcTag: model.PlcTag{
-				ArrayInfo: m.getArrayInfoForDataTypeTableEntry(currentDatatype),
-			},
+			ArrayInfo:    m.getArrayInfoForDataTypeTableEntry(currentDatatype),
 		}, nil
 	}
 

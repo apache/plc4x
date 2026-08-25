@@ -88,8 +88,8 @@ func decodeReadResponse(ctx context.Context, dataTypeId uint16, block []byte) (a
 
 	switch dataType {
 	case readWriteModel.UmasDataType_STRING:
-		if terminator := bytes.IndexByte(block, terminatorByte); terminator >= 0 {
-			return spiValues.NewPlcSTRING(string(block[:terminator])), nil
+		if before, _, ok := bytes.Cut(block, []byte{terminatorByte}); ok {
+			return spiValues.NewPlcSTRING(string(before)), nil
 		}
 		return spiValues.NewPlcSTRING(string(block)), nil
 
