@@ -56,6 +56,17 @@ class OpcuaConfigurationTest {
         assertThat(cfg.getSessionTimeout()).isZero();
         assertThat(cfg.getRequestTimeout()).isZero();
         assertThat(cfg.getNegotiationTimeout()).isZero();
+        assertThat(cfg.getSubscriptionQueueSize()).isZero();
+    }
+
+    @Test
+    void subscriptionQueueSizeRoundtrips() throws Exception {
+        OpcuaConfiguration cfg = new OpcuaConfiguration();
+        // Production wiring goes through the Configuration framework, which also
+        // applies the @LongDefaultValue(1). Here we only verify the field is readable via the
+        // accessor
+        setField(cfg, "subscriptionQueueSize", 10L);
+        assertThat(cfg.getSubscriptionQueueSize()).isEqualTo(10L);
     }
 
     @Test

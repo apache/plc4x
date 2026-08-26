@@ -161,6 +161,13 @@ public class OpcuaConfiguration implements Configuration {
     @Description("Endpoint port used to establish secure channel. Used when client made connection to server which advertises different port number than one used for network connection.")
     private Integer endpointPort;
 
+    @ConfigurationParameter("subscription-queue-size")
+    @LongDefaultValue(1)
+    @Description("Server-side queue depth per monitored item for subscriptions. 1 (default) keeps only\n" +
+        "the latest value between publishes; higher values retain intermediate changes for fast\n" +
+        "change-of-state tags, whose sampling rate can exceed the publishing (cycle) interval.")
+    private long subscriptionQueueSize;
+
     public String getProtocolCode() {
         return protocolCode;
     }
@@ -289,6 +296,8 @@ public class OpcuaConfiguration implements Configuration {
     public Integer getEndpointPort() {
         return endpointPort;
     }
+
+    public long getSubscriptionQueueSize() { return subscriptionQueueSize; }
 
     @Override
     public String toString() {

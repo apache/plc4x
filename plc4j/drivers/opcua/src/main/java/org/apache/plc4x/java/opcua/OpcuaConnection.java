@@ -2398,6 +2398,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             .orElse(DEFAULT_CYCLE_TIME)
             .toMillis();
 
+        // A configurable server-side queue is useful when the sampling rate can exceed the publishing
+        // rate - e.g. a change-of-state subscription that publishes once per second but samples at 0
+        // (the server's fastest practical rate). The queue then retains the intermediate values that
+        // accumulate between publishes instead of collapsing them to the latest.
+        long queueSize = configuration.getSubscriptionQueueSize();
+
         return onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
                 long subscriptionId = response.getSubscriptionId();
                 // The server may revise the publishing interval; everything we time against it
@@ -2405,7 +2411,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 // not what we asked for.
                 long revisedCycleTime = revisedPublishingInterval(response, cycleTime);
                 OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this,
-                    conversation, subscriptionRequest, subscriptionId, cycleTime, revisedCycleTime);
+                    conversation, subscriptionRequest, subscriptionId, cycleTime, revisedCycleTime, queueSize);
                 if (subscriptionRequest.getConsumer() != null) {
                     handle.register(subscriptionRequest.getConsumer());
                 }

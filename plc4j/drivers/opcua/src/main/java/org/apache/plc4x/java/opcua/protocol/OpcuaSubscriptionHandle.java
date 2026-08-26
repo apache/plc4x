@@ -70,6 +70,7 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
     private final Long subscriptionId;
     private final long cycleTime;
     private final long revisedCycleTime;
+    private final long queueSize;
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
 
@@ -82,7 +83,7 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
 
     public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
         Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
-        this(plcSubscriber, conversation, subscriptionRequest, subscriptionId, cycleTime, cycleTime);
+        this(plcSubscriber, conversation, subscriptionRequest, subscriptionId, cycleTime, cycleTime, 1L);
     }
 
     /**
@@ -92,7 +93,7 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
      */
     public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
         Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId,
-        long cycleTime, long revisedCycleTime) {
+        long cycleTime, long revisedCycleTime, long queueSize) {
         this.consumers = new HashSet<>();
         this.tagConsumers = new HashMap<>();
         this.subscriptionRequest = subscriptionRequest;
@@ -102,6 +103,7 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
         this.plcSubscriber = plcSubscriber;
         this.cycleTime = cycleTime;
         this.revisedCycleTime = revisedCycleTime;
+        this.queueSize = queueSize;
     }
 
     public CompletableFuture<OpcuaSubscriptionHandle> onSubscribeCreateMonitoredItemsRequest() {
@@ -153,13 +155,25 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
             // Each monitored item is sampled at the rate its own tag asked for. Using the
             // subscription's cycle time for every item would silently give all tags the rate of
             // whichever tag happened to come first - see the discussion in GH-1896.
-            double samplingInterval = tagDefaultPlcSubscription.getDuration()
-                .map(Duration::toMillis).orElse(cycleTime);
+            // When a queue is configured, request the server's fastest sampling (0.0)
+            // for change-of-state tags so intermediate values accumulate in the queue
+            // between publishes. Otherwise keep the existing per-tag behavior (sample at the tag's
+            // own rate, else the publish cycle)
+            double samplingInterval;
+
+            if (queueSize > 1
+                && tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.CHANGE_OF_STATE
+                && tagDefaultPlcSubscription.getDuration().isEmpty()) {
+                samplingInterval = 0.0;
+            } else {
+                samplingInterval = tagDefaultPlcSubscription.getDuration()
+                    .map(Duration::toMillis).map(Long::doubleValue).orElse((double) cycleTime);
+            }
             MonitoringParameters parameters = new MonitoringParameters(
                 clientHandle,
                 samplingInterval,
                 eventFilter,       // filter, null means use default
-                1L,   // queue size
+                queueSize,   // queue size
                 true        // discard oldest
             );
 
@@ -296,16 +310,33 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
         for (MonitoredItemNotification value : values) {
             String tagName = tagNames.get((int) value.getClientHandle() - 1);
             PlcTag tag = subscriptionRequest.getTag(tagName).getTag();
-            tagMap.put(tagName, tag);
-            dataValues.add(value.getValue());
+
+            // Per-tag consumers already receive each reading individually
             Consumer<PlcSubscriptionEvent> tagConsumer = tagConsumers.get(tagName);
             if (tagConsumer != null) {
                 Map<String, PlcResponseItem<PlcValue>> mappedResponse = plcSubscriber.readResponse(Map.of(tagName, tag), List.of(value.getValue()));
                 PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse);
                 tagConsumer.accept(event);
             }
-        }
 
+            // A single event is name-keyed and cannot hold two values for one tag, so flush the
+            // batch before a duplicate would overwrite it - this keeps every queued value.
+            if (queueSize > 1 && tagMap.containsKey(tagName)) {
+                emitMonitoredBatch(tagMap, dataValues, receiveTs);
+                tagMap = new LinkedHashMap<>();
+                dataValues = new ArrayList<>();
+            }
+            tagMap.put(tagName, tag);
+            dataValues.add(value.getValue());
+        }
+        // Flush events
+        emitMonitoredBatch(tagMap, dataValues, receiveTs);
+    }
+
+    private void emitMonitoredBatch(Map<String, PlcTag> tagMap, List<DataValue> dataValues, long receiveTs) {
+        if (tagMap.isEmpty()) {
+            return;
+        }
         Map<String, PlcResponseItem<PlcValue>> mappedResponse = plcSubscriber.readResponse(tagMap, dataValues);
         // Remember the values so cyclic tags can be reported again on their own schedule even
         // though the server only notifies us when something actually changes - see GH-1102.
