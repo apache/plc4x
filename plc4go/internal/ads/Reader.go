@@ -279,6 +279,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 	} else if len(dataType.GetChildren()) > 0 {
 		// This is a Struct type.
 		plcValues := map[string]apiValues.PlcValue{}
+		var memberOrder []string
 		startPos := uint32(rb.GetPos())
 		curPos := uint32(0)
 		for _, child := range dataType.GetChildren() {
@@ -298,9 +299,12 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 				return nil, errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetSecondaryName()))
 			}
 			plcValues[childName] = childValue
+			memberOrder = append(memberOrder, childName)
 			curPos = uint32(rb.GetPos()) - startPos
 		}
-		return spiValues.NewPlcStruct(plcValues), nil
+		// Keep the struct's declaration order (the order of the children in the data type
+		// table), like the Java driver does with its LinkedHashMap-based PlcStruct.
+		return spiValues.NewPlcStructOrdered(plcValues, memberOrder), nil
 	} else {
 		// This is a primitive type.
 		valueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(dataType)

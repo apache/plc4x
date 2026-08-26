@@ -100,7 +100,7 @@
                         </CANOpenNMTTag>
                       </tag>
                       <value>
-                        <PlcUSINT dataType="int" bitLength="8">128</PlcUSINT>
+                        <PlcUSINT dataType="uint" bitLength="8">128</PlcUSINT>
                       </value>
                     </PlcTagValueItem>
                   </boot_up_request>

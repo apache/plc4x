@@ -61,8 +61,8 @@ func (m *DriverContext) clear() {
 	m.onlineVersion = 0
 	m.dataTypeTable = map[string]driverModel.AdsDataTypeTableEntry{}
 	m.symbolTable = map[string]driverModel.AdsSymbolTableEntry{}
-	m.awaitSetupComplete = false
-	m.awaitDisconnectComplete = false
+	// awaitSetupComplete/awaitDisconnectComplete are configuration handed down from the
+	// driver, not session state - clearing must not reset them.
 }
 
 func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model.SymbolicPlcTag) (*model.DirectPlcTag, error) {
@@ -124,7 +124,8 @@ func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDa
 	if entry.GetNumChildren() > 0 {
 		return apiValues.Struct
 	}
-	dataTypeName := entry.GetSecondaryName()
+	// The main name carries the type's name (matching the Java driver's getMainName()).
+	dataTypeName := entry.GetMainName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
 		dataTypeName = "STRING"
 	} else if strings.HasPrefix(dataTypeName, "WSTRING(") {
@@ -135,7 +136,7 @@ func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDa
 }
 
 func (m *DriverContext) getStringLengthForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) int32 {
-	dataTypeName := entry.GetSecondaryName()
+	dataTypeName := entry.GetMainName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
 		lenStr := dataTypeName[7 : len(dataTypeName)-1]
 		lenVal, err := strconv.Atoi(lenStr)

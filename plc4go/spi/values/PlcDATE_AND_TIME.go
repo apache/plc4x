@@ -127,7 +127,9 @@ func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
 }
 
 func (m PlcDATE_AND_TIME) GetString() string {
-	return fmt.Sprintf("%v", m.GetDateTime())
+	// DATE_AND_TIME is a wall-clock value without a time zone: render the instant's UTC
+	// wall time in ISO-8601, with the fraction only when there is one.
+	return m.GetDateTime().UTC().Format("2006-01-02T15:04:05.999999999")
 }
 
 func (m PlcDATE_AND_TIME) GetPlcValueType() apiValues.PlcValueType {
@@ -143,7 +145,7 @@ func (m PlcDATE_AND_TIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcDATE_AND_TIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
+	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), m.GetString(), utils.WithEncoding("UTF-8"))
 }
 
 func (m PlcDATE_AND_TIME) String() string {

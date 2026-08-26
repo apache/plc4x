@@ -27,6 +27,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/rs/zerolog"
 
@@ -143,6 +144,18 @@ func (m *Connection) Connect(ctx context.Context) error {
 		return errors.Wrap(err, "error connecting to message codec")
 	}
 
+	// For testing purposes we can skip the waiting for a complete connection
+	if !m.driverContext.awaitSetupComplete {
+		m.wg.Go(func() {
+			if err := m.setupConnection(ctx); err != nil {
+				m.log.Error().Err(err).Msg("Error during connection setup")
+			}
+		})
+		m.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
+		m.SetConnected(true)
+		return nil
+	}
+
 	if err := m.setupConnection(ctx); err != nil {
 		return errors.Wrap(err, "error setting up connection")
 	}
@@ -158,6 +171,18 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 	m.driverContext.adsVersion = fmt.Sprintf("%d.%d.%d", deviceInfoResponse.GetMajorVersion(), deviceInfoResponse.GetMinorVersion(), deviceInfoResponse.GetVersion())
 	m.driverContext.deviceName = GetZeroTerminatedString(deviceInfoResponse.GetDevice())
 
+	// Read the online-version
+	// (The order online- before symbol-version matches the Java driver and the shared driver testsuite.)
+	onlineVersionResponse, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME), 0, 4, nil, []byte("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"))
+	if err != nil {
+		return errors.Wrap(err, "error reading online version")
+	}
+	rb := utils.NewReadBufferByteBased(onlineVersionResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	m.driverContext.onlineVersion, err = rb.ReadUint32("", 32)
+	if err != nil {
+		return errors.Wrap(err, "error reading online version")
+	}
+
 	// Read the symbol-version (offline changes)
 	symbolVersionResponse, err := m.ExecuteAdsReadRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VERSION), 0, 1)
 	if err != nil {
@@ -169,17 +194,6 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 		return errors.New("error reading symbol version: empty response data")
 	}
 	m.driverContext.symbolVersion = symbolVersionResponse.GetData()[0]
-
-	// Read the online-version
-	onlineVersionResponse, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME), 0, 4, nil, []byte("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"))
-	if err != nil {
-		return errors.Wrap(err, "error reading online version")
-	}
-	rb := utils.NewReadBufferByteBased(onlineVersionResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	m.driverContext.onlineVersion, err = rb.ReadUint32("", 32)
-	if err != nil {
-		return errors.Wrap(err, "error reading online version")
-	}
 
 	// Read the data type and symbol table
 	err = m.readSymbolTableAndDatatypeTable(ctx)
@@ -219,13 +233,16 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 	})
 
 	// Subscribe for changes to the symbol or the offline-versions
+	// (Cyclic with a 1s check interval: the wire request is an ON_CHANGE device notification
+	// whose cycle time is the interval, matching the Java driver's Duration.ofMillis(1000).
+	// The online- before offline-version order matches the Java driver and the driver testsuite.)
 	versionChangeRequest, err := m.SubscriptionRequestBuilder().
-		AddChangeOfStateTagAddress("offlineVersion", "0xF008/0x0000:USINT").
-		AddPreRegisteredConsumer("offlineVersion", func(event apiModel.PlcSubscriptionEvent) {
-			if event.GetResponseCode("offlineVersion") == apiModel.PlcResponseCode_OK {
-				newVersion := event.GetValue("offlineVersion").GetUint8()
-				if newVersion != m.driverContext.symbolVersion {
-					m.log.Info().Msg("detected offline version change: reloading symbol- and data-type-table.")
+		AddCyclicTagAddress("onlineVersion", "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", time.Second).
+		AddPreRegisteredConsumer("onlineVersion", func(event apiModel.PlcSubscriptionEvent) {
+			if event.GetResponseCode("onlineVersion") == apiModel.PlcResponseCode_OK {
+				newVersion := event.GetValue("onlineVersion").GetUint32()
+				if newVersion != m.driverContext.onlineVersion {
+					m.log.Info().Msg("detected online version change: reloading symbol- and data-type-table.")
 					err := m.readSymbolTableAndDatatypeTable(ctx)
 					if err != nil {
 						m.log.Error().Err(err).Msg("error updating data-type and symbol tables")
@@ -233,12 +250,12 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 				}
 			}
 		}).
-		AddChangeOfStateTagAddress("onlineVersion", "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt").
-		AddPreRegisteredConsumer("onlineVersion", func(event apiModel.PlcSubscriptionEvent) {
-			if event.GetResponseCode("onlineVersion") == apiModel.PlcResponseCode_OK {
-				newVersion := event.GetValue("onlineVersion").GetUint32()
-				if newVersion != m.driverContext.onlineVersion {
-					m.log.Info().Msg("detected online version change: reloading symbol- and data-type-table.")
+		AddCyclicTagAddress("offlineVersion", "0xF008/0x0000:USINT", time.Second).
+		AddPreRegisteredConsumer("offlineVersion", func(event apiModel.PlcSubscriptionEvent) {
+			if event.GetResponseCode("offlineVersion") == apiModel.PlcResponseCode_OK {
+				newVersion := event.GetValue("offlineVersion").GetUint8()
+				if newVersion != m.driverContext.symbolVersion {
+					m.log.Info().Msg("detected offline version change: reloading symbol- and data-type-table.")
 					err := m.readSymbolTableAndDatatypeTable(ctx)
 					if err != nil {
 						m.log.Error().Err(err).Msg("error updating data-type and symbol tables")
@@ -309,7 +326,9 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
 		}
-		dataTypes[dataType.GetSecondaryName()] = dataType
+		// Key by the main name: that's the name symbols reference via their dataTypeName
+		// (and what the Java driver keys by); the secondary name is the aliased/simple type.
+		dataTypes[dataType.GetMainName()] = dataType
 	}
 	return dataTypes, nil
 }
@@ -401,7 +420,9 @@ func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []
 
 func (m *Connection) getPlcValueForAdsDataTypeTableEntry(entry readWriteModel.AdsDataTypeTableEntry) (apiValues.PlcValueType, int32) {
 	stringLength := -1
-	dataTypeName := entry.GetSecondaryName()
+	// The main name carries the type's name ("BYTE", "STRING(80)", ...); the secondary
+	// name is only set for aliased types (matching the Java driver's use of getMainName()).
+	dataTypeName := entry.GetMainName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
 		var err error
 		stringLength, err = strconv.Atoi(dataTypeName[7 : len(dataTypeName)-1])

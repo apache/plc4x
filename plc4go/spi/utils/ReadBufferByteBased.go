@@ -27,6 +27,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode/utf16"
 
 	"github.com/rs/zerolog/log"
 
@@ -469,19 +470,38 @@ func (rb *byteReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, _ ..
 	return big.NewFloat(readFloat64), nil
 }
 
-func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, _ ...WithReaderArgs) (string, error) {
+func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
 	stringBytes, err := rb.ReadByteArray(logicalName, int(bitLength/8))
 	if err != nil {
-		return "", errors.Wrap(err, "Error reading big int")
+		return "", errors.Wrap(err, "Error reading string bytes")
 	}
-	// TODO: make the null-termination a reader arg
-	// End the string at the 0-character.
-	for i, value := range stringBytes {
-		if value == 0x00 {
-			return string(stringBytes[0:i]), nil
+	encoding := strings.ToUpper(strings.ReplaceAll(BufferCommons{}.ExtractEncoding(UpcastReaderArgs(readerArgs...)...), "-", ""))
+	switch encoding {
+	case "UTF16", "UTF16LE", "UTF16BE":
+		byteOrder := binary.ByteOrder(binary.LittleEndian)
+		if encoding == "UTF16BE" {
+			byteOrder = binary.BigEndian
 		}
+		codeUnits := make([]uint16, 0, len(stringBytes)/2)
+		for i := 0; i+1 < len(stringBytes); i += 2 {
+			codeUnit := byteOrder.Uint16(stringBytes[i : i+2])
+			// End the string at the 0-character.
+			if codeUnit == 0x0000 {
+				break
+			}
+			codeUnits = append(codeUnits, codeUnit)
+		}
+		return string(utf16.Decode(codeUnits)), nil
+	default:
+		// TODO: make the null-termination a reader arg
+		// End the string at the 0-character.
+		for i, value := range stringBytes {
+			if value == 0x00 {
+				return string(stringBytes[0:i]), nil
+			}
+		}
+		return string(stringBytes), nil
 	}
-	return string(stringBytes), nil
 }
 
 func (rb *byteReadBuffer) CloseContext(_ string, _ ...WithReaderArgs) error {

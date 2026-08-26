@@ -208,7 +208,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+                  <PlcUDINT dataType="uint" bitLength="32">1717859169</PlcUDINT>
                 </value>
               </PlcResponseItem>
             </expeditedSdo>
@@ -343,7 +343,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcUSINT dataType="int" bitLength="8">97</PlcUSINT>
+                  <PlcUSINT dataType="uint" bitLength="8">97</PlcUSINT>
                 </value>
               </PlcResponseItem>
             </expeditedShort>
@@ -525,7 +525,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+                  <PlcUDINT dataType="uint" bitLength="32">1717859169</PlcUDINT>
                 </value>
               </PlcResponseItem>
             </expeditedSdoCustomAnswer>

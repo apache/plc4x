@@ -151,7 +151,7 @@ func (m PlcSINT) Serialize() ([]byte, error) {
 }
 
 func (m PlcSINT) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteInt8("PlcINT", 8, m.value)
+	return writeBuffer.WriteInt8("PlcSINT", 8, m.value)
 }
 
 func (m PlcSINT) String() string {

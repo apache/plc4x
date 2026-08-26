@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/rs/zerolog/log"
@@ -34,12 +35,47 @@ import (
 
 type PlcStruct struct {
 	values map[string]apiValues.PlcValue
+	// order fixes the member order for GetKeys and serialization: insertion order when
+	// constructed with NewPlcStructOrdered (e.g. the declaration order of a decoded PLC
+	// struct), sorted key order otherwise - never Go's random map iteration order.
+	order []string
 	PlcValueAdapter
 }
 
 func NewPlcStruct(value map[string]apiValues.PlcValue) PlcStruct {
+	order := make([]string, 0, len(value))
+	for key := range value {
+		order = append(order, key)
+	}
+	sort.Strings(order)
 	return PlcStruct{
 		values: value,
+		order:  order,
+	}
+}
+
+// NewPlcStructOrdered creates a PlcStruct whose members keep the given order (usually the
+// struct's declaration order on the PLC). Keys missing from values are ignored; values not
+// listed in order are appended in sorted order.
+func NewPlcStructOrdered(value map[string]apiValues.PlcValue, order []string) PlcStruct {
+	seen := make(map[string]struct{}, len(order))
+	orderedKeys := make([]string, 0, len(value))
+	for _, key := range order {
+		if _, ok := value[key]; ok {
+			orderedKeys = append(orderedKeys, key)
+			seen[key] = struct{}{}
+		}
+	}
+	var rest []string
+	for key := range value {
+		if _, ok := seen[key]; !ok {
+			rest = append(rest, key)
+		}
+	}
+	sort.Strings(rest)
+	return PlcStruct{
+		values: value,
+		order:  append(orderedKeys, rest...),
 	}
 }
 
@@ -67,11 +103,7 @@ func (m PlcStruct) IsStruct() bool {
 }
 
 func (m PlcStruct) GetKeys() []string {
-	var keys []string
-	for k := range m.values {
-		keys = append(keys, k)
-	}
-	return keys
+	return append([]string(nil), m.order...)
 }
 
 func (m PlcStruct) HasKey(key string) bool {
@@ -99,7 +131,8 @@ func (m PlcStruct) IsString() bool {
 func (m PlcStruct) GetString() string {
 	var sb strings.Builder
 	sb.WriteString("PlcStruct{\n")
-	for tagName, tagValue := range m.values {
+	for _, tagName := range m.order {
+		tagValue := m.values[tagName]
 		sb.WriteString("  ")
 		sb.WriteString(tagName)
 		sb.WriteString(": \"")
@@ -130,7 +163,8 @@ func (m PlcStruct) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	if err := writeBuffer.PushContext("PlcStruct"); err != nil {
 		return err
 	}
-	for tagName, tagValue := range m.values {
+	for _, tagName := range m.order {
+		tagValue := m.values[tagName]
 		if err := writeBuffer.PushContext(tagName); err != nil {
 			return err
 		}

@@ -141,7 +141,7 @@ func (m PlcDATE_AND_LTIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcDATE_AND_LTIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE_AND_LTIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
+	return writeBuffer.WriteString("PlcDATE_AND_LTIME", uint32(len([]rune(m.GetString()))*8), m.GetString(), utils.WithEncoding("UTF-8"))
 }
 
 func (m PlcDATE_AND_LTIME) String() string {

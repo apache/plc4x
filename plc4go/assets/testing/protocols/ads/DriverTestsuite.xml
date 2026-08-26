@@ -1206,72 +1206,72 @@
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcStruct>
-                    <hurz_STRING>
-                      <PlcSTRING dataType="string" bitLength="32" encoding="UTF-8">hurz</PlcSTRING>
-                    </hurz_STRING>
-                    <hurz_LTIME>
-                      <PlcLTIME dataType="string" bitLength="192" encoding="UTF-8">PT24015H23M12.034002044S</PlcLTIME>
-                    </hurz_LTIME>
+                    <hurz_BOOL>
+                      <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                    </hurz_BOOL>
+                    <hurz_BYTE>
+                      <PlcBYTE dataType="byte" bitLength="8">0x01</PlcBYTE>
+                    </hurz_BYTE>
+                    <hurz_WORD>
+                      <PlcWORD dataType="uint" bitLength="16">2</PlcWORD>
+                    </hurz_WORD>
+                    <hurz_DWORD>
+                      <PlcDWORD dataType="uint" bitLength="32">3</PlcDWORD>
+                    </hurz_DWORD>
                     <hurz_LWORD>
-                      <PlcLWORD dataType="int" bitLength="64">4</PlcLWORD>
+                      <PlcLWORD dataType="uint" bitLength="64">4</PlcLWORD>
                     </hurz_LWORD>
-                    <hurz_REAL>
-                      <PlcREAL dataType="float" bitLength="32">13.0</PlcREAL>
-                    </hurz_REAL>
-                    <hurz_ULINT>
-                      <PlcULINT dataType="int" bitLength="64">12</PlcULINT>
-                    </hurz_ULINT>
-                    <hurz_WSTRING>
-                      <PlcWSTRING dataType="string" bitLength="80" encoding="UTF-8">wolf</PlcWSTRING>
-                    </hurz_WSTRING>
-                    <hurz_LINT>
-                      <PlcLINT dataType="int" bitLength="64">11</PlcLINT>
-                    </hurz_LINT>
-                    <hurz_DATE_AND_TIME>
-                      <PlcDATE_AND_TIME dataType="string" bitLength="152" encoding="UTF-8">1996-05-06T15:36:30</PlcDATE_AND_TIME>
-                    </hurz_DATE_AND_TIME>
-                    <hurz_UINT>
-                      <PlcUINT dataType="int" bitLength="16">8</PlcUINT>
-                    </hurz_UINT>
                     <hurz_SINT>
                       <PlcSINT dataType="int" bitLength="8">5</PlcSINT>
                     </hurz_SINT>
                     <hurz_USINT>
-                      <PlcUSINT dataType="int" bitLength="8">6</PlcUSINT>
+                      <PlcUSINT dataType="uint" bitLength="8">6</PlcUSINT>
                     </hurz_USINT>
-                    <hurz_LREAL>
-                      <PlcLREAL dataType="float" bitLength="64">14.0</PlcLREAL>
-                    </hurz_LREAL>
-                    <hurz_TIME_OF_DAY>
-                      <PlcTIME_OF_DAY dataType="string" bitLength="96" encoding="UTF-8">15:36:30.123</PlcTIME_OF_DAY>
-                    </hurz_TIME_OF_DAY>
-                    <hurz_BOOL>
-                      <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
-                    </hurz_BOOL>
+                    <hurz_INT>
+                      <PlcINT dataType="int" bitLength="16">7</PlcINT>
+                    </hurz_INT>
+                    <hurz_UINT>
+                      <PlcUINT dataType="uint" bitLength="16">8</PlcUINT>
+                    </hurz_UINT>
                     <hurz_DINT>
                       <PlcDINT dataType="int" bitLength="32">9</PlcDINT>
                     </hurz_DINT>
                     <hurz_UDINT>
-                      <PlcUDINT dataType="int" bitLength="32">10</PlcUDINT>
+                      <PlcUDINT dataType="uint" bitLength="32">10</PlcUDINT>
                     </hurz_UDINT>
-                    <hurz_BYTE>
-                      <PlcBYTE dataType="int" bitLength="8">1</PlcBYTE>
-                    </hurz_BYTE>
+                    <hurz_LINT>
+                      <PlcLINT dataType="int" bitLength="64">11</PlcLINT>
+                    </hurz_LINT>
+                    <hurz_ULINT>
+                      <PlcULINT dataType="uint" bitLength="64">12</PlcULINT>
+                    </hurz_ULINT>
+                    <hurz_REAL>
+                      <PlcREAL dataType="float" bitLength="32">13.0</PlcREAL>
+                    </hurz_REAL>
+                    <hurz_LREAL>
+                      <PlcLREAL dataType="float" bitLength="64">14.0</PlcLREAL>
+                    </hurz_LREAL>
                     <hurz_TIME>
-                      <PlcTIME dataType="int" bitLength="32">1234</PlcTIME>
+                      <PlcTIME dataType="string" bitLength="64" encoding="UTF-8">PT1.234S</PlcTIME>
                     </hurz_TIME>
-                    <hurz_DWORD>
-                      <PlcDWORD dataType="int" bitLength="32">3</PlcDWORD>
-                    </hurz_DWORD>
-                    <hurz_INT>
-                      <PlcINT dataType="int" bitLength="16">7</PlcINT>
-                    </hurz_INT>
-                    <hurz_WORD>
-                      <PlcWORD dataType="int" bitLength="16">2</PlcWORD>
-                    </hurz_WORD>
+                    <hurz_LTIME>
+                      <PlcLTIME dataType="string" bitLength="192" encoding="UTF-8">PT24015H23M12.034002044S</PlcLTIME>
+                    </hurz_LTIME>
                     <hurz_DATE>
                       <PlcDATE dataType="string" bitLength="80" encoding="UTF-8">1978-03-28</PlcDATE>
                     </hurz_DATE>
+                    <hurz_TIME_OF_DAY>
+                      <PlcTIME_OF_DAY dataType="string" bitLength="96" encoding="UTF-8">15:36:30.123</PlcTIME_OF_DAY>
+                    </hurz_TIME_OF_DAY>
+                    <hurz_DATE_AND_TIME>
+                      <PlcDATE_AND_TIME dataType="string" bitLength="152" encoding="UTF-8">1996-05-06T15:36:30</PlcDATE_AND_TIME>
+                    </hurz_DATE_AND_TIME>
+                    <hurz_STRING>
+                      <PlcSTRING dataType="string" bitLength="32" encoding="UTF-8">hurz</PlcSTRING>
+                    </hurz_STRING>
+                    <hurz_WSTRING>
+                      <PlcWSTRING dataType="string" bitLength="80" encoding="UTF-8">wolf</PlcWSTRING>
+                    </hurz_WSTRING>
                   </PlcStruct>
                 </value>
               </PlcResponseItem>
@@ -1305,72 +1305,72 @@
               <address>MAIN.hurz_Struct</address>
               <value>
                 <PlcStruct>
-                  <hurz_STRING>
-                    <PlcSTRING dataType="string" bitLength="32" encoding="UTF-8">hurz</PlcSTRING>
-                  </hurz_STRING>
-                  <hurz_LTIME>
-                    <PlcLTIME dataType="string" bitLength="192" encoding="UTF-8">PT24015H23M12.034002044S</PlcLTIME>
-                  </hurz_LTIME>
+                  <hurz_BOOL>
+                    <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                  </hurz_BOOL>
+                  <hurz_BYTE>
+                    <PlcBYTE dataType="int" bitLength="8">1</PlcBYTE>
+                  </hurz_BYTE>
+                  <hurz_WORD>
+                    <PlcWORD dataType="uint" bitLength="16">2</PlcWORD>
+                  </hurz_WORD>
+                  <hurz_DWORD>
+                    <PlcDWORD dataType="uint" bitLength="32">3</PlcDWORD>
+                  </hurz_DWORD>
                   <hurz_LWORD>
-                    <PlcLWORD dataType="int" bitLength="64">4</PlcLWORD>
+                    <PlcLWORD dataType="uint" bitLength="64">4</PlcLWORD>
                   </hurz_LWORD>
-                  <hurz_REAL>
-                    <PlcREAL dataType="float" bitLength="32">13.0</PlcREAL>
-                  </hurz_REAL>
-                  <hurz_ULINT>
-                    <PlcULINT dataType="int" bitLength="64">12</PlcULINT>
-                  </hurz_ULINT>
-                  <hurz_WSTRING>
-                    <PlcWSTRING dataType="string" bitLength="80" encoding="UTF-8">wolf</PlcWSTRING>
-                  </hurz_WSTRING>
-                  <hurz_LINT>
-                    <PlcLINT dataType="int" bitLength="64">11</PlcLINT>
-                  </hurz_LINT>
-                  <hurz_DATE_AND_TIME>
-                    <PlcDATE_AND_TIME dataType="string" bitLength="152" encoding="UTF-8">1996-05-06T15:36:30</PlcDATE_AND_TIME>
-                  </hurz_DATE_AND_TIME>
-                  <hurz_UINT>
-                    <PlcUINT dataType="int" bitLength="16">8</PlcUINT>
-                  </hurz_UINT>
                   <hurz_SINT>
                     <PlcSINT dataType="int" bitLength="8">5</PlcSINT>
                   </hurz_SINT>
                   <hurz_USINT>
-                    <PlcUSINT dataType="int" bitLength="8">6</PlcUSINT>
+                    <PlcUSINT dataType="uint" bitLength="8">6</PlcUSINT>
                   </hurz_USINT>
-                  <hurz_LREAL>
-                    <PlcLREAL dataType="float" bitLength="64">14.0</PlcLREAL>
-                  </hurz_LREAL>
-                  <hurz_TIME_OF_DAY>
-                    <PlcTIME_OF_DAY dataType="string" bitLength="96" encoding="UTF-8">15:36:30.123</PlcTIME_OF_DAY>
-                  </hurz_TIME_OF_DAY>
-                  <hurz_BOOL>
-                    <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
-                  </hurz_BOOL>
+                  <hurz_INT>
+                    <PlcINT dataType="int" bitLength="16">7</PlcINT>
+                  </hurz_INT>
+                  <hurz_UINT>
+                    <PlcUINT dataType="uint" bitLength="16">8</PlcUINT>
+                  </hurz_UINT>
                   <hurz_DINT>
                     <PlcDINT dataType="int" bitLength="32">9</PlcDINT>
                   </hurz_DINT>
                   <hurz_UDINT>
-                    <PlcUDINT dataType="int" bitLength="32">10</PlcUDINT>
+                    <PlcUDINT dataType="uint" bitLength="32">10</PlcUDINT>
                   </hurz_UDINT>
-                  <hurz_BYTE>
-                    <PlcBYTE dataType="int" bitLength="8">1</PlcBYTE>
-                  </hurz_BYTE>
+                  <hurz_LINT>
+                    <PlcLINT dataType="int" bitLength="64">11</PlcLINT>
+                  </hurz_LINT>
+                  <hurz_ULINT>
+                    <PlcULINT dataType="uint" bitLength="64">12</PlcULINT>
+                  </hurz_ULINT>
+                  <hurz_REAL>
+                    <PlcREAL dataType="float" bitLength="32">13.0</PlcREAL>
+                  </hurz_REAL>
+                  <hurz_LREAL>
+                    <PlcLREAL dataType="float" bitLength="64">14.0</PlcLREAL>
+                  </hurz_LREAL>
                   <hurz_TIME>
                     <PlcTIME dataType="string" bitLength="64" encoding="UTF-8">PT1.234S</PlcTIME>
                   </hurz_TIME>
-                  <hurz_DWORD>
-                    <PlcDWORD dataType="int" bitLength="32">3</PlcDWORD>
-                  </hurz_DWORD>
-                  <hurz_INT>
-                    <PlcINT dataType="int" bitLength="16">7</PlcINT>
-                  </hurz_INT>
-                  <hurz_WORD>
-                    <PlcWORD dataType="int" bitLength="16">2</PlcWORD>
-                  </hurz_WORD>
+                  <hurz_LTIME>
+                    <PlcLTIME dataType="string" bitLength="192" encoding="UTF-8">PT24015H23M12.034002044S</PlcLTIME>
+                  </hurz_LTIME>
                   <hurz_DATE>
                     <PlcDATE dataType="string" bitLength="80" encoding="UTF-8">1978-03-28</PlcDATE>
                   </hurz_DATE>
+                  <hurz_TIME_OF_DAY>
+                    <PlcTIME_OF_DAY dataType="string" bitLength="96" encoding="UTF-8">15:36:30.123</PlcTIME_OF_DAY>
+                  </hurz_TIME_OF_DAY>
+                  <hurz_DATE_AND_TIME>
+                    <PlcDATE_AND_TIME dataType="string" bitLength="152" encoding="UTF-8">1996-05-06T15:36:30</PlcDATE_AND_TIME>
+                  </hurz_DATE_AND_TIME>
+                  <hurz_STRING>
+                    <PlcSTRING dataType="string" bitLength="32" encoding="UTF-8">hurz</PlcSTRING>
+                  </hurz_STRING>
+                  <hurz_WSTRING>
+                    <PlcWSTRING dataType="string" bitLength="80" encoding="UTF-8">wolf</PlcWSTRING>
+                  </hurz_WSTRING>
                 </PlcStruct>
               </value>
             </tag>

@@ -129,7 +129,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcBYTE dataType="uint" bitLength="8">42</PlcBYTE>
+                  <PlcBYTE dataType="byte" bitLength="8">0x2a</PlcBYTE>
                 </value>
               </PlcResponseItem>
             </holding-register_2_BYTE>
@@ -1064,7 +1064,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcBYTE dataType="uint" bitLength="8">42</PlcBYTE>
+                  <PlcBYTE dataType="byte" bitLength="8">0x2a</PlcBYTE>
                 </value>
               </PlcResponseItem>
             </holding-register_2_BYTE>

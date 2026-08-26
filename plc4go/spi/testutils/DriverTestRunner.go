@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"os"
 	"runtime/debug"
+	"sort"
 	"strconv"
 	"strings"
 	"testing"
@@ -223,6 +224,8 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 						tagValue = append(tagValue, valueChild.Text)
 					}
 					wrb.AddTagAddress(tagName, tagAddress, tagValue)
+				} else if structValue := convertApiRequestStructValue(tagNode.GetChild("value")); structValue != nil {
+					wrb.AddTagAddress(tagName, tagAddress, structValue)
 				} else {
 					tagValue := tagNode.GetChild("value").Text
 					wrb.AddTagAddress(tagName, tagAddress, tagValue)
@@ -259,10 +262,11 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 				return errors.Wrap(err, "error serializing response")
 			}
 			actualResponse := xmlWriteBuffer.GetXmlString()
-			// Get the reference XML
-			referenceSerialized := step.payload.XMLPretty()
+			// Compare only the values sections: like on the Java side, the expected XML may
+			// contain a request element whose serialization is implementation-specific.
+			actualSection, referenceSerialized := extractResponseSection(actualResponse, step.payload, "values")
 			// Compare the results
-			err = CompareResults(t, []byte(actualResponse), []byte(referenceSerialized))
+			err = CompareResults(t, []byte(actualSection), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -286,10 +290,11 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 				return errors.Wrap(err, "error serializing response")
 			}
 			actualResponse := xmlWriteBuffer.GetXmlString()
-			// Get the reference XML
-			referenceSerialized := step.payload.XMLPretty()
+			// Compare only the response-code sections: like on the Java side, the expected XML
+			// may contain a request element whose serialization is implementation-specific.
+			actualSection, referenceSerialized := extractResponseSection(actualResponse, step.payload, "responseCodes")
 			// Compare the results
-			err = CompareResults(t, []byte(actualResponse), []byte(referenceSerialized))
+			err = CompareResults(t, []byte(actualSection), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -563,6 +568,68 @@ type ConnectionConnectAwaiter interface {
 	SetAwaitSetupComplete(awaitComplete bool)
 	// SetAwaitDisconnectComplete sets a flag that the driver should await a dis-connection completion
 	SetAwaitDisconnectComplete(awaitComplete bool)
+}
+
+// convertApiRequestStructValue converts a structured api-request value (a PlcStruct element
+// with one member element per property) into the member-name-to-value map form the driver
+// value handlers accept, recursing for nested structs. Plain text values return nil.
+func convertApiRequestStructValue(valueNode *xmldom.Node) any {
+	if valueNode == nil || len(valueNode.Children) != 1 || valueNode.Children[0].Name != "PlcStruct" {
+		return nil
+	}
+	return structValueNodeToMap(valueNode.Children[0])
+}
+
+func structValueNodeToMap(structNode *xmldom.Node) map[string]any {
+	members := map[string]any{}
+	for _, member := range structNode.Children {
+		switch {
+		case len(member.Children) == 1 && member.Children[0].Name == "PlcStruct":
+			members[member.Name] = structValueNodeToMap(member.Children[0])
+		case len(member.Children) == 1:
+			members[member.Name] = member.Children[0].Text
+		default:
+			members[member.Name] = member.Text
+		}
+	}
+	return members
+}
+
+// extractResponseSection narrows an api-response comparison to the named child element
+// (e.g. "values" of a PlcReadResponse), mirroring the Java driver testsuite runner: the
+// reference XML may contain sections (like the request) whose serialization is
+// implementation-specific. When either side lacks the section, both are returned unchanged.
+//
+// Within the section, sibling elements are sorted by name on both sides before comparing:
+// response values are keyed by tag/member name (maps in the API), so their order is not
+// part of the contract and differs between implementations.
+func extractResponseSection(actualResponse string, reference xmldom.Node, sectionName string) (string, string) {
+	referenceSection := reference.GetChild(sectionName)
+	if referenceSection == nil {
+		return actualResponse, reference.XMLPretty()
+	}
+	actualDocument, err := xmldom.Parse(strings.NewReader(actualResponse))
+	if err != nil {
+		return actualResponse, reference.XMLPretty()
+	}
+	actualSection := actualDocument.Root.GetChild(sectionName)
+	if actualSection == nil {
+		return actualResponse, reference.XMLPretty()
+	}
+	sortChildElementsByName(actualSection)
+	sortChildElementsByName(referenceSection)
+	return actualSection.XMLPretty(), referenceSection.XMLPretty()
+}
+
+// sortChildElementsByName recursively brings sibling elements into a canonical (name-sorted)
+// order. Only safe where sibling names are unique keys, as they are in api-response sections.
+func sortChildElementsByName(node *xmldom.Node) {
+	sort.SliceStable(node.Children, func(i, j int) bool {
+		return node.Children[i].Name < node.Children[j].Name
+	})
+	for _, child := range node.Children {
+		sortChildElementsByName(child)
+	}
 }
 
 func ParseDriverTestsuiteXml(t *testing.T, testPath string) *xmldom.Node {

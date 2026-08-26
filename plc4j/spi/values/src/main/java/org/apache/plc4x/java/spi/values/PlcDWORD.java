@@ -294,7 +294,7 @@ public class PlcDWORD extends PlcIECValue<Long> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws BufferException {
-        writeBuffer.writeSignedLong(32, value, WithOption.WithName(getClass().getSimpleName()));
+        writeBuffer.writeUnsignedLong(32, value, WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

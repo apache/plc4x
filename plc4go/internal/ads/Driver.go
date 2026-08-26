@@ -42,6 +42,9 @@ type Driver struct {
 
 	discoverer *Discoverer
 
+	awaitSetupComplete      bool
+	awaitDisconnectComplete bool
+
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
 }
@@ -49,9 +52,11 @@ type Driver struct {
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
-		discoverer: NewDiscoverer(_options...),
-		log:        customLogger,
-		_options:   _options,
+		discoverer:              NewDiscoverer(_options...),
+		awaitSetupComplete:      true,
+		awaitDisconnectComplete: true,
+		log:                     customLogger,
+		_options:                _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "ads", "Beckhoff TwinCat ADS", "tcp", NewTagHandler())
 	return driver
@@ -108,11 +113,24 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't create connection")
 	}
+	connection.driverContext.awaitSetupComplete = d.awaitSetupComplete
+	connection.driverContext.awaitDisconnectComplete = d.awaitDisconnectComplete
 	connectionLog.Debug().Interface("connection", connection).Msg("created connection, connecting now")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}
 	return connection, nil
+}
+
+// SetAwaitSetupComplete lets the driver testsuite runner return from Connect before the
+// connection handshake ran, so the testsuite can feed the handshake's responses itself.
+func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
+	d.awaitSetupComplete = awaitComplete
+}
+
+// SetAwaitDisconnectComplete is the disconnect-side counterpart of SetAwaitSetupComplete.
+func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
+	d.awaitDisconnectComplete = awaitComplete
 }
 
 func (d *Driver) SupportsDiscovery() bool {
