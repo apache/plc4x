@@ -55,10 +55,7 @@ func splitExtendedRegister(address uint16, lengthWords uint16) []extendedRegiste
 
 	var groups []extendedRegisterGroup
 	for remaining := lengthWords; remaining > 0; {
-		inThisFile := uint16(fileRecordLength) - recordNumber
-		if inThisFile > remaining {
-			inThisFile = remaining
-		}
+		inThisFile := min(uint16(fileRecordLength)-recordNumber, remaining)
 		groups = append(groups, extendedRegisterGroup{
 			fileNumber:   fileNumber,
 			recordNumber: recordNumber,

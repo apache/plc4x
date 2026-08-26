@@ -367,7 +367,7 @@ func (c *Connection) updateDigitalValues(pinBlock uint8, data []int8) ([]uint8, 
 	c.valueMutex.Lock()
 	defer c.valueMutex.Unlock()
 	var changedPins []uint8
-	for i := 0; i < 8; i++ {
+	for i := range 8 {
 		pin := firstPin + i
 		if pin > maxDigitalPin {
 			break
@@ -580,10 +580,8 @@ func (c *Connection) sendAll(ctx context.Context, interactionInfo string, messag
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	c.subscribersMutex.Lock()
 	defer c.subscribersMutex.Unlock()
-	for _, existing := range c.subscribers {
-		if existing == subscriber {
-			return
-		}
+	if slices.Contains(c.subscribers, subscriber) {
+		return
 	}
 	c.subscribers = append(c.subscribers, subscriber)
 }

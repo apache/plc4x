@@ -53,6 +53,40 @@ void internal_assert_arrays_equal(uint8_t* expected_array, uint8_t* actual_array
   }
 }*/
 
+// The bound the generated parsers carry is only worth anything if they actually
+// consult it, so this goes through a real one rather than the context alone.
+void parse_refuses_a_context_already_at_the_bound(void) {
+  uint8_t payload[] = {0x03, 0x00, 0x00, 0x16, 0x11, 0xE0, 0x00, 0x00,
+                       0x00, 0x01, 0x00, 0xC1, 0x02, 0x01, 0x00, 0xC2,
+                       0x02, 0x01, 0x02, 0xC0, 0x01, 0x0A};
+
+  plc4c_spi_read_buffer* read_buffer;
+  TEST_ASSERT_EQUAL_INT(
+      OK, plc4c_spi_read_buffer_create(payload, sizeof(payload), &read_buffer));
+
+  // Stand where a deeply nested type would stand, one level short of the bound.
+  plc4x_spi_context ctx = plc4x_spi_context_background();
+  for (uint16_t i = 0; i < plc4x_spi_context_get_max_depth(); i++) {
+    TEST_ASSERT_EQUAL_INT(OK, plc4x_spi_context_enter_type(&ctx));
+  }
+
+  plc4c_s7_read_write_tpkt_packet* message = NULL;
+  TEST_ASSERT_EQUAL_INT(
+      PARSE_ERROR,
+      plc4c_s7_read_write_tpkt_packet_parse(ctx, read_buffer, &message));
+
+  // The same bytes read fine from a context that has room, so the refusal was
+  // the depth and not the payload.
+  plc4c_spi_read_buffer* second_buffer;
+  TEST_ASSERT_EQUAL_INT(OK, plc4c_spi_read_buffer_create(payload, sizeof(payload), &second_buffer));
+  plc4c_s7_read_write_tpkt_packet* ok_message = NULL;
+  TEST_ASSERT_EQUAL_INT(
+      OK, plc4c_s7_read_write_tpkt_packet_parse(plc4x_spi_context_background(),
+                                                second_buffer, &ok_message));
+  free(read_buffer);
+  free(second_buffer);
+}
+
 void internal_parse_serialize_test(uint8_t* payload,
                                    uint8_t payload_size) {
   // Create a new read_buffer instance
@@ -234,6 +268,7 @@ void tearDown(void) {}
 int main(void) {
   UNITY_BEGIN();
 
+  RUN_TEST(parse_refuses_a_context_already_at_the_bound);
   RUN_TEST(parse_cotp_connection_request);
   RUN_TEST(parse_cotp_connection_response);
   RUN_TEST(parse_s7_communication_setup_request);

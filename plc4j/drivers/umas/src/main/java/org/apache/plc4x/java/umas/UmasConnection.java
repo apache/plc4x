@@ -113,7 +113,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -155,6 +157,12 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
     };
 
     private UmasMessageCodec messageCodec;
+
+    /**
+     * This connection's request function keys. One per connection, because a transaction id is a
+     * counter belonging to a connection and means nothing outside it.
+     */
+    private final UmasFunctionKeyTracker functionKeyTracker = new UmasFunctionKeyTracker();
     private final short unitIdentifier;
     private final long requestTimeoutMs;
 
@@ -218,7 +226,7 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
 
     @Override
     protected void onConnect() throws PlcConnectionException {
-        messageCodec = new UmasMessageCodec(transportInstance, this::handleIncomingMessage);
+        messageCodec = new UmasMessageCodec(transportInstance, this::handleIncomingMessage, functionKeyTracker);
         startReceiving(() -> {
             try {
                 messageCodec.processIncomingData();
@@ -380,6 +388,7 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
         PlcRuntimeException closed = new PlcRuntimeException("Connection closed");
         pendingResponses.values().forEach(f -> f.completeExceptionally(closed));
         pendingResponses.clear();
+        functionKeyTracker.clear();
         super.close();
         LOGGER.info("UMAS connection closed");
         fireConnectionStateChanged(ConnectionStateChangeType.DISCONNECTED, null);
@@ -423,7 +432,7 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
      */
     private CompletableFuture<UmasPDUItem> sendRequest(UmasPDUItem item, String stepName) {
         int transactionId = nextTransactionId();
-        UmasFunctionKeyTracker.trackRequest(transactionId, item.getUmasFunctionKey());
+        functionKeyTracker.trackRequest(transactionId, item.getUmasFunctionKey());
         UmasPDU pdu = new UmasPDU(item);
         ModbusTcpADU adu = new ModbusTcpADU(transactionId, unitIdentifier, pdu);
 
@@ -433,6 +442,9 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
             messageCodec.send(adu);
         } catch (MessageCodecException e) {
             pendingResponses.remove(transactionId);
+            // Nothing was sent, so nothing will answer: the function key would sit here until a
+            // later request reached the same id and found it.
+            functionKeyTracker.forget(transactionId);
             return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to send " + stepName, e));
         }
 
@@ -441,6 +453,9 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
             .whenComplete((r, e) -> {
                 if (e != null) {
                     pendingResponses.remove(transactionId);
+                    // A request that gave up leaves its function key behind otherwise, and the
+                    // transaction id counter comes round again.
+                    functionKeyTracker.forget(transactionId);
                 }
             })
             .thenApply(response -> extractUmasResponse(response, stepName));
@@ -947,70 +962,130 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
     private List<PlcBrowseItem> convertToBrowseItems(List<UmasUnlocatedVariableReference> symbols) {
         List<PlcBrowseItem> items = new ArrayList<>(symbols.size());
         for (UmasUnlocatedVariableReference symbol : symbols) {
-            items.add(buildBrowseItem(symbol.getValue(), symbol.getDataType()));
+            items.add(new BrowseTreeBuilder(customTypeFields, customTypeElementTypeIds, customTypeDimensions)
+                .buildBrowseItem(symbol.getValue(), symbol.getDataType()));
         }
         return items;
     }
 
-    private PlcBrowseItem buildBrowseItem(String name, int dataTypeId) {
-        PlcValueType plcValueType;
-        List<ArrayInfo> arrayInfo = Collections.emptyList();
-        Map<String, PlcBrowseItem> children = Collections.emptyMap();
+    /**
+     * Turns the device's data dictionary into browse items.
+     *
+     * <p>Its own class because the dictionary is the device's to write, and walking it is
+     * recursive: a type can name itself among its own fields, directly or round a longer loop, and
+     * a walk that does not notice never returns. Separate from the connection so that walk can be
+     * tested without one.</p>
+     */
+    static final class BrowseTreeBuilder {
 
-        Optional<Integer> elementTypeId = Optional.ofNullable(customTypeElementTypeIds.get(dataTypeId));
-        if (elementTypeId.isPresent()) {
-            plcValueType = resolveValueType(elementTypeId.get());
-            arrayInfo = buildArrayInfo(dataTypeId);
-            children = buildStructChildren(elementTypeId.get());
-        } else if (customTypeFields.containsKey(dataTypeId)) {
-            plcValueType = PlcValueType.Struct;
-            children = buildStructChildren(dataTypeId);
-        } else {
-            plcValueType = mapToPlcValueType(dataTypeId);
-        }
-        SymbolicUmasTag tag = new SymbolicUmasTag(name, plcValueType, Collections.emptyList());
-        return new DefaultPlcBrowseItem(
-            tag, name,
-            true,   // readable
-            true,   // writable
-            Collections.emptySet(),   // no subscriptions
-            false,  // not publishable
-            arrayInfo, children, Collections.emptyMap());
-    }
+        private final Map<Integer, List<UmasUDTDefinition>> customTypeFields;
+        private final Map<Integer, Integer> customTypeElementTypeIds;
+        private final Map<Integer, List<UmasArrayDimension>> customTypeDimensions;
 
-    private PlcValueType resolveValueType(int typeId) {
-        if (customTypeFields.containsKey(typeId)) {
-            return PlcValueType.Struct;
+        BrowseTreeBuilder(Map<Integer, List<UmasUDTDefinition>> customTypeFields,
+                          Map<Integer, Integer> customTypeElementTypeIds,
+                          Map<Integer, List<UmasArrayDimension>> customTypeDimensions) {
+            this.customTypeFields = customTypeFields;
+            this.customTypeElementTypeIds = customTypeElementTypeIds;
+            this.customTypeDimensions = customTypeDimensions;
         }
-        Integer elementTypeId = customTypeElementTypeIds.get(typeId);
-        if (elementTypeId != null) {
-            return resolveValueType(elementTypeId);
-        }
-        return mapToPlcValueType(typeId);
-    }
 
-    private List<ArrayInfo> buildArrayInfo(int typeId) {
-        List<UmasArrayDimension> dims = customTypeDimensions.get(typeId);
-        if (dims == null || dims.isEmpty()) {
-            return Collections.emptyList();
+        PlcBrowseItem buildBrowseItem(String name, int dataTypeId) {
+            return buildBrowseItem(name, dataTypeId, new LinkedHashSet<>());
         }
-        List<ArrayInfo> result = new ArrayList<>();
-        for (UmasArrayDimension dim : dims) {
-            result.add(new DefaultArrayInfo((int) dim.getStartIndex(), (int) dim.getUpperBound()));
-        }
-        return result;
-    }
 
-    private Map<String, PlcBrowseItem> buildStructChildren(int typeId) {
-        List<UmasUDTDefinition> fields = customTypeFields.get(typeId);
-        if (fields == null || fields.isEmpty()) {
-            return Collections.emptyMap();
+        /**
+         * Builds one browse item, and the items for whatever it contains.
+         *
+         * @param expanding the type ids already being expanded on the way to this one. The data
+         *                  dictionary comes from the device, so a type can name itself among its own
+         *                  fields - directly or round a longer loop - and expanding that has no end.
+         *                  Scoped to the path rather than the whole browse, because the same type
+         *                  appearing in two different branches is ordinary and only its appearance
+         *                  inside its own expansion is a cycle.
+         */
+            PlcBrowseItem buildBrowseItem(String name, int dataTypeId, Set<Integer> expanding) {
+            PlcValueType plcValueType;
+            List<ArrayInfo> arrayInfo = Collections.emptyList();
+            Map<String, PlcBrowseItem> children = Collections.emptyMap();
+
+            Optional<Integer> elementTypeId = Optional.ofNullable(customTypeElementTypeIds.get(dataTypeId));
+            if (elementTypeId.isPresent()) {
+                plcValueType = resolveValueType(elementTypeId.get(), new LinkedHashSet<>());
+                arrayInfo = buildArrayInfo(dataTypeId);
+                children = buildStructChildren(elementTypeId.get(), expanding);
+            } else if (customTypeFields.containsKey(dataTypeId)) {
+                plcValueType = PlcValueType.Struct;
+                children = buildStructChildren(dataTypeId, expanding);
+            } else {
+                plcValueType = mapToPlcValueType(dataTypeId);
+            }
+            SymbolicUmasTag tag = new SymbolicUmasTag(name, plcValueType, Collections.emptyList());
+            return new DefaultPlcBrowseItem(
+                tag, name,
+                true,   // readable
+                true,   // writable
+                Collections.emptySet(),   // no subscriptions
+                false,  // not publishable
+                arrayInfo, children, Collections.emptyMap());
         }
-        Map<String, PlcBrowseItem> children = new LinkedHashMap<>();
-        for (UmasUDTDefinition field : fields) {
-            children.put(field.getValue(), buildBrowseItem(field.getValue(), field.getDataType()));
+
+            PlcValueType resolveValueType(int typeId, Set<Integer> seen) {
+            if (customTypeFields.containsKey(typeId)) {
+                return PlcValueType.Struct;
+            }
+            if (!seen.add(typeId)) {
+                // An array whose element type leads back to itself. Nothing further to learn from
+                // following it, and following it does not stop.
+                LOGGER.warn("Data dictionary type {} is its own element type; reporting it as raw bytes",
+                    typeId);
+                return PlcValueType.RAW_BYTE_ARRAY;
+            }
+            Integer elementTypeId = customTypeElementTypeIds.get(typeId);
+            if (elementTypeId != null) {
+                return resolveValueType(elementTypeId, seen);
+            }
+            return mapToPlcValueType(typeId);
         }
-        return children;
+
+            List<ArrayInfo> buildArrayInfo(int typeId) {
+            List<UmasArrayDimension> dims = customTypeDimensions.get(typeId);
+            if (dims == null || dims.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<ArrayInfo> result = new ArrayList<>();
+            for (UmasArrayDimension dim : dims) {
+                result.add(new DefaultArrayInfo((int) dim.getStartIndex(), (int) dim.getUpperBound()));
+            }
+            return result;
+        }
+
+            Map<String, PlcBrowseItem> buildStructChildren(int typeId, Set<Integer> expanding) {
+            List<UmasUDTDefinition> fields = customTypeFields.get(typeId);
+            if (fields == null || fields.isEmpty()) {
+                return Collections.emptyMap();
+            }
+            if (!expanding.add(typeId)) {
+                // This type is already being expanded further up the same path, so expanding it again
+                // would go on for as long as the stack lasted. The item stays in the browse without
+                // its children rather than the browse failing.
+                LOGGER.warn("Data dictionary type {} contains itself; listing it without its fields",
+                    typeId);
+                return Collections.emptyMap();
+            }
+            try {
+                Map<String, PlcBrowseItem> children = new LinkedHashMap<>();
+                for (UmasUDTDefinition field : fields) {
+                    children.put(field.getValue(),
+                        buildBrowseItem(field.getValue(), field.getDataType(), expanding));
+                }
+                return children;
+            } finally {
+                // Off the path again: a sibling branch may legitimately use this type.
+                expanding.remove(typeId);
+            }
+        }
+
     }
 
     private static PlcValueType mapToPlcValueType(int dataTypeId) {

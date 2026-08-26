@@ -649,10 +649,7 @@ func TestWriteBuffer_BCD_SequentialUnalignedFields(t *testing.T) {
 func TestBCD_BufferRoundTripAllWidthsSigned(t *testing.T) {
 	for digits := 1; digits <= maxBCDDigits; digits++ {
 		bitLength := uint8(digits * 4)
-		max := int64(bcdPow10[digits] - 1)
-		if max > math.MaxInt64 {
-			max = math.MaxInt64
-		}
+		max := min(int64(bcdPow10[digits]-1), math.MaxInt64)
 		for _, value := range []int64{0, 1, max / 2, max} {
 			t.Run(fmt.Sprintf("%dbits/%d", bitLength, value), func(t *testing.T) {
 				wb := NewWriteBufferByteBased()

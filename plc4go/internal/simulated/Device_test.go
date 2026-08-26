@@ -50,14 +50,14 @@ func TestDevice_Get(t1 *testing.T) {
 			fields: fields{
 				Name: "hurz",
 				State: map[simulatedTag]*apiValues.PlcValue{
-					NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
+					NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 				},
 			},
 			args: args{
 				field:        NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				verifyOutput: true,
 			},
-			want: ToReference(spiValues.NewPlcBOOL(true)),
+			want: new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 		},
 		{
 			name: "simple random",
@@ -69,7 +69,7 @@ func TestDevice_Get(t1 *testing.T) {
 				field:        NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				verifyOutput: false,
 			},
-			want: ToReference(spiValues.NewPlcBOOL(true)),
+			want: new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 		},
 		{
 			name: "simple stdout",
@@ -132,7 +132,7 @@ func TestDevice_Random(t *testing.T) {
 				field:   NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				numRuns: 1000,
 			},
-			want: ToReference(spiValues.NewPlcBOOL(true)),
+			want: new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 		},
 	}
 	for _, tt := range tests {
@@ -184,7 +184,7 @@ func TestDevice_Set(t1 *testing.T) {
 			},
 			args: args{
 				field:         NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
-				value:         ToReference(spiValues.NewPlcBOOL(true)),
+				value:         new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 				shouldBeSaved: true,
 			},
 		},
@@ -196,7 +196,7 @@ func TestDevice_Set(t1 *testing.T) {
 			},
 			args: args{
 				field:         NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
-				value:         ToReference(spiValues.NewPlcBOOL(true)),
+				value:         new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 				shouldBeSaved: false,
 			},
 		},
@@ -208,7 +208,7 @@ func TestDevice_Set(t1 *testing.T) {
 			},
 			args: args{
 				field:         NewSimulatedTag(TagStdOut, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
-				value:         ToReference(spiValues.NewPlcBOOL(true)),
+				value:         new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 				shouldBeSaved: false,
 			},
 		},

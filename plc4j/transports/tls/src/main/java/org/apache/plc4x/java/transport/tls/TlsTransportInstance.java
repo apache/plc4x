@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -46,6 +47,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -159,6 +161,22 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
                 Arrays.toString(enabledProtocols),
                 Arrays.toString(sslSocket.getEnabledCipherSuites())));
 
+            // Say who we expect to be talking to, before the handshake rather than after it.
+            // Chain validation establishes that a certificate was issued by someone trusted; it
+            // says nothing about who it was issued to, so without this a certificate trusted for
+            // any host is accepted for every host.
+            if (configuration.ignoreCommonName) {
+                LOGGER.warn("ignore-common-name is set: a certificate issued for any other host "
+                    + "will be accepted for {}, which is what a machine in the middle needs",
+                    remoteAddress.getHostName());
+                auditLog.write(AuditLogEventType.SYSTEM,
+                    "TLS host verification disabled by ignore-common-name");
+            } else {
+                SSLParameters sslParameters = sslSocket.getSSLParameters();
+                sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+                sslSocket.setSSLParameters(sslParameters);
+            }
+
             // Perform TLS handshake
             LOGGER.debug("Starting TLS handshake with {}", remoteAddress);
             sslSocket.startHandshake();
@@ -216,7 +234,13 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
         }
 
         TrustManager[] trustManagers = null;
-        if (!configuration.isVerifySsl()) {
+        if (configuration.isVerifySsl()
+            && configuration.trustStoreFile != null && !configuration.trustStoreFile.isEmpty()) {
+            // Trust what the operator named rather than the public authorities the JVM ships with.
+            // A device carrying its own certificate is not signed by any of those, and without a
+            // way to say so the only route to a connection is to stop verifying altogether.
+            trustManagers = loadTrustManagers(configuration);
+        } else if (!configuration.isVerifySsl()) {
             // Use trust-all TrustManager for self-signed certificates
             LOGGER.warn("SSL certificate verification is DISABLED. Connection is encrypted but NOT protected against MITM attacks.");
             trustManagers = new TrustManager[]{
@@ -241,6 +265,36 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
 
         sslContext.init(keyManagers, trustManagers, new SecureRandom());
         return sslContext;
+    }
+
+    /**
+     * Loads the trust managers for the certificates named by {@code trust-store-file}.
+     */
+    private TrustManager[] loadTrustManagers(TlsTransportConfiguration configuration)
+            throws TransportException {
+        String trustStoreType = configuration.trustStoreType != null
+            ? configuration.trustStoreType : "PKCS12";
+        char[] password = configuration.trustStorePassword != null
+            ? configuration.trustStorePassword.toCharArray() : null;
+        try {
+            KeyStore trustStore = KeyStore.getInstance(trustStoreType);
+            try (FileInputStream fis = new FileInputStream(configuration.trustStoreFile)) {
+                trustStore.load(fis, password);
+            }
+            TrustManagerFactory factory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            factory.init(trustStore);
+            LOGGER.info("Trusting the {} certificates in {}", trustStore.size(),
+                configuration.trustStoreFile);
+            getAuditLog().write(AuditLogEventType.SYSTEM, String.format(
+                "Trust store loaded: type=%s, path=%s, entries=%d",
+                trustStoreType, configuration.trustStoreFile, trustStore.size()));
+            return factory.getTrustManagers();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new TransportException(String.format(
+                "Failed to load trust store '%s' (type=%s): %s",
+                configuration.trustStoreFile, trustStoreType, e.getMessage()), e);
+        }
     }
 
     /**
@@ -423,6 +477,15 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
     public boolean isOpen() {
         return open && sslSocket.isConnected() && !sslSocket.isClosed();
     }
+
+    @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
 
     @Override
     public int getNumBytesAvailable() throws TransportException {
@@ -621,16 +684,58 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
     }
 
     /**
+     * Runs a listener so that a failure inside it costs the frame it was handling and nothing more.
+     * The reader loop is the only thing reading the socket, and the peer decides what arrives, so
+     * one frame the codec cannot make sense of must not end the loop that would have read the next.
+     */
+    private void safeRun(Runnable listener) {
+        if (listener == null) {
+            return;
+        }
+        try {
+            listener.run();
+        } catch (Throwable t) {
+            LOGGER.error("Data listener failed", t);
+        }
+    }
+
+    /**
      * Reader loop that continuously reads from the TLS socket and populates the ring buffer.
      * Notifies listeners when data arrives.
      */
     private void runReaderLoop() {
+        try {
+            runReaderLoopInternal();
+        } catch (Throwable t) {
+            // Nothing else reads this socket. If the loop ever leaves by an unexpected route the
+            // transport must stop claiming to be open, rather than leave callers waiting on a
+            // connection that can no longer receive.
+            LOGGER.error("Reader loop failed", t);
+        }
+        if (open) {
+            open = false;
+            notifyDisconnect(null);
+        }
+    }
+
+    private void runReaderLoopInternal() {
         LOGGER.debug("TLS reader loop started");
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
         while (open && !Thread.currentThread().isInterrupted()) {
             try {
-                int bytesRead = inputStream.read(buffer);
+                int free = ringBuffer.remainingForWriting();
+                if (free == 0) {
+                    // The ring is full and whoever consumes it has not caught up. Park briefly and
+                    // look again rather than reading bytes we would have to throw away: only the
+                    // codec knows where a frame ends, so a byte dropped here takes the middle out
+                    // of somebody's message. Never a disconnect - a consumer is allowed to lag.
+                    LockSupport.parkNanos(200_000L);
+                    continue;
+                }
+
+                // Bound the read to the room actually available, so the ring cannot overflow.
+                int bytesRead = inputStream.read(buffer, 0, Math.min(buffer.length, free));
 
                 if (bytesRead > 0) {
                     readLock.lock();
@@ -638,14 +743,15 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
                         // Write to ring buffer
                         int written = ringBuffer.write(buffer, 0, bytesRead);
                         if (written < bytesRead) {
-                            LOGGER.warn("Ring buffer full, lost {} bytes", bytesRead - written);
+                            // The read was bounded to the free space, so this cannot happen unless
+                            // that reasoning is wrong somewhere - say so loudly rather than
+                            // shrugging off lost bytes.
+                            LOGGER.error("Wrote only {} of {} bytes into a ring buffer that reported room",
+                                written, bytesRead);
                         }
 
                         // Notify listener
-                        Runnable listener = dataListener;
-                        if (listener != null) {
-                            listener.run();
-                        }
+                        safeRun(dataListener);
                     } finally {
                         readLock.unlock();
                     }

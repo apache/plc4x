@@ -372,9 +372,7 @@ func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []
 		}
 		plcValueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(curDataType)
 		return &model.DirectPlcTag{
-			PlcTag: model.PlcTag{
-				ArrayInfo: arrayInfo,
-			},
+			ArrayInfo:    arrayInfo,
 			IndexGroup:   indexGroup,
 			IndexOffset:  indexOffset,
 			ValueType:    plcValueType,

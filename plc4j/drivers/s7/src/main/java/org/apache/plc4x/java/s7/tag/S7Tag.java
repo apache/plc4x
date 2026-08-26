@@ -45,14 +45,14 @@ public class S7Tag implements PlcTag, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
@@ -65,6 +65,9 @@ public class S7Tag implements PlcTag, Serializable {
     protected static final String BIT_OFFSET = "bitOffset";
     protected static final String NUM_ELEMENTS = "numElements";
     protected static final String MEMORY_AREA = "memoryArea";
+
+    /** highest byte offset an S7 address can name; see checkByteOffset() below */
+    protected static final int MAX_BYTE_OFFSET = 2097151;
 
     private final TransportSize dataType;
     private final MemoryArea memoryArea;
@@ -194,7 +197,7 @@ public class S7Tag implements PlcTag, Serializable {
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
             }
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -220,7 +223,7 @@ public class S7Tag implements PlcTag, Serializable {
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
             }
 
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
@@ -239,7 +242,9 @@ public class S7Tag implements PlcTag, Serializable {
                     }
                     return new S7Tag(s7AddressAny.getTransportSize(), s7AddressAny.getArea(),
                         s7AddressAny.getDbNumber(), s7AddressAny.getByteAddress(),
-                        s7AddressAny.getBitAddress(), s7AddressAny.getNumberOfElements());
+                        s7AddressAny.getBitAddress(),
+                        checkNumElements(s7AddressAny.getTransportSize(),
+                            s7AddressAny.getNumberOfElements()));
                 }
                 throw new PlcInvalidTagException("Unsupported address type.");
             } catch (BufferException | NumberFormatException e) {
@@ -258,7 +263,7 @@ public class S7Tag implements PlcTag, Serializable {
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
             }
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -289,6 +294,44 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     /**
+     * checks that the number of elements of an S7Tag spans no more than the addressable area.
+     * <p>
+     * A count is a request to allocate, so it has to be answerable before anything is allocated
+     * for it. The largest span that can be addressed at all is one byte past the highest legal
+     * byte offset, and a tag reaching beyond that is asking for memory no device could return.
+     *
+     * @param dataType    data type of the tag, which fixes what one element costs
+     * @param numElements given number of elements
+     * @return given numElements if Ok, throws PlcInvalidTagException otherwise
+     */
+    protected static int checkNumElements(TransportSize dataType, int numElements) {
+        return checkNumElements(numElements, dataType.getSizeInBytes(), dataType.name());
+    }
+
+    /**
+     * checks that the number of elements spans no more than the addressable area, for a caller
+     * that knows what one of its elements costs - a string's element size comes from its declared
+     * length rather than from the transport size alone.
+     *
+     * @param numElements    given number of elements
+     * @param bytesPerElement what one element occupies
+     * @param describe       how to name the type in the failure
+     * @return given numElements if Ok, throws PlcInvalidTagException otherwise
+     */
+    protected static int checkNumElements(int numElements, int bytesPerElement, String describe) {
+        if (numElements < 1) {
+            throw new PlcInvalidTagException("The number of elements must be greater than zero.");
+        }
+        int elementSize = Math.max(1, bytesPerElement);
+        if (numElements > (MAX_BYTE_OFFSET + 1) / elementSize) {
+            throw new PlcInvalidTagException("A tag of " + numElements + " elements of type " +
+                describe + " spans more than the addressable " + (MAX_BYTE_OFFSET + 1) +
+                " bytes.");
+        }
+        return numElements;
+    }
+
+    /**
      * checks if ByteOffset from S7Tag is in valid range
      *
      * @param byteOffset given byteOffset
@@ -296,7 +339,7 @@ public class S7Tag implements PlcTag, Serializable {
      */
     protected static int checkByteOffset(int byteOffset) {
         // TODO: check the value or add reference
-        if (byteOffset > 2097151 || byteOffset < 0) {
+        if (byteOffset > MAX_BYTE_OFFSET || byteOffset < 0) {
             throw new PlcInvalidTagException("ByteOffset must be smaller than 2097151 and positive.");
         }
         return byteOffset;

@@ -64,9 +64,13 @@ public class OpcuaConfiguration implements Configuration {
     private String password;
 
     @ConfigurationParameter("security-policy")
-    @StringDefaultValue("NONE")
+    @StringDefaultValue("Basic256Sha256")
     @Description("The security policy applied to communication channel between driver and OPC UA server.\n" +
-        "Default value assumes. Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.")
+        "Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.\n" +
+        "`NONE` means the channel is neither signed nor encrypted, so anything on the path can read and\n" +
+        "change what is exchanged; it also leaves the server unauthenticated. A policy that signs and\n" +
+        "encrypts needs a trust anchor for the server's certificate - see `trust-store-file` and\n" +
+        "`server-certificate-file`.")
     private SecurityPolicy securityPolicy;
 
     @ConfigurationParameter("message-security")
@@ -112,6 +116,37 @@ public class OpcuaConfiguration implements Configuration {
     @ConfigurationParameter("trust-store-password")
     @Description("Password used to open trust store.")
     private String trustStorePassword;
+
+    @ConfigurationParameter("allow-insecure-credentials")
+    @BooleanDefaultValue(false)
+    @Description("Allows a username and password to be sent over a channel that neither signs nor encrypts.\n" +
+        "Without this, a connection configured with credentials over an unprotected channel fails rather\n" +
+        "than putting the password on the wire where anything on the path can read it. Setting it warns.")
+    private boolean allowInsecureCredentials;
+
+    @ConfigurationParameter("browse-max-references-per-node")
+    @IntDefaultValue(65536)
+    @Description("Largest number of references the driver will collect for a single node while browsing.\n" +
+        "A Browse is answered in batches, each batch handing back a continuation point for the next, and\n" +
+        "the driver follows them until the server stops. A server that never stops would otherwise grow\n" +
+        "the collected list without limit. The same number is asked of the server as its per-node maximum,\n" +
+        "so it can stop before the driver has to. Set to 0 for no limit.")
+    private int browseMaxReferencesPerNode;
+
+    @ConfigurationParameter("browse-max-total-nodes")
+    @IntDefaultValue(1000000)
+    @Description("Largest number of nodes a single browse will expand. A browse walks whatever tree the\n" +
+        "server describes, and the driver has no way to know how large that is before walking it, so this\n" +
+        "bounds a tree that turns out to be unreasonable - or endless, if the server keeps naming nodes it\n" +
+        "has not named before. Set to 0 for no limit.")
+    private int browseMaxTotalNodes;
+
+    @ConfigurationParameter("browse-max-depth")
+    @IntDefaultValue(64)
+    @Description("How deep a browse will recurse into the node tree. Already-visited nodes are never\n" +
+        "expanded twice, so a reference cycle terminates on its own, but a server naming a fresh node at\n" +
+        "every level describes a tree with no bottom. Set to 0 for no limit.")
+    private int browseMaxDepth;
 
     @ConfigurationParameter("insecure-certificate-verification")
     @BooleanDefaultValue(false)
@@ -228,6 +263,34 @@ public class OpcuaConfiguration implements Configuration {
         return trustStorePassword == null ? null : trustStorePassword.toCharArray();
     }
 
+    public boolean isAllowInsecureCredentials() {
+        return allowInsecureCredentials;
+    }
+
+    public int getBrowseMaxReferencesPerNode() {
+        return browseMaxReferencesPerNode;
+    }
+
+    public int getBrowseMaxTotalNodes() {
+        return browseMaxTotalNodes;
+    }
+
+    public int getBrowseMaxDepth() {
+        return browseMaxDepth;
+    }
+
+    public void setBrowseMaxReferencesPerNode(int browseMaxReferencesPerNode) {
+        this.browseMaxReferencesPerNode = browseMaxReferencesPerNode;
+    }
+
+    public void setBrowseMaxTotalNodes(int browseMaxTotalNodes) {
+        this.browseMaxTotalNodes = browseMaxTotalNodes;
+    }
+
+    public void setBrowseMaxDepth(int browseMaxDepth) {
+        this.browseMaxDepth = browseMaxDepth;
+    }
+
     public boolean isInsecureCertificateVerification() {
         return insecureCertificateVerification;
     }
@@ -259,6 +322,11 @@ public class OpcuaConfiguration implements Configuration {
             }
         }
         return serverCertificate;
+    }
+
+    /** Visible for tests that cover how a token is built rather than whether sending it is wise. */
+    public void setAllowInsecureCredentials(boolean allowInsecureCredentials) {
+        this.allowInsecureCredentials = allowInsecureCredentials;
     }
 
     public void setServerCertificate(X509Certificate serverCertificate) {

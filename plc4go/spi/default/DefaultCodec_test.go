@@ -26,10 +26,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"uuid"
 
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -450,7 +450,7 @@ func probeWorkersAlive(t *testing.T, codec *defaultCodec, iteration int) {
 		{"expire", codec.notifyExpireWorker},
 		{"receive", codec.notifyReceiveWorker},
 	} {
-		for send := 0; send < 2; send++ {
+		for range 2 {
 			select {
 			case probe.notify <- struct{}{}:
 			case <-time.After(5 * time.Second):
@@ -468,7 +468,7 @@ func probeWorkersAlive(t *testing.T, codec *defaultCodec, iteration int) {
 // messages are never received (observed as an infinite hang in the cbus
 // Reader tests).
 func Test_defaultCodec_Connect_workersAliveAfterConnect(t *testing.T) {
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		requirements := NewMockDefaultCodecRequirements(t)
 		requirements.EXPECT().Receive(mock.Anything).Return(nil, nil).Maybe()
 		instance := NewMockTransportInstance(t)
@@ -493,7 +493,7 @@ func Test_defaultCodec_Connect_workersAliveAfterConnect(t *testing.T) {
 // codec context is cancelled on Disconnect and used to stay cancelled forever, so a
 // reconnected codec's workers exited immediately through their ctx.Done() paths.
 func Test_defaultCodec_Reconnect_workersAliveAfterReconnect(t *testing.T) {
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		requirements := NewMockDefaultCodecRequirements(t)
 		requirements.EXPECT().Receive(mock.Anything).Return(nil, nil).Maybe()
 		instance := NewMockTransportInstance(t)

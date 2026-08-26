@@ -362,10 +362,7 @@ func (c *Connection) performRepeat(ctx context.Context) error {
 // buildRepeatPayload is the echo payload: the first byte stays zero and every following one is the
 // filler. The negotiated frame size is never below minMaxFrameSize, so the subtraction can't wrap.
 func (c *Connection) buildRepeatPayload() []byte {
-	payloadSize := int(c.session.getMaxFrameSize() - repeatPayloadOverhead)
-	if payloadSize > maxRepeatPayloadSize {
-		payloadSize = maxRepeatPayloadSize
-	}
+	payloadSize := min(int(c.session.getMaxFrameSize()-repeatPayloadOverhead), maxRepeatPayloadSize)
 	payload := make([]byte, payloadSize)
 	for i := 1; i < len(payload); i++ {
 		payload[i] = repeatFillerByte

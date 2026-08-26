@@ -20,7 +20,12 @@
 import pytest
 from bitarray import bitarray
 
-from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
+from plc4py.api.exceptions.exceptions import ParseException
+from plc4py.spi.generation.ReadBuffer import (
+    DEFAULT_MAX_NESTING_DEPTH,
+    MAX_NESTING_DEPTH_ENV,
+    ReadBufferByteBased,
+)
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
 from plc4py.utils.GenericTypes import ByteOrder
@@ -151,3 +156,38 @@ def test_read_buffer_read_float_big_endian(mocker) -> None:
     bb: bitarray = bitarray("1100 0000 0000 0000 0000 0000 0000 0000")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.BIG_ENDIAN)
     assert rb.read_float(logical_name="Byte") == -2.0
+
+
+def test_read_buffer_bounds_nesting_depth() -> None:
+    bb: bytearray = bytearray(b"\x01")
+    rb = ReadBufferByteBased(bb, ByteOrder.BIG_ENDIAN)
+    for _ in range(rb.max_depth):
+        rb.push_context("level")
+    with pytest.raises(ParseException, match="nesting depth"):
+        rb.push_context("one_too_deep")
+
+
+def test_read_buffer_leaving_a_context_makes_room_again() -> None:
+    bb: bytearray = bytearray(b"\x01")
+    rb = ReadBufferByteBased(bb, ByteOrder.BIG_ENDIAN)
+    for _ in range(rb.max_depth):
+        rb.push_context("level")
+    rb.pop_context("level")
+    rb.push_context("back_in_budget")
+
+
+def test_read_buffer_nesting_depth_from_the_environment(monkeypatch) -> None:
+    monkeypatch.setenv(MAX_NESTING_DEPTH_ENV, "8")
+    bb: bytearray = bytearray(b"\x01")
+    rb = ReadBufferByteBased(bb, ByteOrder.BIG_ENDIAN)
+    assert rb.max_depth == 8
+
+
+@pytest.mark.parametrize("value", ["", "   ", "plenty", "0", "-1"])
+def test_read_buffer_unusable_environment_value_keeps_the_default(
+    monkeypatch, value
+) -> None:
+    monkeypatch.setenv(MAX_NESTING_DEPTH_ENV, value)
+    bb: bytearray = bytearray(b"\x01")
+    rb = ReadBufferByteBased(bb, ByteOrder.BIG_ENDIAN)
+    assert rb.max_depth == DEFAULT_MAX_NESTING_DEPTH

@@ -95,7 +95,9 @@ public class ModbusRtuMessageCodec extends MessageCodecBase<ModbusRtuADU> {
             case 0x05, 0x06, 0x0F, 0x10:
                 return WRITE_ECHO_RESPONSE_SIZE;
             default:
-                return -1;
+                // Not a function code this driver knows, so these bytes are not the start of a
+                // response - waiting for more would only wait forever.
+                return DESYNCHRONIZED;
         }
     }
 

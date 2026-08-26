@@ -305,7 +305,7 @@ func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType 
 	case readWriteModel.TransportSize_BOOL:
 		// BOOL arrays arrive as packed bytes (LSB first), matching the write-side packing.
 		items := make([]apiValues.PlcValue, 0, numElements)
-		for i := uint16(0); i < numElements; i++ {
+		for i := range numElements {
 			if int(i/8) >= len(data) {
 				return nil, errors.Errorf("BOOL array response too short: got %d bytes for %d elements", len(data), numElements)
 			}
@@ -315,7 +315,7 @@ func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType 
 	default:
 		readBuffer := utils.NewReadBufferByteBased(data)
 		items := make([]apiValues.PlcValue, 0, numElements)
-		for i := uint16(0); i < numElements; i++ {
+		for i := range numElements {
 			item, err := readWriteModel.DataItemParseWithBuffer(ctx, readBuffer, dataProtocolId, controllerType, stringLength)
 			if err != nil {
 				return nil, errors.Wrapf(err, "error parsing element %d of type %s", i, tag.GetDataType())

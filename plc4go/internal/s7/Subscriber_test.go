@@ -107,7 +107,7 @@ func TestParseCyclicSubscribeResponse(t *testing.T) {
 			readWriteModel.NewS7ParameterUserData([]readWriteModel.S7ParameterUserDataItem{
 				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
 					0x12, 0x08, 0x02, 0x01, sequenceNumber,
-					ptr(uint8(0)), ptr(uint8(1)), ptr(uint16(0)),
+					new(uint8(0)), new(uint8(1)), new(uint16(0)),
 				),
 			}),
 			readWriteModel.NewS7PayloadUserData([]readWriteModel.S7PayloadUserDataItem{payloadItem}),
@@ -145,7 +145,7 @@ func TestExtractCyclicPushItems(t *testing.T) {
 		readWriteModel.NewS7ParameterUserData([]readWriteModel.S7ParameterUserDataItem{
 			readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
 				0x12, 0x00, 0x02, 0x01, 3,
-				ptr(uint8(0)), ptr(uint8(1)), nil,
+				new(uint8(0)), new(uint8(1)), nil,
 			),
 		}),
 		readWriteModel.NewS7PayloadUserData([]readWriteModel.S7PayloadUserDataItem{
@@ -186,7 +186,7 @@ func TestParseAlarmIndication(t *testing.T) {
 		readWriteModel.NewS7ParameterUserData([]readWriteModel.S7ParameterUserDataItem{
 			readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
 				0x12, 0x00, 0x04, 0x12, 0,
-				ptr(uint8(0)), ptr(uint8(1)), nil,
+				new(uint8(0)), new(uint8(1)), nil,
 			),
 		}),
 		readWriteModel.NewS7PayloadUserData([]readWriteModel.S7PayloadUserDataItem{

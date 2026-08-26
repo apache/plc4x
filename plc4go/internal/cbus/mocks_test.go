@@ -4025,7 +4025,7 @@ type MockRequestTransaction_AwaitCompletion_Call struct {
 
 // AwaitCompletion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockRequestTransaction_Expecter) AwaitCompletion(ctx interface{}) *MockRequestTransaction_AwaitCompletion_Call {
+func (_e *MockRequestTransaction_Expecter) AwaitCompletion(ctx any) *MockRequestTransaction_AwaitCompletion_Call {
 	return &MockRequestTransaction_AwaitCompletion_Call{Call: _e.mock.On("AwaitCompletion", ctx)}
 }
 
@@ -4120,7 +4120,7 @@ type MockRequestTransaction_FailRequest_Call struct {
 
 // FailRequest is a helper method to define mock.On call
 //   - err error
-func (_e *MockRequestTransaction_Expecter) FailRequest(err interface{}) *MockRequestTransaction_FailRequest_Call {
+func (_e *MockRequestTransaction_Expecter) FailRequest(err any) *MockRequestTransaction_FailRequest_Call {
 	return &MockRequestTransaction_FailRequest_Call{Call: _e.mock.On("FailRequest", err)}
 }
 
@@ -4249,7 +4249,7 @@ type MockRequestTransaction_Submit_Call struct {
 // Submit is a helper method to define mock.On call
 //   - operationInfo string
 //   - operation transactions.RequestTransactionRunnable
-func (_e *MockRequestTransaction_Expecter) Submit(operationInfo interface{}, operation interface{}) *MockRequestTransaction_Submit_Call {
+func (_e *MockRequestTransaction_Expecter) Submit(operationInfo any, operation any) *MockRequestTransaction_Submit_Call {
 	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operationInfo, operation)}
 }
 

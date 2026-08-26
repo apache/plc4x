@@ -39,8 +39,8 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     // STRING and WSTRING carry the length of one string in parentheses, the same way the S7 driver
     // spells it: "holding-register:1:STRING(20)[3]" is three 20-character strings. The quantity in
     // brackets keeps meaning "how many values", as it does for every other data type.
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d+)\\))?)?(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d+)\\))?)?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d{1,9})(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?(\\[(?<quantity>\\d{1,5})])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?(\\[(?<quantity>\\d{1,5})])?");
 
     public static final int PROTOCOL_ADDRESS_OFFSET = 1;
 

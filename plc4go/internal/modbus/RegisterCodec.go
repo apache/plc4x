@@ -151,7 +151,7 @@ func ParseRegisters(ctx context.Context, data []byte, dataType readWriteModel.Mo
 
 	// Several values are packed without padding between them; a trailing pad is left unread.
 	parsed := make([]apiValues.PlcValue, 0, numberOfValues)
-	for i := uint16(0); i < numberOfValues; i++ {
+	for range numberOfValues {
 		value, err := readWriteModel.DataItemParseWithBuffer(ctx, readBuffer, dataType, stringLength)
 		if err != nil {
 			return nil, errors.Wrap(err, "error parsing data item")
@@ -212,7 +212,7 @@ func serializeRegisters(ctx context.Context, value apiValues.PlcValue, dataType 
 		return writeBuffer.GetBytes(), nil
 	}
 
-	for i := uint16(0); i < numberOfValues; i++ {
+	for i := range numberOfValues {
 		element := value
 		if value.IsList() {
 			element = value.GetList()[i]

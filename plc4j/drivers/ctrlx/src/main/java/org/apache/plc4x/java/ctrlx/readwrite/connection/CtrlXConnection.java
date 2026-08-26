@@ -42,6 +42,7 @@ import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model.ReadNode200Res
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXQuery;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
+import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseRequest;
@@ -57,15 +58,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CtrlXConnection.class);
+
     private static final Logger logger = LoggerFactory.getLogger(CtrlXConnection.class);
 
     private final String baseUrl;
+    private final CtrlXConfiguration configuration;
     private final String username;
     private final String password;
 
@@ -78,10 +83,12 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     private final CtrlXTagHandler controlXTagHandler = new CtrlXTagHandler();
 
-    public CtrlXConnection(String baseUrl, String username, String password) {
+    public CtrlXConnection(String baseUrl, String username, String password,
+                           CtrlXConfiguration configuration) {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
+        this.configuration = configuration;
         this.executorService = Executors.newFixedThreadPool(10);
         this.valueHandler = new DefaultPlcValueHandler();
     }
@@ -102,7 +109,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         if (apiClient != null) {
             throw new PlcConnectionException("Already connected");
         }
-        apiClient = ApiClientFactory.getApiClient(baseUrl, username, password);
+        apiClient = ApiClientFactory.getApiClient(baseUrl, username, password, configuration);
         nodesApi = new NodesApi(apiClient);
         dataLayerApi = new DataLayerInformationAndSettingsApi(apiClient);
     }
@@ -226,6 +233,22 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
         executorService.execute(() -> {
+            // Whatever happens in here, the caller is waiting on this future and has no other way
+            // to learn that it went wrong. Anything thrown out of a Runnable handed to an executor
+            // goes to the thread's uncaught handler and leaves the future waiting for good, so a
+            // failure has to be turned into a completion rather than allowed to escape.
+            try {
+                doBrowse(browseRequest, interceptor, future);
+            } catch (Throwable e) {
+                future.completeExceptionally(
+                    new PlcProtocolException("Error browsing remote", e));
+            }
+        });
+        return future;
+    }
+
+    private void doBrowse(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor,
+                          CompletableFuture<PlcBrowseResponse> future) {
             int numQueries = browseRequest.getQueryNames().size();
 
             // Initialize the response structures.
@@ -246,67 +269,116 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
             // Now walk through the tree and for each leaf-node, check which queries it matches.
             // Start by initializing the list with the lists of all normal and real-time nodes.
-            Queue<String> uncheckedNodeList = new LinkedList<>();
+            List<String> roots = new ArrayList<>();
             try {
                 // Initialize the list with all normal node names
                 BrowseData nodeNames = dataLayerApi.getNodeNames();
                 if (nodeNames.getValue() != null) {
-                    uncheckedNodeList.addAll(nodeNames.getValue());
+                    roots.addAll(nodeNames.getValue());
                 }
 
                 // Then add all real-time node names.
                 BrowseData realtimeNodeNames = dataLayerApi.getRealtimeNodeNames();
                 if (realtimeNodeNames.getValue() != null) {
-                    uncheckedNodeList.addAll(realtimeNodeNames.getValue());
+                    roots.addAll(realtimeNodeNames.getValue());
                 }
             } catch (ApiException e) {
-                throw new RuntimeException(e);
+                future.completeExceptionally(new PlcProtocolException("Error listing root nodes", e));
+                return;
             }
             // Now keep on resolving paths till the list is empty.
-            while (!uncheckedNodeList.isEmpty()) {
-                String curNode = uncheckedNodeList.poll();
-                try {
-                    ReadNode200Response readNode200Response = nodesApi.readNode(curNode, "browse");
-                    List<String> children = readNode200Response.getValue();
-
-                    // If this node has no children, then this is a leaf-node,
-                    // and it's a potential match for any of the queries.
-                    if (children.isEmpty()) {
-                        List<String> matchingQueryNames = matchers.entrySet().stream()
-                            .filter(entry -> entry.getValue().matches(curNode)).map(Map.Entry::getKey)
-                            .toList();
-                        // If there's at least one matching query, read the "metadata", which contains information
-                        // on if the property is readable or writable.
-                        if (!matchingQueryNames.isEmpty()) {
-                            // TODO: Implement the reading of "metadate" as this contains information on if the
-                            // tag is readable or writable.
-                            /*try {
-                                ReadNode200Response metaDataResponse = nodesApi.readNode(curNode, "metadata");
-                                System.out.println(metaDataResponse);
-                            } catch (ApiException e) {
-                                e.printStackTrace();
-                            }*/
-                            matchingQueryNames.forEach(queryName -> responseItems.get(queryName).add(
-                                new DefaultPlcBrowseItem(
-                                    new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
-                                    curNode, true, true,
-                                    EnumSet.of(PlcSubscriptionType.CYCLIC, PlcSubscriptionType.CHANGE_OF_STATE, PlcSubscriptionType.EVENT),
-                                    false,
-                                    Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap())));
-                        }
+            walkNodes(roots,
+                curNode -> nodesApi.readNode(curNode, "browse").getValue(),
+                configuration.getBrowseMaxTotalNodes(),
+                configuration.getBrowseMaxDepth(),
+                curNode -> {
+                    List<String> matchingQueryNames = matchers.entrySet().stream()
+                        .filter(entry -> entry.getValue().matches(curNode)).map(Map.Entry::getKey)
+                        .toList();
+                    // If there's at least one matching query, read the "metadata", which contains information
+                    // on if the property is readable or writable.
+                    if (!matchingQueryNames.isEmpty()) {
+                        // TODO: Implement the reading of "metadate" as this contains information on if the
+                        // tag is readable or writable.
+                        matchingQueryNames.forEach(queryName -> responseItems.get(queryName).add(
+                            new DefaultPlcBrowseItem(
+                                new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
+                                curNode, true, true,
+                                EnumSet.of(PlcSubscriptionType.CYCLIC, PlcSubscriptionType.CHANGE_OF_STATE, PlcSubscriptionType.EVENT),
+                                false,
+                                Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap())));
                     }
-                    // If this node has children, then it's branch, and we need to add its children to the queue.
-                    else {
-                        // Add all children to the list.
-                        uncheckedNodeList.addAll(children.stream().map(child -> curNode + "/" + child).toList());
-                    }
-                } catch (ApiException e) {
-                    // Ignore ...
-                }
-            }
+                });
             future.complete(new DefaultPlcBrowseResponse(browseRequest, responseCodes, responseItems));
-        });
-        return future;
+    }
+
+    /**
+     * Reads the names of one node's children. The browse's only contact with the device, kept
+     * separate so the walk below can be exercised without one.
+     */
+    @FunctionalInterface
+    interface NodeBrowser {
+        List<String> childrenOf(String node) throws ApiException;
+    }
+
+    /** A node still to be read, and how far below a root it sits. */
+    private record PendingNode(String path, int depth) {
+    }
+
+    /**
+     * Walks the tree the device describes, handing every leaf to {@code onLeaf}.
+     *
+     * <p>How much work this is belongs to the device, not to the caller: each node is read to find
+     * its children and each child is then read the same way. Two things bound it. A child is
+     * addressed by its parent's path with the child's name appended, so a device naming a child
+     * that leads back to somewhere the walk has already been produces a longer path every time and
+     * never repeats one - remembering visited paths would not notice, and only depth ends it. And
+     * the total is capped, for a tree that is finite but larger than anyone wants to read.</p>
+     *
+     * <p>A node that cannot be read is skipped, as it always was; one node refusing to answer is
+     * not a reason to abandon the rest of the tree.</p>
+     *
+     * @return how many nodes were read
+     */
+    static int walkNodes(List<String> roots, NodeBrowser browser, int maxTotalNodes, int maxDepth,
+                         Consumer<String> onLeaf) {
+        Queue<PendingNode> pending = new LinkedList<>();
+        for (String root : roots) {
+            pending.add(new PendingNode(root, 0));
+        }
+        int read = 0;
+        while (!pending.isEmpty()) {
+            if (maxTotalNodes > 0 && read >= maxTotalNodes) {
+                LOGGER.warn("Stopped browsing after {} nodes, the configured browse-max-total-nodes; "
+                    + "{} were still queued", maxTotalNodes, pending.size());
+                break;
+            }
+            PendingNode current = pending.poll();
+            read++;
+            List<String> children;
+            try {
+                children = browser.childrenOf(current.path());
+            } catch (ApiException e) {
+                // Ignore ...
+                continue;
+            }
+            // A node naming no children is a leaf, and a potential match for any of the queries.
+            // The device may say so with an empty list or with none at all; both mean the same
+            // thing here, and the second used to be read as a list and fail.
+            if (children == null || children.isEmpty()) {
+                onLeaf.accept(current.path());
+                continue;
+            }
+            if (maxDepth > 0 && current.depth() >= maxDepth) {
+                LOGGER.warn("Stopped browsing '{}' at depth {}, the configured browse-max-depth",
+                    current.path(), maxDepth);
+                continue;
+            }
+            for (String child : children) {
+                pending.add(new PendingNode(current.path() + "/" + child, current.depth() + 1));
+            }
+        }
+        return read;
     }
 
 }

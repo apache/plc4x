@@ -442,7 +442,7 @@ func TestSubscriber_SubscribeByTag(t *testing.T) {
 func TestSubscriptionHandle_ChangeDetectionIsBounded(t *testing.T) {
 	handle := NewSubscriptionHandle(nil, "all", parseTag(t, "*/*"), apiModel.SubscriptionChangeOfState, 0)
 
-	for point := uint32(0); point < maxTrackedPoints; point++ {
+	for point := range uint32(maxTrackedPoints) {
 		require.True(t, handle.shouldPublish(1, point, "same"))
 	}
 	assert.Len(t, handle.lastFingerprints, maxTrackedPoints)

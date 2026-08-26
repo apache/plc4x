@@ -460,7 +460,7 @@ func TestConnection_StrayMessageDrainStopsWhenTheHandshakeFails(t *testing.T) {
 func TestConnection_StrayMessageDrainIsNotDoubledByASecondConnect(t *testing.T) {
 	connection, codec := newTestConnection(t, DefaultConfiguration())
 
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		connectResult := make(chan error, 1)
 		go func() {
 			connectResult <- connection.Connect(testutils.TestContext(t))

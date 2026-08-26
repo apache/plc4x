@@ -174,7 +174,7 @@ type MockPlcConnection_Connect_Call struct {
 
 // Connect is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcConnection_Expecter) Connect(ctx interface{}) *MockPlcConnection_Connect_Call {
+func (_e *MockPlcConnection_Expecter) Connect(ctx any) *MockPlcConnection_Connect_Call {
 	return &MockPlcConnection_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
@@ -348,7 +348,7 @@ type MockPlcConnection_Ping_Call struct {
 
 // Ping is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcConnection_Expecter) Ping(ctx interface{}) *MockPlcConnection_Ping_Call {
+func (_e *MockPlcConnection_Expecter) Ping(ctx any) *MockPlcConnection_Ping_Call {
 	return &MockPlcConnection_Ping_Call{Call: _e.mock.On("Ping", ctx)}
 }
 
@@ -769,7 +769,7 @@ type MockPlcDriver_CheckQuery_Call struct {
 
 // CheckQuery is a helper method to define mock.On call
 //   - query string
-func (_e *MockPlcDriver_Expecter) CheckQuery(query interface{}) *MockPlcDriver_CheckQuery_Call {
+func (_e *MockPlcDriver_Expecter) CheckQuery(query any) *MockPlcDriver_CheckQuery_Call {
 	return &MockPlcDriver_CheckQuery_Call{Call: _e.mock.On("CheckQuery", query)}
 }
 
@@ -820,7 +820,7 @@ type MockPlcDriver_CheckTagAddress_Call struct {
 
 // CheckTagAddress is a helper method to define mock.On call
 //   - tagAddress string
-func (_e *MockPlcDriver_Expecter) CheckTagAddress(tagAddress interface{}) *MockPlcDriver_CheckTagAddress_Call {
+func (_e *MockPlcDriver_Expecter) CheckTagAddress(tagAddress any) *MockPlcDriver_CheckTagAddress_Call {
 	return &MockPlcDriver_CheckTagAddress_Call{Call: _e.mock.On("CheckTagAddress", tagAddress)}
 }
 
@@ -923,9 +923,9 @@ type MockPlcDriver_Discover_Call struct {
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockPlcDriver_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDriver_Discover_Call {
+func (_e *MockPlcDriver_Expecter) Discover(ctx any, callback any, discoveryOptions ...any) *MockPlcDriver_Discover_Call {
 	return &MockPlcDriver_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
+		append([]any{ctx, callback}, discoveryOptions...)...)}
 }
 
 func (_c *MockPlcDriver_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDriver_Discover_Call {
@@ -1001,7 +1001,7 @@ type MockPlcDriver_GetConnection_Call struct {
 //   - transportUrl url.URL
 //   - transports1 map[string]transports.Transport
 //   - options1 map[string][]string
-func (_e *MockPlcDriver_Expecter) GetConnection(ctx interface{}, transportUrl interface{}, transports1 interface{}, options1 interface{}) *MockPlcDriver_GetConnection_Call {
+func (_e *MockPlcDriver_Expecter) GetConnection(ctx any, transportUrl any, transports1 any, options1 any) *MockPlcDriver_GetConnection_Call {
 	return &MockPlcDriver_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, transportUrl, transports1, options1)}
 }
 
@@ -1366,9 +1366,9 @@ type MockPlcDriverManager_Discover_Call struct {
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...WithDiscoveryOption
-func (_e *MockPlcDriverManager_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDriverManager_Discover_Call {
+func (_e *MockPlcDriverManager_Expecter) Discover(ctx any, callback any, discoveryOptions ...any) *MockPlcDriverManager_Discover_Call {
 	return &MockPlcDriverManager_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
+		append([]any{ctx, callback}, discoveryOptions...)...)}
 }
 
 func (_c *MockPlcDriverManager_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption)) *MockPlcDriverManager_Discover_Call {
@@ -1442,7 +1442,7 @@ type MockPlcDriverManager_GetConnection_Call struct {
 // GetConnection is a helper method to define mock.On call
 //   - ctx context.Context
 //   - connectionString string
-func (_e *MockPlcDriverManager_Expecter) GetConnection(ctx interface{}, connectionString interface{}) *MockPlcDriverManager_GetConnection_Call {
+func (_e *MockPlcDriverManager_Expecter) GetConnection(ctx any, connectionString any) *MockPlcDriverManager_GetConnection_Call {
 	return &MockPlcDriverManager_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, connectionString)}
 }
 
@@ -1509,7 +1509,7 @@ type MockPlcDriverManager_GetDriver_Call struct {
 
 // GetDriver is a helper method to define mock.On call
 //   - driverName string
-func (_e *MockPlcDriverManager_Expecter) GetDriver(driverName interface{}) *MockPlcDriverManager_GetDriver_Call {
+func (_e *MockPlcDriverManager_Expecter) GetDriver(driverName any) *MockPlcDriverManager_GetDriver_Call {
 	return &MockPlcDriverManager_GetDriver_Call{Call: _e.mock.On("GetDriver", driverName)}
 }
 
@@ -1595,7 +1595,7 @@ type MockPlcDriverManager_RegisterDriver_Call struct {
 
 // RegisterDriver is a helper method to define mock.On call
 //   - driver PlcDriver
-func (_e *MockPlcDriverManager_Expecter) RegisterDriver(driver interface{}) *MockPlcDriverManager_RegisterDriver_Call {
+func (_e *MockPlcDriverManager_Expecter) RegisterDriver(driver any) *MockPlcDriverManager_RegisterDriver_Call {
 	return &MockPlcDriverManager_RegisterDriver_Call{Call: _e.mock.On("RegisterDriver", driver)}
 }
 
@@ -1807,9 +1807,9 @@ type MockTransport_CreateTransportInstance_Call struct {
 //   - transportUrl url.URL
 //   - options1 map[string][]string
 //   - _options ...options.WithOption
-func (_e *MockTransport_Expecter) CreateTransportInstance(transportUrl interface{}, options1 interface{}, _options ...interface{}) *MockTransport_CreateTransportInstance_Call {
+func (_e *MockTransport_Expecter) CreateTransportInstance(transportUrl any, options1 any, _options ...any) *MockTransport_CreateTransportInstance_Call {
 	return &MockTransport_CreateTransportInstance_Call{Call: _e.mock.On("CreateTransportInstance",
-		append([]interface{}{transportUrl, options1}, _options...)...)}
+		append([]any{transportUrl, options1}, _options...)...)}
 }
 
 func (_c *MockTransport_CreateTransportInstance_Call) Run(run func(transportUrl url.URL, options1 map[string][]string, _options ...options.WithOption)) *MockTransport_CreateTransportInstance_Call {

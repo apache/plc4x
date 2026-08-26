@@ -75,8 +75,16 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
 
         // Use the default max packet size if not configured (handles test cases where defaults aren't applied)
         this.maxPacketSize = configuration.maxPacketSize > 0 ? configuration.maxPacketSize : 65507;
-        this.ringBuffer = new RingBuffer(DEFAULT_BUFFER_SIZE);
-        this.readBuffer = ByteBuffer.allocateDirect(DEFAULT_BUFFER_SIZE);
+        // The ring is the size the caller asked for. It used to be a fixed 8192 whatever the
+        // configuration said, so a driver expecting to buffer a burst got an eighth of it.
+        int ringSize = configuration.receiveBufferSize > 0
+            ? configuration.receiveBufferSize
+            : DEFAULT_BUFFER_SIZE;
+        // A datagram is truncated by the receive itself if it does not fit, so the read buffer has
+        // to be able to hold the largest one we are willing to accept.
+        int readBufferSize = Math.max(this.maxPacketSize, DEFAULT_BUFFER_SIZE);
+        this.ringBuffer = new RingBuffer(Math.max(ringSize, this.maxPacketSize));
+        this.readBuffer = ByteBuffer.allocateDirect(readBufferSize);
 
         try {
             DatagramChannel tempChannel;
@@ -164,6 +172,15 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
     public boolean isOpen() {
         return open && channel.isOpen();
     }
+
+    @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
 
     @Override
     public int getNumBytesAvailable() {
@@ -333,6 +350,16 @@ public class UdpTransportInstance implements AsyncTransportInstance<UdpTransport
                 // Copy to ring buffer
                 byte[] data = new byte[readBuffer.remaining()];
                 readBuffer.get(data);
+
+                // All of the datagram or none of it. A datagram carries no framing of its own, so
+                // the tail of one written into the stream is indistinguishable from a whole one and
+                // the codec would read it as a message nobody sent. Dropping it loses a message;
+                // half-writing it invents one.
+                if (ringBuffer.remainingForWriting() < data.length) {
+                    LOGGER.warn("Dropping a {} byte datagram from {}: only {} bytes of receive buffer free",
+                        data.length, source, ringBuffer.remainingForWriting());
+                    return;
+                }
                 ringBuffer.write(data);
 
                 LOGGER.trace("Received packet of {} bytes from {}", data.length, source);

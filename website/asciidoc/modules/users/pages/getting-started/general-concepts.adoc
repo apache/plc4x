@@ -128,3 +128,34 @@ The common metadata keys currently defined are:
 * receive_timestamp - timestamp assumed upon receiving of packet with data.
 
 
+
+== Limits on Incoming Messages
+
+A driver reads what the device sends it, and some protocols let a value contain further values of
+its own kind - BACnet constructed data holds further constructed data, an OPC UA variant can hold
+further variants, an ADS data type table entry can hold further entries.
+How deeply such a message nests is decided by whoever sent it, and one level of nesting can cost as
+little as a single byte on the wire.
+
+PLC4X therefore reads at most 1024 levels deep and reports anything beyond that as a parse error,
+in the same way it reports any other message it cannot make sense of.
+The deepest message in the project's own test suites nests 36 levels, so this is far past anything
+a real device is expected to send.
+
+Should you meet a device whose messages genuinely nest deeper, set the `PLC4X_MAX_NESTING_DEPTH`
+environment variable to the depth you need:
+
+[source,shell]
+----
+export PLC4X_MAX_NESTING_DEPTH=4096
+----
+
+The variable means the same thing in every language binding, so a process talking to devices
+through more than one of them needs to set it only once.
+A value that is not a positive number is ignored, leaving the default in place, and says so in the
+log.
+
+Raise it to what the device actually needs rather than to a round number well above it.
+The limit exists because the alternative to reporting a parse error is running out of stack, and
+what that costs differs: plc4j and plc4py raise an error the driver can still report, while in
+plc4go and plc4c an exhausted stack ends the process rather than the message.

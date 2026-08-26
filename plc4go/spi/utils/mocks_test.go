@@ -234,7 +234,7 @@ type MockByteOrderAware_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockByteOrderAware_Expecter) SetByteOrder(byteOrder interface{}) *MockByteOrderAware_SetByteOrder_Call {
+func (_e *MockByteOrderAware_Expecter) SetByteOrder(byteOrder any) *MockByteOrderAware_SetByteOrder_Call {
 	return &MockByteOrderAware_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -324,8 +324,8 @@ func (_c *MockCopyable_DeepCopy_Call) Run(run func()) *MockCopyable_DeepCopy_Cal
 	return _c
 }
 
-func (_c *MockCopyable_DeepCopy_Call) Return(v any) *MockCopyable_DeepCopy_Call {
-	_c.Call.Return(v)
+func (_c *MockCopyable_DeepCopy_Call) Return(anyMoqParam any) *MockCopyable_DeepCopy_Call {
+	_c.Call.Return(anyMoqParam)
 	return _c
 }
 
@@ -385,7 +385,7 @@ type MockErrorIdentify_Is_Call struct {
 
 // Is is a helper method to define mock.On call
 //   - target error
-func (_e *MockErrorIdentify_Expecter) Is(target interface{}) *MockErrorIdentify_Is_Call {
+func (_e *MockErrorIdentify_Expecter) Is(target any) *MockErrorIdentify_Is_Call {
 	return &MockErrorIdentify_Is_Call{Call: _e.mock.On("Is", target)}
 }
 
@@ -463,7 +463,7 @@ type MockLengthAware_GetLengthInBits_Call struct {
 
 // GetLengthInBits is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockLengthAware_Expecter) GetLengthInBits(ctx interface{}) *MockLengthAware_GetLengthInBits_Call {
+func (_e *MockLengthAware_Expecter) GetLengthInBits(ctx any) *MockLengthAware_GetLengthInBits_Call {
 	return &MockLengthAware_GetLengthInBits_Call{Call: _e.mock.On("GetLengthInBits", ctx)}
 }
 
@@ -514,7 +514,7 @@ type MockLengthAware_GetLengthInBytes_Call struct {
 
 // GetLengthInBytes is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockLengthAware_Expecter) GetLengthInBytes(ctx interface{}) *MockLengthAware_GetLengthInBytes_Call {
+func (_e *MockLengthAware_Expecter) GetLengthInBytes(ctx any) *MockLengthAware_GetLengthInBytes_Call {
 	return &MockLengthAware_GetLengthInBytes_Call{Call: _e.mock.On("GetLengthInBytes", ctx)}
 }
 
@@ -670,9 +670,9 @@ type MockReadBuffer_CloseContext_Call struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockReadBuffer_CloseContext_Call {
+func (_e *MockReadBuffer_Expecter) CloseContext(logicalName any, readerArgs ...any) *MockReadBuffer_CloseContext_Call {
 	return &MockReadBuffer_CloseContext_Call{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_CloseContext_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBuffer_CloseContext_Call {
@@ -819,7 +819,7 @@ type MockReadBuffer_HasMore_Call struct {
 
 // HasMore is a helper method to define mock.On call
 //   - bitLength uint8
-func (_e *MockReadBuffer_Expecter) HasMore(bitLength interface{}) *MockReadBuffer_HasMore_Call {
+func (_e *MockReadBuffer_Expecter) HasMore(bitLength any) *MockReadBuffer_HasMore_Call {
 	return &MockReadBuffer_HasMore_Call{Call: _e.mock.On("HasMore", bitLength)}
 }
 
@@ -877,9 +877,9 @@ type MockReadBuffer_PullContext_Call struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockReadBuffer_PullContext_Call {
+func (_e *MockReadBuffer_Expecter) PullContext(logicalName any, readerArgs ...any) *MockReadBuffer_PullContext_Call {
 	return &MockReadBuffer_PullContext_Call{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_PullContext_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBuffer_PullContext_Call {
@@ -955,9 +955,9 @@ type MockReadBuffer_ReadBigFloat_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadBigFloat(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadBigFloat_Call {
+func (_e *MockReadBuffer_Expecter) ReadBigFloat(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadBigFloat_Call {
 	return &MockReadBuffer_ReadBigFloat_Call{Call: _e.mock.On("ReadBigFloat",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadBigFloat_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadBigFloat_Call {
@@ -1038,9 +1038,9 @@ type MockReadBuffer_ReadBigInt_Call struct {
 //   - logicalName string
 //   - bitLength uint64
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadBigInt(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadBigInt_Call {
+func (_e *MockReadBuffer_Expecter) ReadBigInt(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadBigInt_Call {
 	return &MockReadBuffer_ReadBigInt_Call{Call: _e.mock.On("ReadBigInt",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadBigInt_Call) Run(run func(logicalName string, bitLength uint64, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadBigInt_Call {
@@ -1118,9 +1118,9 @@ type MockReadBuffer_ReadBit_Call struct {
 // ReadBit is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadBit(logicalName interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadBit_Call {
+func (_e *MockReadBuffer_Expecter) ReadBit(logicalName any, readerArgs ...any) *MockReadBuffer_ReadBit_Call {
 	return &MockReadBuffer_ReadBit_Call{Call: _e.mock.On("ReadBit",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadBit_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadBit_Call {
@@ -1193,9 +1193,9 @@ type MockReadBuffer_ReadByte_Call struct {
 // ReadByte is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadByte(logicalName interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadByte_Call {
+func (_e *MockReadBuffer_Expecter) ReadByte(logicalName any, readerArgs ...any) *MockReadBuffer_ReadByte_Call {
 	return &MockReadBuffer_ReadByte_Call{Call: _e.mock.On("ReadByte",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadByte_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadByte_Call {
@@ -1271,9 +1271,9 @@ type MockReadBuffer_ReadByteArray_Call struct {
 //   - logicalName string
 //   - numberOfBytes int
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadByteArray(logicalName interface{}, numberOfBytes interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadByteArray_Call {
+func (_e *MockReadBuffer_Expecter) ReadByteArray(logicalName any, numberOfBytes any, readerArgs ...any) *MockReadBuffer_ReadByteArray_Call {
 	return &MockReadBuffer_ReadByteArray_Call{Call: _e.mock.On("ReadByteArray",
-		append([]interface{}{logicalName, numberOfBytes}, readerArgs...)...)}
+		append([]any{logicalName, numberOfBytes}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadByteArray_Call) Run(run func(logicalName string, numberOfBytes int, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadByteArray_Call {
@@ -1352,9 +1352,9 @@ type MockReadBuffer_ReadFloat32_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadFloat32(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadFloat32_Call {
+func (_e *MockReadBuffer_Expecter) ReadFloat32(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadFloat32_Call {
 	return &MockReadBuffer_ReadFloat32_Call{Call: _e.mock.On("ReadFloat32",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadFloat32_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadFloat32_Call {
@@ -1433,9 +1433,9 @@ type MockReadBuffer_ReadFloat64_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadFloat64(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadFloat64_Call {
+func (_e *MockReadBuffer_Expecter) ReadFloat64(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadFloat64_Call {
 	return &MockReadBuffer_ReadFloat64_Call{Call: _e.mock.On("ReadFloat64",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadFloat64_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadFloat64_Call {
@@ -1514,9 +1514,9 @@ type MockReadBuffer_ReadInt16_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadInt16(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadInt16_Call {
+func (_e *MockReadBuffer_Expecter) ReadInt16(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadInt16_Call {
 	return &MockReadBuffer_ReadInt16_Call{Call: _e.mock.On("ReadInt16",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadInt16_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadInt16_Call {
@@ -1595,9 +1595,9 @@ type MockReadBuffer_ReadInt32_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadInt32(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadInt32_Call {
+func (_e *MockReadBuffer_Expecter) ReadInt32(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadInt32_Call {
 	return &MockReadBuffer_ReadInt32_Call{Call: _e.mock.On("ReadInt32",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadInt32_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadInt32_Call {
@@ -1676,9 +1676,9 @@ type MockReadBuffer_ReadInt64_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadInt64(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadInt64_Call {
+func (_e *MockReadBuffer_Expecter) ReadInt64(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadInt64_Call {
 	return &MockReadBuffer_ReadInt64_Call{Call: _e.mock.On("ReadInt64",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadInt64_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadInt64_Call {
@@ -1757,9 +1757,9 @@ type MockReadBuffer_ReadInt8_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadInt8(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadInt8_Call {
+func (_e *MockReadBuffer_Expecter) ReadInt8(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadInt8_Call {
 	return &MockReadBuffer_ReadInt8_Call{Call: _e.mock.On("ReadInt8",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadInt8_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadInt8_Call {
@@ -1838,9 +1838,9 @@ type MockReadBuffer_ReadString_Call struct {
 //   - logicalName string
 //   - bitLength uint32
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadString(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadString_Call {
+func (_e *MockReadBuffer_Expecter) ReadString(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadString_Call {
 	return &MockReadBuffer_ReadString_Call{Call: _e.mock.On("ReadString",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadString_Call) Run(run func(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadString_Call {
@@ -1919,9 +1919,9 @@ type MockReadBuffer_ReadUint16_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadUint16(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadUint16_Call {
+func (_e *MockReadBuffer_Expecter) ReadUint16(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadUint16_Call {
 	return &MockReadBuffer_ReadUint16_Call{Call: _e.mock.On("ReadUint16",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadUint16_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadUint16_Call {
@@ -2000,9 +2000,9 @@ type MockReadBuffer_ReadUint32_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadUint32(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadUint32_Call {
+func (_e *MockReadBuffer_Expecter) ReadUint32(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadUint32_Call {
 	return &MockReadBuffer_ReadUint32_Call{Call: _e.mock.On("ReadUint32",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadUint32_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadUint32_Call {
@@ -2081,9 +2081,9 @@ type MockReadBuffer_ReadUint64_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadUint64(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadUint64_Call {
+func (_e *MockReadBuffer_Expecter) ReadUint64(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadUint64_Call {
 	return &MockReadBuffer_ReadUint64_Call{Call: _e.mock.On("ReadUint64",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadUint64_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadUint64_Call {
@@ -2162,9 +2162,9 @@ type MockReadBuffer_ReadUint8_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBuffer_Expecter) ReadUint8(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBuffer_ReadUint8_Call {
+func (_e *MockReadBuffer_Expecter) ReadUint8(logicalName any, bitLength any, readerArgs ...any) *MockReadBuffer_ReadUint8_Call {
 	return &MockReadBuffer_ReadUint8_Call{Call: _e.mock.On("ReadUint8",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBuffer_ReadUint8_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBuffer_ReadUint8_Call {
@@ -2215,7 +2215,7 @@ type MockReadBuffer_Reset_Call struct {
 
 // Reset is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockReadBuffer_Expecter) Reset(pos interface{}) *MockReadBuffer_Reset_Call {
+func (_e *MockReadBuffer_Expecter) Reset(pos any) *MockReadBuffer_Reset_Call {
 	return &MockReadBuffer_Reset_Call{Call: _e.mock.On("Reset", pos)}
 }
 
@@ -2255,7 +2255,7 @@ type MockReadBuffer_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockReadBuffer_Expecter) SetByteOrder(byteOrder interface{}) *MockReadBuffer_SetByteOrder_Call {
+func (_e *MockReadBuffer_Expecter) SetByteOrder(byteOrder any) *MockReadBuffer_SetByteOrder_Call {
 	return &MockReadBuffer_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -2411,9 +2411,9 @@ type MockReadBufferByteBased_CloseContext_Call struct {
 // CloseContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) CloseContext(logicalName interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_CloseContext_Call {
+func (_e *MockReadBufferByteBased_Expecter) CloseContext(logicalName any, readerArgs ...any) *MockReadBufferByteBased_CloseContext_Call {
 	return &MockReadBufferByteBased_CloseContext_Call{Call: _e.mock.On("CloseContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_CloseContext_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_CloseContext_Call {
@@ -2650,7 +2650,7 @@ type MockReadBufferByteBased_HasMore_Call struct {
 
 // HasMore is a helper method to define mock.On call
 //   - bitLength uint8
-func (_e *MockReadBufferByteBased_Expecter) HasMore(bitLength interface{}) *MockReadBufferByteBased_HasMore_Call {
+func (_e *MockReadBufferByteBased_Expecter) HasMore(bitLength any) *MockReadBufferByteBased_HasMore_Call {
 	return &MockReadBufferByteBased_HasMore_Call{Call: _e.mock.On("HasMore", bitLength)}
 }
 
@@ -2701,7 +2701,7 @@ type MockReadBufferByteBased_PeekByte_Call struct {
 
 // PeekByte is a helper method to define mock.On call
 //   - offset byte
-func (_e *MockReadBufferByteBased_Expecter) PeekByte(offset interface{}) *MockReadBufferByteBased_PeekByte_Call {
+func (_e *MockReadBufferByteBased_Expecter) PeekByte(offset any) *MockReadBufferByteBased_PeekByte_Call {
 	return &MockReadBufferByteBased_PeekByte_Call{Call: _e.mock.On("PeekByte", offset)}
 }
 
@@ -2759,9 +2759,9 @@ type MockReadBufferByteBased_PullContext_Call struct {
 // PullContext is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) PullContext(logicalName interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_PullContext_Call {
+func (_e *MockReadBufferByteBased_Expecter) PullContext(logicalName any, readerArgs ...any) *MockReadBufferByteBased_PullContext_Call {
 	return &MockReadBufferByteBased_PullContext_Call{Call: _e.mock.On("PullContext",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_PullContext_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_PullContext_Call {
@@ -2837,9 +2837,9 @@ type MockReadBufferByteBased_ReadBigFloat_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadBigFloat(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadBigFloat_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadBigFloat(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadBigFloat_Call {
 	return &MockReadBufferByteBased_ReadBigFloat_Call{Call: _e.mock.On("ReadBigFloat",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadBigFloat_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadBigFloat_Call {
@@ -2920,9 +2920,9 @@ type MockReadBufferByteBased_ReadBigInt_Call struct {
 //   - logicalName string
 //   - bitLength uint64
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadBigInt(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadBigInt_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadBigInt(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadBigInt_Call {
 	return &MockReadBufferByteBased_ReadBigInt_Call{Call: _e.mock.On("ReadBigInt",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadBigInt_Call) Run(run func(logicalName string, bitLength uint64, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadBigInt_Call {
@@ -3000,9 +3000,9 @@ type MockReadBufferByteBased_ReadBit_Call struct {
 // ReadBit is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadBit(logicalName interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadBit_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadBit(logicalName any, readerArgs ...any) *MockReadBufferByteBased_ReadBit_Call {
 	return &MockReadBufferByteBased_ReadBit_Call{Call: _e.mock.On("ReadBit",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadBit_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadBit_Call {
@@ -3075,9 +3075,9 @@ type MockReadBufferByteBased_ReadByte_Call struct {
 // ReadByte is a helper method to define mock.On call
 //   - logicalName string
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadByte(logicalName interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadByte_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadByte(logicalName any, readerArgs ...any) *MockReadBufferByteBased_ReadByte_Call {
 	return &MockReadBufferByteBased_ReadByte_Call{Call: _e.mock.On("ReadByte",
-		append([]interface{}{logicalName}, readerArgs...)...)}
+		append([]any{logicalName}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadByte_Call) Run(run func(logicalName string, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadByte_Call {
@@ -3153,9 +3153,9 @@ type MockReadBufferByteBased_ReadByteArray_Call struct {
 //   - logicalName string
 //   - numberOfBytes int
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadByteArray(logicalName interface{}, numberOfBytes interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadByteArray_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadByteArray(logicalName any, numberOfBytes any, readerArgs ...any) *MockReadBufferByteBased_ReadByteArray_Call {
 	return &MockReadBufferByteBased_ReadByteArray_Call{Call: _e.mock.On("ReadByteArray",
-		append([]interface{}{logicalName, numberOfBytes}, readerArgs...)...)}
+		append([]any{logicalName, numberOfBytes}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadByteArray_Call) Run(run func(logicalName string, numberOfBytes int, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadByteArray_Call {
@@ -3234,9 +3234,9 @@ type MockReadBufferByteBased_ReadFloat32_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadFloat32(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadFloat32_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadFloat32(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadFloat32_Call {
 	return &MockReadBufferByteBased_ReadFloat32_Call{Call: _e.mock.On("ReadFloat32",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadFloat32_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadFloat32_Call {
@@ -3315,9 +3315,9 @@ type MockReadBufferByteBased_ReadFloat64_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadFloat64(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadFloat64_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadFloat64(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadFloat64_Call {
 	return &MockReadBufferByteBased_ReadFloat64_Call{Call: _e.mock.On("ReadFloat64",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadFloat64_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadFloat64_Call {
@@ -3396,9 +3396,9 @@ type MockReadBufferByteBased_ReadInt16_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadInt16(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadInt16_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadInt16(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadInt16_Call {
 	return &MockReadBufferByteBased_ReadInt16_Call{Call: _e.mock.On("ReadInt16",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadInt16_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadInt16_Call {
@@ -3477,9 +3477,9 @@ type MockReadBufferByteBased_ReadInt32_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadInt32(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadInt32_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadInt32(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadInt32_Call {
 	return &MockReadBufferByteBased_ReadInt32_Call{Call: _e.mock.On("ReadInt32",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadInt32_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadInt32_Call {
@@ -3558,9 +3558,9 @@ type MockReadBufferByteBased_ReadInt64_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadInt64(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadInt64_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadInt64(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadInt64_Call {
 	return &MockReadBufferByteBased_ReadInt64_Call{Call: _e.mock.On("ReadInt64",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadInt64_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadInt64_Call {
@@ -3639,9 +3639,9 @@ type MockReadBufferByteBased_ReadInt8_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadInt8(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadInt8_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadInt8(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadInt8_Call {
 	return &MockReadBufferByteBased_ReadInt8_Call{Call: _e.mock.On("ReadInt8",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadInt8_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadInt8_Call {
@@ -3720,9 +3720,9 @@ type MockReadBufferByteBased_ReadString_Call struct {
 //   - logicalName string
 //   - bitLength uint32
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadString(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadString_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadString(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadString_Call {
 	return &MockReadBufferByteBased_ReadString_Call{Call: _e.mock.On("ReadString",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadString_Call) Run(run func(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadString_Call {
@@ -3801,9 +3801,9 @@ type MockReadBufferByteBased_ReadUint16_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadUint16(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadUint16_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadUint16(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadUint16_Call {
 	return &MockReadBufferByteBased_ReadUint16_Call{Call: _e.mock.On("ReadUint16",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadUint16_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadUint16_Call {
@@ -3882,9 +3882,9 @@ type MockReadBufferByteBased_ReadUint32_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadUint32(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadUint32_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadUint32(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadUint32_Call {
 	return &MockReadBufferByteBased_ReadUint32_Call{Call: _e.mock.On("ReadUint32",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadUint32_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadUint32_Call {
@@ -3963,9 +3963,9 @@ type MockReadBufferByteBased_ReadUint64_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadUint64(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadUint64_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadUint64(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadUint64_Call {
 	return &MockReadBufferByteBased_ReadUint64_Call{Call: _e.mock.On("ReadUint64",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadUint64_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadUint64_Call {
@@ -4044,9 +4044,9 @@ type MockReadBufferByteBased_ReadUint8_Call struct {
 //   - logicalName string
 //   - bitLength uint8
 //   - readerArgs ...WithReaderArgs
-func (_e *MockReadBufferByteBased_Expecter) ReadUint8(logicalName interface{}, bitLength interface{}, readerArgs ...interface{}) *MockReadBufferByteBased_ReadUint8_Call {
+func (_e *MockReadBufferByteBased_Expecter) ReadUint8(logicalName any, bitLength any, readerArgs ...any) *MockReadBufferByteBased_ReadUint8_Call {
 	return &MockReadBufferByteBased_ReadUint8_Call{Call: _e.mock.On("ReadUint8",
-		append([]interface{}{logicalName, bitLength}, readerArgs...)...)}
+		append([]any{logicalName, bitLength}, readerArgs...)...)}
 }
 
 func (_c *MockReadBufferByteBased_ReadUint8_Call) Run(run func(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs)) *MockReadBufferByteBased_ReadUint8_Call {
@@ -4097,7 +4097,7 @@ type MockReadBufferByteBased_Reset_Call struct {
 
 // Reset is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockReadBufferByteBased_Expecter) Reset(pos interface{}) *MockReadBufferByteBased_Reset_Call {
+func (_e *MockReadBufferByteBased_Expecter) Reset(pos any) *MockReadBufferByteBased_Reset_Call {
 	return &MockReadBufferByteBased_Reset_Call{Call: _e.mock.On("Reset", pos)}
 }
 
@@ -4137,7 +4137,7 @@ type MockReadBufferByteBased_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockReadBufferByteBased_Expecter) SetByteOrder(byteOrder interface{}) *MockReadBufferByteBased_SetByteOrder_Call {
+func (_e *MockReadBufferByteBased_Expecter) SetByteOrder(byteOrder any) *MockReadBufferByteBased_SetByteOrder_Call {
 	return &MockReadBufferByteBased_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -4271,7 +4271,7 @@ type MockSerializable_SerializeWithWriteBuffer_Call struct {
 // SerializeWithWriteBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeBuffer WriteBuffer
-func (_e *MockSerializable_Expecter) SerializeWithWriteBuffer(ctx interface{}, writeBuffer interface{}) *MockSerializable_SerializeWithWriteBuffer_Call {
+func (_e *MockSerializable_Expecter) SerializeWithWriteBuffer(ctx any, writeBuffer any) *MockSerializable_SerializeWithWriteBuffer_Call {
 	return &MockSerializable_SerializeWithWriteBuffer_Call{Call: _e.mock.On("SerializeWithWriteBuffer", ctx, writeBuffer)}
 }
 
@@ -4531,9 +4531,9 @@ type MockWriteBuffer_PopContext_Call struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBuffer_PopContext_Call {
+func (_e *MockWriteBuffer_Expecter) PopContext(logicalName any, writerArgs ...any) *MockWriteBuffer_PopContext_Call {
 	return &MockWriteBuffer_PopContext_Call{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_PopContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBuffer_PopContext_Call {
@@ -4597,9 +4597,9 @@ type MockWriteBuffer_PushContext_Call struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBuffer_PushContext_Call {
+func (_e *MockWriteBuffer_Expecter) PushContext(logicalName any, writerArgs ...any) *MockWriteBuffer_PushContext_Call {
 	return &MockWriteBuffer_PushContext_Call{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_PushContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBuffer_PushContext_Call {
@@ -4645,7 +4645,7 @@ type MockWriteBuffer_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockWriteBuffer_Expecter) SetByteOrder(byteOrder interface{}) *MockWriteBuffer_SetByteOrder_Call {
+func (_e *MockWriteBuffer_Expecter) SetByteOrder(byteOrder any) *MockWriteBuffer_SetByteOrder_Call {
 	return &MockWriteBuffer_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -4705,9 +4705,9 @@ type MockWriteBuffer_WriteBigFloat_Call struct {
 //   - bitLength uint8
 //   - value *big.Float
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteBigFloat(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteBigFloat_Call {
+func (_e *MockWriteBuffer_Expecter) WriteBigFloat(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteBigFloat_Call {
 	return &MockWriteBuffer_WriteBigFloat_Call{Call: _e.mock.On("WriteBigFloat",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteBigFloat_Call) Run(run func(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteBigFloat_Call {
@@ -4783,9 +4783,9 @@ type MockWriteBuffer_WriteBigInt_Call struct {
 //   - bitLength uint8
 //   - value *big.Int
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteBigInt(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteBigInt_Call {
+func (_e *MockWriteBuffer_Expecter) WriteBigInt(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteBigInt_Call {
 	return &MockWriteBuffer_WriteBigInt_Call{Call: _e.mock.On("WriteBigInt",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteBigInt_Call) Run(run func(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteBigInt_Call {
@@ -4860,9 +4860,9 @@ type MockWriteBuffer_WriteBit_Call struct {
 //   - logicalName string
 //   - value bool
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteBit(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteBit_Call {
+func (_e *MockWriteBuffer_Expecter) WriteBit(logicalName any, value any, writerArgs ...any) *MockWriteBuffer_WriteBit_Call {
 	return &MockWriteBuffer_WriteBit_Call{Call: _e.mock.On("WriteBit",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteBit_Call) Run(run func(logicalName string, value bool, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteBit_Call {
@@ -4932,9 +4932,9 @@ type MockWriteBuffer_WriteByte_Call struct {
 //   - logicalName string
 //   - value byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteByte(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteByte_Call {
+func (_e *MockWriteBuffer_Expecter) WriteByte(logicalName any, value any, writerArgs ...any) *MockWriteBuffer_WriteByte_Call {
 	return &MockWriteBuffer_WriteByte_Call{Call: _e.mock.On("WriteByte",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteByte_Call) Run(run func(logicalName string, value byte, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteByte_Call {
@@ -5004,9 +5004,9 @@ type MockWriteBuffer_WriteByteArray_Call struct {
 //   - logicalName string
 //   - data []byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteByteArray(logicalName interface{}, data interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteByteArray_Call {
+func (_e *MockWriteBuffer_Expecter) WriteByteArray(logicalName any, data any, writerArgs ...any) *MockWriteBuffer_WriteByteArray_Call {
 	return &MockWriteBuffer_WriteByteArray_Call{Call: _e.mock.On("WriteByteArray",
-		append([]interface{}{logicalName, data}, writerArgs...)...)}
+		append([]any{logicalName, data}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteByteArray_Call) Run(run func(logicalName string, data []byte, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteByteArray_Call {
@@ -5077,9 +5077,9 @@ type MockWriteBuffer_WriteFloat32_Call struct {
 //   - bitLength uint8
 //   - value float32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteFloat32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteFloat32_Call {
+func (_e *MockWriteBuffer_Expecter) WriteFloat32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteFloat32_Call {
 	return &MockWriteBuffer_WriteFloat32_Call{Call: _e.mock.On("WriteFloat32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteFloat32_Call) Run(run func(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteFloat32_Call {
@@ -5155,9 +5155,9 @@ type MockWriteBuffer_WriteFloat64_Call struct {
 //   - bitLength uint8
 //   - value float64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteFloat64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteFloat64_Call {
+func (_e *MockWriteBuffer_Expecter) WriteFloat64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteFloat64_Call {
 	return &MockWriteBuffer_WriteFloat64_Call{Call: _e.mock.On("WriteFloat64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteFloat64_Call) Run(run func(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteFloat64_Call {
@@ -5233,9 +5233,9 @@ type MockWriteBuffer_WriteInt16_Call struct {
 //   - bitLength uint8
 //   - value int16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteInt16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteInt16_Call {
+func (_e *MockWriteBuffer_Expecter) WriteInt16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteInt16_Call {
 	return &MockWriteBuffer_WriteInt16_Call{Call: _e.mock.On("WriteInt16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteInt16_Call) Run(run func(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteInt16_Call {
@@ -5311,9 +5311,9 @@ type MockWriteBuffer_WriteInt32_Call struct {
 //   - bitLength uint8
 //   - value int32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteInt32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteInt32_Call {
+func (_e *MockWriteBuffer_Expecter) WriteInt32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteInt32_Call {
 	return &MockWriteBuffer_WriteInt32_Call{Call: _e.mock.On("WriteInt32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteInt32_Call) Run(run func(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteInt32_Call {
@@ -5389,9 +5389,9 @@ type MockWriteBuffer_WriteInt64_Call struct {
 //   - bitLength uint8
 //   - value int64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteInt64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteInt64_Call {
+func (_e *MockWriteBuffer_Expecter) WriteInt64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteInt64_Call {
 	return &MockWriteBuffer_WriteInt64_Call{Call: _e.mock.On("WriteInt64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteInt64_Call) Run(run func(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteInt64_Call {
@@ -5467,9 +5467,9 @@ type MockWriteBuffer_WriteInt8_Call struct {
 //   - bitLength uint8
 //   - value int8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteInt8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteInt8_Call {
+func (_e *MockWriteBuffer_Expecter) WriteInt8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteInt8_Call {
 	return &MockWriteBuffer_WriteInt8_Call{Call: _e.mock.On("WriteInt8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteInt8_Call) Run(run func(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteInt8_Call {
@@ -5537,7 +5537,7 @@ type MockWriteBuffer_WriteSerializable_Call struct {
 // WriteSerializable is a helper method to define mock.On call
 //   - ctx context.Context
 //   - serializable Serializable
-func (_e *MockWriteBuffer_Expecter) WriteSerializable(ctx interface{}, serializable interface{}) *MockWriteBuffer_WriteSerializable_Call {
+func (_e *MockWriteBuffer_Expecter) WriteSerializable(ctx any, serializable any) *MockWriteBuffer_WriteSerializable_Call {
 	return &MockWriteBuffer_WriteSerializable_Call{Call: _e.mock.On("WriteSerializable", ctx, serializable)}
 }
 
@@ -5602,9 +5602,9 @@ type MockWriteBuffer_WriteString_Call struct {
 //   - bitLength uint32
 //   - value string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteString(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteString_Call {
+func (_e *MockWriteBuffer_Expecter) WriteString(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteString_Call {
 	return &MockWriteBuffer_WriteString_Call{Call: _e.mock.On("WriteString",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteString_Call) Run(run func(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteString_Call {
@@ -5680,9 +5680,9 @@ type MockWriteBuffer_WriteUint16_Call struct {
 //   - bitLength uint8
 //   - value uint16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteUint16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteUint16_Call {
+func (_e *MockWriteBuffer_Expecter) WriteUint16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteUint16_Call {
 	return &MockWriteBuffer_WriteUint16_Call{Call: _e.mock.On("WriteUint16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteUint16_Call) Run(run func(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteUint16_Call {
@@ -5758,9 +5758,9 @@ type MockWriteBuffer_WriteUint32_Call struct {
 //   - bitLength uint8
 //   - value uint32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteUint32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteUint32_Call {
+func (_e *MockWriteBuffer_Expecter) WriteUint32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteUint32_Call {
 	return &MockWriteBuffer_WriteUint32_Call{Call: _e.mock.On("WriteUint32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteUint32_Call) Run(run func(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteUint32_Call {
@@ -5836,9 +5836,9 @@ type MockWriteBuffer_WriteUint64_Call struct {
 //   - bitLength uint8
 //   - value uint64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteUint64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteUint64_Call {
+func (_e *MockWriteBuffer_Expecter) WriteUint64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteUint64_Call {
 	return &MockWriteBuffer_WriteUint64_Call{Call: _e.mock.On("WriteUint64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteUint64_Call) Run(run func(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteUint64_Call {
@@ -5914,9 +5914,9 @@ type MockWriteBuffer_WriteUint8_Call struct {
 //   - bitLength uint8
 //   - value uint8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteUint8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteUint8_Call {
+func (_e *MockWriteBuffer_Expecter) WriteUint8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBuffer_WriteUint8_Call {
 	return &MockWriteBuffer_WriteUint8_Call{Call: _e.mock.On("WriteUint8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteUint8_Call) Run(run func(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteUint8_Call {
@@ -5992,9 +5992,9 @@ type MockWriteBuffer_WriteVirtual_Call struct {
 //   - logicalName string
 //   - value any
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBuffer_Expecter) WriteVirtual(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBuffer_WriteVirtual_Call {
+func (_e *MockWriteBuffer_Expecter) WriteVirtual(ctx any, logicalName any, value any, writerArgs ...any) *MockWriteBuffer_WriteVirtual_Call {
 	return &MockWriteBuffer_WriteVirtual_Call{Call: _e.mock.On("WriteVirtual",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBuffer_WriteVirtual_Call) Run(run func(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs)) *MockWriteBuffer_WriteVirtual_Call {
@@ -6300,9 +6300,9 @@ type MockWriteBufferBoxBased_PopContext_Call struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_PopContext_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) PopContext(logicalName any, writerArgs ...any) *MockWriteBufferBoxBased_PopContext_Call {
 	return &MockWriteBufferBoxBased_PopContext_Call{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_PopContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_PopContext_Call {
@@ -6366,9 +6366,9 @@ type MockWriteBufferBoxBased_PushContext_Call struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_PushContext_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) PushContext(logicalName any, writerArgs ...any) *MockWriteBufferBoxBased_PushContext_Call {
 	return &MockWriteBufferBoxBased_PushContext_Call{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_PushContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_PushContext_Call {
@@ -6414,7 +6414,7 @@ type MockWriteBufferBoxBased_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockWriteBufferBoxBased_Expecter) SetByteOrder(byteOrder interface{}) *MockWriteBufferBoxBased_SetByteOrder_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) SetByteOrder(byteOrder any) *MockWriteBufferBoxBased_SetByteOrder_Call {
 	return &MockWriteBufferBoxBased_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -6474,9 +6474,9 @@ type MockWriteBufferBoxBased_WriteBigFloat_Call struct {
 //   - bitLength uint8
 //   - value *big.Float
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteBigFloat(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteBigFloat_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteBigFloat(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteBigFloat_Call {
 	return &MockWriteBufferBoxBased_WriteBigFloat_Call{Call: _e.mock.On("WriteBigFloat",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteBigFloat_Call) Run(run func(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteBigFloat_Call {
@@ -6552,9 +6552,9 @@ type MockWriteBufferBoxBased_WriteBigInt_Call struct {
 //   - bitLength uint8
 //   - value *big.Int
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteBigInt(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteBigInt_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteBigInt(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteBigInt_Call {
 	return &MockWriteBufferBoxBased_WriteBigInt_Call{Call: _e.mock.On("WriteBigInt",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteBigInt_Call) Run(run func(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteBigInt_Call {
@@ -6629,9 +6629,9 @@ type MockWriteBufferBoxBased_WriteBit_Call struct {
 //   - logicalName string
 //   - value bool
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteBit(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteBit_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteBit(logicalName any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteBit_Call {
 	return &MockWriteBufferBoxBased_WriteBit_Call{Call: _e.mock.On("WriteBit",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteBit_Call) Run(run func(logicalName string, value bool, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteBit_Call {
@@ -6701,9 +6701,9 @@ type MockWriteBufferBoxBased_WriteByte_Call struct {
 //   - logicalName string
 //   - value byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteByte(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteByte_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteByte(logicalName any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteByte_Call {
 	return &MockWriteBufferBoxBased_WriteByte_Call{Call: _e.mock.On("WriteByte",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteByte_Call) Run(run func(logicalName string, value byte, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteByte_Call {
@@ -6773,9 +6773,9 @@ type MockWriteBufferBoxBased_WriteByteArray_Call struct {
 //   - logicalName string
 //   - data []byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteByteArray(logicalName interface{}, data interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteByteArray_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteByteArray(logicalName any, data any, writerArgs ...any) *MockWriteBufferBoxBased_WriteByteArray_Call {
 	return &MockWriteBufferBoxBased_WriteByteArray_Call{Call: _e.mock.On("WriteByteArray",
-		append([]interface{}{logicalName, data}, writerArgs...)...)}
+		append([]any{logicalName, data}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteByteArray_Call) Run(run func(logicalName string, data []byte, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteByteArray_Call {
@@ -6846,9 +6846,9 @@ type MockWriteBufferBoxBased_WriteFloat32_Call struct {
 //   - bitLength uint8
 //   - value float32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteFloat32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteFloat32_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteFloat32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteFloat32_Call {
 	return &MockWriteBufferBoxBased_WriteFloat32_Call{Call: _e.mock.On("WriteFloat32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteFloat32_Call) Run(run func(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteFloat32_Call {
@@ -6924,9 +6924,9 @@ type MockWriteBufferBoxBased_WriteFloat64_Call struct {
 //   - bitLength uint8
 //   - value float64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteFloat64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteFloat64_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteFloat64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteFloat64_Call {
 	return &MockWriteBufferBoxBased_WriteFloat64_Call{Call: _e.mock.On("WriteFloat64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteFloat64_Call) Run(run func(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteFloat64_Call {
@@ -7002,9 +7002,9 @@ type MockWriteBufferBoxBased_WriteInt16_Call struct {
 //   - bitLength uint8
 //   - value int16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteInt16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteInt16_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteInt16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteInt16_Call {
 	return &MockWriteBufferBoxBased_WriteInt16_Call{Call: _e.mock.On("WriteInt16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteInt16_Call) Run(run func(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteInt16_Call {
@@ -7080,9 +7080,9 @@ type MockWriteBufferBoxBased_WriteInt32_Call struct {
 //   - bitLength uint8
 //   - value int32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteInt32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteInt32_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteInt32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteInt32_Call {
 	return &MockWriteBufferBoxBased_WriteInt32_Call{Call: _e.mock.On("WriteInt32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteInt32_Call) Run(run func(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteInt32_Call {
@@ -7158,9 +7158,9 @@ type MockWriteBufferBoxBased_WriteInt64_Call struct {
 //   - bitLength uint8
 //   - value int64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteInt64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteInt64_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteInt64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteInt64_Call {
 	return &MockWriteBufferBoxBased_WriteInt64_Call{Call: _e.mock.On("WriteInt64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteInt64_Call) Run(run func(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteInt64_Call {
@@ -7236,9 +7236,9 @@ type MockWriteBufferBoxBased_WriteInt8_Call struct {
 //   - bitLength uint8
 //   - value int8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteInt8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteInt8_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteInt8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteInt8_Call {
 	return &MockWriteBufferBoxBased_WriteInt8_Call{Call: _e.mock.On("WriteInt8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteInt8_Call) Run(run func(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteInt8_Call {
@@ -7306,7 +7306,7 @@ type MockWriteBufferBoxBased_WriteSerializable_Call struct {
 // WriteSerializable is a helper method to define mock.On call
 //   - ctx context.Context
 //   - serializable Serializable
-func (_e *MockWriteBufferBoxBased_Expecter) WriteSerializable(ctx interface{}, serializable interface{}) *MockWriteBufferBoxBased_WriteSerializable_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteSerializable(ctx any, serializable any) *MockWriteBufferBoxBased_WriteSerializable_Call {
 	return &MockWriteBufferBoxBased_WriteSerializable_Call{Call: _e.mock.On("WriteSerializable", ctx, serializable)}
 }
 
@@ -7371,9 +7371,9 @@ type MockWriteBufferBoxBased_WriteString_Call struct {
 //   - bitLength uint32
 //   - value string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteString(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteString_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteString(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteString_Call {
 	return &MockWriteBufferBoxBased_WriteString_Call{Call: _e.mock.On("WriteString",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteString_Call) Run(run func(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteString_Call {
@@ -7449,9 +7449,9 @@ type MockWriteBufferBoxBased_WriteUint16_Call struct {
 //   - bitLength uint8
 //   - value uint16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteUint16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteUint16_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteUint16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteUint16_Call {
 	return &MockWriteBufferBoxBased_WriteUint16_Call{Call: _e.mock.On("WriteUint16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteUint16_Call) Run(run func(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteUint16_Call {
@@ -7527,9 +7527,9 @@ type MockWriteBufferBoxBased_WriteUint32_Call struct {
 //   - bitLength uint8
 //   - value uint32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteUint32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteUint32_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteUint32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteUint32_Call {
 	return &MockWriteBufferBoxBased_WriteUint32_Call{Call: _e.mock.On("WriteUint32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteUint32_Call) Run(run func(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteUint32_Call {
@@ -7605,9 +7605,9 @@ type MockWriteBufferBoxBased_WriteUint64_Call struct {
 //   - bitLength uint8
 //   - value uint64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteUint64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteUint64_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteUint64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteUint64_Call {
 	return &MockWriteBufferBoxBased_WriteUint64_Call{Call: _e.mock.On("WriteUint64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteUint64_Call) Run(run func(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteUint64_Call {
@@ -7683,9 +7683,9 @@ type MockWriteBufferBoxBased_WriteUint8_Call struct {
 //   - bitLength uint8
 //   - value uint8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteUint8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteUint8_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteUint8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteUint8_Call {
 	return &MockWriteBufferBoxBased_WriteUint8_Call{Call: _e.mock.On("WriteUint8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteUint8_Call) Run(run func(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteUint8_Call {
@@ -7761,9 +7761,9 @@ type MockWriteBufferBoxBased_WriteVirtual_Call struct {
 //   - logicalName string
 //   - value any
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferBoxBased_Expecter) WriteVirtual(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferBoxBased_WriteVirtual_Call {
+func (_e *MockWriteBufferBoxBased_Expecter) WriteVirtual(ctx any, logicalName any, value any, writerArgs ...any) *MockWriteBufferBoxBased_WriteVirtual_Call {
 	return &MockWriteBufferBoxBased_WriteVirtual_Call{Call: _e.mock.On("WriteVirtual",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferBoxBased_WriteVirtual_Call) Run(run func(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs)) *MockWriteBufferBoxBased_WriteVirtual_Call {
@@ -8044,9 +8044,9 @@ type MockWriteBufferByteBased_PopContext_Call struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_PopContext_Call {
+func (_e *MockWriteBufferByteBased_Expecter) PopContext(logicalName any, writerArgs ...any) *MockWriteBufferByteBased_PopContext_Call {
 	return &MockWriteBufferByteBased_PopContext_Call{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_PopContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_PopContext_Call {
@@ -8110,9 +8110,9 @@ type MockWriteBufferByteBased_PushContext_Call struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_PushContext_Call {
+func (_e *MockWriteBufferByteBased_Expecter) PushContext(logicalName any, writerArgs ...any) *MockWriteBufferByteBased_PushContext_Call {
 	return &MockWriteBufferByteBased_PushContext_Call{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_PushContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_PushContext_Call {
@@ -8158,7 +8158,7 @@ type MockWriteBufferByteBased_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockWriteBufferByteBased_Expecter) SetByteOrder(byteOrder interface{}) *MockWriteBufferByteBased_SetByteOrder_Call {
+func (_e *MockWriteBufferByteBased_Expecter) SetByteOrder(byteOrder any) *MockWriteBufferByteBased_SetByteOrder_Call {
 	return &MockWriteBufferByteBased_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -8218,9 +8218,9 @@ type MockWriteBufferByteBased_WriteBigFloat_Call struct {
 //   - bitLength uint8
 //   - value *big.Float
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteBigFloat(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteBigFloat_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteBigFloat(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteBigFloat_Call {
 	return &MockWriteBufferByteBased_WriteBigFloat_Call{Call: _e.mock.On("WriteBigFloat",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteBigFloat_Call) Run(run func(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteBigFloat_Call {
@@ -8296,9 +8296,9 @@ type MockWriteBufferByteBased_WriteBigInt_Call struct {
 //   - bitLength uint8
 //   - value *big.Int
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteBigInt(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteBigInt_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteBigInt(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteBigInt_Call {
 	return &MockWriteBufferByteBased_WriteBigInt_Call{Call: _e.mock.On("WriteBigInt",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteBigInt_Call) Run(run func(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteBigInt_Call {
@@ -8373,9 +8373,9 @@ type MockWriteBufferByteBased_WriteBit_Call struct {
 //   - logicalName string
 //   - value bool
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteBit(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteBit_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteBit(logicalName any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteBit_Call {
 	return &MockWriteBufferByteBased_WriteBit_Call{Call: _e.mock.On("WriteBit",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteBit_Call) Run(run func(logicalName string, value bool, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteBit_Call {
@@ -8445,9 +8445,9 @@ type MockWriteBufferByteBased_WriteByte_Call struct {
 //   - logicalName string
 //   - value byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteByte(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteByte_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteByte(logicalName any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteByte_Call {
 	return &MockWriteBufferByteBased_WriteByte_Call{Call: _e.mock.On("WriteByte",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteByte_Call) Run(run func(logicalName string, value byte, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteByte_Call {
@@ -8517,9 +8517,9 @@ type MockWriteBufferByteBased_WriteByteArray_Call struct {
 //   - logicalName string
 //   - data []byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteByteArray(logicalName interface{}, data interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteByteArray_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteByteArray(logicalName any, data any, writerArgs ...any) *MockWriteBufferByteBased_WriteByteArray_Call {
 	return &MockWriteBufferByteBased_WriteByteArray_Call{Call: _e.mock.On("WriteByteArray",
-		append([]interface{}{logicalName, data}, writerArgs...)...)}
+		append([]any{logicalName, data}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteByteArray_Call) Run(run func(logicalName string, data []byte, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteByteArray_Call {
@@ -8590,9 +8590,9 @@ type MockWriteBufferByteBased_WriteFloat32_Call struct {
 //   - bitLength uint8
 //   - value float32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteFloat32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteFloat32_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteFloat32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteFloat32_Call {
 	return &MockWriteBufferByteBased_WriteFloat32_Call{Call: _e.mock.On("WriteFloat32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteFloat32_Call) Run(run func(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteFloat32_Call {
@@ -8668,9 +8668,9 @@ type MockWriteBufferByteBased_WriteFloat64_Call struct {
 //   - bitLength uint8
 //   - value float64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteFloat64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteFloat64_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteFloat64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteFloat64_Call {
 	return &MockWriteBufferByteBased_WriteFloat64_Call{Call: _e.mock.On("WriteFloat64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteFloat64_Call) Run(run func(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteFloat64_Call {
@@ -8746,9 +8746,9 @@ type MockWriteBufferByteBased_WriteInt16_Call struct {
 //   - bitLength uint8
 //   - value int16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteInt16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteInt16_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteInt16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteInt16_Call {
 	return &MockWriteBufferByteBased_WriteInt16_Call{Call: _e.mock.On("WriteInt16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteInt16_Call) Run(run func(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteInt16_Call {
@@ -8824,9 +8824,9 @@ type MockWriteBufferByteBased_WriteInt32_Call struct {
 //   - bitLength uint8
 //   - value int32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteInt32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteInt32_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteInt32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteInt32_Call {
 	return &MockWriteBufferByteBased_WriteInt32_Call{Call: _e.mock.On("WriteInt32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteInt32_Call) Run(run func(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteInt32_Call {
@@ -8902,9 +8902,9 @@ type MockWriteBufferByteBased_WriteInt64_Call struct {
 //   - bitLength uint8
 //   - value int64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteInt64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteInt64_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteInt64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteInt64_Call {
 	return &MockWriteBufferByteBased_WriteInt64_Call{Call: _e.mock.On("WriteInt64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteInt64_Call) Run(run func(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteInt64_Call {
@@ -8980,9 +8980,9 @@ type MockWriteBufferByteBased_WriteInt8_Call struct {
 //   - bitLength uint8
 //   - value int8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteInt8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteInt8_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteInt8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteInt8_Call {
 	return &MockWriteBufferByteBased_WriteInt8_Call{Call: _e.mock.On("WriteInt8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteInt8_Call) Run(run func(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteInt8_Call {
@@ -9050,7 +9050,7 @@ type MockWriteBufferByteBased_WriteSerializable_Call struct {
 // WriteSerializable is a helper method to define mock.On call
 //   - ctx context.Context
 //   - serializable Serializable
-func (_e *MockWriteBufferByteBased_Expecter) WriteSerializable(ctx interface{}, serializable interface{}) *MockWriteBufferByteBased_WriteSerializable_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteSerializable(ctx any, serializable any) *MockWriteBufferByteBased_WriteSerializable_Call {
 	return &MockWriteBufferByteBased_WriteSerializable_Call{Call: _e.mock.On("WriteSerializable", ctx, serializable)}
 }
 
@@ -9115,9 +9115,9 @@ type MockWriteBufferByteBased_WriteString_Call struct {
 //   - bitLength uint32
 //   - value string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteString(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteString_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteString(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteString_Call {
 	return &MockWriteBufferByteBased_WriteString_Call{Call: _e.mock.On("WriteString",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteString_Call) Run(run func(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteString_Call {
@@ -9193,9 +9193,9 @@ type MockWriteBufferByteBased_WriteUint16_Call struct {
 //   - bitLength uint8
 //   - value uint16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteUint16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteUint16_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteUint16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteUint16_Call {
 	return &MockWriteBufferByteBased_WriteUint16_Call{Call: _e.mock.On("WriteUint16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteUint16_Call) Run(run func(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteUint16_Call {
@@ -9271,9 +9271,9 @@ type MockWriteBufferByteBased_WriteUint32_Call struct {
 //   - bitLength uint8
 //   - value uint32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteUint32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteUint32_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteUint32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteUint32_Call {
 	return &MockWriteBufferByteBased_WriteUint32_Call{Call: _e.mock.On("WriteUint32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteUint32_Call) Run(run func(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteUint32_Call {
@@ -9349,9 +9349,9 @@ type MockWriteBufferByteBased_WriteUint64_Call struct {
 //   - bitLength uint8
 //   - value uint64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteUint64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteUint64_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteUint64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteUint64_Call {
 	return &MockWriteBufferByteBased_WriteUint64_Call{Call: _e.mock.On("WriteUint64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteUint64_Call) Run(run func(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteUint64_Call {
@@ -9427,9 +9427,9 @@ type MockWriteBufferByteBased_WriteUint8_Call struct {
 //   - bitLength uint8
 //   - value uint8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteUint8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteUint8_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteUint8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteUint8_Call {
 	return &MockWriteBufferByteBased_WriteUint8_Call{Call: _e.mock.On("WriteUint8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteUint8_Call) Run(run func(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteUint8_Call {
@@ -9505,9 +9505,9 @@ type MockWriteBufferByteBased_WriteVirtual_Call struct {
 //   - logicalName string
 //   - value any
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferByteBased_Expecter) WriteVirtual(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferByteBased_WriteVirtual_Call {
+func (_e *MockWriteBufferByteBased_Expecter) WriteVirtual(ctx any, logicalName any, value any, writerArgs ...any) *MockWriteBufferByteBased_WriteVirtual_Call {
 	return &MockWriteBufferByteBased_WriteVirtual_Call{Call: _e.mock.On("WriteVirtual",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferByteBased_WriteVirtual_Call) Run(run func(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs)) *MockWriteBufferByteBased_WriteVirtual_Call {
@@ -9751,9 +9751,9 @@ type MockWriteBufferJsonBased_PopContext_Call struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_PopContext_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) PopContext(logicalName any, writerArgs ...any) *MockWriteBufferJsonBased_PopContext_Call {
 	return &MockWriteBufferJsonBased_PopContext_Call{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_PopContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_PopContext_Call {
@@ -9817,9 +9817,9 @@ type MockWriteBufferJsonBased_PushContext_Call struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_PushContext_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) PushContext(logicalName any, writerArgs ...any) *MockWriteBufferJsonBased_PushContext_Call {
 	return &MockWriteBufferJsonBased_PushContext_Call{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_PushContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_PushContext_Call {
@@ -9865,7 +9865,7 @@ type MockWriteBufferJsonBased_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockWriteBufferJsonBased_Expecter) SetByteOrder(byteOrder interface{}) *MockWriteBufferJsonBased_SetByteOrder_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) SetByteOrder(byteOrder any) *MockWriteBufferJsonBased_SetByteOrder_Call {
 	return &MockWriteBufferJsonBased_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -9925,9 +9925,9 @@ type MockWriteBufferJsonBased_WriteBigFloat_Call struct {
 //   - bitLength uint8
 //   - value *big.Float
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteBigFloat(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteBigFloat_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteBigFloat(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteBigFloat_Call {
 	return &MockWriteBufferJsonBased_WriteBigFloat_Call{Call: _e.mock.On("WriteBigFloat",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteBigFloat_Call) Run(run func(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteBigFloat_Call {
@@ -10003,9 +10003,9 @@ type MockWriteBufferJsonBased_WriteBigInt_Call struct {
 //   - bitLength uint8
 //   - value *big.Int
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteBigInt(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteBigInt_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteBigInt(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteBigInt_Call {
 	return &MockWriteBufferJsonBased_WriteBigInt_Call{Call: _e.mock.On("WriteBigInt",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteBigInt_Call) Run(run func(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteBigInt_Call {
@@ -10080,9 +10080,9 @@ type MockWriteBufferJsonBased_WriteBit_Call struct {
 //   - logicalName string
 //   - value bool
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteBit(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteBit_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteBit(logicalName any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteBit_Call {
 	return &MockWriteBufferJsonBased_WriteBit_Call{Call: _e.mock.On("WriteBit",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteBit_Call) Run(run func(logicalName string, value bool, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteBit_Call {
@@ -10152,9 +10152,9 @@ type MockWriteBufferJsonBased_WriteByte_Call struct {
 //   - logicalName string
 //   - value byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteByte(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteByte_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteByte(logicalName any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteByte_Call {
 	return &MockWriteBufferJsonBased_WriteByte_Call{Call: _e.mock.On("WriteByte",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteByte_Call) Run(run func(logicalName string, value byte, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteByte_Call {
@@ -10224,9 +10224,9 @@ type MockWriteBufferJsonBased_WriteByteArray_Call struct {
 //   - logicalName string
 //   - data []byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteByteArray(logicalName interface{}, data interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteByteArray_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteByteArray(logicalName any, data any, writerArgs ...any) *MockWriteBufferJsonBased_WriteByteArray_Call {
 	return &MockWriteBufferJsonBased_WriteByteArray_Call{Call: _e.mock.On("WriteByteArray",
-		append([]interface{}{logicalName, data}, writerArgs...)...)}
+		append([]any{logicalName, data}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteByteArray_Call) Run(run func(logicalName string, data []byte, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteByteArray_Call {
@@ -10297,9 +10297,9 @@ type MockWriteBufferJsonBased_WriteFloat32_Call struct {
 //   - bitLength uint8
 //   - value float32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteFloat32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteFloat32_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteFloat32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteFloat32_Call {
 	return &MockWriteBufferJsonBased_WriteFloat32_Call{Call: _e.mock.On("WriteFloat32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteFloat32_Call) Run(run func(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteFloat32_Call {
@@ -10375,9 +10375,9 @@ type MockWriteBufferJsonBased_WriteFloat64_Call struct {
 //   - bitLength uint8
 //   - value float64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteFloat64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteFloat64_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteFloat64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteFloat64_Call {
 	return &MockWriteBufferJsonBased_WriteFloat64_Call{Call: _e.mock.On("WriteFloat64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteFloat64_Call) Run(run func(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteFloat64_Call {
@@ -10453,9 +10453,9 @@ type MockWriteBufferJsonBased_WriteInt16_Call struct {
 //   - bitLength uint8
 //   - value int16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteInt16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteInt16_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteInt16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteInt16_Call {
 	return &MockWriteBufferJsonBased_WriteInt16_Call{Call: _e.mock.On("WriteInt16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteInt16_Call) Run(run func(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteInt16_Call {
@@ -10531,9 +10531,9 @@ type MockWriteBufferJsonBased_WriteInt32_Call struct {
 //   - bitLength uint8
 //   - value int32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteInt32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteInt32_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteInt32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteInt32_Call {
 	return &MockWriteBufferJsonBased_WriteInt32_Call{Call: _e.mock.On("WriteInt32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteInt32_Call) Run(run func(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteInt32_Call {
@@ -10609,9 +10609,9 @@ type MockWriteBufferJsonBased_WriteInt64_Call struct {
 //   - bitLength uint8
 //   - value int64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteInt64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteInt64_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteInt64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteInt64_Call {
 	return &MockWriteBufferJsonBased_WriteInt64_Call{Call: _e.mock.On("WriteInt64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteInt64_Call) Run(run func(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteInt64_Call {
@@ -10687,9 +10687,9 @@ type MockWriteBufferJsonBased_WriteInt8_Call struct {
 //   - bitLength uint8
 //   - value int8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteInt8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteInt8_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteInt8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteInt8_Call {
 	return &MockWriteBufferJsonBased_WriteInt8_Call{Call: _e.mock.On("WriteInt8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteInt8_Call) Run(run func(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteInt8_Call {
@@ -10757,7 +10757,7 @@ type MockWriteBufferJsonBased_WriteSerializable_Call struct {
 // WriteSerializable is a helper method to define mock.On call
 //   - ctx context.Context
 //   - serializable Serializable
-func (_e *MockWriteBufferJsonBased_Expecter) WriteSerializable(ctx interface{}, serializable interface{}) *MockWriteBufferJsonBased_WriteSerializable_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteSerializable(ctx any, serializable any) *MockWriteBufferJsonBased_WriteSerializable_Call {
 	return &MockWriteBufferJsonBased_WriteSerializable_Call{Call: _e.mock.On("WriteSerializable", ctx, serializable)}
 }
 
@@ -10822,9 +10822,9 @@ type MockWriteBufferJsonBased_WriteString_Call struct {
 //   - bitLength uint32
 //   - value string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteString(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteString_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteString(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteString_Call {
 	return &MockWriteBufferJsonBased_WriteString_Call{Call: _e.mock.On("WriteString",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteString_Call) Run(run func(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteString_Call {
@@ -10900,9 +10900,9 @@ type MockWriteBufferJsonBased_WriteUint16_Call struct {
 //   - bitLength uint8
 //   - value uint16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteUint16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteUint16_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteUint16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteUint16_Call {
 	return &MockWriteBufferJsonBased_WriteUint16_Call{Call: _e.mock.On("WriteUint16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteUint16_Call) Run(run func(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteUint16_Call {
@@ -10978,9 +10978,9 @@ type MockWriteBufferJsonBased_WriteUint32_Call struct {
 //   - bitLength uint8
 //   - value uint32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteUint32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteUint32_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteUint32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteUint32_Call {
 	return &MockWriteBufferJsonBased_WriteUint32_Call{Call: _e.mock.On("WriteUint32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteUint32_Call) Run(run func(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteUint32_Call {
@@ -11056,9 +11056,9 @@ type MockWriteBufferJsonBased_WriteUint64_Call struct {
 //   - bitLength uint8
 //   - value uint64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteUint64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteUint64_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteUint64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteUint64_Call {
 	return &MockWriteBufferJsonBased_WriteUint64_Call{Call: _e.mock.On("WriteUint64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteUint64_Call) Run(run func(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteUint64_Call {
@@ -11134,9 +11134,9 @@ type MockWriteBufferJsonBased_WriteUint8_Call struct {
 //   - bitLength uint8
 //   - value uint8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteUint8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteUint8_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteUint8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteUint8_Call {
 	return &MockWriteBufferJsonBased_WriteUint8_Call{Call: _e.mock.On("WriteUint8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteUint8_Call) Run(run func(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteUint8_Call {
@@ -11212,9 +11212,9 @@ type MockWriteBufferJsonBased_WriteVirtual_Call struct {
 //   - logicalName string
 //   - value any
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferJsonBased_Expecter) WriteVirtual(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferJsonBased_WriteVirtual_Call {
+func (_e *MockWriteBufferJsonBased_Expecter) WriteVirtual(ctx any, logicalName any, value any, writerArgs ...any) *MockWriteBufferJsonBased_WriteVirtual_Call {
 	return &MockWriteBufferJsonBased_WriteVirtual_Call{Call: _e.mock.On("WriteVirtual",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferJsonBased_WriteVirtual_Call) Run(run func(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs)) *MockWriteBufferJsonBased_WriteVirtual_Call {
@@ -11449,9 +11449,9 @@ type MockWriteBufferXmlBased_PopContext_Call struct {
 // PopContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) PopContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_PopContext_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) PopContext(logicalName any, writerArgs ...any) *MockWriteBufferXmlBased_PopContext_Call {
 	return &MockWriteBufferXmlBased_PopContext_Call{Call: _e.mock.On("PopContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_PopContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_PopContext_Call {
@@ -11515,9 +11515,9 @@ type MockWriteBufferXmlBased_PushContext_Call struct {
 // PushContext is a helper method to define mock.On call
 //   - logicalName string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) PushContext(logicalName interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_PushContext_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) PushContext(logicalName any, writerArgs ...any) *MockWriteBufferXmlBased_PushContext_Call {
 	return &MockWriteBufferXmlBased_PushContext_Call{Call: _e.mock.On("PushContext",
-		append([]interface{}{logicalName}, writerArgs...)...)}
+		append([]any{logicalName}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_PushContext_Call) Run(run func(logicalName string, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_PushContext_Call {
@@ -11563,7 +11563,7 @@ type MockWriteBufferXmlBased_SetByteOrder_Call struct {
 
 // SetByteOrder is a helper method to define mock.On call
 //   - byteOrder binary.ByteOrder
-func (_e *MockWriteBufferXmlBased_Expecter) SetByteOrder(byteOrder interface{}) *MockWriteBufferXmlBased_SetByteOrder_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) SetByteOrder(byteOrder any) *MockWriteBufferXmlBased_SetByteOrder_Call {
 	return &MockWriteBufferXmlBased_SetByteOrder_Call{Call: _e.mock.On("SetByteOrder", byteOrder)}
 }
 
@@ -11623,9 +11623,9 @@ type MockWriteBufferXmlBased_WriteBigFloat_Call struct {
 //   - bitLength uint8
 //   - value *big.Float
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteBigFloat(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteBigFloat_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteBigFloat(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteBigFloat_Call {
 	return &MockWriteBufferXmlBased_WriteBigFloat_Call{Call: _e.mock.On("WriteBigFloat",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteBigFloat_Call) Run(run func(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteBigFloat_Call {
@@ -11701,9 +11701,9 @@ type MockWriteBufferXmlBased_WriteBigInt_Call struct {
 //   - bitLength uint8
 //   - value *big.Int
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteBigInt(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteBigInt_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteBigInt(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteBigInt_Call {
 	return &MockWriteBufferXmlBased_WriteBigInt_Call{Call: _e.mock.On("WriteBigInt",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteBigInt_Call) Run(run func(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteBigInt_Call {
@@ -11778,9 +11778,9 @@ type MockWriteBufferXmlBased_WriteBit_Call struct {
 //   - logicalName string
 //   - value bool
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteBit(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteBit_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteBit(logicalName any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteBit_Call {
 	return &MockWriteBufferXmlBased_WriteBit_Call{Call: _e.mock.On("WriteBit",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteBit_Call) Run(run func(logicalName string, value bool, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteBit_Call {
@@ -11850,9 +11850,9 @@ type MockWriteBufferXmlBased_WriteByte_Call struct {
 //   - logicalName string
 //   - value byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteByte(logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteByte_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteByte(logicalName any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteByte_Call {
 	return &MockWriteBufferXmlBased_WriteByte_Call{Call: _e.mock.On("WriteByte",
-		append([]interface{}{logicalName, value}, writerArgs...)...)}
+		append([]any{logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteByte_Call) Run(run func(logicalName string, value byte, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteByte_Call {
@@ -11922,9 +11922,9 @@ type MockWriteBufferXmlBased_WriteByteArray_Call struct {
 //   - logicalName string
 //   - data []byte
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteByteArray(logicalName interface{}, data interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteByteArray_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteByteArray(logicalName any, data any, writerArgs ...any) *MockWriteBufferXmlBased_WriteByteArray_Call {
 	return &MockWriteBufferXmlBased_WriteByteArray_Call{Call: _e.mock.On("WriteByteArray",
-		append([]interface{}{logicalName, data}, writerArgs...)...)}
+		append([]any{logicalName, data}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteByteArray_Call) Run(run func(logicalName string, data []byte, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteByteArray_Call {
@@ -11995,9 +11995,9 @@ type MockWriteBufferXmlBased_WriteFloat32_Call struct {
 //   - bitLength uint8
 //   - value float32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteFloat32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteFloat32_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteFloat32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteFloat32_Call {
 	return &MockWriteBufferXmlBased_WriteFloat32_Call{Call: _e.mock.On("WriteFloat32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteFloat32_Call) Run(run func(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteFloat32_Call {
@@ -12073,9 +12073,9 @@ type MockWriteBufferXmlBased_WriteFloat64_Call struct {
 //   - bitLength uint8
 //   - value float64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteFloat64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteFloat64_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteFloat64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteFloat64_Call {
 	return &MockWriteBufferXmlBased_WriteFloat64_Call{Call: _e.mock.On("WriteFloat64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteFloat64_Call) Run(run func(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteFloat64_Call {
@@ -12151,9 +12151,9 @@ type MockWriteBufferXmlBased_WriteInt16_Call struct {
 //   - bitLength uint8
 //   - value int16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteInt16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteInt16_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteInt16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteInt16_Call {
 	return &MockWriteBufferXmlBased_WriteInt16_Call{Call: _e.mock.On("WriteInt16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteInt16_Call) Run(run func(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteInt16_Call {
@@ -12229,9 +12229,9 @@ type MockWriteBufferXmlBased_WriteInt32_Call struct {
 //   - bitLength uint8
 //   - value int32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteInt32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteInt32_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteInt32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteInt32_Call {
 	return &MockWriteBufferXmlBased_WriteInt32_Call{Call: _e.mock.On("WriteInt32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteInt32_Call) Run(run func(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteInt32_Call {
@@ -12307,9 +12307,9 @@ type MockWriteBufferXmlBased_WriteInt64_Call struct {
 //   - bitLength uint8
 //   - value int64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteInt64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteInt64_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteInt64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteInt64_Call {
 	return &MockWriteBufferXmlBased_WriteInt64_Call{Call: _e.mock.On("WriteInt64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteInt64_Call) Run(run func(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteInt64_Call {
@@ -12385,9 +12385,9 @@ type MockWriteBufferXmlBased_WriteInt8_Call struct {
 //   - bitLength uint8
 //   - value int8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteInt8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteInt8_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteInt8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteInt8_Call {
 	return &MockWriteBufferXmlBased_WriteInt8_Call{Call: _e.mock.On("WriteInt8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteInt8_Call) Run(run func(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteInt8_Call {
@@ -12455,7 +12455,7 @@ type MockWriteBufferXmlBased_WriteSerializable_Call struct {
 // WriteSerializable is a helper method to define mock.On call
 //   - ctx context.Context
 //   - serializable Serializable
-func (_e *MockWriteBufferXmlBased_Expecter) WriteSerializable(ctx interface{}, serializable interface{}) *MockWriteBufferXmlBased_WriteSerializable_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteSerializable(ctx any, serializable any) *MockWriteBufferXmlBased_WriteSerializable_Call {
 	return &MockWriteBufferXmlBased_WriteSerializable_Call{Call: _e.mock.On("WriteSerializable", ctx, serializable)}
 }
 
@@ -12520,9 +12520,9 @@ type MockWriteBufferXmlBased_WriteString_Call struct {
 //   - bitLength uint32
 //   - value string
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteString(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteString_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteString(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteString_Call {
 	return &MockWriteBufferXmlBased_WriteString_Call{Call: _e.mock.On("WriteString",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteString_Call) Run(run func(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteString_Call {
@@ -12598,9 +12598,9 @@ type MockWriteBufferXmlBased_WriteUint16_Call struct {
 //   - bitLength uint8
 //   - value uint16
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteUint16(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteUint16_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteUint16(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteUint16_Call {
 	return &MockWriteBufferXmlBased_WriteUint16_Call{Call: _e.mock.On("WriteUint16",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteUint16_Call) Run(run func(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteUint16_Call {
@@ -12676,9 +12676,9 @@ type MockWriteBufferXmlBased_WriteUint32_Call struct {
 //   - bitLength uint8
 //   - value uint32
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteUint32(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteUint32_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteUint32(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteUint32_Call {
 	return &MockWriteBufferXmlBased_WriteUint32_Call{Call: _e.mock.On("WriteUint32",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteUint32_Call) Run(run func(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteUint32_Call {
@@ -12754,9 +12754,9 @@ type MockWriteBufferXmlBased_WriteUint64_Call struct {
 //   - bitLength uint8
 //   - value uint64
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteUint64(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteUint64_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteUint64(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteUint64_Call {
 	return &MockWriteBufferXmlBased_WriteUint64_Call{Call: _e.mock.On("WriteUint64",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteUint64_Call) Run(run func(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteUint64_Call {
@@ -12832,9 +12832,9 @@ type MockWriteBufferXmlBased_WriteUint8_Call struct {
 //   - bitLength uint8
 //   - value uint8
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteUint8(logicalName interface{}, bitLength interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteUint8_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteUint8(logicalName any, bitLength any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteUint8_Call {
 	return &MockWriteBufferXmlBased_WriteUint8_Call{Call: _e.mock.On("WriteUint8",
-		append([]interface{}{logicalName, bitLength, value}, writerArgs...)...)}
+		append([]any{logicalName, bitLength, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteUint8_Call) Run(run func(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteUint8_Call {
@@ -12910,9 +12910,9 @@ type MockWriteBufferXmlBased_WriteVirtual_Call struct {
 //   - logicalName string
 //   - value any
 //   - writerArgs ...WithWriterArgs
-func (_e *MockWriteBufferXmlBased_Expecter) WriteVirtual(ctx interface{}, logicalName interface{}, value interface{}, writerArgs ...interface{}) *MockWriteBufferXmlBased_WriteVirtual_Call {
+func (_e *MockWriteBufferXmlBased_Expecter) WriteVirtual(ctx any, logicalName any, value any, writerArgs ...any) *MockWriteBufferXmlBased_WriteVirtual_Call {
 	return &MockWriteBufferXmlBased_WriteVirtual_Call{Call: _e.mock.On("WriteVirtual",
-		append([]interface{}{ctx, logicalName, value}, writerArgs...)...)}
+		append([]any{ctx, logicalName, value}, writerArgs...)...)}
 }
 
 func (_c *MockWriteBufferXmlBased_WriteVirtual_Call) Run(run func(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs)) *MockWriteBufferXmlBased_WriteVirtual_Call {
@@ -13012,9 +13012,9 @@ type MockAsciiBoxer_Box_Call struct {
 
 // Box is a helper method to define mock.On call
 //   - fns ...func(*BoxOptions)
-func (_e *MockAsciiBoxer_Expecter) Box(fns ...interface{}) *MockAsciiBoxer_Box_Call {
+func (_e *MockAsciiBoxer_Expecter) Box(fns ...any) *MockAsciiBoxer_Box_Call {
 	return &MockAsciiBoxer_Box_Call{Call: _e.mock.On("Box",
-		append([]interface{}{}, fns...)...)}
+		append([]any{}, fns...)...)}
 }
 
 func (_c *MockAsciiBoxer_Box_Call) Run(run func(fns ...func(*BoxOptions))) *MockAsciiBoxer_Box_Call {
@@ -13101,9 +13101,9 @@ type MockAsciiBoxWriter_AlignBoxes_Call struct {
 //   - asciiBoxes []AsciiBox
 //   - desiredWith int
 //   - options ...func(*BoxOptions)
-func (_e *MockAsciiBoxWriter_Expecter) AlignBoxes(asciiBoxes interface{}, desiredWith interface{}, options ...interface{}) *MockAsciiBoxWriter_AlignBoxes_Call {
+func (_e *MockAsciiBoxWriter_Expecter) AlignBoxes(asciiBoxes any, desiredWith any, options ...any) *MockAsciiBoxWriter_AlignBoxes_Call {
 	return &MockAsciiBoxWriter_AlignBoxes_Call{Call: _e.mock.On("AlignBoxes",
-		append([]interface{}{asciiBoxes, desiredWith}, options...)...)}
+		append([]any{asciiBoxes, desiredWith}, options...)...)}
 }
 
 func (_c *MockAsciiBoxWriter_AlignBoxes_Call) Run(run func(asciiBoxes []AsciiBox, desiredWith int, options ...func(*BoxOptions))) *MockAsciiBoxWriter_AlignBoxes_Call {
@@ -13173,9 +13173,9 @@ type MockAsciiBoxWriter_BoxBelowBox_Call struct {
 //   - box1 AsciiBox
 //   - box2 AsciiBox
 //   - options ...func(*BoxOptions)
-func (_e *MockAsciiBoxWriter_Expecter) BoxBelowBox(box1 interface{}, box2 interface{}, options ...interface{}) *MockAsciiBoxWriter_BoxBelowBox_Call {
+func (_e *MockAsciiBoxWriter_Expecter) BoxBelowBox(box1 any, box2 any, options ...any) *MockAsciiBoxWriter_BoxBelowBox_Call {
 	return &MockAsciiBoxWriter_BoxBelowBox_Call{Call: _e.mock.On("BoxBelowBox",
-		append([]interface{}{box1, box2}, options...)...)}
+		append([]any{box1, box2}, options...)...)}
 }
 
 func (_c *MockAsciiBoxWriter_BoxBelowBox_Call) Run(run func(box1 AsciiBox, box2 AsciiBox, options ...func(*BoxOptions))) *MockAsciiBoxWriter_BoxBelowBox_Call {
@@ -13244,9 +13244,9 @@ type MockAsciiBoxWriter_BoxBox_Call struct {
 // BoxBox is a helper method to define mock.On call
 //   - box AsciiBox
 //   - options ...func(*BoxOptions)
-func (_e *MockAsciiBoxWriter_Expecter) BoxBox(box interface{}, options ...interface{}) *MockAsciiBoxWriter_BoxBox_Call {
+func (_e *MockAsciiBoxWriter_Expecter) BoxBox(box any, options ...any) *MockAsciiBoxWriter_BoxBox_Call {
 	return &MockAsciiBoxWriter_BoxBox_Call{Call: _e.mock.On("BoxBox",
-		append([]interface{}{box}, options...)...)}
+		append([]any{box}, options...)...)}
 }
 
 func (_c *MockAsciiBoxWriter_BoxBox_Call) Run(run func(box AsciiBox, options ...func(*BoxOptions))) *MockAsciiBoxWriter_BoxBox_Call {
@@ -13311,9 +13311,9 @@ type MockAsciiBoxWriter_BoxSideBySide_Call struct {
 //   - box1 AsciiBox
 //   - box2 AsciiBox
 //   - options ...func(*BoxOptions)
-func (_e *MockAsciiBoxWriter_Expecter) BoxSideBySide(box1 interface{}, box2 interface{}, options ...interface{}) *MockAsciiBoxWriter_BoxSideBySide_Call {
+func (_e *MockAsciiBoxWriter_Expecter) BoxSideBySide(box1 any, box2 any, options ...any) *MockAsciiBoxWriter_BoxSideBySide_Call {
 	return &MockAsciiBoxWriter_BoxSideBySide_Call{Call: _e.mock.On("BoxSideBySide",
-		append([]interface{}{box1, box2}, options...)...)}
+		append([]any{box1, box2}, options...)...)}
 }
 
 func (_c *MockAsciiBoxWriter_BoxSideBySide_Call) Run(run func(box1 AsciiBox, box2 AsciiBox, options ...func(*BoxOptions))) *MockAsciiBoxWriter_BoxSideBySide_Call {
@@ -13382,9 +13382,9 @@ type MockAsciiBoxWriter_BoxString_Call struct {
 // BoxString is a helper method to define mock.On call
 //   - data string
 //   - options ...func(*BoxOptions)
-func (_e *MockAsciiBoxWriter_Expecter) BoxString(data interface{}, options ...interface{}) *MockAsciiBoxWriter_BoxString_Call {
+func (_e *MockAsciiBoxWriter_Expecter) BoxString(data any, options ...any) *MockAsciiBoxWriter_BoxString_Call {
 	return &MockAsciiBoxWriter_BoxString_Call{Call: _e.mock.On("BoxString",
-		append([]interface{}{data}, options...)...)}
+		append([]any{data}, options...)...)}
 }
 
 func (_c *MockAsciiBoxWriter_BoxString_Call) Run(run func(data string, options ...func(*BoxOptions))) *MockAsciiBoxWriter_BoxString_Call {
@@ -13558,7 +13558,7 @@ type MockPlcValue_GetBoolAt_Call struct {
 
 // GetBoolAt is a helper method to define mock.On call
 //   - index uint32
-func (_e *MockPlcValue_Expecter) GetBoolAt(index interface{}) *MockPlcValue_GetBoolAt_Call {
+func (_e *MockPlcValue_Expecter) GetBoolAt(index any) *MockPlcValue_GetBoolAt_Call {
 	return &MockPlcValue_GetBoolAt_Call{Call: _e.mock.On("GetBoolAt", index)}
 }
 
@@ -13919,7 +13919,7 @@ type MockPlcValue_GetIndex_Call struct {
 
 // GetIndex is a helper method to define mock.On call
 //   - i uint32
-func (_e *MockPlcValue_Expecter) GetIndex(i interface{}) *MockPlcValue_GetIndex_Call {
+func (_e *MockPlcValue_Expecter) GetIndex(i any) *MockPlcValue_GetIndex_Call {
 	return &MockPlcValue_GetIndex_Call{Call: _e.mock.On("GetIndex", i)}
 }
 
@@ -14684,7 +14684,7 @@ type MockPlcValue_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - key string
-func (_e *MockPlcValue_Expecter) GetValue(key interface{}) *MockPlcValue_GetValue_Call {
+func (_e *MockPlcValue_Expecter) GetValue(key any) *MockPlcValue_GetValue_Call {
 	return &MockPlcValue_GetValue_Call{Call: _e.mock.On("GetValue", key)}
 }
 
@@ -14735,7 +14735,7 @@ type MockPlcValue_HasKey_Call struct {
 
 // HasKey is a helper method to define mock.On call
 //   - key string
-func (_e *MockPlcValue_Expecter) HasKey(key interface{}) *MockPlcValue_HasKey_Call {
+func (_e *MockPlcValue_Expecter) HasKey(key any) *MockPlcValue_HasKey_Call {
 	return &MockPlcValue_HasKey_Call{Call: _e.mock.On("HasKey", key)}
 }
 

@@ -289,7 +289,7 @@ type MockPlcBrowseRequestBuilder_AddQuery_Call struct {
 // AddQuery is a helper method to define mock.On call
 //   - name string
 //   - query string
-func (_e *MockPlcBrowseRequestBuilder_Expecter) AddQuery(name interface{}, query interface{}) *MockPlcBrowseRequestBuilder_AddQuery_Call {
+func (_e *MockPlcBrowseRequestBuilder_Expecter) AddQuery(name any, query any) *MockPlcBrowseRequestBuilder_AddQuery_Call {
 	return &MockPlcBrowseRequestBuilder_AddQuery_Call{Call: _e.mock.On("AddQuery", name, query)}
 }
 
@@ -473,7 +473,7 @@ type MockPlcBrowseRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcBrowseRequest_Expecter) Execute(ctx interface{}) *MockPlcBrowseRequest_Execute_Call {
+func (_e *MockPlcBrowseRequest_Expecter) Execute(ctx any) *MockPlcBrowseRequest_Execute_Call {
 	return &MockPlcBrowseRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -527,7 +527,7 @@ type MockPlcBrowseRequest_ExecuteWithInterceptor_Call struct {
 // ExecuteWithInterceptor is a helper method to define mock.On call
 //   - ctx context.Context
 //   - interceptor func(result PlcBrowseItem) bool
-func (_e *MockPlcBrowseRequest_Expecter) ExecuteWithInterceptor(ctx interface{}, interceptor interface{}) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
+func (_e *MockPlcBrowseRequest_Expecter) ExecuteWithInterceptor(ctx any, interceptor any) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
 	return &MockPlcBrowseRequest_ExecuteWithInterceptor_Call{Call: _e.mock.On("ExecuteWithInterceptor", ctx, interceptor)}
 }
 
@@ -585,7 +585,7 @@ type MockPlcBrowseRequest_GetQuery_Call struct {
 
 // GetQuery is a helper method to define mock.On call
 //   - queryName string
-func (_e *MockPlcBrowseRequest_Expecter) GetQuery(queryName interface{}) *MockPlcBrowseRequest_GetQuery_Call {
+func (_e *MockPlcBrowseRequest_Expecter) GetQuery(queryName any) *MockPlcBrowseRequest_GetQuery_Call {
 	return &MockPlcBrowseRequest_GetQuery_Call{Call: _e.mock.On("GetQuery", queryName)}
 }
 
@@ -845,7 +845,7 @@ type MockPlcBrowseResponse_GetQueryResults_Call struct {
 
 // GetQueryResults is a helper method to define mock.On call
 //   - name string
-func (_e *MockPlcBrowseResponse_Expecter) GetQueryResults(name interface{}) *MockPlcBrowseResponse_GetQueryResults_Call {
+func (_e *MockPlcBrowseResponse_Expecter) GetQueryResults(name any) *MockPlcBrowseResponse_GetQueryResults_Call {
 	return &MockPlcBrowseResponse_GetQueryResults_Call{Call: _e.mock.On("GetQueryResults", name)}
 }
 
@@ -942,7 +942,7 @@ type MockPlcBrowseResponse_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - name string
-func (_e *MockPlcBrowseResponse_Expecter) GetResponseCode(name interface{}) *MockPlcBrowseResponse_GetResponseCode_Call {
+func (_e *MockPlcBrowseResponse_Expecter) GetResponseCode(name any) *MockPlcBrowseResponse_GetResponseCode_Call {
 	return &MockPlcBrowseResponse_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", name)}
 }
 
@@ -2565,7 +2565,7 @@ type MockPlcReadRequestBuilder_AddTag_Call struct {
 // AddTag is a helper method to define mock.On call
 //   - tagName string
 //   - tag PlcTag
-func (_e *MockPlcReadRequestBuilder_Expecter) AddTag(tagName interface{}, tag interface{}) *MockPlcReadRequestBuilder_AddTag_Call {
+func (_e *MockPlcReadRequestBuilder_Expecter) AddTag(tagName any, tag any) *MockPlcReadRequestBuilder_AddTag_Call {
 	return &MockPlcReadRequestBuilder_AddTag_Call{Call: _e.mock.On("AddTag", tagName, tag)}
 }
 
@@ -2624,7 +2624,7 @@ type MockPlcReadRequestBuilder_AddTagAddress_Call struct {
 // AddTagAddress is a helper method to define mock.On call
 //   - tagName string
 //   - tagAddress string
-func (_e *MockPlcReadRequestBuilder_Expecter) AddTagAddress(tagName interface{}, tagAddress interface{}) *MockPlcReadRequestBuilder_AddTagAddress_Call {
+func (_e *MockPlcReadRequestBuilder_Expecter) AddTagAddress(tagName any, tagAddress any) *MockPlcReadRequestBuilder_AddTagAddress_Call {
 	return &MockPlcReadRequestBuilder_AddTagAddress_Call{Call: _e.mock.On("AddTagAddress", tagName, tagAddress)}
 }
 
@@ -3015,7 +3015,7 @@ type MockPlcReadRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcReadRequest_Expecter) Execute(ctx interface{}) *MockPlcReadRequest_Execute_Call {
+func (_e *MockPlcReadRequest_Expecter) Execute(ctx any) *MockPlcReadRequest_Execute_Call {
 	return &MockPlcReadRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -3068,7 +3068,7 @@ type MockPlcReadRequest_GetTag_Call struct {
 
 // GetTag is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcReadRequest_Expecter) GetTag(tagName interface{}) *MockPlcReadRequest_GetTag_Call {
+func (_e *MockPlcReadRequest_Expecter) GetTag(tagName any) *MockPlcReadRequest_GetTag_Call {
 	return &MockPlcReadRequest_GetTag_Call{Call: _e.mock.On("GetTag", tagName)}
 }
 
@@ -3326,7 +3326,7 @@ type MockPlcReadResponse_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcReadResponse_Expecter) GetResponseCode(tagName interface{}) *MockPlcReadResponse_GetResponseCode_Call {
+func (_e *MockPlcReadResponse_Expecter) GetResponseCode(tagName any) *MockPlcReadResponse_GetResponseCode_Call {
 	return &MockPlcReadResponse_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", tagName)}
 }
 
@@ -3425,7 +3425,7 @@ type MockPlcReadResponse_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcReadResponse_Expecter) GetValue(tagName interface{}) *MockPlcReadResponse_GetValue_Call {
+func (_e *MockPlcReadResponse_Expecter) GetValue(tagName any) *MockPlcReadResponse_GetValue_Call {
 	return &MockPlcReadResponse_GetValue_Call{Call: _e.mock.On("GetValue", tagName)}
 }
 
@@ -3821,7 +3821,7 @@ type MockPlcSubscriptionEvent_GetAddress_Call struct {
 
 // GetAddress is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcSubscriptionEvent_Expecter) GetAddress(tagName interface{}) *MockPlcSubscriptionEvent_GetAddress_Call {
+func (_e *MockPlcSubscriptionEvent_Expecter) GetAddress(tagName any) *MockPlcSubscriptionEvent_GetAddress_Call {
 	return &MockPlcSubscriptionEvent_GetAddress_Call{Call: _e.mock.On("GetAddress", tagName)}
 }
 
@@ -3872,7 +3872,7 @@ type MockPlcSubscriptionEvent_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcSubscriptionEvent_Expecter) GetResponseCode(tagName interface{}) *MockPlcSubscriptionEvent_GetResponseCode_Call {
+func (_e *MockPlcSubscriptionEvent_Expecter) GetResponseCode(tagName any) *MockPlcSubscriptionEvent_GetResponseCode_Call {
 	return &MockPlcSubscriptionEvent_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", tagName)}
 }
 
@@ -3923,7 +3923,7 @@ type MockPlcSubscriptionEvent_GetSource_Call struct {
 
 // GetSource is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcSubscriptionEvent_Expecter) GetSource(tagName interface{}) *MockPlcSubscriptionEvent_GetSource_Call {
+func (_e *MockPlcSubscriptionEvent_Expecter) GetSource(tagName any) *MockPlcSubscriptionEvent_GetSource_Call {
 	return &MockPlcSubscriptionEvent_GetSource_Call{Call: _e.mock.On("GetSource", tagName)}
 }
 
@@ -4022,7 +4022,7 @@ type MockPlcSubscriptionEvent_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcSubscriptionEvent_Expecter) GetValue(tagName interface{}) *MockPlcSubscriptionEvent_GetValue_Call {
+func (_e *MockPlcSubscriptionEvent_Expecter) GetValue(tagName any) *MockPlcSubscriptionEvent_GetValue_Call {
 	return &MockPlcSubscriptionEvent_GetValue_Call{Call: _e.mock.On("GetValue", tagName)}
 }
 
@@ -4191,7 +4191,7 @@ type MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call struct {
 // AddChangeOfStateTag is a helper method to define mock.On call
 //   - tagName string
 //   - tag PlcSubscriptionTag
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddChangeOfStateTag(tagName interface{}, tag interface{}) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddChangeOfStateTag(tagName any, tag any) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call{Call: _e.mock.On("AddChangeOfStateTag", tagName, tag)}
 }
 
@@ -4250,7 +4250,7 @@ type MockPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress_Call struct {
 // AddChangeOfStateTagAddress is a helper method to define mock.On call
 //   - tagName string
 //   - tagAddress string
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddChangeOfStateTagAddress(tagName interface{}, tagAddress interface{}) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddChangeOfStateTagAddress(tagName any, tagAddress any) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress_Call{Call: _e.mock.On("AddChangeOfStateTagAddress", tagName, tagAddress)}
 }
 
@@ -4310,7 +4310,7 @@ type MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call struct {
 //   - tagName string
 //   - tag PlcSubscriptionTag
 //   - interval time.Duration
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddCyclicTag(tagName interface{}, tag interface{}, interval interface{}) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddCyclicTag(tagName any, tag any, interval any) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call{Call: _e.mock.On("AddCyclicTag", tagName, tag, interval)}
 }
 
@@ -4375,7 +4375,7 @@ type MockPlcSubscriptionRequestBuilder_AddCyclicTagAddress_Call struct {
 //   - tagName string
 //   - tagAddress string
 //   - interval time.Duration
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddCyclicTagAddress(tagName interface{}, tagAddress interface{}, interval interface{}) *MockPlcSubscriptionRequestBuilder_AddCyclicTagAddress_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddCyclicTagAddress(tagName any, tagAddress any, interval any) *MockPlcSubscriptionRequestBuilder_AddCyclicTagAddress_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddCyclicTagAddress_Call{Call: _e.mock.On("AddCyclicTagAddress", tagName, tagAddress, interval)}
 }
 
@@ -4439,7 +4439,7 @@ type MockPlcSubscriptionRequestBuilder_AddEventTag_Call struct {
 // AddEventTag is a helper method to define mock.On call
 //   - tagName string
 //   - tag PlcSubscriptionTag
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddEventTag(tagName interface{}, tag interface{}) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddEventTag(tagName any, tag any) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddEventTag_Call{Call: _e.mock.On("AddEventTag", tagName, tag)}
 }
 
@@ -4498,7 +4498,7 @@ type MockPlcSubscriptionRequestBuilder_AddEventTagAddress_Call struct {
 // AddEventTagAddress is a helper method to define mock.On call
 //   - tagName string
 //   - tagAddress string
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddEventTagAddress(tagName interface{}, tagAddress interface{}) *MockPlcSubscriptionRequestBuilder_AddEventTagAddress_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddEventTagAddress(tagName any, tagAddress any) *MockPlcSubscriptionRequestBuilder_AddEventTagAddress_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddEventTagAddress_Call{Call: _e.mock.On("AddEventTagAddress", tagName, tagAddress)}
 }
 
@@ -4557,7 +4557,7 @@ type MockPlcSubscriptionRequestBuilder_AddPreRegisteredConsumer_Call struct {
 // AddPreRegisteredConsumer is a helper method to define mock.On call
 //   - tagName string
 //   - consumer PlcSubscriptionEventConsumer
-func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddPreRegisteredConsumer(tagName interface{}, consumer interface{}) *MockPlcSubscriptionRequestBuilder_AddPreRegisteredConsumer_Call {
+func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddPreRegisteredConsumer(tagName any, consumer any) *MockPlcSubscriptionRequestBuilder_AddPreRegisteredConsumer_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddPreRegisteredConsumer_Call{Call: _e.mock.On("AddPreRegisteredConsumer", tagName, consumer)}
 }
 
@@ -4860,7 +4860,7 @@ type MockPlcSubscriptionRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcSubscriptionRequest_Expecter) Execute(ctx interface{}) *MockPlcSubscriptionRequest_Execute_Call {
+func (_e *MockPlcSubscriptionRequest_Expecter) Execute(ctx any) *MockPlcSubscriptionRequest_Execute_Call {
 	return &MockPlcSubscriptionRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -4913,7 +4913,7 @@ type MockPlcSubscriptionRequest_GetTag_Call struct {
 
 // GetTag is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcSubscriptionRequest_Expecter) GetTag(tagName interface{}) *MockPlcSubscriptionRequest_GetTag_Call {
+func (_e *MockPlcSubscriptionRequest_Expecter) GetTag(tagName any) *MockPlcSubscriptionRequest_GetTag_Call {
 	return &MockPlcSubscriptionRequest_GetTag_Call{Call: _e.mock.On("GetTag", tagName)}
 }
 
@@ -5171,7 +5171,7 @@ type MockPlcSubscriptionResponse_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - name string
-func (_e *MockPlcSubscriptionResponse_Expecter) GetResponseCode(name interface{}) *MockPlcSubscriptionResponse_GetResponseCode_Call {
+func (_e *MockPlcSubscriptionResponse_Expecter) GetResponseCode(name any) *MockPlcSubscriptionResponse_GetResponseCode_Call {
 	return &MockPlcSubscriptionResponse_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", name)}
 }
 
@@ -5233,7 +5233,7 @@ type MockPlcSubscriptionResponse_GetSubscriptionHandle_Call struct {
 
 // GetSubscriptionHandle is a helper method to define mock.On call
 //   - name string
-func (_e *MockPlcSubscriptionResponse_Expecter) GetSubscriptionHandle(name interface{}) *MockPlcSubscriptionResponse_GetSubscriptionHandle_Call {
+func (_e *MockPlcSubscriptionResponse_Expecter) GetSubscriptionHandle(name any) *MockPlcSubscriptionResponse_GetSubscriptionHandle_Call {
 	return &MockPlcSubscriptionResponse_GetSubscriptionHandle_Call{Call: _e.mock.On("GetSubscriptionHandle", name)}
 }
 
@@ -5449,7 +5449,7 @@ type MockPlcSubscriptionHandle_Register_Call struct {
 
 // Register is a helper method to define mock.On call
 //   - consumer PlcSubscriptionEventConsumer
-func (_e *MockPlcSubscriptionHandle_Expecter) Register(consumer interface{}) *MockPlcSubscriptionHandle_Register_Call {
+func (_e *MockPlcSubscriptionHandle_Expecter) Register(consumer any) *MockPlcSubscriptionHandle_Register_Call {
 	return &MockPlcSubscriptionHandle_Register_Call{Call: _e.mock.On("Register", consumer)}
 }
 
@@ -6434,9 +6434,9 @@ type MockPlcUnsubscriptionRequestBuilder_AddHandles_Call struct {
 
 // AddHandles is a helper method to define mock.On call
 //   - handles ...PlcSubscriptionHandle
-func (_e *MockPlcUnsubscriptionRequestBuilder_Expecter) AddHandles(handles ...interface{}) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+func (_e *MockPlcUnsubscriptionRequestBuilder_Expecter) AddHandles(handles ...any) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
 	return &MockPlcUnsubscriptionRequestBuilder_AddHandles_Call{Call: _e.mock.On("AddHandles",
-		append([]interface{}{}, handles...)...)}
+		append([]any{}, handles...)...)}
 }
 
 func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Run(run func(handles ...PlcSubscriptionHandle)) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
@@ -6616,7 +6616,7 @@ type MockPlcUnsubscriptionRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcUnsubscriptionRequest_Expecter) Execute(ctx interface{}) *MockPlcUnsubscriptionRequest_Execute_Call {
+func (_e *MockPlcUnsubscriptionRequest_Expecter) Execute(ctx any) *MockPlcUnsubscriptionRequest_Execute_Call {
 	return &MockPlcUnsubscriptionRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -6903,7 +6903,7 @@ type MockPlcWriteRequestBuilder_AddTag_Call struct {
 //   - tagName string
 //   - tag PlcTag
 //   - value any
-func (_e *MockPlcWriteRequestBuilder_Expecter) AddTag(tagName interface{}, tag interface{}, value interface{}) *MockPlcWriteRequestBuilder_AddTag_Call {
+func (_e *MockPlcWriteRequestBuilder_Expecter) AddTag(tagName any, tag any, value any) *MockPlcWriteRequestBuilder_AddTag_Call {
 	return &MockPlcWriteRequestBuilder_AddTag_Call{Call: _e.mock.On("AddTag", tagName, tag, value)}
 }
 
@@ -6968,7 +6968,7 @@ type MockPlcWriteRequestBuilder_AddTagAddress_Call struct {
 //   - tagName string
 //   - tagAddress string
 //   - value any
-func (_e *MockPlcWriteRequestBuilder_Expecter) AddTagAddress(tagName interface{}, tagAddress interface{}, value interface{}) *MockPlcWriteRequestBuilder_AddTagAddress_Call {
+func (_e *MockPlcWriteRequestBuilder_Expecter) AddTagAddress(tagName any, tagAddress any, value any) *MockPlcWriteRequestBuilder_AddTagAddress_Call {
 	return &MockPlcWriteRequestBuilder_AddTagAddress_Call{Call: _e.mock.On("AddTagAddress", tagName, tagAddress, value)}
 }
 
@@ -7364,7 +7364,7 @@ type MockPlcWriteRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcWriteRequest_Expecter) Execute(ctx interface{}) *MockPlcWriteRequest_Execute_Call {
+func (_e *MockPlcWriteRequest_Expecter) Execute(ctx any) *MockPlcWriteRequest_Execute_Call {
 	return &MockPlcWriteRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -7417,7 +7417,7 @@ type MockPlcWriteRequest_GetTag_Call struct {
 
 // GetTag is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcWriteRequest_Expecter) GetTag(tagName interface{}) *MockPlcWriteRequest_GetTag_Call {
+func (_e *MockPlcWriteRequest_Expecter) GetTag(tagName any) *MockPlcWriteRequest_GetTag_Call {
 	return &MockPlcWriteRequest_GetTag_Call{Call: _e.mock.On("GetTag", tagName)}
 }
 
@@ -7516,7 +7516,7 @@ type MockPlcWriteRequest_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcWriteRequest_Expecter) GetValue(tagName interface{}) *MockPlcWriteRequest_GetValue_Call {
+func (_e *MockPlcWriteRequest_Expecter) GetValue(tagName any) *MockPlcWriteRequest_GetValue_Call {
 	return &MockPlcWriteRequest_GetValue_Call{Call: _e.mock.On("GetValue", tagName)}
 }
 
@@ -7728,7 +7728,7 @@ type MockPlcWriteResponse_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcWriteResponse_Expecter) GetResponseCode(tagName interface{}) *MockPlcWriteResponse_GetResponseCode_Call {
+func (_e *MockPlcWriteResponse_Expecter) GetResponseCode(tagName any) *MockPlcWriteResponse_GetResponseCode_Call {
 	return &MockPlcWriteResponse_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", tagName)}
 }
 

@@ -75,7 +75,7 @@ func parsePlcValue(tag PlcTag, rawData []byte, dataType readWriteModel.CIPDataTy
 	}
 	if nb > 1 {
 		list := make([]values.PlcValue, 0, nb)
-		for i := 0; i < nb; i++ {
+		for i := range nb {
 			offset := i * elementSize
 			switch dataType {
 			case readWriteModel.CIPDataTypeCode_SINT:

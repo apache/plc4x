@@ -50,6 +50,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,7 +80,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     // DEFAULT_SENDER_CONTEXT and made every outgoing packet's senderContext
     // unpredictable — which breaks scripted DriverTestsuite tests that expect
     // the literal "PLC4X   " bytes.)
-    private final BlockingQueue<CompletableFuture<EipPacket>> pendingRequests = new LinkedBlockingDeque<>();
+    private final Correlator correlator = new Correlator();
 
     protected long sessionHandle = EMPTY_SESSION_HANDLE;
     protected long connectionId = 0L;
@@ -361,9 +362,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         if (messageCodec != null) {
             messageCodec.close();
         }
-        pendingRequests.forEach(future ->
-            future.completeExceptionally(new PlcRuntimeException("Connection closed")));
-        pendingRequests.clear();
+        correlator.failAll(new PlcRuntimeException("Connection closed"));
         super.close();
         LOGGER.info("EIP TCP connection closed");
         fireConnectionStateChanged(ConnectionStateChangeType.DISCONNECTED, null);
@@ -406,8 +405,79 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             cause != null ? cause.getMessage() : "Connection closed by remote");
         PlcRuntimeException exception = new PlcRuntimeException(
             cause != null ? "Connection lost: " + cause.getMessage() : "Connection closed by remote", cause);
-        pendingRequests.forEach(future -> future.completeExceptionally(exception));
-        pendingRequests.clear();
+        correlator.failAll(exception);
+    }
+
+    /**
+     * Decides which pending request a response belongs to.
+     *
+     * <p>EIP has no transaction id, so this is send order: the response in front answers the
+     * request in front. That holds while every request is answered - and stops holding the moment
+     * one is not. A request that timed out can still be answered afterwards, and its answer would
+     * go to whoever is at the head by then: a caller handed values from a read it never made,
+     * reported as a success, with every response after it off by one for the life of the
+     * connection.</p>
+     *
+     * <p>So a response that might answer a request which gave up is discarded. When it really was
+     * that request's, nothing is lost. When it was the next request's, that request times out -
+     * which is a failure someone is told about, rather than a number they trust.</p>
+     *
+     * <p>Telling the two apart needs a value that comes back with the response, and there are two
+     * candidates, both of which this driver sends and then ignores. Connected sends carry a
+     * sequence count in their ConnectedDataItem, incremented per request; the response's count is
+     * never looked at. Unconnected sends have only the eight-byte senderContext, which is the same
+     * bytes on every request - and whether a device returns it unmodified is not something anything
+     * here has ever relied on, so it would want confirming before correlation is keyed on it.</p>
+     *
+     * <p>Both would be needed to cover this: reads and writes run unconnected in two of their three
+     * modes, so the connected sequence count alone would leave the other two as they are. Either
+     * way it changes what goes on the wire, and the scripted driver testsuites assert those bytes
+     * with no way to exempt a single field.</p>
+     */
+    static final class Correlator {
+
+        private final BlockingQueue<CompletableFuture<EipPacket>> pending = new LinkedBlockingDeque<>();
+        private final AtomicInteger possiblyStale = new AtomicInteger();
+
+        void register(CompletableFuture<EipPacket> responseFuture) {
+            pending.offer(responseFuture);
+        }
+
+        /** Drops a request that was never sent; nothing will answer it. */
+        void forget(CompletableFuture<EipPacket> responseFuture) {
+            pending.remove(responseFuture);
+        }
+
+        /** Drops a request that gave up waiting, remembering that it may still be answered. */
+        void timedOut(CompletableFuture<EipPacket> responseFuture) {
+            if (pending.remove(responseFuture)) {
+                possiblyStale.incrementAndGet();
+            }
+        }
+
+        void deliver(EipPacket packet) {
+            if (possiblyStale.get() > 0 && possiblyStale.decrementAndGet() >= 0) {
+                LOGGER.warn("Discarding an EIP response that may answer a request which already "
+                    + "timed out; it cannot be told apart from a response to a later request");
+                return;
+            }
+            CompletableFuture<EipPacket> future = pending.poll();
+            if (future != null) {
+                future.complete(packet);
+            } else {
+                LOGGER.warn("Received EIP response with no pending request");
+            }
+        }
+
+        void failAll(Throwable cause) {
+            pending.forEach(future -> future.completeExceptionally(cause));
+            pending.clear();
+            possiblyStale.set(0);
+        }
+
+        int pendingCount() {
+            return pending.size();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -416,7 +486,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
 
     private CompletableFuture<EipPacket> sendRequest(EipPacket request) {
         CompletableFuture<EipPacket> responseFuture = new CompletableFuture<>();
-        pendingRequests.offer(responseFuture);
+        correlator.register(responseFuture);
 
         try {
             if (auditLog.isEnabled()) {
@@ -424,7 +494,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             }
             messageCodec.send(request);
         } catch (MessageCodecException e) {
-            pendingRequests.remove(responseFuture);
+            correlator.forget(responseFuture);
             responseFuture.completeExceptionally(new PlcRuntimeException("Failed to send EIP request", e));
             return responseFuture;
         }
@@ -433,7 +503,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         responseFuture.orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
             .whenComplete((r, e) -> {
                 if (e instanceof TimeoutException) {
-                    pendingRequests.remove(responseFuture);
+                    correlator.timedOut(responseFuture);
                 }
             });
 
@@ -444,12 +514,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         if (auditLog.isEnabled()) {
             auditLog.write(AuditLogEventType.INCOMING_MESSAGE, "Received EIP response");
         }
-        CompletableFuture<EipPacket> future = pendingRequests.poll();
-        if (future != null) {
-            future.complete(packet);
-        } else {
-            LOGGER.warn("Received EIP response with no pending request");
-        }
+        correlator.deliver(packet);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

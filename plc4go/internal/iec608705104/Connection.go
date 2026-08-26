@@ -413,10 +413,8 @@ func (c *Connection) noteReceivedDataFrame(sendSequenceNo uint16) (uint16, bool)
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	c.subscribersMutex.Lock()
 	defer c.subscribersMutex.Unlock()
-	for _, existing := range c.subscribers {
-		if existing == subscriber {
-			return
-		}
+	if slices.Contains(c.subscribers, subscriber) {
+		return
 	}
 	c.subscribers = append(c.subscribers, subscriber)
 }

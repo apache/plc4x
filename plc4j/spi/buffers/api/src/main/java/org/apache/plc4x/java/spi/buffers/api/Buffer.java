@@ -28,4 +28,24 @@ public interface Buffer {
 
     WithOption[] getContext();
 
+    /**
+     * @return how many contexts are open, for a caller that means to recover from a failed read
+     * and has to know what to give back. A buffer that keeps no contexts has none to report.
+     */
+    default int getContextDepth() {
+        return 0;
+    }
+
+    /**
+     * Closes every context opened since {@code contextDepth} was taken. Only a read that finishes
+     * pops what it pushed, so a caller that recovers from a failed read and carries on has to give
+     * the nesting budget back itself - otherwise a message full of absent optional fields spends
+     * the budget of a message that nests deeply.
+     *
+     * @param contextDepth a depth previously returned by {@link #getContextDepth()}
+     */
+    default void resetContextDepth(int contextDepth) {
+        // A buffer that keeps no contexts has nothing to give back.
+    }
+
 }

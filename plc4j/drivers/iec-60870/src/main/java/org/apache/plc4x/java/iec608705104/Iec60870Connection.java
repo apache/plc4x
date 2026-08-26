@@ -92,6 +92,11 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
     /** Send an S-format acknowledgement every N unconfirmed I-format frames. */
     private static final int ACK_EVERY_N_FRAMES = 8;
 
+    /**
+     * Sequence numbers are fifteen bits wide and wrap, so they are counted modulo this.
+     */
+    private static final int SEQUENCE_NUMBER_MODULUS = 1 << 15;
+
     private Iec60870MessageCodec messageCodec;
 
     /** Single-flight pending response future for the handshake. */
@@ -101,6 +106,13 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
 
     private volatile boolean handshakeComplete = false;
     private int unconfirmedPackets;
+
+    /**
+     * V(R) - the sequence number we expect the station to send next, which is one past the last one
+     * it did send. This is what an acknowledgement carries: it tells the station how far we have
+     * read, so it can release what it was holding in case it had to send it again.
+     */
+    private int expectedSendSequenceNumber;
 
     public Iec60870Connection(Iec608705014Configuration configuration,
                               TransportInstance<?> transportInstance,
@@ -266,13 +278,14 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
 
         // Real telemetry: I-format ASDUs.
         if (apdu instanceof APDUIFormat apduiFormat) {
+            // One past what the station just sent, wrapped - that is what we have read up to, and
+            // what an acknowledgement is for. It used to be built from the frame's *receive*
+            // sequence number, which is the station telling us how much of ours it had read: a
+            // different number entirely, and one that says nothing about what we have taken in.
+            expectedSendSequenceNumber = nextExpectedAfter(apduiFormat.getSendSequenceNumber());
             unconfirmedPackets++;
             if (unconfirmedPackets >= ACK_EVERY_N_FRAMES) {
-                try {
-                    messageCodec.send(new APDUSFormat(0x01, apduiFormat.getReceiveSequenceNo() + 1));
-                } catch (MessageCodecException e) {
-                    LOGGER.error("Failed to send S-format acknowledgement", e);
-                }
+                sendAcknowledgement();
                 unconfirmedPackets = 0;
             }
             processAsdu(apduiFormat.getAsdu());
@@ -325,17 +338,66 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
     // ASDU → PlcSubscriptionEvent dispatch
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void processAsdu(ASDU asdu) {
-        int asduAddress = asdu.getAsduAddressField();
-        for (InformationObject informationObject : asdu.getInformationObjects()) {
-            int objectAddress = informationObject.getAddress();
-            Iec608705104Tag tag = new Iec608705104Tag(asduAddress, objectAddress);
-            PlcValue plcValue = Iec608705104TagParser.parseTag(informationObject, asdu.getTypeIdentification());
-            LocalDateTime eventTime = extractEventTime(informationObject);
-            publishEvent(eventTime, tag, plcValue, asduAddress, objectAddress);
+    /**
+     * @return the sequence number we expect next after receiving {@code sendSequenceNumber}, which
+     * is one past it - fifteen bits wide, so it wraps rather than growing.
+     */
+    static int nextExpectedAfter(int sendSequenceNumber) {
+        return (sendSequenceNumber + 1) % SEQUENCE_NUMBER_MODULUS;
+    }
+
+    /**
+     * @return the control-field value carrying {@code sequenceNumber}. The number lives in the upper
+     * fifteen bits, the lowest being what tells the frame formats apart, so it goes out shifted up
+     * by one.
+     */
+    static int encodeSequenceNumber(int sequenceNumber) {
+        return (sequenceNumber % SEQUENCE_NUMBER_MODULUS) << 1;
+    }
+
+    /**
+     * Tells the station how far we have read, so it can let go of what it was keeping in case it
+     * needed to send it again.
+     */
+    private void sendAcknowledgement() {
+        try {
+            // The number sits in the upper fifteen bits of the control field, the lowest bit being
+            // what tells the frame formats apart - so it goes on the wire shifted up by one.
+            messageCodec.send(new APDUSFormat(0x01, encodeSequenceNumber(expectedSendSequenceNumber)));
+        } catch (MessageCodecException e) {
+            LOGGER.error("Failed to send S-format acknowledgement", e);
         }
     }
 
+    private void processAsdu(ASDU asdu) {
+        int asduAddress = asdu.getAsduAddressField();
+        for (InformationObject informationObject : asdu.getInformationObjects()) {
+            try {
+                int objectAddress = informationObject.getAddress();
+                Iec608705104Tag tag = new Iec608705104Tag(asduAddress, objectAddress);
+                PlcValue plcValue = Iec608705104TagParser.parseTag(informationObject, asdu.getTypeIdentification());
+                LocalDateTime deviceTime = extractEventTime(informationObject);
+                // A timestamp we could not make sense of makes the item invalid, not the pass. The
+                // event still needs a time to carry, so it gets the time it arrived - what the
+                // objects that carry no timestamp of their own have always been given.
+                publishEvent(
+                    deviceTime != null ? deviceTime : LocalDateTime.now(),
+                    tag, plcValue,
+                    deviceTime != null ? PlcResponseCode.OK : PlcResponseCode.INVALID_DATA,
+                    asduAddress, objectAddress);
+            } catch (RuntimeException e) {
+                // One object of an ASDU we cannot handle costs that object. The objects behind it
+                // in the same frame were sent by the same station and are no less valid for it.
+                LOGGER.warn("Ignoring an information object that could not be handled", e);
+            }
+        }
+    }
+
+    /**
+     * @return the time the station says the event happened, or {@code null} if it sent one that
+     * cannot be a time. Objects that carry no timestamp report the time they arrived, which is not
+     * the same thing as a timestamp we could not read.
+     */
     private static LocalDateTime extractEventTime(InformationObject informationObject) {
         if (informationObject instanceof InformationObjectWithTreeByteTime threeByte) {
             return convertCp24Time2aToCalendar(threeByte.getCp24Time2a());
@@ -351,12 +413,24 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
      * current host clock for the year/month/day/hour fields.
      */
     static LocalDateTime convertCp24Time2aToCalendar(ThreeOctetBinaryTime cp24Time2) {
+        // The station chooses these, and a minute of 62 is not a minute. Checked before they reach
+        // LocalDateTime, which answers an impossible date with an exception rather than a value.
+        if (outOfRange(cp24Time2.getMinutes(), 0, 59)
+            || outOfRange(cp24Time2.getMilliseconds(), 0, 59_999)) {
+            LOGGER.warn("Ignoring a CP24Time2a of {} minutes and {} ms, which is not a time",
+                cp24Time2.getMinutes(), cp24Time2.getMilliseconds());
+            return null;
+        }
         LocalDateTime now = LocalDateTime.now();
         return LocalDateTime.of(
             now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(),
             cp24Time2.getMinutes(),
             cp24Time2.getMilliseconds() / 1000,
             (cp24Time2.getMilliseconds() % 1000) * 1_000_000);
+    }
+
+    private static boolean outOfRange(int value, int min, int max) {
+        return value < min || value > max;
     }
 
     /**
@@ -368,6 +442,19 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
         Duration localTimeZoneOffsetFromUtc = Duration.ofMillis(localTimeZone.getRawOffset());
         if (cp56Time2.getDaylightSaving()) {
             localTimeZoneOffsetFromUtc = localTimeZoneOffsetFromUtc.plus(Duration.ofMillis(localTimeZone.getDSTSavings()));
+        }
+        // Same reasoning as CP24: a month of 0 is the case the report named, and a day of 0, an
+        // hour of 25 and a minute of 61 are all equally sendable.
+        if (outOfRange(cp56Time2.getYear(), 0, 99)
+            || outOfRange(cp56Time2.getMonth(), 1, 12)
+            || outOfRange(cp56Time2.getDay(), 1, 31)
+            || outOfRange(cp56Time2.getHour(), 0, 23)
+            || outOfRange(cp56Time2.getMinutes(), 0, 59)
+            || outOfRange(cp56Time2.getMilliseconds(), 0, 59_999)) {
+            LOGGER.warn("Ignoring a CP56Time2a of {}-{}-{} {}:{} +{}ms, which is not a time",
+                cp56Time2.getYear(), cp56Time2.getMonth(), cp56Time2.getDay(),
+                cp56Time2.getHour(), cp56Time2.getMinutes(), cp56Time2.getMilliseconds());
+            return null;
         }
         return LocalDateTime.of(
                 2000 + cp56Time2.getYear(),
@@ -391,13 +478,13 @@ public class Iec60870Connection extends ConnectionBase<Iec608705014Configuration
      * @param objectAddress the information object address, matched the same way.
      */
     private void publishEvent(LocalDateTime eventTime, Iec608705104Tag tag, PlcValue plcValue,
-                              int asduAddress, int objectAddress) {
+                              PlcResponseCode responseCode, int asduAddress, int objectAddress) {
         Instant timestamp = eventTime.atZone(ZoneId.systemDefault()).toInstant();
         String tagKey = tag.getAddressString();
         Iec608705104PlcSubscriptionEvent event = new Iec608705104PlcSubscriptionEvent(
             timestamp,
             Collections.singletonMap(tagKey, tag),
-            Collections.singletonMap(tagKey, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap(tagKey, new DefaultPlcResponseItem<>(responseCode, plcValue)));
 
         // IEC-104 has no per-tag filtering on the wire: the station simply
         // reports everything it has. So the filtering happens here, by

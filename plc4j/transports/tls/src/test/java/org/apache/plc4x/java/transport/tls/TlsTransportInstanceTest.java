@@ -374,6 +374,142 @@ class TlsTransportInstanceTest {
         }
     }
 
+    /**
+     * The reader loop is the only thing reading the socket, so a data listener that fails on one
+     * frame must cost that frame and nothing else - the peer chooses what arrives, and a frame the
+     * codec cannot parse is a frame the peer can send again.
+     */
+    @Test
+    void testDataListenerThrowingKeepsTransportReceiving() throws Exception {
+        Future<SSLSocket> serverFuture = acceptConnection();
+
+        TlsTransportInstance instance = new TlsTransportInstance(
+            new InetSocketAddress("127.0.0.1", serverPort),
+            createConfig(), AuditLog.builder().build());
+
+        try {
+            SSLSocket serverSocket = serverFuture.get(5, TimeUnit.SECONDS);
+
+            CountDownLatch secondNotification = new CountDownLatch(2);
+            java.util.concurrent.atomic.AtomicInteger notifications =
+                new java.util.concurrent.atomic.AtomicInteger();
+            instance.registerDataListener(() -> {
+                secondNotification.countDown();
+                if (notifications.incrementAndGet() == 1) {
+                    throw new IllegalStateException("simulated parse failure");
+                }
+            });
+
+            OutputStream serverOut = serverSocket.getOutputStream();
+            serverOut.write(new byte[]{0x01});
+            serverOut.flush();
+            Thread.sleep(200);
+            serverOut.write(new byte[]{0x02});
+            serverOut.flush();
+
+            assertTrue(secondNotification.await(5, TimeUnit.SECONDS),
+                "the reader loop must survive a listener that threw and deliver the next frame");
+            assertTrue(instance.isOpen(), "one unparseable frame must not close the transport");
+
+            instance.removeDataListener();
+            serverSocket.close();
+        } finally {
+            instance.close();
+        }
+    }
+
+    /**
+     * If the loop ever does stop while the transport still believes it is open, whoever is waiting
+     * on a response has to be told - otherwise they wait on a connection that can no longer
+     * receive.
+     */
+    @Test
+    void testReaderLoopExitingWhileOpenReportsDisconnect() throws Exception {
+        Future<SSLSocket> serverFuture = acceptConnection();
+
+        TlsTransportInstance instance = new TlsTransportInstance(
+            new InetSocketAddress("127.0.0.1", serverPort),
+            createConfig(), AuditLog.builder().build());
+
+        try {
+            SSLSocket serverSocket = serverFuture.get(5, TimeUnit.SECONDS);
+
+            CountDownLatch disconnected = new CountDownLatch(1);
+            instance.registerDisconnectListener(cause -> disconnected.countDown());
+
+            // The server going away ends the loop; the transport must not stay "open".
+            serverSocket.close();
+
+            assertTrue(disconnected.await(5, TimeUnit.SECONDS),
+                "a reader loop that stops must report the disconnection");
+            assertFalse(instance.isOpen());
+        } finally {
+            instance.close();
+        }
+    }
+
+    /**
+     * More bytes can arrive than the ring buffer has room for, and the codec is the only thing that
+     * knows where a frame ends - so a byte read off the socket and then dropped takes the middle out
+     * of somebody's message. Every byte the peer sent has to turn up, in the order it was sent.
+     */
+    @Test
+    void testReadingMoreThanTheRingHoldsLosesNothing() throws Exception {
+        Future<SSLSocket> serverFuture = acceptConnection();
+
+        TlsTransportConfiguration config = createConfig();
+        // Small enough that a single send cannot fit, so the loop has to wait for room.
+        config.receiveBufferSize = 2048;
+
+        TlsTransportInstance instance = new TlsTransportInstance(
+            new InetSocketAddress("127.0.0.1", serverPort), config, AuditLog.builder().build());
+
+        try {
+            SSLSocket serverSocket = serverFuture.get(5, TimeUnit.SECONDS);
+
+            int total = 16384;
+            byte[] sent = new byte[total];
+            for (int i = 0; i < total; i++) {
+                sent[i] = (byte) (i % 251);
+            }
+
+            java.io.ByteArrayOutputStream drained = new java.io.ByteArrayOutputStream();
+            instance.registerDataListener(() -> { });
+
+            OutputStream serverOut = serverSocket.getOutputStream();
+            Thread sender = new Thread(() -> {
+                try {
+                    serverOut.write(sent);
+                    serverOut.flush();
+                } catch (IOException e) {
+                    // the assertions below report what actually arrived
+                }
+            });
+            sender.start();
+
+            long deadline = System.currentTimeMillis() + 15000;
+            while (drained.size() < total && System.currentTimeMillis() < deadline) {
+                int available = instance.getNumBytesAvailable();
+                if (available > 0) {
+                    drained.write(instance.read(available));
+                } else {
+                    Thread.sleep(5);
+                }
+            }
+            sender.join(5000);
+
+            assertEquals(total, drained.size(),
+                "every byte the peer sent must be delivered, not dropped when the ring filled");
+            assertArrayEquals(sent, drained.toByteArray(),
+                "the bytes must arrive in the order they were sent");
+
+            instance.removeDataListener();
+            serverSocket.close();
+        } finally {
+            instance.close();
+        }
+    }
+
     @Test
     void testDisconnectListenerOnServerClose() throws Exception {
         Future<SSLSocket> serverFuture = acceptConnection();

@@ -117,7 +117,7 @@ func TestDiscovererDiscoverWithCanceledContext(t *testing.T) {
 func TestDiscovererDiscoverWithExpiringContext(t *testing.T) {
 	baseline := runtime.NumGoroutine()
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		d := testDiscoverer(t)
 		ctx, cancel := context.WithTimeout(context.Background(), 20*time.Millisecond)
 		if err := d.Discover(ctx, func(_ apiModel.PlcDiscoveryItem) {}); err != nil {

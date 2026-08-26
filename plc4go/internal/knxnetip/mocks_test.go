@@ -554,7 +554,7 @@ type MockGroupAddressTag_matches_Call struct {
 
 // matches is a helper method to define mock.On call
 //   - knxGroupAddress model0.KnxGroupAddress
-func (_e *MockGroupAddressTag_Expecter) matches(knxGroupAddress interface{}) *MockGroupAddressTag_matches_Call {
+func (_e *MockGroupAddressTag_Expecter) matches(knxGroupAddress any) *MockGroupAddressTag_matches_Call {
 	return &MockGroupAddressTag_matches_Call{Call: _e.mock.On("matches", knxGroupAddress)}
 }
 

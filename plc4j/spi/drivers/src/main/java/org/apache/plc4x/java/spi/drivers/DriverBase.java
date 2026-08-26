@@ -84,11 +84,18 @@ public abstract class DriverBase implements PlcDriver {
 
     /**
      * Matches the value of connection-string query parameters that carry secrets so they can be
-     * masked before logging. Covers any parameter whose name contains "password", "passwd", "secret"
-     * or "token" (optionally with a transport prefix like "tls.").
+     * masked before logging. Covers any parameter whose name contains "password", "passwd",
+     * "secret", "token", "psk-key" or "passphrase" (optionally with a transport prefix like
+     * "tls.").
+     *
+     * <p>"psk-key" is named in full rather than matching "key" or "psk" alone, which would take
+     * "key-store-file", "key-store-type", "generated-key-size", "log-session-keys" and
+     * "psk-identity" with it. Those are a path, a store type, a number, a boolean and an
+     * identifier - masking them protects nothing and costs an operator the diagnosis, the identity
+     * most of all, since it says which key was refused.</p>
      */
     private static final Pattern SECRET_PARAM_PATTERN = Pattern.compile(
-        "(?i)([?&][^=&]*(?:password|passwd|secret|token)[^=&]*=)[^&]*");
+        "(?i)([?&][^=&]*(?:password|passwd|secret|token|psk-key|passphrase)[^=&]*=)[^&]*");
 
     private static final Logger log = LoggerFactory.getLogger(DriverBase.class);
 

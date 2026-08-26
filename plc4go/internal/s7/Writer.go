@@ -236,7 +236,7 @@ func serializePlcValue(tag apiModel.PlcTag, plcValue apiValues.PlcValue, control
 			return nil, errors.Errorf("expected %d list elements, got %d", numElements, len(list))
 		}
 		data := make([]byte, (numElements+7)/8)
-		for i := uint16(0); i < numElements; i++ {
+		for i := range numElements {
 			if list[i].GetBool() {
 				data[i/8] |= 1 << (i % 8)
 			}
@@ -255,7 +255,7 @@ func serializePlcValue(tag apiModel.PlcTag, plcValue apiValues.PlcValue, control
 		}
 		data = serialized
 	} else {
-		for i := uint16(0); i < numElements; i++ {
+		for i := range numElements {
 			serialized, err := readWriteModel.DataItemSerialize(plcValue.GetIndex(uint32(i)), dataProtocolId, controllerType, int32(stringLength))
 			if err != nil {
 				return nil, errors.Wrapf(err, "Error serializing element %d of type: '%v'", i, s7Tag.GetDataType())

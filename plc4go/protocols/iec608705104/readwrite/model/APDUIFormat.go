@@ -45,13 +45,18 @@ type APDUIFormat interface {
 	utils.Copyable
 	APDU
 	// GetReceiveSequenceNo returns ReceiveSequenceNo (property field)
-	// TODO: Fix this ...
-	// [virtual uint 15 sendSequenceNo 'command >> 1']
-	// TODO: Shift this right by one bit to make it an uint 15
 	GetReceiveSequenceNo() uint16
 	// GetAsdu returns Asdu (property field)
 	// Payload
 	GetAsdu() ASDU
+	// GetSendSequenceNumber returns SendSequenceNumber (virtual field)
+	// The send sequence number is in the command field: an I-format frame is one whose
+	// lowest bit is clear, and the number occupies the fifteen bits above it. Virtual
+	// rather than read, because those same two bytes are what tells the formats apart and
+	// are already consumed above - passed in so it is in scope where the parse happens.
+	GetSendSequenceNumber() uint16
+	// GetReceiveSequenceNumber returns ReceiveSequenceNumber (virtual field)
+	GetReceiveSequenceNumber() uint16
 	// IsAPDUIFormat is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUIFormat()
 	// CreateBuilder creates a APDUIFormatBuilder
@@ -231,6 +236,27 @@ func (m *_APDUIFormat) GetAsdu() ASDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_APDUIFormat) GetSendSequenceNumber() uint16 {
+	ctx := context.Background()
+	_ = ctx
+	return uint16(m.GetCommand() >> uint16(1))
+}
+
+func (m *_APDUIFormat) GetReceiveSequenceNumber() uint16 {
+	ctx := context.Background()
+	_ = ctx
+	return uint16(m.GetReceiveSequenceNo() >> uint16(1))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAPDUIFormat(structType any) APDUIFormat {
@@ -250,8 +276,12 @@ func (m *_APDUIFormat) GetPlx4xTypeName() string {
 func (m *_APDUIFormat) GetLengthInBits(ctx context.Context) uint64 {
 	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
+	// A virtual field doesn't have any in- or output.
+
 	// Simple field (receiveSequenceNo)
 	lengthInBits += 16
+
+	// A virtual field doesn't have any in- or output.
 
 	// Simple field (asdu)
 	lengthInBits += m.Asdu.GetLengthInBits(ctx)
@@ -263,7 +293,7 @@ func (m *_APDUIFormat) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_APDUIFormat) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU) (__aPDUIFormat APDUIFormat, err error) {
+func (m *_APDUIFormat) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, command uint16) (__aPDUIFormat APDUIFormat, err error) {
 	m.APDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -274,11 +304,23 @@ func (m *_APDUIFormat) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	sendSequenceNumber, err := ReadVirtualField[uint16](ctx, "sendSequenceNumber", (*uint16)(nil), command>>uint16(1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendSequenceNumber' field"))
+	}
+	_ = sendSequenceNumber
+
 	receiveSequenceNo, err := ReadSimpleField(ctx, "receiveSequenceNo", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiveSequenceNo' field"))
 	}
 	m.ReceiveSequenceNo = receiveSequenceNo
+
+	receiveSequenceNumber, err := ReadVirtualField[uint16](ctx, "receiveSequenceNumber", (*uint16)(nil), receiveSequenceNo>>uint16(1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiveSequenceNumber' field"))
+	}
+	_ = receiveSequenceNumber
 
 	asdu, err := ReadSimpleField[ASDU](ctx, "asdu", ReadComplex[ASDU](ASDUParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
@@ -310,9 +352,21 @@ func (m *_APDUIFormat) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		if pushErr := writeBuffer.PushContext("APDUIFormat"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for APDUIFormat")
 		}
+		// Virtual field
+		sendSequenceNumber := m.GetSendSequenceNumber()
+		_ = sendSequenceNumber
+		if _sendSequenceNumberErr := writeBuffer.WriteVirtual(ctx, "sendSequenceNumber", m.GetSendSequenceNumber()); _sendSequenceNumberErr != nil {
+			return errors.Wrap(_sendSequenceNumberErr, "Error serializing 'sendSequenceNumber' field")
+		}
 
 		if err := WriteSimpleField[uint16](ctx, "receiveSequenceNo", m.GetReceiveSequenceNo(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'receiveSequenceNo' field")
+		}
+		// Virtual field
+		receiveSequenceNumber := m.GetReceiveSequenceNumber()
+		_ = receiveSequenceNumber
+		if _receiveSequenceNumberErr := writeBuffer.WriteVirtual(ctx, "receiveSequenceNumber", m.GetReceiveSequenceNumber()); _receiveSequenceNumberErr != nil {
+			return errors.Wrap(_receiveSequenceNumberErr, "Error serializing 'receiveSequenceNumber' field")
 		}
 
 		if err := WriteSimpleField[ASDU](ctx, "asdu", m.GetAsdu(), WriteComplex[ASDU](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {

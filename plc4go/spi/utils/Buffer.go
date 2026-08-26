@@ -27,17 +27,17 @@ type WithReaderWriterArgs interface {
 
 // WithAdditionalStringRepresentation can be used by e.g. enums to supply an additional string representation
 func WithAdditionalStringRepresentation(stringRepresentation string) WithReaderWriterArgs {
-	return withAdditionalStringRepresentation{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, stringRepresentation: stringRepresentation}
+	return withAdditionalStringRepresentation{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}, stringRepresentation: stringRepresentation}
 }
 
 // WithRenderAsList indicates that an element can be rendered as list
 func WithRenderAsList(renderAsList bool) WithReaderWriterArgs {
-	return withRenderAsList{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, renderAsList: renderAsList}
+	return withRenderAsList{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}, renderAsList: renderAsList}
 }
 
 // WithEncoding specifies an encoding
 func WithEncoding(encoding string) WithReaderWriterArgs {
-	return withEncoding{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, encoding: encoding}
+	return withEncoding{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}, encoding: encoding}
 }
 
 ///////////////////////////////////////

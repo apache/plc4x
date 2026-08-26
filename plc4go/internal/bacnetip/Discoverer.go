@@ -761,7 +761,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 			return nil, err
 		}
 		var addrs []string
-		for _, a := range strings.Split(joined, ",") {
+		for a := range strings.SplitSeq(joined, ",") {
 			if a = strings.TrimSpace(a); a != "" {
 				addrs = append(addrs, a)
 			}

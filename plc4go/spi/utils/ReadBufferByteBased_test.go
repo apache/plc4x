@@ -2173,3 +2173,51 @@ func Test_byteReadBuffer_ReadByteArray(t *testing.T) {
 		})
 	}
 }
+
+func Test_resolveMaxReadBufferDepth(t *testing.T) {
+	tests := []struct {
+		name       string
+		configured string
+		want       int
+	}{
+		{name: "unset leaves the default in place", configured: "", want: DefaultMaxReadBufferDepth},
+		{name: "blank leaves the default in place", configured: "   ", want: DefaultMaxReadBufferDepth},
+		{name: "not a number leaves the default in place", configured: "plenty", want: DefaultMaxReadBufferDepth},
+		{name: "zero leaves the default in place", configured: "0", want: DefaultMaxReadBufferDepth},
+		{name: "negative leaves the default in place", configured: "-1", want: DefaultMaxReadBufferDepth},
+		{name: "a lower bound is honoured", configured: "64", want: 64},
+		{name: "a higher bound is honoured", configured: " 4096 ", want: 4096},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, resolveMaxReadBufferDepth(tt.configured))
+		})
+	}
+}
+
+func Test_byteReadBuffer_PullContext_boundsNesting(t *testing.T) {
+	t.Run("nesting past the bound is reported as a parse error", func(t *testing.T) {
+		rb := NewReadBufferByteBased(nil, WithMaxDepthForReadBufferByteBased(8))
+		for range 8 {
+			assert.NoError(t, rb.PullContext("level"))
+		}
+		err := rb.PullContext("oneTooDeep")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "nesting depth")
+	})
+	t.Run("leaving a context makes room again", func(t *testing.T) {
+		rb := NewReadBufferByteBased(nil, WithMaxDepthForReadBufferByteBased(8))
+		for range 8 {
+			assert.NoError(t, rb.PullContext("level"))
+		}
+		assert.NoError(t, rb.CloseContext("level"))
+		assert.NoError(t, rb.PullContext("backInBudget"))
+	})
+	t.Run("the environment sets the bound when no option does", func(t *testing.T) {
+		rb := NewReadBufferByteBased(nil)
+		for range maxReadBufferDepth {
+			assert.NoError(t, rb.PullContext("level"))
+		}
+		assert.Error(t, rb.PullContext("oneTooDeep"))
+	})
+}

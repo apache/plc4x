@@ -56,12 +56,33 @@ public class APDUIFormat extends APDU implements Message {
     return asdu;
   }
 
-  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer) throws BufferException {
+  /**
+   * Virtual field sendSequenceNumber
+   */
+  public short getSendSequenceNumber() {
+    return (short) ((command) >> (1));
+  }
+
+  /**
+   * Virtual field receiveSequenceNumber
+   */
+  public short getReceiveSequenceNumber() {
+    return (short) ((receiveSequenceNo) >> (1));
+  }
+
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, int command) throws
+      BufferException {
     readBuffer.pushContext(WithOption.WithName("APDUIFormat"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Virtual Field: sendSequenceNumber (doesn't parse anything, just makes the value available)
+    short sendSequenceNumber = FieldReaderFactory.readVirtualField(short.class, (command) >> (1), WithOption.WithName("sendSequenceNumber"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+
     // Simple Field: receiveSequenceNo
     int receiveSequenceNo = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("receiveSequenceNo"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+
+    // Virtual Field: receiveSequenceNumber (doesn't parse anything, just makes the value available)
+    short receiveSequenceNumber = FieldReaderFactory.readVirtualField(short.class, (receiveSequenceNo) >> (1), WithOption.WithName("receiveSequenceNumber"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: asdu
     ASDU asdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ASDU.class, ASDU.staticParse(readBuffer)), readBuffer), WithOption.WithName("asdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -74,8 +95,14 @@ public class APDUIFormat extends APDU implements Message {
     writeBuffer.pushContext(WithOption.WithName("APDUIFormat"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
     int startPos = writeBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Virtual Field: sendSequenceNumber (doesn't serialize anything, just makes the value available)
+    short sendSequenceNumber = (short) getSendSequenceNumber();
+
     // Simple Field: receiveSequenceNo
     FieldWriterFactory.writeSimpleField((int) receiveSequenceNo, DataWriterFactory.writeUnsignedInt(writeBuffer, 16), WithOption.WithName("receiveSequenceNo"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+
+    // Virtual Field: receiveSequenceNumber (doesn't serialize anything, just makes the value available)
+    short receiveSequenceNumber = (short) getReceiveSequenceNumber();
 
     // Simple Field: asdu
     FieldWriterFactory.writeSimpleField((ASDU) asdu, DataWriterFactory.writeComplex(writeBuffer), WithOption.WithName("asdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -93,8 +120,12 @@ public class APDUIFormat extends APDU implements Message {
     int lengthInBits = super.getLengthInBits();
     APDUIFormat _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Virtual Field: sendSequenceNumber (doesn't produce any output, just makes the value available)
+
     // Simple Field: receiveSequenceNo
     lengthInBits += 16;
+
+    // Virtual Field: receiveSequenceNumber (doesn't produce any output, just makes the value available)
 
     // Simple Field: asdu
     lengthInBits += asdu.getLengthInBits();

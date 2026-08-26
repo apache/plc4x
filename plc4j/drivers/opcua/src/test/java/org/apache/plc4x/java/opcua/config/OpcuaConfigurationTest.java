@@ -57,6 +57,9 @@ class OpcuaConfigurationTest {
         assertThat(cfg.getRequestTimeout()).isZero();
         assertThat(cfg.getNegotiationTimeout()).isZero();
         assertThat(cfg.getSubscriptionQueueSize()).isZero();
+        assertThat(cfg.getBrowseMaxReferencesPerNode()).isZero();
+        assertThat(cfg.getBrowseMaxTotalNodes()).isZero();
+        assertThat(cfg.getBrowseMaxDepth()).isZero();
     }
 
     @Test
@@ -67,6 +70,19 @@ class OpcuaConfigurationTest {
         // accessor
         setField(cfg, "subscriptionQueueSize", 10L);
         assertThat(cfg.getSubscriptionQueueSize()).isEqualTo(10L);
+    }
+
+    @Test
+    void browseBoundsAreConfigurable() {
+        // A browse walks whatever tree the server describes, and how large that is cannot be
+        // known before walking it - so each of the three ways it can run away has a knob.
+        OpcuaConfiguration cfg = new OpcuaConfiguration();
+        cfg.setBrowseMaxReferencesPerNode(10);
+        cfg.setBrowseMaxTotalNodes(20);
+        cfg.setBrowseMaxDepth(3);
+        assertThat(cfg.getBrowseMaxReferencesPerNode()).isEqualTo(10);
+        assertThat(cfg.getBrowseMaxTotalNodes()).isEqualTo(20);
+        assertThat(cfg.getBrowseMaxDepth()).isEqualTo(3);
     }
 
     @Test

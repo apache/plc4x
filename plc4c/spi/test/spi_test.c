@@ -18,6 +18,7 @@
  */
 #include <unity.h>
 
+void test_plc4c_spi_context(void);
 void test_plc4c_spi_read_buffer(void);
 void test_plc4c_spi_write_buffer(void);
 void test_system_plc4c_system_create_connection(void);
@@ -29,6 +30,7 @@ void tearDown(void) {}
 int main(void) {
   UNITY_BEGIN();
 
+  RUN_TEST(test_plc4c_spi_context);
   RUN_TEST(test_plc4c_spi_read_buffer);
   RUN_TEST(test_plc4c_spi_write_buffer);
   RUN_TEST(test_system_plc4c_system_create_connection);

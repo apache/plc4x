@@ -505,7 +505,7 @@ func TestDecodePoint_ProtectionEquipmentEventIsUnsupported(t *testing.T) {
 func TestDecodePoint_FingerprintIsStable(t *testing.T) {
 	frame := iFormatFrame(0, 0, asduBytes(0x0B, 3, 10, informationObjectBytes(13, 0xD2, 0x04, 0x00)))
 	_, first, _ := decodeFirstPoint(t, frame)
-	for i := 0; i < 20; i++ {
+	for range 20 {
 		_, again, _ := decodeFirstPoint(t, frame)
 		require.Equal(t, first, again)
 	}

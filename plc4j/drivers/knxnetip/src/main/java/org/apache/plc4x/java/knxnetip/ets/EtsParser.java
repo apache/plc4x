@@ -34,6 +34,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -47,18 +49,40 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.File;
+import java.io.FilterInputStream;
+import java.io.InputStream;
+import java.nio.file.StandardCopyOption;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class EtsParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EtsParser.class);
+
+    /**
+     * How much a single entry of a knxproj may expand to.
+     *
+     * <p>A zip entry says how big it will be once inflated, and it can say anything. Compression
+     * ratios of a thousand to one are ordinary for repetitive data, so a small file can name a
+     * large one - and the XML here is not merely inflated but parsed into a document, which costs
+     * several times the text again.</p>
+     *
+     * <p>The declared size is checked before anything is read, and the bytes are counted as they
+     * arrive, because the declaration is written by whoever made the file. The largest knx_master
+     * seen in practice is a few tens of megabytes, so this leaves room to spare while keeping a
+     * crafted file from deciding how much memory we use.</p>
+     */
+    private static final long MAX_UNCOMPRESSED_ENTRY_SIZE = 128L * 1024 * 1024;
 
     private static boolean isEts6Schema(String schemaVersion) {
         if (schemaVersion == null) {
@@ -68,6 +92,73 @@ public class EtsParser {
             return Integer.parseInt(schemaVersion) >= 21;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+
+    /**
+     * Reads an entry, refusing one that says it is larger than the budget and stopping if it turns
+     * out to be larger than it said.
+     */
+    private static InputStream boundedEntryStream(ZipFile zipFile, FileHeader header)
+            throws IOException {
+        long declared = header.getUncompressedSize();
+        if (declared > MAX_UNCOMPRESSED_ENTRY_SIZE) {
+            throw new PlcRuntimeException(String.format(
+                "Refusing to read '%s': it declares %d bytes once expanded, over the %d byte limit",
+                header.getFileName(), declared, MAX_UNCOMPRESSED_ENTRY_SIZE));
+        }
+        return new BoundedInputStream(zipFile.getInputStream(header), MAX_UNCOMPRESSED_ENTRY_SIZE,
+            header.getFileName());
+    }
+
+    /**
+     * Writes an entry out under the same budget. Not zip4j's extractFile, which would have written
+     * whatever the entry expanded to before anybody could object.
+     */
+    private static void extractBounded(ZipFile zipFile, FileHeader header, Path target)
+            throws IOException {
+        try (InputStream in = boundedEntryStream(zipFile, header)) {
+            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    /** Counts what passes through and stops once it is more than was allowed. */
+    static final class BoundedInputStream extends FilterInputStream {
+
+        private final long limit;
+        private final String entryName;
+        private long read;
+
+        BoundedInputStream(InputStream in, long limit, String entryName) {
+            super(in);
+            this.limit = limit;
+            this.entryName = entryName;
+        }
+
+        private void count(long justRead) throws IOException {
+            if (justRead < 0) {
+                return;
+            }
+            read += justRead;
+            if (read > limit) {
+                throw new IOException(String.format(
+                    "'%s' expanded past the %d byte limit, whatever its header claimed",
+                    entryName, limit));
+            }
+        }
+
+        @Override
+        public int read() throws IOException {
+            int b = super.read();
+            count(b < 0 ? 0 : 1);
+            return b;
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            int n = super.read(b, off, len);
+            count(n);
+            return n;
         }
     }
 
@@ -82,15 +173,17 @@ public class EtsParser {
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
 
+            // Unpacked beside the process rather than held in memory, because zip4j needs a file
+            // to open the archive that password-protected projects keep inside the archive.
+            Path tempDir = Files.createTempDirectory(null);
             try (ZipFile zipFile = new ZipFile(knxprojFile)) {
-                Path tempDir = Files.createTempDirectory(null);
 
                 final FileHeader knxMasterFileHeader = zipFile.getFileHeader("knx_master.xml");
                 if(knxMasterFileHeader == null) {
                     throw new PlcRuntimeException("Error accessing knx_master.xml file.");
                 }
-                zipFile.extractFile("knx_master.xml", tempDir.toFile().getAbsolutePath());
                 File knxMasterFile = new File(tempDir.toFile(), "knx_master.xml");
+                extractBounded(zipFile, knxMasterFileHeader, knxMasterFile.toPath());
                 // If the file contains: <KNX xmlns="http://knx.org/xml/project/21"> it's an ETS6 file
                 // In all other cases, we'll treat it as ETS5
                 String etsSchemaVersion = null;
@@ -128,8 +221,8 @@ public class EtsParser {
                         throw new PlcRuntimeException(String.format("Error accessing project header file. Project file '%s/project.xml' and '%s.zip' don't exist.", projectNumber, projectNumber));
                     }
                     // Dump the encrypted zip to a temp file.
-                    zipFile.extractFile(projectNumber + ".zip", tempDir.toFile().getAbsolutePath());
                     File tempFile = new File(tempDir.toFile(), projectNumber + ".zip");
+                    extractBounded(zipFile, encryptedProjectFileHeader, tempFile.toPath());
 
                     // Unzip the archive inside the archive.
                     //noinspection CommentedOutCode
@@ -138,7 +231,7 @@ public class EtsParser {
                         if (compressedProjectFileHeader == null) {
                             throw new PlcRuntimeException(String.format("Error accessing project header file: Project file 'project.xml' inside '%s.zip'.", projectNumber));
                         }
-                        projectHeaderDoc = builder.parse(projectZipFile.getInputStream(compressedProjectFileHeader));
+                        projectHeaderDoc = builder.parse(boundedEntryStream(projectZipFile, compressedProjectFileHeader));
 
                         // TODO: Leave this in, as it helps debug problems, wen a new ETS version comes out.
                         // Print the document content to the console.
@@ -149,19 +242,19 @@ public class EtsParser {
                         if (projectFileFileHeader == null) {
                             throw new PlcRuntimeException("Error accessing project file.");
                         }
-                        projectDoc = builder.parse(projectZipFile.getInputStream(projectFileFileHeader));
+                        projectDoc = builder.parse(boundedEntryStream(projectZipFile, projectFileFileHeader));
 
                         // TODO: Leave this in, as it helps debug problems, wen a new ETS version comes out.
                         //System.out.println("Project Doc:");
                         //printDocument(projectDoc);
                     }
                 } else {
-                    projectHeaderDoc = builder.parse(zipFile.getInputStream(projectFileHeader));
+                    projectHeaderDoc = builder.parse(boundedEntryStream(zipFile, projectFileHeader));
                     FileHeader projectFileFileHeader = zipFile.getFileHeader(projectNumber + "/0.xml");
                     if (projectFileFileHeader == null) {
                         throw new PlcRuntimeException("Error accessing project file.");
                     }
-                    projectDoc = builder.parse(zipFile.getInputStream(projectFileFileHeader));
+                    projectDoc = builder.parse(boundedEntryStream(zipFile, projectFileFileHeader));
                 }
                 final XPathExpression xpathGroupAddressStyle = xPath.compile("/KNX/Project/ProjectInformation/@GroupAddressStyle");
                 Attr groupAddressStyle = (Attr) xpathGroupAddressStyle.evaluate(projectHeaderDoc, XPathConstants.NODE);
@@ -174,7 +267,7 @@ public class EtsParser {
                 if (knxMasterDataFileFileHeader == null) {
                     throw new PlcRuntimeException("Error accessing KNX master file.");
                 }
-                Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFileFileHeader));
+                Document knxMasterDoc = builder.parse(boundedEntryStream(zipFile, knxMasterDataFileFileHeader));
                 final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
                 NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
 
@@ -259,10 +352,38 @@ public class EtsParser {
                     }
                 }
                 return new EtsModel(groupAddressStyleCode, groupAddresses, topologyNames);
+            } finally {
+                // What we unpacked goes again whether we got a model out of it or not. A read that
+                // failed is the case that repeats - an operator pointing the driver at the wrong
+                // file does it until they find the right one.
+                deleteRecursively(tempDir);
             }
         } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
             // Zip and Xml Stuff
             throw new PlcRuntimeException(e);
+        }
+    }
+
+    /**
+     * Removes a directory and everything below it, reporting what it could not remove rather than
+     * failing the read over it - by the time this runs the model is either built or lost already,
+     * and neither outcome is improved by a second error.
+     */
+    private static void deleteRecursively(Path directory) {
+        if (directory == null || !Files.exists(directory)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(directory)) {
+            // Deepest first, since a directory only goes once it is empty.
+            paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    LOGGER.warn("Could not remove {} while cleaning up after reading a knxproj", path, e);
+                }
+            });
+        } catch (IOException e) {
+            LOGGER.warn("Could not clean up {} after reading a knxproj", directory, e);
         }
     }
 

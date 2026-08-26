@@ -132,7 +132,7 @@ func (c *DeviceInfoCache) LoadStatic(spec string) error {
 		return nil
 	}
 	var failures []string
-	for _, raw := range strings.Split(spec, ",") {
+	for raw := range strings.SplitSeq(spec, ",") {
 		entry := strings.TrimSpace(raw)
 		if entry == "" {
 			continue

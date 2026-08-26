@@ -68,9 +68,7 @@ func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValu
 		IndexOffset:  indexOffset,
 		ValueType:    valueType,
 		StringLength: stringLength,
-		PlcTag: PlcTag{
-			ArrayInfo: arrayInfo,
-		},
+		ArrayInfo:    arrayInfo,
 	}, nil
 }
 
@@ -179,9 +177,7 @@ type SymbolicPlcTag struct {
 func NewAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
 	return SymbolicPlcTag{
 		SymbolicAddress: symbolicAddress,
-		PlcTag: PlcTag{
-			ArrayInfo: arrayInfo,
-		},
+		ArrayInfo:       arrayInfo,
 	}, nil
 }
 

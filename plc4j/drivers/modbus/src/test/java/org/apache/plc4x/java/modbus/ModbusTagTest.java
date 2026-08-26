@@ -30,6 +30,7 @@ import static org.apache.plc4x.java.modbus.base.tag.ModbusTag.PROTOCOL_ADDRESS_O
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 
 class ModbusTagTest {
 
@@ -129,4 +130,27 @@ class ModbusTagTest {
         );
     }
 
+
+    /**
+     * The quantity is capped at 125 and the address range is checked, but both checks run after
+     * the number has been parsed - so a count too wide to be a number never reached them and left
+     * as a NumberFormatException instead of the invalid address it is.
+     */
+    @Test
+    void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> ModbusTagHoldingRegister.of("holding-register:1:INT[99999999999]"));
+    }
+
+    @Test
+    void anAddressTooWideToBeANumberIsAlsoAnInvalidTag() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> ModbusTagHoldingRegister.of("holding-register:99999999999:INT"));
+    }
+
+    @Test
+    void aStringLengthTooWideToBeANumberIsAlsoAnInvalidTag() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> ModbusTagHoldingRegister.of("holding-register:1:STRING(99999999999)"));
+    }
 }

@@ -39,6 +39,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
@@ -300,6 +301,15 @@ public class PskTlsTransportInstance extends BaseTransportInstance<PskTlsTranspo
     }
 
     @Override
+
+    public int getReceiveCapacity() {
+
+        return ringBuffer.capacity();
+
+    }
+
+
+    @Override
     public int getNumBytesAvailable() throws TransportException {
         readLock.lock();
         try {
@@ -492,26 +502,69 @@ public class PskTlsTransportInstance extends BaseTransportInstance<PskTlsTranspo
         }
     }
 
+    /**
+     * Runs a listener so that a failure inside it costs the frame it was handling and nothing more.
+     * The reader loop is the only thing reading the socket, and the peer decides what arrives, so
+     * one frame the codec cannot make sense of must not end the loop that would have read the next.
+     */
+    private void safeRun(Runnable listener) {
+        if (listener == null) {
+            return;
+        }
+        try {
+            listener.run();
+        } catch (Throwable t) {
+            LOGGER.error("Data listener failed", t);
+        }
+    }
+
     private void runReaderLoop() {
+        try {
+            runReaderLoopInternal();
+        } catch (Throwable t) {
+            // Nothing else reads this socket. If the loop ever leaves by an unexpected route the
+            // transport must stop claiming to be open, rather than leave callers waiting on a
+            // connection that can no longer receive.
+            LOGGER.error("Reader loop failed", t);
+        }
+        if (open) {
+            open = false;
+            notifyDisconnect(null);
+        }
+    }
+
+    private void runReaderLoopInternal() {
         LOGGER.debug("TLS-PSK reader loop started");
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
         while (open && !Thread.currentThread().isInterrupted()) {
             try {
-                int bytesRead = inputStream.read(buffer);
+                int free = ringBuffer.remainingForWriting();
+                if (free == 0) {
+                    // The ring is full and whoever consumes it has not caught up. Park briefly and
+                    // look again rather than reading bytes we would have to throw away: only the
+                    // codec knows where a frame ends, so a byte dropped here takes the middle out
+                    // of somebody's message. Never a disconnect - a consumer is allowed to lag.
+                    LockSupport.parkNanos(200_000L);
+                    continue;
+                }
+
+                // Bound the read to the room actually available, so the ring cannot overflow.
+                int bytesRead = inputStream.read(buffer, 0, Math.min(buffer.length, free));
 
                 if (bytesRead > 0) {
                     readLock.lock();
                     try {
                         int written = ringBuffer.write(buffer, 0, bytesRead);
                         if (written < bytesRead) {
-                            LOGGER.warn("Ring buffer full, lost {} bytes", bytesRead - written);
+                            // The read was bounded to the free space, so this cannot happen unless
+                            // that reasoning is wrong somewhere - say so loudly rather than
+                            // shrugging off lost bytes.
+                            LOGGER.error("Wrote only {} of {} bytes into a ring buffer that reported room",
+                                written, bytesRead);
                         }
 
-                        Runnable listener = dataListener;
-                        if (listener != null) {
-                            listener.run();
-                        }
+                        safeRun(dataListener);
                     } finally {
                         readLock.unlock();
                     }

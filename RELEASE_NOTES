@@ -160,6 +160,161 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- The OPC UA driver's "security-policy" now defaults to
+  Basic256Sha256 instead of NONE. NONE means the channel is
+  neither signed nor encrypted, so anything on the network path
+  can read and alter what is exchanged, and the server is not
+  authenticated at all.
+  A protected channel needs the server's certificate to be known
+  before the channel is opened. The discovery phase that would
+  otherwise fetch it runs unprotected by necessity, and a
+  certificate learned from the peer it is meant to authenticate
+  establishes nothing - so the driver no longer proceeds from
+  discovery onto a channel weaker than the one configured. It used
+  to do exactly that, silently: a connection asking for
+  Basic256Sha256 got a session with neither signing nor encryption
+  and no indication of it.
+  Together this means a connection that names no certificate now
+  fails where it previously came up unprotected. Name one with
+  "server-certificate-file", or a trust store with
+  "trust-store-file"; or set "discovery=false" if the endpoint needs
+  no discovery; or ask for "security-policy=NONE" to accept an
+  unprotected channel as before.
+  Note that a protected channel also needs a client key pair:
+  supply one with "key-store-file", or the driver generates a
+  throwaway self-signed certificate, which a server that
+  authenticates its clients will not accept.
+- The OPC UA driver refuses to send a username and password over a
+  channel that neither signs nor encrypts, because the password is
+  then readable by anything on the path and stays useful long after
+  it is read. The new "allow-insecure-credentials" parameter sends
+  them anyway, with a warning.
+- The OPC UA driver now requires an endpoint to match both the
+  requested security policy and the requested message security
+  mode, and selects the strongest endpoint that matches rather than
+  the weakest. It previously accepted an endpoint matching either
+  one and then chose the lowest security level on offer, so a
+  server publishing a wide-open endpoint beside a protected one was
+  usually reached over the wide-open one. Where two endpoints are
+  equally strong, one whose user token policy protects the token is
+  preferred.
+- The ctrlX driver no longer trusts the Bosch factory default
+  certificate that ships inside the driver jar, and no longer
+  accepts a certificate for any host regardless of the name it was
+  issued for. It also asks for a TLS context rather than the
+  legacy "SSL" one. That certificate identifies nobody - anything
+  presenting it and its key was trusted - and because it was the
+  only trust anchor, a device carrying a properly issued
+  certificate could not be reached at all. The credentials for the
+  connection travel over that channel.
+  Connections to a device still on its factory certificate will
+  now fail. The new "allow-factory-default-certificate" parameter
+  restores the old behaviour, with a warning; alternatively
+  "server-certificate-file" names a single PEM certificate to
+  trust, or "trust-store-file" (with "trust-store-password" and
+  "trust-store-type") a key store of them, matching the names used
+  by the OPC UA driver and the TLS transport.
+  "ignore-common-name" is also available if the certificate is
+  trusted but names a different host.
+- The TLS transport now checks that the server's certificate was
+  issued for the host it connected to. The "ignore-common-name"
+  parameter was declared but never consulted, so this check did
+  not happen at all: with "verify-ssl" on, any certificate from a
+  trusted issuer was accepted for any host, which is what a
+  machine in the middle needs. Setting "ignore-common-name=true"
+  restores the old behaviour and logs a warning saying so.
+  A connection to a device whose certificate names something other
+  than the address it is reached at will now fail where it
+  previously succeeded.
+  Two new parameters make the check usable where a device carries
+  its own certificate: "trust-store-file" (with
+  "trust-store-password" and "trust-store-type") names the
+  certificates to trust instead of the public authorities the JVM
+  ships with. Previously the only way past a private CA was
+  "verify-ssl=false", which turns off both the chain check and
+  this one.
+- The IEC 60870-5-104 driver now derives its S-format
+  acknowledgements from the send sequence number of the frames it
+  received, counted modulo 2^15 and encoded in the upper fifteen
+  bits of the control field, as the standard requires. It
+  previously sent the received frame's receive sequence number
+  plus one, which is the station reporting how much of our traffic
+  it had taken in - a different number, and one that said nothing
+  about how far we had read. This changes what the driver puts on
+  the wire in response to received telemetry, so a station that
+  checks acknowledgements will see different (correct) values, and
+  one that had adapted to the old behaviour may need attention.
+  The frame format itself is unchanged.
+- Tag addresses naming an implausible number of elements are now
+  rejected as invalid addresses rather than acted on. An element
+  count is a request to allocate, and it was taken at face value:
+  in the s7 driver a count is now measured against the 2097151
+  bytes an S7 address can reach (for the string forms, against
+  what one string of the declared length costs, which is the same
+  arithmetic the optimizer does in an int and where an unbounded
+  count overflowed); in the ads driver an index group, index
+  offset and element count must each fit the four bytes ADS
+  carries them in; in the firmata driver a digital tag must stay
+  within the 256 pins the protocol can name, having previously
+  turned its count into that many set bits at parse time. In all
+  three, a count too wide to be a number used to escape as a
+  NumberFormatException instead of the PlcInvalidTagException the
+  tag parsers promise.
+- The OPC UA driver bounds a browse, which previously walked
+  whatever tree the server described for as long as it described
+  one. "browse-max-references-per-node" (default 65536) limits the
+  references collected for one node and is now also asked of the
+  server, "browse-max-total-nodes" (default 1000000) limits how
+  many nodes one browse expands, and "browse-max-depth" (default
+  64) limits how deep it recurses. Set any of them to 0 for no
+  limit. Reaching one warns and returns what was found rather
+  than failing, so an address space within these sizes is
+  unaffected.
+- The ctrlX driver bounds a browse the same way, with
+  "browse-max-total-nodes" (default 1000000) and
+  "browse-max-depth" (default 64). Its browse also now always
+  completes its future: a node answering with no child list used
+  to throw inside the executor's task, where nothing caught it and
+  the caller was left waiting on a future that was never
+  completed. Such a node is now read as the leaf it says it is.
+- The simulated driver bounds how much data one tag may ask it to
+  make up. The count in the address was multiplied by the size of
+  one element in an int to size the array it fills, so a large
+  enough count asked for a negative array rather than a large one,
+  and anything below that got what it asked for - three hundred
+  million doubles being 2.4 GB. The product is now measured
+  against a budget of 16 MiB per tag.
+  The Go driver carries that count as a uint16, where a count
+  above it used to be truncated to its low two bytes rather than
+  refused - a request for 70000 elements handing back a tag of
+  4464, and one for 65536 handing back a tag of none. Both are
+  now invalid addresses, as is a count of zero, which the Java
+  driver already refused.
+- The modbus, profinet and profinet-ng tag parsers now report a
+  count, address or slot too wide to be a number as an invalid
+  tag. All three already bounded these values, but the checks ran
+  after the number was read, so anything too wide to read left as
+  a NumberFormatException instead. The digit widths are capped in
+  the address patterns, at what each field can hold.
+- Every generated parser now refuses a message that nests its
+  types deeper than 1024 levels, in both the Java and the Go
+  bindings. Several types contain themselves - BACnet constructed
+  data holds further constructed data, an OPC UA variant of type
+  24 holds further variants - so the depth of the value tree is
+  the sender's to choose and one level costs a single byte on the
+  wire. Deep enough, that ran the parser out of stack: in Java a
+  StackOverflowError, which is neither a parse failure the driver
+  can report nor an error the receive path contains, so a frame
+  that should have cost one frame ended the connection; in Go a
+  goroutine out of stack takes the process with it rather than
+  the request. Set PLC4X_MAX_NESTING_DEPTH for a device whose
+  messages genuinely nest deeper - it means the same thing in
+  both bindings, and a value that is not a positive number leaves
+  the default in place with a warning. The deepest message in the
+  project's own testsuites nests 36 levels, so this bounds only
+  what no real device sends. Note for Go consumers that the
+  default rose from 255 to 1024 in the process, so one setting of
+  the variable now means one depth whichever binding reads it.
 
 Changed Maven Coordinates
 -------------------------

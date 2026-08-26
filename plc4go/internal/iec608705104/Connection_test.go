@@ -241,7 +241,7 @@ func TestConnection_AcknowledgesAfterTheWindow(t *testing.T) {
 	connection, codec := newHandshakenConnection(t)
 
 	sentFrames := 0
-	for sendSequenceNo := uint16(0); sendSequenceNo < defaultAckThreshold; sendSequenceNo++ {
+	for sendSequenceNo := range uint16(defaultAckThreshold) {
 		// Every frame also carries the station's own receive sequence number, which has nothing to
 		// do with what it has sent us. Making it differ from the send sequence number is what
 		// catches a driver echoing the wrong one.
@@ -271,7 +271,7 @@ func TestConnection_AcknowledgesAfterTheWindow(t *testing.T) {
 func TestConnection_DoesNotAcknowledgeBeforeTheWindow(t *testing.T) {
 	_, codec := newHandshakenConnection(t)
 
-	for sendSequenceNo := uint16(0); sendSequenceNo < defaultAckThreshold-1; sendSequenceNo++ {
+	for sendSequenceNo := range uint16(defaultAckThreshold - 1) {
 		frame := iFormatFrame(sendSequenceNo, 0, asduBytes(0x01, 3, 10, informationObjectBytes(13, 0x01)))
 		pushIncoming(t, codec, parseApdu(t, frame))
 	}
@@ -290,7 +290,7 @@ func TestConnection_AcknowledgementWindowIsConfigurable(t *testing.T) {
 	completeHandshake(t, connection, codec)
 	t.Cleanup(func() { assert.NoError(t, connection.Close()) })
 
-	for sendSequenceNo := uint16(0); sendSequenceNo < 2; sendSequenceNo++ {
+	for sendSequenceNo := range uint16(2) {
 		frame := iFormatFrame(sendSequenceNo, 0, asduBytes(0x01, 3, 10, informationObjectBytes(13, 0x01)))
 		pushIncoming(t, codec, parseApdu(t, frame))
 	}

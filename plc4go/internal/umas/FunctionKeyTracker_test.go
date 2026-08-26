@@ -63,7 +63,7 @@ func TestFunctionKeyTracker_ReusingATransactionOverwritesIt(t *testing.T) {
 // Entries whose response never arrives would otherwise pile up for the life of the connection.
 func TestFunctionKeyTracker_EvictsTheOldestOnceItIsFull(t *testing.T) {
 	tracker := newFunctionKeyTracker()
-	for i := 0; i < maxTrackedFunctionKeys; i++ {
+	for i := range maxTrackedFunctionKeys {
 		tracker.trackRequest(uint16(i), 0x22)
 	}
 	// One more entry pushes the oldest one out and nothing else.
@@ -82,11 +82,11 @@ func TestFunctionKeyTracker_EvictsTheOldestOnceItIsFull(t *testing.T) {
 func TestFunctionKeyTracker_IsSafeForConcurrentUse(t *testing.T) {
 	tracker := newFunctionKeyTracker()
 	var waitGroup sync.WaitGroup
-	for worker := 0; worker < 8; worker++ {
+	for worker := range 8 {
 		waitGroup.Add(1)
 		go func(worker int) {
 			defer waitGroup.Done()
-			for i := 0; i < 100; i++ {
+			for i := range 100 {
 				identifier := uint16(worker*100 + i)
 				tracker.trackRequest(identifier, 0x22)
 				tracker.consumeFunctionKey(identifier)

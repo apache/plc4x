@@ -206,10 +206,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			return nil, nil
 		}
 
-		peekSize := lengthFieldEnd
-		if numBytesAvailable < peekSize {
-			peekSize = numBytesAvailable
-		}
+		peekSize := min(numBytesAvailable, lengthFieldEnd)
 		header, err := ti.PeekReadableBytes(ctx, peekSize)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking the length field")

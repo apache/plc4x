@@ -118,6 +118,42 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 		},
+		{
+			// The count is carried as a uint16, so anything above it used to come back as the low two
+			// bytes of what was asked for - a tag of 4464 elements rather than an error.
+			name: "error array size past the count a tag can carry",
+			args: args{
+				query: "RANDOM/test_stdout:BOOL[70000]",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			// The same, one past the boundary, where the low two bytes are zero and the tag came back
+			// holding nothing at all.
+			name: "error array size one past the count a tag can carry",
+			args: args{
+				query: "RANDOM/test_stdout:BOOL[65536]",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "error array size of zero",
+			args: args{
+				query: "RANDOM/test_stdout:BOOL[0]",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "largest array size a tag can carry",
+			args: args{
+				query: "RANDOM/test_stdout:BOOL[65535]",
+			},
+			want:    NewSimulatedTag(TagRandom, "test_stdout", readWriteModel.SimulatedDataTypeSizes_BOOL, 65535),
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

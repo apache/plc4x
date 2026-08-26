@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+	"maps"
 	"reflect"
 	"runtime/debug"
 	"sync"
@@ -218,9 +219,7 @@ func (p *pollingSubscription) snapshot() ([]string, map[string]apiModel.PlcSubsc
 	tagNames := make([]string, len(p.tagNames))
 	copy(tagNames, p.tagNames)
 	tags := make(map[string]apiModel.PlcSubscriptionTag, len(p.tags))
-	for tagName, tag := range p.tags {
-		tags[tagName] = tag
-	}
+	maps.Copy(tags, p.tags)
 	return tagNames, tags
 }
 
@@ -669,11 +668,9 @@ func (d *defaultPollingSubscriber) startDelivery(consumer apiModel.PlcSubscripti
 		// There is nothing to run, and deliver skips such a registration anyway.
 		return registered
 	}
-	d.deliveryWg.Add(1)
-	go func() {
-		defer d.deliveryWg.Done()
+	d.deliveryWg.Go(func() {
 		registered.run(d.log)
-	}()
+	})
 	return registered
 }
 

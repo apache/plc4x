@@ -111,7 +111,7 @@ type MockPositionMover_SetPos_Call struct {
 
 // SetPos is a helper method to define mock.On call
 //   - pos uint32
-func (_e *MockPositionMover_Expecter) SetPos(pos interface{}) *MockPositionMover_SetPos_Call {
+func (_e *MockPositionMover_Expecter) SetPos(pos any) *MockPositionMover_SetPos_Call {
 	return &MockPositionMover_SetPos_Call{Call: _e.mock.On("SetPos", pos)}
 }
 

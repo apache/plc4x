@@ -22,6 +22,7 @@ package org.apache.plc4x.java.ctrlx.readwrite;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api.DataLayerInformationAndSettingsApi;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model.BrowseData;
+import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,12 @@ public class BrowseTest {
     @Test
     @Disabled("Only made to run locally")
     public void browseTest() throws Exception {
-        ApiClient apiClient = ApiClientFactory.getApiClient("https://192.168.42.100", "boschrexroth", "TimechoEurope2023");
+        // Run against a device still on its factory certificate, which is what this always did -
+        // now it has to say so.
+        CtrlXConfiguration configuration = new CtrlXConfiguration();
+        configuration.allowFactoryDefaultCertificate = true;
+        ApiClient apiClient = ApiClientFactory.getApiClient(
+            "https://192.168.42.100", "boschrexroth", "TimechoEurope2023", configuration);
         //
         DataLayerInformationAndSettingsApi api = new DataLayerInformationAndSettingsApi(apiClient);
         BrowseData nodeNames = api.getNodeNames();

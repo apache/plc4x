@@ -119,9 +119,7 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 		}
 		foundTag := spiModel.NewDefaultPlcBrowseItem(
 			model.SymbolicPlcTag{
-				PlcTag: model.PlcTag{
-					ArrayInfo: arrayInfo,
-				},
+				ArrayInfo:       arrayInfo,
 				SymbolicAddress: parentName,
 			},
 			parentName,
