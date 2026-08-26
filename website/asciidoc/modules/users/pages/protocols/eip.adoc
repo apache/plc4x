@@ -70,6 +70,7 @@ These are the data types the driver can encode and decode:
 |===
 |To store a|Use this data type
 |Bit|BOOL
+|Bit array|DWORD (32-bit boolean array)
 |8-bit integer|SINT
 |16-bit integer|INT
 |32-bit integer|DINT
