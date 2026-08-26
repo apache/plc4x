@@ -169,11 +169,18 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
                 samplingInterval = tagDefaultPlcSubscription.getDuration()
                     .map(Duration::toMillis).map(Long::doubleValue).orElse((double) cycleTime);
             }
+            // Only change-of-state items get the configured queue depth. Cyclic items never sample
+            // faster than they publish, so a deeper queue would sit unused; event items are fanned
+            // out through a name-keyed map in onEventNotification that cannot hold two values for the
+            // same tag, so a deeper queue there would silently drop the extra notifications.
+            long itemQueueSize =
+                tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.CHANGE_OF_STATE
+                    ? queueSize : 1L;
             MonitoringParameters parameters = new MonitoringParameters(
                 clientHandle,
                 samplingInterval,
                 eventFilter,       // filter, null means use default
-                queueSize,   // queue size
+                itemQueueSize,   // queue size
                 true        // discard oldest
             );
 

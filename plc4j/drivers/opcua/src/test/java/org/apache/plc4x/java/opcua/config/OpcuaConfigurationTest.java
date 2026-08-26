@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.config;
 
+import org.apache.plc4x.java.spi.config.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -63,13 +64,14 @@ class OpcuaConfigurationTest {
     }
 
     @Test
-    void subscriptionQueueSizeRoundtrips() throws Exception {
-        OpcuaConfiguration cfg = new OpcuaConfiguration();
-        // Production wiring goes through the Configuration framework, which also
-        // applies the @LongDefaultValue(1). Here we only verify the field is readable via the
-        // accessor
-        setField(cfg, "subscriptionQueueSize", 10L);
-        assertThat(cfg.getSubscriptionQueueSize()).isEqualTo(10L);
+    void subscriptionQueueSizeDefaultsToOneAndParsesFromConfig() {
+        // An empty configuration must apply the @LongDefaultValue(1),
+        // and an explicit value must be parsed under the "subscription-queue-size" parameter name.
+        ConfigurationFactory factory = new ConfigurationFactory();
+        assertThat(factory.createConfiguration(OpcuaConfiguration.class, "")
+            .getSubscriptionQueueSize()).isEqualTo(1L);
+        assertThat(factory.createConfiguration(OpcuaConfiguration.class, "subscription-queue-size=10")
+            .getSubscriptionQueueSize()).isEqualTo(10L);
     }
 
     @Test

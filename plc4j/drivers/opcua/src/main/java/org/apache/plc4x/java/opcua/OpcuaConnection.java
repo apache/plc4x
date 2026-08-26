@@ -2475,6 +2475,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         // (the server's fastest practical rate). The queue then retains the intermediate values that
         // accumulate between publishes instead of collapsing them to the latest.
         long queueSize = configuration.getSubscriptionQueueSize();
+        // The queue size is serialized as an OPC UA UInt32, so reject values outside that range
+        // up front rather than letting them fail later during message encoding.
+        if (queueSize < 0 || queueSize > 0xffff_ffffL) {
+            throw new PlcRuntimeException(
+                "subscription-queue-size must be between 0 and 4294967295, but was " + queueSize);
+        }
 
         return onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
                 long subscriptionId = response.getSubscriptionId();
