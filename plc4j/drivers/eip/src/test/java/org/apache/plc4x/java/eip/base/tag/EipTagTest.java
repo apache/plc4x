@@ -42,19 +42,20 @@ public class EipTagTest {
      */
     @Test
     public void testDocumentedAddressForms() {
-        assertTag("myTag", "myTag", CIPDataTypeCode.DINT, 1);
-        assertTag("myTag:REAL", "myTag", CIPDataTypeCode.REAL, 1);
-        assertTag("myTag:4", "myTag", CIPDataTypeCode.DINT, 4);
-        assertTag("myArray[3]:DINT", "myArray[3]", CIPDataTypeCode.DINT, 1);
-        assertTag("myArray[0]:DINT:4", "myArray[0]", CIPDataTypeCode.DINT, 4);
+        assertTag("myTag", "myTag", null, CIPDataTypeCode.DINT, 1);
+        assertTag("myTag:REAL", "myTag", null, CIPDataTypeCode.REAL, 1);
+        assertTag("myTag:4", "myTag", null, CIPDataTypeCode.DINT, 4);
+        assertTag("myArray[3]:DINT", "myArray", (short)3, CIPDataTypeCode.DINT, 1);
+        assertTag("myArray[0]:DINT:4", "myArray", (short)0, CIPDataTypeCode.DINT, 4);
         // The '%' prefix is optional.
-        assertTag("%myTag:REAL", "%myTag", CIPDataTypeCode.REAL, 1);
+        assertTag("%myTag:REAL", "%myTag", null, CIPDataTypeCode.REAL, 1);
     }
 
-    private void assertTag(String address, String tag, CIPDataTypeCode type, int elementNb) {
+    private void assertTag(String address, String tag, Short index, CIPDataTypeCode type, int elementNb) {
         EipTag eipTag = EipTag.of(address);
         Assertions.assertNotNull(eipTag, address);
         Assertions.assertEquals(tag, eipTag.getTag(), address);
+        Assertions.assertEquals(index, eipTag.getIndex(), address);
         Assertions.assertEquals(type, eipTag.getType(), address);
         Assertions.assertEquals(elementNb, eipTag.getElementNb(), address);
     }

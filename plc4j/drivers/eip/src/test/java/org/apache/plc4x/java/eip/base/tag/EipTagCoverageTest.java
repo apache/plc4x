@@ -30,11 +30,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EipTagCoverageTest {
 
     @Test
-    void singleArgCtorDefaultsElementsTo1AndLeavesTypeNull() {
+    void singleArgCtorDefaultsElementsTo1AndLeavesTypeAndIndexNull() {
         EipTag tag = new EipTag("%A0");
         assertThat(tag.getTag()).isEqualTo("%A0");
         assertThat(tag.getElementNb()).isEqualTo(1);
         assertThat(tag.getType()).isNull();
+        assertThat(tag.getIndex()).isNull();
     }
 
     @Test
@@ -42,15 +43,16 @@ class EipTagCoverageTest {
         EipTag tag = new EipTag("%A0", 4);
         assertThat(tag.getElementNb()).isEqualTo(4);
         assertThat(tag.getType()).isNull();
+        assertThat(tag.getIndex()).isNull();
     }
 
     @Test
     void ctorWithTypeOnly() {
         EipTag tag = new EipTag("%A0", CIPDataTypeCode.INT);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
-        // No element-count constructor → default int zero (not the 1 the
+        // No element-count constructor → default int 1
         // single-arg ctor injects). Lock the surface in place.
-        assertThat(tag.getElementNb()).isZero();
+        assertThat(tag.getElementNb()).isOne();
     }
 
     @Test
@@ -62,21 +64,13 @@ class EipTagCoverageTest {
     }
 
     @Test
-    void setTypeAndSetElementNbRoundtrip() {
-        EipTag tag = new EipTag("%A0");
-        tag.setType(CIPDataTypeCode.REAL);
-        tag.setElementNb(7);
-        assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.REAL);
-        assertThat(tag.getElementNb()).isEqualTo(7);
-    }
-
-    @Test
     void ofParsesTagWithTypeAndElements() {
         EipTag tag = EipTag.of("MyVar:INT:5");
         assertThat(tag).isNotNull();
         assertThat(tag.getTag()).isEqualTo("MyVar");
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
         assertThat(tag.getElementNb()).isEqualTo(5);
+        assertThat(tag.getIndex()).isNull();
     }
 
     @Test
@@ -85,14 +79,26 @@ class EipTagCoverageTest {
         assertThat(tag).isNotNull();
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.DINT);
         assertThat(tag.getElementNb()).isEqualTo(2);
+        assertThat(tag.getIndex()).isNull();
+    }
+
+    @Test
+    void ofDefaultsDataTypeToDintAndElementNbTo1WhenMissing() {
+        EipTag tag = EipTag.of("%A0[1]");
+        assertThat(tag).isNotNull();
+        assertThat(tag.getTag()).isEqualTo("%A0");
+        assertThat(tag.getIndex()).isOne();
+        assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.DINT);
+        assertThat(tag.getElementNb()).isEqualTo(1);
     }
 
     @Test
     void ofWithZeroElementsUsesTypeOnlyCtorPath() {
-        // elementNb=0 selects the (tag, type) constructor branch.
+        // elementNb=0 selects the minimum element value that is 1
         EipTag tag = EipTag.of("%A0:INT:0");
         assertThat(tag).isNotNull();
-        assertThat(tag.getElementNb()).isZero();
+        assertThat(tag.getIndex()).isNull();
+        assertThat(tag.getElementNb()).isOne();
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
     }
 
@@ -111,11 +117,15 @@ class EipTagCoverageTest {
         assertThat(new EipTag("%A0").getAddressString()).isEqualTo("%A0");
         assertThat(new EipTag("%A0", CIPDataTypeCode.DINT).getAddressString()).isEqualTo("%A0:DINT");
         assertThat(new EipTag("%A0", CIPDataTypeCode.DINT, 8).getAddressString()).isEqualTo("%A0:DINT:8");
+        assertThat(new EipTag("%A0", (short)1, CIPDataTypeCode.DINT, 8).getAddressString()).isEqualTo("%A0[1]:DINT:8");
 
         // Whatever it renders has to parse back into an equivalent tag.
-        EipTag original = EipTag.of("%A0:DINT:8");
+        EipTag original = EipTag.of("%A0[1]:DINT:8");
+        assertThat(original).isNotNull();
         EipTag reparsed = EipTag.of(original.getAddressString());
+        assertThat(reparsed).isNotNull();
         assertThat(reparsed.getTag()).isEqualTo(original.getTag());
+        assertThat(reparsed.getIndex()).isEqualTo(original.getIndex());
         assertThat(reparsed.getType()).isEqualTo(original.getType());
         assertThat(reparsed.getElementNb()).isEqualTo(original.getElementNb());
     }

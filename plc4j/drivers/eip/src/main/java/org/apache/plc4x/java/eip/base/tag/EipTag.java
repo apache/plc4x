@@ -36,47 +36,54 @@ import java.util.regex.Pattern;
 public class EipTag implements PlcTag, Serializable {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^(?<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
+        Pattern.compile("^(?<tag>[%a-zA-Z_.0-9]+)(\\[(?<index>[0-9]+)?])?:?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
     private static final String GROUP_NAME_TAG = "tag";
-    private static final String GROUP_NAME_GROUP_NAME_ELEMENTS = "elementNb";
+    private static final String GROUP_NAME_INDEX = "index";
     private static final String GROUP_NAME_TYPE = "dataType";
+    private static final String GROUP_NAME_ELEMENTS = "elementNb";
 
     private final String tag;
-    private CIPDataTypeCode type;
-    private int elementNb;
+    private final Short index;
+    private final CIPDataTypeCode type;
+    private final int elementNb;
 
     public EipTag(String tag) {
-        this.tag = tag;
-        this.elementNb = 1;
+        this(tag, null, null, 1);
     }
 
     public EipTag(String tag, int elementNb) {
-        this.tag = tag;
-        this.elementNb = elementNb;
+        this(tag, null, null, elementNb);
     }
 
     public EipTag(String tag, CIPDataTypeCode type, int elementNb) {
-        this.tag = tag;
-        this.type = type;
-        this.elementNb = elementNb;
+        this(tag, null, type, elementNb);
     }
 
     public EipTag(String tag, CIPDataTypeCode type) {
+        this(tag, null, type, 1);
+    }
+
+    public EipTag(String tag, Short index, CIPDataTypeCode type, int elementNb) {
         this.tag = tag;
+        this.index = index != null ? (short)Math.max(0, index) : null;
         this.type = type;
+        this.elementNb = Math.max(1, elementNb);
     }
 
     @Override
     public String getAddressString() {
         // Mirrors the format ADDRESS_PATTERN accepts, so of(getAddressString()) round-trips:
-        //   tag[:dataType[:elementNb]]
+        //   tag[index]:dataType:elementNb
         StringBuilder sb = new StringBuilder(tag);
+        if (index != null) {
+            sb.append('[').append(index).append(']');
+        }
         if (type != null) {
             sb.append(':').append(type.name());
-            if (elementNb > 1) {
-                sb.append(':').append(elementNb);
-            }
+        }
+        if (elementNb > 1) {
+            sb.append(':').append(elementNb);
         }
         return sb.toString();
     }
@@ -95,20 +102,17 @@ public class EipTag implements PlcTag, Serializable {
         return type;
     }
 
-    public void setType(CIPDataTypeCode type) {
-        this.type = type;
-    }
 
     public int getElementNb() {
         return elementNb;
     }
 
-    public void setElementNb(int elementNb) {
-        this.elementNb = elementNb;
-    }
-
     public String getTag() {
         return tag;
+    }
+
+    public Short getIndex() {
+        return index;
     }
 
     public static boolean matches(String tagQuery) {
@@ -119,21 +123,16 @@ public class EipTag implements PlcTag, Serializable {
         Matcher matcher = ADDRESS_PATTERN.matcher(tagString);
         if (matcher.matches()) {
             String tag = matcher.group(GROUP_NAME_TAG);
-            int nb = 1;
-            CIPDataTypeCode type;
-            if (!matcher.group(GROUP_NAME_GROUP_NAME_ELEMENTS).isEmpty()) {
-                nb = Integer.parseInt(matcher.group(GROUP_NAME_GROUP_NAME_ELEMENTS));
-            }
-            if (!matcher.group(GROUP_NAME_TYPE).isEmpty()) {
-                type = CIPDataTypeCode.valueOf(matcher.group(GROUP_NAME_TYPE));
-            } else {
-                type = CIPDataTypeCode.DINT;
-            }
-            if (nb != 0) {
-                return new EipTag(tag, type, nb);
-            } else {
-                return new EipTag(tag, type);
-            }
+
+            String elementsString = matcher.group(GROUP_NAME_ELEMENTS);
+            int nb = elementsString.isEmpty() ? 1 : Integer.parseInt(elementsString);
+
+            String indexString = matcher.group(GROUP_NAME_INDEX);
+            Short index = indexString != null ? Short.parseShort(indexString) : null;
+
+            String typeString = matcher.group(GROUP_NAME_TYPE);
+            CIPDataTypeCode type = typeString.isEmpty() ? CIPDataTypeCode.DINT : CIPDataTypeCode.valueOf(typeString);
+            return new EipTag(tag, index, type, nb);
         }
         return null;
     }
