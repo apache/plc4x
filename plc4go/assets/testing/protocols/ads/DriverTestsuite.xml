@@ -74,7 +74,7 @@
                 <octet6 dataType="uint" bitLength="8">1</octet6>
               </AmsNetId>
             </sourceAmsNetId>
-            <sourceAmsPort dataType="uint" bitLength="16">800</sourceAmsPort>
+            <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
             <commandId>
               <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_DEVICE_INFO">1</CommandId>
             </commandId>
@@ -115,7 +115,7 @@
                 <octet6 dataType="uint" bitLength="8">1</octet6>
               </AmsNetId>
             </targetAmsNetId>
-            <targetAmsPort dataType="uint" bitLength="16">800</targetAmsPort>
+            <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
             <sourceAmsNetId>
               <AmsNetId>
                 <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -141,7 +141,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">24</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">1</invokeId>
             <AdsReadDeviceInfoResponse>
               <result>
@@ -187,7 +189,7 @@
                 <octet6 dataType="uint" bitLength="8">1</octet6>
               </AmsNetId>
             </sourceAmsNetId>
-            <sourceAmsPort dataType="uint" bitLength="16">800</sourceAmsPort>
+            <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
             <commandId>
               <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
             </commandId>
@@ -202,7 +204,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">66</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">2</invokeId>
             <AdsReadWriteRequest>
               <indexGroup dataType="uint" bitLength="32">61444</indexGroup>
@@ -233,7 +237,7 @@
                 <octet6 dataType="uint" bitLength="8">1</octet6>
               </AmsNetId>
             </targetAmsNetId>
-            <targetAmsPort dataType="uint" bitLength="16">800</targetAmsPort>
+            <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
             <sourceAmsNetId>
               <AmsNetId>
                 <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -259,7 +263,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">12</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">2</invokeId>
             <AdsReadWriteResponse>
               <result>
@@ -303,7 +309,7 @@
                 <octet6 dataType="uint" bitLength="8">1</octet6>
               </AmsNetId>
             </sourceAmsNetId>
-            <sourceAmsPort dataType="uint" bitLength="16">800</sourceAmsPort>
+            <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
             <commandId>
               <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
             </commandId>
@@ -318,7 +324,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">12</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">3</invokeId>
             <AdsReadRequest>
               <indexGroup dataType="uint" bitLength="32">61448</indexGroup>
@@ -345,7 +353,7 @@
                 <octet6 dataType="uint" bitLength="8">1</octet6>
               </AmsNetId>
             </targetAmsNetId>
-            <targetAmsPort dataType="uint" bitLength="16">800</targetAmsPort>
+            <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
             <sourceAmsNetId>
               <AmsNetId>
                 <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -371,7 +379,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">9</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">3</invokeId>
             <AdsReadResponse>
               <result>
@@ -427,7 +437,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">12</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">4</invokeId>
             <AdsReadRequest>
               <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
@@ -480,7 +492,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">32</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">4</invokeId>
             <AdsReadResponse>
               <result>
@@ -536,7 +550,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">12</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">5</invokeId>
             <AdsReadRequest>
               <indexGroup dataType="uint" bitLength="32">61454</indexGroup>
@@ -589,7 +605,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">35944</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">5</invokeId>
             <AdsReadResponse>
               <result>
@@ -645,7 +663,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">12</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">6</invokeId>
             <AdsReadRequest>
               <indexGroup dataType="uint" bitLength="32">61451</indexGroup>
@@ -698,7 +718,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">42072</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">6</invokeId>
             <AdsReadResponse>
               <result>
@@ -757,7 +779,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">40</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">7</invokeId>
             <AdsAddDeviceNotificationRequest>
               <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
@@ -817,7 +841,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">8</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">7</invokeId>
             <AdsAddDeviceNotificationResponse>
               <result>
@@ -875,7 +901,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">40</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">8</invokeId>
             <AdsAddDeviceNotificationRequest>
               <indexGroup dataType="uint" bitLength="32">61448</indexGroup>
@@ -935,7 +963,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">8</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">8</invokeId>
             <AdsAddDeviceNotificationResponse>
               <result>
@@ -994,7 +1024,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">41</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">0</invokeId>
             <AdsDeviceNotificationRequest>
               <length dataType="uint" bitLength="32">37</length>
@@ -1082,7 +1114,7 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
               <AdsReadRequest>
                 <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
                 <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
@@ -1137,7 +1169,7 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
               <AdsReadResponse>
                 <result>
                   <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
@@ -1325,7 +1357,7 @@
                     <PlcBYTE dataType="int" bitLength="8">1</PlcBYTE>
                   </hurz_BYTE>
                   <hurz_TIME>
-                    <PlcTIME dataType="int" bitLength="32">1234</PlcTIME>
+                    <PlcTIME dataType="string" bitLength="64" encoding="UTF-8">PT1.234S</PlcTIME>
                   </hurz_TIME>
                   <hurz_DWORD>
                     <PlcDWORD dataType="int" bitLength="32">3</PlcDWORD>
@@ -1387,7 +1419,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">348</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">9</invokeId>
               <AdsWriteRequest>
                 <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
@@ -1441,8 +1475,10 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">4</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
-              <invokeId dataType="uint" bitLength="32">10</invokeId>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
               <AdsWriteResponse>
                 <result>
                   <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
@@ -1514,7 +1550,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadRequest>
                 <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
@@ -1567,7 +1605,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">9</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
@@ -1679,7 +1719,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadRequest>
                 <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
@@ -1733,7 +1775,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
@@ -1858,7 +1902,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadRequest>
                 <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
@@ -1911,7 +1957,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
@@ -1970,7 +2018,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
               <data>
                 <AdsData>
@@ -2027,7 +2077,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
               <data>
                 <AdsData>
@@ -2134,7 +2186,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadRequest>
                 <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
@@ -2187,7 +2241,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
@@ -2246,7 +2302,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
               <data>
                 <AdsData>
@@ -2304,7 +2362,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
               <data>
                 <AdsData>
@@ -2402,7 +2462,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">3</invokeId>
               <data>
                 <AdsData>
@@ -2459,7 +2521,9 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
               <invokeId dataType="uint" bitLength="32">3</invokeId>
               <data>
                 <AdsData>

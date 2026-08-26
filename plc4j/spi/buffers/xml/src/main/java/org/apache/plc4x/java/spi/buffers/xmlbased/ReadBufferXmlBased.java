@@ -43,6 +43,9 @@ public class ReadBufferXmlBased extends AbstractBuffer implements ReadBuffer, Xm
     public ReadBufferXmlBased(InputStream is) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        // decode() expects a field's text as a single Characters event; without coalescing the
+        // StAX reader splits large text nodes (e.g. multi-kilobyte hex byte arrays) into chunks.
+        xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, true);
         // TODO: Set this ....
         sizeInBits = 0;
         positionInBits = 0;

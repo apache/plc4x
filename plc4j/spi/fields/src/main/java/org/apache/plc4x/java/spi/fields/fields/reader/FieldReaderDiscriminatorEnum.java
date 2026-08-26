@@ -33,7 +33,10 @@ public class FieldReaderDiscriminatorEnum<T> implements FieldCommons {
     public T readDiscriminatorEnumField(DataReader<T> dataReader, WithOption... options) throws BufferException {
         LOGGER.debug("reading field {}", getName(options));
         dataReader.pushContext(WithOption.AddOptions(options, WithOption.WithRenderAsList(true)));
-        T result = dataReader.read(options);
+        // The serializer names the inner element after the enum type (see FieldWriterDiscriminatorEnum),
+        // which isn't statically known here - read with the wildcard name so name-validating
+        // buffers (XML) accept it.
+        T result = dataReader.read(WithOption.AddOptions(options, WithOption.WithName("*")));
         dataReader.popContext(WithOption.AddOptions(options, WithOption.WithRenderAsList(true)));
         return result;
     }
