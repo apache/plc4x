@@ -68,28 +68,9 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	// Here we can be sure that we're only handling a single request.
 	tagName := readRequest.GetTagNames()[0]
 	tag := readRequest.GetTag(tagName)
-	if model.NeedsResolving(tag) {
-		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type")))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-		// Replace the symbolic tag with a direct one
-		tag, err = m.resolveSymbolicTag(ctx, adsField)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-				readRequest,
-				nil,
-				errors.Wrap(err, "invalid tag item type"),
-			))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-	}
-	directAdsTag, ok := tag.(*model.DirectPlcTag)
-	if !ok {
-		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("invalid tag item type")))
+	directAdsTag, err := m.directTagFor(ctx, tag)
+	if err != nil {
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type")))
 		m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 		return
 	}
@@ -146,36 +127,9 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 	requestItems := make([]driverModel.AdsMultiRequestItem, 0)
 	for _, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName)
-		if model.NeedsResolving(tag) {
-			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrap(err, "invalid tag item type"),
-				))
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-			// Replace the symbolic tag with a direct one
-			tag, err = m.resolveSymbolicTag(ctx, adsField)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrap(err, "invalid tag item type"),
-				))
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-		}
-		directAdsTag, ok := tag.(*model.DirectPlcTag)
-		if !ok {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-				readRequest,
-				nil,
-				errors.New("invalid tag item type"),
-			))
+		directAdsTag, err := m.directTagFor(ctx, tag)
+		if err != nil {
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type")))
 			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}

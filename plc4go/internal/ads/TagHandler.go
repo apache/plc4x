@@ -20,8 +20,6 @@
 package ads
 
 import (
-	"encoding/binary"
-	"encoding/hex"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -68,15 +66,13 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.directAdsStringTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
-			decodeString, err := hex.DecodeString(indexGroupHexString)
+			// ParseUint instead of hex.DecodeString: addresses like 0x8 have an odd
+			// number of digits, which byte-wise decoding rejects.
+			parsed, err := strconv.ParseUint(indexGroupHexString, 16, 32)
 			if err != nil {
-				return nil, errors.Wrap(err, "Error decoding index group")
+				return nil, errors.Wrap(err, "Error decoding indexGroup")
 			}
-			// Fill up the array with missing bytes to get an array of size 4 bytes.
-			for i := len(decodeString); i < 4; i++ {
-				decodeString = append([]byte{0}, decodeString...)
-			}
-			indexGroup = binary.BigEndian.Uint32(decodeString)
+			indexGroup = uint32(parsed)
 		} else {
 			parsedIndexGroup, err := strconv.ParseUint(match["indexGroup"], 10, 32)
 			if err != nil {
@@ -86,15 +82,13 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		}
 		var indexOffset uint32
 		if indexOffsetHexString := match["indexOffsetHex"]; indexOffsetHexString != "" {
-			decodeString, err := hex.DecodeString(indexOffsetHexString)
+			// ParseUint instead of hex.DecodeString: addresses like 0x8 have an odd
+			// number of digits, which byte-wise decoding rejects.
+			parsed, err := strconv.ParseUint(indexOffsetHexString, 16, 32)
 			if err != nil {
-				return nil, errors.Wrap(err, "Error decoding index group")
+				return nil, errors.Wrap(err, "Error decoding indexOffset")
 			}
-			// Fill up the array with missing bytes to get an array of size 4 bytes.
-			for i := len(decodeString); i < 4; i++ {
-				decodeString = append([]byte{0}, decodeString...)
-			}
-			indexOffset = binary.BigEndian.Uint32(decodeString)
+			indexOffset = uint32(parsed)
 		} else {
 			parsedIndexOffset, err := strconv.ParseUint(match["indexOffset"], 10, 32)
 			if err != nil {
@@ -175,15 +169,13 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 	} else if match := utils.GetSubgroupMatches(m.directAdsTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
-			decodeString, err := hex.DecodeString(indexGroupHexString)
+			// ParseUint instead of hex.DecodeString: addresses like 0x8 have an odd
+			// number of digits, which byte-wise decoding rejects.
+			parsed, err := strconv.ParseUint(indexGroupHexString, 16, 32)
 			if err != nil {
-				return nil, errors.Wrap(err, "Error decoding index group")
+				return nil, errors.Wrap(err, "Error decoding indexGroup")
 			}
-			// Fill up the array with missing bytes to get an array of size 4 bytes.
-			for i := len(decodeString); i < 4; i++ {
-				decodeString = append([]byte{0}, decodeString...)
-			}
-			indexGroup = binary.BigEndian.Uint32(decodeString)
+			indexGroup = uint32(parsed)
 		} else {
 			parsedIndexGroup, err := strconv.ParseUint(match["indexGroup"], 10, 32)
 			if err != nil {
@@ -193,15 +185,13 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		}
 		var indexOffset uint32
 		if indexOffsetHexString := match["indexOffsetHex"]; indexOffsetHexString != "" {
-			decodeString, err := hex.DecodeString(indexOffsetHexString)
+			// ParseUint instead of hex.DecodeString: addresses like 0x8 have an odd
+			// number of digits, which byte-wise decoding rejects.
+			parsed, err := strconv.ParseUint(indexOffsetHexString, 16, 32)
 			if err != nil {
-				return nil, errors.Wrap(err, "Error decoding index group")
+				return nil, errors.Wrap(err, "Error decoding indexOffset")
 			}
-			// Fill up the array with missing bytes to get an array of size 4 bytes.
-			for i := len(decodeString); i < 4; i++ {
-				decodeString = append([]byte{0}, decodeString...)
-			}
-			indexOffset = binary.BigEndian.Uint32(decodeString)
+			indexOffset = uint32(parsed)
 		} else {
 			parsedIndexOffset, err := strconv.ParseUint(match["indexOffset"], 10, 32)
 			if err != nil {

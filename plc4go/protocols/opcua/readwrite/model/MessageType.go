@@ -156,7 +156,7 @@ func (e MessageType) Serialize() ([]byte, error) {
 func (e MessageType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("MessageType", uint32(24), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("MessageType", uint32(24), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8"))
 }
 
 func (e MessageType) GetValue() string {

@@ -352,6 +352,41 @@ func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32
 	return symbols, nil
 }
 
+// directTagFor returns a request tag as a fully usable direct tag: symbolic tags are
+// resolved against the tables loaded during connection setup, and direct tags created
+// straight from an address string get their data type table entry filled in.
+func (m *Connection) directTagFor(ctx context.Context, tag apiModel.PlcTag) (*model.DirectPlcTag, error) {
+	var directTag model.DirectPlcTag
+	switch typedTag := tag.(type) {
+	case model.SymbolicPlcTag:
+		resolvedTag, err := m.resolveSymbolicTag(ctx, typedTag)
+		if err != nil {
+			return nil, errors.Wrap(err, "error resolving symbolic tag")
+		}
+		return resolvedTag, nil
+	case *model.SymbolicPlcTag:
+		resolvedTag, err := m.resolveSymbolicTag(ctx, *typedTag)
+		if err != nil {
+			return nil, errors.Wrap(err, "error resolving symbolic tag")
+		}
+		return resolvedTag, nil
+	case model.DirectPlcTag:
+		directTag = typedTag
+	case *model.DirectPlcTag:
+		directTag = *typedTag
+	default:
+		return nil, errors.Errorf("invalid tag type %T", tag)
+	}
+	if directTag.DataType == nil {
+		dataType, ok := m.driverContext.dataTypeTable[directTag.ValueType.String()]
+		if !ok {
+			return nil, errors.Errorf("no entry for data type %s in the data type table", directTag.ValueType)
+		}
+		directTag.DataType = dataType
+	}
+	return &directTag, nil
+}
+
 func (m *Connection) resolveSymbolicTag(ctx context.Context, symbolicTag model.SymbolicPlcTag) (*model.DirectPlcTag, error) {
 	// Find the initial datatype, based on the first to segments.
 	symbolicAddress := symbolicTag.SymbolicAddress

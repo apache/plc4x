@@ -184,7 +184,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLREAL(value), nil
 	case plcValueType == api.CHAR: // CHAR
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF8"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("WINDOWS1252"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -202,7 +202,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcWCHAR(value), nil
 	case plcValueType == api.STRING: // STRING
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32((stringLength)*(8)), utils.WithEncoding("UTF8"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32((stringLength)*(8)), utils.WithEncoding("WINDOWS1252"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -418,7 +418,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == api.CHAR: // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("WINDOWS1252")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == api.WCHAR: // WCHAR
@@ -428,7 +428,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == api.STRING: // STRING
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("WINDOWS1252")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 

@@ -1491,7 +1491,7 @@
     </steps>
   </testcase>
 
-  <!--testcase>
+  <testcase>
     <name>Single element direct read request</name>
     <description>
       When doing a simple read request with only a single direct address, the
@@ -1501,10 +1501,10 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <tags isList="true">
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
-              <name>hurz</name>
-              <address>00004040/00000008:BOOL</address>
-            </tag>
+          <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <name>hurz</name>
+            <address>0x4040/0x8:BOOL</address>
+          </tag>
           </tags>
         </TestReadRequest>
       </api-request>
@@ -1524,18 +1524,18 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -1553,11 +1553,11 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
               <AdsReadRequest>
-                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
-                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                <length dataType="uint" bitLength="32">24</length>
+                <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">8</indexOffset>
+                <length dataType="uint" bitLength="32">1</length>
               </AdsReadRequest>
             </AmsPacket>
           </userdata>
@@ -1574,12 +1574,12 @@
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -1590,7 +1590,7 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -1608,38 +1608,20 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">1</length>
-                    <data dataType="byte" bitLength="8">0x01</data>
-                  </AdsReadResponse>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadResponse>
+                <result>
+                  <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                </result>
+                <length dataType="uint" bitLength="32">1</length>
+                <data dataType="byte" bitLength="8">0x01</data>
+              </AdsReadResponse>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <hurz>
-                  <DirectAdsField>
-                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">8</indexOffset>
-                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                  </DirectAdsField>
-                </hurz>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
           <values isList="true">
             <hurz>
               <PlcResponseItem>
@@ -1652,35 +1634,34 @@
           </values>
         </PlcReadResponse>
       </api-response>
-      <delay>1000</delay>
     </steps>
   </testcase>
 
   <testcase>
     <name>Multi-element direct read request</name>
     <description>
-      When doing a simple read request with only direct addresses, but multiple
-      ones, the unofficial multi-read method should be used to read all in one go.
+      When doing a read request with multiple direct addresses, the request is packed
+      into a single ADS sum command and the merged response is split up again.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <tags isList="true">
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
-              <name>hurz1</name>
-              <address>00004040/00000008:BOOL</address>
-            </tag>
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
-              <name>hurz2</name>
-              <address>00004040/00000012:BOOL</address>
-            </tag>
+          <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <name>hurz1</name>
+            <address>0x4040/0x8:BOOL</address>
+          </tag>
+          <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <name>hurz2</name>
+            <address>0x4040/0xC:BOOL</address>
+          </tag>
           </tags>
         </TestReadRequest>
       </api-request>
-      <outgoing-plc-message name="Send Ads Read Request">
+      <outgoing-plc-message name="Send Ads Sum Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">44</length>
+          <length dataType="uint" bitLength="32">72</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -1693,20 +1674,20 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
               </commandId>
               <initCommand dataType="bit" bitLength="1">false</initCommand>
               <updCommand dataType="bit" bitLength="1">false</updCommand>
@@ -1718,22 +1699,39 @@
               <response dataType="bit" bitLength="1">false</response>
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">12</length>
+              <length dataType="uint" bitLength="32">40</length>
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <AdsReadRequest>
-                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
-                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                <length dataType="uint" bitLength="32">24</length>
-              </AdsReadRequest>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadWriteRequest>
+                <indexGroup dataType="uint" bitLength="32">61568</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">2</indexOffset>
+                <readLength dataType="uint" bitLength="32">10</readLength>
+                <writeLength dataType="uint" bitLength="32">24</writeLength>
+                <items isList="true">
+                  <AdsMultiRequestItem>
+                    <AdsMultiRequestItemRead>
+                      <itemIndexGroup dataType="uint" bitLength="32">16448</itemIndexGroup>
+                      <itemIndexOffset dataType="uint" bitLength="32">8</itemIndexOffset>
+                      <itemReadLength dataType="uint" bitLength="32">1</itemReadLength>
+                    </AdsMultiRequestItemRead>
+                  </AdsMultiRequestItem>
+                  <AdsMultiRequestItem>
+                    <AdsMultiRequestItemRead>
+                      <itemIndexGroup dataType="uint" bitLength="32">16448</itemIndexGroup>
+                      <itemIndexOffset dataType="uint" bitLength="32">12</itemIndexOffset>
+                      <itemReadLength dataType="uint" bitLength="32">1</itemReadLength>
+                    </AdsMultiRequestItemRead>
+                  </AdsMultiRequestItem>
+                </items>
+                <data dataType="byte" bitLength="0">0x</data>
+              </AdsReadWriteRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
-
       </outgoing-plc-message>
-      <incoming-plc-message name="Receive Ads Read Response">
+      <incoming-plc-message name="Receive Ads Sum Read Response">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
           <length dataType="uint" bitLength="32">50</length>
@@ -1744,12 +1742,12 @@
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -1760,7 +1758,7 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
               </commandId>
@@ -1778,46 +1776,20 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadWriteResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">10</length>
-                    <data dataType="byte" bitLength="80">0x00000000000000000101</data>
-                  </AdsReadWriteResponse>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadWriteResponse>
+                <result>
+                  <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                </result>
+                <length dataType="uint" bitLength="32">10</length>
+                <data dataType="byte" bitLength="80">0x00000000000000000101</data>
+              </AdsReadWriteResponse>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <hurz1>
-                  <DirectAdsField>
-                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">8</indexOffset>
-                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                  </DirectAdsField>
-                </hurz1>
-                <hurz2>
-                  <DirectAdsField>
-                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">12</indexOffset>
-                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                  </DirectAdsField>
-                </hurz2>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
           <values isList="true">
             <hurz1>
               <PlcResponseItem>
@@ -1838,144 +1810,27 @@
           </values>
         </PlcReadResponse>
       </api-response>
-      <delay>1000</delay>
     </steps>
   </testcase>
 
   <testcase>
     <name>Single element symbolic read request</name>
     <description>
-      When doing a simple read request with only a single symbolic address, which has not
-      been resolved previously, first a resolution request has to be issued and the data
-      from the response should be used in a second request to actually read the data.
+      A read request with a symbolic address is resolved offline against the symbol- and
+      data-type-tables loaded during connection setup, so only the direct read of the
+      resolved address goes on the wire.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <tags isList="true">
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
-              <name>hurz1</name>
-              <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </tag>
+          <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <name>hurz1</name>
+            <address>MAIN.hurz_Struct.hurz_BOOL</address>
+          </tag>
           </tags>
         </TestReadRequest>
       </api-request>
-      <outgoing-plc-message name="Send Resolve Symbolic Address Request">
-        <AmsTCPPacket>
-          <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">44</length>
-          <userdata>
-            <AmsPacket>
-              <targetAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">20</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
-              <sourceAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
-              <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
-              </commandId>
-              <initCommand dataType="bit" bitLength="1">false</initCommand>
-              <updCommand dataType="bit" bitLength="1">false</updCommand>
-              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-              <noReturn dataType="bit" bitLength="1">false</noReturn>
-              <response dataType="bit" bitLength="1">false</response>
-              <broadcast dataType="bit" bitLength="1">false</broadcast>
-              <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">12</length>
-              <errorCode>
-                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
-              </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <AdsReadRequest>
-                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
-                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                <length dataType="uint" bitLength="32">24</length>
-              </AdsReadRequest>
-            </AmsPacket>
-          </userdata>
-        </AmsTCPPacket>
-      </outgoing-plc-message>
-      <incoming-plc-message name="Receive Resolve Symbolic Address Response">
-        <AmsTCPPacket>
-          <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">44</length>
-          <userdata>
-            <AmsPacket>
-              <targetAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
-              <sourceAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">20</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
-              <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
-              </commandId>
-              <initCommand dataType="bit" bitLength="1">false</initCommand>
-              <updCommand dataType="bit" bitLength="1">false</updCommand>
-              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-              <noReturn dataType="bit" bitLength="1">false</noReturn>
-              <response dataType="bit" bitLength="1">true</response>
-              <broadcast dataType="bit" bitLength="1">false</broadcast>
-              <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">12</length>
-              <errorCode>
-                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
-              </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadWriteResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">4</length>
-                    <data dataType="byte" bitLength="32">0x0100801b</data>
-                  </AdsReadWriteResponse>
-                </AdsData>
-              </data>
-            </AmsPacket>
-          </userdata>
-        </AmsTCPPacket>
-      </incoming-plc-message>
       <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
@@ -1992,18 +1847,18 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -2021,16 +1876,12 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">2</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadRequest>
-                    <indexGroup dataType="uint" bitLength="32">61445</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">461373441</indexOffset>
-                    <length dataType="uint" bitLength="32">1</length>
-                  </AdsReadRequest>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
+                <length dataType="uint" bitLength="32">1</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
@@ -2038,7 +1889,7 @@
       <incoming-plc-message name="Receive Ads Read Response">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">50</length>
+          <length dataType="uint" bitLength="32">41</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -2046,12 +1897,12 @@
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -2062,7 +1913,7 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -2076,47 +1927,30 @@
               <response dataType="bit" bitLength="1">true</response>
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">18</length>
+              <length dataType="uint" bitLength="32">9</length>
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">2</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">10</length>
-                    <data dataType="byte" bitLength="80">0x00000000000000000101</data>
-                  </AdsReadResponse>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadResponse>
+                <result>
+                  <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                </result>
+                <length dataType="uint" bitLength="32">1</length>
+                <data dataType="byte" bitLength="8">0x01</data>
+              </AdsReadResponse>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <hurz1>
-                  <SymbolicAdsField>
-                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                  </SymbolicAdsField>
-                </hurz1>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
           <values isList="true">
             <hurz1>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
                 </value>
               </PlcResponseItem>
             </hurz1>
@@ -2129,137 +1963,20 @@
   <testcase>
     <name>Single element symbolic read request (Address previously resolved)</name>
     <description>
-      When doing a simple read request with only a single symbolic address, which has
-      been resolved previously, the data from the previous request should be used directly
-      without re-resolving it.
+      Reading the same symbolic address twice resolves to the same direct address both
+      times without any additional resolution traffic on the wire.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <tags isList="true">
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
-              <name>hurz1</name>
-              <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </tag>
+          <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <name>hurz1</name>
+            <address>MAIN.hurz_Struct.hurz_BOOL</address>
+          </tag>
           </tags>
         </TestReadRequest>
       </api-request>
-      <outgoing-plc-message name="Send Resolve Symbolic Address Request">
-        <AmsTCPPacket>
-          <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">44</length>
-          <userdata>
-            <AmsPacket>
-              <targetAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">20</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
-              <sourceAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
-              <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
-              </commandId>
-              <initCommand dataType="bit" bitLength="1">false</initCommand>
-              <updCommand dataType="bit" bitLength="1">false</updCommand>
-              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-              <noReturn dataType="bit" bitLength="1">false</noReturn>
-              <response dataType="bit" bitLength="1">false</response>
-              <broadcast dataType="bit" bitLength="1">false</broadcast>
-              <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">12</length>
-              <errorCode>
-                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
-              </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <AdsReadRequest>
-                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
-                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                <length dataType="uint" bitLength="32">24</length>
-              </AdsReadRequest>
-            </AmsPacket>
-          </userdata>
-        </AmsTCPPacket>
-      </outgoing-plc-message>
-      <incoming-plc-message name="Receive Resolve Symbolic Address Response">
-        <AmsTCPPacket>
-          <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">44</length>
-          <userdata>
-            <AmsPacket>
-              <targetAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
-              <sourceAmsNetId>
-                <AmsNetId>
-                  <octet1 dataType="uint" bitLength="8">192</octet1>
-                  <octet2 dataType="uint" bitLength="8">168</octet2>
-                  <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">20</octet4>
-                  <octet5 dataType="uint" bitLength="8">1</octet5>
-                  <octet6 dataType="uint" bitLength="8">1</octet6>
-                </AmsNetId>
-              </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
-              <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
-              </commandId>
-              <initCommand dataType="bit" bitLength="1">false</initCommand>
-              <updCommand dataType="bit" bitLength="1">false</updCommand>
-              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-              <noReturn dataType="bit" bitLength="1">false</noReturn>
-              <response dataType="bit" bitLength="1">true</response>
-              <broadcast dataType="bit" bitLength="1">false</broadcast>
-              <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">12</length>
-              <errorCode>
-                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
-              </errorCode>
-              <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadWriteResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">4</length>
-                    <data dataType="byte" bitLength="32">0x0100801b</data>
-                  </AdsReadWriteResponse>
-                </AdsData>
-              </data>
-            </AmsPacket>
-          </userdata>
-        </AmsTCPPacket>
-      </incoming-plc-message>
       <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
@@ -2276,18 +1993,18 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -2305,25 +2022,20 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">2</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadRequest>
-                    <indexGroup dataType="uint" bitLength="32">61445</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">461373441</indexOffset>
-                    <length dataType="uint" bitLength="32">1</length>
-                  </AdsReadRequest>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
+                <length dataType="uint" bitLength="32">1</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
-
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Ads Read Response">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">50</length>
+          <length dataType="uint" bitLength="32">41</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -2331,12 +2043,12 @@
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -2347,7 +2059,7 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -2361,66 +2073,47 @@
               <response dataType="bit" bitLength="1">true</response>
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">18</length>
+              <length dataType="uint" bitLength="32">9</length>
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">2</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">10</length>
-                    <data dataType="byte" bitLength="80">0x00000000000000000101</data>
-                  </AdsReadResponse>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <AdsReadResponse>
+                <result>
+                  <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                </result>
+                <length dataType="uint" bitLength="32">1</length>
+                <data dataType="byte" bitLength="8">0x01</data>
+              </AdsReadResponse>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
-
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <hurz1>
-                  <SymbolicAdsField>
-                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                  </SymbolicAdsField>
-                </hurz1>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
           <values isList="true">
             <hurz1>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
                 </value>
               </PlcResponseItem>
             </hurz1>
           </values>
         </PlcReadResponse>
       </api-response>
-      <delay>500</delay>
-      <api-request name="Receive a second Read Request for the same resource from application">
+      <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <tags isList="true">
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
-              <name>hurz1</name>
-              <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </tag>
+          <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <name>hurz1</name>
+            <address>MAIN.hurz_Struct.hurz_BOOL</address>
+          </tag>
           </tags>
         </TestReadRequest>
       </api-request>
-      <outgoing-plc-message name="Send Ads Read Request directly using the preciously resolved address">
+      <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
           <length dataType="uint" bitLength="32">44</length>
@@ -2436,18 +2129,18 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -2465,24 +2158,20 @@
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">3</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadRequest>
-                    <indexGroup dataType="uint" bitLength="32">61445</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">461373441</indexOffset>
-                    <length dataType="uint" bitLength="32">1</length>
-                  </AdsReadRequest>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">10</invokeId>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
+                <length dataType="uint" bitLength="32">1</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
       </outgoing-plc-message>
-      <incoming-plc-message name="Receive Ads Read Response again">
+      <incoming-plc-message name="Receive Ads Read Response">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">50</length>
+          <length dataType="uint" bitLength="32">41</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -2490,12 +2179,12 @@
                   <octet1 dataType="uint" bitLength="8">192</octet1>
                   <octet2 dataType="uint" bitLength="8">168</octet2>
                   <octet3 dataType="uint" bitLength="8">23</octet3>
-                  <octet4 dataType="uint" bitLength="8">200</octet4>
+                  <octet4 dataType="uint" bitLength="8">220</octet4>
                   <octet5 dataType="uint" bitLength="8">1</octet5>
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </targetAmsNetId>
-              <targetAmsPort dataType="uint" bitLength="16">48898</targetAmsPort>
+              <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
               <sourceAmsNetId>
                 <AmsNetId>
                   <octet1 dataType="uint" bitLength="8">192</octet1>
@@ -2506,7 +2195,7 @@
                   <octet6 dataType="uint" bitLength="8">1</octet6>
                 </AmsNetId>
               </sourceAmsNetId>
-              <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
+              <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
@@ -2520,47 +2209,30 @@
               <response dataType="bit" bitLength="1">true</response>
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">18</length>
+              <length dataType="uint" bitLength="32">9</length>
               <errorCode>
                 <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
               </errorCode>
-              <invokeId dataType="uint" bitLength="32">3</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadResponse>
-                    <result>
-                      <ReturnCode dataType="uint" bitLength="32">0</ReturnCode>
-                    </result>
-                    <length dataType="uint" bitLength="32">10</length>
-                    <data dataType="byte" bitLength="80">0x00000000000000000101</data>
-                  </AdsReadResponse>
-                </AdsData>
-              </data>
+              <invokeId dataType="uint" bitLength="32">10</invokeId>
+              <AdsReadResponse>
+                <result>
+                  <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                </result>
+                <length dataType="uint" bitLength="32">1</length>
+                <data dataType="byte" bitLength="8">0x01</data>
+              </AdsReadResponse>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
       </incoming-plc-message>
-      <api-response name="Report Read Response to application again">
+      <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <hurz1>
-                  <SymbolicAdsField>
-                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                  </SymbolicAdsField>
-                </hurz1>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
           <values isList="true">
             <hurz1>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
                 </value>
               </PlcResponseItem>
             </hurz1>
@@ -2568,6 +2240,6 @@
         </PlcReadResponse>
       </api-response>
     </steps>
-  </testcase-->
+  </testcase>
 
 </test:driver-testsuite>

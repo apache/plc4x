@@ -518,12 +518,12 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF16BE)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF16BE")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING

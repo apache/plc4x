@@ -187,7 +187,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcCHAR(value), nil
 	case dataType == ModbusDataType_WCHAR: // WCHAR
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF8"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF16BE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -205,7 +205,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataType == ModbusDataType_WSTRING: // WSTRING
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32((stringLength)*(16)), utils.WithEncoding("UTF8"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32((stringLength)*(16)), utils.WithEncoding("UTF16BE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -325,22 +325,22 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataType == ModbusDataType_CHAR: // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_WCHAR: // WCHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF16BE")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_STRING: // STRING
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_WSTRING: // WSTRING
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(16)), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(16)), value.GetString(), utils.WithEncoding("UTF16BE")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default:

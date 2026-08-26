@@ -67,28 +67,9 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	// Here we can be sure that we're only handling a single request.
 	tagName := writeRequest.GetTagNames()[0]
 	tag := writeRequest.GetTag(tagName)
-	if model.NeedsResolving(tag) {
-		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
-				writeRequest,
-				nil,
-				errors.Wrap(err, "invalid tag item type"),
-			))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-		// Replace the symbolic tag with a direct one
-		tag, err = m.resolveSymbolicTag(ctx, adsField)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-	}
-	directAdsTag, ok := tag.(*model.DirectPlcTag)
-	if !ok {
-		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type")))
+	directAdsTag, err := m.directTagFor(ctx, tag)
+	if err != nil {
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
 		m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 		return
 	}
@@ -96,7 +77,7 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	// Get the value from the request and serialize it to a byte array
 	value := writeRequest.GetValue(tagName)
 	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io)
+	err = m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io)
 	if err != nil {
 		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error serializing plc value")))
 		return
@@ -140,24 +121,9 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	for _, tagName := range writeRequest.GetTagNames() {
 		tag := writeRequest.GetTag(tagName)
-		if model.NeedsResolving(tag) {
-			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-			// Replace the symbolic tag with a direct one
-			tag, err = m.resolveSymbolicTag(ctx, adsField)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-		}
-		directAdsTag, ok := tag.(*model.DirectPlcTag)
-		if !ok {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type")))
+		directAdsTag, err := m.directTagFor(ctx, tag)
+		if err != nil {
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
 			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
@@ -165,7 +131,7 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 		directAdsTags[tagName] = directAdsTag
 
 		// Serialize the plc value
-		err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io)
+		err = m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io)
 		if err != nil {
 			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error serializing plc value")))
 			return

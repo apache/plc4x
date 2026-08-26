@@ -144,7 +144,7 @@ func (e OpcuaIdentifierType) Serialize() ([]byte, error) {
 func (e OpcuaIdentifierType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaIdentifierType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaIdentifierType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8"))
 }
 
 func (e OpcuaIdentifierType) GetValue() string {

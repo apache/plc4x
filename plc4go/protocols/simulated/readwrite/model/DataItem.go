@@ -667,38 +667,38 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "CHAR": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
-			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(8), value.GetIndex(i).GetString(), utils.WithEncoding("UTF8)"))
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(8), value.GetIndex(i).GetString(), utils.WithEncoding("UTF8"))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF16)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF16")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WCHAR": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
-			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(16), value.GetIndex(i).GetString(), utils.WithEncoding("UTF16)"))
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(16), value.GetIndex(i).GetString(), utils.WithEncoding("UTF16"))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "STRING": // STRING
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WSTRING": // STRING
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF16)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF16")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default:
