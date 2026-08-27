@@ -85,6 +85,14 @@ New Features
   codecs/transports (TransportErrorKind).
 - Performance: Sped up byte-aligned integer read/write in the Java
   byte-based SPI buffers.
+- EtherNet/IP: The CIP bit-string types (BYTE, WORD, DWORD, LWORD)
+  and unsigned integer types (USINT, UINT, UDINT, ULINT) can now be
+  read and written, in both the Java and the Go drivers. They were
+  accepted by the address parser but not decoded, so reading such a
+  tag returned INTERNAL_ERROR. All eight are unsigned over their
+  full range: a DWORD reads as 0 to 4294967295 and an LWORD as 0 to
+  18446744073709551615. Their signed counterparts are unchanged - a
+  DINT of 0xFFFFFFFF still reads as -1.
 
 Incompatible changes
 --------------------
@@ -315,6 +323,43 @@ Incompatible changes
   what no real device sends. Note for Go consumers that the
   default rose from 255 to 1024 in the process, so one setting of
   the variable now means one depth whichever binding reads it.
+- plc4go now requires Go 1.27. The uuid package it used to take
+  from github.com/google/uuid now comes from the standard library,
+  which drops that dependency outright - it is gone from go.mod and
+  go.sum - at the cost of the version floor.
+- EtherNet/IP: Two CIP data type codes were wrong and are
+  corrected. LWORD moves from 0x00D3 to 0x00D4 and STRINGI from
+  0x00DD to 0x00DE. Each had been sharing its value with another
+  type (DWORD and ENGUNIT respectively), and a duplicate key is
+  silently dropped from the generated lookup tables, so LWORD and
+  STRINGI could not be resolved by name or by value at all. Anyone
+  who hardcoded the old LWORD value was addressing a DWORD.
+- EtherNet/IP: A string write now emits the structure the read path
+  parses - a 2-byte structure handle, a 4-byte length and then the
+  characters - so what the driver writes reads back as the same
+  value. Previously it wrote a bare length followed by the
+  characters, which no read could decode. The length is now the
+  number of UTF-8 bytes rather than of characters; the two differ
+  for any non-ASCII text, which used to read back truncated. Text
+  that does not fit the type's fixed payload is reported instead of
+  overflowing. Because CIPDataTypeCode.STRING declares a size of 0,
+  the serializer emits no payload for it at all, so a write
+  addressed as ":STRING" is now rejected rather than silently sent
+  empty - write strings as ":STRUCTURED".
+- Go: Several values now serialize under their own names and in
+  their canonical forms, which changes the output anything parsing
+  it will see. PlcDWORD, PlcSINT, PlcULINT and PlcWSTRING were
+  serialized as PlcDINT, PlcINT, PlcUINT and PlcSTRING; PlcTIME and
+  PlcLTIME render ISO-8601 with hours/minutes/seconds and a
+  sub-second fraction instead of truncating to whole seconds;
+  PlcDATE_AND_TIME renders the UTC wall time in ISO-8601 rather
+  than Go's local-zone default; and PlcStruct keeps a deterministic
+  member order. String-ish values now carry encoding="UTF-8".
+- Java: The unsigned bit-string values WORD, DWORD and LWORD now
+  serialize as dataType="uint" rather than through the signed
+  writers, PlcBYTE serializes as a bit string, and PlcTIME renders
+  as an ISO-8601 string like PlcLTIME. This aligns the Java and Go
+  renderings of the same value.
 
 Changed Maven Coordinates
 -------------------------
@@ -387,6 +432,39 @@ Bug Fixes
   leaks on Modbus reconnect, robust Modbus receive with
   desync/resync, TCP/UDP transport deadline and reset races, codec
   disconnect deadlock).
+- Go: Generated code ignored the string encoding declared in the
+  mspec and read and wrote every string as UTF-8. A WSTRING, which
+  ADS declares as UTF-16LE, stopped at the first NUL byte, so
+  "wolf" decoded as "w". The generated code now carries the real
+  encodings (UTF-16LE, UTF-16BE, ASCII, ISO-8859-1, Windows-1252),
+  and the byte-based write buffer passes the single-byte encodings
+  through instead of zero-filling anything it did not recognise.
+  Reading a string likewise honors the requested encoding, decoding
+  UTF-16 per code unit rather than per byte.
+- Java: The XML buffer could not read back everything its own
+  writer produced. A field discriminating on a typed enum was
+  written under the enum's name but read under the field's, and a
+  text node larger than the parser's chunk size - the ADS symbol
+  and data-type tables run to 70-80k characters - failed with
+  "Expected end element" because the reader was not coalescing.
+- ADS (Go): Several fixes. The connection accepts the same
+  kebab-case parameters as the Java driver (source-ams-net-id and
+  friends), and a missing targetAmsNetId is now reported as such
+  rather than as sourceAmsNetId. The device-info request uses the
+  configured AMS ports instead of a hardcoded 851/800. Multi-tag
+  subscriptions run in request order rather than in map order,
+  honor the requested interval as the notification cycle time, and
+  no longer panic when a data type is missing from the table. The
+  data type table is keyed by the name symbols actually reference.
+- ADS (Go): Direct-address reads and writes all failed with
+  "invalid tag item type" - the request paths expected a pointer
+  where the tag handler produced a value - and never filled in the
+  tag's data type. Hex address parts with an odd number of digits
+  (0x8) were rejected, though the Java driver accepts them.
+- EtherNet/IP: A reply carrying fewer bytes than a single-element
+  tag declares no longer throws out of the response handler; it is
+  reported as INTERNAL_ERROR for that tag, which is what a
+  truncated multi-element reply already did.
 
 ==============================================================
 Apache PLC4X 0.13.1
