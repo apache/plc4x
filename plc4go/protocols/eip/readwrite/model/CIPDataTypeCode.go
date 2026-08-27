@@ -61,7 +61,7 @@ const (
 	CIPDataTypeCode_BYTE          CIPDataTypeCode = 0x00D1
 	CIPDataTypeCode_WORD          CIPDataTypeCode = 0x00D2
 	CIPDataTypeCode_DWORD         CIPDataTypeCode = 0x00D3
-	CIPDataTypeCode_LWORD         CIPDataTypeCode = 0x00D3
+	CIPDataTypeCode_LWORD         CIPDataTypeCode = 0x00D4
 	CIPDataTypeCode_STRING2       CIPDataTypeCode = 0x00D5
 	CIPDataTypeCode_FTIME         CIPDataTypeCode = 0x00D6
 	CIPDataTypeCode_LTIME         CIPDataTypeCode = 0x00D7
@@ -71,7 +71,7 @@ const (
 	CIPDataTypeCode_TIME          CIPDataTypeCode = 0x00DB
 	CIPDataTypeCode_EPATH         CIPDataTypeCode = 0x00DC
 	CIPDataTypeCode_ENGUNIT       CIPDataTypeCode = 0x00DD
-	CIPDataTypeCode_STRINGI       CIPDataTypeCode = 0x00DD
+	CIPDataTypeCode_STRINGI       CIPDataTypeCode = 0x00DE
 	CIPDataTypeCode_STRUCTURED    CIPDataTypeCode = 0x02A0
 )
 
@@ -192,6 +192,10 @@ func (e CIPDataTypeCode) Size() uint8 {
 		{ /* '0X00D3' */
 			return 4
 		}
+	case 0x00D4:
+		{ /* '0X00D4' */
+			return 8
+		}
 	case 0x00D5:
 		{ /* '0X00D5' */
 			return 0
@@ -226,6 +230,10 @@ func (e CIPDataTypeCode) Size() uint8 {
 		}
 	case 0x00DD:
 		{ /* '0X00DD' */
+			return 0
+		}
+	case 0x00DE:
+		{ /* '0X00DE' */
 			return 0
 		}
 	case 0x02A0:
@@ -287,6 +295,8 @@ func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_WORD, true
 	case 0x00D3:
 		return CIPDataTypeCode_DWORD, true
+	case 0x00D4:
+		return CIPDataTypeCode_LWORD, true
 	case 0x00D5:
 		return CIPDataTypeCode_STRING2, true
 	case 0x00D6:
@@ -305,6 +315,8 @@ func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_EPATH, true
 	case 0x00DD:
 		return CIPDataTypeCode_ENGUNIT, true
+	case 0x00DE:
+		return CIPDataTypeCode_STRINGI, true
 	case 0x02A0:
 		return CIPDataTypeCode_STRUCTURED, true
 	}
@@ -351,6 +363,8 @@ func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_WORD, true
 	case "DWORD":
 		return CIPDataTypeCode_DWORD, true
+	case "LWORD":
+		return CIPDataTypeCode_LWORD, true
 	case "STRING2":
 		return CIPDataTypeCode_STRING2, true
 	case "FTIME":
@@ -369,6 +383,8 @@ func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_EPATH, true
 	case "ENGUNIT":
 		return CIPDataTypeCode_ENGUNIT, true
+	case "STRINGI":
+		return CIPDataTypeCode_STRINGI, true
 	case "STRUCTURED":
 		return CIPDataTypeCode_STRUCTURED, true
 	}
@@ -484,6 +500,8 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 		return "WORD"
 	case CIPDataTypeCode_DWORD:
 		return "DWORD"
+	case CIPDataTypeCode_LWORD:
+		return "LWORD"
 	case CIPDataTypeCode_STRING2:
 		return "STRING2"
 	case CIPDataTypeCode_FTIME:
@@ -502,6 +520,8 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 		return "EPATH"
 	case CIPDataTypeCode_ENGUNIT:
 		return "ENGUNIT"
+	case CIPDataTypeCode_STRINGI:
+		return "STRINGI"
 	case CIPDataTypeCode_STRUCTURED:
 		return "STRUCTURED"
 	}

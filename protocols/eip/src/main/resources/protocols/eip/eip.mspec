@@ -478,7 +478,7 @@
     ['0X00D1'   BYTE            ['1']]
     ['0X00D2'   WORD            ['2']]
     ['0X00D3'   DWORD           ['4']]
-    ['0X00D3'   LWORD           ['8']]
+    ['0X00D4'   LWORD           ['8']]
     ['0X00D5'   STRING2         ['0']] // Character string, 2-bytes per character
     ['0X00D6'   FTIME           ['4']] // Duration - high resolution
     ['0X00D7'   LTIME           ['8']] // Duration - long
@@ -488,7 +488,7 @@
     ['0X00DB'   TIME            ['4']] // Duration - milliseconds
     ['0X00DC'   EPATH           ['0']] // CIP path segments
     ['0X00DD'   ENGUNIT         ['0']] // Engineering units
-    ['0X00DD'   STRINGI         ['0']] // International character string
+    ['0X00DE'   STRINGI         ['0']] // International character string
     // ARRAY
     ['0X02A0'   STRUCTURED      ['88']]
     //['0X02A0'   STRING          ['88']]

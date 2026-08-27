@@ -21,6 +21,7 @@ package org.apache.plc4x.java.eip.base;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
+import org.apache.plc4x.java.eip.readwrite.CIPStructTypeCode;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.junit.jupiter.api.Test;
@@ -71,6 +72,31 @@ class EipArrayReadTest {
 
         // Only one element's worth of data for an 8-element tag.
         assertNull(EipTcpConnection.parsePlcValue(tag, dints(1), CIPDataTypeCode.DINT));
+    }
+
+    /**
+     * A truncated single-element reply used to reach the ByteBuffer getters and throw an
+     * IndexOutOfBoundsException out of the response handler; it is now reported like the
+     * multi-element case.
+     */
+    @Test
+    void shortScalarReplyIsReportedInsteadOfThrowing() {
+        assertNull(EipTcpConnection.parsePlcValue(EipTag.of("%N40:DINT"), new byte[]{0x01, 0x02}, CIPDataTypeCode.DINT));
+        assertNull(EipTcpConnection.parsePlcValue(EipTag.of("%N40:LINT"), new byte[]{0x01}, CIPDataTypeCode.LINT));
+        assertNull(EipTcpConnection.parsePlcValue(EipTag.of("%N40:REAL"), new byte[0], CIPDataTypeCode.REAL));
+    }
+
+    /** A string header or body shorter than its declared length must not throw either. */
+    @Test
+    void shortStringReplyIsReportedInsteadOfThrowing() {
+        assertNull(EipTcpConnection.parsePlcValue(EipTag.of("%N40:STRING"), new byte[]{0x00, 0x00}, CIPDataTypeCode.STRING));
+
+        ByteBuffer truncated = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN);
+        truncated.putShort((short) CIPStructTypeCode.STRING.getValue());
+        truncated.putShort((short) 64); // claims 64 characters, only 2 follow
+        truncated.putShort((short) 0);
+        truncated.putShort((short) 0x4142);
+        assertNull(EipTcpConnection.parsePlcValue(EipTag.of("%N40:STRING"), truncated.array(), CIPDataTypeCode.STRING));
     }
 
     @Test

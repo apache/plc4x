@@ -160,10 +160,20 @@ func TestEncodeValueBOOL(t *testing.T) {
 	assert.Equal(t, []byte{0x01}, raw)
 }
 
+// This used to assert a payload of {0x02, 0x00, 0x00, 0x00, 'A', 'B'} - a bare 4-byte length
+// followed by the characters. That is not the structure the read path parses: it has no structure
+// handle, so decoding it back reported an unsupported structured type. The encoding now matches
+// what parseStructured expects, which the round trip below pins down.
 func TestEncodeValueSTRING(t *testing.T) {
-	raw, err := encodeValue(spiValues.NewPlcSTRING("AB"), readWriteModel.CIPDataTypeCode_STRING)
+	raw, err := encodeValue(spiValues.NewPlcSTRING("AB"), readWriteModel.CIPDataTypeCode_STRUCTURED)
 	require.NoError(t, err)
-	assert.Equal(t, []byte{0x02, 0x00, 0x00, 0x00, 0x41, 0x42}, raw)
+	assert.Equal(t, uint16(readWriteModel.CIPStructTypeCode_STRING), binary.LittleEndian.Uint16(raw))
+	assert.Equal(t, uint32(2), binary.LittleEndian.Uint32(raw[stringLenOffset:]))
+	assert.Equal(t, []byte{0x41, 0x42}, raw[stringDataOffset:stringDataOffset+2])
+
+	decoded, err := parsePlcValue(mustTag(t, "%s:STRUCTURED"), raw, readWriteModel.CIPDataTypeCode_STRUCTURED)
+	require.NoError(t, err)
+	assert.Equal(t, "AB", decoded.GetString())
 }
 
 func TestDecodeResponseCode(t *testing.T) {

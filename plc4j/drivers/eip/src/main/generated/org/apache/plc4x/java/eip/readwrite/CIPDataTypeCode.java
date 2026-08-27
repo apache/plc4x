@@ -63,7 +63,7 @@ public enum CIPDataTypeCode {
 
   DWORD((int) 0X00D3, (short) 4),
 
-  LWORD((int) 0X00D3, (short) 8),
+  LWORD((int) 0X00D4, (short) 8),
 
   STRING2((int) 0X00D5, (short) 0),
 
@@ -83,7 +83,7 @@ public enum CIPDataTypeCode {
 
   ENGUNIT((int) 0X00DD, (short) 0),
 
-  STRINGI((int) 0X00DD, (short) 0),
+  STRINGI((int) 0X00DE, (short) 0),
 
   STRUCTURED((int) 0X02A0, (short) 88);
 

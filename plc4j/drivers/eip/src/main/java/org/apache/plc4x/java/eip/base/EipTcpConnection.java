@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.eip.base;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -45,6 +46,7 @@ import org.apache.plc4x.java.utils.auditlog.api.AuditLogEventType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -781,7 +783,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                         values.put(fieldName, PlcResponseCode.INTERNAL_ERROR);
                         return null;
                     });
-                } catch (BufferException e) {
+                } catch (BufferException | PlcInvalidTagException e) {
                     values.put(fieldName, PlcResponseCode.INTERNAL_ERROR);
                     return CompletableFuture.<Void>completedFuture(null);
                 }
@@ -807,11 +809,12 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);
             int elements = Math.max(field.getElementNb(), 1);
-            byte[] data = encodeValue(value, field.getType());
             try {
+                byte[] data = encodeValue(value, field.getType());
                 items.add(new CipWriteRequest(toAnsi(field.getTag()), field.getType(), elements, data));
-            } catch (BufferException e) {
-                return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to write field", e));
+            } catch (BufferException | PlcInvalidTagException e) {
+                return CompletableFuture.failedFuture(
+                    new PlcRuntimeException("Failed to write field '" + fieldName + "'", e));
             }
         }
 
@@ -856,11 +859,12 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);
             int elements = Math.max(field.getElementNb(), 1);
-            byte[] data = encodeValue(value, field.getType());
             try {
+                byte[] data = encodeValue(value, field.getType());
                 items.add(new CipWriteRequest(toAnsi(field.getTag()), field.getType(), elements, data));
-            } catch (BufferException e) {
-                return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to write field", e));
+            } catch (BufferException | PlcInvalidTagException e) {
+                return CompletableFuture.failedFuture(
+                    new PlcRuntimeException("Failed to write field '" + fieldName + "'", e));
             }
         }
         ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId);
@@ -1017,102 +1021,171 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         return Math.max(tag.getElementNb(), 1);
     }
 
+    /**
+     * Reinterprets a 64 bit two's complement value as the unsigned bit string it is on the wire.
+     * {@link PlcLWORD} validates against a range starting at zero, so a negative long - which is
+     * simply an LWORD with bit 63 set - would otherwise be rejected as out of range.
+     */
+    private static BigInteger unsigned(long value) {
+        return new BigInteger(Long.toUnsignedString(value));
+    }
+
+    /**
+     * Layout of a CIP string structure, shared by the read and write paths so they cannot drift
+     * apart: a 2-byte structure handle, a 4-byte length, then the characters.
+     */
+    private static final int STRING_LEN_OFFSET = 2;
+    private static final int STRING_DATA_OFFSET = 6;
+
+    /** Decodes one element of a fixed-size type at the given offset into the reply payload. */
+    @FunctionalInterface
+    private interface ValueReader {
+        PlcValue read(ByteBuffer data, int index);
+    }
+
+    /** Encodes one element of a fixed-size type into a buffer sized for it. */
+    @FunctionalInterface
+    private interface ValueWriter {
+        void write(ByteBuffer buffer, PlcValue value);
+    }
+
+    record TypeCodec(ValueReader reader, ValueWriter writer) {
+    }
+
+    /**
+     * The types that are stored as a flat sequence of equally sized elements, and how to decode
+     * and encode one. This is the single source of truth for that set: it drives the short-reply
+     * guard, the array decoding, the scalar decoding and the write path alike, so a type cannot
+     * be added to one of them and silently forgotten in the others.
+     *
+     * <p>The unsigned types are widened before being handed to their {@code Plc*} constructor.
+     * Those validate against a range starting at zero, so a sign-extended value - an ordinary
+     * value with the top bit set - would be rejected as out of range. Going the other way no
+     * widening is needed: the {@code getByte()}/{@code getShort()}/{@code getInteger()} getters
+     * truncate to the same two's complement bit pattern the wire format expects.
+     *
+     * <p>Package-private so tests can assert the read/write invariants for every entry.
+     */
+    static final Map<CIPDataTypeCode, TypeCodec> FIXED_SIZE_CODECS;
+
+    static {
+        Map<CIPDataTypeCode, TypeCodec> codecs = new EnumMap<>(CIPDataTypeCode.class);
+        codecs.put(CIPDataTypeCode.BOOL, new TypeCodec(
+            (data, index) -> new PlcBOOL(data.get(index) != 0),
+            (buffer, value) -> buffer.put(value.getByte())));
+        codecs.put(CIPDataTypeCode.SINT, new TypeCodec(
+            (data, index) -> new PlcSINT(data.get(index)),
+            (buffer, value) -> buffer.put(value.getByte())));
+        codecs.put(CIPDataTypeCode.INT, new TypeCodec(
+            (data, index) -> new PlcINT(data.getShort(index)),
+            (buffer, value) -> buffer.putShort(value.getShort())));
+        codecs.put(CIPDataTypeCode.DINT, new TypeCodec(
+            (data, index) -> new PlcDINT(data.getInt(index)),
+            (buffer, value) -> buffer.putInt(value.getInteger())));
+        codecs.put(CIPDataTypeCode.LINT, new TypeCodec(
+            (data, index) -> new PlcLINT(data.getLong(index)),
+            (buffer, value) -> buffer.putLong(value.getLong())));
+        codecs.put(CIPDataTypeCode.USINT, new TypeCodec(
+            (data, index) -> new PlcUSINT(data.get(index) & 0xFF),
+            (buffer, value) -> buffer.put(value.getByte())));
+        codecs.put(CIPDataTypeCode.UINT, new TypeCodec(
+            (data, index) -> new PlcUINT(data.getShort(index) & 0xFFFF),
+            (buffer, value) -> buffer.putShort(value.getShort())));
+        codecs.put(CIPDataTypeCode.UDINT, new TypeCodec(
+            (data, index) -> new PlcUDINT(Integer.toUnsignedLong(data.getInt(index))),
+            (buffer, value) -> buffer.putInt(value.getInteger())));
+        codecs.put(CIPDataTypeCode.ULINT, new TypeCodec(
+            (data, index) -> new PlcULINT(unsigned(data.getLong(index))),
+            (buffer, value) -> buffer.putLong(value.getLong())));
+        codecs.put(CIPDataTypeCode.BYTE, new TypeCodec(
+            (data, index) -> new PlcBYTE(data.get(index) & 0xFF),
+            (buffer, value) -> buffer.put(value.getByte())));
+        codecs.put(CIPDataTypeCode.WORD, new TypeCodec(
+            (data, index) -> new PlcWORD(data.getShort(index) & 0xFFFF),
+            (buffer, value) -> buffer.putShort(value.getShort())));
+        codecs.put(CIPDataTypeCode.DWORD, new TypeCodec(
+            (data, index) -> new PlcDWORD(Integer.toUnsignedLong(data.getInt(index))),
+            (buffer, value) -> buffer.putInt(value.getInteger())));
+        codecs.put(CIPDataTypeCode.LWORD, new TypeCodec(
+            (data, index) -> new PlcLWORD(unsigned(data.getLong(index))),
+            (buffer, value) -> buffer.putLong(value.getLong())));
+        codecs.put(CIPDataTypeCode.REAL, new TypeCodec(
+            (data, index) -> new PlcREAL(data.getFloat(index)),
+            (buffer, value) -> buffer.putFloat(value.getFloat())));
+        codecs.put(CIPDataTypeCode.LREAL, new TypeCodec(
+            (data, index) -> new PlcLREAL(data.getDouble(index)),
+            (buffer, value) -> buffer.putDouble(value.getDouble())));
+        FIXED_SIZE_CODECS = Collections.unmodifiableMap(codecs);
+    }
+
     /** Whether the type is stored as a flat sequence of equally sized elements. */
     private static boolean isFixedSize(CIPDataTypeCode type) {
-        return switch (type) {
-            case SINT, INT, DINT, LINT, REAL, LREAL, BOOL -> true;
-            default -> false;
-        };
+        return FIXED_SIZE_CODECS.containsKey(type);
     }
 
     // Package-private and static so the decoding can be tested without a connection.
     static PlcValue parsePlcValue(EipTag tag, byte[] rawData, CIPDataTypeCode type) {
-        final int STRING_LEN_OFFSET = 2;
-        final int STRING_DATA_OFFSET = 6;
         ByteBuffer data = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
         int nb = elementCount(tag);
+        TypeCodec codec = FIXED_SIZE_CODECS.get(type);
+
+        // Handle array reads.
         if (nb > 1) {
-            // Never read past what the device actually sent - a short reply must not blow up
-            // the whole response with an IndexOutOfBoundsException. Only the fixed-size types
-            // below are laid out element by element; STRING/STRUCTURED carry their own length.
-            int elementSize = isFixedSize(type) ? type.getSize() : 0;
-            if (elementSize > 0 && rawData.length < nb * elementSize) {
+            if (codec == null) {
+                // STRING and STRUCTURED carry their own length rather than being laid out element
+                // by element, so only the first one can be decoded from the reply.
+                PlcValue value = parseStructured(rawData, data, type);
+                return value == null ? null : new PlcList(List.of(value));
+            }
+            // Never read past what the device actually sent - a short reply must not blow up the
+            // whole response with an IndexOutOfBoundsException.
+            int elementSize = type.getSize();
+            if (rawData.length < nb * elementSize) {
                 LOGGER.warn("Device returned {} bytes for tag '{}', expected {} for {} elements of {}.",
                     rawData.length, tag.getTag(), nb * elementSize, nb, type);
                 return null;
             }
-            List<PlcValue> list = new ArrayList<>();
-            int index = 0;
+            List<PlcValue> list = new ArrayList<>(nb);
             for (int i = 0; i < nb; i++) {
-                switch (type) {
-                    case DINT:
-                        list.add(new PlcDINT(data.getInt(index)));
-                        index += type.getSize();
-                        break;
-                    case INT:
-                        list.add(new PlcINT(data.getShort(index)));
-                        index += type.getSize();
-                        break;
-                    case SINT:
-                        list.add(new PlcSINT(data.get(index)));
-                        index += type.getSize();
-                        break;
-                    case REAL:
-                        list.add(new PlcREAL(data.getFloat(index)));
-                        index += type.getSize();
-                        break;
-                    case LREAL:
-                        list.add(new PlcLREAL(data.getDouble(index)));
-                        index += type.getSize();
-                        break;
-                    case LINT:
-                        list.add(new PlcLINT(data.getLong(index)));
-                        index += type.getSize();
-                        break;
-                    case BOOL:
-                        list.add(new PlcBOOL(data.get(index) != 0));
-                        index += type.getSize();
-                        break;
-                    case STRING:
-                    case STRUCTURED:
-                        short structuredType = data.getShort(0);
-                        short structuredLen = data.getShort(STRING_LEN_OFFSET);
-                        if (structuredType == CIPStructTypeCode.STRING.getValue()) {
-                            list.add(new PlcSTRING(new String(rawData, STRING_DATA_OFFSET, structuredLen, StandardCharsets.UTF_8)));
-                        }
-                        return list.isEmpty() ? null : new PlcList(list);
-                    default:
-                        return null;
-                }
+                list.add(codec.reader().read(data, i * elementSize));
             }
             return new PlcList(list);
         }
-        switch (type) {
-            case SINT:
-                return new PlcSINT(data.get(0));
-            case INT:
-                return new PlcINT(data.getShort(0));
-            case DINT:
-                return new PlcDINT(data.getInt(0));
-            case LINT:
-                return new PlcLINT(data.getLong(0));
-            case REAL:
-                return new PlcREAL(data.getFloat(0));
-            case LREAL:
-                return new PlcLREAL(data.getDouble(0));
-            case BOOL:
-                return new PlcBOOL(data.get(0) != 0);
-            case STRING:
-            case STRUCTURED:
-                short structuredType = data.getShort(0);
-                short structuredLen = data.getShort(STRING_LEN_OFFSET);
-                if (structuredType == CIPStructTypeCode.STRING.getValue()) {
-                    return new PlcSTRING(new String(rawData, STRING_DATA_OFFSET, structuredLen, StandardCharsets.UTF_8));
-                }
+
+        // If it wasn't an array, then handle single-element reads, which are not wrapped in a PlcList.
+        if (codec != null) {
+            if (rawData.length < type.getSize()) {
+                LOGGER.warn("Device returned {} bytes for tag '{}', expected {} for a {}.",
+                    rawData.length, tag.getTag(), type.getSize(), type);
                 return null;
-            default:
-                return null;
+            }
+            return codec.reader().read(data, 0);
         }
+        return parseStructured(rawData, data, type);
+    }
+
+    /**
+     * Decodes a STRING or STRUCTURED payload, which carries its own length. Returns {@code null}
+     * for any other type, and for a structure that is not a string - neither is decodable here.
+     */
+    private static PlcValue parseStructured(byte[] rawData, ByteBuffer data, CIPDataTypeCode type) {
+        if (type != CIPDataTypeCode.STRING && type != CIPDataTypeCode.STRUCTURED) {
+            return null;
+        }
+        if (rawData.length < STRING_DATA_OFFSET) {
+            LOGGER.warn("Device returned {} bytes for a {}, too short for a string header.", rawData.length, type);
+            return null;
+        }
+        short structuredType = data.getShort(0);
+        short structuredLen = data.getShort(STRING_LEN_OFFSET);
+        if (structuredType != CIPStructTypeCode.STRING.getValue()) {
+            return null;
+        }
+        if (structuredLen < 0 || rawData.length < STRING_DATA_OFFSET + structuredLen) {
+            LOGGER.warn("Device returned {} bytes for a string of length {}.", rawData.length, structuredLen);
+            return null;
+        }
+        return new PlcSTRING(new String(rawData, STRING_DATA_OFFSET, structuredLen, StandardCharsets.UTF_8));
     }
 
     private PlcWriteResponse decodeWriteResponse(CipService p, PlcWriteRequest writeRequest) {
@@ -1120,7 +1193,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         List<String> sendable = sendableTagNames(writeRequest);
         if (p instanceof CipWriteResponse resp) {
             if (sendable.isEmpty()) {
-                return new DefaultPlcWriteResponse((DefaultPlcWriteRequest) writeRequest, responses);
+                return new DefaultPlcWriteResponse(writeRequest, responses);
             }
             String fieldName = sendable.getFirst();
             responses.put(fieldName, decodeResponseCode(resp.getStatus()));
@@ -1160,37 +1233,39 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         return new DefaultPlcWriteResponse(writeRequest, responses);
     }
 
-    private byte[] encodeValue(PlcValue value, CIPDataTypeCode type) {
+    // Package-private and static so the encoding can be tested without a connection.
+    static byte[] encodeValue(PlcValue value, CIPDataTypeCode type) {
         ByteBuffer buffer = ByteBuffer.allocate(type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
-        switch (type) {
-            case BOOL:
-            case SINT:
-                buffer.put(value.getByte());
-                break;
-            case INT:
-                buffer.putShort(value.getShort());
-                break;
-            case DINT:
-                buffer.putInt(value.getInteger());
-                break;
-            case LINT:
-                buffer.putLong(value.getLong());
-                break;
-            case REAL:
-                buffer.putFloat(value.getFloat());
-                break;
-            case LREAL:
-                buffer.putDouble(value.getDouble());
-                break;
-            case STRING:
-            case STRUCTURED:
-                buffer.putInt(value.getString().length());
-                buffer.put(value.getString().getBytes(StandardCharsets.UTF_8), 0, value.getString().length());
-                break;
-            default:
-                break;
+        TypeCodec codec = FIXED_SIZE_CODECS.get(type);
+        if (codec != null) {
+            codec.writer().write(buffer, value);
+        } else if (type == CIPDataTypeCode.STRING || type == CIPDataTypeCode.STRUCTURED) {
+            encodeString(buffer, value.getString(), type);
         }
         return buffer.array();
+    }
+
+    /**
+     * Writes the structure the read path parses back: a 2-byte structure handle, a 4-byte length
+     * and then the characters, leaving the rest of the buffer as padding.
+     *
+     * <p>The length is the number of UTF-8 <em>bytes</em>, not characters - the two differ for any
+     * non-ASCII text, and a length that disagrees with the bytes that follow reads back truncated.
+     *
+     * <p>The buffer is sized by {@link CIPDataTypeCode#getSize()} because that is exactly what the
+     * CipWriteRequest serializer emits for the type. Anything longer cannot be sent, so it is
+     * rejected here rather than overflowing the buffer or silently losing the tail.
+     */
+    private static void encodeString(ByteBuffer buffer, String text, CIPDataTypeCode type) {
+        byte[] encoded = text.getBytes(StandardCharsets.UTF_8);
+        int capacity = buffer.capacity() - STRING_DATA_OFFSET;
+        if (encoded.length > capacity) {
+            throw new PlcInvalidTagException(String.format(
+                "A %s holds at most %d bytes of text, but %d were given", type, Math.max(capacity, 0), encoded.length));
+        }
+        buffer.putShort((short) CIPStructTypeCode.STRING.getValue());
+        buffer.putInt(encoded.length);
+        buffer.put(encoded);
     }
 
     private PlcResponseCode decodeResponseCode(int status) {
