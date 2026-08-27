@@ -88,12 +88,13 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 
 	configuration := DefaultConfiguration()
 
-	// plc4j spells the option default-unit-identifier; the Go driver has always called it
-	// unit-identifier, so both are accepted and the plc4j spelling wins when somebody sets both.
-	unitIdentifierString := reader.Get("unit-identifier")
-	if defaultUnitIdentifierString := reader.Get("default-unit-identifier"); defaultUnitIdentifierString != "" {
-		unitIdentifierString = defaultUnitIdentifierString
-	}
+	// One name for one concept: "default-unit-identifier", the same as plc4j. This driver also
+	// accepted "unit-identifier", which plc4j never declared - so one connection string set the
+	// unit here and was ignored there. Worse, "unit-identifier" *is* the name UMAS uses, where it
+	// means something subtly different: modbus has a per-tag override ({unit-id: 3}), so this is
+	// a default, while UMAS has none, so its is absolute. Two spellings meaning two things is
+	// exactly what this vocabulary exists to stop. Supplying the old name is now reported.
+	unitIdentifierString := reader.Get("default-unit-identifier")
 	if unitIdentifierString != "" {
 		parsedUint, err := strconv.ParseUint(unitIdentifierString, 10, 8)
 		if err != nil {
