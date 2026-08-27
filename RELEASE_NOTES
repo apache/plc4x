@@ -531,6 +531,17 @@ utilities). These are new artifacts, not renames.
 Bug Fixes
 ---------
 
+- Fixed the Java S7 driver's tags reporting no address at all:
+  "getAddressString()" returned null, so anything carrying a tag as a string -
+  a log line, a browse result, a serialized request - got nothing from an S7
+  tag. It now spells the address the way the parser reads it back, including
+  the declared length of a fixed-length string and the counter number of a
+  COUNTER address, which is stored split across the byte and bit offsets.
+- The Open Protocol driver's tag class now reports that it has no tag
+  addressing yet instead of returning null. "OpenProtocolTag.of()" handed a
+  null tag to callers of "prepareTag()", so the failure surfaced later as a
+  NullPointerException; it now throws PlcInvalidTagException, matching the
+  driver's tag handler, which already rejected every address.
 - Fixed the Go S7 driver reading a fixed-length string from the wrong data
   block. The long-form address ("%DB69.DBX68:STRING(10)") built its tag with
   a hard-coded block number of zero, so it read DB0 and reported the result

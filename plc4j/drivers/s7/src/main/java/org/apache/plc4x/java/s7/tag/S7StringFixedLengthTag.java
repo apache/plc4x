@@ -52,6 +52,17 @@ public class S7StringFixedLengthTag extends S7Tag {
         return stringLength;
     }
 
+    /**
+     * Spells the tag the way {@link #of(String)} parses it back, which means carrying the
+     * declared length: without it the address reads as a variable-length string, and the length
+     * is what decides the layout when the string is read or written.
+     */
+    @Override
+    public String getAddressString() {
+        // The base form ends in ":STRING"; the declared length belongs directly behind it.
+        return super.getAddressString() + "(" + stringLength + ")";
+    }
+
     public static boolean matches(String address) {
         return  DATA_BLOCK_STRING_FIXED_LENGTH_ADDRESS_PATTERN.matcher(address).matches() ||
             DATA_BLOCK_STRING_FIXED_LENGTH_SHORT_PATTERN.matcher(address).matches();

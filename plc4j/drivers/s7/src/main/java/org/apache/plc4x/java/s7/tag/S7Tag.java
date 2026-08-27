@@ -108,9 +108,41 @@ public class S7Tag implements PlcTag, Serializable {
         
     }
 
+    /**
+     * Spells the tag the way {@link #of(String)} parses it back, so a tag can be carried as a
+     * string - which is what a log line, a browse result or a serialized request needs.
+     *
+     * <p>The optional transfer size code is left out: it only repeats what the type already
+     * says, and an address without it parses to the same tag.</p>
+     */
     @Override
     public String getAddressString() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        if (memoryArea == MemoryArea.DATA_BLOCKS) {
+            // Rendering a data block through its short name would produce "%D100", which parses
+            // back as block 0 of the data-block area - a different address.
+            sb.append("%DB").append(blockNumber).append(".DB").append(addressedByteOffset());
+        } else {
+            sb.append('%').append(memoryArea.getShortName()).append(addressedByteOffset());
+        }
+        // A bit offset is only part of an address for BOOL, and is required there.
+        if (dataType == TransportSize.BOOL) {
+            sb.append('.').append(bitOffset);
+        }
+        sb.append(ArrayNotationParser.render(getArrayInfo()));
+        return sb.append(':').append(dataType.name()).toString();
+    }
+
+    /**
+     * The byte offset as the address writes it. A COUNTER address names a counter, which the
+     * constructor splits across the byte and bit offsets, so rendering one has to put it back
+     * together - otherwise "%DB1.DB100:COUNTER" comes back as counter 12.
+     */
+    protected int addressedByteOffset() {
+        if (dataType == TransportSize.COUNTER) {
+            return (byteOffset << 3) | bitOffset;
+        }
+        return byteOffset;
     }
 
     @Override
