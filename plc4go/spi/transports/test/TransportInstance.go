@@ -189,13 +189,10 @@ func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
+	// Like Read: buffered bytes are served deadline-or-not - the context only governs waiting for
+	// missing bytes (transferFromChannel) - while the simulated wire latency is simply slept out.
 	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
-	timer := time.NewTimer(m.simulatedLatency)
-	select {
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	case <-timer.C:
-	}
+	time.Sleep(m.simulatedLatency)
 	availableBytes := m.availableBytes()
 	if availableBytes < numBytes {
 		m.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
@@ -233,14 +230,18 @@ func (m *TransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, 
 	if availableBytes < numBytes {
 		m.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
 		availableBytes = m.transferFromChannel(ctx)
+		if availableBytes < numBytes {
+			if err := ctx.Err(); err != nil {
+				return nil, err
+			}
+			return nil, errors.Errorf("Only %d bytes available. Requested %d", availableBytes, numBytes)
+		}
 	}
+	// Bytes which already made it into the buffer are served the way the production transports
+	// serve them - deadline or not: the context only governs waiting for missing bytes (above),
+	// while the simulated wire latency is simply slept out.
 	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
-	timer := time.NewTimer(m.simulatedLatency)
-	select {
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	case <-timer.C:
-	}
+	time.Sleep(m.simulatedLatency)
 	return m.read(int(numBytes)), nil
 }
 

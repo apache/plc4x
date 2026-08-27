@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class WritePacerTest {
 
@@ -69,36 +70,43 @@ class WritePacerTest {
     void activityDuringWaitExtendsGap() throws Exception {
         final long gapMs = 200;
         final long midWaitMs = 50;
-        WritePacer pacer = new WritePacer(gapMs);
-        AtomicLong midWaitActivity = new AtomicLong();
+        // The premise is that the traffic thread gets scheduled while the writer is still waiting
+        // its turn. A stalled machine can deliver it only after the original gap has already
+        // expired - such a run proves nothing about the pacer, so it is retried rather than failed.
+        for (int attempt = 1; ; attempt++) {
+            WritePacer pacer = new WritePacer(gapMs);
+            AtomicLong midWaitActivity = new AtomicLong();
 
-        long firstActivity = System.nanoTime();
-        pacer.noteActivity();
-        Thread traffic = new Thread(() -> {
-            try {
-                Thread.sleep(midWaitMs);
-                // Stamped before the call, so it is never later than the pacer's own stamp.
-                midWaitActivity.set(System.nanoTime());
-                pacer.noteActivity(); // traffic arrives while a writer waits its turn
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            long firstActivity = System.nanoTime();
+            pacer.noteActivity();
+            Thread traffic = new Thread(() -> {
+                try {
+                    Thread.sleep(midWaitMs);
+                    // Stamped before the call, so it is never later than the pacer's own stamp.
+                    midWaitActivity.set(System.nanoTime());
+                    pacer.noteActivity(); // traffic arrives while a writer waits its turn
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+            traffic.start();
+            pacer.awaitTurn();
+            long returned = System.nanoTime();
+            traffic.join(1000);
+
+            long activity = midWaitActivity.get();
+            assertNotEquals(0, activity, "the traffic thread never recorded its activity");
+            if (activity - firstActivity >= TimeUnit.MILLISECONDS.toNanos(gapMs)) {
+                assumeTrue(attempt < 3,
+                    "machine too stalled to deliver the mid-wait activity inside the gap");
+                continue;
             }
-        });
-        traffic.start();
-        pacer.awaitTurn();
-        long returned = System.nanoTime();
-        traffic.join(1000);
-
-        long activity = midWaitActivity.get();
-        assertNotEquals(0, activity, "the traffic thread never recorded its activity");
-        // The point of the test is activity arriving *during* the wait, so say so out loud: if a
-        // stalled machine delivered it after the original gap had already expired, the premise is
-        // gone and the run proves nothing - that is a broken test, not a broken pacer.
-        assertTrue(activity - firstActivity < TimeUnit.MILLISECONDS.toNanos(gapMs),
-            "test premise broken: the mid-wait activity arrived only after the original gap had expired");
-        // The contract: the gap restarts from that activity. Both stamps come from the same clock
-        // and bracket the pacer's own, so this holds no matter how the threads were scheduled.
-        assertTrue(returned - activity >= TimeUnit.MILLISECONDS.toNanos(gapMs),
-            "the gap must restart from the mid-wait activity");
+            // The contract: the gap restarts from that activity. Both stamps come from the same
+            // clock and bracket the pacer's own, so this holds no matter how the threads were
+            // scheduled.
+            assertTrue(returned - activity >= TimeUnit.MILLISECONDS.toNanos(gapMs),
+                "the gap must restart from the mid-wait activity");
+            return;
+        }
     }
 }

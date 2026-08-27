@@ -32,6 +32,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/iec608705104/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 )
 
@@ -202,6 +203,52 @@ func TestMessageCodec_ReceiveDropsAnUnparseableFrameWhole(t *testing.T) {
 	assert.Nil(t, message, "the broken frame yields nothing")
 
 	_, ok := receive(t, codec).(readWriteModel.APDUUFormatTestFrameConfirmation)
+	assert.True(t, ok, "the frame behind the broken one")
+}
+
+// cancelBeforeFrameConsume expires the receive context at the moment the codec consumes a whole
+// frame, reproducing a receive deadline which ran out while the frame was being parsed.
+type cancelBeforeFrameConsume struct {
+	transports.TransportInstance
+	cancel    context.CancelFunc
+	frameSize uint32
+}
+
+func (c *cancelBeforeFrameConsume) Read(ctx context.Context, numBytes uint32) ([]byte, error) {
+	if numBytes == c.frameSize {
+		c.cancel()
+	}
+	return c.TransportInstance.Read(ctx, numBytes)
+}
+
+func TestMessageCodec_ReceiveDropsAnUnparseableFrameDespiteAnExpiredDeadline(t *testing.T) {
+	_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+	transport := test.NewTransport(_options...)
+	transportInstance, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
+	require.NoError(t, err)
+	testTransportInstance, ok := transportInstance.(*test.TransportInstance)
+	require.True(t, ok)
+	require.NoError(t, testTransportInstance.Connect(t.Context()))
+	t.Cleanup(func() { assert.NoError(t, testTransportInstance.Close()) })
+
+	// The same unparseable I-format frame the plain drop test uses, followed by a healthy one.
+	broken := []byte{0x68, 0x08, 0x02, 0x00, 0x00, 0x00, 0x2A, 0x01, 0x03, 0x00}
+	ctx, cancel := context.WithCancel(testutils.TestContext(t))
+	t.Cleanup(cancel)
+	codec := NewMessageCodec(&cancelBeforeFrameConsume{testTransportInstance, cancel, uint32(len(broken))}, _options...)
+
+	var stream []byte
+	stream = append(stream, broken...)
+	stream = append(stream, mustDecodeHex(t, "680483000000")...)
+	testTransportInstance.FillReadBuffer(stream)
+
+	// The deadline expires between parsing and consuming: the frame is fully buffered and already
+	// judged, so it must be dropped anyway rather than left to poison the buffer head.
+	message, err := codec.Receive(ctx)
+	require.NoError(t, err)
+	assert.Nil(t, message, "the broken frame yields nothing")
+
+	_, ok = receive(t, codec).(readWriteModel.APDUUFormatTestFrameConfirmation)
 	assert.True(t, ok, "the frame behind the broken one")
 }
 
