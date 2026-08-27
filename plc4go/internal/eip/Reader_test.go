@@ -151,3 +151,24 @@ func TestToAnsi(t *testing.T) {
 		})
 	}
 }
+
+// An array index rides in a MemberID, whose instance field the mspec declares as uint 8, so it
+// holds 0 to 255. A larger index used to be converted with uint8(...), which wraps silently -
+// a[300] addressed element 44 and produced a request that looked entirely valid. The Java
+// driver rejects the same address when it serializes ("Value 300 is out of range for 8 bits"),
+// so this reports it too rather than reading the wrong element.
+func TestToAnsiRejectsOutOfRangeIndex(t *testing.T) {
+	for _, tag := range []string{"a[256]", "a[300]", "myArray[1000]"} {
+		t.Run(tag, func(t *testing.T) {
+			_, err := toAnsi(tag)
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "255")
+		})
+	}
+}
+
+func TestToAnsiAcceptsTheLargestIndex(t *testing.T) {
+	actual, err := toAnsi("a[255]")
+	require.NoError(t, err)
+	assert.Equal(t, []byte{0x91, 0x01, 0x61, 0x00, 0x28, 0xFF}, actual)
+}

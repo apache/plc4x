@@ -360,6 +360,14 @@ Incompatible changes
   writers, PlcBYTE serializes as a bit string, and PlcTIME renders
   as an ISO-8601 string like PlcLTIME. This aligns the Java and Go
   renderings of the same value.
+- EtherNet/IP: EipTag is now immutable, matching every other
+  driver's tag in both bindings - it was the only tag class in
+  plc4j that exposed setters. setType(...) and setElementNb(...)
+  are gone; give the type and the element count to the
+  constructor instead. An element count below one is normalised
+  to one rather than kept, so a tag built as ":INT:0", or through
+  the (tag, type) constructor which used to leave the count at
+  zero, now reads one element instead of none.
 
 Changed Maven Coordinates
 -------------------------

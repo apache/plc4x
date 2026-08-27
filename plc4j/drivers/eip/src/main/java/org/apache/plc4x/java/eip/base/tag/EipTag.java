@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.eip.base.tag;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
@@ -29,6 +30,8 @@ import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,33 +41,78 @@ public class EipTag implements PlcTag, Serializable {
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("^(?<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
+    /**
+     * Splits an address into the members it names. A qualifier of '[' introduces an array
+     * member, anything else another symbol; characters outside a member name (a leading '%')
+     * are skipped. Compiled once - a tag address is decomposed when the tag is built, not
+     * again for every request that uses it.
+     */
+    private static final Pattern PATH_PATTERN = Pattern.compile("([.\\[\\]])*([A-Za-z_0-9]+)");
+
     private static final String GROUP_NAME_TAG = "tag";
     private static final String GROUP_NAME_GROUP_NAME_ELEMENTS = "elementNb";
     private static final String GROUP_NAME_TYPE = "dataType";
 
+    /** One step of the CIP path an address describes. */
+    public sealed interface PathElement permits SymbolElement, MemberElement {
+    }
+
+    /** A named symbol - a tag, or one member of a structured tag. */
+    public record SymbolElement(String name) implements PathElement {
+    }
+
+    /** An array member, addressed by index. */
+    public record MemberElement(short index) implements PathElement {
+    }
+
     private final String tag;
-    private CIPDataTypeCode type;
-    private int elementNb;
+    private final CIPDataTypeCode type;
+    private final int elementNb;
+    private final List<PathElement> pathElements;
 
     public EipTag(String tag) {
-        this.tag = tag;
-        this.elementNb = 1;
+        this(tag, null, 1);
     }
 
     public EipTag(String tag, int elementNb) {
-        this.tag = tag;
-        this.elementNb = elementNb;
+        this(tag, null, elementNb);
+    }
+
+    public EipTag(String tag, CIPDataTypeCode type) {
+        this(tag, type, 1);
     }
 
     public EipTag(String tag, CIPDataTypeCode type, int elementNb) {
         this.tag = tag;
         this.type = type;
-        this.elementNb = elementNb;
+        // A request always asks for at least one element; normalising here keeps every use site
+        // from having to guard against a count of zero.
+        this.elementNb = Math.max(elementNb, 1);
+        this.pathElements = decomposePath(tag);
     }
 
-    public EipTag(String tag, CIPDataTypeCode type) {
-        this.tag = tag;
-        this.type = type;
+    private static List<PathElement> decomposePath(String tag) {
+        if (tag == null) {
+            return Collections.emptyList();
+        }
+        Matcher matcher = PATH_PATTERN.matcher(tag);
+        List<PathElement> elements = new ArrayList<>(2);
+        while (matcher.find()) {
+            String identifier = matcher.group(2);
+            if ("[".equals(matcher.group(1))) {
+                // MemberID.instance is a uint 8 in the mspec, so it holds 0 to 255. Reject a
+                // larger index here rather than letting it fail later during serialization.
+                int index = Integer.parseInt(identifier);
+                if (index > 255) {
+                    throw new PlcInvalidTagException(String.format(
+                        "Error parsing address %s, index %d is out of range 0 to 255", tag, index));
+                }
+                elements.add(new MemberElement((short) index));
+            } else {
+                elements.add(new SymbolElement(identifier));
+            }
+        }
+        return Collections.unmodifiableList(elements);
     }
 
     @Override
@@ -95,20 +143,21 @@ public class EipTag implements PlcTag, Serializable {
         return type;
     }
 
-    public void setType(CIPDataTypeCode type) {
-        this.type = type;
-    }
-
     public int getElementNb() {
         return elementNb;
     }
 
-    public void setElementNb(int elementNb) {
-        this.elementNb = elementNb;
-    }
-
     public String getTag() {
         return tag;
+    }
+
+    /**
+     * The CIP path this address describes, one element per member, decomposed when the tag was
+     * built. A structured address yields one element per member - {@code a.b} is two symbols,
+     * not one symbol named "a.b" - because that is how a controller walks the path.
+     */
+    public List<PathElement> getPathElements() {
+        return pathElements;
     }
 
     public static boolean matches(String tagQuery) {
@@ -129,11 +178,7 @@ public class EipTag implements PlcTag, Serializable {
             } else {
                 type = CIPDataTypeCode.DINT;
             }
-            if (nb != 0) {
-                return new EipTag(tag, type, nb);
-            } else {
-                return new EipTag(tag, type);
-            }
+            return new EipTag(tag, type, nb);
         }
         return null;
     }

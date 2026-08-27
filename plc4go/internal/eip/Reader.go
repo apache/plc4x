@@ -331,9 +331,12 @@ func ansiPad(identifier string) *uint8 {
 	return nil
 }
 
+// resourceAddressPattern splits a tag address into the members it names. Compiled once: toAnsi
+// runs for every tag of every request, and compiling a pattern per call is not free.
+var resourceAddressPattern = regexp.MustCompile("([.\\[\\]])*([A-Za-z_0-9]+){1}")
+
 func toAnsi(tag string) ([]byte, error) {
 	ctx := context.TODO()
-	resourceAddressPattern := regexp.MustCompile("([.\\[\\]])*([A-Za-z_0-9]+){1}")
 
 	segments := make([]readWriteModel.PathSegment, 0)
 	lengthInBytes := uint16(0)
@@ -348,6 +351,11 @@ func toAnsi(tag string) ([]byte, error) {
 				numericIdentifier, err := strconv.Atoi(identifier)
 				if err != nil {
 					return nil, fmt.Errorf("error parsing address %s, identifier %s couldn't be parsed to an integer", tag, identifier)
+				}
+				// MemberID.instance is a uint 8 in the mspec, so it holds 0 to 255. Converting
+				// a larger index would wrap it silently and address the wrong element.
+				if numericIdentifier < 0 || numericIdentifier > 255 {
+					return nil, fmt.Errorf("error parsing address %s, index %d is out of range 0 to 255", tag, numericIdentifier)
 				}
 				newSegment = readWriteModel.NewLogicalSegment(readWriteModel.NewMemberID(0, uint8(numericIdentifier)))
 			} else {
