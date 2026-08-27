@@ -1675,9 +1675,17 @@ public enum KnxManufacturer {
 
   M_ALLSMART((int) 824, (int) 886, "AllSmart"),
 
-  M_ABB___RESERVED((int) 825, (int) 43954, "ABB - reserved"),
+  M_BUTTONPlus((int) 825, (int) 887, "Button+"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 826, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_((int) 826, (int) 888, "Guangzhou YingLight technology Co.,Ltd."),
+
+  M_RUEDIGER_WOLF_AB((int) 827, (int) 889, "Rüdiger Wolf AB"),
+
+  M_KOLORS_INDIA_PRIVATE_LIMITED((int) 828, (int) 890, "KOLORS INDIA PRIVATE LIMITED"),
+
+  M_ABB___RESERVED((int) 829, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 830, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

@@ -1577,8 +1577,12 @@
     ['822' M_BEEKER_TECH_GMBH_AND_CO__KG ['884', '"Beeker Tech GmbH & Co. KG"']]
     ['823' M_CARBON_INTEGRATION ['885', '"Carbon Integration"']]
     ['824' M_ALLSMART ['886', '"AllSmart"']]
-    ['825' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['826' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['825' M_BUTTONPlus ['887', '"Button+"']]
+    ['826' M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ ['888', '"Guangzhou YingLight technology Co.,Ltd."']]
+    ['827' M_RUEDIGER_WOLF_AB ['889', '"Rüdiger Wolf AB"']]
+    ['828' M_KOLORS_INDIA_PRIVATE_LIMITED ['890', '"KOLORS INDIA PRIVATE LIMITED"']]
+    ['829' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['830' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

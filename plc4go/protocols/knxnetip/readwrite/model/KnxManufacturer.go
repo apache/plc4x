@@ -868,8 +868,12 @@ const (
 	KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG                        KnxManufacturer = 822
 	KnxManufacturer_M_CARBON_INTEGRATION                                 KnxManufacturer = 823
 	KnxManufacturer_M_ALLSMART                                           KnxManufacturer = 824
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 825
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 826
+	KnxManufacturer_M_BUTTONPlus                                         KnxManufacturer = 825
+	KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_            KnxManufacturer = 826
+	KnxManufacturer_M_RUEDIGER_WOLF_AB                                   KnxManufacturer = 827
+	KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED                       KnxManufacturer = 828
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 829
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 830
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1702,6 +1706,10 @@ func init() {
 		KnxManufacturer_M_BEEKER_TECH_GMBH_AND_CO__KG,
 		KnxManufacturer_M_CARBON_INTEGRATION,
 		KnxManufacturer_M_ALLSMART,
+		KnxManufacturer_M_BUTTONPlus,
+		KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_,
+		KnxManufacturer_M_RUEDIGER_WOLF_AB,
+		KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4939,15 +4947,31 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 825:
 		{ /* '825' */
-			return 43954
+			return 887
 		}
 	case 826:
 		{ /* '826' */
-			return 43959
+			return 888
+		}
+	case 827:
+		{ /* '827' */
+			return 889
+		}
+	case 828:
+		{ /* '828' */
+			return 890
+		}
+	case 829:
+		{ /* '829' */
+			return 43954
 		}
 	case 83:
 		{ /* '83' */
 			return 122
+		}
+	case 830:
+		{ /* '830' */
+			return 43959
 		}
 	case 84:
 		{ /* '84' */
@@ -8265,15 +8289,31 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 825:
 		{ /* '825' */
-			return "ABB - reserved"
+			return "Button+"
 		}
 	case 826:
 		{ /* '826' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Guangzhou YingLight technology Co.,Ltd."
+		}
+	case 827:
+		{ /* '827' */
+			return "Rüdiger Wolf AB"
+		}
+	case 828:
+		{ /* '828' */
+			return "KOLORS INDIA PRIVATE LIMITED"
+		}
+	case 829:
+		{ /* '829' */
+			return "ABB - reserved"
 		}
 	case 83:
 		{ /* '83' */
 			return "Durable Technologies"
+		}
+	case 830:
+		{ /* '830' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 84:
 		{ /* '84' */
@@ -9975,11 +10015,19 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 824:
 		return KnxManufacturer_M_ALLSMART, true
 	case 825:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_BUTTONPlus, true
 	case 826:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_, true
+	case 827:
+		return KnxManufacturer_M_RUEDIGER_WOLF_AB, true
+	case 828:
+		return KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED, true
+	case 829:
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 83:
 		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
+	case 830:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 84:
 		return KnxManufacturer_M_INNOTEAM, true
 	case 85:
@@ -11634,12 +11682,20 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_CARBON_INTEGRATION, true
 	case "M_ALLSMART":
 		return KnxManufacturer_M_ALLSMART, true
+	case "M_BUTTONPlus":
+		return KnxManufacturer_M_BUTTONPlus, true
+	case "M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_":
+		return KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_, true
+	case "M_RUEDIGER_WOLF_AB":
+		return KnxManufacturer_M_RUEDIGER_WOLF_AB, true
+	case "M_KOLORS_INDIA_PRIVATE_LIMITED":
+		return KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_DURABLE_TECHNOLOGIES":
 		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_INNOTEAM":
 		return KnxManufacturer_M_INNOTEAM, true
 	case "M_ISE_GMBH":
@@ -13366,12 +13422,20 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_CARBON_INTEGRATION"
 	case KnxManufacturer_M_ALLSMART:
 		return "M_ALLSMART"
+	case KnxManufacturer_M_BUTTONPlus:
+		return "M_BUTTONPlus"
+	case KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_:
+		return "M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_"
+	case KnxManufacturer_M_RUEDIGER_WOLF_AB:
+		return "M_RUEDIGER_WOLF_AB"
+	case KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED:
+		return "M_KOLORS_INDIA_PRIVATE_LIMITED"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_DURABLE_TECHNOLOGIES:
 		return "M_DURABLE_TECHNOLOGIES"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_INNOTEAM:
 		return "M_INNOTEAM"
 	case KnxManufacturer_M_ISE_GMBH:
