@@ -51,6 +51,7 @@ import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 import org.apache.plc4x.java.spi.transports.api.TransportInstance;
@@ -519,7 +520,17 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
             return new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null);
         }
 
-        String symbolicAddress = symbolicTag.getSymbolicAddress().toLowerCase();
+        if (!symbolicTag.getSelection().isEmpty()) {
+            // The read reference is built from the symbol's own block and offset; selecting an
+            // element would need the per-element arithmetic this driver does not do yet. Report
+            // it rather than return the whole variable as though it were the element asked for.
+            LOGGER.warn("Read tag '{}': selecting array elements is not supported yet by the UMAS"
+                + " driver; address the whole variable instead", tagName);
+            return new DefaultPlcResponseItem<>(PlcResponseCode.UNSUPPORTED, null);
+        }
+        // Look up the symbolic path; a selection is never part of the symbol's name.
+        String symbolicAddress =
+            ArrayNotationParser.addressPart(symbolicTag.getSymbolicAddress()).toLowerCase();
         Optional<UmasUnlocatedVariableReference> symbolOpt = Optional.ofNullable(symbolTable.get(symbolicAddress));
         if (symbolOpt.isEmpty()) {
             LOGGER.warn("Read tag '{}': symbol '{}' not found in symbol table", tagName, symbolicAddress);
@@ -660,7 +671,13 @@ public class UmasConnection extends PollingSubscriptionConnectionBase<UmasConfig
         if (!(tag instanceof SymbolicUmasTag symbolicTag)) {
             return PlcResponseCode.INVALID_ADDRESS;
         }
-        String symbolicAddress = symbolicTag.getSymbolicAddress().toLowerCase();
+        if (!symbolicTag.getSelection().isEmpty()) {
+            LOGGER.warn("Write tag '{}': selecting array elements is not supported yet by the UMAS"
+                + " driver; address the whole variable instead", tagName);
+            return PlcResponseCode.UNSUPPORTED;
+        }
+        String symbolicAddress =
+            ArrayNotationParser.addressPart(symbolicTag.getSymbolicAddress()).toLowerCase();
         Optional<UmasUnlocatedVariableReference> symbolOpt = Optional.ofNullable(symbolTable.get(symbolicAddress));
         if (symbolOpt.isEmpty()) {
             return PlcResponseCode.NOT_FOUND;

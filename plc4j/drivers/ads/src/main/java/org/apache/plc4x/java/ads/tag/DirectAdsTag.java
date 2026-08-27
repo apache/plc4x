@@ -24,6 +24,8 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
@@ -42,7 +44,8 @@ public class DirectAdsTag implements AdsTag {
     private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile(
         "^((0[xX](?<indexGroupHex>[0-9a-fA-F]{1,8}))|(?<indexGroup>\\d{1,10}))" +
             "/((0[xX](?<indexOffsetHex>[0-9a-fA-F]{1,8}))|(?<indexOffset>\\d{1,10}))" +
-            ":(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d{1,10})])?");
+            ArrayNotationParser.ARRAY_GROUP +
+            ":(?<adsDataType>\\w+)");
 
     /** An index group, an index offset and a length all travel ADS as four bytes. */
     private static final long MAX_UINT32 = 0xFFFFFFFFL;
@@ -106,10 +109,27 @@ public class DirectAdsTag implements AdsTag {
         return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
     }
 
+    /**
+     * Resolves the address's array expression to the offset from the index offset and the number
+     * of elements. An absent expression selects one element at the address itself.
+     *
+     * @return {@code {offset, numberOfElements}}
+     */
+    protected static int[] selectionOf(Matcher matcher, String address) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return new int[]{0, 1};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
+    }
+
     public static DirectAdsTag of(String address) {
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new PlcInvalidTagException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}:{adsDataType}([numberOfElements])?");
+            throw ArrayNotationParser.invalidAddress(address,
+                "{indexGroup}/{indexOffset}[selection]:{TYPE} - for example 0x4020/0[0..3]:DINT");
         }
 
         String indexGroupStringHex = matcher.group("indexGroupHex");
@@ -123,9 +143,9 @@ public class DirectAdsTag implements AdsTag {
 
         String adsDataTypeString = matcher.group("adsDataType");
 
-        String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null
-            ? parseElementCount(numberOfElementsString) : null;
+        int[] selection = selectionOf(matcher, address);
+        indexOffset += selection[0];
+        Integer numberOfElements = selection[1];
 
         return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeString, numberOfElements);
     }
@@ -152,11 +172,8 @@ public class DirectAdsTag implements AdsTag {
 
     @Override
     public String getAddressString() {
-        String address = String.format("0x%d/%d:%s", getIndexGroup(), getIndexOffset(), getPlcDataType());
-        if(getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
-        return address;
+        return String.format("0x%d/%d%s:%s", getIndexGroup(), getIndexOffset(),
+            ArrayNotationParser.render(getArrayInfo()), getPlcDataType());
     }
 
     @Override
@@ -171,7 +188,7 @@ public class DirectAdsTag implements AdsTag {
     @Override
     public List<ArrayInfo> getArrayInfo() {
         if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1));
         }
         return Collections.emptyList();
     }

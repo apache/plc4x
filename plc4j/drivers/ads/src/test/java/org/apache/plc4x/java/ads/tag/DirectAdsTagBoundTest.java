@@ -32,7 +32,7 @@ public class DirectAdsTagBoundTest {
 
     @Test
     void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
-        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2:INT[99999999999]"));
+        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2[0..99999999998]:INT"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class DirectAdsTagBoundTest {
     @Test
     void aStringTagCountTooWideToBeANumberIsAlsoAnInvalidTag() {
         assertThrows(PlcInvalidTagException.class,
-            () -> DirectAdsStringTag.of("1/2:STRING(80)[99999999999]"));
+            () -> DirectAdsStringTag.of("1/2[0..99999999998]:STRING(80)"));
     }
 
     @Test
@@ -69,8 +69,13 @@ public class DirectAdsTagBoundTest {
     }
 
     @Test
-    void aCountOfZeroIsNotACountOfElements() {
-        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2:INT[0]"));
+    /**
+     * A count of zero used to be rejected. The notation cannot express it: [0] names the element
+     * at offset 0, which is one element, and an empty bracket names nothing at all.
+     */
+    void anEmptySelectionIsRefused() {
+        assertEquals(1, DirectAdsTag.of("1/2[0]:INT").getNumberOfElements());
+        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2[]:INT"));
     }
 
     @Test
@@ -87,7 +92,7 @@ public class DirectAdsTagBoundTest {
 
     @Test
     void hexAddressesAreReadAsHex() {
-        DirectAdsTag tag = DirectAdsTag.of("0x10/0xFF:INT[2]");
+        DirectAdsTag tag = DirectAdsTag.of("0x10/0xFF[0..1]:INT");
         assertEquals(0x10, tag.getIndexGroup());
         assertEquals(0xFF, tag.getIndexOffset());
         assertEquals(2, tag.getNumberOfElements());
@@ -95,7 +100,7 @@ public class DirectAdsTagBoundTest {
 
     @Test
     void aStringTagSharesTheSameChecks() {
-        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/2:STRING(80)[3]");
+        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/2[0..2]:STRING(80)");
         assertEquals(0x10, tag.getIndexGroup());
         assertEquals(2, tag.getIndexOffset());
         assertEquals(3, tag.getNumberOfElements());
@@ -103,20 +108,21 @@ public class DirectAdsTagBoundTest {
     }
 
     @Test
-    void aStringTagCountOfZeroIsAlsoRefused() {
+    void aStringTagEmptySelectionIsAlsoRefused() {
+        assertEquals(1, DirectAdsStringTag.of("1/2[0]:STRING(80)").getNumberOfElements());
         assertThrows(PlcInvalidTagException.class,
-            () -> DirectAdsStringTag.of("1/2:STRING(80)[0]"));
+            () -> DirectAdsStringTag.of("1/2[]:STRING(80)"));
     }
 
     @Test
     void aCountThatWouldNotFitAnIntIsRefused() {
         // Ten digits match the pattern but do not fit the int the count is kept in.
-        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2:INT[3000000000]"));
+        assertThrows(PlcInvalidTagException.class, () -> DirectAdsTag.of("1/2[0..2999999999]:INT"));
     }
 
     @Test
     void aPlausibleTagStillParses() {
-        DirectAdsTag tag = DirectAdsTag.of("1/2:INT[4]");
+        DirectAdsTag tag = DirectAdsTag.of("1/2[0..3]:INT");
         assertEquals(4, tag.getNumberOfElements());
         assertEquals(1, tag.getIndexGroup());
         assertEquals(2, tag.getIndexOffset());

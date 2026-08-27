@@ -32,6 +32,13 @@ ADS device concept: https://infosys.beckhoff.com/english.php?content=../content/
 Specification for ADS devices: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
 
 == Structure AMS/TCP Packet
+
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
 ADS (Automation Device Specification) is the TwinCAT communication protocol that specifies the interaction between two ADS devices. For example, it defines what operations can be executed on another ADS device, what parameters are necessary for that and what return value is sent after execution.
 
 AMS (Automation Message Specification) specifies the exchange of the ADS data. A major component of the communication protocol is the AmsNetId. This is specified in the AMS/ADS package for the source and target device. An ADS device can be explicitly addressed using the AmsNetId.

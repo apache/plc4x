@@ -40,7 +40,7 @@ class DirectAdsStringTagTest {
 
     @Test
     void ofParsesHexStringAddressWithArray() {
-        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/0x20:WSTRING(40)[3]");
+        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/0x20[0..2]:WSTRING(40)");
         assertEquals(0x10L, tag.getIndexGroup());
         assertEquals(0x20L, tag.getIndexOffset());
         assertEquals("WSTRING", tag.getPlcDataType());

@@ -32,6 +32,8 @@ import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
@@ -43,16 +45,21 @@ import java.util.regex.Pattern;
 
 public class S7Tag implements PlcTag, Serializable {
 
+    /** The shared array notation, which sits between the address and the type. */
+    protected static final String ARRAY_EXPRESSION = ArrayNotationParser.ARRAY_GROUP;
+
+    protected static final String ARRAY = "array";
+
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
@@ -64,6 +71,7 @@ public class S7Tag implements PlcTag, Serializable {
     protected static final String BYTE_OFFSET = "byteOffset";
     protected static final String BIT_OFFSET = "bitOffset";
     protected static final String NUM_ELEMENTS = "numElements";
+
     protected static final String MEMORY_AREA = "memoryArea";
 
     /** highest byte offset an S7 address can name; see checkByteOffset() below */
@@ -195,10 +203,9 @@ public class S7Tag implements PlcTag, Serializable {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
-            }
+            int[] selection = selectionOf(matcher, tagString);
+            byteOffset += selection[0] * dataType.getSizeInBytes();
+            int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
@@ -221,10 +228,9 @@ public class S7Tag implements PlcTag, Serializable {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
-            }
+            int[] selection = selectionOf(matcher, tagString);
+            byteOffset += selection[0] * dataType.getSizeInBytes();
+            int numElements = checkNumElements(dataType, selection[1]);
 
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
         } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches()) {
@@ -261,10 +267,9 @@ public class S7Tag implements PlcTag, Serializable {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
-            }
+            int[] selection = selectionOf(matcher, tagString);
+            byteOffset += selection[0] * dataType.getSizeInBytes();
+            int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
@@ -276,7 +281,8 @@ public class S7Tag implements PlcTag, Serializable {
 
             return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
         }
-        throw new PlcInvalidTagException("Unable to parse address: " + tagString);
+        throw ArrayNotationParser.invalidAddress(tagString,
+            "%{area}{offset}[selection]:{TYPE} - for example %DB42:28.0[0..3]:BYTE");
     }
 
     /**
@@ -304,6 +310,25 @@ public class S7Tag implements PlcTag, Serializable {
      * @param numElements given number of elements
      * @return given numElements if Ok, throws PlcInvalidTagException otherwise
      */
+    /**
+     * Resolves the address's array expression to the offset of the first element and the number
+     * of elements. An absent expression selects one element at the address itself.
+     *
+     * <p>The offset is in elements; a caller scales it by the data type's size to reach a byte
+     * offset.
+     *
+     * @return {@code {elementOffset, numElements}}
+     */
+    protected static int[] selectionOf(Matcher matcher, String address) {
+        String expression = matcher.group(ARRAY);
+        if (expression == null) {
+            return new int[]{0, 1};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
+    }
+
     protected static int checkNumElements(TransportSize dataType, int numElements) {
         return checkNumElements(numElements, dataType.getSizeInBytes(), dataType.name());
     }

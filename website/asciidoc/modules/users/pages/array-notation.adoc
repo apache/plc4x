@@ -1,0 +1,160 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:icons: font
+
+= Addressing arrays
+
+Every PLC4X driver selects array elements the same way. The address itself differs per protocol -
+an S7 data block, a Modbus register, an OPC UA node - but what comes after it does not:
+
+[source]
+----
+<driver-specific address>[<selection>]:<TYPE>
+----
+
+The selection sits *before* the type. Where a driver's address carries no type, it ends the
+address.
+
+== The forms
+
+[cols="2,3,2", options="header"]
+|===
+|Written |Means |Example
+
+|_(omitted)_
+|the whole value - a scalar, or every element of an array
+|`myTag`
+
+|`[n]`
+|**one element**, the one at index `n`
+|`myTag[4]` - the fifth element
+
+|`[lo..hi]`
+|an **array** of the elements `lo` through `hi`, both included
+|`myTag[0..7]` - eight elements
+
+|`[n;base]`
+|one element, in an array the PLC declares as starting at `base`
+|`myTag[1;1]` - the first element
+
+|`[lo..hi;base]`
+|a range, in an array declared as starting at `base`
+|`myTag[4..7;1]` - four elements, starting at the fourth
+
+|`[…][…]`
+|one bracket per dimension
+|`myTag[1..2][0..5]`
+|===
+
+=== A single index is not an array
+
+`myTag[4]` selects one element and gives you a scalar. `myTag[4..4]` selects a range that happens
+to hold one element and gives you a list of one. The difference is deliberate: it is how a tool
+reading `getArrayInfo()` decides whether to render a value or a list.
+
+=== Arrays that do not start at zero
+
+IEC 61131 lets an array be declared `ARRAY[1..10] OF BYTE`, and the indices the PLC program shows
+you then start at 1. Write those indices, and add `;base` so the driver knows where the data
+really begins:
+
+[source]
+----
+%DB42:28.0[4..7;1]:BYTE
+----
+
+That reads four bytes, starting three elements past the address - because element 4 of an array
+declared from 1 is the fourth.
+
+Some drivers already know the declared bounds from the device: **ADS**, **UMAS** and **OPC-UA**
+learn them from the symbol table or the address space. There you can simply write the declared
+indices, and `;base` becomes a statement of intent the driver checks against what the device says.
+A base that disagrees is reported, because it means the address was written against a different
+layout than the PLC has.
+
+=== Multi-dimensional arrays
+
+Two spellings are accepted and mean the same thing - the second is what Allen-Bradley and others
+use:
+
+[source]
+----
+g_matI16_2x3[1..2][3..4]
+g_matI16_2x3[1..2,3..4]
+----
+
+`getAddressString()` always produces the first, so an address you read back from a tag is in one
+canonical spelling regardless of how it was written.
+
+A range may only be the **last** dimension. `a[1].b[2..5]` is fine - one path to one structure,
+then a run of its elements. `a[1..3].b` is not: member `b` of three separate elements is not one
+contiguous read, and no protocol here fetches that in a single request. The same goes for
+`a[1..3][2]`, a strided slice.
+
+== What each driver can express
+
+The notation is the same everywhere; what a protocol can carry is not.
+
+[cols="2,1,1,3", options="header"]
+|===
+|Driver |Dimensions |Whole array |Notes
+
+|OPC-UA |many |yes |Omitting the selection asks for the whole node
+|ADS |many |yes |Declared bounds come from the symbol table
+|UMAS |many |yes |Selecting elements is not implemented yet and is reported
+|EtherNet/IP |1 |no |A CIP index is a `uint 8`, so it cannot start past 255
+|S7, Modbus, SLMP |1 |no |Memory offsets; the base is resolved into the address
+|Simulated, Profinet |1 |no |Can only select from the first element
+|Firmata |1 |no |No type suffix, so the selection ends the address
+|===
+
+Where a protocol cannot express what you wrote, the driver says so. It will not quietly read
+something else.
+
+== Why `;` and not something else
+
+The `;` before a declared base is the one separator the notation adds. It is kept as `;` for
+three reasons:
+
+* OPC UA addresses already use `;` as the separator of the standard NodeId string form
+  (`ns=2;i=MyInt`, from OPC UA Part 6). That is not PLC4X's to redefine - people copy those
+  strings out of their tooling - so `;` was already part of the vocabulary.
+* It stays visually distinct from `:`, which separates the type. `%DB42:28.0[4..7;1]:BYTE` is
+  readable; the same address with four colons doing three different jobs is not.
+* `:` is structural in S7, Modbus, SLMP, EtherNet/IP and ADS addresses, whereas `;` is structural
+  in only one driver. Reusing the less overloaded character inside brackets keeps the grammar
+  unambiguous.
+
+== Upgrading
+
+The brackets used to come *after* the type on several drivers, where they meant a **count**:
+
+[source]
+----
+holding-register:1:INT[4]      <1>
+holding-register:1[0..3]:INT   <2>
+----
+<1> before - four registers
+<2> now
+
+An address in the old form no longer parses, and the error tells you what to write instead. That
+is deliberate: `[4]` used to mean "four elements" and now means "the fifth", so an address that
+still parsed would quietly return different data.
+
+WARNING: **Firmata is the exception.** Its addresses carry no type (`3[4]`), so its brackets did
+not move and there is nothing to reject. `3[4]` used to mean four pins from pin 3 and now means
+one pin, the fifth. Rewrite these as `3[0..3]`.

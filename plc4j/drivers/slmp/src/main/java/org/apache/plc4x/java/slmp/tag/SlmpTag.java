@@ -24,6 +24,8 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.slmp.SlmpDataType;
 import org.apache.plc4x.java.slmp.readwrite.SlmpDeviceCode;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.io.Serializable;
@@ -41,8 +43,9 @@ import java.util.regex.Pattern;
 public class SlmpTag implements PlcTag, Serializable {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile(
-        "^(?<device>[A-Za-z]+)(?<hexPrefix>0[xX])?(?<address>[0-9A-Fa-f]+)" +
-        "(:(?<datatype>[A-Za-z_]+))?(\\[(?<quantity>\\d+)])?$");
+        "^(?<device>[A-Za-z]+)(?<hexPrefix>0[xX])?(?<address>[0-9A-Fa-f]+)"
+            + ArrayNotationParser.ARRAY_GROUP
+            + "(:(?<datatype>[A-Za-z_]+))?$");
 
     /** Conservative single-frame word ceiling for 3E binary Batch Read/Write (not the exact device max). */
     static final int MAX_POINTS = 960;
@@ -65,7 +68,8 @@ public class SlmpTag implements PlcTag, Serializable {
     public static SlmpTag of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcInvalidTagException("Unable to parse SLMP address: " + addressString);
+            throw ArrayNotationParser.invalidAddress(addressString,
+                "{device}{address}[selection]:{TYPE} - for example D100[0..3]:INT");
         }
         String deviceToken = matcher.group("device").toUpperCase();
         SlmpDeviceCode device;
@@ -117,16 +121,15 @@ public class SlmpTag implements PlcTag, Serializable {
             }
         }
 
-        String quantityToken = matcher.group("quantity");
-        int quantity;
-        if (quantityToken == null) {
-            quantity = 1;
-        } else {
-            try {
-                quantity = Integer.parseInt(quantityToken);
-            } catch (NumberFormatException e) {
-                throw new PlcInvalidTagException("quantity out of range in: " + addressString);
-            }
+        // The selection sits between the address and the type; its offset moves the device
+        // number, and its size is how many devices are read.
+        String arrayToken = matcher.group("array");
+        int quantity = 1;
+        if (arrayToken != null) {
+            ArrayInfo dimension = ArrayNotationParser
+                .parse(arrayToken, addressString, AddressConstraints.SINGLE_DIMENSION).get(0);
+            deviceNumber += dimension.getLowerBound() - dimension.getBase();
+            quantity = dimension.getSize();
         }
         if (quantity < 1) {
             throw new PlcInvalidTagException("quantity must be >= 1 in: " + addressString);
@@ -167,11 +170,9 @@ public class SlmpTag implements PlcTag, Serializable {
             ? "0x" + Integer.toHexString(deviceNumber).toUpperCase()
             : Integer.toString(deviceNumber);
         StringBuilder sb = new StringBuilder(deviceCode.name()).append(addr);
+        sb.append(ArrayNotationParser.render(getArrayInfo()));
         if (dataType != SlmpDataType.WORD || quantity != 1) {
             sb.append(':').append(dataType.name());
-        }
-        if (quantity != 1) {
-            sb.append('[').append(quantity).append(']');
         }
         return sb.toString();
     }

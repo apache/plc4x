@@ -255,7 +255,7 @@ public class EipDockerIT {
 
             // Read all four back with a single array read.
             PlcReadRequest readRequest = connection.readRequestBuilder()
-                .addTagAddress("arr", "hurz_DINT_ARR[0]:DINT:4")
+                .addTagAddress("arr", "hurz_DINT_ARR[0..3]:DINT")
                 .build();
             PlcReadResponse readResponse = readRequest.execute().get();
 

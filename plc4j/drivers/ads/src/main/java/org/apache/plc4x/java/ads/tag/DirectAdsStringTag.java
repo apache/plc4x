@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.tag;
 
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
@@ -35,8 +36,8 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
     private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]{1,8}))|(?<indexGroup>\\d{1,10}))" +
             "/((0[xX](?<indexOffsetHex>[0-9a-fA-F]{1,8}))|(?<indexOffset>\\d{1,10}))" +
-            ":(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)" +
-            "(\\[(?<numberOfElements>\\d{1,10})])?");
+            ArrayNotationParser.ARRAY_GROUP +
+            ":(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)");
 
     private final int stringLength;
 
@@ -69,9 +70,9 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
         String stringLengthString = matcher.group("stringLength");
         int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 0;
 
-        String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null
-            ? parseElementCount(numberOfElementsString) : null;
+        int[] selection = selectionOf(matcher, address);
+        indexOffset += selection[0];
+        Integer numberOfElements = selection[1];
 
         return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
     }

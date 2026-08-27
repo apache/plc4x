@@ -28,19 +28,24 @@ import org.apache.plc4x.java.spi.buffers.api.Serializable;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ModbusTag implements PlcTag, Serializable {
 
+    /** The shared array notation, which sits between the address and the type. */
+    private static final String ARRAY_EXPRESSION = ArrayNotationParser.ARRAY_GROUP;
+
     // STRING and WSTRING carry the length of one string in parentheses, the same way the S7 driver
-    // spells it: "holding-register:1:STRING(20)[3]" is three 20-character strings. The quantity in
-    // brackets keeps meaning "how many values", as it does for every other data type.
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d{1,9})(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?(\\[(?<quantity>\\d{1,5})])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?(\\[(?<quantity>\\d{1,5})])?");
+    // spells it: "holding-register:1[0..2]:STRING(20)" is three 20-character strings.
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d{1,9})" + ARRAY_EXPRESSION + "(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?" + ARRAY_EXPRESSION + "(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?");
 
     public static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
@@ -54,6 +59,22 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     private final ModbusDataType dataType;
     private final Short unitId;
     private final ModbusByteOrder byteOrder;
+
+    /**
+     * Resolves the address's array expression to the offset from the base address and the number
+     * of elements. An absent expression selects one element at the address itself.
+     *
+     * @return {@code {offset, quantity}}
+     */
+    protected static int[] selectionOf(Matcher matcher, String addressString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return new int[]{0, 1};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION).get(0);
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
+    }
 
     public static ModbusTag of(String addressString) {
         if (ModbusTagCoil.matches(addressString)) {
@@ -71,17 +92,17 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         if (ModbusTagExtendedRegister.matches(addressString)) {
             return ModbusTagExtendedRegister.of(addressString);
         }
-        throw new PlcInvalidTagException("Unable to parse address: " + addressString);
+        throw ArrayNotationParser.invalidAddress(addressString,
+            "{area}:{address}[selection]:{TYPE} - for example holding-register:1[0..3]:INT");
     }
 
     @Override
     public String getAddressString() {
+        // The selection sits between the address and the type, in the shared notation.
         String address = String.format("%s%05d", getAddressStringPrefix(), getLogicalAddress());
-        if(getDataType() != null) {
+        address += ArrayNotationParser.render(getArrayInfo());
+        if (getDataType() != null) {
             address += ":" + getDataType().name();
-        }
-        if(!getArrayInfo().isEmpty()) {
-            address += "[" + (getArrayInfo().get(0).getUpperBound() + 1) + "]";
         }
         return address;
     }

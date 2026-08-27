@@ -47,12 +47,12 @@ public class FirmataTagPinSpanTest {
 
     @Test
     void aSpanRunningPastTheLastPinIsRejected() {
-        assertThrows(PlcInvalidTagException.class, () -> FirmataTag.of("digital:250[100]"));
+        assertThrows(PlcInvalidTagException.class, () -> FirmataTag.of("digital:250[0..99]"));
     }
 
     @Test
     void theWholePinSpaceIsStillAllowed() {
-        FirmataTagDigital tag = FirmataTagDigital.of("digital:0[256]");
+        FirmataTagDigital tag = FirmataTagDigital.of("digital:0[0..255]");
         assertEquals(256, tag.getNumberOfElements());
         assertEquals(256, tag.getBitSet().cardinality());
     }

@@ -21,15 +21,19 @@ package org.apache.plc4x.java.profinet.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProfinetTag implements PlcTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<slot>\\d{1,5}).(?<subSlot>\\d{1,5}).(?<direction>INPUT|OUTPUT)(.(?<index>\\d{1,5}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d{1,5})])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<slot>\\d{1,5}).(?<subSlot>\\d{1,5}).(?<direction>INPUT|OUTPUT)(.(?<index>\\d{1,5}))?" + ArrayNotationParser.ARRAY_GROUP + ":(?<dataType>[a-zA-Z_]+)");
     private final int slot;
     private final int subSlot;
     private final Direction direction;
@@ -49,18 +53,48 @@ public class ProfinetTag implements PlcTag {
         }
     }
 
+
+    /**
+     * Resolves the address's array expression to the number of elements. This driver addresses a
+     * named variable rather than a numeric offset, so a selection that does not start at the
+     * first element has nothing to apply to and is reported rather than quietly ignored.
+     */
+    private static int elementsOf(Matcher matcher, String addressString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return 1;
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION).get(0);
+        if (dimension.getLowerBound() - dimension.getBase() != 0) {
+            throw new PlcInvalidTagException("Array selection '" + expression + "' in tag '"
+                + addressString + "' must start at the first element: this driver addresses a "
+                + "named variable, so there is no offset to start from");
+        }
+        return dimension.getSize();
+    }
+
     public static ProfinetTag of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcInvalidTagException(addressString, ADDRESS_PATTERN);
+            throw ArrayNotationParser.invalidAddress(addressString,
+                "{slot}.{subSlot}.{INPUT|OUTPUT}.{index}[selection]:{TYPE}"
+                    + " - for example 1.2.INPUT.0[0..3]:INT");
         }
 
         int slot = Integer.parseInt(matcher.group("slot"));
         int subSlot = Integer.parseInt(matcher.group("subSlot"));
         Direction direction = Direction.valueOf(matcher.group("direction"));
-        int index = Integer.parseInt(matcher.group("index"));
+        // The index is optional in the pattern but has always been required in practice - it was
+        // parsed unguarded, so an address without one failed with a NumberFormatException. Say so.
+        String indexToken = matcher.group("index");
+        if (indexToken == null) {
+            throw new PlcInvalidTagException("Address '" + addressString + "' is missing the index:"
+                + " expected {slot}.{subSlot}.{INPUT|OUTPUT}.{index}[selection]:{TYPE}");
+        }
+        int index = Integer.parseInt(indexToken);
         PlcValueType dataType = PlcValueType.valueOf(matcher.group("dataType"));
-        int numElements = (matcher.group("numElements") != null) ? Integer.parseInt(matcher.group("numElements")) : 1;
+        int numElements = elementsOf(matcher, addressString);
 
         return new ProfinetTag(slot, subSlot, direction, index, dataType, numElements);
     }
@@ -97,7 +131,10 @@ public class ProfinetTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        return PlcTag.super.getArrayInfo();
+        if (numElements > 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
+        }
+        return Collections.emptyList();
     }
 
     public static enum Direction {

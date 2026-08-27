@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.firmata.readwrite.PinMode;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.util.BitSet;
@@ -50,11 +51,8 @@ public class FirmataTagDigital extends FirmataTag {
 
     @Override
     public String getAddressString() {
-        String address = "digital:" + getAddress();
-        if(getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
-        return address;
+        // The selection terminates the address; Firmata carries no type suffix.
+        return "digital:" + getAddress() + ArrayNotationParser.render(getArrayInfo());
     }
 
     @Override
@@ -65,7 +63,7 @@ public class FirmataTagDigital extends FirmataTag {
     @Override
     public List<ArrayInfo> getArrayInfo() {
         if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1));
         }
         return Collections.emptyList();
     }
@@ -85,8 +83,9 @@ public class FirmataTagDigital extends FirmataTag {
         }
         int address = Integer.parseInt(matcher.group("address"));
 
-        String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        int[] selection = selectionOf(matcher, addressString);
+        address += selection[0];
+        Integer quantity = selection[1];
 
         PinMode pinMode = ("PULLUP".equals(matcher.group("mode"))) ? PinMode.PinModePullup : null;
 

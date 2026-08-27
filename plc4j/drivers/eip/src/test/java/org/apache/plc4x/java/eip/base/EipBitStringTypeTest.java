@@ -105,7 +105,7 @@ class EipBitStringTypeTest {
 
     @Test
     void arrayOfDwordsIsFullyDecoded() {
-        EipTag tag = EipTag.of("%N40[0]:DWORD:3");
+        EipTag tag = EipTag.of("%N40[0..2]:DWORD");
         assertEquals(3, tag.getElementNb());
 
         byte[] raw = bytes(12, b -> {
@@ -124,7 +124,7 @@ class EipBitStringTypeTest {
 
     @Test
     void arrayOfLwordsIsFullyDecoded() {
-        EipTag tag = EipTag.of("%N40[0]:LWORD:2");
+        EipTag tag = EipTag.of("%N40[0..1]:LWORD");
 
         byte[] raw = bytes(16, b -> {
             b.putLong(1L);
@@ -140,13 +140,13 @@ class EipBitStringTypeTest {
     @Test
     void arrayOfBytesAndWordsIsFullyDecoded() {
         PlcValue bytesValue = EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:BYTE:3"), new byte[]{0x01, (byte) 0x80, (byte) 0xFF}, CIPDataTypeCode.BYTE);
+            EipTag.of("%N40[0..2]:BYTE"), new byte[]{0x01, (byte) 0x80, (byte) 0xFF}, CIPDataTypeCode.BYTE);
         assertEquals(3, bytesValue.getLength());
         assertEquals(128L, bytesValue.getIndex(1).getLong());
         assertEquals(255L, bytesValue.getIndex(2).getLong());
 
         PlcValue wordsValue = EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:WORD:2"),
+            EipTag.of("%N40[0..1]:WORD"),
             bytes(4, b -> {
                 b.putShort((short) 0x8000);
                 b.putShort((short) 0xFFFF);
@@ -164,9 +164,9 @@ class EipBitStringTypeTest {
     @Test
     void shortReplyIsReportedInsteadOfThrowing() {
         assertNull(EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:DWORD:8"), bytes(4, b -> b.putInt(1)), CIPDataTypeCode.DWORD));
+            EipTag.of("%N40[0..7]:DWORD"), bytes(4, b -> b.putInt(1)), CIPDataTypeCode.DWORD));
         assertNull(EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:LWORD:4"), bytes(8, b -> b.putLong(1)), CIPDataTypeCode.LWORD));
+            EipTag.of("%N40[0..3]:LWORD"), bytes(8, b -> b.putLong(1)), CIPDataTypeCode.LWORD));
     }
 
     // --- writes ---

@@ -81,8 +81,9 @@ public class ModbusTagHoldingRegister extends ModbusTag {
             throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
         }
 
-        String quantityString = matcher.group("quantity");
-        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
+        int[] selection = selectionOf(matcher, addressString);
+        address += selection[0];
+        int quantity = selection[1];
         if ((address + quantity) > REGISTER_MAXADDRESS) {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }

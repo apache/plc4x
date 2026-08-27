@@ -66,7 +66,7 @@ class S7TagTest {
 
     @Test
     void parseDataBlockByteArray() {
-        S7Tag tag = S7Tag.of("%DB1.DBB0:BYTE[10]");
+        S7Tag tag = S7Tag.of("%DB1.DBB0[0..9]:BYTE");
         assertEquals(TransportSize.BYTE, tag.getDataType());
         assertEquals(10, tag.getNumberOfElements());
     }
@@ -108,7 +108,7 @@ class S7TagTest {
 
     @Test
     void parseRawByteArrayKeyword() {
-        S7Tag tag = S7Tag.of("%DB1.DBB0:RAW_BYTE_ARRAY[16]");
+        S7Tag tag = S7Tag.of("%DB1.DBB0[0..15]:RAW_BYTE_ARRAY");
         assertEquals(TransportSize.BYTE, tag.getDataType());
         assertEquals(16, tag.getNumberOfElements());
     }
@@ -127,7 +127,7 @@ class S7TagTest {
     void arrayInfoNonScalar() {
         S7Tag scalar = S7Tag.of("%MW0:INT");
         assertTrue(scalar.getArrayInfo().isEmpty());
-        S7Tag arr = S7Tag.of("%DB1.DBB0:BYTE[10]");
+        S7Tag arr = S7Tag.of("%DB1.DBB0[0..9]:BYTE");
         assertEquals(1, arr.getArrayInfo().size());
         assertEquals(0, arr.getArrayInfo().get(0).getLowerBound());
         assertEquals(9, arr.getArrayInfo().get(0).getUpperBound());

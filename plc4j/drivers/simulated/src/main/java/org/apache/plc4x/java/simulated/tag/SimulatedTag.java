@@ -24,6 +24,8 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.types.SimulatedTagType;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.util.Collections;
@@ -43,7 +45,7 @@ public class SimulatedTag implements PlcTag {
      * - {@code STDOUT/foo:STRING}
      */
     private static final Pattern ADDRESS_PATTERN = Pattern.compile(
-        "^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d{1,9})])?$");
+        "^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\\\.]+)" + ArrayNotationParser.ARRAY_GROUP + ":(?<dataType>[a-zA-Z0-9]++)$");
 
     /**
      * Largest amount of made-up data a single tag may ask for.
@@ -66,6 +68,27 @@ public class SimulatedTag implements PlcTag {
         this.numElements = numElements;
     }
 
+
+    /**
+     * Resolves the address's array expression to the number of elements. This driver addresses a
+     * named variable rather than a numeric offset, so a selection that does not start at the
+     * first element has nothing to apply to and is reported rather than quietly ignored.
+     */
+    private static int elementsOf(Matcher matcher, String tagString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return 1;
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, tagString, AddressConstraints.SINGLE_DIMENSION).get(0);
+        if (dimension.getLowerBound() - dimension.getBase() != 0) {
+            throw new PlcInvalidTagException("Array selection '" + expression + "' in tag '"
+                + tagString + "' must start at the first element: this driver addresses a "
+                + "named variable, so there is no offset to start from");
+        }
+        return dimension.getSize();
+    }
+
     public static SimulatedTag of(String tagString) throws PlcInvalidTagException {
         Matcher matcher = ADDRESS_PATTERN.matcher(tagString);
         if (matcher.matches()) {
@@ -79,13 +102,11 @@ public class SimulatedTag implements PlcTag {
                 throw new PlcInvalidTagException("Invalid data type: " + matcher.group("dataType"));
             }
 
-            int numElements = 1;
-            if (matcher.group("numElements") != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group("numElements")));
-            }
+            int numElements = checkNumElements(dataType, elementsOf(matcher, tagString));
             return new SimulatedTag(type, name, dataType, numElements);
         }
-        throw new PlcInvalidTagException("Unable to parse address: " + tagString);
+        throw ArrayNotationParser.invalidAddress(tagString,
+            "{type}/{name}[selection]:{TYPE} - for example RANDOM/foo[0..3]:INT");
     }
 
     /**
@@ -124,7 +145,8 @@ public class SimulatedTag implements PlcTag {
 
     @Override
     public String getAddressString() {
-        return String.format("%s/%s:%s[%d]", type.name(), name, dataType.name(), numElements);
+        return String.format("%s/%s%s:%s", type.name(), name,
+            ArrayNotationParser.render(getArrayInfo()), dataType.name());
     }
 
     @Override

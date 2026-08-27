@@ -40,7 +40,7 @@ class EipArrayReadTest {
 
     @Test
     void arrayOfDintsIsFullyDecoded() {
-        EipTag tag = EipTag.of("%N40[0]:DINT:8");
+        EipTag tag = EipTag.of("%N40[0..7]:DINT");
         assertNotNull(tag);
         assertEquals(8, tag.getElementNb());
 
@@ -68,7 +68,7 @@ class EipArrayReadTest {
      */
     @Test
     void shortReplyIsReportedInsteadOfThrowing() {
-        EipTag tag = EipTag.of("%N40[0]:DINT:8");
+        EipTag tag = EipTag.of("%N40[0..7]:DINT");
 
         // Only one element's worth of data for an 8-element tag.
         assertNull(EipTcpConnection.parsePlcValue(tag, dints(1), CIPDataTypeCode.DINT));
@@ -101,7 +101,7 @@ class EipArrayReadTest {
 
     @Test
     void arrayOfIntsIsFullyDecoded() {
-        EipTag tag = EipTag.of("%N40[0]:INT:4");
+        EipTag tag = EipTag.of("%N40[0..3]:INT");
 
         ByteBuffer buffer = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN);
         for (short s : new short[]{10, 20, 30, 40}) {

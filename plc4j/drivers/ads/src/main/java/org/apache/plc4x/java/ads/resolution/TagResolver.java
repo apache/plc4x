@@ -23,9 +23,12 @@ import org.apache.plc4x.java.ads.readwrite.AdsDataTypeArrayInfo;
 import org.apache.plc4x.java.ads.readwrite.AdsDataTypeTableEntry;
 import org.apache.plc4x.java.ads.readwrite.AdsSymbolTableEntry;
 import org.apache.plc4x.java.ads.tag.SymbolicAdsTag;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +73,13 @@ public final class TagResolver {
                     + " option or address the value directly as"
                     + " '{IndexGroup}/{IndexOffset}:{TYPE}'.");
         }
-        AddressParser.AddressPart root = AddressParser.parse(tag.getSymbolicAddress());
+        // The trailing selection is not part of the symbolic path; it says which elements of the
+        // resolved location to read. Its first index is appended to the path's own indices so the
+        // existing bounds checking and lower-bound arithmetic apply to it unchanged.
+        String path = ArrayNotationParser.addressPart(tag.getSymbolicAddress());
+        List<ArrayInfo> selection = tag.getSelection();
+        AddressParser.AddressPart root = withSelectionStart(AddressParser.parse(path), selection);
+
         AdsSymbolTableEntry symbol = symbolTable.get(root.baseSegment());
         if (symbol == null) {
             throw new PlcInvalidTagException("Unknown symbol: " + root.baseSegment());
@@ -80,8 +89,80 @@ public final class TagResolver {
             throw new PlcInvalidTagException(
                 "Unknown data type for symbol " + root.baseSegment() + ": " + symbol.getDataTypeName());
         }
-        return resolvePart(symbol.getGroup(), symbol.getOffset(), dataType,
+        verifyDeclaredBase(tag, symbol, dataType);
+
+        ResolvedAdsTag resolved = resolvePart(symbol.getGroup(), symbol.getOffset(), dataType,
             root.arrayIndices(), root.child());
+        return scaleToSelection(resolved, selection);
+    }
+
+    /**
+     * Appends the first index of each selected dimension to the deepest segment of the path, so
+     * that the location the read starts at is resolved by the same code that resolves an index
+     * written in the path itself.
+     */
+    private static AddressParser.AddressPart withSelectionStart(AddressParser.AddressPart part,
+                                                                List<ArrayInfo> selection) {
+        if (selection.isEmpty()) {
+            return part;
+        }
+        if (part.child() != null) {
+            return new AddressParser.AddressPart(part.baseSegment(), part.arrayIndices(),
+                withSelectionStart(part.child(), selection));
+        }
+        List<Integer> indices = new ArrayList<>(part.arrayIndices());
+        for (ArrayInfo dimension : selection) {
+            indices.add(dimension.getLowerBound());
+        }
+        return new AddressParser.AddressPart(part.baseSegment(), indices, null);
+    }
+
+    /**
+     * Checks a declared lower bound written in the address against the one the symbol table
+     * declares. The table is authoritative; a base in the address is the user's statement of
+     * intent, and a disagreement means the address was written against a different layout than
+     * the PLC has - which would otherwise read silently shifted data.
+     *
+     * <p>This is the one rule of the notation that cannot be checked while the address is
+     * parsed, because the symbol table is not loaded then.
+     */
+    private void verifyDeclaredBase(SymbolicAdsTag tag, AdsSymbolTableEntry symbol,
+                                    AdsDataTypeTableEntry dataType) {
+        Integer declared = tag.getDeclaredBase();
+        if (declared == null || dataType.getArrayInfo().isEmpty()) {
+            return;
+        }
+        long actual = dataType.getArrayInfo().get(dataType.getArrayInfo().size() - 1).getLowerBound();
+        if (declared != actual) {
+            throw new PlcInvalidTagException(String.format(
+                "Address '%s' declares the array to start at %d, but %s declares it to start at %d",
+                tag.getSymbolicAddress(), declared, symbol.getName(), actual));
+        }
+    }
+
+    /**
+     * Widens a location resolved for a single element to cover the whole selection: the same
+     * start, as many bytes as the selection spans, decoded as a list.
+     */
+    private static ResolvedAdsTag scaleToSelection(ResolvedAdsTag resolved, List<ArrayInfo> selection) {
+        int elements = 1;
+        for (ArrayInfo dimension : selection) {
+            elements *= dimension.getSize();
+        }
+        if (elements <= 1) {
+            return resolved;
+        }
+        // The decoder builds its lists from the ADS array-info shape, so the selection is
+        // restated in those terms: one dimension, starting where the user asked, as many
+        // elements as it spans.
+        List<AdsDataTypeArrayInfo> dimensions = new ArrayList<>(selection.size());
+        for (ArrayInfo dimension : selection) {
+            dimensions.add(new AdsDataTypeArrayInfo(
+                (long) dimension.getLowerBound(), (long) dimension.getSize()));
+        }
+        return new ResolvedAdsTag(resolved.indexGroup(), resolved.indexOffset(),
+            resolved.sizeInBytes() * elements, resolved.dataTypeName(), PlcValueType.List,
+            resolved.stringLength(), dimensions);
     }
 
     private ResolvedAdsTag resolvePart(long indexGroup, long indexOffset,
@@ -92,8 +173,22 @@ public final class TagResolver {
             return resolveArray(indexGroup, indexOffset, dataType, arrayIndices, child);
         }
         if (child != null) {
+            if (!dataType.getArrayInfo().isEmpty()) {
+                // Omitting the brackets asks for the whole array, so a member access after one
+                // asks for that member of every element - which is not one contiguous read. The
+                // partially indexed form is refused in resolveArray for the same reason; this is
+                // the same rule where no index was given at all. Without it the address would
+                // silently resolve against the first element.
+                throw new PlcInvalidTagException(
+                    "Field access requires an array element to be specified for "
+                        + dataType.getMainName() + ": an address that omits the index asks for the"
+                        + " whole array, and a member of every element is not a single read");
+            }
             return resolveChild(indexGroup, indexOffset, dataType, child);
         }
+        // remainingArrayInfo stays empty for a whole-array read: it means "dimensions still to
+        // be applied", and the decoder reads the full shape from the type table itself. This is
+        // an internal signal, not the caller-facing report - see SymbolicAdsTag#getArrayInfo.
         return finalizeLeaf(indexGroup, indexOffset, dataType, Collections.emptyList());
     }
 

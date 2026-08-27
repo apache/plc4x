@@ -32,7 +32,7 @@ public class ManualOpcUaS71500NewFWBrowse {
     public static void main(String[] args) throws Exception {
 
         long startTime = System.currentTimeMillis();
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("opcua://192.168.24.66:4840")){
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("opcua://192.168.24.66:4840?message-security=NONE&insecure-certificate-verification=true")){
             PlcBrowseResponse plcBrowseResponse = connection.browseRequestBuilder()
                 .addQuery("all", "**")
                 .build().executeWithInterceptor((queryName, query, item) -> {

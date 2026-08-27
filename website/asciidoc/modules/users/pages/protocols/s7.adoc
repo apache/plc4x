@@ -182,10 +182,15 @@ The PLC4X S7 Driver is therefore sticking to the address format defined by this 
 In general all S7 addresses have this format:
 
 ----
-. %{Memory-Area}{start-address}:{Data-Type}[{array-size}]
+. %{Memory-Area}{start-address}[{selection}]:{Data-Type}
 ----
 
-If the array-part is omitted, the size-default of `1` is assumed.
+If the selection is omitted, a single element is read.
+The selection in brackets is the shared array notation - a single index, an inclusive
+range, and optionally the array's declared lower bound. See
+xref:array-notation.adoc[Addressing arrays] for the full set of forms and what this
+driver can express.
+
 
 Generally there are two types of addresses:
 

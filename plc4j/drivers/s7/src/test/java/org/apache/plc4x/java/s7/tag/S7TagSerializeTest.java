@@ -49,7 +49,7 @@ class S7TagSerializeTest {
 
     @Test
     void s7Tag_serializeWithArrayCount() throws Exception {
-        S7Tag tag = S7Tag.of("%DB1.DBW20:INT[5]");
+        S7Tag tag = S7Tag.of("%DB1.DBW20[0..4]:INT");
         WriteBufferByteBased buf = buffer();
         tag.serialize(buf);
         assertEquals(5, tag.getNumberOfElements());
@@ -77,7 +77,7 @@ class S7TagSerializeTest {
 
     @Test
     void s7Tag_toStringMentionsDataTypeAndArea() {
-        S7Tag t = S7Tag.of("%DB10.DBD8:DINT[3]");
+        S7Tag t = S7Tag.of("%DB10.DBD8[0..2]:DINT");
         String s = t.toString();
         assertTrue(s.contains("DINT"), () -> "expected dataType in toString: " + s);
         assertTrue(s.contains("DATA_BLOCKS") || s.contains("blockNumber"),
@@ -101,7 +101,7 @@ class S7TagSerializeTest {
 
     @Test
     void s7StringFixedLengthTag_array() {
-        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(40)[3]");
+        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0[0..2]:STRING(40)");
         assertEquals(40, tag.getStringLength());
         assertEquals(3, tag.getNumberOfElements());
     }

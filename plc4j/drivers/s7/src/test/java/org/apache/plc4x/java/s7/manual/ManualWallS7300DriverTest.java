@@ -58,24 +58,24 @@ public class ManualWallS7300DriverTest extends BasicPlcTest {
         test.addTestCase(/*"g_dattim",*/        "%DB42:28.0:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.of(2025, 11, 12, 14, 33, 21)));
         test.addTestCase(/*"g_str",*/           "%DB42:36.0:STRING(40)",    new PlcSTRING("Hello PLC4X"));
         if(testArrays) {
-            test.addTestCase(/*"g_arrBool",*/       "%DB42:78.0:BOOL[8]", new PlcList(List.of(
+            test.addTestCase(/*"g_arrBool",*/       "%DB42:78.0[0..7]:BOOL", new PlcList(List.of(
                 new PlcBOOL(true), new PlcBOOL(false), new PlcBOOL(true), new PlcBOOL(false),
                 new PlcBOOL(false), new PlcBOOL(false), new PlcBOOL(true), new PlcBOOL(false))
             ));
-            test.addTestCase(/*"g_arrByte",*/       "%DB42:80.0:BYTE[8]", new PlcList(List.of(
+            test.addTestCase(/*"g_arrByte",*/       "%DB42:80.0[0..7]:BYTE", new PlcList(List.of(
                 new PlcBYTE(0xDE), new PlcBYTE(0xAD), new PlcBYTE(0xBE), new PlcBYTE(0xEF),
                 new PlcBYTE(0x12), new PlcBYTE(0x34), new PlcBYTE(0x56), new PlcBYTE(0x78))
             ));
-            test.addTestCase(/*"g_arrInt",*/        "%DB4:88.0:INT[5]", new PlcList(List.of(
+            test.addTestCase(/*"g_arrInt",*/        "%DB4:88.0[0..4]:INT", new PlcList(List.of(
                 new PlcINT(-3), new PlcINT(-1), new PlcINT(0), new PlcINT(1), new PlcINT(3))
             ));
-            test.addTestCase(/*"g_arrDInt",*/       "%DB42:98.0:DINT[4]", new PlcList(List.of(
+            test.addTestCase(/*"g_arrDInt",*/       "%DB42:98.0[0..3]:DINT", new PlcList(List.of(
                 new PlcDINT(-1000), new PlcDINT(0), new PlcDINT(1000), new PlcDINT(2000000))
             ));
-            test.addTestCase(/*"g_arrTime",*/       "%DB42:114.0:TIME[3]", new PlcList(List.of(
+            test.addTestCase(/*"g_arrTime",*/       "%DB42:114.0[0..2]:TIME", new PlcList(List.of(
                 new PlcTIME(Duration.ofMillis(10)), new PlcTIME(Duration.ofSeconds(1)), new PlcTIME(Duration.ofSeconds(10)))
             ));
-            test.addTestCase(/*"g_arrString",*/     "%DB42:126.0:STRING(16)[3]", new PlcList(List.of(
+            test.addTestCase(/*"g_arrString",*/     "%DB42:126.0[0..2]:STRING(16)", new PlcList(List.of(
                 new PlcSTRING("alpha"), new PlcSTRING("beta"), new PlcSTRING("gamma"))
             ));
             test.addTestCase(/*"g_matI16_2x3",*/    "%DB42:180.0:INT[2][3]", new PlcList(List.of(

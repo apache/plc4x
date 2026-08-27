@@ -33,6 +33,7 @@
 
 ** xref:blogs-videos-and-slides.adoc[]
 
+** xref:array-notation.adoc[Addressing arrays]
 ** xref:protocols/index.adoc[Protocols]
 *** xref:protocols/ab-eth.adoc[]
 *** xref:protocols/ads.adoc[]

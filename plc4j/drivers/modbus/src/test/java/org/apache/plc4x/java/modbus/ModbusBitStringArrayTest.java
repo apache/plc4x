@@ -103,9 +103,9 @@ class ModbusBitStringArrayTest {
      */
     @Test
     void asksTheDeviceForEveryRegister() {
-        assertEquals(3, ModbusTagHoldingRegister.of("holding-register:1:WORD[3]").getLengthWords());
-        assertEquals(4, ModbusTagHoldingRegister.of("holding-register:1:DWORD[2]").getLengthWords());
-        assertEquals(8, ModbusTagHoldingRegister.of("holding-register:1:LWORD[2]").getLengthWords());
+        assertEquals(3, ModbusTagHoldingRegister.of("holding-register:1[0..2]:WORD").getLengthWords());
+        assertEquals(4, ModbusTagHoldingRegister.of("holding-register:1[0..1]:DWORD").getLengthWords());
+        assertEquals(8, ModbusTagHoldingRegister.of("holding-register:1[0..1]:LWORD").getLengthWords());
     }
 
     private static PlcValue parse(byte[] data, ModbusDataType dataType, int numberOfValues) throws Exception {

@@ -19,16 +19,20 @@
 package org.apache.plc4x.java.firmata.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class FirmataTag implements PlcTag {
 
     public static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("(?<address>\\d{1,3})(\\[(?<quantity>\\d{1,3})])?");
+        Pattern.compile("(?<address>\\d{1,3})" + ArrayNotationParser.ARRAY_GROUP);
 
     /**
      * Number of pins the protocol can name at all: a pin travels the wire in eight bits.
@@ -49,6 +53,22 @@ public abstract class FirmataTag implements PlcTag {
             return FirmataTagDigital.of(tagString);
         }
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
+    }
+
+    /**
+     * Resolves the address's array expression to the offset of the first pin and the number of
+     * pins. Firmata addresses carry no type, so the expression terminates the address.
+     *
+     * @return {@code {offset, quantity}}
+     */
+    protected static int[] selectionOf(Matcher matcher, String address) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return new int[]{0, 1};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
     }
 
     protected FirmataTag(int address, Integer quantity) {
