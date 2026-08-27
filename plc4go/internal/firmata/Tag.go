@@ -108,10 +108,7 @@ func (t digitalTag) GetPinMode() *readWriteModel.PinMode {
 // unparseable back into the same tag; since plc4go re-parses address strings whenever a tag arrives
 // wrapped in a DefaultPlcSubscriptionTag, the suffix is kept here.
 func (t digitalTag) GetAddressString() string {
-	address := fmt.Sprintf("digital:%d", t.address)
-	if t.quantity != 1 {
-		address += fmt.Sprintf("[%d]", t.quantity)
-	}
+	address := fmt.Sprintf("digital:%d%s", t.address, spiModel.RenderArrayExpression(t.GetArrayInfo()))
 	if t.pinMode != nil && *t.pinMode == readWriteModel.PinMode_PinModePullup {
 		address += ":PULLUP"
 	}
@@ -152,11 +149,7 @@ func (t analogTag) GetNumberOfElements() uint8 {
 }
 
 func (t analogTag) GetAddressString() string {
-	address := fmt.Sprintf("analog:%d", t.address)
-	if t.quantity != 1 {
-		address += fmt.Sprintf("[%d]", t.quantity)
-	}
-	return address
+	return fmt.Sprintf("analog:%d%s", t.address, spiModel.RenderArrayExpression(t.GetArrayInfo()))
 }
 
 // GetValueType mirrors plc4j's FirmataTagAnalog.getPlcValueType. An analog sample is 14 bits wide,
@@ -186,12 +179,16 @@ func (t analogTag) String() string {
 
 // arrayInfoFor reports a tag covering a single pin as a scalar and everything else as an array, the
 // way plc4j's FirmataTag subclasses do.
+// arrayInfoFor reports the shape of the value the caller receives: a run of pins is a list, a
+// single pin is a scalar. The indices are relative to the value, not to the address - a firmata
+// address is a pin number, so the driver folds the start of the selection into it.
 func arrayInfoFor(quantity uint8) []apiModel.ArrayInfo {
-	if quantity != 1 {
+	if quantity > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(quantity),
+				UpperBound: uint32(quantity) - 1,
+				Range:      true,
 			},
 		}
 	}

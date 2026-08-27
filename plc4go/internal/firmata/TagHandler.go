@@ -28,13 +28,15 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-// addressPattern is the pin number and the optional run length every firmata address starts with,
-// ported verbatim from plc4j's FirmataTag.ADDRESS_PATTERN.
-const addressPattern = `(?P<address>\d+)(\[(?P<quantity>\d+)])?`
+// addressPattern is the pin number and the optional selection every firmata address starts with,
+// ported from plc4j's FirmataTag.ADDRESS_PATTERN. Firmata has no type suffix, so the selection
+// ends the address - apart from the digital form's PULLUP mode.
+var addressPattern = `(?P<address>\d+)` + spiModel.ArrayGroupPattern
 
 // TagHandler parses firmata tag addresses. There are exactly two forms, ported from plc4j's
 // FirmataTagDigital.ADDRESS_PATTERN and FirmataTagAnalog.ADDRESS_PATTERN:
@@ -61,7 +63,7 @@ func NewTagHandler(_options ...options.WithOption) TagHandler {
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.digitalPattern, tagAddress); match != nil {
-		address, quantity, err := parseAddressAndQuantity(match, maxDigitalPin)
+		address, quantity, err := parseAddressAndQuantity(match, tagAddress, maxDigitalPin)
 		if err != nil {
 			return nil, err
 		}
@@ -73,13 +75,16 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		return NewDigitalTag(address, quantity, pinMode), nil
 	}
 	if match := utils.GetSubgroupMatches(m.analogPattern, tagAddress); match != nil {
-		address, quantity, err := parseAddressAndQuantity(match, maxAnalogPin)
+		address, quantity, err := parseAddressAndQuantity(match, tagAddress, maxAnalogPin)
 		if err != nil {
 			return nil, err
 		}
 		return NewAnalogTag(address, quantity), nil
 	}
-	return nil, errors.Errorf("Unable to parse %s", tagAddress)
+	// "digital:2[4]" still parses, but it now selects the pin at index 4 rather than four pins;
+	// a form that no longer parses at all gets the shape it should have been written in.
+	return nil, spiModel.InvalidAddressError(tagAddress,
+		"digital:{pin}[selection] or analog:{pin}[selection] - for example digital:2[0..3]")
 }
 
 // ParseQuery is not supported: firmata boards can be asked for their capabilities, but neither this
@@ -91,28 +96,31 @@ func (m TagHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
 // parseAddressAndQuantity turns the numbers out of an address into a pin and a run length, refusing
 // runs which reach past the last pin the wire format can address, since a pin beyond that one is
 // silently truncated to something else when it goes onto the wire.
-func parseAddressAndQuantity(match map[string]string, maxPin uint64) (uint8, uint8, error) {
-	address, err := strconv.ParseUint(match["address"], 10, 32)
+//
+// The selection's offset moves the pin, so "digital:2[4..7]" is the same run as "digital:6[0..3]".
+// A firmata run is consecutive pins, so nothing deeper than a single dimension fits.
+func parseAddressAndQuantity(match map[string]string, address string, maxPin uint64) (uint8, uint8, error) {
+	pin, err := strconv.ParseUint(match["address"], 10, 32)
 	if err != nil {
 		return 0, 0, errors.Wrapf(err, "Error parsing address %s", match["address"])
 	}
 	quantity := uint64(1)
-	if quantityString := match["quantity"]; quantityString != "" {
-		if quantity, err = strconv.ParseUint(quantityString, 10, 32); err != nil {
-			return 0, 0, errors.Wrapf(err, "Error parsing quantity %s", quantityString)
+	if expression := match["array"]; expression != "" {
+		dimensions, err := spiModel.ParseArrayExpression(expression, address, spiModel.SingleDimension)
+		if err != nil {
+			return 0, 0, err
 		}
-	}
-	if quantity == 0 {
-		return 0, 0, errors.New("quantity must be greater than zero")
+		pin += uint64(dimensions[0].GetLowerBound() - dimensions[0].GetBase())
+		quantity = uint64(dimensions[0].GetSize())
 	}
 	if quantity > maxQuantity {
 		return 0, 0, errors.Errorf("quantity may not be larger than %d. Was %d", maxQuantity, quantity)
 	}
-	if address > maxPin {
-		return 0, 0, errors.Errorf("pin %d is out of range, the highest addressable pin is %d", address, maxPin)
+	if pin > maxPin {
+		return 0, 0, errors.Errorf("pin %d is out of range, the highest addressable pin is %d", pin, maxPin)
 	}
-	if address+quantity-1 > maxPin {
-		return 0, 0, errors.Errorf("a run of %d pins starting at pin %d reaches past the highest addressable pin %d", quantity, address, maxPin)
+	if pin+quantity-1 > maxPin {
+		return 0, 0, errors.Errorf("a run of %d pins starting at pin %d reaches past the highest addressable pin %d", quantity, pin, maxPin)
 	}
-	return uint8(address), uint8(quantity), nil
+	return uint8(pin), uint8(quantity), nil
 }

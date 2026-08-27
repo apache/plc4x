@@ -213,24 +213,41 @@ func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64
 	return nil
 }
 
-func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, stringLengthString string, datatype readWriteModel.ModbusDataType, config tagConfig, _options ...options.WithOption) (apiModel.PlcTag, error) {
+// modbusConstraints: a Modbus read covers one contiguous run of registers or bits, so an address
+// selects from a single dimension.
+var modbusConstraints = spiModel.SingleDimension
+
+// selectionOf reads the array expression an address carries and returns how far past the written
+// address the selection starts, in registers, and how many it spans. An address with no
+// expression reads one element where it says.
+//
+// The offset is consumed into the address here, the way plc4j's per-area of() does: a Modbus
+// address is a register number, so "holding-register:1[4..7]" is the same read as
+// "holding-register:5[0..3]".
+func selectionOf(expression string, address string) (uint64, uint64, error) {
+	if expression == "" {
+		return 0, 1, nil
+	}
+	dimensions, err := spiModel.ParseArrayExpression(expression, address, modbusConstraints)
+	if err != nil {
+		return 0, 0, err
+	}
+	dimension := dimensions[0]
+	return uint64(dimension.GetLowerBound() - dimension.GetBase()), uint64(dimension.GetSize()), nil
+}
+
+func NewModbusPlcTagFromStrings(tagType TagType, addressString string, arrayExpression string, stringLengthString string, datatype readWriteModel.ModbusDataType, config tagConfig, _options ...options.WithOption) (apiModel.PlcTag, error) {
 	// Parsed with 32 bits so that an out-of-range address is reported as such instead of as an
 	// unparsable string.
 	address, err := strconv.ParseUint(addressString, 10, 32)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
-	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	if quantityString == "" {
-		customLogger.Debug().Msg("No quantity supplied, assuming 1")
-		quantityString = "1"
-	}
-	quantity, err := strconv.ParseUint(quantityString, 10, 32)
+	offset, quantity, err := selectionOf(arrayExpression, addressString+arrayExpression)
 	if err != nil {
-		// A quantity that was spelled out but doesn't parse is a broken address, not a request
-		// for a single element.
-		return nil, errors.Errorf("Couldn't parse quantity string '%s' into an int", quantityString)
+		return nil, err
 	}
+	address += offset
 	if err := validateAddressAndQuantity(tagType, address, quantity); err != nil {
 		return nil, err
 	}
@@ -249,7 +266,8 @@ func (m modbusTag) GetAddressString() string {
 	}
 	// The logical address is what the user wrote and what the address has to parse back as (plc4j
 	// ModbusTag.getAddressString uses getLogicalAddress for the same reason).
-	address := fmt.Sprintf("%dx%05d:%s[%d]", m.TagType, uint32(m.Address)+uint32(logicalAddressOffset(m.TagType)), dataType, m.Quantity)
+	address := fmt.Sprintf("%dx%05d%s:%s", m.TagType, uint32(m.Address)+uint32(logicalAddressOffset(m.TagType)),
+		spiModel.RenderArrayExpression(m.GetArrayInfo()), dataType)
 	// Same for the per-tag settings, which are written in curly braces behind the address.
 	var config []string
 	if m.UnitId != nil {
@@ -272,19 +290,23 @@ func (m modbusTag) GetValueType() apiValues.PlcValueType {
 	}
 }
 
-// GetArrayInfo reports the number of elements as a half-open range [0, Quantity).
+// GetArrayInfo reports the shape of the value the caller receives, as an inclusive range: a
+// quantity of 5 yields [0..4], the same as plc4j.
 //
-// Note that plc4j's ModbusTag returns an inclusive upper bound (quantity - 1). The Go SPI uses the
-// opposite convention: spiModel.DefaultArrayInfo.GetSize is UpperBound - LowerBound, and every
-// consumer (e.g. bacnetip's Reader, knxnetip's Subscriber) as well as every other Go driver (ads,
-// s7, cbus, simulated) treats the upper bound as exclusive. Modbus follows the Go convention here,
-// so a quantity of 5 yields [0, 5) and not [0, 4].
+// The bounds used to be exclusive here, documented as a deliberate divergence from plc4j. It was
+// not one worth keeping: once the range is what the user wrote, the bounds are the indices the
+// address stated, and an exclusive upper bound reports a number that appears nowhere in it.
+//
+// The indices are relative to the value the caller receives, not to what was written: a Modbus
+// address is a register number, so the driver consumes the start of the selection into the
+// address when it resolves it.
 func (m modbusTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.Quantity != 1 {
+	if m.Quantity > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(m.Quantity),
+				UpperBound: uint32(m.Quantity) - 1,
+				Range:      true,
 			},
 		}
 	}

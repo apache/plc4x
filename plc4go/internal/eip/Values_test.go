@@ -90,7 +90,7 @@ func TestParsePlcValueSingleBOOL(t *testing.T) {
 
 func TestParsePlcValueDINTArray(t *testing.T) {
 	raw := []byte{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00}
-	value, err := parsePlcValue(mustTag(t, "%arr[0]:DINT:2"), raw, readWriteModel.CIPDataTypeCode_DINT)
+	value, err := parsePlcValue(mustTag(t, "%arr[0..1]:DINT"), raw, readWriteModel.CIPDataTypeCode_DINT)
 	require.NoError(t, err)
 	require.True(t, value.IsList())
 	list := value.GetList()
@@ -101,7 +101,7 @@ func TestParsePlcValueDINTArray(t *testing.T) {
 
 func TestParsePlcValueShortReplyIsError(t *testing.T) {
 	// 2 DINT elements requested but only 4 bytes returned: must error, not panic (GH-954 thread)
-	_, err := parsePlcValue(mustTag(t, "%arr[0]:DINT:2"), []byte{0x01, 0x00, 0x00, 0x00}, readWriteModel.CIPDataTypeCode_DINT)
+	_, err := parsePlcValue(mustTag(t, "%arr[0..1]:DINT"), []byte{0x01, 0x00, 0x00, 0x00}, readWriteModel.CIPDataTypeCode_DINT)
 	require.Error(t, err)
 }
 

@@ -82,7 +82,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		var serviceRequest readWriteModel.BACnetConfirmedServiceRequest
 		quantity := uint32(1)
 		if len(readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()) > 0 {
-			quantity = readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetUpperBound() - readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetLowerBound()
+			// GetSize, not upper minus lower: both bounds are inclusive, so subtracting them
+			// counts one element short of what the caller asked for.
+			quantity = readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetSize()
 		}
 		if isMultiRequest := len(readRequest.GetTagNames()) > 1 || quantity > 1; !isMultiRequest {
 			// Single request

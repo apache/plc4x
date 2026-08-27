@@ -138,3 +138,66 @@ func Test_Connection_BrowseRequestBuilder_acceptsBothQueryForms(t *testing.T) {
 	assert.IsType(t, DeviceQuery{}, browseRequest.GetQuery("devices"))
 	assert.IsType(t, CommunicationObjectQuery{}, browseRequest.GetQuery("comObjects"))
 }
+
+// The two device address forms carry a real element count, so they take the shared notation.
+// Nothing here covered them before, which is how the browser came to build addresses in a
+// spelling the handler no longer accepts - a failure that only showed up against a device.
+func TestTagHandler_DeviceAddressesUseTheSharedNotation(t *testing.T) {
+	handler := NewTagHandler()
+
+	for _, address := range []string{
+		"1.2.3#4B1C:UINT",        // a memory address, one element
+		"1.2.3#4B1C[0..7]:UINT",  // eight of them, the selection before the type
+		"1.2.3#4B1C[0..3]:USINT", // the form the browser builds when it walks the tables
+		"1.2.3#11/1/5[0..3]",     // a property address; no type suffix, so the selection ends it
+		"1.2.3#3/23/5",           // a property address with no selection
+	} {
+		t.Run(address, func(t *testing.T) {
+			tag, err := handler.ParseTag(address)
+			require.NoError(t, err)
+			assert.Equal(t, address, tag.GetAddressString())
+
+			reparsed, err := handler.ParseTag(tag.GetAddressString())
+			require.NoError(t, err)
+			assert.Equal(t, tag, reparsed)
+		})
+	}
+
+	// An omitted property index defaults to 1 and is spelled out when the tag is rendered, which
+	// still re-parses to the same tag.
+	implied, err := handler.ParseTag("1.2.3#11/1[0..3]")
+	require.NoError(t, err)
+	assert.Equal(t, "1.2.3#11/1/1[0..3]", implied.GetAddressString())
+	reparsed, err := handler.ParseTag(implied.GetAddressString())
+	require.NoError(t, err)
+	assert.Equal(t, implied, reparsed)
+}
+
+// A property is read with a start index and a count, and the property index in the address is
+// that start index - so a selection that starts past the first element moves it.
+func TestTagHandler_APropertySelectionMovesTheStartIndex(t *testing.T) {
+	handler := NewTagHandler()
+
+	shifted, err := handler.ParseTag("1.2.3#11/1/1[4..7]")
+	require.NoError(t, err)
+	equivalent, err := handler.ParseTag("1.2.3#11/1/5[0..3]")
+	require.NoError(t, err)
+	assert.Equal(t, equivalent, shifted)
+
+	// A memory address has no such mapping: what one element occupies depends on the datapoint
+	// type, which is measured in bits, so an offset is reported rather than guessed at.
+	_, err = handler.ParseTag("1.2.3#4B1C[4..7]:UINT")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "must start at the first element")
+}
+
+// The group-address forms are not array addresses at all: their brackets hold a set of group
+// addresses to match, so they are left exactly as they were.
+func TestTagHandler_GroupAddressBracketsAreAMatchExpression(t *testing.T) {
+	handler := NewTagHandler()
+
+	for _, address := range []string{"1/[2-3]/4:BOOL", "[1,3]/2/[4-6]:BOOL", "*/*/*:BOOL"} {
+		_, err := handler.ParseTag(address)
+		assert.NoError(t, err, address)
+	}
+}

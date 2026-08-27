@@ -24,6 +24,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -1550,4 +1551,27 @@ func TestTagHandler_unitAddressFromArgument(t *testing.T) {
 			assert.Equalf(t, tt.want, got, "unitAddressFromArgument(%v, %v)", tt.args.unitAddressArgument, tt.args.allowWildcard)
 		})
 	}
+}
+
+// C-Bus addresses are commands, not memory locations, and their brackets hold the arguments of
+// one CAL command - "recall=[param, count]" - rather than a selection appended to an address.
+// There is nothing here for the array notation to replace, so these addresses are unchanged;
+// what a command reads several of is still reported through GetArrayInfo like any other list.
+func TestTagHandler_CommandArgumentsAreNotAnArraySelection(t *testing.T) {
+	handler := NewTagHandler()
+
+	several, err := handler.ParseTag("cal/0/recall=[0x20, 4]")
+	require.NoError(t, err)
+	require.Len(t, several.GetArrayInfo(), 1)
+	assert.Equal(t, uint32(4), several.GetArrayInfo()[0].GetSize())
+	assert.True(t, several.GetArrayInfo()[0].IsRange())
+
+	one, err := handler.ParseTag("cal/0/recall=[0x20, 1]")
+	require.NoError(t, err)
+	assert.Empty(t, one.GetArrayInfo(), "one value is a scalar")
+
+	// The notation's own spelling is not accepted here, because there is no address to append a
+	// selection to.
+	_, err = handler.ParseTag("cal/0/recall=[0x20][0..3]")
+	assert.Error(t, err)
 }

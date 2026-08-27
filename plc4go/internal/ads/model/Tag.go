@@ -30,6 +30,7 @@ import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -80,14 +81,13 @@ func CastToDirectAdsTagFromPlcTag(plcTag apiModel.PlcTag) (DirectPlcTag, error) 
 }
 
 func (m DirectPlcTag) GetAddressString() string {
-	address := fmt.Sprintf("0x%d/%d:%s", m.IndexGroup, m.IndexOffset, m.ValueType.String())
+	// The selection sits before the type, and the group is rendered in the hex the "0x" claims -
+	// "0x%d" printed the decimal digits under a hex prefix, so 16416 came back as 0x16416, an
+	// address that parses to a different index group than the one it was rendered from.
+	address := fmt.Sprintf("0x%X/%d%s:%s", m.IndexGroup, m.IndexOffset,
+		spiModel.RenderArrayExpression(m.ArrayInfo), m.ValueType.String())
 	if m.ValueType == apiValues.STRING || m.ValueType == apiValues.WSTRING {
 		address = address + "(" + strconv.Itoa(int(m.StringLength)) + ")"
-	}
-	if len(m.ArrayInfo) > 0 {
-		for _, ai := range m.ArrayInfo {
-			address = address + "[" + strconv.Itoa(int(ai.GetLowerBound())) + ".." + strconv.Itoa(int(ai.GetUpperBound())) + "]"
-		}
 	}
 	return address
 }
@@ -96,8 +96,21 @@ func (m DirectPlcTag) GetValueType() apiValues.PlcValueType {
 	return m.ValueType
 }
 
-func (m DirectPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
+// shapeOf reports the shape of the value the caller receives: empty for a scalar, one entry per
+// dimension for an array. A bare index selects one element and so reports empty; a range reports
+// its dimensions even when it spans one element. plc4j decides this by re-reading the address
+// string; the dimensions here already carry the distinction, so read it from them.
+func shapeOf(arrayInfo []apiModel.ArrayInfo) []apiModel.ArrayInfo {
+	for _, dimension := range arrayInfo {
+		if dimension.IsRange() {
+			return arrayInfo
+		}
+	}
 	return []apiModel.ArrayInfo{}
+}
+
+func (m DirectPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return shapeOf(m.ArrayInfo)
 }
 
 func (m DirectPlcTag) Serialize() ([]byte, error) {
@@ -189,7 +202,7 @@ func CastToSymbolicPlcTagFromPlcTag(plcTag apiModel.PlcTag) (SymbolicPlcTag, err
 }
 
 func (m SymbolicPlcTag) GetAddressString() string {
-	return m.SymbolicAddress
+	return m.SymbolicAddress + spiModel.RenderArrayExpression(m.ArrayInfo)
 }
 
 func (m SymbolicPlcTag) GetValueType() apiValues.PlcValueType {
@@ -197,7 +210,7 @@ func (m SymbolicPlcTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (m SymbolicPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return []apiModel.ArrayInfo{}
+	return shapeOf(m.ArrayInfo)
 }
 
 func (m SymbolicPlcTag) Serialize() ([]byte, error) {

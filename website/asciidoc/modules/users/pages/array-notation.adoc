@@ -18,8 +18,9 @@
 
 = Addressing arrays
 
-Every PLC4X driver selects array elements the same way. The address itself differs per protocol -
-an S7 data block, a Modbus register, an OPC UA node - but what comes after it does not:
+Every PLC4X driver selects array elements the same way, in PLC4J and in PLC4Go alike. The address
+itself differs per protocol - an S7 data block, a Modbus register, an OPC UA node - but what comes
+after it does not:
 
 [source]
 ----
@@ -28,6 +29,9 @@ an S7 data block, a Modbus register, an OPC UA node - but what comes after it do
 
 The selection sits *before* the type. Where a driver's address carries no type, it ends the
 address.
+
+The same address means the same thing in either language: one address, written once, used from
+Java or Go.
 
 == The forms
 
@@ -120,10 +124,35 @@ The notation is the same everywhere; what a protocol can carry is not.
 |S7, Modbus, SLMP |1 |no |Memory offsets; the base is resolved into the address
 |Simulated, Profinet |1 |no |Can only select from the first element
 |Firmata |1 |no |No type suffix, so the selection ends the address
+|KNXnet/IP |1 |no |Device addresses only; a property selection moves the start index
 |===
 
 Where a protocol cannot express what you wrote, the driver says so. It will not quietly read
 something else.
+
+The two bindings do not carry the same set of drivers, and a driver present in both is not always
+at the same depth. Where a driver in both accepts a selection, the notation and its meaning are
+identical; what differs is which drivers accept one at all:
+
+* PLC4Go has no Profinet driver.
+* PLC4Go's OPC-UA driver takes no selection - its addresses are a NodeId and a type. PLC4J's,
+  which is where this notation came from, takes the full grammar.
+* PLC4Go's UMAS driver accepts a bare index inside a symbolic path (`myVar[1].member[2]`) but not
+  a range; PLC4J's parses ranges and reports selecting elements as unsupported.
+* PLC4Go's KNXnet/IP driver has the device address forms in the table above. PLC4J's has no
+  equivalent.
+
+=== Brackets that are not array selections
+
+Three address forms use square brackets for something else entirely. They are unchanged by this
+notation, and the notation's own spellings are not accepted there:
+
+* **C-Bus** writes the arguments of a CAL command in brackets - `recall=[param, count]`. The
+  count is an argument of the command, not a selection appended to an address.
+* **KNXnet/IP group addresses** write a set of group addresses to match - `1/[2-3]/4`, and
+  `[1,3]/2/[4-6]`. That is a filter over addresses, not a selection within one value.
+* **BACnet/IP** writes a property's array index - `ANALOG_VALUE,2/PRESENT_VALUE[3]`. This is an
+  index, and already means what an index means here, so nothing about it changed.
 
 == Why `;` and not something else
 
@@ -158,3 +187,13 @@ still parsed would quietly return different data.
 WARNING: **Firmata is the exception.** Its addresses carry no type (`3[4]`), so its brackets did
 not move and there is nothing to reject. `3[4]` used to mean four pins from pin 3 and now means
 one pin, the fifth. Rewrite these as `3[0..3]`.
+
+WARNING: **PLC4Go's ADS driver is a second exception.** Its `[n]` used to be a *count* of `n`
+elements, unlike PLC4J's, so `MAIN.g_arr[3]` read three elements and now reads one - the element
+at index 3. Rewrite these as `MAIN.g_arr[0..2]`. Its `[a:b]` start-and-count form, which PLC4J
+never had, is gone: write `[a..a+b-1]`. These two changes are also what makes the same ADS
+address mean the same thing in both languages, which it did not before.
+
+A count of zero no longer has a spelling anywhere. Several drivers used to accept `[0]` and
+reject it as "quantity must be greater than zero"; a range is written with the indices it covers,
+so there is no way to ask for no elements at all, and `[0]` now selects the first one.

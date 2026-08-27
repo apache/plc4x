@@ -100,7 +100,7 @@ func (m *Reader) readWithoutMessageRouter(ctx context.Context, readRequest apiMo
 	plcValues := map[string]values.PlcValue{}
 	for _, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName).(PlcTag)
-		ansi, err := toAnsi(tag.GetTag())
+		ansi, err := cipPathOf(tag)
 		if err != nil {
 			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 			continue
@@ -212,7 +212,7 @@ func (m *Reader) buildReadService(readRequest apiModel.PlcReadRequest) (readWrit
 	requests := make([]readWriteModel.CipService, 0, len(tagNames))
 	for _, tagName := range tagNames {
 		tag := readRequest.GetTag(tagName).(PlcTag)
-		ansi, err := toAnsi(tag.GetTag())
+		ansi, err := cipPathOf(tag)
 		if err != nil {
 			return nil, errors.Wrapf(err, "error encoding eip ansi for tag %s", tagName)
 		}
@@ -334,6 +334,23 @@ func ansiPad(identifier string) *uint8 {
 // resourceAddressPattern splits a tag address into the members it names. Compiled once: toAnsi
 // runs for every tag of every request, and compiling a pattern per call is not free.
 var resourceAddressPattern = regexp.MustCompile("([.\\[\\]])*([A-Za-z_0-9]+){1}")
+
+// cipPathOf is the CIP path a tag's address describes: the members named in the address,
+// followed by a member segment for the element the selection starts at.
+//
+// A selection starting at the first element carries no member segment: that is what a request
+// without one already means, so emitting MemberID(0) would add two bytes that say nothing - and
+// every address that used to be written "tag:TYPE:n" was sent without one. Feature 002 found
+// this the hard way, when the emitted MemberID(0) broke a recorded exchange no unit test covered.
+func cipPathOf(tag PlcTag) ([]byte, error) {
+	address := tag.GetTag()
+	if selection := tag.GetSelection(); len(selection) > 0 {
+		if offset := selection[0].GetLowerBound() - selection[0].GetBase(); offset > 0 {
+			address = fmt.Sprintf("%s[%d]", address, offset)
+		}
+	}
+	return toAnsi(address)
+}
 
 func toAnsi(tag string) ([]byte, error) {
 	ctx := context.TODO()

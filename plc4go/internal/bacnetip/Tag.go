@@ -116,7 +116,7 @@ func (p property) String() string {
 		result += fmt.Sprint(*p.PropertyIdentifierProprietary)
 	}
 	if p.ArrayIndex != nil {
-		result += fmt.Sprintf(":[%d]", p.ArrayIndex)
+		result += fmt.Sprintf(":[%d]", *p.ArrayIndex)
 	}
 	if p.WritePriority != nil {
 		result += fmt.Sprintf(":{%d}", *p.WritePriority)
@@ -124,19 +124,56 @@ func (p property) String() string {
 	return result
 }
 
+// addressString spells one property the way the tag handler parses it back:
+// {PROPERTY}[index]{writePriority}. property.String is a display form, with separating colons
+// the address syntax has no place for, and it is what the tag serializes as - so the two are
+// kept apart rather than one being bent into the other.
+func (p property) addressString() string {
+	var result string
+	if p.PropertyIdentifier != nil {
+		result += fmt.Sprint(*p.PropertyIdentifier)
+	} else {
+		result += fmt.Sprint(*p.PropertyIdentifierProprietary)
+	}
+	if p.ArrayIndex != nil {
+		result += fmt.Sprintf("[%d]", *p.ArrayIndex)
+	}
+	if p.WritePriority != nil {
+		result += fmt.Sprintf("{%d}", *p.WritePriority)
+	}
+	return result
+}
+
+// addressString spells the object the way the tag handler parses it back: {TYPE},{instance}.
+func (o objectId) addressString() string {
+	var result string
+	if o.ObjectIdType != nil {
+		result += fmt.Sprint(*o.ObjectIdType)
+	} else {
+		result += fmt.Sprint(*o.ObjectIdTypeProprietary)
+	}
+	return result + fmt.Sprintf(",%d", o.ObjectIdInstance)
+}
+
+// GetAddressString spells the tag the way the tag handler parses it back. It used to render the
+// display form instead, which parses back as nothing at all: the object separator came out as
+// ':' where the syntax wants ',', each property carried a leading ':' the syntax has no place
+// for, and the array index printed the address of the pointer holding it rather than the index.
 func (m plcTag) GetAddressString() string {
 	var properties []string
 	for _, p := range m.Properties {
-		properties = append(properties, fmt.Sprint(p))
+		properties = append(properties, p.addressString())
 	}
-	propertiesString := strings.Join(properties, "&")
-	return fmt.Sprintf("%v/%s", m.ObjectId, propertiesString)
+	return fmt.Sprintf("%s/%s", m.ObjectId.addressString(), strings.Join(properties, "&"))
 }
 
 func (m plcTag) GetValueType() apiValues.PlcValueType {
 	return apiValues.Struct
 }
 
+// GetArrayInfo reports the shape of the value the caller receives. A BACnet address selects one
+// property, and the bracket it may carry is an index into that property's array - one element,
+// which is a scalar. There is no form here that selects several, so this is always empty.
 func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
 }

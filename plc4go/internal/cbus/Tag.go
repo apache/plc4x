@@ -298,11 +298,12 @@ func (s statusTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (s statusTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if s.numElements != 1 {
+	if s.numElements > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(s.numElements),
+				UpperBound: uint32(s.numElements) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -439,11 +440,12 @@ func (c calRecallTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (c calRecallTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if c.count != 1 {
+	if c.count > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(c.count),
+				UpperBound: uint32(c.count) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -506,11 +508,12 @@ func (c calIdentifyTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (c calIdentifyTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if c.numElements != 1 {
+	if c.numElements > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(c.numElements),
+				UpperBound: uint32(c.numElements) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -573,11 +576,12 @@ func (c calGetStatusTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (c calGetStatusTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if c.count != 1 {
+	if c.count > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(c.count),
+				UpperBound: uint32(c.count) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -648,11 +652,12 @@ func (s salTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (s salTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if s.numElements != 1 {
+	if s.numElements > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(s.numElements),
+				UpperBound: uint32(s.numElements) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -729,11 +734,12 @@ func (s salMonitorTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (s salMonitorTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if s.numElements != 1 {
+	if s.numElements > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(s.numElements),
+				UpperBound: uint32(s.numElements) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -807,11 +813,12 @@ func (m mmiMonitorTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (m mmiMonitorTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.numElements != 1 {
+	if m.numElements > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(m.numElements),
+				UpperBound: uint32(m.numElements) - 1,
+				Range:      true,
 			},
 		}
 	}

@@ -268,7 +268,7 @@ func TestPacksSeveralStrings(t *testing.T) {
 
 // An odd number of strings must not pick up a pad byte: a string is padded to a whole register by
 // its own declared length, not by the single character the element width used to be computed from.
-// With the pad byte in place a 'holding-register:1:STRING(20)[3]' write serialized to 61 bytes
+// With the pad byte in place a 'holding-register:1[0..2]:STRING(20)' write serialized to 61 bytes
 // while the read side asked for 30 registers.
 func TestPacksAnOddNumberOfStringsWithoutAPadByte(t *testing.T) {
 	three := values.NewPlcList([]apiValues.PlcValue{

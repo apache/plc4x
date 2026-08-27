@@ -27,6 +27,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,11 +47,37 @@ func NewTagHandler() TagHandler {
 		groupAddress2Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))/(?P<subGroup>(\d{1,4}|\*|\[(\d{1,4}|\d{1,4}\-\d{1,4})(,(\d{1,4}|\d{1,4}\-\d{1,4}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
 		groupAddress1Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,5}|\*|\[(\d{1,5}|\d{1,5}\-\d{1,5})(,(\d{1,5}|\d{1,5}\-\d{1,5}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
 
-		deviceQuery:                    regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))$`),
-		devicePropertyAddress:          regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})#(?P<objectId>\d{1,3})\/(?P<propertyId>\d{1,3})(\/(?P<propertyIndex>\d{1,4}))?(\[(?P<numElements>\d{1,2})])?$`),
-		deviceMemoryAddress:            regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})#(?P<address>[0-9a-fA-F]{1,8})(:(?P<datatype>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?)?$`),
+		deviceQuery: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))$`),
+		// The two device forms carry a real element count, so they take the shared notation.
+		// A property address has no type suffix, so the selection ends it.
+		devicePropertyAddress:          regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})#(?P<objectId>\d{1,3})\/(?P<propertyId>\d{1,3})(\/(?P<propertyIndex>\d{1,4}))?` + spiModel.ArrayGroupPattern + `$`),
+		deviceMemoryAddress:            regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})#(?P<address>[0-9a-fA-F]{1,8})` + spiModel.ArrayGroupPattern + `(:(?P<datatype>[a-zA-Z_]+))?$`),
 		deviceCommunicationObjectQuery: regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})#com-obj$`),
 	}
+}
+
+// selectionOf reads the array expression a device address carries and returns how far past the
+// written start the selection begins and how many elements it spans. An address with no
+// expression reads one element where it says.
+//
+// The group-address forms are deliberately not routed through here: their brackets hold a set of
+// group addresses to match - "[1-3,5]" - not an array selection, and they never described a
+// count.
+func selectionOf(expression string, tagAddress string) (uint64, uint64, error) {
+	if expression == "" {
+		return 0, 1, nil
+	}
+	dimensions, err := spiModel.ParseArrayExpression(expression, tagAddress, spiModel.SingleDimension)
+	if err != nil {
+		return 0, 0, err
+	}
+	dimension := dimensions[0]
+	elements := uint64(dimension.GetSize())
+	if elements > 0xFF {
+		return 0, 0, errors.Errorf("A selection of %d elements in '%s' is more than the count "+
+			"field can carry", elements, tagAddress)
+	}
+	return uint64(dimension.GetLowerBound() - dimension.GetBase()), elements, nil
 }
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
@@ -95,11 +122,14 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if ok && len(propertyInd) > 0 {
 			propertyIndex, _ = strconv.ParseUint(propertyInd, 10, 16)
 		}
-		numberOfElements := uint64(1)
-		numElements, ok := match["numElements"]
-		if ok && len(numElements) > 0 {
-			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
+		// A property is read with a start index and a count, and the property index written in
+		// the address is that start index - so a selection that starts past the first element
+		// moves it, exactly as an offset moves the address of a memory-addressed driver.
+		offset, numberOfElements, err := selectionOf(match["array"], tagAddress)
+		if err != nil {
+			return nil, err
 		}
+		propertyIndex += offset
 		return NewDevicePropertyAddressPlcTag(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup), uint8(objectId), uint8(propertyId),
 			uint16(propertyIndex), uint8(numberOfElements)), nil
@@ -122,10 +152,18 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		} else {
 			return nil, errors.New("invalid address: " + match["address"])
 		}
-		numberOfElements := uint64(1)
-		numElements, ok := match["numElements"]
-		if ok && len(numElements) > 0 {
-			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
+		offset, numberOfElements, err := selectionOf(match["array"], tagAddress)
+		if err != nil {
+			return nil, err
+		}
+		if offset != 0 {
+			// Unlike the property form there is nothing exact to move here: what one element
+			// occupies depends on the datapoint type, which is measured in bits and need not be
+			// a whole number of bytes. Guessing a byte size would move the address to somewhere
+			// no one asked for, so this is reported instead.
+			return nil, errors.Errorf("Array selection in tag '%s' must start at the first "+
+				"element: a memory address is moved in bytes and a datapoint type is measured "+
+				"in bits, so there is no offset to apply", tagAddress)
 		}
 		return NewDeviceMemoryAddressPlcTag(uint8(mainGroup), uint8(middleGroup), uint8(subGroup), address, uint8(numberOfElements), &tagType), nil
 	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, tagAddress); match != nil {
@@ -135,7 +173,9 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		return NewCommunicationObjectQuery(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
 	}
-	return nil, errors.New("Invalid address format for tag '" + tagAddress + "'")
+	return nil, spiModel.InvalidAddressError(tagAddress,
+		"a group address, or {area}.{line}.{device}#{object}/{property}[selection] - "+
+			"for example 1.2.3#11/1[0..3]")
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

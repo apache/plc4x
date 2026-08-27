@@ -417,11 +417,17 @@ func (m *Connection) resolveSymbolicTag(ctx context.Context, symbolicTag model.S
 func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []string, curDataType readWriteModel.AdsDataTypeTableEntry, indexGroup uint32, indexOffset uint32) (*model.DirectPlcTag, error) {
 	// If we've reached then end of the resolution, return the final entry.
 	if len(addressParts) == 0 {
+		// The dimensions the symbol table declares. They are arrays by definition - the device
+		// says so - which is what Range records: without it the shape rule would read them as a
+		// bare index and report the whole array as a scalar. The declared lower bound is also
+		// the base, so an address written with the PLC's own indices lines up with it.
 		var arrayInfo []apiModel.ArrayInfo
 		for _, adsArrayInfo := range curDataType.GetArrayInfo() {
 			arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 				LowerBound: adsArrayInfo.GetLowerBound(),
 				UpperBound: adsArrayInfo.GetUpperBound(),
+				Base:       adsArrayInfo.GetLowerBound(),
+				Range:      true,
 			})
 		}
 		plcValueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(curDataType)

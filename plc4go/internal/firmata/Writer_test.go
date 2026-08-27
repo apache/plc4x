@@ -88,7 +88,7 @@ func TestWriter_WriteRepeatsNoPinMode(t *testing.T) {
 func TestWriter_WriteARunOfDigitalPins(t *testing.T) {
 	connection, transportInstance := newTestConnection(t)
 
-	result := executeWrite(t, connection, "bar", "digital:2[3]", []bool{true, false, true})
+	result := executeWrite(t, connection, "bar", "digital:2[0..2]", []bool{true, false, true})
 	require.NoError(t, result.GetErr())
 	assert.Equal(t, apiModel.PlcResponseCode_OK, result.GetResponse().GetResponseCode("bar"))
 
@@ -105,7 +105,7 @@ func TestWriter_WriteRejectsTheWrongNumberOfValues(t *testing.T) {
 	connection, transportInstance := newTestConnection(t)
 
 	writeRequestBuilder := connection.WriteRequestBuilder()
-	writeRequestBuilder.AddTagAddress("bar", "digital:2[3]", []bool{true, false})
+	writeRequestBuilder.AddTagAddress("bar", "digital:2[0..2]", []bool{true, false})
 	_, err := writeRequestBuilder.Build()
 	assert.Error(t, err)
 	assert.Empty(t, sentBytes(t, transportInstance), "a rejected write must not reconfigure any pin")
@@ -192,7 +192,7 @@ func TestWriter_WriteClaimsARunAllOrNothing(t *testing.T) {
 	require.Equal(t, apiModel.PlcResponseCode_OK, responseCode)
 	sentBytes(t, transportInstance)
 
-	result := executeWrite(t, connection, "bar", "digital:2[3]", []bool{true, true, true})
+	result := executeWrite(t, connection, "bar", "digital:2[0..2]", []bool{true, true, true})
 	require.NoError(t, result.GetErr())
 	assert.Equal(t, apiModel.PlcResponseCode_INVALID_ADDRESS, result.GetResponse().GetResponseCode("bar"))
 	assert.Empty(t, sentBytes(t, transportInstance))

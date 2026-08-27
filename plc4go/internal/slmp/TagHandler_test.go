@@ -53,13 +53,13 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			wantDataType: DataTypeWORD, wantQuantity: 1, wantNumberOfPoints: 1,
 		},
 		{
-			name: "R is addressed in decimal", address: "R200:REAL[4]",
+			name: "R is addressed in decimal", address: "R200[0..3]:REAL",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_R, wantDeviceNumber: 200,
 			wantDataType: DataTypeREAL, wantQuantity: 4, wantNumberOfPoints: 8,
 		},
 		{
 			// W is a link register, which MELSEC addresses in hex (SH-080008 section 8.1).
-			name: "W is addressed in hex", address: "W1A:WORD[10]",
+			name: "W is addressed in hex", address: "W1A[0..9]:WORD",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_W, wantDeviceNumber: 0x1A,
 			wantDataType: DataTypeWORD, wantQuantity: 10, wantNumberOfPoints: 10,
 		},
@@ -82,7 +82,7 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			wantDataType: DataTypeWORD, wantQuantity: 1, wantNumberOfPoints: 1,
 		},
 		{
-			name: "an all-letter W address", address: "WABCD:INT[2]",
+			name: "an all-letter W address", address: "WABCD[0..1]:INT",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_W, wantDeviceNumber: 0xABCD,
 			wantDataType: DataTypeINT, wantQuantity: 2, wantNumberOfPoints: 2,
 		},
@@ -92,7 +92,7 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			wantDataType: DataTypeINT, wantQuantity: 1, wantNumberOfPoints: 1,
 		},
 		{
-			name: "a double-word type takes two points per element", address: "D0:DINT[3]",
+			name: "a double-word type takes two points per element", address: "D0[0..2]:DINT",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_D, wantDeviceNumber: 0,
 			wantDataType: DataTypeDINT, wantQuantity: 3, wantNumberOfPoints: 6,
 		},
@@ -102,7 +102,7 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			wantDataType: DataTypeUDINT, wantQuantity: 1, wantNumberOfPoints: 2,
 		},
 		{
-			name: "UINT is a single word", address: "D0:UINT[8]",
+			name: "UINT is a single word", address: "D0[0..7]:UINT",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_D, wantDeviceNumber: 0,
 			wantDataType: DataTypeUINT, wantQuantity: 8, wantNumberOfPoints: 8,
 		},
@@ -112,12 +112,12 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			wantDataType: DataTypeWORD, wantQuantity: 1, wantNumberOfPoints: 1,
 		},
 		{
-			name: "the largest single-frame word transfer", address: "D0:WORD[960]",
+			name: "the largest single-frame word transfer", address: "D0[0..959]:WORD",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_D, wantDeviceNumber: 0,
 			wantDataType: DataTypeWORD, wantQuantity: 960, wantNumberOfPoints: 960,
 		},
 		{
-			name: "which is half as many double-word elements", address: "D0:REAL[480]",
+			name: "which is half as many double-word elements", address: "D0[0..479]:REAL",
 			wantDeviceCode: readWriteModel.SlmpDeviceCode_D, wantDeviceNumber: 0,
 			wantDataType: DataTypeREAL, wantQuantity: 480, wantNumberOfPoints: 960,
 		},
@@ -161,15 +161,17 @@ func TestTagHandler_ParseTagRejects(t *testing.T) {
 		{name: "a decimal device with hex digits", address: "DAB"},
 		{name: "an unknown data type", address: "D350:LREAL"},
 		{name: "a data type nobody wrote", address: "D350:"},
-		{name: "a quantity of zero", address: "D350:WORD[0]"},
+		// There is no way to ask for zero devices any more - a range is written with the
+		// indices it covers - but an inverted one is still nonsense.
+		{name: "an inverted range", address: "D350[3..1]:WORD"},
 		{name: "a negative quantity", address: "D350:WORD[-1]"},
 		{name: "an empty quantity", address: "D350:WORD[]"},
 		{name: "a device number beyond the 24-bit field", address: "D16777216"},
 		// There is no request optimizer to split a bigger transfer into several frames, so a tag
 		// that would need one is refused rather than sent as a frame the device rejects.
-		{name: "more words than one frame carries", address: "D0:WORD[961]"},
-		{name: "more double words than one frame carries", address: "D0:REAL[481]"},
-		{name: "trailing junk", address: "D350:WORD[1]x"},
+		{name: "more words than one frame carries", address: "D0[0..960]:WORD"},
+		{name: "more double words than one frame carries", address: "D0[0..480]:REAL"},
+		{name: "trailing junk", address: "D350:WORDx"},
 	}
 	handler := NewTagHandler()
 	for _, testCase := range tests {
@@ -194,8 +196,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 // to the same tag would silently poll something else.
 func TestTag_AddressStringRoundTrips(t *testing.T) {
 	addresses := []string{
-		"D350", "D350:INT", "D350:WORD[4]", "R200:REAL[4]", "W1A:WORD[10]", "W0x1A",
-		"WAB", "D0:DINT[3]", "D0:UDINT", "D0:UINT[8]", "D16777215",
+		"D350", "D350:INT", "D350[0..3]:WORD", "R200[0..3]:REAL", "W1A[0..9]:WORD", "W0x1A",
+		"WAB", "D0[0..2]:DINT", "D0:UDINT", "D0[0..7]:UINT", "D16777215",
 	}
 	handler := NewTagHandler()
 	for _, address := range addresses {
@@ -216,10 +218,10 @@ func TestTag_AddressStringSpelling(t *testing.T) {
 		tag  PlcTag
 		want string
 	}{
-		{tag: NewTag(readWriteModel.SlmpDeviceCode_D, 350, DataTypeWORD, 1), want: "D350:WORD[1]"},
-		{tag: NewTag(readWriteModel.SlmpDeviceCode_R, 200, DataTypeREAL, 4), want: "R200:REAL[4]"},
+		{tag: NewTag(readWriteModel.SlmpDeviceCode_D, 350, DataTypeWORD, 1), want: "D350:WORD"},
+		{tag: NewTag(readWriteModel.SlmpDeviceCode_R, 200, DataTypeREAL, 4), want: "R200[0..3]:REAL"},
 		// A W address is written in hex, because that is how the handler reads one back.
-		{tag: NewTag(readWriteModel.SlmpDeviceCode_W, 0x1A, DataTypeINT, 2), want: "W0x1A:INT[2]"},
+		{tag: NewTag(readWriteModel.SlmpDeviceCode_W, 0x1A, DataTypeINT, 2), want: "W0x1A[0..1]:INT"},
 	}
 	for _, testCase := range tests {
 		t.Run(testCase.want, func(t *testing.T) {
@@ -236,13 +238,13 @@ func TestTag_Metadata(t *testing.T) {
 	assert.Equal(t, apiValues.INT, scalar.GetValueType())
 	assert.Empty(t, scalar.GetArrayInfo(), "a scalar tag has no array info")
 
-	array, err := handler.ParseTag("R200:REAL[4]")
+	array, err := handler.ParseTag("R200[0..3]:REAL")
 	require.NoError(t, err)
 	assert.Equal(t, apiValues.REAL, array.GetValueType())
 	require.Len(t, array.GetArrayInfo(), 1)
-	// The Go SPI's upper bound is exclusive, so four elements are [0, 4) and the size is 4.
+	// Both bounds are inclusive, so four elements are 0..3 and the size is 4.
 	assert.Equal(t, uint32(0), array.GetArrayInfo()[0].GetLowerBound())
-	assert.Equal(t, uint32(4), array.GetArrayInfo()[0].GetUpperBound())
+	assert.Equal(t, uint32(3), array.GetArrayInfo()[0].GetUpperBound())
 	assert.Equal(t, uint32(4), array.GetArrayInfo()[0].GetSize())
 
 	// Every slmp tag is usable as a subscription tag, because subscriptions are emulated by polling
@@ -272,4 +274,43 @@ func TestCastToSlmpTagFromPlcTag(t *testing.T) {
 		apiModel.SubscriptionCyclic, nil, 0))
 	assert.Error(t, err)
 	assert.Nil(t, foreign)
+}
+
+// An SLMP address is a device number, so a selection that starts past the declared base is
+// resolved into the address itself: "D100[4..7]" is the same read as "D104[0..3]".
+func TestTagHandler_ParseTag_consumesTheSelectionOffset(t *testing.T) {
+	handler := NewTagHandler()
+
+	shifted, err := handler.ParseTag("D100[4..7]:INT")
+	require.NoError(t, err)
+	equivalent, err := handler.ParseTag("D104[0..3]:INT")
+	require.NoError(t, err)
+	assert.Equal(t, equivalent, shifted)
+	assert.Equal(t, "D104[0..3]:INT", shifted.GetAddressString())
+
+	// A declared base is what the offset is measured from, so [4..7;4] shifts nothing.
+	fromDeclaredBase, err := handler.ParseTag("D100[4..7;4]:INT")
+	require.NoError(t, err)
+	unshifted, err := handler.ParseTag("D100[0..3]:INT")
+	require.NoError(t, err)
+	assert.Equal(t, unshifted, fromDeclaredBase)
+
+	// A bare index selects the device at that index, not that many devices.
+	single, err := handler.ParseTag("D100[4]:INT")
+	require.NoError(t, err)
+	assert.Equal(t, "D104:INT", single.GetAddressString())
+	assert.Empty(t, single.GetArrayInfo(), "one device is a scalar")
+}
+
+// Addresses written with the count after the type must fail, naming what to write instead.
+func TestTagHandler_ParseTag_rejectsTheOldCountSuffix(t *testing.T) {
+	handler := NewTagHandler()
+
+	for _, address := range []string{"D350:WORD[2]", "R200:REAL[4]", "W1A:WORD[10]"} {
+		t.Run(address, func(t *testing.T) {
+			_, err := handler.ParseTag(address)
+			require.Error(t, err, address)
+			assert.Contains(t, err.Error(), "invalid address", address)
+		})
+	}
 }

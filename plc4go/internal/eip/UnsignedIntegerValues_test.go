@@ -75,7 +75,7 @@ func TestParsePlcValueArrayOfUDINTs(t *testing.T) {
 	raw = binary.LittleEndian.AppendUint32(raw, 0xFFFFFFFF)
 	raw = binary.LittleEndian.AppendUint32(raw, 0x80000000)
 
-	value, err := parsePlcValue(mustTag(t, "%d[0]:UDINT:3"), raw, readWriteModel.CIPDataTypeCode_UDINT)
+	value, err := parsePlcValue(mustTag(t, "%d[0..2]:UDINT"), raw, readWriteModel.CIPDataTypeCode_UDINT)
 	require.NoError(t, err)
 	require.True(t, value.IsList())
 	list := value.GetList()
@@ -89,7 +89,7 @@ func TestParsePlcValueArrayOfULINTs(t *testing.T) {
 	raw := binary.LittleEndian.AppendUint64(nil, 1)
 	raw = binary.LittleEndian.AppendUint64(raw, 0xFFFFFFFFFFFFFFFF)
 
-	value, err := parsePlcValue(mustTag(t, "%l[0]:ULINT:2"), raw, readWriteModel.CIPDataTypeCode_ULINT)
+	value, err := parsePlcValue(mustTag(t, "%l[0..1]:ULINT"), raw, readWriteModel.CIPDataTypeCode_ULINT)
 	require.NoError(t, err)
 	list := value.GetList()
 	require.Len(t, list, 2)
@@ -98,23 +98,23 @@ func TestParsePlcValueArrayOfULINTs(t *testing.T) {
 }
 
 func TestParsePlcValueArrayOfUSINTsAndUINTs(t *testing.T) {
-	usints, err := parsePlcValue(mustTag(t, "%b[0]:USINT:3"), []byte{0x01, 0x80, 0xFF}, readWriteModel.CIPDataTypeCode_USINT)
+	usints, err := parsePlcValue(mustTag(t, "%b[0..2]:USINT"), []byte{0x01, 0x80, 0xFF}, readWriteModel.CIPDataTypeCode_USINT)
 	require.NoError(t, err)
 	assert.Equal(t, uint8(0xFF), usints.GetList()[2].GetUint8())
 
 	raw := binary.LittleEndian.AppendUint16(nil, 0x8000)
 	raw = binary.LittleEndian.AppendUint16(raw, 0xFFFF)
-	uints, err := parsePlcValue(mustTag(t, "%w[0]:UINT:2"), raw, readWriteModel.CIPDataTypeCode_UINT)
+	uints, err := parsePlcValue(mustTag(t, "%w[0..1]:UINT"), raw, readWriteModel.CIPDataTypeCode_UINT)
 	require.NoError(t, err)
 	assert.Equal(t, uint16(0x8000), uints.GetList()[0].GetUint16())
 	assert.Equal(t, uint16(0xFFFF), uints.GetList()[1].GetUint16())
 }
 
 func TestParsePlcValueUnsignedIntegerShortReply(t *testing.T) {
-	_, err := parsePlcValue(mustTag(t, "%d[0]:UDINT:8"), binary.LittleEndian.AppendUint32(nil, 1), readWriteModel.CIPDataTypeCode_UDINT)
+	_, err := parsePlcValue(mustTag(t, "%d[0..7]:UDINT"), binary.LittleEndian.AppendUint32(nil, 1), readWriteModel.CIPDataTypeCode_UDINT)
 	assert.Error(t, err)
 
-	_, err = parsePlcValue(mustTag(t, "%l[0]:ULINT:4"), binary.LittleEndian.AppendUint64(nil, 1), readWriteModel.CIPDataTypeCode_ULINT)
+	_, err = parsePlcValue(mustTag(t, "%l[0..3]:ULINT"), binary.LittleEndian.AppendUint64(nil, 1), readWriteModel.CIPDataTypeCode_ULINT)
 	assert.Error(t, err)
 }
 

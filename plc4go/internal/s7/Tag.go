@@ -84,9 +84,21 @@ func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byte
 	}
 }
 
+// GetAddressString spells the tag the way the tag handler parses it back. It used to render the
+// tag type as a number and nothing else of the address - "0:INT[8]" - which named neither the
+// memory area nor the offset it read, and did not parse back into anything.
 func (m plcTag) GetAddressString() string {
-	// TODO: add missing variables like memory area, block number, byte offset, bit offset
-	return fmt.Sprintf("%d:%s[%d]", m.TagType, m.Datatype, m.NumElements)
+	var address string
+	if m.MemoryArea == readWriteModel.MemoryArea_DATA_BLOCKS {
+		address = fmt.Sprintf("%%DB%d.DB%d", m.BlockNumber, m.ByteOffset)
+	} else {
+		address = fmt.Sprintf("%%%s%d", m.MemoryArea.ShortName(), m.ByteOffset)
+	}
+	// A bit offset is only part of an address for BOOL, and is required there.
+	if m.Datatype == readWriteModel.TransportSize_BOOL {
+		address += fmt.Sprintf(".%d", m.BitOffset)
+	}
+	return address + spiModel.RenderArrayExpression(m.GetArrayInfo()) + ":" + m.Datatype.String()
 }
 
 func (m plcTag) GetValueType() apiValues.PlcValueType {
@@ -96,12 +108,16 @@ func (m plcTag) GetValueType() apiValues.PlcValueType {
 	return apiValues.NULL
 }
 
+// GetArrayInfo reports the shape of the value the caller receives, not the indices the address
+// was written with: an S7 address names a byte offset, so the driver consumes the start of the
+// selection when it resolves the address and what remains is a count of elements from there.
 func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.NumElements != 1 {
+	if m.NumElements > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(m.NumElements),
+				UpperBound: uint32(m.NumElements) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -191,6 +207,20 @@ func (m plcTag) String() string {
 		return err.Error()
 	}
 	return wb.GetBox().String()
+}
+
+// GetAddressString spells a string tag the way the tag handler parses it back, which means
+// carrying the declared length: without it the address reads as a variable-length string. A
+// variable-length tag renders its assumed length, which is the length it was already given.
+func (m PlcStringTag) GetAddressString() string {
+	var address string
+	if m.MemoryArea == readWriteModel.MemoryArea_DATA_BLOCKS {
+		address = fmt.Sprintf("%%DB%d.DB%d", m.BlockNumber, m.ByteOffset)
+	} else {
+		address = fmt.Sprintf("%%%s%d", m.MemoryArea.ShortName(), m.ByteOffset)
+	}
+	return fmt.Sprintf("%s%s:%s(%d)", address,
+		spiModel.RenderArrayExpression(m.GetArrayInfo()), m.Datatype, m.stringLength)
 }
 
 func (m PlcStringTag) Serialize() ([]byte, error) {

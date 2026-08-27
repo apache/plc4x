@@ -521,6 +521,22 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-slmp</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <type>test-jar</type>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-iec-60870</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <type>test-jar</type>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <type>test-jar</type>

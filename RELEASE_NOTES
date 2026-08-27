@@ -432,6 +432,67 @@ Incompatible changes
 - Fixed `getArrayInfo()` reporting one element too many on the ADS direct and
   Firmata drivers, whose inclusive bounds were built from the element count
   rather than the last index.
+- PLC4Go now uses the same array notation as PLC4J, so one address means one
+  thing in either language. The grammar, the rules and the rendering are the
+  ones described above; the two share a specification rather than code, and
+  the Go parser is tested against the Java cases directly.
+
+  The forms that changed, by driver:
+
+    S7           %M100:INT[10]             -> %M100[0..9]:INT
+    S7 (string)  %DB69.DBX68:WSTRING[3]    -> %DB69.DBX68[0..2]:WSTRING
+    Modbus       holding-register:1:INT[4] -> holding-register:1[0..3]:INT
+    SLMP         D100:INT[4]               -> D100[0..3]:INT
+    EtherNet/IP  %rate:DINT:4              -> %rate[0..3]:DINT
+    Simulated    RANDOM/foo:INT[4]         -> RANDOM/foo[0..3]:INT
+    KNXnet/IP    1.2.3#4B1C:UINT[4]        -> 1.2.3#4B1C[0..3]:UINT
+    KNXnet/IP    1.2.3#11/1/1[4]           -> 1.2.3#11/1/1[0..3]
+
+  Addresses in the old form no longer parse, and the error names the address
+  to write instead - with two exceptions, below, where the address parses
+  either way and only its meaning moves.
+- Two Go drivers change the meaning of addresses that still parse, so there is
+  nothing to reject and nothing to warn about at runtime:
+
+    * ADS `[n]` was a *count* of n elements and is now the element at index n.
+      `MAIN.g_arr[3]` read three elements and now reads one. Rewrite as
+      `MAIN.g_arr[0..2]`. This also means Go and Java ADS now agree about the
+      same address; they did not before.
+    * Firmata `[n]` was a run of n pins and is now the pin at index n, exactly
+      as in PLC4J. `digital:2[3]` read three pins from pin 2 and now reads
+      pin 5. Rewrite as `digital:2[0..2]`.
+- ADS also drops the `[a:b]` start-and-count form, which had no counterpart in
+  PLC4J. `MAIN.g_arr[2:4]` is written `MAIN.g_arr[2..5]`.
+- A count of zero no longer has a spelling. Several Go drivers accepted `[0]`
+  and rejected it as "quantity must be greater than zero"; a range is written
+  with the indices it covers, so there is no way to ask for none, and `[0]`
+  now selects the first element.
+- `ArrayInfo` bounds are inclusive in PLC4Go, as they are in PLC4J:
+  `GetSize()` returns `UpperBound - LowerBound + 1`. They were exclusive,
+  documented as a deliberate divergence, so `[0..7]` reported eight elements
+  in Java and seven in Go - the same disagreement about the same address that
+  this change exists to remove. Code reading `GetUpperBound()` directly must
+  be revisited.
+- `ArrayInfo` gains `GetBase()` and `IsRange()`. Go has no default methods, so
+  any implementation outside PLC4Go must add them.
+- Addresses that a driver rendered back are now spelled the way its parser
+  reads them. Several never round-tripped: BACnet/IP rendered `:` where the
+  syntax wants `,`, gave every property a leading `:`, and printed the address
+  of the pointer holding an array index rather than the index; KNXnet/IP
+  device addresses rendered `/` where the syntax wants `.`; the ADS direct
+  form printed its index group as decimal digits behind an `0x` prefix, so
+  16416 came back as `0x16416` - a different address; and the S7 tag rendered
+  as "0:INT[8]", naming neither the memory area nor the offset it read.
+- Fixed the Go BACnet/IP driver asking for one element fewer than requested
+  when a read carried an element count, which followed from the bounds
+  becoming inclusive.
+- C-Bus addresses are unchanged. Its brackets carry the arguments of a CAL
+  command (`recall=[param, count]`), not a selection appended to an address.
+- KNXnet/IP group addresses are unchanged. Their brackets hold a set of group
+  addresses to match (`[1-3,5]`), not an array selection. Only the two device
+  address forms, which carry a real element count, moved to the new notation.
+- BACnet/IP addresses are unchanged. Its bracket is a property array index,
+  which already meant what the notation says an index means.
 
 Changed Maven Coordinates
 -------------------------
@@ -470,6 +531,12 @@ utilities). These are new artifacts, not renames.
 Bug Fixes
 ---------
 
+- Fixed the Go S7 driver reading a fixed-length string from the wrong data
+  block. The long-form address ("%DB69.DBX68:STRING(10)") built its tag with
+  a hard-coded block number of zero, so it read DB0 and reported the result
+  as though it had come from DB69. The short form ("%DB69:68:STRING(10)")
+  and every non-string address were unaffected, as is PLC4J, which parses
+  the block number for all of them.
 - Fixed serialization in the 'plc4x' proxy driver's message
   codec, which did not configure the buffer integer/string
   encodings under SPI3 and failed to serialize any message.

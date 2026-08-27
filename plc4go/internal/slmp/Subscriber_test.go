@@ -113,7 +113,7 @@ func TestConnection_SubscribeCyclicPollsTheReadPath(t *testing.T) {
 		assert.Equal(t, apiModel.PlcResponseCode_OK, event.GetResponseCode("hurz"))
 		// The address the poller polled has to be the address the tag spells, which is what makes
 		// the round trip of GetAddressString load bearing.
-		assert.Equal(t, "D350:WORD[1]", event.GetAddress("hurz"))
+		assert.Equal(t, "D350:WORD", event.GetAddress("hurz"))
 		require.NotNil(t, event.GetValue("hurz"))
 		assert.Positive(t, event.GetValue("hurz").GetUint16(), "the poll has to carry the polled value")
 	case <-time.After(5 * time.Second):

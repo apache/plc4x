@@ -30,6 +30,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -68,12 +69,12 @@ type TagHandler struct {
 }
 
 func NewTagHandler(_options ...options.WithOption) TagHandler {
-	// STRING and WSTRING carry the length of one string in parentheses, the way plc4j's
-	// ModbusTag.ADDRESS_PATTERN spells it: "holding-register:1:STRING(20)[3]" is three
-	// 20-character strings. The quantity in brackets keeps meaning "how many values". Behind that,
-	// curly braces may carry per-tag settings (plc4j TagConfigParser.TAG_CONFIG_PATTERN).
-	generalAddressPattern := `(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+)(\((?P<stringLength>\d+)\))?)?(\[(?P<quantity>\d+)])?` + tagConfigPattern + `$`
-	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+)(\((?P<stringLength>\d+)\))?)?(\[(?P<quantity>\d+)])?` + tagConfigPattern + `$`
+	// The selection sits between the address and the type, as it does in plc4j's
+	// ModbusTag.ADDRESS_PATTERN: "holding-register:1[0..2]:STRING(20)" is three 20-character
+	// strings. STRING and WSTRING carry the length of one string in parentheses. Behind all of
+	// that, curly braces may carry per-tag settings (plc4j TagConfigParser.TAG_CONFIG_PATTERN).
+	generalAddressPattern := `(?P<address>\d+)` + spiModel.ArrayGroupPattern + `(:(?P<datatype>[a-zA-Z_]+)(\((?P<stringLength>\d+)\))?)?` + tagConfigPattern + `$`
+	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?` + spiModel.ArrayGroupPattern + `(:(?P<datatype>[a-zA-Z_]+)(\((?P<stringLength>\d+)\))?)?` + tagConfigPattern + `$`
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return TagHandler{
 		plc4xCoilPattern:               regexp.MustCompile("^coil:" + generalAddressPattern),
@@ -143,9 +144,12 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		return NewModbusPlcTagFromStrings(candidate.tagType, match["address"], match["quantity"], match["stringLength"], dataType, config, m.options...)
+		return NewModbusPlcTagFromStrings(candidate.tagType, match["address"], match["array"], match["stringLength"], dataType, config, m.options...)
 	}
-	return nil, errors.Errorf("Invalid address format for address '%s'", tagAddress)
+	// "holding-register:1:INT[4]" - the count after the type - no longer parses, so name the
+	// form to write rather than reporting only that nothing matched.
+	return nil, spiModel.InvalidAddressError(tagAddress,
+		"{area}:{address}[selection]:{TYPE} - for example holding-register:1[0..3]:INT")
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

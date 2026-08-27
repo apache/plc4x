@@ -49,7 +49,7 @@ func TestDriver_Metadata(t *testing.T) {
 func TestDriver_CheckTagAddress(t *testing.T) {
 	driver := NewDriver()
 
-	assert.NoError(t, driver.CheckTagAddress("digital:4[2]:PULLUP"))
+	assert.NoError(t, driver.CheckTagAddress("digital:4[0..1]:PULLUP"))
 	assert.NoError(t, driver.CheckTagAddress("analog:4"))
 	assert.Error(t, driver.CheckTagAddress("holding-register:4"))
 	// Browsing isn't supported, so no query is valid.

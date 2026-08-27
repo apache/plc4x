@@ -76,7 +76,7 @@ func TestParsePlcValueArrayOfDWORDs(t *testing.T) {
 	raw = binary.LittleEndian.AppendUint32(raw, 0xFFFFFFFF)
 	raw = binary.LittleEndian.AppendUint32(raw, 0x80000000)
 
-	value, err := parsePlcValue(mustTag(t, "%d[0]:DWORD:3"), raw, readWriteModel.CIPDataTypeCode_DWORD)
+	value, err := parsePlcValue(mustTag(t, "%d[0..2]:DWORD"), raw, readWriteModel.CIPDataTypeCode_DWORD)
 	require.NoError(t, err)
 	require.True(t, value.IsList())
 	list := value.GetList()
@@ -90,7 +90,7 @@ func TestParsePlcValueArrayOfLWORDs(t *testing.T) {
 	raw := binary.LittleEndian.AppendUint64(nil, 1)
 	raw = binary.LittleEndian.AppendUint64(raw, 0xFFFFFFFFFFFFFFFF)
 
-	value, err := parsePlcValue(mustTag(t, "%l[0]:LWORD:2"), raw, readWriteModel.CIPDataTypeCode_LWORD)
+	value, err := parsePlcValue(mustTag(t, "%l[0..1]:LWORD"), raw, readWriteModel.CIPDataTypeCode_LWORD)
 	require.NoError(t, err)
 	list := value.GetList()
 	require.Len(t, list, 2)
@@ -99,13 +99,13 @@ func TestParsePlcValueArrayOfLWORDs(t *testing.T) {
 }
 
 func TestParsePlcValueArrayOfBYTEsAndWORDs(t *testing.T) {
-	bytesValue, err := parsePlcValue(mustTag(t, "%b[0]:BYTE:3"), []byte{0x01, 0x80, 0xFF}, readWriteModel.CIPDataTypeCode_BYTE)
+	bytesValue, err := parsePlcValue(mustTag(t, "%b[0..2]:BYTE"), []byte{0x01, 0x80, 0xFF}, readWriteModel.CIPDataTypeCode_BYTE)
 	require.NoError(t, err)
 	assert.Equal(t, uint8(0xFF), bytesValue.GetList()[2].GetUint8())
 
 	raw := binary.LittleEndian.AppendUint16(nil, 0x8000)
 	raw = binary.LittleEndian.AppendUint16(raw, 0xFFFF)
-	wordsValue, err := parsePlcValue(mustTag(t, "%w[0]:WORD:2"), raw, readWriteModel.CIPDataTypeCode_WORD)
+	wordsValue, err := parsePlcValue(mustTag(t, "%w[0..1]:WORD"), raw, readWriteModel.CIPDataTypeCode_WORD)
 	require.NoError(t, err)
 	assert.Equal(t, uint16(0x8000), wordsValue.GetList()[0].GetUint16())
 	assert.Equal(t, uint16(0xFFFF), wordsValue.GetList()[1].GetUint16())
@@ -114,10 +114,10 @@ func TestParsePlcValueArrayOfBYTEsAndWORDs(t *testing.T) {
 // The bit-string types are fixed size, so a reply shorter than the declared element count is
 // reported as an error rather than read past the end of the buffer.
 func TestParsePlcValueBitStringShortReply(t *testing.T) {
-	_, err := parsePlcValue(mustTag(t, "%d[0]:DWORD:8"), binary.LittleEndian.AppendUint32(nil, 1), readWriteModel.CIPDataTypeCode_DWORD)
+	_, err := parsePlcValue(mustTag(t, "%d[0..7]:DWORD"), binary.LittleEndian.AppendUint32(nil, 1), readWriteModel.CIPDataTypeCode_DWORD)
 	assert.Error(t, err)
 
-	_, err = parsePlcValue(mustTag(t, "%l[0]:LWORD:4"), binary.LittleEndian.AppendUint64(nil, 1), readWriteModel.CIPDataTypeCode_LWORD)
+	_, err = parsePlcValue(mustTag(t, "%l[0..3]:LWORD"), binary.LittleEndian.AppendUint64(nil, 1), readWriteModel.CIPDataTypeCode_LWORD)
 	assert.Error(t, err)
 }
 

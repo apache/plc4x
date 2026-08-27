@@ -178,7 +178,7 @@ func TestConnection_pingFailsOnAnUnusablePingAddress(t *testing.T) {
 	}{
 		{"unparsable", "this is not an address"},
 		{"an address outside the address space", "holding-register:70000:INT"},
-		{"a quantity no request can carry", "holding-register:1:INT[126]"},
+		{"a quantity no request can carry", "holding-register:1[0..125]:INT"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			configuration := DefaultConfiguration()

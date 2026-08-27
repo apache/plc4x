@@ -27,6 +27,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/slmp/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,14 +66,19 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		addressPattern: regexp.MustCompile(`^(?P<device>[A-Za-z]+?)(?P<hexPrefix>0[xX])?(?P<address>[0-9A-Fa-f]+)(:(?P<datatype>[A-Za-z_]+))?(\[(?P<quantity>\d+)])?$`),
+		// The selection sits between the address and the type, as it does in plc4j's
+		// SlmpTag.ADDRESS_PATTERN: "D100[0..3]:INT".
+		addressPattern: regexp.MustCompile(`^(?P<device>[A-Za-z]+?)(?P<hexPrefix>0[xX])?(?P<address>[0-9A-Fa-f]+)` + spiModel.ArrayGroupPattern + `(:(?P<datatype>[A-Za-z_]+))?$`),
 	}
 }
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	match := utils.GetSubgroupMatches(m.addressPattern, tagAddress)
 	if match == nil {
-		return nil, errors.Errorf("Unable to parse SLMP address: %s", tagAddress)
+		// "D100:INT[4]" - the count after the type - no longer parses, so name the form to
+		// write rather than reporting only that nothing matched.
+		return nil, spiModel.InvalidAddressError(tagAddress,
+			"{device}{address}[selection]:{TYPE} - for example D100[0..3]:INT")
 	}
 
 	deviceToken := strings.ToUpper(match["device"])
@@ -110,16 +116,22 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		}
 	}
 
-	// Parsed as 32 bit, which is well past the point ceiling checked below and keeps the
-	// multiplication that computes the point count from overflowing.
+	// The selection's offset moves the device number and its size is how many devices are read,
+	// so "D100[4..7]" is the same read as "D104[0..3]". An SLMP Batch Read covers one contiguous
+	// run of devices, so nothing deeper than a single dimension fits.
 	quantity := uint64(1)
-	if quantityToken := match["quantity"]; quantityToken != "" {
-		if quantity, err = strconv.ParseUint(quantityToken, 10, 32); err != nil {
-			return nil, errors.Wrapf(err, "quantity out of range in: %s", tagAddress)
+	if expression := match["array"]; expression != "" {
+		dimensions, err := spiModel.ParseArrayExpression(expression, tagAddress, spiModel.SingleDimension)
+		if err != nil {
+			return nil, err
 		}
-		if quantity < 1 {
-			return nil, errors.Errorf("quantity must be >= 1 in: %s", tagAddress)
+		dimension := dimensions[0]
+		deviceNumber += uint64(dimension.GetLowerBound() - dimension.GetBase())
+		if deviceNumber > maxDeviceNumber {
+			return nil, errors.Errorf("device number %d exceeds the 24-bit SLMP device-address range [0..%d]: %s",
+				deviceNumber, maxDeviceNumber, tagAddress)
 		}
+		quantity = uint64(dimension.GetSize())
 	}
 
 	// The point count is what the frame asks for, so it - not the quantity - is what has to stay

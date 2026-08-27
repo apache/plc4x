@@ -65,7 +65,8 @@ func (t simulatedTag) GetDataTypeSize() model.SimulatedDataTypeSizes {
 }
 
 func (t simulatedTag) GetAddressString() string {
-	return fmt.Sprintf("%s/%s:%s[%d]", t.TagType.Name(), t.Name, t.DataTypeSize.String(), t.Quantity)
+	return fmt.Sprintf("%s/%s%s:%s", t.TagType.Name(), t.Name,
+		spiModel.RenderArrayExpression(t.GetArrayInfo()), t.DataTypeSize.String())
 }
 
 func (t simulatedTag) GetValueType() values.PlcValueType {
@@ -76,11 +77,12 @@ func (t simulatedTag) GetValueType() values.PlcValueType {
 }
 
 func (t simulatedTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if t.Quantity != 1 {
+	if t.Quantity > 1 {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(t.Quantity),
+				UpperBound: uint32(t.Quantity) - 1,
+				Range:      true,
 			},
 		}
 	}
