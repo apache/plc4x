@@ -92,6 +92,9 @@ guarantees of a signed secure channel. Only enable it for local testing. In prod
 |`request-timeout` |LONG |30000| |Timeout for read/write/subscribe calls. Value in milliseconds.
 |`endpoint-host` |STRING | | |Endpoint host used to establish secure channel connection. Used when client made connection to server which advertises different hostname than one used for network connection.
 |`endpoint-port` |INT | | |Endpoint port used to establish secure channel. Used when client made connection to server which advertises different port number than one used for network connection.
+|`subscription-queue-size` |LONG |1| |Server-side queue depth per monitored item for subscriptions. 1 (default) keeps only +
+the latest value between publishes; higher values retain intermediate changes for fast +
+change-of-state tags, whose sampling rate can exceed the publishing (cycle) interval.
 5+|Transport config options:
 5+|
 +++
