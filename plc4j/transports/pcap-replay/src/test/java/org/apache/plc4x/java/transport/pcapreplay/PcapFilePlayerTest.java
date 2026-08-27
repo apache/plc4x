@@ -452,17 +452,32 @@ class PcapFilePlayerTest {
         );
 
         player.start();
-        assertTrue(player.isPlaying());
 
-        // Wait for replay to complete
-        Thread.sleep(200);
+        // No isPlaying() check here: test.pcap is 328 bytes and this player replays it once, as
+        // fast as it can, so playback can be over before the next statement runs - the flag says
+        // more about thread scheduling than about the player. (Every other test in this class
+        // that asserts isPlaying() passes loop=true so the player cannot finish on its own; this
+        // one is deliberately a single pass.) What the replay did is the thing worth asserting.
+        awaitPlaybackEnd(player);
 
-        // Should have processed some packets
-        long packetsReplayed = player.getPacketsReplayed();
-        assertTrue(packetsReplayed >= 0);
+        // Every packet in the file, rather than ">= 0", which a count can never fail.
+        assertEquals(4, player.getPacketsReplayed(), "all four packets in test.pcap");
 
         player.stop();
         assertFalse(player.isPlaying());
+    }
+
+    /**
+     * Waits for a single-pass replay to finish, rather than sleeping for a fixed time and hoping.
+     * A fixed sleep is either too short on a loaded machine - which is when this test used to
+     * fail - or slower than it needs to be on an idle one.
+     */
+    private static void awaitPlaybackEnd(PcapFilePlayer player) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+        while (player.isPlaying() && (System.nanoTime() < deadline)) {
+            Thread.sleep(5);
+        }
+        assertFalse(player.isPlaying(), "a single pass over a 328 byte file should be long done");
     }
 
     @Test
