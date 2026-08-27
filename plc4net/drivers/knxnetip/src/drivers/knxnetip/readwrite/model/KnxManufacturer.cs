@@ -850,8 +850,12 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_BEEKER_TECH_GMBH_AND_CO__KG = 822,
         M_CARBON_INTEGRATION = 823,
         M_ALLSMART = 824,
-        M_ABB___RESERVED = 825,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 826,
+        M_BUTTONPlus = 825,
+        M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ = 826,
+        M_RUEDIGER_WOLF_AB = 827,
+        M_KOLORS_INDIA_PRIVATE_LIMITED = 828,
+        M_ABB___RESERVED = 829,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 830,
     }
 
     public static class KnxManufacturerInfo
@@ -3282,14 +3286,26 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ALLSMART: { /* '824' */
                     return 886;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '825' */
-                    return 43954;
+                case KnxManufacturer.M_BUTTONPlus: { /* '825' */
+                    return 887;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '826' */
-                    return 43959;
+                case KnxManufacturer.M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_: { /* '826' */
+                    return 888;
+                }
+                case KnxManufacturer.M_RUEDIGER_WOLF_AB: { /* '827' */
+                    return 889;
+                }
+                case KnxManufacturer.M_KOLORS_INDIA_PRIVATE_LIMITED: { /* '828' */
+                    return 890;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '829' */
+                    return 43954;
                 }
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
                     return 122;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '830' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_INNOTEAM: { /* '84' */
                     return 123;
@@ -5773,14 +5789,26 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ALLSMART: { /* '824' */
                     return "AllSmart";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '825' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_BUTTONPlus: { /* '825' */
+                    return "Button+";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '826' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_: { /* '826' */
+                    return "Guangzhou YingLight technology Co.,Ltd.";
+                }
+                case KnxManufacturer.M_RUEDIGER_WOLF_AB: { /* '827' */
+                    return "Rüdiger Wolf AB";
+                }
+                case KnxManufacturer.M_KOLORS_INDIA_PRIVATE_LIMITED: { /* '828' */
+                    return "KOLORS INDIA PRIVATE LIMITED";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '829' */
+                    return "ABB - reserved";
                 }
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
                     return "Durable Technologies";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '830' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_INNOTEAM: { /* '84' */
                     return "Innoteam";
