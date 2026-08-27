@@ -48,9 +48,9 @@ class EipTagCoverageTest {
     void ctorWithTypeOnly() {
         EipTag tag = new EipTag("%A0", CIPDataTypeCode.INT);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
-        // No element-count constructor → default int zero (not the 1 the
-        // single-arg ctor injects). Lock the surface in place.
-        assertThat(tag.getElementNb()).isZero();
+        // Every constructor now normalises to at least one element. This used to leave the
+        // field at Java's default of zero, which is not a count any request can be made with.
+        assertThat(tag.getElementNb()).isEqualTo(1);
     }
 
     @Test
@@ -61,11 +61,13 @@ class EipTagCoverageTest {
         assertThat(tag.getPlcValueType()).isEqualTo(PlcValueType.DINT);
     }
 
+    /**
+     * The type and element count are given at construction; EipTag is immutable, like every
+     * other driver's tag. This used to go through setType/setElementNb.
+     */
     @Test
-    void setTypeAndSetElementNbRoundtrip() {
-        EipTag tag = new EipTag("%A0");
-        tag.setType(CIPDataTypeCode.REAL);
-        tag.setElementNb(7);
+    void typeAndElementNbComeFromTheConstructor() {
+        EipTag tag = new EipTag("%A0", CIPDataTypeCode.REAL, 7);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.REAL);
         assertThat(tag.getElementNb()).isEqualTo(7);
     }
@@ -88,11 +90,12 @@ class EipTagCoverageTest {
     }
 
     @Test
-    void ofWithZeroElementsUsesTypeOnlyCtorPath() {
-        // elementNb=0 selects the (tag, type) constructor branch.
+    void ofWithZeroElementsReadsOneElement() {
+        // An explicit count of zero used to survive into the tag; a request for zero elements
+        // is meaningless, so it is normalised to one like any other count below one.
         EipTag tag = EipTag.of("%A0:INT:0");
         assertThat(tag).isNotNull();
-        assertThat(tag.getElementNb()).isZero();
+        assertThat(tag.getElementNb()).isEqualTo(1);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
     }
 

@@ -53,8 +53,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * EtherNet/IP (CIP encapsulation) TCP connection — direct port of the legacy
@@ -555,7 +553,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             EipTag eipTag = (EipTag) request.getTag(tagName);
             CompletableFuture<Void> tagFuture = chain.thenComposeAsync(v -> executeThrottled(() -> {
                 try {
-                    CipReadRequest req = new CipReadRequest(toAnsi(eipTag.getTag()), elementCount(eipTag));
+                    CipReadRequest req = new CipReadRequest(toAnsi(eipTag), eipTag.getElementNb());
                     CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
                         classSegment, instanceSegment, req,
                         (byte) getConfiguration().getBackplane(),
@@ -606,7 +604,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String tagName : sendableTagNames(request)) {
             EipTag eipTag = (EipTag) request.getTag(tagName);
             try {
-                requests.add(new CipReadRequest(toAnsi(eipTag.getTag()), elementCount(eipTag)));
+                requests.add(new CipReadRequest(toAnsi(eipTag), eipTag.getElementNb()));
             } catch (BufferException e) {
                 return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to read field", e));
             }
@@ -649,7 +647,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String tagName : sendableTagNames(request)) {
             EipTag eipTag = (EipTag) request.getTag(tagName);
             try {
-                requests.add(new CipReadRequest(toAnsi(eipTag.getTag()), elementCount(eipTag)));
+                requests.add(new CipReadRequest(toAnsi(eipTag), eipTag.getElementNb()));
             } catch (BufferException e) {
                 return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to read field", e));
             }
@@ -758,12 +756,11 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String fieldName : sendableTagNames(request)) {
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);
-            int elements = Math.max(field.getElementNb(), 1);
             CompletableFuture<Void> tagFuture = chain.thenComposeAsync(v -> executeThrottled(() -> {
                 try {
                     byte[] data = encodeValue(value, field.getType());
                     CipWriteRequest writeReq = new CipWriteRequest(
-                        toAnsi(field.getTag()), field.getType(), elements, data);
+                        toAnsi(field), field.getType(), field.getElementNb(), data);
                     CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
                         classSegment, instanceSegment, writeReq,
                         (byte) getConfiguration().getBackplane(),
@@ -808,10 +805,9 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String fieldName : sendableTagNames(request)) {
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);
-            int elements = Math.max(field.getElementNb(), 1);
             try {
                 byte[] data = encodeValue(value, field.getType());
-                items.add(new CipWriteRequest(toAnsi(field.getTag()), field.getType(), elements, data));
+                items.add(new CipWriteRequest(toAnsi(field), field.getType(), field.getElementNb(), data));
             } catch (BufferException | PlcInvalidTagException e) {
                 return CompletableFuture.failedFuture(
                     new PlcRuntimeException("Failed to write field '" + fieldName + "'", e));
@@ -858,10 +854,9 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String fieldName : sendableTagNames(request)) {
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);
-            int elements = Math.max(field.getElementNb(), 1);
             try {
                 byte[] data = encodeValue(value, field.getType());
-                items.add(new CipWriteRequest(toAnsi(field.getTag()), field.getType(), elements, data));
+                items.add(new CipWriteRequest(toAnsi(field), field.getType(), field.getElementNb(), data));
             } catch (BufferException | PlcInvalidTagException e) {
                 return CompletableFuture.failedFuture(
                     new PlcRuntimeException("Failed to write field '" + fieldName + "'", e));
@@ -909,23 +904,25 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     // Encoders / decoders
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private byte[] toAnsi(String tag) throws BufferException {
-        Pattern resourcePattern = Pattern.compile("([.\\[\\]])*([A-Za-z_0-9]+)");
-        Matcher matcher = resourcePattern.matcher(tag);
-        List<PathSegment> segments = new LinkedList<>();
+    /**
+     * Serializes the CIP path of a tag: one segment per member, in the order the address names
+     * them. The address was decomposed when the tag was built, so this does no parsing.
+     */
+    private byte[] toAnsi(EipTag tag) throws BufferException {
+        List<EipTag.PathElement> elements = tag.getPathElements();
+        List<PathSegment> segments = new ArrayList<>(elements.size());
         int lengthBytes = 0;
-        while (matcher.find()) {
-            String identifier = matcher.group(2);
-            String qualifier = matcher.group(1);
-            PathSegment newSegment;
-            if ("[".equals(qualifier)) {
-                newSegment = new LogicalSegment(new MemberID((byte) 0x00, Short.parseShort(identifier)));
+        for (EipTag.PathElement element : elements) {
+            PathSegment segment;
+            if (element instanceof EipTag.MemberElement member) {
+                segment = new LogicalSegment(new MemberID((byte) 0x00, member.index()));
             } else {
-                newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier,
-                    (identifier.length() % 2 == 0) ? null : (short) 0));
+                String name = ((EipTag.SymbolElement) element).name();
+                segment = new DataSegment(new AnsiExtendedSymbolSegment(name,
+                    (name.length() % 2 == 0) ? null : (short) 0));
             }
-            segments.add(newSegment);
-            lengthBytes += newSegment.getLengthInBytes();
+            segments.add(segment);
+            lengthBytes += segment.getLengthInBytes();
         }
         WriteBufferByteBased buffer = messageCodec.createWriteBuffer(lengthBytes);
         for (PathSegment segment : segments) {
@@ -1010,15 +1007,6 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         }
         values.put(tagName, new DefaultPlcResponseItem<>(code, plcValue));
         return values;
-    }
-
-    /**
-     * Number of elements to ask the device for. An array tag ({@code %tag[0]:DINT:8}) has to
-     * request all of its elements - see GH-1008 - otherwise the device returns a single element
-     * and the decoder below has nothing to read the remaining ones from.
-     */
-    private static int elementCount(EipTag tag) {
-        return Math.max(tag.getElementNb(), 1);
     }
 
     /**
@@ -1126,7 +1114,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     // Package-private and static so the decoding can be tested without a connection.
     static PlcValue parsePlcValue(EipTag tag, byte[] rawData, CIPDataTypeCode type) {
         ByteBuffer data = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
-        int nb = elementCount(tag);
+        int nb = tag.getElementNb();
         TypeCodec codec = FIXED_SIZE_CODECS.get(type);
 
         // Handle array reads.
