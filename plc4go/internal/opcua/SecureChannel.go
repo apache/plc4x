@@ -92,7 +92,7 @@ type SecureChannel struct {
 	ckp                       CertificateKeyPair
 	endpoint                  readWriteModel.PascalString
 	username                  string
-	password                  string
+	password                  string `secret:"true"`
 	securityPolicy            string
 	publicCertificate         readWriteModel.PascalByteString
 	thumbprint                readWriteModel.PascalByteString

@@ -76,7 +76,7 @@ public class PskTlsTransportInstance extends BaseTransportInstance<PskTlsTranspo
         this.ringBuffer = new RingBuffer(configuration.receiveBufferSize);
 
         auditLog.write(AuditLogEventType.SYSTEM, String.format(
-            "TLS-PSK configuration: target=%s:%d, psk-identity=%s, connect-timeout=%d, read-timeout=%d",
+            "TLS-PSK configuration: target=%s:%d, psk-identity=%s, connect-timeout-ms=%d, read-timeout-ms=%d",
             remoteAddress.getHostName(), remoteAddress.getPort(),
             configuration.pskIdentity,
             configuration.connectTimeout, configuration.readTimeout));

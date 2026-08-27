@@ -107,7 +107,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("password", uint32(len(d.Password)*8), d.Password, utils.WithEncoding("UTF-8")); err != nil {
+	if err := writeBuffer.WriteString("password", uint32(len("<redacted>")*8), "<redacted>", utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -123,7 +123,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("keyStorePassword", uint32(len(d.KeyStorePassword)*8), d.KeyStorePassword, utils.WithEncoding("UTF-8")); err != nil {
+	if err := writeBuffer.WriteString("keyStorePassword", uint32(len("<redacted>")*8), "<redacted>", utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	if d.Ckp != nil {

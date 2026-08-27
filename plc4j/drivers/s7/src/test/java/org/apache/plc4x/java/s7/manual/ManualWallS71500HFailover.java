@@ -55,7 +55,7 @@ public class ManualWallS71500HFailover {
 
     /** Primary = S7-1511C-1 PN, Secondary = S7-1516-3 PN/DP. Different models, same family. */
     private static final String CONNECTION_URL =
-        "s7://192.168.24.66/192.168.24.64?local-device-group=PG_OR_PC&remote-rack=0&remote-slot=1&ha-failover-timeout=500&ha-heartbeat-interval=1000";
+        "s7://192.168.24.66/192.168.24.64?local-device-group=PG_OR_PC&remote-rack=0&remote-slot=1&ha-failover-timeout-ms=500&ha-heartbeat-interval-ms=1000";
     private static final long RUN_DURATION_MS = 120_000L;
     private static final long READ_INTERVAL_MS = 2_000L;
 

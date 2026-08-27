@@ -97,6 +97,81 @@ New Features
 Incompatible changes
 --------------------
 
+- Configuration parameters now use one vocabulary across PLC4J and PLC4Go.
+  A duration in milliseconds ends in "-ms", TLS settings live under "tls.",
+  and a parameter aimed at a transport no longer repeats that transport's
+  code. Old names are removed rather than deprecated: supplying one is
+  reported as an unknown parameter, naming the replacement, and the setting
+  does not apply. The full table is below.
+
+  Durations:
+
+    request-timeout           -> request-timeout-ms
+    timeout-request (ads)     -> request-timeout-ms
+    connect-timeout           -> connect-timeout-ms
+    read-timeout              -> read-timeout-ms
+    write-timeout             -> write-timeout-ms
+    session-timeout           -> session-timeout-ms
+    channel-lifetime          -> channel-lifetime-ms
+    min-channel-lifetime      -> min-channel-lifetime-ms
+    ha-heartbeat-interval     -> ha-heartbeat-interval-ms
+    ha-failover-timeout       -> ha-failover-timeout-ms
+
+  Establishing a socket and completing a protocol handshake are two
+  settings, not one, so they now have two names. "connect-timeout-ms" is
+  the socket connect; the COTP handshake and the OPC UA negotiation steps
+  are "handshake-timeout-ms":
+
+    cotp.cotp-connection-timeout -> cotp.handshake-timeout-ms
+    negotiation-timeout (opcua)  -> handshake-timeout-ms
+
+  Transport parameters no longer repeat their transport's code, which the
+  prefix already supplies:
+
+    tcp.tcp-no-delay          -> tcp.no-delay
+    cotp.cotp-tpdu-size       -> cotp.tpdu-size
+    tls.tls-version           -> tls.version
+
+  TLS settings are addressed under "tls.":
+
+    tls.verify-ssl            -> tls.verify
+    key-store-file (opcua)    -> tls.keystore
+    key-store-password        -> tls.keystore-password
+    key-store-type            -> tls.keystore-type
+
+  A name a protocol specification fixes keeps its own spelling and units:
+  SLMP's "monitoring-timer" is a field of the 3E request frame in the
+  protocol's own units, not a value in milliseconds, so it is unchanged and
+  carries a comment at its declaration saying why.
+
+- The OPC UA driver's "insecure-certificate-verification" became
+  "tls.verify", with the opposite sense. A connection that set
+  "insecure-certificate-verification=true" must now set "tls.verify=false".
+  This one is not just a rename: if it is missed, the new default applies,
+  which is to verify the server certificate. That fails loudly against a
+  server whose certificate does not validate rather than connecting
+  insecurely, but it is a behaviour change and not a silent one.
+
+- An unrecognised connection-string parameter is now reported in PLC4Go as
+  well as PLC4J, naming the parameter and suggesting the nearest known one.
+  It remains a warning: a stray parameter does not fail a connection that
+  would otherwise work. PLC4Go's OPC UA driver previously *refused* the
+  connection on an unknown option; it now warns like every other driver,
+  so a connection string accepted by PLC4J is no longer rejected there.
+
+- Configuration values carrying secrets are marked at their declaration -
+  "@Secret" in PLC4J, a `secret:"true"` struct tag in PLC4Go - and render
+  as "<redacted>" wherever a configuration is rendered. This replaces
+  guessing from parameter names, which could only ever be one parameter
+  behind: a pre-shared key was logged in clear until its name was added to
+  the list by hand. A name-based check remains for parameters no
+  configuration declares, since a credential passed under an unknown name
+  is still a credential.
+
+- Fixed PLC4Go logging connection strings verbatim. A password in a Go
+  connection string reached the log in clear at debug level, at twenty
+  call sites across the driver manager and the connection cache. They are
+  redacted now, along with credentials in a URI's userinfo.
 - The connection-creating methods of the API moved from
   "PlcConnectionManager" to a new "PlcConnectionFactory"
   interface, which the "PlcDriverManager" hands out via

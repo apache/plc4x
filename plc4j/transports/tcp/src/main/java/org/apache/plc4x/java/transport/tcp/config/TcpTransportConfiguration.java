@@ -30,28 +30,28 @@ public class TcpTransportConfiguration implements TransportConfiguration {
     /**
      * Connection timeout in milliseconds.
      */
-    @ConfigurationParameter("connect-timeout")
+    @ConfigurationParameter("connect-timeout-ms")
     @IntDefaultValue(5000)
     public int connectTimeout;
 
     /**
      * Socket read timeout in milliseconds. 0 means no timeout.
      */
-    @ConfigurationParameter("read-timeout")
+    @ConfigurationParameter("read-timeout-ms")
     @IntDefaultValue(0)
     public int readTimeout;
 
     /**
      * Socket write timeout in milliseconds. 0 means no timeout.
      */
-    @ConfigurationParameter("write-timeout")
+    @ConfigurationParameter("write-timeout-ms")
     @IntDefaultValue(0)
     public int writeTimeout;
 
     /**
      * Enable TCP_NODELAY (disable Nagle's algorithm).
      */
-    @ConfigurationParameter("tcp-no-delay")
+    @ConfigurationParameter("no-delay")
     @BooleanDefaultValue(true)
     public boolean tcpNoDelay;
 

@@ -29,6 +29,7 @@ import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.connection.CtrlXConnection;
 import org.apache.plc4x.java.ctrlx.readwrite.discovery.CtrlXPlcDiscoverer;
 import org.apache.plc4x.java.spi.config.ConfigurationFactory;
+import org.apache.plc4x.java.spi.drivers.UnknownParameterReporter;
 import org.apache.plc4x.java.spi.drivers.DriverBase;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryRequest;
 
@@ -78,6 +79,12 @@ public class CtrlXDriver implements PlcDriver {
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
+
+        // This driver implements PlcDriver directly rather than extending DriverBase, so nothing
+        // reports a parameter the configuration does not declare unless it does so itself. Without
+        // this a typo was accepted in silence and the connection ran on defaults.
+        UnknownParameterReporter.report(getProtocolCode(), paramString, transportCode,
+            CtrlXConfiguration.class, null);
 
         // CtrlX only supports "https" as transport.
         if(!"https".equals(transportCode)) {

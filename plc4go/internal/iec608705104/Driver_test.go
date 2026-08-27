@@ -99,7 +99,7 @@ func TestDriver_GetConnectionRefusesABadOption(t *testing.T) {
 		testutils.TestContext(t),
 		url.URL{Scheme: "tcp", Host: "127.0.0.1"},
 		map[string]transports.Transport{},
-		map[string][]string{"request-timeout": {"not a number"}})
+		map[string][]string{"request-timeout-ms": {"not a number"}})
 
 	assert.Error(t, err)
 	assert.Nil(t, connection)

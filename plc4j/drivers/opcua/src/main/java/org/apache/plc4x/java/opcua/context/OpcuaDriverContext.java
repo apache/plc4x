@@ -120,8 +120,8 @@ public class OpcuaDriverContext {
     /**
      * Selects the server-certificate trust strategy, in order of precedence:
      * <ol>
-     *   <li>{@code insecure-certificate-verification=true} &rarr; trust everything (unsafe, opt-in only);</li>
-     *   <li>a {@code trust-store-file} &rarr; validate the certificate chain against the trust store;</li>
+     *   <li>{@code tls.verify=false} &rarr; trust everything (unsafe, opt-in only);</li>
+     *   <li>a {@code tls.trust-store} &rarr; validate the certificate chain against the trust store;</li>
      *   <li>a {@code server-certificate-file} &rarr; pin trust to that exact certificate;</li>
      *   <li>otherwise &rarr; fail closed and reject, since no trust anchor is available.</li>
      * </ol>
@@ -131,10 +131,10 @@ public class OpcuaDriverContext {
      */
     private CertificateVerifier buildCertificateVerifier(OpcuaConfiguration configuration)
         throws IOException, GeneralSecurityException {
-        if (configuration.isInsecureCertificateVerification()) {
-            LOGGER.warn("OPC UA server certificate verification is DISABLED "
-                + "('insecure-certificate-verification=true'). The connection is vulnerable to "
-                + "man-in-the-middle attacks; do not use this in production.");
+        if (!configuration.isVerifyServerCertificate()) {
+            LOGGER.warn("OPC UA server certificate verification is DISABLED ('tls.verify=false'). "
+                + "The connection is vulnerable to man-in-the-middle attacks; do not use this in "
+                + "production.");
             return new PermissiveCertificateVerifier();
         }
         if (configuration.getTrustStoreFile() != null) {
@@ -146,7 +146,7 @@ public class OpcuaDriverContext {
             return new PinnedCertificateVerifier(configuration.getServerCertificate());
         }
         LOGGER.warn("No OPC UA trust anchor configured ('trust-store-file' or 'server-certificate-file'); "
-            + "server certificates will be rejected. Set 'insecure-certificate-verification=true' to bypass "
+            + "server certificates will be rejected. Set 'tls.verify=false' to bypass "
             + "verification for local testing only.");
         return new RejectingCertificateVerifier();
     }

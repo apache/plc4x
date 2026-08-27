@@ -304,11 +304,11 @@ func TestParseAndCreate_OptionsReachInstance(t *testing.T) {
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: "/dev/ttyTest0"},
 		map[string][]string{
-			"baud-rate":    {"19200"},
-			"data-bits":    {"7"},
-			"parity":       {"even"},
-			"stop-bits":    {"2"},
-			"read-timeout": {"250"},
+			"baud-rate":       {"19200"},
+			"data-bits":       {"7"},
+			"parity":          {"even"},
+			"stop-bits":       {"2"},
+			"read-timeout-ms": {"250"},
 		},
 	)
 	require.NoError(t, err)

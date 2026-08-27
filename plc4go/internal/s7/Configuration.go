@@ -26,6 +26,7 @@ import (
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Configuration struct {
@@ -40,6 +41,11 @@ type Configuration struct {
 }
 
 func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLog, options)
+	defer reader.ReportUnknown("s7")
+
 	configuration := Configuration{
 		localRack:      1,
 		localSlot:      1,
@@ -50,35 +56,35 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		maxAmqCallee:   8,
 		controllerType: readWriteModel.ControllerType_ANY,
 	}
-	if localRackString := getFromOptions(localLog, options, "local-rack"); localRackString != "" {
+	if localRackString := reader.Get("local-rack"); localRackString != "" {
 		parsedInt, err := strconv.ParseInt(localRackString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-rack")
 		}
 		configuration.localRack = int32(parsedInt)
 	}
-	if localSlotString := getFromOptions(localLog, options, "local-slot"); localSlotString != "" {
+	if localSlotString := reader.Get("local-slot"); localSlotString != "" {
 		parsedInt, err := strconv.ParseInt(localSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-slot")
 		}
 		configuration.localSlot = int32(parsedInt)
 	}
-	if remoteRackString := getFromOptions(localLog, options, "remote-rack"); remoteRackString != "" {
+	if remoteRackString := reader.Get("remote-rack"); remoteRackString != "" {
 		parsedInt, err := strconv.ParseInt(remoteRackString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-rack")
 		}
 		configuration.remoteRack = int32(parsedInt)
 	}
-	if remoteSlotString := getFromOptions(localLog, options, "remote-slot"); remoteSlotString != "" {
+	if remoteSlotString := reader.Get("remote-slot"); remoteSlotString != "" {
 		parsedInt, err := strconv.ParseInt(remoteSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-slot")
 		}
 		configuration.remoteSlot = int32(parsedInt)
 	}
-	if controllerTypeString := getFromOptions(localLog, options, "controller-type"); controllerTypeString != "" {
+	if controllerTypeString := reader.Get("controller-type"); controllerTypeString != "" {
 		controllerType, ok := readWriteModel.ControllerTypeByName(controllerTypeString)
 		if !ok {
 			return Configuration{}, errors.Errorf("Unknown controller type %s", controllerTypeString)
@@ -86,7 +92,7 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		configuration.controllerType = controllerType
 	}
 
-	pduSizeString := getFromOptions(localLog, options, "pdu-size")
+	pduSizeString := reader.Get("pdu-size")
 	if pduSizeString != "" {
 		parsedUint, err := strconv.ParseUint(pduSizeString, 10, 16)
 		if err != nil {
@@ -95,7 +101,7 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		configuration.pduSize = uint16(parsedUint)
 	}
 
-	if maxAmqCallerString := getFromOptions(localLog, options, "max-amq-caller"); maxAmqCallerString != "" {
+	if maxAmqCallerString := reader.Get("max-amq-caller"); maxAmqCallerString != "" {
 		parsedUint, err := strconv.ParseUint(maxAmqCallerString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-amq-caller %s", maxAmqCallerString)
@@ -103,7 +109,7 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		configuration.maxAmqCaller = uint16(parsedUint)
 	}
 
-	if maxAmqCalleeString := getFromOptions(localLog, options, "max-amq-callee"); maxAmqCalleeString != "" {
+	if maxAmqCalleeString := reader.Get("max-amq-callee"); maxAmqCalleeString != "" {
 		parsedUint, err := strconv.ParseUint(maxAmqCalleeString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-amq-callee %s", maxAmqCalleeString)
@@ -111,17 +117,4 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		configuration.maxAmqCallee = uint16(parsedUint)
 	}
 	return configuration, nil
-}
-
-func getFromOptions(localLog zerolog.Logger, options map[string][]string, key string) string {
-	if optionValues, ok := options[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Options %s must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

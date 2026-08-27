@@ -101,8 +101,8 @@ public class S7HCotpConnection extends ConnectionBase<S7Configuration> {
      * Heartbeat tick interval and wrapper-level failover timeout, both in milliseconds.
      * Read from {@link S7Configuration#getHaHeartbeatInterval()} /
      * {@link S7Configuration#getHaFailoverTimeout()} at connection construction so each
-     * connection can be tuned independently via URL params {@code ?ha-heartbeat-interval=}
-     * and {@code ?ha-failover-timeout=}.
+     * connection can be tuned independently via URL params {@code ?ha-heartbeat-interval-ms=}
+     * and {@code ?ha-failover-timeout-ms=}.
      */
     private final long heartbeatIntervalMs;
     private final long failoverTimeoutMs;

@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 // Configuration is what an ab-eth connection string can say about the connection. Ported from
@@ -42,7 +43,7 @@ type Configuration struct {
 const (
 	// defaultStation is plc4j's @IntDefaultValue(0) for the station option.
 	defaultStation = uint8(0)
-	// defaultRequestTimeout is plc4j's @IntDefaultValue(10_000) for the request-timeout option.
+	// defaultRequestTimeout is plc4j's @IntDefaultValue(10_000) for the request-timeout-ms option.
 	defaultRequestTimeout = 10 * time.Second
 )
 
@@ -57,9 +58,14 @@ func DefaultConfiguration() Configuration {
 // ParseFromOptions reads the connection options out of a parsed connection string. The timeout is
 // spelled in milliseconds, the way plc4j's @IntDefaultValue(10_000) does.
 func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLog, connectionOptions)
+	defer reader.ReportUnknown("ab-eth")
+
 	configuration := DefaultConfiguration()
 
-	if stationString := getFromOptions(localLog, connectionOptions, "station"); stationString != "" {
+	if stationString := reader.Get("station"); stationString != "" {
 		// The station is the DF1 destination address, which is a single byte on the wire.
 		parsedInt, err := strconv.ParseUint(stationString, 10, 8)
 		if err != nil {
@@ -68,13 +74,13 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 		configuration.station = uint8(parsedInt)
 	}
 
-	if requestTimeoutString := getFromOptions(localLog, connectionOptions, "request-timeout"); requestTimeoutString != "" {
+	if requestTimeoutString := reader.Get("request-timeout-ms"); requestTimeoutString != "" {
 		parsedInt, err := strconv.ParseUint(requestTimeoutString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout %s", requestTimeoutString)
+			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout-ms %s", requestTimeoutString)
 		}
 		if parsedInt == 0 {
-			return Configuration{}, errors.New("request-timeout must be greater than zero")
+			return Configuration{}, errors.New("request-timeout-ms must be greater than zero")
 		}
 		configuration.requestTimeout = time.Duration(parsedInt) * time.Millisecond
 	}
@@ -84,18 +90,4 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 
 func (c Configuration) String() string {
 	return fmt.Sprintf("abeth.Configuration{station: %d, requestTimeout: %s}", c.station, c.requestTimeout)
-}
-
-// getFromOptions plucks a single-valued option out of the parsed connection string.
-func getFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string, key string) string {
-	if optionValues, ok := connectionOptions[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Option must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

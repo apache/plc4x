@@ -67,7 +67,7 @@ public class CotpTransportConfiguration extends TcpTransportConfiguration implem
      * Valid values: 128, 256, 512, 1024, 2048, 4096, 8192.
      * Default is 8192 bytes.
      */
-    @ConfigurationParameter("cotp-tpdu-size")
+    @ConfigurationParameter("tpdu-size")
     @Description("COTP PDU size for data transmission. Valid values: 128, 256, 512, 1024, 2048, 4096, 8192.")
     @IntDefaultValue(8192)
     public int cotpTpduSize = 8192;
@@ -76,7 +76,7 @@ public class CotpTransportConfiguration extends TcpTransportConfiguration implem
      * Connection timeout for COTP handshake in milliseconds.
      * Default is 5000ms (5 seconds).
      */
-    @ConfigurationParameter("cotp-connection-timeout")
+    @ConfigurationParameter("handshake-timeout-ms")
     @Description("Connection timeout for COTP handshake in milliseconds.")
     @IntDefaultValue(5000)
     public int cotpConnectionTimeout = 5000;

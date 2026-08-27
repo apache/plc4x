@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ctrlx.readwrite.configuration;
 
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Secret;
 import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
@@ -39,6 +40,7 @@ public class CtrlXConfiguration implements Configuration {
     @Description("Key store of certificates to trust, instead of the JVM's public authorities")
     public String trustStoreFile;
 
+    @Secret
     @ConfigurationParameter("trust-store-password")
     @Description("Password of the trust store named by trust-store-file")
     public String trustStorePassword;

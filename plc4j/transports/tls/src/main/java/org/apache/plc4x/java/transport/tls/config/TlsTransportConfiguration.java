@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.transport.tls.config;
 
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Secret;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
@@ -35,7 +36,7 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
      * Set to false for self-signed certificates in development/testing environments.
      * WARNING: Disabling verification still provides encryption but does NOT protect against MITM attacks.
      */
-    @ConfigurationParameter("verify-ssl")
+    @ConfigurationParameter("verify")
     @BooleanDefaultValue(true)
     public boolean verifySsl;
 
@@ -58,12 +59,13 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
      *
      * <p>This is what makes verification usable for a device carrying its own certificate: without
      * it the only way past a private CA is to turn verification off entirely, which is why
-     * {@code verify-ssl=false} tends to end up in configurations and stay there.</p>
+     * {@code verify=false} tends to end up in configurations and stay there.</p>
      */
     @ConfigurationParameter("trust-store-file")
     @Description("Key store of certificates to trust, instead of the JVM's public authorities")
     public String trustStoreFile;
 
+    @Secret
     @ConfigurationParameter("trust-store-password")
     @Description("Password of the trust store named by trust-store-file")
     public String trustStorePassword;
@@ -78,7 +80,7 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
      * Valid values: "TLSv1.2", "TLSv1.3"
      * Some protocols (like Secure ADS) require a specific TLS version.
      */
-    @ConfigurationParameter("tls-version")
+    @ConfigurationParameter("version")
     @Description("TLS protocol version (e.g., 'TLSv1.2', 'TLSv1.3'). If not set, uses TLS 1.3 with fallback to TLS 1.2.")
     public String tlsVersion;
 
@@ -113,6 +115,7 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
     /**
      * Password for the keystore specified by the keystore parameter.
      */
+    @Secret
     @ConfigurationParameter("keystore-password")
     @Description("Password for the client keystore.")
     public String keystorePassword;

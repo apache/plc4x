@@ -196,16 +196,16 @@ func (m *Connection) getTunnelConnectionType() driverModel.KnxLayer {
 	return driverModel.KnxLayer_TUNNEL_LINK_LAYER
 }
 
-// getRequestTimeout evaluates the "request-timeout" connection option (in
+// getRequestTimeout evaluates the "request-timeout-ms" connection option (in
 // milliseconds) which limits how long we wait for a gateway reply.
 // (Java: KnxNetIpConfiguration#requestTimeout)
 func (m *Connection) getRequestTimeout() time.Duration {
-	if val, ok := m.options["request-timeout"]; ok && len(val) > 0 {
+	if val, ok := m.options["request-timeout-ms"]; ok && len(val) > 0 {
 		requestTimeout, err := strconv.ParseUint(val[0], 10, 32)
 		if err == nil && requestTimeout > 0 {
 			return time.Duration(requestTimeout) * time.Millisecond
 		}
-		m.log.Warn().Str("request-timeout", val[0]).Msg("Invalid value for request-timeout, falling back to the default")
+		m.log.Warn().Str("request-timeout-ms", val[0]).Msg("Invalid value for request-timeout-ms, falling back to the default")
 	}
 	return defaultRequestTimeout
 }

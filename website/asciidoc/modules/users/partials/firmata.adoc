@@ -37,7 +37,7 @@
  - `serial`
  - `tcp`
 5+|Config options:
-|`request-timeout` |INT |10000| |Maximum time (in milliseconds) to wait for the initial firmware-report reply during connection setup.
+|`request-timeout-ms` |INT |10000| |Maximum time (in milliseconds) to wait for the initial firmware-report reply during connection setup.
 5+|Transport config options:
 5+|
 +++
@@ -48,8 +48,8 @@
 |`serial.stop-bits` |INT |1| |Number of stop bits (1 or 2)
 |`serial.parity` |STRING |none| |Parity: none, odd, even, mark, space (case-insensitive)
 |`serial.flow-control` |STRING |none| |Flow control: none, rts-cts, xon-xoff (case-insensitive)
-|`serial.read-timeout` |INT |1000| |Read timeout in milliseconds. 0 means blocking read.
-|`serial.write-timeout` |INT |1000| |Write timeout in milliseconds.
+|`serial.read-timeout-ms` |INT |1000| |Read timeout in milliseconds. 0 means blocking read.
+|`serial.write-timeout-ms` |INT |1000| |Write timeout in milliseconds.
 |`serial.dtr` |BOOLEAN |false| |Enable DTR (Data Terminal Ready) signal
 |`serial.rts` |BOOLEAN |false| |Enable RTS (Request To Send) signal
 |`serial.reuse-port` |BOOLEAN |false| |Reuse the underlying serial port across multiple transport instances. When true, instances with the same port will share a connection. This is useful for protocols where multiple logical connections share one serial port. Connections sharing a port must target distinct unit ids; Modbus RTU responses carry no transaction ids, so same-unit traffic from multiple connections cannot be told apart.
@@ -58,10 +58,10 @@
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout` |INT |5000| |
-|`tcp.read-timeout` |INT |0| |
-|`tcp.write-timeout` |INT |0| |
-|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.connect-timeout-ms` |INT |5000| |
+|`tcp.read-timeout-ms` |INT |0| |
+|`tcp.write-timeout-ms` |INT |0| |
+|`tcp.no-delay` |BOOLEAN |true| |
 |`tcp.keep-alive` |BOOLEAN |false| |
 |`tcp.send-buffer-size` |INT |81920| |
 |`tcp.receive-buffer-size` |INT |81920| |

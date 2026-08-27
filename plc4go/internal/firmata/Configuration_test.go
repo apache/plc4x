@@ -43,32 +43,32 @@ func TestParseFromOptions(t *testing.T) {
 		{
 			// plc4j spells the timeout in milliseconds (@IntDefaultValue(10_000)).
 			name:              "a request timeout in milliseconds",
-			connectionOptions: map[string][]string{"request-timeout": {"250"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"250"}},
 			want:              250 * time.Millisecond,
 		},
 		{
 			name:              "an empty option falls back to the default",
-			connectionOptions: map[string][]string{"request-timeout": {}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {}},
 			want:              defaultRequestTimeout,
 		},
 		{
 			name:              "the first of several values wins",
-			connectionOptions: map[string][]string{"request-timeout": {"250", "500"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"250", "500"}},
 			want:              250 * time.Millisecond,
 		},
 		{
 			name:              "a timeout which isn't a number",
-			connectionOptions: map[string][]string{"request-timeout": {"soon"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"soon"}},
 			wantErr:           true,
 		},
 		{
 			name:              "a timeout of zero would never wait",
-			connectionOptions: map[string][]string{"request-timeout": {"0"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"0"}},
 			wantErr:           true,
 		},
 		{
 			name:              "a negative timeout",
-			connectionOptions: map[string][]string{"request-timeout": {"-1"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"-1"}},
 			wantErr:           true,
 		},
 	}

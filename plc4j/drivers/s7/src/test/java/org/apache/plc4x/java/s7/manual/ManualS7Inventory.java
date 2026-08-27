@@ -126,7 +126,7 @@ public class ManualS7Inventory {
         }
         for (int slot : CANDIDATE_SLOTS) {
             // The rack/slot parameters belong to the COTP transport, hence the prefix.
-            String url = String.format("s7://%s?cotp.remote-slot=%d&read-timeout=%d",
+            String url = String.format("s7://%s?cotp.remote-slot=%d&read-timeout-ms=%d",
                 ipAddress, slot, READ_TIMEOUT_MS);
             // getConnection() hands back an already-connected connection — connecting again
             // would re-run the S7 handshake on a live session and fail.

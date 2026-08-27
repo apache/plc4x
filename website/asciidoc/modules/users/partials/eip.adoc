@@ -41,7 +41,7 @@
 *Since: 1.0.0*
 |`force-unconnected-operation` |BOOLEAN |false| |Forces the driver to use unconnected requests. +
 *Since: 0.13.0*
-|`request-timeout` |INT |10000| |Default timeout for all types of requests.
+|`request-timeout-ms` |INT |10000| |Default timeout for all types of requests.
 |`communication-path` |STRING | | |The communication path allows for connection routing across multiple backplanes. It uses a common format found in Logix controllers. +
 It consists of pairs of values, each pair begins with either 1 (Backplane) or 2 (Ethernet), followed by a slot in the case of a backplane address, or if using Ethernet an ip address. e.g. [1,4,2,192.168.0.1,1,1] - Routes to the 4th slot in the first rack, which is an Ethernet module, it then connects to the address 192.168.0.1, then finds the module in slot 1.
 5+|Transport config options:
@@ -49,10 +49,10 @@ It consists of pairs of values, each pair begins with either 1 (Backplane) or 2 
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout` |INT |5000| |
-|`tcp.read-timeout` |INT |0| |
-|`tcp.write-timeout` |INT |0| |
-|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.connect-timeout-ms` |INT |5000| |
+|`tcp.read-timeout-ms` |INT |0| |
+|`tcp.write-timeout-ms` |INT |0| |
+|`tcp.no-delay` |BOOLEAN |true| |
 |`tcp.keep-alive` |BOOLEAN |false| |
 |`tcp.send-buffer-size` |INT |81920| |
 |`tcp.receive-buffer-size` |INT |81920| |

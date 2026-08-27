@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 // Configuration is what a umas connection string can say about the connection. Ported from plc4j's
@@ -47,7 +48,7 @@ type Configuration struct {
 const (
 	// defaultUnitIdentifier is plc4j's @IntDefaultValue(0) for the unit-identifier option.
 	defaultUnitIdentifier = uint8(0)
-	// defaultRequestTimeout is plc4j's @IntDefaultValue(4000) for the request-timeout option.
+	// defaultRequestTimeout is plc4j's @IntDefaultValue(4000) for the request-timeout-ms option.
 	defaultRequestTimeout = 4000 * time.Millisecond
 	// defaultMaxFrameSize is plc4j's @IntDefaultValue(65535) for the max-frame-size option.
 	defaultMaxFrameSize = uint16(65535)
@@ -68,9 +69,14 @@ func DefaultConfiguration() Configuration {
 // ParseFromOptions reads the connection options out of a parsed connection string. The timeout is
 // spelled in milliseconds, the way plc4j's @IntDefaultValue(4000) does.
 func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLog, connectionOptions)
+	defer reader.ReportUnknown("umas")
+
 	configuration := DefaultConfiguration()
 
-	if unitIdentifierString := getFromOptions(localLog, connectionOptions, "unit-identifier"); unitIdentifierString != "" {
+	if unitIdentifierString := reader.Get("unit-identifier"); unitIdentifierString != "" {
 		parsedInt, err := strconv.ParseUint(unitIdentifierString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing unit-identifier %s (has to fit into a single byte)", unitIdentifierString)
@@ -78,18 +84,18 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 		configuration.unitIdentifier = uint8(parsedInt)
 	}
 
-	if requestTimeoutString := getFromOptions(localLog, connectionOptions, "request-timeout"); requestTimeoutString != "" {
+	if requestTimeoutString := reader.Get("request-timeout-ms"); requestTimeoutString != "" {
 		parsedInt, err := strconv.ParseUint(requestTimeoutString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout %s", requestTimeoutString)
+			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout-ms %s", requestTimeoutString)
 		}
 		if parsedInt == 0 {
-			return Configuration{}, errors.New("request-timeout must be greater than zero")
+			return Configuration{}, errors.New("request-timeout-ms must be greater than zero")
 		}
 		configuration.requestTimeout = time.Duration(parsedInt) * time.Millisecond
 	}
 
-	if maxFrameSizeString := getFromOptions(localLog, connectionOptions, "max-frame-size"); maxFrameSizeString != "" {
+	if maxFrameSizeString := reader.Get("max-frame-size"); maxFrameSizeString != "" {
 		parsedInt, err := strconv.ParseUint(maxFrameSizeString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-frame-size %s (has to fit into two bytes)", maxFrameSizeString)
@@ -106,18 +112,4 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 func (c Configuration) String() string {
 	return fmt.Sprintf("umas.Configuration{unitIdentifier: %d, requestTimeout: %s, maxFrameSize: %d}",
 		c.unitIdentifier, c.requestTimeout, c.maxFrameSize)
-}
-
-// getFromOptions plucks a single-valued option out of the parsed connection string.
-func getFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string, key string) string {
-	if optionValues, ok := connectionOptions[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Option must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

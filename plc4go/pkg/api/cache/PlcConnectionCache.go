@@ -33,6 +33,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -147,7 +148,7 @@ func (c *plcConnectionCache) onConnectionEvent(event connectionEvent) {
 			c.tracer.AddTrace("destroy-connection", errorEvent.getError().Error())
 		}
 		c.log.Debug().
-			Str("connectionString", connectionContainerInstance.connectionString).
+			Str("connectionString", spiOptions.RedactConnectionString(connectionContainerInstance.connectionString)).
 			Err(errorEvent.getError()).
 			Msg("Connection reported an error event")
 	}
@@ -179,7 +180,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 		if c.tracer != nil {
 			c.tracer.AddTrace("get-connection", "create new cached connection")
 		}
-		c.log.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
+		c.log.Debug().Str("connectionString", spiOptions.RedactConnectionString(connectionString)).Msg("Create new cached connection")
 		// Create a new connection container.
 		cc := newConnectionContainer(c.log, c.driverManager, connectionString)
 		cc.maxIdleTime = c.maxIdleTime
@@ -210,7 +211,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 	select {
 	case conn := <-connChan: // Wait till we get a lease.
 		c.log.Debug().
-			Str("connectionString", connectionString).
+			Str("connectionString", spiOptions.RedactConnectionString(connectionString)).
 			Stringer("conn", conn).
 			Msg("Successfully got lease to connection")
 		if c.tracer != nil {
@@ -238,7 +239,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 		if c.tracer != nil {
 			c.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 		}
-		c.log.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
+		c.log.Debug().Str("connectionString", spiOptions.RedactConnectionString(connectionString)).Msg("Timeout while waiting for connection.")
 		return nil, errors.New("timeout while waiting for connection")
 	}
 }

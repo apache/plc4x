@@ -150,7 +150,7 @@ func Test_CustomMessageHandling_passesNonTunnelingFramesOn(t *testing.T) {
 // tunneling ACK which used to be swallowed here: DefaultCodec.ReceiveWork skips the
 // expectations completely for a message the custom handler reports as handled, so a
 // swallowed ACK made every correlated tunneling-request (e.g. a group-address write) run
-// into its request-timeout.
+// into its request-timeout-ms.
 func Test_CustomMessageHandling_tunnelingResponseIsPassedOn(t *testing.T) {
 	codec, transportInstance, intercepted := newTestMessageCodec(t)
 

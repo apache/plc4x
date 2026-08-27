@@ -71,7 +71,7 @@ public class BatchConfiguration {
     /**
      * Watchdog bound for a single fetch cycle, in milliseconds. Null means "use the
      * default". This is not the request timeout — set that on the connection URL, e.g.
-     * {@code "opcua:tcp://host:4840?request-timeout=10000"}.
+     * {@code "opcua:tcp://host:4840?request-timeout-ms=10000"}.
      */
     @JsonProperty("fetchTimeoutMs")
     private Long fetchTimeoutMs;

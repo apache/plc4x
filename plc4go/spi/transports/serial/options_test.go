@@ -44,16 +44,16 @@ func TestParseSerialOptions(t *testing.T) {
 		{
 			name: "full happy path",
 			options: map[string][]string{
-				"baud-rate":       {"19200"},
-				"data-bits":       {"7"},
-				"stop-bits":       {"2"},
-				"parity":          {"even"},
-				"flow-control":    {"rts-cts"},
-				"dtr":             {"true"},
-				"rts":             {"true"},
-				"read-timeout":    {"250"},
-				"write-timeout":   {"0"},
-				"connect-timeout": {"5000"},
+				"baud-rate":          {"19200"},
+				"data-bits":          {"7"},
+				"stop-bits":          {"2"},
+				"parity":             {"even"},
+				"flow-control":       {"rts-cts"},
+				"dtr":                {"true"},
+				"rts":                {"true"},
+				"read-timeout-ms":    {"250"},
+				"write-timeout-ms":   {"0"},
+				"connect-timeout-ms": {"5000"},
 			},
 			want: serialConfig{
 				port: serialport.Config{
@@ -86,8 +86,8 @@ func TestParseSerialOptions(t *testing.T) {
 			}(),
 		},
 		{
-			name:    "read-timeout zero means blocking",
-			options: map[string][]string{"read-timeout": {"0"}},
+			name:    "read-timeout-ms zero means blocking",
+			options: map[string][]string{"read-timeout-ms": {"0"}},
 			want: func() serialConfig {
 				c := defaultSerialConfig()
 				c.readTimeout = 0
@@ -130,9 +130,9 @@ func TestParseSerialOptions(t *testing.T) {
 			wantErr: `"dtr"`,
 		},
 		{
-			name:    "invalid read-timeout",
-			options: map[string][]string{"read-timeout": {"-5"}},
-			wantErr: `"read-timeout"`,
+			name:    "invalid read-timeout-ms",
+			options: map[string][]string{"read-timeout-ms": {"-5"}},
+			wantErr: `"read-timeout-ms"`,
 		},
 		{
 			name:    "empty value slice ignored like absent option",

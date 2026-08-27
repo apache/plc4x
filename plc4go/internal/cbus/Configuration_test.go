@@ -171,35 +171,5 @@ func Test_createDefaultConfiguration(t *testing.T) {
 	}
 }
 
-func Test_getFromOptions(t *testing.T) {
-	type args struct {
-		options map[string][]string
-		key     string
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "key not found",
-			args: args{
-				options: map[string][]string{},
-				key:     "testKey",
-			},
-		},
-		{
-			name: "key found",
-			args: args{
-				options: map[string][]string{"testKey": {"asd", "asd"}},
-				key:     "testKey",
-			},
-			want: "asd", // note: multi keys not supported yet, so first one is returned
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, getFromOptions(testutils.ProduceTestingLogger(t), tt.args.options, tt.args.key), "getFromOptions(%v, %v)", tt.args.options, tt.args.key)
-		})
-	}
-}
+// The per-driver getFromOptions this used to cover is gone: every driver now reads options
+// through spi/options.OptionReader, and its behaviour is covered once, in OptionReader_test.go.

@@ -648,7 +648,7 @@ public class ModbusDockerIT {
     @DisplayName("TCP/TLS: Read holding registers")
     void testTcpTlsReadHoldingRegisters() throws Exception {
         try (var conn = new DefaultPlcDriverManager().getConnection(
-            String.format("modbus-tcp:tls://%s:%d?tls.verify-ssl=false", host, tlsPort))) {
+            String.format("modbus-tcp:tls://%s:%d?tls.verify=false", host, tlsPort))) {
             var resp = conn.readRequestBuilder()
                 .addTagAddress("bool", "holding-register:1:BOOL")
                 .addTagAddress("int", "holding-register:12:INT")
@@ -664,7 +664,7 @@ public class ModbusDockerIT {
     @DisplayName("TCP/TLS: Write and read-back")
     void testTcpTlsWriteReadBack() throws Exception {
         try (var conn = new DefaultPlcDriverManager().getConnection(
-            String.format("modbus-tcp:tls://%s:%d?tls.verify-ssl=false", host, tlsPort))) {
+            String.format("modbus-tcp:tls://%s:%d?tls.verify=false", host, tlsPort))) {
             conn.writeRequestBuilder().addTagAddress("value", "holding-register:170:INT", (short) -5555).build().execute().get();
             assertEquals(-5555, (int) conn.readRequestBuilder().addTagAddress("value", "holding-register:170:INT").build().execute().get().getShort("value"));
         }
@@ -674,7 +674,7 @@ public class ModbusDockerIT {
     @DisplayName("TCP/TLS: Read coils")
     void testTcpTlsReadCoils() throws Exception {
         try (var conn = new DefaultPlcDriverManager().getConnection(
-            String.format("modbus-tcp:tls://%s:%d?tls.verify-ssl=false", host, tlsPort))) {
+            String.format("modbus-tcp:tls://%s:%d?tls.verify=false", host, tlsPort))) {
             assertTrue(conn.readRequestBuilder().addTagAddress("value", "coil:1").build().execute().get().getBoolean("value"));
         }
     }
@@ -683,7 +683,7 @@ public class ModbusDockerIT {
     @DisplayName("TCP/TLS: Read discrete inputs")
     void testTcpTlsReadDiscreteInputs() throws Exception {
         try (var conn = new DefaultPlcDriverManager().getConnection(
-            String.format("modbus-tcp:tls://%s:%d?tls.verify-ssl=false", host, tlsPort))) {
+            String.format("modbus-tcp:tls://%s:%d?tls.verify=false", host, tlsPort))) {
             assertTrue(conn.readRequestBuilder().addTagAddress("value", "discrete-input:2").build().execute().get().getBoolean("value"));
         }
     }
@@ -692,7 +692,7 @@ public class ModbusDockerIT {
     @DisplayName("TCP/TLS: Read input registers")
     void testTcpTlsReadInputRegisters() throws Exception {
         try (var conn = new DefaultPlcDriverManager().getConnection(
-            String.format("modbus-tcp:tls://%s:%d?tls.verify-ssl=false", host, tlsPort))) {
+            String.format("modbus-tcp:tls://%s:%d?tls.verify=false", host, tlsPort))) {
             assertEquals(42424, (int) conn.readRequestBuilder().addTagAddress("value", "input-register:3:UINT").build().execute().get().getInteger("value"));
         }
     }

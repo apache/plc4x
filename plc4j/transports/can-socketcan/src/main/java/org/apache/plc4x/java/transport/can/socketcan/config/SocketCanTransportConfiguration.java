@@ -56,7 +56,7 @@ public class SocketCanTransportConfiguration extends CanTransportConfiguration {
     /**
      * Read timeout in milliseconds for blocking reads on the CAN socket.
      */
-    @ConfigurationParameter("read-timeout")
+    @ConfigurationParameter("read-timeout-ms")
     @Description("Read timeout in milliseconds for blocking reads on the CAN socket")
     @IntDefaultValue(1000)
     public int readTimeout = 1000;

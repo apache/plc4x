@@ -140,7 +140,7 @@ func TestTransportInstance_FallbackReadDeadlineBoundsSilentRead(t *testing.T) {
 	transport := NewTransport()
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"read-timeout": {"200"}},
+		map[string][]string{"read-timeout-ms": {"200"}},
 	)
 	require.NoError(t, err)
 	require.NoError(t, instance.Connect(context.Background()))
@@ -160,7 +160,7 @@ func TestTransportInstance_ExplicitCtxDeadlineBeatsFallback(t *testing.T) {
 	transport := NewTransport()
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"read-timeout": {"60000"}},
+		map[string][]string{"read-timeout-ms": {"60000"}},
 	)
 	require.NoError(t, err)
 	require.NoError(t, instance.Connect(context.Background()))

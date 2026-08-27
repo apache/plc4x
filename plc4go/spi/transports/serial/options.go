@@ -133,24 +133,24 @@ func parseSerialOptions(options map[string][]string) (serialConfig, error) {
 		}
 		cfg.rts = value
 	}
-	if raw, ok := firstValue(options, "read-timeout"); ok {
+	if raw, ok := firstValue(options, "read-timeout-ms"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("read-timeout", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("read-timeout-ms", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.readTimeout = time.Duration(millis) * time.Millisecond
 	}
-	if raw, ok := firstValue(options, "write-timeout"); ok {
+	if raw, ok := firstValue(options, "write-timeout-ms"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("write-timeout", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("write-timeout-ms", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.writeTimeout = time.Duration(millis) * time.Millisecond
 	}
-	if raw, ok := firstValue(options, "connect-timeout"); ok {
+	if raw, ok := firstValue(options, "connect-timeout-ms"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("connect-timeout", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("connect-timeout-ms", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.connectTimeout = uint32(millis)
 	}

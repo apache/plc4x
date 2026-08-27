@@ -22,11 +22,11 @@ package bacnetip
 import (
 	"reflect"
 	"strconv"
-	"strings"
 
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 // Configuration captures driver-level options parsed from the connection URL.
@@ -125,12 +125,17 @@ type Configuration struct {
 // are matched case-insensitively so users can write "localDeviceId", "LocalDeviceId",
 // or "localdeviceid" interchangeably in the connection string.
 func ParseFromOptions(log zerolog.Logger, optionsMap map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(log, optionsMap).CaseInsensitive()
+	defer reader.ReportUnknown("bacnet-ip")
+
 	configuration := createDefaultConfiguration()
 	rv := reflect.ValueOf(&configuration).Elem()
 	for i := 0; i < rv.NumField(); i++ {
 		field := rv.Type().Field(i)
 		key := field.Name
-		optionValue := getFromOptions(log, optionsMap, key)
+		optionValue := reader.Get(key)
 		if optionValue == "" {
 			continue
 		}
@@ -174,24 +179,4 @@ func createDefaultConfiguration() Configuration {
 		CovLifetimeSeconds:      600,
 		DiscoveryTimeoutSeconds: 5,
 	}
-}
-
-// getFromOptions returns the first value associated with key, matching the
-// optionsMap key case-insensitively (BACnet field names are CamelCase; users
-// commonly type lowercase in URLs).
-func getFromOptions(localLog zerolog.Logger, optionsMap map[string][]string, key string) string {
-	target := strings.ToLower(key)
-	for k, optionValues := range optionsMap {
-		if strings.ToLower(k) != target {
-			continue
-		}
-		if len(optionValues) == 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", k).Msg("Options key must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

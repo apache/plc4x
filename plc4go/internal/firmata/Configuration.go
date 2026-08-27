@@ -26,6 +26,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 // Configuration is what a firmata connection string can say about the connection as a whole.
@@ -39,7 +40,7 @@ type Configuration struct {
 }
 
 const (
-	// defaultRequestTimeout is plc4j's FirmataConfiguration request-timeout default of ten
+	// defaultRequestTimeout is plc4j's FirmataConfiguration request-timeout-ms default of ten
 	// seconds. A board that has just been reset needs a moment before it reports its firmware.
 	defaultRequestTimeout = 10 * time.Second
 )
@@ -54,32 +55,23 @@ func DefaultConfiguration() Configuration {
 // ParseFromOptions reads the connection options out of a parsed connection string. The timeout is
 // spelled in milliseconds, the way plc4j's @IntDefaultValue(10_000) does.
 func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLog, connectionOptions)
+	defer reader.ReportUnknown("firmata")
+
 	configuration := DefaultConfiguration()
 
-	if requestTimeoutString := getFromOptions(localLog, connectionOptions, "request-timeout"); requestTimeoutString != "" {
+	if requestTimeoutString := reader.Get("request-timeout-ms"); requestTimeoutString != "" {
 		parsedInt, err := strconv.ParseUint(requestTimeoutString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout %s", requestTimeoutString)
+			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout-ms %s", requestTimeoutString)
 		}
 		if parsedInt == 0 {
-			return Configuration{}, errors.New("request-timeout must be greater than zero")
+			return Configuration{}, errors.New("request-timeout-ms must be greater than zero")
 		}
 		configuration.requestTimeout = time.Duration(parsedInt) * time.Millisecond
 	}
 
 	return configuration, nil
-}
-
-// getFromOptions plucks a single-valued option out of the parsed connection string.
-func getFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string, key string) string {
-	if optionValues, ok := connectionOptions[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Option must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

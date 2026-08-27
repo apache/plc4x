@@ -51,20 +51,20 @@ public class S7Configuration implements Configuration {
     @Description("Skip controller-type detection and assume the given type.")
     protected ControllerType controllerType = ControllerType.ANY;
 
-    @ConfigurationParameter("read-timeout")
+    @ConfigurationParameter("read-timeout-ms")
     @IntDefaultValue(10000)
     @Description("Maximum waiting time (in milliseconds) for a single S7 request/response exchange.")
     protected int readTimeout = 10000;
 
-    @ConfigurationParameter("ha-heartbeat-interval")
+    @ConfigurationParameter("ha-heartbeat-interval-ms")
     @IntDefaultValue(4000)
     @Description("S7H dual-path only: interval between heartbeat ticks (in milliseconds). "
         + "Each tick pings each inner connection so a standby disruption is detected within "
-        + "interval + ha-failover-timeout. Lower values detect faster but generate more "
+        + "interval + ha-failover-timeout-ms. Lower values detect faster but generate more "
         + "background traffic. Default 4000 (4s).")
     protected int haHeartbeatInterval = 4000;
 
-    @ConfigurationParameter("ha-failover-timeout")
+    @ConfigurationParameter("ha-failover-timeout-ms")
     @IntDefaultValue(2000)
     @Description("S7H dual-path only: maximum time (in milliseconds) the wrapper waits for "
         + "an operation on the active inner before swapping to the alternate. The same value "

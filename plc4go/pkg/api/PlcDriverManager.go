@@ -30,6 +30,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -190,7 +191,7 @@ func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[str
 }
 
 func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString string) (PlcConnection, error) {
-	m.log.Debug().Str("connectionString", connectionString).Msg("Getting connection for connectionString")
+	m.log.Debug().Str("connectionString", spiOptions.RedactConnectionString(connectionString)).Msg("Getting connection for connectionString")
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {

@@ -47,7 +47,7 @@ public class UdpTransportConfiguration implements TransportConfiguration {
     /**
      * Socket read timeout in milliseconds. 0 means no timeout.
      */
-    @ConfigurationParameter( "read-timeout")
+    @ConfigurationParameter( "read-timeout-ms")
     @Description( "Socket read timeout in milliseconds. 0 means no timeout.")
     @IntDefaultValue(0)
     public int readTimeout;

@@ -46,7 +46,7 @@ class DriverBaseUnknownParameterTest {
 
     @Test
     void acceptsParametersTheDriverDeclares() {
-        assertEquals(List.of(), unknownIn("controller-type=S7_300&read-timeout=5000"));
+        assertEquals(List.of(), unknownIn("controller-type=S7_300&read-timeout-ms=5000"));
     }
 
     @Test
@@ -125,7 +125,7 @@ class DriverBaseUnknownParameterTest {
     }
 
     private static final Set<String> KNOWN = Set.of(
-        "controller-type", "read-timeout", "allow-unsupported-transport",
+        "controller-type", "read-timeout-ms", "allow-unsupported-transport",
         "cotp.remote-slot", "cotp.remote-rack", "cotp.local-tsap", "log.audit-log-file");
 
     /**
@@ -174,7 +174,7 @@ class DriverBaseUnknownParameterTest {
         @ConfigurationParameter("controller-type")
         protected String controllerType = "ANY";
 
-        @ConfigurationParameter("read-timeout")
+        @ConfigurationParameter("read-timeout-ms")
         protected int readTimeout = 10000;
 
         @ComplexConfigurationParameter(prefix = "encoding", defaultOverrides = {}, requiredOverrides = {})

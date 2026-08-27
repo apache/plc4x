@@ -50,12 +50,12 @@ func TestParseFromOptions(t *testing.T) {
 		},
 		{
 			name:              "both options",
-			connectionOptions: map[string][]string{"monitoring-timer": {"250"}, "request-timeout": {"1500"}},
+			connectionOptions: map[string][]string{"monitoring-timer": {"250"}, "request-timeout-ms": {"1500"}},
 			want:              Configuration{monitoringTimer: 250, requestTimeout: 1500 * time.Millisecond},
 		},
 		{
 			name:              "the request timeout is spelled in milliseconds",
-			connectionOptions: map[string][]string{"request-timeout": {"250"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"250"}},
 			want:              Configuration{monitoringTimer: defaultMonitoringTimer, requestTimeout: 250 * time.Millisecond},
 		},
 		{
@@ -84,12 +84,12 @@ func TestParseFromOptions(t *testing.T) {
 			// A zero timeout would time out every request immediately, which is never what anyone
 			// meant. plc4j rejects it at connect time.
 			name:              "a zero request timeout is refused",
-			connectionOptions: map[string][]string{"request-timeout": {"0"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"0"}},
 			wantErr:           true,
 		},
 		{
 			name:              "a non-numeric request timeout is refused",
-			connectionOptions: map[string][]string{"request-timeout": {"later"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"later"}},
 			wantErr:           true,
 		},
 		{

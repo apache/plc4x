@@ -58,6 +58,6 @@
 |`raw-socket.reuse-interface` |BOOLEAN |false| |Reuse the underlying network interface across multiple transport instances. When true, instances with the same interface and protocol will share a pcap handle. This is useful for protocols where multiple logical connections share one Ethernet type.
 |`raw-socket.bpf-filter` |STRING | | |BPF (Berkeley Packet Filter) expression to filter packets.
 |`raw-socket.max-frame-size` |INT |1500| |Maximum frame size (MTU) in bytes.
-|`raw-socket.read-timeout` |INT |0| |Read timeout for blocking reads in milliseconds.
+|`raw-socket.read-timeout-ms` |INT |0| |Read timeout for blocking reads in milliseconds.
 |`raw-socket.include-ethernet-header` |BOOLEAN |false| |Deliver full Ethernet frames to the driver and accept raw Ethernet frames on send. Required for L2 protocols that build their own Ethernet headers.
 |===

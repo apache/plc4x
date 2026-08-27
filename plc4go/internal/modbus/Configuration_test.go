@@ -77,7 +77,7 @@ func TestParseFromOptions_pingAddress(t *testing.T) {
 
 // The request timeout is stated in milliseconds, as it is in plc4j.
 func TestParseFromOptions_requestTimeout(t *testing.T) {
-	configuration := parseConfiguration(t, map[string][]string{"request-timeout": {"250"}})
+	configuration := parseConfiguration(t, map[string][]string{"request-timeout-ms": {"250"}})
 	assert.Equal(t, 250*time.Millisecond, configuration.requestTimeout)
 }
 
@@ -92,8 +92,8 @@ func TestParseFromOptions_rejectsBadValues(t *testing.T) {
 		{"unit identifier that isn't a number", map[string][]string{"default-unit-identifier": {"nope"}}},
 		{"unknown byte order", map[string][]string{"default-payload-byte-order": {"MIDDLE_ENDIAN"}}},
 		{"unparsable ping address", map[string][]string{"ping-address": {"this is not an address"}}},
-		{"request timeout that isn't a number", map[string][]string{"request-timeout": {"soon"}}},
-		{"request timeout of zero", map[string][]string{"request-timeout": {"0"}}},
+		{"request timeout that isn't a number", map[string][]string{"request-timeout-ms": {"soon"}}},
+		{"request timeout of zero", map[string][]string{"request-timeout-ms": {"0"}}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			_, err := ParseFromOptions(zerolog.Nop(), test.connectionOptions)

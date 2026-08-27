@@ -56,7 +56,7 @@ public class EIPConfiguration implements Configuration {
     @Since("0.13.0")
     private boolean forceUnconnectedOperation = false;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(10_000)
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;

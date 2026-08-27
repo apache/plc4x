@@ -108,8 +108,6 @@ func TestCreateDefaultConfiguration(t *testing.T) {
 	assert.Equal(t, uint32(5), cfg.DiscoveryTimeoutSeconds)
 }
 
-func TestGetFromOptions(t *testing.T) {
-	log := testutils.ProduceTestingLogger(t)
-	assert.Empty(t, getFromOptions(log, map[string][]string{}, "missing"))
-	assert.Equal(t, "first", getFromOptions(log, map[string][]string{"present": {"first", "second"}}, "present"))
-}
+// The per-driver getFromOptions this used to cover is gone: every driver now reads options
+// through spi/options.OptionReader, so the same behaviour - an absent option is empty, a repeated
+// one yields the first value and warns - is covered once, in OptionReader_test.go.

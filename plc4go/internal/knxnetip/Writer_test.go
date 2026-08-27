@@ -216,7 +216,7 @@ func Test_Writer_Write_largeDatapointType(t *testing.T) {
 // Test_Writer_Write_timeout is the regression test for the write which never completed its
 // result channel: a silent gateway has to end up as a REQUEST_TIMEOUT response code.
 func Test_Writer_Write_timeout(t *testing.T) {
-	connection, codec := newWriterConnection(t, map[string][]string{"request-timeout": {"100"}},
+	connection, codec := newWriterConnection(t, map[string][]string{"request-timeout-ms": {"100"}},
 		func(*writerCodec, spi.Message, spi.HandleMessage, spi.HandleError) error {
 			// The gateway swallows the request without ever answering.
 			return nil
@@ -416,7 +416,7 @@ func Test_Writer_Write_ignoresForeignConfirmations(t *testing.T) {
 			"a confirmation of somebody else's frame must not be accepted")
 		return nil
 	}
-	connection, _ := newWriterConnection(t, map[string][]string{"request-timeout": {"200"}}, foreignConfirmation)
+	connection, _ := newWriterConnection(t, map[string][]string{"request-timeout-ms": {"200"}}, foreignConfirmation)
 
 	writeRequestBuilder := connection.WriteRequestBuilder()
 	writeRequestBuilder.AddTagAddress("switch", "1/2/3:DPT_Switch", true)

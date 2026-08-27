@@ -40,9 +40,9 @@
 |`max-amq-caller` |INT |8| |Maximum number of unconfirmed requests the PLC will accept in parallel.
 |`max-amq-callee` |INT |8| |Maximum number of unconfirmed responses or requests PLC4X will accept in parallel.
 |`controller-type` |STRING |ANY| |Skip controller-type detection and assume the given type.
-|`read-timeout` |INT |10000| |Maximum waiting time (in milliseconds) for a single S7 request/response exchange.
-|`ha-heartbeat-interval` |INT |4000| |S7H dual-path only: interval between heartbeat ticks (in milliseconds). Each tick pings each inner connection so a standby disruption is detected within interval + ha-failover-timeout. Lower values detect faster but generate more background traffic. Default 4000 (4s).
-|`ha-failover-timeout` |INT |2000| |S7H dual-path only: maximum time (in milliseconds) the wrapper waits for an operation on the active inner before swapping to the alternate. The same value is used as the per-tick ping timeout in the heartbeat. Lower values fail over faster but risk swapping on transient slow responses. Default 2000 (2s).
+|`read-timeout-ms` |INT |10000| |Maximum waiting time (in milliseconds) for a single S7 request/response exchange.
+|`ha-heartbeat-interval-ms` |INT |4000| |S7H dual-path only: interval between heartbeat ticks (in milliseconds). Each tick pings each inner connection so a standby disruption is detected within interval + ha-failover-timeout-ms. Lower values detect faster but generate more background traffic. Default 4000 (4s).
+|`ha-failover-timeout-ms` |INT |2000| |S7H dual-path only: maximum time (in milliseconds) the wrapper waits for an operation on the active inner before swapping to the alternate. The same value is used as the per-tick ping timeout in the heartbeat. Lower values fail over faster but risk swapping on transient slow responses. Default 2000 (2s).
 5+|Transport config options:
 5+|
 +++
@@ -56,13 +56,13 @@
 |`cotp.remote-device-group` |STRING |PG_OR_PC| |Remote Device Group.
 |`cotp.local-tsap` |INT |0| |Local TSAP (Transport Service Access Point) identifier.
 |`cotp.remote-tsap` |INT |0| |Remote TSAP (Transport Service Access Point) identifier.
-|`cotp.cotp-tpdu-size` |INT |8192| |COTP PDU size for data transmission. Valid values: 128, 256, 512, 1024, 2048, 4096, 8192.
-|`cotp.cotp-connection-timeout` |INT |5000| |Connection timeout for COTP handshake in milliseconds.
+|`cotp.tpdu-size` |INT |8192| |COTP PDU size for data transmission. Valid values: 128, 256, 512, 1024, 2048, 4096, 8192.
+|`cotp.handshake-timeout-ms` |INT |5000| |Connection timeout for COTP handshake in milliseconds.
 |`cotp.protocol-class` |INT |0| |COTP protocol class to use. Class 0 is most commonly used (simple class, no flow control).
-|`cotp.connect-timeout` |INT |5000| |
-|`cotp.read-timeout` |INT |0| |
-|`cotp.write-timeout` |INT |0| |
-|`cotp.tcp-no-delay` |BOOLEAN |true| |
+|`cotp.connect-timeout-ms` |INT |5000| |
+|`cotp.read-timeout-ms` |INT |0| |
+|`cotp.write-timeout-ms` |INT |0| |
+|`cotp.no-delay` |BOOLEAN |true| |
 |`cotp.keep-alive` |BOOLEAN |false| |
 |`cotp.send-buffer-size` |INT |81920| |
 |`cotp.receive-buffer-size` |INT |81920| |

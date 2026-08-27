@@ -45,12 +45,14 @@ type Configuration struct {
 	SenderCertificate []byte
 	Discovery         bool
 	Username          string
-	Password          string
-	SecurityPolicy    string
-	KeyStoreFile      string
-	CertDirectory     string
-	KeyStorePassword  string
-	Ckp               *CertificateKeyPair
+	// The credentials below render as <redacted>, never as their values - see the generator's
+	// secret tag. Username is not marked: it says who is connecting, which is a diagnostic.
+	Password         string `secret:"true"`
+	SecurityPolicy   string
+	KeyStoreFile     string
+	CertDirectory    string
+	KeyStorePassword string `secret:"true"`
+	Ckp              *CertificateKeyPair
 	// AllowUnverifiedSecurityPolicies is an explicit opt-in for security policies other than "None".
 	// The plc4go OPC UA secure-channel implementation does not verify server certificates or message
 	// signatures yet, so any other policy is refused unless this is set to true.
@@ -65,7 +67,7 @@ type Configuration struct {
 var transportLevelOptionKeys = map[string]struct{}{
 	"defaulttcpport":       {},
 	"defaultudpport":       {},
-	"connect-timeout":      {},
+	"connect-timeout-ms":   {},
 	"so-reuse":             {},
 	"transport-type":       {},
 	"transport-port-range": {},
@@ -94,9 +96,19 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 			if _, isTransportOption := transportLevelOptionKeys[strings.ToLower(optionKey)]; isTransportOption {
 				continue
 			}
-			// Fail on unknown options instead of silently ignoring them: a typo in a
-			// security-relevant option must not silently fall back to defaults.
-			return Configuration{}, errors.Errorf("unknown option %s", optionKey)
+			// Warn rather than fail, matching plc4j, which reports an unknown parameter and
+			// carries on for every driver. This driver used to be the only one anywhere in
+			// PLC4X that refused the connection, which meant one connection string was
+			// accepted by plc4j and rejected here.
+			//
+			// The reason it refused is still real and is now carried by the warning instead:
+			// a typo in a security-relevant option (securityPolicy, allowUnverified...) falls
+			// back to a default, and the operator has to see that it did. An unread option is
+			// reported by name, so it is visible - but it no longer stops the connection.
+			log.Warn().
+				Str("option", optionKey).
+				Msg("Connection string option is not known to the opcua driver and is ignored")
+			continue
 		}
 		optionValue := getFromOptions(log, options, optionKey)
 		if optionValue == "" {

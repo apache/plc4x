@@ -450,7 +450,11 @@ func (g *Generator) generate(typeName string) {
 			case "bool":
 				g.Printf(indent(indentTimes, boolFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "string":
-				g.Printf(indent(indentTimes, stringFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
+				if field.isSecret {
+					g.Printf(indent(indentTimes, secretFieldSerialize), fieldNameUntitled)
+				} else {
+					g.Printf(indent(indentTimes, stringFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
+				}
 			case "error":
 				g.Printf(indent(indentTimes, errorFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			default:
@@ -604,6 +608,7 @@ type Field struct {
 	fieldType       ast.Expr
 	isDelegate      bool
 	isStringer      bool
+	isSecret        bool
 	asPtr           bool
 	directSerialize bool
 	hasLocker       string
@@ -662,6 +667,13 @@ func (f *File) genDecl(node ast.Node) bool {
 			if field.Tag != nil && field.Tag.Value == "`directSerialize:\"true\"`" { // TODO: Check if we do that a bit smarter
 				directSerialize = true
 			}
+			// A field carrying a credential renders as <redacted>, never as its value. This is
+			// the Go counterpart of plc4j's @Secret: the marking sits on the declaration, so it
+			// cannot drift the way a list of secret-looking names in another package would.
+			isSecret := false
+			if field.Tag != nil && field.Tag.Value == "`secret:\"true\"`" {
+				isSecret = true
+			}
 			if len(field.Names) == 0 {
 				if *verbose {
 					fmt.Printf("\t adding delegate\n")
@@ -672,6 +684,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft,
 						isDelegate: true,
 						isStringer: isStringer,
+						isSecret:   isSecret,
 						asPtr:      asPtr,
 						hasLocker:  hasLocker,
 					})
@@ -683,6 +696,7 @@ func (f *File) genDecl(node ast.Node) bool {
 							fieldType:  set,
 							isDelegate: true,
 							isStringer: isStringer,
+							isSecret:   isSecret,
 							asPtr:      asPtr,
 							hasLocker:  hasLocker,
 						})
@@ -692,6 +706,7 @@ func (f *File) genDecl(node ast.Node) bool {
 							fieldType:  set.Sel,
 							isDelegate: true,
 							isStringer: isStringer,
+							isSecret:   isSecret,
 							asPtr:      asPtr,
 							hasLocker:  hasLocker,
 						})
@@ -704,6 +719,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft.Sel,
 						isDelegate: true,
 						isStringer: isStringer,
+						isSecret:   isSecret,
 						asPtr:      asPtr,
 						hasLocker:  hasLocker,
 					})
@@ -719,6 +735,7 @@ func (f *File) genDecl(node ast.Node) bool {
 				name:            field.Names[0].Name,
 				fieldType:       field.Type,
 				isStringer:      isStringer,
+				isSecret:        isSecret,
 				asPtr:           asPtr,
 				directSerialize: directSerialize,
 				hasLocker:       hasLocker,
@@ -845,6 +862,14 @@ var uint64FieldSerialize = `
 
 var boolFieldSerialize = `
 	if err := writeBuffer.WriteBit(%[2]s, %[1]s); err != nil {
+		return err
+	}
+`
+
+// secretFieldSerialize renders a marked field's placeholder rather than its value. The field is
+// still named, so a reader can see that a credential is configured without learning what it is.
+var secretFieldSerialize = `
+	if err := writeBuffer.WriteString(%[1]s, uint32(len("<redacted>")*8), "<redacted>", utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 `

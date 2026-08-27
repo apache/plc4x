@@ -46,7 +46,7 @@ class ChannelLifetimeTest {
 
     private static final long REQUESTED = 3_600_000L;
 
-    /** The shipped default of {@code min-channel-lifetime}. */
+    /** The shipped default of {@code min-channel-lifetime-ms}. */
     private static final long MIN = 5_000L;
 
     /**
@@ -82,7 +82,7 @@ class ChannelLifetimeTest {
 
     /**
      * The floor must not override the operator. Someone who deliberately configures a short
-     * {@code channel-lifetime} gets it - the reconciliation only ever declines to go below what was
+     * {@code channel-lifetime-ms} gets it - the reconciliation only ever declines to go below what was
      * asked for, never above it.
      */
     @Test
@@ -152,7 +152,7 @@ class ChannelLifetimeTest {
      * the default is pinned here rather than assumed.
      */
     @Test
-    @DisplayName("min-channel-lifetime defaults to 5000 ms")
+    @DisplayName("min-channel-lifetime-ms defaults to 5000 ms")
     void minimumChannelLifetimeDefaultResolves() throws Exception {
         OpcuaConfiguration defaults =
             new ConfigurationFactory().createConfiguration(OpcuaConfiguration.class, "");
@@ -162,10 +162,10 @@ class ChannelLifetimeTest {
     }
 
     @Test
-    @DisplayName("min-channel-lifetime can be lowered from the connection string")
+    @DisplayName("min-channel-lifetime-ms can be lowered from the connection string")
     void minimumChannelLifetimeCanBeLowered() throws Exception {
         OpcuaConfiguration lowered = new ConfigurationFactory()
-            .createConfiguration(OpcuaConfiguration.class, "min-channel-lifetime=250");
+            .createConfiguration(OpcuaConfiguration.class, "min-channel-lifetime-ms=250");
 
         assertEquals(250L, lowered.getMinChannelLifetime());
     }

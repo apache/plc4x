@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 // Configuration is what a modbus connection string can say about the connection as a whole. Ported
@@ -64,7 +65,7 @@ const (
 	defaultUnitIdentifier = uint8(1)
 	// defaultPingAddress reads the first holding register, as plc4j's ModbusTcpConfiguration does.
 	defaultPingAddress = "4x00001:BOOL"
-	// defaultRequestTimeout is plc4j's request-timeout default of five seconds.
+	// defaultRequestTimeout is plc4j's request-timeout-ms default of five seconds.
 	defaultRequestTimeout = 5 * time.Second
 )
 
@@ -80,12 +81,17 @@ func DefaultConfiguration() Configuration {
 
 // ParseFromOptions reads the connection options out of a parsed connection string.
 func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLog, connectionOptions)
+	defer reader.ReportUnknown("modbus")
+
 	configuration := DefaultConfiguration()
 
 	// plc4j spells the option default-unit-identifier; the Go driver has always called it
 	// unit-identifier, so both are accepted and the plc4j spelling wins when somebody sets both.
-	unitIdentifierString := getFromOptions(localLog, connectionOptions, "unit-identifier")
-	if defaultUnitIdentifierString := getFromOptions(localLog, connectionOptions, "default-unit-identifier"); defaultUnitIdentifierString != "" {
+	unitIdentifierString := reader.Get("unit-identifier")
+	if defaultUnitIdentifierString := reader.Get("default-unit-identifier"); defaultUnitIdentifierString != "" {
 		unitIdentifierString = defaultUnitIdentifierString
 	}
 	if unitIdentifierString != "" {
@@ -96,7 +102,7 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 		configuration.unitIdentifier = uint8(parsedUint)
 	}
 
-	if byteOrderString := getFromOptions(localLog, connectionOptions, "default-payload-byte-order"); byteOrderString != "" {
+	if byteOrderString := reader.Get("default-payload-byte-order"); byteOrderString != "" {
 		byteOrder, ok := ByteOrderByName(byteOrderString)
 		if !ok {
 			return Configuration{}, errors.Errorf("Unknown default-payload-byte-order %s", byteOrderString)
@@ -104,7 +110,7 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 		configuration.defaultPayloadByteOrder = byteOrder
 	}
 
-	if pingAddress := getFromOptions(localLog, connectionOptions, "ping-address"); pingAddress != "" {
+	if pingAddress := reader.Get("ping-address"); pingAddress != "" {
 		if _, err := NewTagHandler().ParseTag(pingAddress); err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing ping-address %s", pingAddress)
 		}
@@ -112,31 +118,18 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 	}
 
 	// plc4j states the request timeout in milliseconds.
-	if requestTimeoutString := getFromOptions(localLog, connectionOptions, "request-timeout"); requestTimeoutString != "" {
+	if requestTimeoutString := reader.Get("request-timeout-ms"); requestTimeoutString != "" {
 		parsedUint, err := strconv.ParseUint(requestTimeoutString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout %s", requestTimeoutString)
+			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout-ms %s", requestTimeoutString)
 		}
 		if parsedUint == 0 {
-			return Configuration{}, errors.Errorf("request-timeout must be greater than zero. Was %s", requestTimeoutString)
+			return Configuration{}, errors.Errorf("request-timeout-ms must be greater than zero. Was %s", requestTimeoutString)
 		}
 		configuration.requestTimeout = time.Duration(parsedUint) * time.Millisecond
 	}
 
 	return configuration, nil
-}
-
-func getFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string, key string) string {
-	if optionValues, ok := connectionOptions[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Option must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }
 
 // withRequestTimeout bounds a single request. The codec turns the deadline of the context it is
