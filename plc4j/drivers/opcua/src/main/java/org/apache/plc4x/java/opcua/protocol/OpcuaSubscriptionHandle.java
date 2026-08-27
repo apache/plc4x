@@ -92,6 +92,18 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
      *                         cadence and its timeouts are derived from this one
      */
     public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
+                                   Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId,
+                                   long cycleTime, long revisedCycleTime) {
+        this(plcSubscriber, conversation, subscriptionRequest, subscriptionId, cycleTime, revisedCycleTime, 1L);
+    }
+
+    /**
+     * @param cycleTime        the publishing interval that was requested
+     * @param revisedCycleTime the publishing interval the server granted; the publish request
+     *                         cadence and its timeouts are derived from this one
+     * @param queueSize        server-side queue depth per change-of-state monitored item
+     */
+    public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
         Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId,
         long cycleTime, long revisedCycleTime, long queueSize) {
         this.consumers = new HashSet<>();
