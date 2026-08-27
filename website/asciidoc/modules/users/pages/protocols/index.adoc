@@ -42,7 +42,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |BACnet/IP
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
@@ -91,7 +91,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |EtherNet/IP - Logix
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
@@ -126,7 +126,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |OPC-UA
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
@@ -193,7 +193,9 @@ implementation's driver manager - a protocol specification on its own is not eno
 Notes on the partially implemented drivers:
 
 * *AB-Ethernet* reads and offers polled subscriptions in both Java and Go; neither writes.
-* *BACnet/IP* passively receives broadcast traffic and exposes it as subscriptions. It does not read or write properties.
+* *BACnet/IP* (Java) passively receives broadcast traffic and exposes it as subscriptions; it does
+not read or write properties. The Go driver is the complete one: it reads and writes properties,
+discovers devices and subscribes to COV notifications.
 * *CAN (raw)* (Java) writes and subscribes; there is no read support.
 * *CBus* (Java) is a skeleton that connects but implements no operations. The Go driver is the complete one.
 * *ctrlX* (Java) answers pings; that is the only operation it completes. Discovery is offered by
@@ -208,6 +210,10 @@ RTU sends unsolicited ASDUs once the session is started, so there is nothing to 
 driver keeps the IEC quality descriptors alongside each value, so a reading the RTU marked invalid,
 blocked, substituted or not-topical does not arrive looking like a good one.
 * *KNXnet/IP* (C#) is the only driver in plc4net and has not kept pace with the other implementations.
+* *OPC-UA* (Go) reads, writes and subscribes over an unencrypted channel, but that is where it ends:
+only `securityPolicy=None` actually works, browsing is not implemented, and messages are not
+chunked, so a request or response larger than a single chunk fails. The Java driver implements the
+six security policies, browsing and chunking.
 * *Open-Protocol* (Java) is a skeleton that connects but implements no operations.
 * *Profinet* (Java) discovers devices and browses the submodules of a connected device; neither of
 the two Java drivers has read or write support. Only the newer `profinet-ng` driver is part of
