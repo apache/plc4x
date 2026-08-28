@@ -129,7 +129,7 @@
     <commons-csv.version>1.14.1</commons-csv.version>
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.5.1</equalsverifier.version>
-    <freemarker.version>2.3.34</freemarker.version>
+    <freemarker.version>2.3.35</freemarker.version>
     <groovy.version>5.1.1</groovy.version>
     <guava.version>33.7.1-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
