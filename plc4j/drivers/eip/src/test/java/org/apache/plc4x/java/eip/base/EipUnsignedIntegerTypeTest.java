@@ -99,7 +99,7 @@ class EipUnsignedIntegerTypeTest {
 
     @Test
     void arrayOfUdintsIsFullyDecoded() {
-        EipTag tag = EipTag.of("%N40[0]:UDINT:3");
+        EipTag tag = EipTag.of("%N40[0..2]:UDINT");
         assertEquals(3, tag.getElementNb());
 
         byte[] raw = bytes(12, b -> {
@@ -123,7 +123,7 @@ class EipUnsignedIntegerTypeTest {
             b.putLong(0xFFFFFFFFFFFFFFFFL);
         });
         PlcValue value = EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:ULINT:2"), raw, CIPDataTypeCode.ULINT);
+            EipTag.of("%N40[0..1]:ULINT"), raw, CIPDataTypeCode.ULINT);
 
         assertEquals(2, value.getLength());
         assertEquals(BigInteger.ONE, value.getIndex(0).getBigInteger());
@@ -133,13 +133,13 @@ class EipUnsignedIntegerTypeTest {
     @Test
     void arrayOfUsintsAndUintsIsFullyDecoded() {
         PlcValue usints = EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:USINT:3"), new byte[]{0x01, (byte) 0x80, (byte) 0xFF}, CIPDataTypeCode.USINT);
+            EipTag.of("%N40[0..2]:USINT"), new byte[]{0x01, (byte) 0x80, (byte) 0xFF}, CIPDataTypeCode.USINT);
         assertEquals(3, usints.getLength());
         assertEquals(128L, usints.getIndex(1).getLong());
         assertEquals(255L, usints.getIndex(2).getLong());
 
         PlcValue uints = EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:UINT:2"),
+            EipTag.of("%N40[0..1]:UINT"),
             bytes(4, b -> {
                 b.putShort((short) 0x8000);
                 b.putShort((short) 0xFFFF);
@@ -153,9 +153,9 @@ class EipUnsignedIntegerTypeTest {
     @Test
     void shortReplyIsReportedInsteadOfThrowing() {
         assertNull(EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:UDINT:8"), bytes(4, b -> b.putInt(1)), CIPDataTypeCode.UDINT));
+            EipTag.of("%N40[0..7]:UDINT"), bytes(4, b -> b.putInt(1)), CIPDataTypeCode.UDINT));
         assertNull(EipTcpConnection.parsePlcValue(
-            EipTag.of("%N40[0]:ULINT:4"), bytes(8, b -> b.putLong(1)), CIPDataTypeCode.ULINT));
+            EipTag.of("%N40[0..3]:ULINT"), bytes(8, b -> b.putLong(1)), CIPDataTypeCode.ULINT));
     }
 
     // --- writes ---

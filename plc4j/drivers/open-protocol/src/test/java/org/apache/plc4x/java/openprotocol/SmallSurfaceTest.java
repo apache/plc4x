@@ -37,19 +37,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class SmallSurfaceTest {
 
     @Test
-    void tagOfIsCurrentlyAPlaceholder() {
+    void tagOfSaysThereIsNoTagAddressingYet() {
         // Marker behaviour — kept here so anyone replacing this stub knows to
         // also remove this test (or replace it with a real parsing assertion).
-        assertThat(OpenProtocolTag.of("any")).isNull();
+        // It used to return null, which the driver's prepareTag() handed to the caller as
+        // though it were a tag; the failure then surfaced later as a NullPointerException,
+        // somewhere with nothing left to say about the address that caused it.
+        assertThatThrownBy(() -> OpenProtocolTag.of("any"))
+            .isInstanceOf(PlcInvalidTagException.class)
+            .hasMessageContaining("any");
     }
 
     @Test
     void tagDelegatesArrayInfoAndValueTypeToPlcTagDefaults() {
         OpenProtocolTag tag = new OpenProtocolTag();
         // Defaults from PlcTag — non-null collections and a default value type.
-        assertThat(tag.getAddressString()).isNull();
         assertThat(tag.getArrayInfo()).isNotNull();
         assertThat(tag.getPlcValueType()).isNotNull();
+        // But there is no address to render, and saying so beats reporting a blank one.
+        assertThatThrownBy(tag::getAddressString)
+            .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test

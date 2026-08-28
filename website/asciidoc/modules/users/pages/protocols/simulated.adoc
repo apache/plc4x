@@ -23,6 +23,13 @@
 
 == Connection String Options
 
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
+
 include::partial$simulated.adoc[]
 
 [cols="2,2a,5a"]

@@ -41,30 +41,30 @@ public class SimulatedTagBoundTest {
     @Test
     void aCountWhoseSizeWouldNotFitAnIntIsRefused() {
         // 400000000 LREALs is 3.2e9 bytes, which as an int is negative.
-        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo:LREAL[400000000]"));
+        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo[0..399999999]:LREAL"));
     }
 
     @Test
     void aCountThatWouldBeMerelyEnormousIsAlsoRefused() {
-        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo:LREAL[300000000]"));
+        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo[0..299999999]:LREAL"));
     }
 
     @Test
     void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
-        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo:LREAL[99999999999]"));
+        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo[0..99999999998]:LREAL"));
     }
 
     @Test
     void aWiderElementLeavesRoomForFewerOfThem() {
         // The budget is in bytes, so the same count passes as a byte and fails as an eight-byte
         // double: 4194304 of them is 32MiB, past the budget, while as SINT it is 4MiB.
-        assertEquals(4194304, elementsOf("RANDOM/foo:SINT[4194304]"));
-        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo:LREAL[4194304]"));
+        assertEquals(4194304, elementsOf("RANDOM/foo[0..4194303]:SINT"));
+        assertThrows(PlcInvalidTagException.class, () -> SimulatedTag.of("RANDOM/foo[0..4194303]:LREAL"));
     }
 
     @Test
     void aPlausibleCountStillParses() {
-        assertEquals(16, elementsOf("RANDOM/foo:LREAL[16]"));
+        assertEquals(16, elementsOf("RANDOM/foo[0..15]:LREAL"));
     }
 
     @Test

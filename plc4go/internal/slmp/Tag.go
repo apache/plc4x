@@ -72,16 +72,26 @@ type plcTag struct {
 	DeviceNumber uint32
 	DataType     DataType
 	Quantity     uint16
+	// ExplicitRange records whether the address wrote the selection as a range. A one-element
+	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
+	ExplicitRange bool
 }
 
 var _ PlcTag = plcTag{}
 
 func NewTag(deviceCode readWriteModel.SlmpDeviceCode, deviceNumber uint32, dataType DataType, quantity uint16) PlcTag {
+	return NewTagWithShape(deviceCode, deviceNumber, dataType, quantity, quantity > 1)
+}
+
+// NewTagWithShape is NewTag plus what the address said about its shape: a range is an array even
+// when it spans one element, which the quantity alone cannot carry.
+func NewTagWithShape(deviceCode readWriteModel.SlmpDeviceCode, deviceNumber uint32, dataType DataType, quantity uint16, explicitRange bool) PlcTag {
 	return plcTag{
-		DeviceCode:   deviceCode,
-		DeviceNumber: deviceNumber,
-		DataType:     dataType,
-		Quantity:     quantity,
+		ExplicitRange: explicitRange,
+		DeviceCode:    deviceCode,
+		DeviceNumber:  deviceNumber,
+		DataType:      dataType,
+		Quantity:      quantity,
 	}
 }
 
@@ -133,24 +143,28 @@ func (m plcTag) GetAddressString() string {
 	// Unlike plc4j's SlmpTag.getAddressString, the data type is always spelled out. plc4j omits it
 	// for a WORD tag of quantity one and spells it for every other tag, which round-trips too, but
 	// an address that always names its type is the one a reader of a log line can act on.
-	return fmt.Sprintf("%s%s:%s[%d]", m.DeviceCode, address, m.DataType, m.Quantity)
+	return fmt.Sprintf("%s%s%s:%s", m.DeviceCode, address,
+		spiModel.RenderArrayExpression(m.GetArrayInfo()), m.DataType)
 }
 
 func (m plcTag) GetValueType() apiValues.PlcValueType {
 	return m.DataType.GetValueType()
 }
 
-// GetArrayInfo reports the number of elements as a half-open range [0, Quantity).
+// GetArrayInfo reports the shape of the value the caller receives, as an inclusive range: a
+// quantity of 5 yields [0..4], the same as plc4j.
 //
-// plc4j's SlmpTag returns an inclusive upper bound (quantity - 1); the Go SPI uses the opposite
-// convention - spiModel.DefaultArrayInfo.GetSize is UpperBound - LowerBound - so a quantity of 5
-// yields [0, 5) here and not [0, 4].
+// The indices are relative to what the caller receives, not to what was written: an SLMP address
+// is a device number, so the driver folds the start of the selection into it when it resolves
+// the address.
 func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.Quantity != 1 {
+	// The flag decides the shape; the count only sizes it.
+	if m.ExplicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(m.Quantity),
+				UpperBound: uint32(m.Quantity) - 1,
+				Range:      true,
 			},
 		}
 	}

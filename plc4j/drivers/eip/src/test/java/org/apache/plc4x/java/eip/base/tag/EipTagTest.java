@@ -27,10 +27,10 @@ public class EipTagTest {
 
     @Test
     public void testTagParse() {
-        EipTag eipTag = EipTag.of("%A0:2");
+        EipTag eipTag = EipTag.of("%A0[0..1]");
 
         Assertions.assertNotNull(eipTag);
-        Assertions.assertEquals(eipTag.getTag(), "%A0");
+        Assertions.assertEquals("%A0[0..1]", eipTag.getTag());
         Assertions.assertEquals(eipTag.getType(), CIPDataTypeCode.DINT);
         Assertions.assertEquals(eipTag.getElementNb(), 2);
     }
@@ -44,9 +44,9 @@ public class EipTagTest {
     public void testDocumentedAddressForms() {
         assertTag("myTag", "myTag", CIPDataTypeCode.DINT, 1);
         assertTag("myTag:REAL", "myTag", CIPDataTypeCode.REAL, 1);
-        assertTag("myTag:4", "myTag", CIPDataTypeCode.DINT, 4);
+        assertTag("myTag[0..3]", "myTag[0..3]", CIPDataTypeCode.DINT, 4);
         assertTag("myArray[3]:DINT", "myArray[3]", CIPDataTypeCode.DINT, 1);
-        assertTag("myArray[0]:DINT:4", "myArray[0]", CIPDataTypeCode.DINT, 4);
+        assertTag("myArray[0..3]:DINT", "myArray[0..3]", CIPDataTypeCode.DINT, 4);
         // The '%' prefix is optional.
         assertTag("%myTag:REAL", "%myTag", CIPDataTypeCode.REAL, 1);
     }

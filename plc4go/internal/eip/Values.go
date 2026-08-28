@@ -197,12 +197,17 @@ func isFixedSize(dataType readWriteModel.CIPDataTypeCode) bool {
 // wire regardless of the encapsulation byte order.
 func parsePlcValue(tag PlcTag, rawData []byte, dataType readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
 	nb := int(elementCount(tag))
+	// Whether the caller gets a list is decided by the shape the tag reports, not by how many
+	// elements it happens to hold: "%arr[4..4]" selects one element and is still a list of one,
+	// while "%arr[4]" is a scalar. Deciding from the count made the response contradict
+	// GetArrayInfo, which is what a consumer reads to know which it is.
+	asList := len(tag.GetArrayInfo()) > 0
 	codec, fixedSize := fixedSizeCodecs[dataType]
 	if !fixedSize {
 		// STRING and STRUCTURED carry their own length rather than being laid out element by
 		// element, so only the first one can be decoded from the reply.
 		value, err := parseStructured(tag, rawData, dataType)
-		if err != nil || nb == 1 {
+		if err != nil || !asList {
 			return value, err
 		}
 		return spiValues.NewPlcList([]values.PlcValue{value}), nil
@@ -215,7 +220,7 @@ func parsePlcValue(tag PlcTag, rawData []byte, dataType readWriteModel.CIPDataTy
 		return nil, errors.Errorf("device returned %d bytes for tag '%s', expected %d for %d element(s) of %s",
 			len(rawData), tag.GetTag(), nb*elementSize, nb, dataType)
 	}
-	if nb == 1 {
+	if !asList {
 		return codec.read(rawData, 0), nil
 	}
 	list := make([]values.PlcValue, 0, nb)

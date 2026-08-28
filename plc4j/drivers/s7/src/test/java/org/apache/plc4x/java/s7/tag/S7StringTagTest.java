@@ -38,7 +38,7 @@ class S7StringTagTest {
 
     @Test
     void parseFixedLengthStringWithCount() {
-        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(40)[3]");
+        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0[0..2]:STRING(40)");
         assertNotNull(tag);
         assertEquals(40, tag.getStringLength());
         assertEquals(3, tag.getNumberOfElements());
@@ -128,7 +128,7 @@ class S7StringTagTest {
         assertEquals(69, shortForm.getBlockNumber());
         assertEquals(68, shortForm.getByteOffset());
 
-        S7Tag withCount = S7Tag.of("%DB1.DB0:WSTRING(40)[3]");
+        S7Tag withCount = S7Tag.of("%DB1.DB0[0..2]:WSTRING(40)");
         assertInstanceOf(S7StringFixedLengthTag.class, withCount);
         assertEquals(40, ((S7StringFixedLengthTag) withCount).getStringLength());
         assertEquals(3, withCount.getNumberOfElements());
@@ -137,7 +137,7 @@ class S7StringTagTest {
     @Test
     void s7TagMatchesAcceptsStringLengths() {
         assertTrue(S7Tag.matches("%DB69:68:STRING(20)"));
-        assertTrue(S7Tag.matches("%DB1.DB0:WSTRING(40)[3]"));
+        assertTrue(S7Tag.matches("%DB1.DB0[0..2]:WSTRING(40)"));
         assertFalse(S7Tag.matches("not-a-tag"));
     }
 
@@ -150,7 +150,7 @@ class S7StringTagTest {
         for (String address : new String[]{
             "%DB69:68:STRING(20)",
             "%DB1.DB0:STRING(80)",
-            "%DB1.DB0:STRING(40)[3]",
+            "%DB1.DB0[0..2]:STRING(40)",
             "%DB1.DB0:STRING",
             "%DB1:0:STRING",
             "%MW0:INT",

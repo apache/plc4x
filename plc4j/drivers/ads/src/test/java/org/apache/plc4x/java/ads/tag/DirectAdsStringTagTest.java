@@ -40,7 +40,7 @@ class DirectAdsStringTagTest {
 
     @Test
     void ofParsesHexStringAddressWithArray() {
-        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/0x20:WSTRING(40)[3]");
+        DirectAdsStringTag tag = DirectAdsStringTag.of("0x10/0x20[0..2]:WSTRING(40)");
         assertEquals(0x10L, tag.getIndexGroup());
         assertEquals(0x20L, tag.getIndexOffset());
         assertEquals("WSTRING", tag.getPlcDataType());
@@ -70,8 +70,11 @@ class DirectAdsStringTagTest {
     void getAddressStringFormatsBase() {
         DirectAdsStringTag single = DirectAdsStringTag.of(1, 2, "STRING", 10, 1);
         assertFalse(single.getAddressString().contains("["));
+        // The selection is written as the range it is, before the type - not as the trailing count
+        // this used to assert, which the address pattern no longer accepts.
         DirectAdsStringTag array = DirectAdsStringTag.of(1, 2, "STRING", 10, 4);
-        assertTrue(array.getAddressString().contains("[4]"));
+        assertTrue(array.getAddressString().contains("[0..3]"), array.getAddressString());
+        assertTrue(array.getAddressString().endsWith(":STRING(10)"), array.getAddressString());
     }
 
     @Test

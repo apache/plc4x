@@ -44,7 +44,9 @@ class ModbusTagTest {
         for (int i = 1; i <= allowedMax; i++) {
             List<ModbusTag> tags = new ArrayList<>();
             for (String tagPattern : tagPatterns) {
-                final ModbusTag modbusTag = ModbusTag.of(String.format(tagPattern, i));
+                // The templates spell the selection as an inclusive range, so the last index is
+                // one below the element count the loop is asserting.
+                final ModbusTag modbusTag = ModbusTag.of(String.format(tagPattern, i - 1));
                 assertTrue(expectedClass.isInstance(modbusTag));
                 assertEquals(i, modbusTag.getNumberOfElements());
                 tags.add(modbusTag);
@@ -83,7 +85,7 @@ class ModbusTagTest {
     @Test
     void testCoil_INT_ARRAY_RANGE() {
         verifyModbusTag(
-            List.of("coil:1:BOOL[%d]", "00001:BOOL[%d]", "000001:BOOL[%d]", "0x00001:BOOL[%d]"),
+            List.of("coil:1[0..%d]:BOOL", "00001[0..%d]:BOOL", "000001[0..%d]:BOOL", "0x00001[0..%d]:BOOL"),
             2000,
             ModbusTagCoil.class,
             PROTOCOL_ADDRESS_OFFSET
@@ -93,7 +95,7 @@ class ModbusTagTest {
     @Test
     void testDiscreteInput_INT_ARRAY_RANGE() {
         verifyModbusTag(
-            List.of("discrete-input:1:BOOL[%d]", "10001:BOOL[%d]", "100001:BOOL[%d]", "1x00001:BOOL[%d]"),
+            List.of("discrete-input:1[0..%d]:BOOL", "10001[0..%d]:BOOL", "100001[0..%d]:BOOL", "1x00001[0..%d]:BOOL"),
             2000,
             ModbusTagDiscreteInput.class,
             PROTOCOL_ADDRESS_OFFSET
@@ -103,7 +105,7 @@ class ModbusTagTest {
     @Test
     void testHolding_INT_ARRAY_RANGE() {
         verifyModbusTag(
-            List.of("holding-register:1:INT[%d]", "40001:INT[%d]", "400001:INT[%d]", "4x00001:INT[%d]"),
+            List.of("holding-register:1[0..%d]:INT", "40001[0..%d]:INT", "400001[0..%d]:INT", "4x00001[0..%d]:INT"),
             125,
             ModbusTagHoldingRegister.class,
             PROTOCOL_ADDRESS_OFFSET
@@ -113,7 +115,7 @@ class ModbusTagTest {
     @Test
     void testInput_INT_ARRAY_RANGE() {
         verifyModbusTag(
-            List.of("input-register:1:INT[%d]", "30001:INT[%d]", "300001:INT[%d]", "3x00001:INT[%d]"),
+            List.of("input-register:1[0..%d]:INT", "30001[0..%d]:INT", "300001[0..%d]:INT", "3x00001[0..%d]:INT"),
             125,
             ModbusTagInputRegister.class,
             PROTOCOL_ADDRESS_OFFSET
@@ -123,7 +125,7 @@ class ModbusTagTest {
     @Test
     void testExtended_INT_ARRAY_RANGE() {
         verifyModbusTag(
-            List.of("extended-register:1:INT[%d]", "60001:INT[%d]", "600001:INT[%d]", "6x00001:INT[%d]"),
+            List.of("extended-register:1[0..%d]:INT", "60001[0..%d]:INT", "600001[0..%d]:INT", "6x00001[0..%d]:INT"),
             125,
             ModbusTagExtendedRegister.class,
             0 // Addresses for extended memory start at address 0 instead of 1
@@ -139,7 +141,7 @@ class ModbusTagTest {
     @Test
     void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
         assertThrows(PlcInvalidTagException.class,
-            () -> ModbusTagHoldingRegister.of("holding-register:1:INT[99999999999]"));
+            () -> ModbusTagHoldingRegister.of("holding-register:1[0..99999999998]:INT"));
     }
 
     @Test

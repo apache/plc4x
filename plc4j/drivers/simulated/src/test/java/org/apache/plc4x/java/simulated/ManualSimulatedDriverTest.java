@@ -28,7 +28,7 @@ public class ManualSimulatedDriverTest {
 
     public static void main(String[] args) throws Exception {
         try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("simulated:hurz")){
-            PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("test", "RANDOM/dummy:UINT[100]").build();
+            PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("test", "RANDOM/dummy[0..99]:UINT").build();
             PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse);
         }

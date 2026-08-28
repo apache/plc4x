@@ -29,7 +29,7 @@ class EipTagHandlerTest {
 
     @Test
     void parsesValidTag() {
-        assertThat(handler.parseTag("%A0:2")).isInstanceOf(EipTag.class);
+        assertThat(handler.parseTag("%A0[0..1]")).isInstanceOf(EipTag.class);
     }
 
     @Test

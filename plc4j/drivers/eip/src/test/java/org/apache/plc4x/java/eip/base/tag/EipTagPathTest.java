@@ -95,10 +95,10 @@ class EipTagPathTest {
             new EipTag("a[2].b", CIPDataTypeCode.DINT).getPathElements());
     }
 
-    /** Empty brackets carry no member, matching what the address pattern already accepted. */
+    /** Empty brackets name no element and are rejected rather than quietly ignored. */
     @Test
-    void emptyBracketsContributeNoMember() {
-        assertEquals(List.of(new SymbolElement("a")), path("a[]:DINT"));
+    void emptyBracketsAreRejected() {
+        assertNull(EipTag.of("a[]:DINT"));
     }
 
     @Test
@@ -136,8 +136,8 @@ class EipTagPathTest {
     void elementCountIsNeverBelowOne() {
         assertEquals(1, new EipTag("a", CIPDataTypeCode.DINT, 0).getElementNb());
         assertEquals(1, new EipTag("a", CIPDataTypeCode.DINT, -5).getElementNb());
-        assertEquals(1, EipTag.of("a:DINT:0").getElementNb());
-        assertEquals(8, EipTag.of("a:DINT:8").getElementNb());
+        assertEquals(1, EipTag.of("a:DINT").getElementNb());
+        assertEquals(8, EipTag.of("a[0..7]:DINT").getElementNb());
     }
 
     /**
@@ -154,6 +154,28 @@ class EipTagPathTest {
         assertEquals(
             List.of(new SymbolElement("a"), new MemberElement((short) 255)),
             path("a[255]:DINT"));
+    }
+
+    // --- what a consumer sees ---
+
+    /**
+     * getArrayInfo() tells a consumer whether it received a scalar or a list. A bare index
+     * selects one element, so it reports empty; a range reports its dimensions even when it
+     * spans one element. Reading that one element still walks a member path, which is a
+     * separate concern.
+     */
+    @Test
+    void arrayInfoDescribesTheValueNotTheFetch() {
+        assertTrue(EipTag.of("myArray[4]:DINT").getArrayInfo().isEmpty(), "a bare index is a scalar");
+        assertTrue(EipTag.of("myTag:DINT").getArrayInfo().isEmpty(), "no selection is a scalar");
+
+        assertEquals(1, EipTag.of("myArray[4..4]:DINT").getArrayInfo().size(), "a range is an array");
+        assertEquals(8, EipTag.of("myArray[0..7]:DINT").getArrayInfo().get(0).getSize());
+
+        // The single element still needs its member segment on the wire.
+        assertEquals(
+            List.of(new SymbolElement("myArray"), new MemberElement((short) 4)),
+            EipTag.of("myArray[4]:DINT").getPathElements());
     }
 
     private static List<PathElement> path(String address) {

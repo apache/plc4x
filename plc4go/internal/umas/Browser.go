@@ -159,10 +159,10 @@ func (c *Connection) buildStructChildren(dataTypeId uint16, depth int) map[strin
 
 // buildArrayInfo turns the dimensions of an array type into what plc4x calls array info.
 //
-// Note that the plc4go DefaultArrayInfo reports GetSize as upperBound - lowerBound, where plc4j's
-// reports upperBound - lowerBound + 1 for the same bounds. The bounds themselves are carried over
-// unchanged - they are what the dictionary says - so a consumer reading the bounds sees the same
-// thing in both languages.
+// The bounds are what the dictionary says, and both are inclusive, so GetSize counts them the
+// same way plc4j does. They are marked as ranges because the device declared them as arrays -
+// that is what tells a consumer to expect a list rather than a value - and the declared start
+// index is also the base, so an address written with the PLC's own indices lines up with it.
 func buildArrayInfo(dimensions []readWriteModel.UmasArrayDimension) []apiModel.ArrayInfo {
 	if len(dimensions) == 0 {
 		return nil
@@ -172,6 +172,8 @@ func buildArrayInfo(dimensions []readWriteModel.UmasArrayDimension) []apiModel.A
 		arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 			LowerBound: dimension.GetStartIndex(),
 			UpperBound: dimension.GetUpperBound(),
+			Base:       dimension.GetStartIndex(),
+			Range:      true,
 		})
 	}
 	return arrayInfo

@@ -23,6 +23,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
@@ -49,7 +50,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 		{
 			name: "simple random array",
 			args: args{
-				query: "RANDOM/test_random:BOOL[10]",
+				query: "RANDOM/test_random[0..9]:BOOL",
 			},
 			want:    NewSimulatedTag(TagRandom, "test_random", readWriteModel.SimulatedDataTypeSizes_BOOL, 10),
 			wantErr: false,
@@ -65,7 +66,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 		{
 			name: "simple state array",
 			args: args{
-				query: "STATE/test_state:BOOL[42]",
+				query: "STATE/test_state[0..41]:BOOL",
 			},
 			want:    NewSimulatedTag(TagState, "test_state", readWriteModel.SimulatedDataTypeSizes_BOOL, 42),
 			wantErr: false,
@@ -81,7 +82,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 		{
 			name: "simple stdout array",
 			args: args{
-				query: "STDOUT/test_stdout:BOOL[23]",
+				query: "STDOUT/test_stdout[0..22]:BOOL",
 			},
 			want:    NewSimulatedTag(TagStdOut, "test_stdout", readWriteModel.SimulatedDataTypeSizes_BOOL, 23),
 			wantErr: false,
@@ -105,7 +106,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 		{
 			name: "error invalid datatype",
 			args: args{
-				query: "RANDOM/test_stdout:HURZ[23]",
+				query: "RANDOM/test_stdout[0..22]:HURZ",
 			},
 			want:    nil,
 			wantErr: true,
@@ -113,7 +114,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 		{
 			name: "error invalid array size",
 			args: args{
-				query: "RANDOM/test_stdout:BOOL[999999999999999999999999999999999999]",
+				query: "RANDOM/test_stdout[0..999999999999999999999999999999999998]:BOOL",
 			},
 			want:    nil,
 			wantErr: true,
@@ -123,7 +124,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			// bytes of what was asked for - a tag of 4464 elements rather than an error.
 			name: "error array size past the count a tag can carry",
 			args: args{
-				query: "RANDOM/test_stdout:BOOL[70000]",
+				query: "RANDOM/test_stdout[0..69999]:BOOL",
 			},
 			want:    nil,
 			wantErr: true,
@@ -133,15 +134,17 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			// holding nothing at all.
 			name: "error array size one past the count a tag can carry",
 			args: args{
-				query: "RANDOM/test_stdout:BOOL[65536]",
+				query: "RANDOM/test_stdout[0..65535]:BOOL",
 			},
 			want:    nil,
 			wantErr: true,
 		},
 		{
-			name: "error array size of zero",
+			// A count of zero has no spelling in the notation - a range is written with the
+			// indices it covers - but an inverted one is still nonsense.
+			name: "error inverted range",
 			args: args{
-				query: "RANDOM/test_stdout:BOOL[0]",
+				query: "RANDOM/test_stdout[3..1]:BOOL",
 			},
 			want:    nil,
 			wantErr: true,
@@ -149,7 +152,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 		{
 			name: "largest array size a tag can carry",
 			args: args{
-				query: "RANDOM/test_stdout:BOOL[65535]",
+				query: "RANDOM/test_stdout[0..65534]:BOOL",
 			},
 			want:    NewSimulatedTag(TagRandom, "test_stdout", readWriteModel.SimulatedDataTypeSizes_BOOL, 65535),
 			wantErr: false,
@@ -204,4 +207,21 @@ func TestFieldType_Name(t *testing.T) {
 			}
 		})
 	}
+}
+
+// This driver addresses a named variable rather than a numeric offset, so a selection that does
+// not start at the first element has nothing to apply to. Reading it as though it did would hand
+// back the first elements under the impression they were the requested ones.
+func TestFieldHandler_ParseTagRejectsASelectionWithAnOffset(t *testing.T) {
+	handler := NewTagHandler()
+
+	_, err := handler.ParseTag("RANDOM/test[4..7]:INT")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "must start at the first element")
+
+	// A declared base is what the offset is measured from, so [4..7;4] does start at the first
+	// element and is accepted.
+	fromDeclaredBase, err := handler.ParseTag("RANDOM/test[4..7;4]:INT")
+	require.NoError(t, err)
+	assert.Equal(t, uint16(4), fromDeclaredBase.(simulatedTag).Quantity)
 }

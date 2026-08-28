@@ -49,11 +49,11 @@ func TestParseTagWithDINT(t *testing.T) {
 }
 
 func TestParseTagArray(t *testing.T) {
-	// %arr[0]:DINT:4 → DINT, elementNb 4, tag preserved as arr[0]
-	tag, err := NewTagHandler().ParseTag("%arr[0]:DINT:4")
+	// %arr[0..3]:DINT → DINT, four elements; the selection is held apart from the tag name
+	tag, err := NewTagHandler().ParseTag("%arr[0..3]:DINT")
 	require.NoError(t, err)
 	plcTag := tag.(PlcTag)
-	assert.Equal(t, "arr[0]", plcTag.GetTag())
+	assert.Equal(t, "arr", plcTag.GetTag())
 	assert.Equal(t, readWriteModel.CIPDataTypeCode_DINT, plcTag.GetType())
 	assert.Equal(t, uint16(4), plcTag.GetElementNb())
 }
@@ -109,14 +109,14 @@ func TestParseTagGarbageInput(t *testing.T) {
 	// Invalid prefix (not %): error
 	_, err := NewTagHandler().ParseTag("rate:DINT")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "invalid tag address")
+	assert.Contains(t, err.Error(), "invalid address")
 }
 
 func TestParseTagEmptyString(t *testing.T) {
 	// Empty string: error
 	_, err := NewTagHandler().ParseTag("")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "invalid tag address")
+	assert.Contains(t, err.Error(), "invalid address")
 }
 
 func TestParseTagWithTypeButNoElements(t *testing.T) {
@@ -130,10 +130,82 @@ func TestParseTagWithTypeButNoElements(t *testing.T) {
 }
 
 func TestParseTagLargeElementCount(t *testing.T) {
-	// %arr[0]:DINT:1000 → elementNb 1000
-	tag, err := NewTagHandler().ParseTag("%arr[0]:DINT:1000")
+	// %arr[0..999]:DINT → 1000 elements
+	tag, err := NewTagHandler().ParseTag("%arr[0..999]:DINT")
 	require.NoError(t, err)
 	plcTag := tag.(PlcTag)
 	assert.Equal(t, readWriteModel.CIPDataTypeCode_DINT, plcTag.GetType())
 	assert.Equal(t, uint16(1000), plcTag.GetElementNb())
+}
+
+// The element count used to be a third colon-separated field. It is a range now, and the old
+// spelling must not parse - an address whose meaning changed has to fail rather than quietly
+// read something else.
+func TestParseTagRejectsTheOldElementCount(t *testing.T) {
+	for _, address := range []string{"%rate:DINT:4", "%arr[0]:DINT:2", "%rate:DINT[4]"} {
+		t.Run(address, func(t *testing.T) {
+			_, err := NewTagHandler().ParseTag(address)
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "invalid address", address)
+		})
+	}
+}
+
+// What a CIP request can encode: one dimension, starting no later than 255, since the member
+// segment that carries the offset is a uint 8.
+func TestParseTagRejectsWhatCipCannotEncode(t *testing.T) {
+	for _, address := range []string{"%arr[0..1][2..3]:DINT", "%arr[256]:DINT", "%arr[300..302]:DINT"} {
+		t.Run(address, func(t *testing.T) {
+			_, err := NewTagHandler().ParseTag(address)
+			require.Error(t, err, address)
+		})
+	}
+}
+
+// A rendered address must re-parse to the same tag, so a tag can be carried as a string.
+func TestParseTagRoundTrips(t *testing.T) {
+	for _, address := range []string{"%rate:DINT", "%arr[4]:DINT", "%arr[0..3]:DINT", "%arr[4..7;1]:INT", "%struct.member:INT"} {
+		t.Run(address, func(t *testing.T) {
+			tag, err := NewTagHandler().ParseTag(address)
+			require.NoError(t, err)
+			assert.Equal(t, address, tag.GetAddressString())
+
+			reparsed, err := NewTagHandler().ParseTag(tag.GetAddressString())
+			require.NoError(t, err)
+			assert.Equal(t, tag, reparsed)
+		})
+	}
+}
+
+// A bare index selects one element and so reports no dimensions; a range reports one even when
+// it spans a single element. This is what a consumer reads to tell a value from a list.
+func TestGetArrayInfoDistinguishesAScalarFromAList(t *testing.T) {
+	scalar, err := NewTagHandler().ParseTag("%arr[4]:DINT")
+	require.NoError(t, err)
+	assert.Empty(t, scalar.GetArrayInfo())
+	assert.Equal(t, uint16(1), scalar.(PlcTag).GetElementNb())
+
+	oneElementRange, err := NewTagHandler().ParseTag("%arr[4..4]:DINT")
+	require.NoError(t, err)
+	assert.Len(t, oneElementRange.GetArrayInfo(), 1)
+	assert.Equal(t, uint16(1), oneElementRange.(PlcTag).GetElementNb())
+
+	list, err := NewTagHandler().ParseTag("%arr[0..3]:DINT")
+	require.NoError(t, err)
+	assert.Len(t, list.GetArrayInfo(), 1)
+	assert.Equal(t, uint16(4), list.(PlcTag).GetElementNb())
+}
+
+// A CIP request carries its element count in 16 bits, so a selection larger than that cannot be
+// asked for. It used to be narrowed silently: "%arr[0..65535]" is 65536 elements, which is zero
+// in a uint16 - the device would have been asked for nothing at all.
+func TestParseTag_refusesACountTheRequestCannotCarry(t *testing.T) {
+	_, err := NewTagHandler().ParseTag("%arr[0..65535]:DINT")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "65535")
+
+	// One below the limit is still asked for in full.
+	tag, err := NewTagHandler().ParseTag("%arr[0..65534]:DINT")
+	require.NoError(t, err)
+	assert.Equal(t, uint16(65535), tag.(PlcTag).GetElementNb())
 }

@@ -194,6 +194,52 @@ func (_c *MockPlcTag_GetElementNb_Call) RunAndReturn(run func() uint16) *MockPlc
 	return _c
 }
 
+// GetSelection provides a mock function for the type MockPlcTag
+func (_mock *MockPlcTag) GetSelection() []model.ArrayInfo {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSelection")
+	}
+
+	var r0 []model.ArrayInfo
+	if returnFunc, ok := ret.Get(0).(func() []model.ArrayInfo); ok {
+		r0 = returnFunc()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.ArrayInfo)
+		}
+	}
+	return r0
+}
+
+// MockPlcTag_GetSelection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSelection'
+type MockPlcTag_GetSelection_Call struct {
+	*mock.Call
+}
+
+// GetSelection is a helper method to define mock.On call
+func (_e *MockPlcTag_Expecter) GetSelection() *MockPlcTag_GetSelection_Call {
+	return &MockPlcTag_GetSelection_Call{Call: _e.mock.On("GetSelection")}
+}
+
+func (_c *MockPlcTag_GetSelection_Call) Run(run func()) *MockPlcTag_GetSelection_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPlcTag_GetSelection_Call) Return(arrayInfos []model.ArrayInfo) *MockPlcTag_GetSelection_Call {
+	_c.Call.Return(arrayInfos)
+	return _c
+}
+
+func (_c *MockPlcTag_GetSelection_Call) RunAndReturn(run func() []model.ArrayInfo) *MockPlcTag_GetSelection_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetTag provides a mock function for the type MockPlcTag
 func (_mock *MockPlcTag) GetTag() string {
 	ret := _mock.Called()

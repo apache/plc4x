@@ -124,7 +124,7 @@ class S7BlockReadOptimizerTest {
         S7DriverContext tiny = new S7DriverContext();
         tiny.setPduSize(64);
         // A 200-byte array is larger than the PDU's available payload so it must be split.
-        PlcReadRequest r = req(new String[][] {{"big", "%DB1.DBB0:BYTE[200]"}});
+        PlcReadRequest r = req(new String[][] {{"big", "%DB1.DBB0[0..199]:BYTE"}});
         List<S7ReadChunk> chunks = optimizer.splitReadRequest(r, tiny);
         assertTrue(chunks.size() > 1, "expected multiple chunks, got " + chunks.size());
         // Each chunk's binding flags as a split fragment of the same original tag.

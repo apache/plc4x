@@ -94,7 +94,7 @@ func (m *Writer) buildWriteRequest(writeRequest apiModel.PlcWriteRequest, tagNam
 	if err != nil {
 		return nil, errors.Wrapf(err, "error encoding value for tag %s", tagName)
 	}
-	ansi, err := toAnsi(tag.GetTag())
+	ansi, err := cipPathOf(tag)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error encoding eip ansi for tag %s", tagName)
 	}

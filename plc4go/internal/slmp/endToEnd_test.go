@@ -82,7 +82,7 @@ func pushFrame(t *testing.T, transportInstance *test.TransportInstance, frame re
 func TestEndToEnd_ReadThroughTheRunningCodec(t *testing.T) {
 	connection, transportInstance := newRunningConnection(t)
 
-	readRequest, err := connection.ReadRequestBuilder().AddTagAddress("registers", "D350:WORD[2]").Build()
+	readRequest, err := connection.ReadRequestBuilder().AddTagAddress("registers", "D350[0..1]:WORD").Build()
 	require.NoError(t, err)
 	results := readRequest.Execute(testutils.TestContext(t))
 
@@ -110,7 +110,7 @@ func TestEndToEnd_WriteThroughTheRunningCodec(t *testing.T) {
 	connection, transportInstance := newRunningConnection(t)
 
 	writeRequest, err := connection.WriteRequestBuilder().
-		AddTagAddress("registers", "D350:WORD[2]", []uint16{0x1234, 0x5678}).Build()
+		AddTagAddress("registers", "D350[0..1]:WORD", []uint16{0x1234, 0x5678}).Build()
 	require.NoError(t, err)
 	results := writeRequest.Execute(testutils.TestContext(t))
 

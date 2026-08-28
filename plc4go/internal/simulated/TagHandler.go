@@ -22,11 +22,11 @@ package simulated
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,8 +61,40 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		simulatedQuery: regexp.MustCompile(`^(?P<type>\w+)/(?P<name>[a-zA-Z0-9_\\.]+):(?P<dataType>[a-zA-Z0-9]+)(\[(?P<numElements>\d+)])?$`),
+		// The selection sits between the name and the type, as it does in plc4j's
+		// SimulatedTag.ADDRESS_PATTERN: "RANDOM/foo[0..3]:INT".
+		simulatedQuery: regexp.MustCompile(`^(?P<type>\w+)/(?P<name>[a-zA-Z0-9_\\.]+)` + spiModel.ArrayGroupPattern + `:(?P<dataType>[a-zA-Z0-9]+)$`),
 	}
+}
+
+// elementsOf resolves an address's array expression to a number of elements. This driver
+// addresses a named variable rather than a numeric offset, so a selection that does not start at
+// the first element has nothing to apply to and is reported rather than quietly ignored.
+//
+// The count is carried as a uint16 from here on, so it is bounded as one: an unchecked cast
+// turned a count above 65535 into whatever the low two bytes happened to be, handing back a tag
+// of 4464 elements for a request of 70000 and an empty one for 65536.
+func elementsOf(expression string, tagAddress string) (uint16, bool, error) {
+	if expression == "" {
+		return 1, false, nil
+	}
+	dimensions, err := spiModel.ParseArrayExpression(expression, tagAddress, spiModel.SingleDimension)
+	if err != nil {
+		return 0, false, err
+	}
+	dimension := dimensions[0]
+	if dimension.GetLowerBound() != dimension.GetBase() {
+		return 0, false, errors.Errorf("Array selection '%s' in tag '%s' must start at the first element: "+
+			"this driver addresses a named variable, so there is no offset to start from",
+			expression, tagAddress)
+	}
+	elements := dimension.GetSize()
+	if elements < 1 || elements > 0xFFFF {
+		return 0, false, errors.Errorf("A tag of %d elements in '%s' is more than a simulated tag may hold",
+			elements, tagAddress)
+	}
+	// A range is an array even when it spans one element, which the count cannot say.
+	return uint16(elements), dimension.IsRange(), nil
 }
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
@@ -92,24 +124,16 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 				return nil, errors.New("unknown tag data-type '" + tagDataTypeName + "'")
 			}
 		}
-		tagNumElementsText, ok := match["numElements"]
-		tagNumElements := uint16(1)
-		if ok && len(tagNumElementsText) > 0 {
-			// The count is carried as a uint16 from here on, so parse it as one: an Atoi followed by a
-			// cast turned a count above 65535 into whatever the low two bytes happened to be, handing
-			// back a tag of 4464 elements for a request of 70000 and an empty one for 65536.
-			num, err := strconv.ParseUint(tagNumElementsText, 10, 16)
-			if err != nil {
-				return nil, errors.Wrapf(err, "invalid size '%s'", tagNumElementsText)
-			}
-			if num == 0 {
-				return nil, errors.New("the number of elements must be greater than zero")
-			}
-			tagNumElements = uint16(num)
+		tagNumElements, explicitRange, err := elementsOf(match["array"], tagAddress)
+		if err != nil {
+			return nil, err
 		}
-		return NewSimulatedTag(tagType, tagName, tagDataType, tagNumElements), nil
+		return NewSimulatedTagWithShape(tagType, tagName, tagDataType, tagNumElements, explicitRange), nil
 	}
-	return nil, errors.New("Invalid address format for address '" + tagAddress + "'")
+	// "RANDOM/foo:INT[4]" - the count after the type - no longer parses, so name the form to
+	// write rather than reporting only that nothing matched.
+	return nil, spiModel.InvalidAddressError(tagAddress,
+		"{type}/{name}[selection]:{TYPE} - for example RANDOM/foo[0..3]:INT")
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

@@ -43,7 +43,7 @@ func TestDriver_CheckQuery(t *testing.T) {
 		{
 			name: "valid query",
 			args: args{
-				query: "STATE/test:UINT[2]",
+				query: "STATE/test[0..1]:UINT",
 			},
 			wantErr: false,
 		},

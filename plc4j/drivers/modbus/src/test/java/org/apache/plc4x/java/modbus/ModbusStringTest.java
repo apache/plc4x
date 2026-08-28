@@ -78,7 +78,7 @@ class ModbusStringTest {
     @Test
     void sizesTheRequestFromTheDeclaredLength() {
         assertEquals(6, ModbusTagHoldingRegister.of("holding-register:1:STRING(12)").getLengthWords());
-        assertEquals(18, ModbusTagHoldingRegister.of("holding-register:1:STRING(12)[3]").getLengthWords());
+        assertEquals(18, ModbusTagHoldingRegister.of("holding-register:1[0..2]:STRING(12)").getLengthWords());
         // A wide character is two bytes, so the same declared length needs twice the registers.
         assertEquals(12, ModbusTagHoldingRegister.of("holding-register:1:WSTRING(12)").getLengthWords());
     }
@@ -86,7 +86,7 @@ class ModbusStringTest {
     @Test
     void keepsTheDeclaredLengthOnTheTag() {
         assertEquals(20, ModbusTagHoldingRegister.of("holding-register:1:STRING(20)").getStringLength());
-        assertEquals(3, ModbusTagHoldingRegister.of("holding-register:1:STRING(20)[3]").getNumberOfElements());
+        assertEquals(3, ModbusTagHoldingRegister.of("holding-register:1[0..2]:STRING(20)").getNumberOfElements());
     }
 
     /**
@@ -114,8 +114,8 @@ class ModbusStringTest {
     @Test
     void leavesOtherDataTypesUnchanged() {
         assertEquals(1, ModbusTagHoldingRegister.of("holding-register:1:INT").getStringLength());
-        assertEquals(7, ModbusTagHoldingRegister.of("holding-register:1:INT[7]").getLengthWords());
-        assertEquals(14, ModbusTagHoldingRegister.of("holding-register:1:DINT[7]").getLengthWords());
+        assertEquals(7, ModbusTagHoldingRegister.of("holding-register:1[0..6]:INT").getLengthWords());
+        assertEquals(14, ModbusTagHoldingRegister.of("holding-register:1[0..6]:DINT").getLengthWords());
     }
 
     private static PlcValue parse(String text, ModbusDataType dataType, int numberOfValues, int stringLength)

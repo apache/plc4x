@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -60,7 +61,10 @@ type modbusTag struct {
 	TagType  TagType
 	Address  uint16
 	Quantity uint16
-	Datatype readWriteModel.ModbusDataType
+	// ExplicitRange records whether the address wrote the selection as a range. A one-element
+	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
+	ExplicitRange bool
+	Datatype      readWriteModel.ModbusDataType
 	// StringLength is the declared length of a single string. Nothing on the wire announces it, so
 	// it is part of the address; for every data type that is not a string it is 1, which leaves the
 	// size arithmetic unchanged (plc4j ModbusTag).
@@ -88,18 +92,19 @@ func logicalAddressOffset(tagType TagType) uint16 {
 // NewTag builds a tag from the logical (user facing) address, which for every area but the
 // extended registers is one higher than the address that goes onto the wire.
 func NewTag(tagType TagType, address uint16, quantity uint16, datatype readWriteModel.ModbusDataType) apiModel.PlcTag {
-	return newTagFromWireAddress(tagType, address-logicalAddressOffset(tagType), quantity, datatype, 1, tagConfig{})
+	return newTagFromWireAddress(tagType, address-logicalAddressOffset(tagType), quantity, datatype, 1, tagConfig{}, quantity > 1)
 }
 
-func newTagFromWireAddress(tagType TagType, wireAddress uint16, quantity uint16, datatype readWriteModel.ModbusDataType, stringLength uint16, config tagConfig) modbusTag {
+func newTagFromWireAddress(tagType TagType, wireAddress uint16, quantity uint16, datatype readWriteModel.ModbusDataType, stringLength uint16, config tagConfig, explicitRange bool) modbusTag {
 	return modbusTag{
-		TagType:      tagType,
-		Address:      wireAddress,
-		Quantity:     quantity,
-		Datatype:     datatype,
-		StringLength: stringLength,
-		UnitId:       config.unitId,
-		ByteOrder:    config.byteOrder,
+		ExplicitRange: explicitRange,
+		TagType:       tagType,
+		Address:       wireAddress,
+		Quantity:      quantity,
+		Datatype:      datatype,
+		StringLength:  stringLength,
+		UnitId:        config.unitId,
+		ByteOrder:     config.byteOrder,
 	}
 }
 
@@ -179,8 +184,10 @@ func (m modbusTag) resolveByteOrder(defaultByteOrder ByteOrder) ByteOrder {
 // ModbusTagExtendedRegister.of) reject an address beyond the 16 bit address space, a range running
 // past the end of it and a quantity beyond what a single request can carry - 2000 for the bit
 // areas, 125 for the register areas.
-// Both arguments are the values as written by the user, i.e. address is the logical address.
-func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64) error {
+// address is the logical address as written by the user and quantity the number of elements the
+// user selected; registers is what those elements occupy on the wire, which is what the address
+// space and the per-request ceilings are measured in.
+func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64, registers uint64) error {
 	// plc4j checks getLogicalAddress() <= 0 in the ModbusTag constructor, which covers the
 	// extended register area too even though that one is addressed starting at zero on the wire.
 	if address < 1 {
@@ -196,49 +203,125 @@ func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64
 	}
 	// plc4j rejects a range whose last address reaches maxWireAddress, and the strict bound keeps
 	// the quantity well inside the 16 bit field it is written into further down.
-	if wireAddress+quantity > maxWireAddress {
+	if wireAddress+registers > maxWireAddress {
 		return errors.Errorf("last requested address is out of range, should be between %d and %d. Was %d",
-			offset, maxWireAddress, wireAddress+quantity)
+			offset, maxWireAddress, wireAddress+registers)
 	}
 	switch tagType {
 	case Coil, DiscreteInput:
-		if quantity > maxCoilQuantity {
-			return errors.Errorf("quantity may not be larger than %d. Was %d", maxCoilQuantity, quantity)
+		if registers > maxCoilQuantity {
+			return errors.Errorf("quantity may not be larger than %d. Was %d", maxCoilQuantity, registers)
 		}
 	default:
-		if quantity > maxRegisterQuantity {
-			return errors.Errorf("quantity may not be larger than %d. Was %d", maxRegisterQuantity, quantity)
+		if registers > maxRegisterQuantity {
+			return errors.Errorf("quantity may not be larger than %d registers. Was %d", maxRegisterQuantity, registers)
 		}
 	}
 	return nil
 }
 
-func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, stringLengthString string, datatype readWriteModel.ModbusDataType, config tagConfig, _options ...options.WithOption) (apiModel.PlcTag, error) {
+// modbusConstraints: a Modbus read covers one contiguous run of registers or bits, so an address
+// selects from a single dimension.
+var modbusConstraints = spiModel.SingleDimension
+
+// selectionOf reads the array expression an address carries and returns how far past the written
+// address the selection starts, in registers, and how many it spans. An address with no
+// expression reads one element where it says.
+//
+// The offset is consumed into the address here, the way plc4j's per-area of() does: a Modbus
+// address is a register number, so "holding-register:1[4..7]" is the same read as
+// "holding-register:5[0..3]".
+func selectionOf(expression string, address string) (uint64, uint64, bool, error) {
+	if expression == "" {
+		return 0, 1, false, nil
+	}
+	dimensions, err := spiModel.ParseArrayExpression(expression, address, modbusConstraints)
+	if err != nil {
+		return 0, 0, false, err
+	}
+	dimension := dimensions[0]
+	// The third value is not derivable from the others: [4] and [4..4] both select one element,
+	// and only the range is an array.
+	return uint64(dimension.GetLowerBound() - dimension.GetBase()), uint64(dimension.GetSize()),
+		dimension.IsRange(), nil
+}
+
+func NewModbusPlcTagFromStrings(tagType TagType, addressString string, arrayExpression string, stringLengthString string, datatype readWriteModel.ModbusDataType, config tagConfig, _options ...options.WithOption) (apiModel.PlcTag, error) {
 	// Parsed with 32 bits so that an out-of-range address is reported as such instead of as an
 	// unparsable string.
 	address, err := strconv.ParseUint(addressString, 10, 32)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
-	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	if quantityString == "" {
-		customLogger.Debug().Msg("No quantity supplied, assuming 1")
-		quantityString = "1"
-	}
-	quantity, err := strconv.ParseUint(quantityString, 10, 32)
+	offset, quantity, explicitRange, err := selectionOf(arrayExpression, addressString+arrayExpression)
 	if err != nil {
-		// A quantity that was spelled out but doesn't parse is a broken address, not a request
-		// for a single element.
-		return nil, errors.Errorf("Couldn't parse quantity string '%s' into an int", quantityString)
-	}
-	if err := validateAddressAndQuantity(tagType, address, quantity); err != nil {
 		return nil, err
 	}
 	stringLength, err := validateStringLength(datatype, stringLengthString)
 	if err != nil {
 		return nil, err
 	}
-	return newTagFromWireAddress(tagType, uint16(address-uint64(logicalAddressOffset(tagType))), uint16(quantity), datatype, stringLength, config), nil
+	// The offset counts elements; a register address counts registers. They are the same number
+	// only for a one-register type, so "holding-register:1[4]:DINT" would otherwise land four
+	// registers short of the fifth DINT.
+	registerOffset, err := registerOffsetOf(tagType, offset, datatype, stringLength)
+	if err != nil {
+		return nil, err
+	}
+	address += registerOffset
+	// The wire carries registers, not elements. The address-space and per-request limits are
+	// about what a request can hold, so they have to be checked against the register count: 63
+	// DINTs are 126 registers and do not fit into the 125 a read carries, however few elements
+	// that is.
+	registers := registerCountOf(tagType, datatype, quantity, stringLength)
+	if err := validateAddressAndQuantity(tagType, address, quantity, registers); err != nil {
+		return nil, err
+	}
+	return newTagFromWireAddress(tagType, uint16(address-uint64(logicalAddressOffset(tagType))), uint16(quantity), datatype, stringLength, config, explicitRange), nil
+}
+
+// registerOffsetOf is how far into the area a selection starts, in addresses.
+//
+// A bit area addresses individual bits, so one element is one address there and nothing is
+// scaled. A register area addresses registers, and the conversion goes through the total bit
+// offset rather than rounding each element up on its own: the register codec packs elements
+// narrower than a register - widthBits reports 8 for a CHAR and 1 for a BOOL - so rounding per
+// element would place the start where nothing was written. An offset that does not land on a
+// register boundary cannot be addressed by a Modbus read at all, and is reported rather than
+// quietly moved to the register before or after it.
+func registerOffsetOf(tagType TagType, elementOffset uint64, dataType readWriteModel.ModbusDataType, stringLength uint16) (uint64, error) {
+	switch tagType {
+	case Coil, DiscreteInput:
+		return elementOffset, nil
+	}
+	bits := elementOffset * widthBits(dataType, stringLength)
+	if bits%16 != 0 {
+		return 0, errors.Errorf("selection starts %d bits into the address, which is not a register "+
+			"boundary - a read starts at a register, so this offset cannot be addressed", bits)
+	}
+	return bits / 16, nil
+}
+
+// registerCountOf is how many addresses the selection occupies on the wire: bits in a bit area,
+// where one element is one address, and registers everywhere else. This is the count the request
+// carries, and so the one the address-space and per-request limits apply to.
+func registerCountOf(tagType TagType, dataType readWriteModel.ModbusDataType, quantity uint64, stringLength uint16) uint64 {
+	switch tagType {
+	case Coil, DiscreteInput:
+		return quantity
+	}
+	if quantity > math.MaxUint16 {
+		// Too large for lengthInBytes to be asked, and far beyond any request. Reported as-is so
+		// the quantity limits below reject it rather than a truncated conversion passing.
+		return quantity
+	}
+	registers := (lengthInBytes(dataType, uint16(quantity), stringLength) + 1) / 2
+	if registers < 1 {
+		// A value narrower than a register still occupies a whole one, and every request has to
+		// ask for something.
+		return 1
+	}
+	return registers
 }
 
 func (m modbusTag) GetAddressString() string {
@@ -249,7 +332,8 @@ func (m modbusTag) GetAddressString() string {
 	}
 	// The logical address is what the user wrote and what the address has to parse back as (plc4j
 	// ModbusTag.getAddressString uses getLogicalAddress for the same reason).
-	address := fmt.Sprintf("%dx%05d:%s[%d]", m.TagType, uint32(m.Address)+uint32(logicalAddressOffset(m.TagType)), dataType, m.Quantity)
+	address := fmt.Sprintf("%dx%05d%s:%s", m.TagType, uint32(m.Address)+uint32(logicalAddressOffset(m.TagType)),
+		spiModel.RenderArrayExpression(m.GetArrayInfo()), dataType)
 	// Same for the per-tag settings, which are written in curly braces behind the address.
 	var config []string
 	if m.UnitId != nil {
@@ -272,19 +356,24 @@ func (m modbusTag) GetValueType() apiValues.PlcValueType {
 	}
 }
 
-// GetArrayInfo reports the number of elements as a half-open range [0, Quantity).
+// GetArrayInfo reports the shape of the value the caller receives, as an inclusive range: a
+// quantity of 5 yields [0..4], the same as plc4j.
 //
-// Note that plc4j's ModbusTag returns an inclusive upper bound (quantity - 1). The Go SPI uses the
-// opposite convention: spiModel.DefaultArrayInfo.GetSize is UpperBound - LowerBound, and every
-// consumer (e.g. bacnetip's Reader, knxnetip's Subscriber) as well as every other Go driver (ads,
-// s7, cbus, simulated) treats the upper bound as exclusive. Modbus follows the Go convention here,
-// so a quantity of 5 yields [0, 5) and not [0, 4].
+// The bounds used to be exclusive here, documented as a deliberate divergence from plc4j. It was
+// not one worth keeping: once the range is what the user wrote, the bounds are the indices the
+// address stated, and an exclusive upper bound reports a number that appears nowhere in it.
+//
+// The indices are relative to the value the caller receives, not to what was written: a Modbus
+// address is a register number, so the driver consumes the start of the selection into the
+// address when it resolves it.
 func (m modbusTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.Quantity != 1 {
+	// The flag decides the shape; the count only sizes it.
+	if m.ExplicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(m.Quantity),
+				UpperBound: uint32(m.Quantity) - 1,
+				Range:      true,
 			},
 		}
 	}

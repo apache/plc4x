@@ -43,6 +43,10 @@ public class ModbusTagDiscreteInput extends ModbusTag {
         super(address, quantity, stringLength, dataType, config);
     }
 
+    public ModbusTagDiscreteInput(int address, Integer quantity, Integer stringLength, ModbusDataType dataType, Map<String, String> config, boolean explicitRange) {
+        super(address, quantity, stringLength, dataType, config, explicitRange);
+    }
+
     protected String getAddressStringPrefix() {
         return ADDRESS_PREFIX;
     }
@@ -82,8 +86,9 @@ public class ModbusTagDiscreteInput extends ModbusTag {
             throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAX_ADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
         }
 
-        String quantityString = matcher.group("quantity");
-        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
+        int[] selection = selectionOf(matcher, addressString);
+        address += selection[0];
+        int quantity = selection[1];
         if ((address + quantity) > REGISTER_MAX_ADDRESS) {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAX_ADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }
@@ -97,6 +102,6 @@ public class ModbusTagDiscreteInput extends ModbusTag {
         String stringLengthString = matcher.group("stringLength");
         Integer stringLength = (stringLengthString != null) ? Integer.parseInt(stringLengthString) : null;
 
-        return new ModbusTagDiscreteInput(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString));
+        return new ModbusTagDiscreteInput(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString), selection[2] == 1);
     }
 }

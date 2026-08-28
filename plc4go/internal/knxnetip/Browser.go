@@ -231,7 +231,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	// Read the data in the group address table
 	readRequest, err = m.connection.ReadRequestBuilder().
 		AddTagAddress("groupAddressTable",
-			fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses)).
+			fmt.Sprintf("%s#%X[0..%d]:UINT", knxAddressString, groupAddressTableStartAddress, numGroupAddresses-1)).
 		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
@@ -316,10 +316,10 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	// - Max 63 bytes readable in one request, due to max of count tag
 	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddTagAddress("groupAddressAssociationTable",
-			fmt.Sprintf("%s#%X:UDINT[%d]", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries))
+			fmt.Sprintf("%s#%X[0..%d]:UDINT", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries-1))
 	} else {
 		readRequestBuilder.AddTagAddress("groupAddressAssociationTable",
-			fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressAssociationTableAddress+1, numberOfGroupAddressAssociationTableEntries))
+			fmt.Sprintf("%s#%X[0..%d]:UINT", knxAddressString, groupAddressAssociationTableAddress+1, numberOfGroupAddressAssociationTableEntries-1))
 	}
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
@@ -463,7 +463,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			groupAddressMap[comObjectNumber] = append(groupAddressMap[comObjectNumber], groupAddress)
 			entryAddress := comObjectTableAddresses.ComObjectTableAddress() + 3 + (comObjectNumber * 4)
 			readRequestBuilder.AddTagAddress(strconv.Itoa(int(comObjectNumber)),
-				fmt.Sprintf("%s#%X:USINT[4]", knxAddressString, entryAddress))
+				fmt.Sprintf("%s#%X[0..3]:USINT", knxAddressString, entryAddress))
 		}
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {

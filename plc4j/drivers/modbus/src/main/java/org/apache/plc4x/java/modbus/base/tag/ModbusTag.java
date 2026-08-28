@@ -28,19 +28,24 @@ import org.apache.plc4x.java.spi.buffers.api.Serializable;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ModbusTag implements PlcTag, Serializable {
 
+    /** The shared array notation, which sits between the address and the type. */
+    private static final String ARRAY_EXPRESSION = ArrayNotationParser.ARRAY_GROUP;
+
     // STRING and WSTRING carry the length of one string in parentheses, the same way the S7 driver
-    // spells it: "holding-register:1:STRING(20)[3]" is three 20-character strings. The quantity in
-    // brackets keeps meaning "how many values", as it does for every other data type.
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d{1,9})(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?(\\[(?<quantity>\\d{1,5})])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?(\\[(?<quantity>\\d{1,5})])?");
+    // spells it: "holding-register:1[0..2]:STRING(20)" is three 20-character strings.
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d{1,9})" + ARRAY_EXPRESSION + "(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?" + ARRAY_EXPRESSION + "(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d{1,5})\\))?)?");
 
     public static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
@@ -48,12 +53,88 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     private final int quantity;
 
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range -
+     * {@code [4]} yields a scalar and {@code [4..4]} a list of one - and the count alone cannot
+     * say which was written, so the parser's answer is carried here.
+     */
+    private final boolean explicitRange;
+
     /** The declared length of a single string; 1 for every other data type. */
     private final int stringLength;
 
     private final ModbusDataType dataType;
     private final Short unitId;
     private final ModbusByteOrder byteOrder;
+
+    /**
+     * Resolves the address's array expression to the offset from the base address, the number of
+     * elements, and whether a range was written. An absent expression selects one element at the
+     * address itself.
+     *
+     * <p>The third value is not derivable from the other two: {@code [4]} and {@code [4..4]} both
+     * select one element, and only the range is an array.</p>
+     *
+     * @return {@code {offset, quantity, rangeWritten}}, the last being 1 or 0
+     */
+    protected static int[] selectionOf(Matcher matcher, String addressString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return new int[]{0, 1, 0};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION).getFirst();
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+            dimension.isRange() ? 1 : 0};
+    }
+
+    /**
+     * How many bytes one element of the given type occupies on the wire: a string its declared
+     * length, anything else its data type's size.
+     */
+    protected static int bytesPerElement(ModbusDataType dataType, Integer stringLength) {
+        return ((stringLength != null) ? stringLength : 1) * dataType.getDataTypeSize();
+    }
+
+    /**
+     * How far into the register area a selection starts, in registers.
+     *
+     * <p>A selection offset counts elements, but a register-area address counts registers, so the
+     * two have to be reconciled before the offset is applied. They coincide for a one-register
+     * type, which is why every example using INT looked right while {@code [4]:DINT} silently read
+     * four registers short of its target.</p>
+     *
+     * <p>The conversion goes through the total byte offset rather than rounding each element up
+     * on its own. Elements narrower than a register are packed - two {@code CHAR}s share one
+     * register, which is what {@link #getLengthWords()} reports for the length - so rounding per
+     * element would place the start where nothing was written. An offset that does not land on a
+     * register boundary cannot be addressed by a Modbus read at all, and is rejected here rather
+     * than silently moved to the register before or after it.</p>
+     */
+    protected static int registerOffsetOf(int elementOffset, ModbusDataType dataType,
+                                          Integer stringLength, String addressString) {
+        long bytes = (long) elementOffset * bytesPerElement(dataType, stringLength);
+        if ((bytes % 2) != 0) {
+            throw new IllegalArgumentException("Selection starts " + bytes + " bytes into the "
+                + "address, which is not a register boundary. A Modbus read starts at a register, "
+                + "so an odd byte offset cannot be addressed. Was " + addressString);
+        }
+        return (int) (bytes / 2);
+    }
+
+    /**
+     * How many registers a selection of the given number of elements occupies.
+     *
+     * <p>This is the count the wire carries, and the one the address-space and per-request limits
+     * have to be checked against - 63 {@code DINT}s are 126 registers and do not fit into a
+     * request that carries 125, however few elements that is.</p>
+     */
+    protected static int registerCountOf(int quantity, ModbusDataType dataType, Integer stringLength) {
+        long bytes = (long) quantity * bytesPerElement(dataType, stringLength);
+        // Round the total up, and never to nothing: a value narrower than a register still
+        // occupies a whole one, and every request has to ask for something.
+        return (int) Math.max(1, (bytes + 1) / 2);
+    }
 
     public static ModbusTag of(String addressString) {
         if (ModbusTagCoil.matches(addressString)) {
@@ -71,17 +152,17 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         if (ModbusTagExtendedRegister.matches(addressString)) {
             return ModbusTagExtendedRegister.of(addressString);
         }
-        throw new PlcInvalidTagException("Unable to parse address: " + addressString);
+        throw ArrayNotationParser.invalidAddress(addressString,
+            "{area}:{address}[selection]:{TYPE} - for example holding-register:1[0..3]:INT");
     }
 
     @Override
     public String getAddressString() {
+        // The selection sits between the address and the type, in the shared notation.
         String address = String.format("%s%05d", getAddressStringPrefix(), getLogicalAddress());
-        if(getDataType() != null) {
+        address += ArrayNotationParser.render(getArrayInfo());
+        if (getDataType() != null) {
             address += ":" + getDataType().name();
-        }
-        if(!getArrayInfo().isEmpty()) {
-            address += "[" + (getArrayInfo().get(0).getUpperBound() + 1) + "]";
         }
         return address;
     }
@@ -104,6 +185,12 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     protected ModbusTag(int address, Integer quantity, Integer stringLength, ModbusDataType dataType,
                         Map<String, String> config) {
+        this(address, quantity, stringLength, dataType, config, (quantity != null) && (quantity > 1));
+    }
+
+    protected ModbusTag(int address, Integer quantity, Integer stringLength, ModbusDataType dataType,
+                        Map<String, String> config, boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.address = address;
         if (getLogicalAddress() <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + getLogicalAddress());
@@ -178,7 +265,11 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     }
 
     public int getLengthWords() {
-        return (int) ((quantity * stringLength * (float) dataType.getDataTypeSize()) / 2.0f);
+        // Rounded up, and never to zero: a single CHAR is one byte and still occupies a whole
+        // register, where truncating the halved byte count asked for none at all. This is the
+        // same arithmetic registerOffsetOf() applies to the start, so the offset and the length
+        // cannot disagree.
+        return registerCountOf(quantity, dataType, stringLength);
     }
 
     public ModbusDataType getDataType() {
@@ -192,10 +283,18 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(quantity != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1));
+        // A range is an array even when it spans one element, so the flag decides the shape and
+        // the count only sizes it. Deriving the shape from the count alone reported [4..4] as a
+        // scalar, contradicting the notation's own rule.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1, 0, true));
         }
         return Collections.emptyList();
+    }
+
+    /** Whether the address wrote a range, as opposed to selecting a single element. */
+    public boolean isExplicitRange() {
+        return explicitRange;
     }
 
     @Override
@@ -203,15 +302,15 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ModbusTag)) {
-            return false;
+        if (o instanceof ModbusTag that) {
+            return address == that.address &&
+                quantity == that.quantity &&
+            explicitRange == that.explicitRange &&
+                dataType == that.dataType &&
+                Objects.equals(unitId, that.unitId) &&
+                getClass() == that.getClass(); // MUST be identical
         }
-        ModbusTag that = (ModbusTag) o;
-        return address == that.address &&
-            quantity == that.quantity &&
-            dataType == that.dataType &&
-            unitId == that.unitId &&
-            getClass() == that.getClass(); // MUST be identical
+        return false;
     }
 
     @Override

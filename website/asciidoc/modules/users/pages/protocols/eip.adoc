@@ -23,6 +23,13 @@
 
 == Connection String Options
 
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
+
 include::partial$eip.adoc[]
 
 == Address Format
@@ -43,13 +50,12 @@ To read and write data to a PLC4X device, the EtherNet/IP driver uses symbolic s
 |===
 |Name |Description
 |Tagname |symbolic name of the data. May optionally be prefixed with `%`.
-|Start Index (optional)|if the data is an array, we can specify a starting index from where we want to read. It is appended to the tag name and has to be the last part of it.
+|Selection (optional)|which elements of an array to read - a single index or an inclusive range. It follows the tag name, before the data type. See xref:array-notation.adoc[Addressing arrays].
 |DataType (optional)|the data type of the value. Defaults to `DINT` when omitted, so for anything that is not a 32-bit integer it should be given explicitly - also when reading.
-|Number of elements (optional)|if the data is an array, we can specify the number of elements we want to read. Defaults to `1`. Use this in combination with the starting index to get the exact scope you want.
 |===
 
-NOTE: The data type comes *before* the number of elements. Reading four DINTs starting at index 0
- is `myArray[0]:DINT:4`.
+NOTE: The selection comes *before* the data type, and a range says how many elements are read.
+ Reading four DINTs starting at index 0 is `myArray[0..3]:DINT`.
 
 .Examples
 [cols="2" ,options="header"]
@@ -57,10 +63,14 @@ NOTE: The data type comes *before* the number of elements. Reading four DINTs st
 |Address |Meaning
 |`myTag` |a single element of `myTag`, decoded as `DINT`
 |`myTag:REAL` |a single element of `myTag`, decoded as `REAL`
-|`myTag:4` |four elements of `myTag`, decoded as `DINT`
+|`myTag[0..3]` |four elements of `myTag`, decoded as `DINT`
 |`myArray[3]:DINT` |element 3 of `myArray`
-|`myArray[0]:DINT:4` |elements 0 to 3 of `myArray`, returned as a list
+|`myArray[0..3]:DINT` |elements 0 to 3 of `myArray`, returned as a list
 |===
+
+A CIP array index travels in a `MemberID`, whose instance field is a `uint 8`, so a selection
+cannot start past index 255. A range may run beyond it - the request carries a start and a
+count - but it cannot begin there.
 
 === Data Types
 

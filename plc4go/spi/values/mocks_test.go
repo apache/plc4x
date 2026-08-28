@@ -1966,6 +1966,50 @@ func (_m *MockArrayInfo) EXPECT() *MockArrayInfo_Expecter {
 	return &MockArrayInfo_Expecter{mock: &_m.Mock}
 }
 
+// GetBase provides a mock function for the type MockArrayInfo
+func (_mock *MockArrayInfo) GetBase() uint32 {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBase")
+	}
+
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(uint32)
+	}
+	return r0
+}
+
+// MockArrayInfo_GetBase_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBase'
+type MockArrayInfo_GetBase_Call struct {
+	*mock.Call
+}
+
+// GetBase is a helper method to define mock.On call
+func (_e *MockArrayInfo_Expecter) GetBase() *MockArrayInfo_GetBase_Call {
+	return &MockArrayInfo_GetBase_Call{Call: _e.mock.On("GetBase")}
+}
+
+func (_c *MockArrayInfo_GetBase_Call) Run(run func()) *MockArrayInfo_GetBase_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockArrayInfo_GetBase_Call) Return(v uint32) *MockArrayInfo_GetBase_Call {
+	_c.Call.Return(v)
+	return _c
+}
+
+func (_c *MockArrayInfo_GetBase_Call) RunAndReturn(run func() uint32) *MockArrayInfo_GetBase_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetLowerBound provides a mock function for the type MockArrayInfo
 func (_mock *MockArrayInfo) GetLowerBound() uint32 {
 	ret := _mock.Called()
@@ -2094,6 +2138,50 @@ func (_c *MockArrayInfo_GetUpperBound_Call) Return(v uint32) *MockArrayInfo_GetU
 }
 
 func (_c *MockArrayInfo_GetUpperBound_Call) RunAndReturn(run func() uint32) *MockArrayInfo_GetUpperBound_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// IsRange provides a mock function for the type MockArrayInfo
+func (_mock *MockArrayInfo) IsRange() bool {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for IsRange")
+	}
+
+	var r0 bool
+	if returnFunc, ok := ret.Get(0).(func() bool); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	return r0
+}
+
+// MockArrayInfo_IsRange_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsRange'
+type MockArrayInfo_IsRange_Call struct {
+	*mock.Call
+}
+
+// IsRange is a helper method to define mock.On call
+func (_e *MockArrayInfo_Expecter) IsRange() *MockArrayInfo_IsRange_Call {
+	return &MockArrayInfo_IsRange_Call{Call: _e.mock.On("IsRange")}
+}
+
+func (_c *MockArrayInfo_IsRange_Call) Run(run func()) *MockArrayInfo_IsRange_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockArrayInfo_IsRange_Call) Return(b bool) *MockArrayInfo_IsRange_Call {
+	_c.Call.Return(b)
+	return _c
+}
+
+func (_c *MockArrayInfo_IsRange_Call) RunAndReturn(run func() bool) *MockArrayInfo_IsRange_Call {
 	_c.Call.Return(run)
 	return _c
 }

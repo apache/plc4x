@@ -18,12 +18,15 @@
  */
 package org.apache.plc4x.java.ads.tag;
 
+import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
@@ -42,7 +45,8 @@ public class DirectAdsTag implements AdsTag {
     private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile(
         "^((0[xX](?<indexGroupHex>[0-9a-fA-F]{1,8}))|(?<indexGroup>\\d{1,10}))" +
             "/((0[xX](?<indexOffsetHex>[0-9a-fA-F]{1,8}))|(?<indexOffset>\\d{1,10}))" +
-            ":(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d{1,10})])?");
+            ArrayNotationParser.ARRAY_GROUP +
+            ":(?<adsDataType>\\w+)");
 
     /** An index group, an index offset and a length all travel ADS as four bytes. */
     private static final long MAX_UINT32 = 0xFFFFFFFFL;
@@ -55,7 +59,18 @@ public class DirectAdsTag implements AdsTag {
 
     private final int numberOfElements;
 
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range,
+     * and the count cannot say which was written.
+     */
+    private final boolean explicitRange;
+
     public DirectAdsTag(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
+        this(indexGroup, indexOffset, adsDataTypeName, numberOfElements, (numberOfElements != null) && (numberOfElements > 1));
+    }
+
+    public DirectAdsTag(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.indexGroup = checkUint32("indexGroup", indexGroup);
         this.indexOffset = checkUint32("indexOffset", indexOffset);
         this.adsDataTypeName = Objects.requireNonNull(adsDataTypeName);
@@ -106,10 +121,28 @@ public class DirectAdsTag implements AdsTag {
         return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
     }
 
+    /**
+     * Resolves the address's array expression to the offset from the index offset and the number
+     * of elements. An absent expression selects one element at the address itself.
+     *
+     * @return {@code {offset, numberOfElements}}
+     */
+    protected static int[] selectionOf(Matcher matcher, String address) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return new int[]{0, 1, 0};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).getFirst();
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+            dimension.isRange() ? 1 : 0};
+    }
+
     public static DirectAdsTag of(String address) {
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new PlcInvalidTagException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}:{adsDataType}([numberOfElements])?");
+            throw ArrayNotationParser.invalidAddress(address,
+                "{indexGroup}/{indexOffset}[selection]:{TYPE} - for example 0x4020/0[0..3]:DINT");
         }
 
         String indexGroupStringHex = matcher.group("indexGroupHex");
@@ -123,11 +156,36 @@ public class DirectAdsTag implements AdsTag {
 
         String adsDataTypeString = matcher.group("adsDataType");
 
-        String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null
-            ? parseElementCount(numberOfElementsString) : null;
+        int[] selection = selectionOf(matcher, address);
+        // An index offset is a byte offset; the selection counts elements. They are the same
+        // number only for a one-byte type, so 0x4020/0[3]:DINT would otherwise advance three
+        // bytes and read from inside the first element.
+        indexOffset += (long) selection[0] * bytesPerElement(adsDataTypeString, selection[0], address);
+        Integer numberOfElements = selection[1];
 
-        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeString, numberOfElements);
+        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeString, numberOfElements,
+            selection[2] == 1);
+    }
+
+    /**
+     * The storage size of one element of the named type.
+     *
+     * <p>The device's data-type table is not available while an address is being parsed, so only
+     * the types ADS defines itself can be measured here. A selection on anything else cannot be
+     * placed, and is refused rather than silently applied at the wrong offset - the offset is only
+     * needed when something was selected, so an address without a selection is unaffected.</p>
+     */
+    private static int bytesPerElement(String typeName, int offset, String address) {
+        try {
+            return AdsDataType.valueOf(typeName).getNumBytes();
+        } catch (IllegalArgumentException e) {
+            if (offset == 0) {
+                return 1;
+            }
+            throw new PlcInvalidTagException("Cannot place a selection in '" + address + "': the size"
+                + " of type '" + typeName + "' is only known to the device, so the element's offset"
+                + " cannot be computed here. Address the element directly instead.");
+        }
     }
 
     public static boolean matches(String address) {
@@ -152,11 +210,10 @@ public class DirectAdsTag implements AdsTag {
 
     @Override
     public String getAddressString() {
-        String address = String.format("0x%d/%d:%s", getIndexGroup(), getIndexOffset(), getPlcDataType());
-        if(getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
-        return address;
+        // "0x%d" printed the group's decimal digits behind a hex prefix, so group 16416 came back
+        // as 0x16416 - which re-parses as 91158, a different address entirely.
+        return String.format("0x%X/%d%s:%s", getIndexGroup(), getIndexOffset(),
+            ArrayNotationParser.render(getArrayInfo()), getPlcDataType());
     }
 
     @Override
@@ -170,8 +227,9 @@ public class DirectAdsTag implements AdsTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+        // A range is an array even when it spans one element; the count cannot express that.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1, 0, true));
         }
         return Collections.emptyList();
     }
@@ -181,12 +239,11 @@ public class DirectAdsTag implements AdsTag {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DirectAdsTag)) {
-            return false;
+        if (o instanceof DirectAdsTag that) {
+            return indexGroup == that.indexGroup &&
+                indexOffset == that.indexOffset;
         }
-        DirectAdsTag that = (DirectAdsTag) o;
-        return indexGroup == that.indexGroup &&
-            indexOffset == that.indexOffset;
+        return false;
     }
 
     @Override

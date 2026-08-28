@@ -57,7 +57,7 @@ func TestDriver_Identity(t *testing.T) {
 
 	tag, err := driver.GetPlcTagHandler().ParseTag("D350")
 	require.NoError(t, err)
-	assert.Equal(t, "D350:WORD[1]", tag.GetAddressString())
+	assert.Equal(t, "D350:WORD", tag.GetAddressString())
 }
 
 // TestDriver_DefaultPortComesFromTheMspec keeps the default port and the wire spec from drifting

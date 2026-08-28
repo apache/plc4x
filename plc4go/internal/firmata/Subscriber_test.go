@@ -102,7 +102,7 @@ func TestSubscriber_SubscribeDigitalPinWithPullup(t *testing.T) {
 func TestSubscriber_SubscribeARunOfDigitalPinsAcrossPorts(t *testing.T) {
 	connection, transportInstance := newTestConnection(t)
 
-	_, responseCode := subscribe(t, connection, "bar", "digital:6[4]")
+	_, responseCode := subscribe(t, connection, "bar", "digital:6[0..3]")
 	assert.Equal(t, apiModel.PlcResponseCode_OK, responseCode)
 
 	assert.Equal(t, []byte{
@@ -117,7 +117,7 @@ func TestSubscriber_SubscribeARunOfDigitalPinsAcrossPorts(t *testing.T) {
 func TestSubscriber_SubscribeAnalogPin(t *testing.T) {
 	connection, transportInstance := newTestConnection(t)
 
-	_, responseCode := subscribe(t, connection, "dial", "analog:2[2]")
+	_, responseCode := subscribe(t, connection, "dial", "analog:2[0..1]")
 	assert.Equal(t, apiModel.PlcResponseCode_OK, responseCode)
 
 	assert.Equal(t, []byte{
@@ -213,7 +213,7 @@ func TestSubscriber_IgnoresPinsItDoesNotCover(t *testing.T) {
 // which changed (plc4j FirmataConnection.publishDigitalEvents).
 func TestSubscriber_DeliversTheWholeRun(t *testing.T) {
 	connection, _ := newTestConnection(t)
-	handle, _ := subscribe(t, connection, "bar", "digital:8[3]")
+	handle, _ := subscribe(t, connection, "bar", "digital:8[0..2]")
 	collect, _ := collectEvents(t, handle)
 
 	connection.handleIncomingMessage(readWriteModel.NewFirmataMessageDigitalIO(1, []int8{0x05, 0x00}))
@@ -247,7 +247,7 @@ func TestSubscriber_DeliversAnalogChanges(t *testing.T) {
 // A pin of a run the board hasn't sampled yet is reported as -1, the way plc4j fills the gaps.
 func TestSubscriber_DeliversUnknownAnalogPinsAsMinusOne(t *testing.T) {
 	connection, _ := newTestConnection(t)
-	handle, _ := subscribe(t, connection, "dials", "analog:3[2]")
+	handle, _ := subscribe(t, connection, "dials", "analog:3[0..1]")
 	collect, _ := collectEvents(t, handle)
 
 	connection.handleIncomingMessage(readWriteModel.NewFirmataMessageAnalogIO(3, []int8{0x05, 0x00}))

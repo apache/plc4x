@@ -39,7 +39,7 @@ class SlmpTagTest {
 
     @Test
     void parsesDataTypeAndQuantity() {
-        SlmpTag tag = SlmpTag.of("R200:REAL[4]");
+        SlmpTag tag = SlmpTag.of("R200[0..3]:REAL");
         assertEquals(SlmpDeviceCode.R, tag.getDeviceCode());
         assertEquals(200, tag.getDeviceNumber());
         assertEquals(SlmpDataType.REAL, tag.getDataType());
@@ -49,7 +49,7 @@ class SlmpTagTest {
 
     @Test
     void parsesHexLinkRegisterBareForm() {
-        SlmpTag tag = SlmpTag.of("W1A:WORD[10]");
+        SlmpTag tag = SlmpTag.of("W1A[0..9]:WORD");
         assertEquals(SlmpDeviceCode.W, tag.getDeviceCode());
         assertEquals(0x1A, tag.getDeviceNumber());            // W is hex
         assertEquals(10, tag.getQuantity());
@@ -64,7 +64,7 @@ class SlmpTagTest {
     @Test
     void parses0xPrefixCombinedWithDatatypeAndQuantity() {
         // the documented example form: 0x prefix + datatype + quantity in one address
-        SlmpTag tag = SlmpTag.of("W0x1A:WORD[10]");
+        SlmpTag tag = SlmpTag.of("W0x1A[0..9]:WORD");
         assertEquals(SlmpDeviceCode.W, tag.getDeviceCode());
         assertEquals(0x1A, tag.getDeviceNumber());
         assertEquals(SlmpDataType.WORD, tag.getDataType());
@@ -73,7 +73,7 @@ class SlmpTagTest {
 
     @Test
     void canonicalAddressStringRoundTrips() {
-        assertEquals("D350:INT[2]", SlmpTag.of("D350:INT[2]").getAddressString());
+        assertEquals("D350[0..1]:INT", SlmpTag.of("D350[0..1]:INT").getAddressString());
         assertEquals("W0x1A", SlmpTag.of("W1A").getAddressString());   // W prints 0x hex
     }
 
@@ -94,20 +94,25 @@ class SlmpTagTest {
     }
 
     @Test
-    void rejectsZeroQuantity() {
-        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D100:WORD[0]"));
+    /**
+     * A quantity of zero used to be rejected. The notation has no way to say it: [0] names the
+     * element at offset 0, which is one device, and an empty bracket names nothing at all.
+     */
+    void rejectsAnEmptySelection() {
+        assertEquals(1, SlmpTag.of("D100[0]:WORD").getQuantity());
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D100[]:WORD"));
     }
 
     @Test
     void rejectsOverCeiling() {
-        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:WORD[961]"));
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0[0..960]:WORD"));
     }
 
     @Test
     void rejectsQuantityOverflowingInt() {
         // a quantity beyond Integer.MAX_VALUE must surface as PlcInvalidTagException,
         // consistent with the device-number parse, not a raw NumberFormatException
-        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:WORD[999999999999]"));
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0[0..999999999998]:WORD"));
     }
 
     @Test
@@ -121,6 +126,6 @@ class SlmpTagTest {
     void rejectsQuantityWhoseWordCountOverflowsInt() {
         // quantity * wordsPerElement must not overflow int and slip past the MAX_POINTS ceiling:
         // 2147483647 * 2 words wraps negative in int arithmetic, so the tag would otherwise be accepted
-        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:REAL[2147483647]"));
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0[0..2147483646]:REAL"));
     }
 }

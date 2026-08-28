@@ -30,6 +30,13 @@ between the two; where that is the case it is called out below.
 
 == Connection String Options
 
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
+
 include::partial$umas.adoc[]
 == Supported Operations
 

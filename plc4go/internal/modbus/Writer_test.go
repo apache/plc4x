@@ -393,7 +393,7 @@ func TestWriter_registerWriteRejectsAPayloadThatIsntWholeRegisters(t *testing.T)
 // An odd number of strings fills its registers exactly, so it goes out with a quantity that
 // matches the byte count.
 func TestWriter_writesAnOddNumberOfStrings(t *testing.T) {
-	tag := parseTag(t, "holding-register:1:STRING(4)[3]")
+	tag := parseTag(t, "holding-register:1[0..2]:STRING(4)")
 	value := spiValues.NewPlcList([]apiValues.PlcValue{
 		spiValues.NewPlcSTRING("ab"), spiValues.NewPlcSTRING("cd"), spiValues.NewPlcSTRING("ef"),
 	})
@@ -409,7 +409,7 @@ func TestWriter_writesAnOddNumberOfStrings(t *testing.T) {
 // Several BOOLs share a register, so the quantity a write announces is the number of registers the
 // packed bits occupy rather than one per value.
 func TestWriter_writesPackedBoolsAsOneRegister(t *testing.T) {
-	tag := parseTag(t, "holding-register:1:BOOL[3]")
+	tag := parseTag(t, "holding-register:1[0..2]:BOOL")
 	value := spiValues.NewPlcList([]apiValues.PlcValue{
 		spiValues.NewPlcBOOL(true), spiValues.NewPlcBOOL(false), spiValues.NewPlcBOOL(true),
 	})

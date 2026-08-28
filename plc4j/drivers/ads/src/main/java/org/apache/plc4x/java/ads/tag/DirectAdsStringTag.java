@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.tag;
 
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
@@ -35,13 +36,19 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
     private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]{1,8}))|(?<indexGroup>\\d{1,10}))" +
             "/((0[xX](?<indexOffsetHex>[0-9a-fA-F]{1,8}))|(?<indexOffset>\\d{1,10}))" +
-            ":(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)" +
-            "(\\[(?<numberOfElements>\\d{1,10})])?");
+            ArrayNotationParser.ARRAY_GROUP +
+            ":(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)");
 
     private final int stringLength;
 
     public DirectAdsStringTag(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
-        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
+        this(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements,
+            (numberOfElements != null) && (numberOfElements > 1));
+    }
+
+    public DirectAdsStringTag(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength,
+                              Integer numberOfElements, boolean explicitRange) {
+        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements, explicitRange);
         this.stringLength = stringLength;
     }
 
@@ -69,11 +76,20 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
         String stringLengthString = matcher.group("stringLength");
         int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 0;
 
-        String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null
-            ? parseElementCount(numberOfElementsString) : null;
+        int[] selection = selectionOf(matcher, address);
+        // A string element occupies its declared length plus the terminator, doubled for WSTRING -
+        // the same size AdsTcpConnection computes for the read. The offset counts elements, so it
+        // has to be multiplied by that or a selection lands inside an earlier string.
+        indexOffset += (long) selection[0] * bytesPerString(adsDataTypeName, stringLength);
+        Integer numberOfElements = selection[1];
 
-        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
+        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength,
+            numberOfElements, selection[2] == 1);
+    }
+
+    /** What one string of the declared length occupies, terminator included. */
+    private static int bytesPerString(String adsDataTypeName, int stringLength) {
+        return "WSTRING".equals(adsDataTypeName) ? (stringLength + 1) * 2 : (stringLength + 1);
     }
 
     public static boolean matches(String address) {
@@ -82,11 +98,12 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
     @Override
     public String getAddressString() {
-        String address = String.format("0x%d/%d:%s(%d)", getIndexGroup(), getIndexOffset(), getPlcDataType(), getStringLength());
-        if(getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
-        return address;
+        // The selection sits before the type, as the pattern accepts it, and the index group is
+        // rendered in the hex its "0x" claims: "0x%d" printed decimal digits behind a hex prefix,
+        // so group 16416 came back as 0x16416 - a different address that also carried the removed
+        // suffix form, and so parsed as nothing at all.
+        return String.format("0x%X/%d%s:%s(%d)", getIndexGroup(), getIndexOffset(),
+            ArrayNotationParser.render(getArrayInfo()), getPlcDataType(), getStringLength());
     }
 
     @Override

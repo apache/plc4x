@@ -24,7 +24,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"runtime/debug"
-	"strings"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -137,22 +136,15 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 			return
 		}
 
-		// Size of one element.
-		size := directAdsTag.DataType.GetSize()
-
-		// Calculate how many elements in total we'll be reading.
-		arraySize := uint32(1)
-		if len(tag.GetArrayInfo()) > 0 {
-			for _, arrayInfo := range tag.GetArrayInfo() {
-				arraySize = arraySize * arrayInfo.GetSize()
-			}
-		}
+		// How many bytes this tag transfers - the whole of what its type declares, or just the
+		// part the address selected out of it, which the resolved tag knows.
+		size := directAdsTag.TransferSizeInBytes()
 
 		// Status code + payload size
 		expectedResponseDataSize += 4
 
 		requestItems = append(requestItems, driverModel.NewAdsMultiRequestItemWrite(
-			directAdsTag.IndexGroup, directAdsTag.IndexOffset, size*arraySize))
+			directAdsTag.IndexGroup, directAdsTag.IndexOffset, size))
 	}
 
 	response, err := m.ExecuteAdsReadWriteRequest(ctx,
@@ -204,10 +196,9 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 			return fmt.Errorf("expecting exactly %d items in the list", len(plcValues))
 		}
 
-		arrayItemTypeName := dataType.GetSecondaryName()[strings.Index(dataType.GetSecondaryName(), " OF ")+4:]
-		arrayItemType, ok := m.driverContext.dataTypeTable[arrayItemTypeName]
-		if !ok {
-			return fmt.Errorf("couldn't resolve array item type %s", arrayItemTypeName)
+		arrayItemType, err := m.arrayItemTypeFor(dataType)
+		if err != nil {
+			return err
 		}
 
 		for _, plcValue := range plcValues {

@@ -32,7 +32,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeBooleanBOOL() {
         Boolean[] object = {true,false,true,false,true,false,true,true,false};
-        ModbusTagCoil coils = ModbusTagCoil.of("coil:8:BOOL[9]");
+        ModbusTagCoil coils = ModbusTagCoil.of("coil:8[0..8]:BOOL");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(coils, object);
         Assertions.assertEquals("[true,false,true,false,true,false,true,true,false]", list.toString());
     }
@@ -40,7 +40,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerSINT() {
         Integer[] object = {1,-1,127,-128,5,6,7,8};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8:SINT[8]{unit-id: 10}");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8[0..7]:SINT{unit-id: 10}");
         Assertions.assertEquals((short) 10, holdingRegister.getUnitId());
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,-1,127,-128,5,6,7,8]", list.toString());
@@ -49,7 +49,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerUSINT() {
         Integer[] object = {1,255,0,4,5,6,7,8};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8:USINT[8]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8[0..7]:USINT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,255,0,4,5,6,7,8]", list.toString());
     }
@@ -57,7 +57,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerBYTE() {
         Integer[] object = {1,255,0,4,5,6,7,8};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8:BYTE[8]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8[0..7]:BYTE");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,255,0,4,5,6,7,8]", list.toString());
     }
@@ -65,7 +65,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerINT() {
         Integer[] object = {1,-1,32000,-32000,5,6,7};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:INT[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:INT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,-1,32000,-32000,5,6,7]", list.toString());
     }
@@ -73,7 +73,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerUINT() {
         Integer[] object = {1,65535,10,55000,5,6,7};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:UINT[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:UINT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,65535,10,55000,5,6,7]", list.toString());
     }
@@ -81,7 +81,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerWORD() {
         Integer[] object = {1,65535,10,55000,5,6,7};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:WORD[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:WORD");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,65535,10,55000,5,6,7]", list.toString());
     }
@@ -89,7 +89,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerDINT() {
         Integer[] object = {1,655354775,-2147483648,2147483647,5,6,7};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:DINT[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:DINT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,655354775,-2147483648,2147483647,5,6,7]", list.toString());
     }
@@ -97,7 +97,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeLongUDINT() {
         Long[] object = {1L,655354775L,0L,4294967295L,5L,6L,7L};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:UDINT[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:UDINT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,655354775,0,4294967295,5,6,7]", list.toString());
     }
@@ -105,7 +105,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeLongDWORD() {
         Long[] object = {1L,655354775L,0L,4294967295L,5L,6L,7L};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:DWORD[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:DWORD");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,655354775,0,4294967295,5,6,7]", list.toString());
     }
@@ -113,7 +113,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeLongLINT() {
         Long[] object = {1L,655354775L,-9223372036854775808L,9223372036854775807L,5L,6L,7L};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:LINT[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:LINT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,655354775,-9223372036854775808,9223372036854775807,5,6,7]", list.toString());
     }
@@ -121,7 +121,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeBigIntegerULINT() {
         BigInteger[] object = {BigInteger.valueOf(1L),BigInteger.valueOf(655354775L),BigInteger.valueOf(0),new BigInteger("18446744073709551615"),BigInteger.valueOf(5L),BigInteger.valueOf(6L),BigInteger.valueOf(7L)};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:ULINT[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:ULINT");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,655354775,0,18446744073709551615,5,6,7]", list.toString());
     }
@@ -129,7 +129,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeBigIntegerLWORD() {
         BigInteger[] object = {BigInteger.valueOf(1L),BigInteger.valueOf(655354775L),BigInteger.valueOf(0),new BigInteger("18446744073709551615"),BigInteger.valueOf(5L),BigInteger.valueOf(6L),BigInteger.valueOf(7L)};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:LWORD[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:LWORD");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1,655354775,0,18446744073709551615,5,6,7]", list.toString());
     }
@@ -137,7 +137,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeFloatREAL() {
         Float[] object = {1.1f,1000.1f,100000.1f,3.4028232E38f,-3.4028232E38f,-1f,10384759934840.0f};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:REAL[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:REAL");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         //! When using Java 19 it seems the toString method uses a different precision than the previous versions,
         //! so we need to check differently in this case.
@@ -151,7 +151,7 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeDoubleLREAL() {
         Double[] object = {1.1,1000.1,100000.1,1.7E308,-1.7E308,-1d,10384759934840.0};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7:LREAL[7]");
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:7[0..6]:LREAL");
         PlcList list = (PlcList) new DefaultPlcValueHandler().newPlcValue(holdingRegister, object);
         Assertions.assertEquals("[1.1,1000.1,100000.1,1.7E308,-1.7E308,-1.0,1.038475993484E13]", list.toString());
     }

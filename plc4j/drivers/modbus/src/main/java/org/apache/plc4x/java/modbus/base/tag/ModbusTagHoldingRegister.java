@@ -43,6 +43,10 @@ public class ModbusTagHoldingRegister extends ModbusTag {
         super(address, quantity, stringLength, dataType, config);
     }
 
+    public ModbusTagHoldingRegister(int address, Integer quantity, Integer stringLength, ModbusDataType dataType, Map<String, String> config, boolean explicitRange) {
+        super(address, quantity, stringLength, dataType, config, explicitRange);
+    }
+
     protected String getAddressStringPrefix() {
         return ADDRESS_PREFIX;
     }
@@ -81,22 +85,28 @@ public class ModbusTagHoldingRegister extends ModbusTag {
             throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
         }
 
-        String quantityString = matcher.group("quantity");
-        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
-        if ((address + quantity) > REGISTER_MAXADDRESS) {
-            throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
-        }
-
-        if (quantity > 125) {
-            throw new IllegalArgumentException("quantity may not be larger than 125. Was " + quantity);
-        }
-
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
 
         String stringLengthString = matcher.group("stringLength");
         Integer stringLength = (stringLengthString != null) ? Integer.parseInt(stringLengthString) : null;
 
-        return new ModbusTagHoldingRegister(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString));
+        int[] selection = selectionOf(matcher, addressString);
+        // The offset counts elements; the address counts registers.
+        address += registerOffsetOf(selection[0], dataType, stringLength, addressString);
+        int quantity = selection[1];
+        // The wire carries registers, not elements: the limits below are about how much a request
+        // can hold and where the address space ends, so both have to be measured in registers.
+        int registers = registerCountOf(quantity, dataType, stringLength);
+        if ((address + registers) > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (registers - 1)));
+        }
+
+        if (registers > 125) {
+            throw new IllegalArgumentException("quantity may not be larger than 125 registers. Was " + registers);
+        }
+
+
+        return new ModbusTagHoldingRegister(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString), selection[2] == 1);
     }
 
 }

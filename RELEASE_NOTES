@@ -368,6 +368,155 @@ Incompatible changes
   to one rather than kept, so a tag built as ":INT:0", or through
   the (tag, type) constructor which used to leave the count at
   zero, now reads one element instead of none.
+- All Java drivers now select array elements with one shared notation, written
+  before the data type: `[n]` for a single element, `[lo..hi]` for an
+  inclusive range, an optional `;base` for an array the PLC declares as
+  starting somewhere other than zero, and one bracket per dimension. The
+  dimensions of one array may also be written comma-separated inside a single
+  bracket - `[1..2,3..4]` is the same as `[1..2][3..4]` - which is the form
+  Allen-Bradley and others use; addresses are always rendered back in the
+  one-bracket-per-dimension form. See the "Addressing arrays" page.
+
+  This replaces four incompatible spellings. `[4]` meant "four elements" in
+  seven tag classes and "the fifth element" in two; it now means one element
+  everywhere, and a count is written as a range. Addresses in the old form no
+  longer parse, and the error names the address to write instead - so an
+  upgrade reports the change rather than quietly returning different data.
+  The affected forms, by driver:
+
+    S7           %DB42:28.0:BYTE[4]        -> %DB42:28.0[0..3]:BYTE
+    S7 (string)  %DB1:0:STRING(20)[4]      -> %DB1:0[0..3]:STRING(20)
+    Modbus       holding-register:1:INT[4] -> holding-register:1[0..3]:INT
+    SLMP         D100:INT[4]               -> D100[0..3]:INT
+    ADS (direct) 0x4020/0:DINT[4]          -> 0x4020/0[0..3]:DINT
+    EtherNet/IP  myArray[0]:DINT:4         -> myArray[0..3]:DINT
+    Profinet     tag:INT[4]                -> tag[0..3]:INT
+    Profinet-NG  1.2.INPUT.0:INT[4]        -> 1.2.INPUT.0[0..3]:INT
+    Simulated    RANDOM/foo:INT[4]         -> RANDOM/foo[0..3]:INT
+
+  OPC-UA addresses are unchanged - its implementation is the one the shared
+  notation was extracted from - and ADS and UMAS symbolic addresses keep
+  their existing form while gaining ranges.
+- Firmata is the one driver whose addresses change meaning silently. They
+  carry no data type (`3[4]`), so the brackets did not move and there is
+  nothing to reject: `3[4]` used to read four pins starting at pin 3 and now
+  reads one pin, the fifth. Rewrite these as `3[0..3]`.
+- An address that selects nothing now asks for the whole value rather than a
+  single element. For a scalar that is unchanged; for an array it is every
+  element, on the drivers that can determine the extent from the device
+  (OPC-UA, ADS, UMAS). The others read one element as before, because their
+  addresses are memory offsets with no declared array at them.
+- A single index and a one-element range are no longer the same thing.
+  `myTag[4]` selects one element and yields a scalar, while `myTag[4..4]`
+  yields a list of one. `PlcTag.getArrayInfo()` reports the shape of the
+  value received - empty for a scalar, one entry per dimension for an array -
+  so a consumer can tell the two apart without knowing the protocol.
+- `ArrayInfo` gains `getBase()` and `isRange()`, both as default methods, so
+  existing implementations keep compiling. Its javadoc described `[6]` as a
+  six-element array, which was never what the drivers did and is not what the
+  notation means.
+- EtherNet/IP rejects an array index above 255 while parsing the address; a
+  CIP MemberID carries a `uint 8`. A range may run past it, since the request
+  carries a start and a count, but it cannot begin there.
+- ADS and UMAS verify a `;base` written in the address against the bounds the
+  device declares, and report a disagreement. The device is authoritative; a
+  base that differs means the address was written against a different layout,
+  which would otherwise read silently shifted data.
+- ADS rejects an address that names a member of an array without saying which
+  element - `MAIN.g_arr.member` on an array `g_arr`. It previously resolved
+  against the first element and reported the result as though it were the
+  whole path.
+- Selecting array elements over UMAS is reported as UNSUPPORTED rather than
+  returning the whole variable. The driver has no per-element arithmetic yet;
+  the address parses, and the refusal is explicit.
+- Fixed `getArrayInfo()` reporting one element too many on the ADS direct and
+  Firmata drivers, whose inclusive bounds were built from the element count
+  rather than the last index.
+- Fixed a direct ADS array selection transferring every element it asked for
+  and decoding only the first, in both PLC4J and PLC4Go. The size of the
+  request was multiplied by the element count while the decoder was given no
+  shape, so `0x4020/0[0..3]:DINT` returned one value for four elements' worth
+  of bytes - a well-formed answer to a question nobody asked.
+- Fixed a symbolic ADS selection being ignored in PLC4Go. `MAIN.arr[1..4]`
+  resolved like `MAIN.arr`: the whole array, from its original offset. The
+  selection now moves the read to the first selected element and transfers
+  only what it spans, across as many dimensions as the address names
+  (`MAIN.grid[3,1..3]`), and a selection outside what the device declares is
+  refused rather than approximated.
+- Fixed the shape of a partly selected multi-dimensional ADS array in PLC4J.
+  `MAIN.grid[1..2]` on an `ARRAY [0..9,0..4]` reported two elements rather
+  than two rows of five: the dimensions the selection did not name were
+  dropped from the shape while their bytes were still transferred. They are
+  selected whole, and are part of the value.
+- A dimension of an ADS selection written as a bare index now collapses,
+  where before every named dimension added a level of list. `grid[3,1..3]` is
+  a list of three, not a list of one list of three, and `grid[3,2]` is a
+  scalar. This is the same rule the notation states for a single dimension.
+- Fixed SLMP reporting a one-element range as a scalar in PLC4J. `D100[4..4]`
+  now returns a list of one, as `D100[4]` returns a scalar and as PLC4Go's
+  SLMP driver already did. Its shape came from the element count, which
+  cannot express the difference.
+- PLC4Go now uses the same array notation as PLC4J, so one address means one
+  thing in either language. The grammar, the rules and the rendering are the
+  ones described above; the two share a specification rather than code, and
+  the Go parser is tested against the Java cases directly.
+
+  The forms that changed, by driver:
+
+    S7           %M100:INT[10]             -> %M100[0..9]:INT
+    S7 (string)  %DB69.DBX68:WSTRING[3]    -> %DB69.DBX68[0..2]:WSTRING
+    Modbus       holding-register:1:INT[4] -> holding-register:1[0..3]:INT
+    SLMP         D100:INT[4]               -> D100[0..3]:INT
+    EtherNet/IP  %rate:DINT:4              -> %rate[0..3]:DINT
+    Simulated    RANDOM/foo:INT[4]         -> RANDOM/foo[0..3]:INT
+    KNXnet/IP    1.2.3#4B1C:UINT[4]        -> 1.2.3#4B1C[0..3]:UINT
+    KNXnet/IP    1.2.3#11/1/1[4]           -> 1.2.3#11/1/1[0..3]
+
+  Addresses in the old form no longer parse, and the error names the address
+  to write instead - with two exceptions, below, where the address parses
+  either way and only its meaning moves.
+- Two Go drivers change the meaning of addresses that still parse, so there is
+  nothing to reject and nothing to warn about at runtime:
+
+    * ADS `[n]` was a *count* of n elements and is now the element at index n.
+      `MAIN.g_arr[3]` read three elements and now reads one. Rewrite as
+      `MAIN.g_arr[0..2]`. This also means Go and Java ADS now agree about the
+      same address; they did not before.
+    * Firmata `[n]` was a run of n pins and is now the pin at index n, exactly
+      as in PLC4J. `digital:2[3]` read three pins from pin 2 and now reads
+      pin 5. Rewrite as `digital:2[0..2]`.
+- ADS also drops the `[a:b]` start-and-count form, which had no counterpart in
+  PLC4J. `MAIN.g_arr[2:4]` is written `MAIN.g_arr[2..5]`.
+- A count of zero no longer has a spelling. Several Go drivers accepted `[0]`
+  and rejected it as "quantity must be greater than zero"; a range is written
+  with the indices it covers, so there is no way to ask for none, and `[0]`
+  now selects the first element.
+- `ArrayInfo` bounds are inclusive in PLC4Go, as they are in PLC4J:
+  `GetSize()` returns `UpperBound - LowerBound + 1`. They were exclusive,
+  documented as a deliberate divergence, so `[0..7]` reported eight elements
+  in Java and seven in Go - the same disagreement about the same address that
+  this change exists to remove. Code reading `GetUpperBound()` directly must
+  be revisited.
+- `ArrayInfo` gains `GetBase()` and `IsRange()`. Go has no default methods, so
+  any implementation outside PLC4Go must add them.
+- Addresses that a driver rendered back are now spelled the way its parser
+  reads them. Several never round-tripped: BACnet/IP rendered `:` where the
+  syntax wants `,`, gave every property a leading `:`, and printed the address
+  of the pointer holding an array index rather than the index; KNXnet/IP
+  device addresses rendered `/` where the syntax wants `.`; the ADS direct
+  form printed its index group as decimal digits behind an `0x` prefix, so
+  16416 came back as `0x16416` - a different address; and the S7 tag rendered
+  as "0:INT[8]", naming neither the memory area nor the offset it read.
+- Fixed the Go BACnet/IP driver asking for one element fewer than requested
+  when a read carried an element count, which followed from the bounds
+  becoming inclusive.
+- C-Bus addresses are unchanged. Its brackets carry the arguments of a CAL
+  command (`recall=[param, count]`), not a selection appended to an address.
+- KNXnet/IP group addresses are unchanged. Their brackets hold a set of group
+  addresses to match (`[1-3,5]`), not an array selection. Only the two device
+  address forms, which carry a real element count, moved to the new notation.
+- BACnet/IP addresses are unchanged. Its bracket is a property array index,
+  which already meant what the notation says an index means.
 
 Changed Maven Coordinates
 -------------------------
@@ -406,6 +555,23 @@ utilities). These are new artifacts, not renames.
 Bug Fixes
 ---------
 
+- Fixed the Java S7 driver's tags reporting no address at all:
+  "getAddressString()" returned null, so anything carrying a tag as a string -
+  a log line, a browse result, a serialized request - got nothing from an S7
+  tag. It now spells the address the way the parser reads it back, including
+  the declared length of a fixed-length string and the counter number of a
+  COUNTER address, which is stored split across the byte and bit offsets.
+- The Open Protocol driver's tag class now reports that it has no tag
+  addressing yet instead of returning null. "OpenProtocolTag.of()" handed a
+  null tag to callers of "prepareTag()", so the failure surfaced later as a
+  NullPointerException; it now throws PlcInvalidTagException, matching the
+  driver's tag handler, which already rejected every address.
+- Fixed the Go S7 driver reading a fixed-length string from the wrong data
+  block. The long-form address ("%DB69.DBX68:STRING(10)") built its tag with
+  a hard-coded block number of zero, so it read DB0 and reported the result
+  as though it had come from DB69. The short form ("%DB69:68:STRING(10)")
+  and every non-string address were unaffected, as is PLC4J, which parses
+  the block number for all of them.
 - Fixed serialization in the 'plc4x' proxy driver's message
   codec, which did not configure the buffer integer/string
   encodings under SPI3 and failed to serialize any message.

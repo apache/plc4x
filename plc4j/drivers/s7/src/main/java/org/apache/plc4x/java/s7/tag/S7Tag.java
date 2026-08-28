@@ -32,6 +32,8 @@ import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
@@ -43,16 +45,21 @@ import java.util.regex.Pattern;
 
 public class S7Tag implements PlcTag, Serializable {
 
+    /** The shared array notation, which sits between the address and the type. */
+    protected static final String ARRAY_EXPRESSION = ArrayNotationParser.ARRAY_GROUP;
+
+    protected static final String ARRAY = "array";
+
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d{1,7})])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
@@ -64,6 +71,7 @@ public class S7Tag implements PlcTag, Serializable {
     protected static final String BYTE_OFFSET = "byteOffset";
     protected static final String BIT_OFFSET = "bitOffset";
     protected static final String NUM_ELEMENTS = "numElements";
+
     protected static final String MEMORY_AREA = "memoryArea";
 
     /** highest byte offset an S7 address can name; see checkByteOffset() below */
@@ -76,9 +84,24 @@ public class S7Tag implements PlcTag, Serializable {
     private final byte bitOffset;
     private final int numElements;
 
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range, so
+     * the count cannot carry this: {@code [4]} and {@code [4..4]} both select one element.
+     */
+    private final boolean explicitRange;
+
     public S7Tag(TransportSize dataType, MemoryArea memoryArea,
                     int blockNumber, int byteOffset,
                     byte bitOffset, int numElements) {
+        this(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,
+            numElements != 1);
+    }
+
+    public S7Tag(TransportSize dataType, MemoryArea memoryArea,
+                    int blockNumber, int byteOffset,
+                    byte bitOffset, int numElements,
+                    boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
@@ -100,9 +123,41 @@ public class S7Tag implements PlcTag, Serializable {
         
     }
 
+    /**
+     * Spells the tag the way {@link #of(String)} parses it back, so a tag can be carried as a
+     * string - which is what a log line, a browse result or a serialized request needs.
+     *
+     * <p>The optional transfer size code is left out: it only repeats what the type already
+     * says, and an address without it parses to the same tag.</p>
+     */
     @Override
     public String getAddressString() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        if (memoryArea == MemoryArea.DATA_BLOCKS) {
+            // Rendering a data block through its short name would produce "%D100", which parses
+            // back as block 0 of the data-block area - a different address.
+            sb.append("%DB").append(blockNumber).append(".DB").append(addressedByteOffset());
+        } else {
+            sb.append('%').append(memoryArea.getShortName()).append(addressedByteOffset());
+        }
+        // A bit offset is only part of an address for BOOL, and is required there.
+        if (dataType == TransportSize.BOOL) {
+            sb.append('.').append(bitOffset);
+        }
+        sb.append(ArrayNotationParser.render(getArrayInfo()));
+        return sb.append(':').append(dataType.name()).toString();
+    }
+
+    /**
+     * The byte offset as the address writes it. A COUNTER address names a counter, which the
+     * constructor splits across the byte and bit offsets, so rendering one has to put it back
+     * together - otherwise "%DB1.DB100:COUNTER" comes back as counter 12.
+     */
+    protected int addressedByteOffset() {
+        if (dataType == TransportSize.COUNTER) {
+            return (byteOffset << 3) | bitOffset;
+        }
+        return byteOffset;
     }
 
     @Override
@@ -124,10 +179,17 @@ public class S7Tag implements PlcTag, Serializable {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if (numElements != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
+        // The flag decides the shape and the count only sizes it: a range is an array even when it
+        // spans one element, which no count can express.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1, 0, true));
         }
         return Collections.emptyList();
+    }
+
+    /** Whether the address wrote a range, as opposed to selecting a single element. */
+    public boolean isExplicitRange() {
+        return explicitRange;
     }
 
     public TransportSize getDataType() {
@@ -195,17 +257,16 @@ public class S7Tag implements PlcTag, Serializable {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
-            }
+            int[] selection = selectionOf(matcher, tagString);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
             String dataTypeName = matcher.group(DATA_TYPE);
             if("RAW_BYTE_ARRAY".equals(dataTypeName)) {
@@ -221,12 +282,11 @@ public class S7Tag implements PlcTag, Serializable {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
-            }
+            int[] selection = selectionOf(matcher, tagString);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            int numElements = checkNumElements(dataType, selection[1]);
 
-            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
         } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches()) {
             try {
                 String hex = tagString.replace("-", "");
@@ -261,10 +321,9 @@ public class S7Tag implements PlcTag, Serializable {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(dataType, Integer.parseInt(matcher.group(NUM_ELEMENTS)));
-            }
+            int[] selection = selectionOf(matcher, tagString);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
@@ -274,9 +333,10 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("A bit offset other than 0 is only supported for type BOOL");
             }
 
-            return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
+            return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, selection[2] == 1);
         }
-        throw new PlcInvalidTagException("Unable to parse address: " + tagString);
+        throw ArrayNotationParser.invalidAddress(tagString,
+            "%{area}{offset}[selection]:{TYPE} - for example %DB42:28.0[0..3]:BYTE");
     }
 
     /**
@@ -304,6 +364,26 @@ public class S7Tag implements PlcTag, Serializable {
      * @param numElements given number of elements
      * @return given numElements if Ok, throws PlcInvalidTagException otherwise
      */
+    /**
+     * Resolves the address's array expression to the offset of the first element and the number
+     * of elements. An absent expression selects one element at the address itself.
+     *
+     * <p>The offset is in elements; a caller scales it by the data type's size to reach a byte
+     * offset.
+     *
+     * @return {@code {elementOffset, numElements}}
+     */
+    protected static int[] selectionOf(Matcher matcher, String address) {
+        String expression = matcher.group(ARRAY);
+        if (expression == null) {
+            return new int[]{0, 1, 0};
+        }
+        ArrayInfo dimension = ArrayNotationParser
+            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+            dimension.isRange() ? 1 : 0};
+    }
+
     protected static int checkNumElements(TransportSize dataType, int numElements) {
         return checkNumElements(numElements, dataType.getSizeInBytes(), dataType.name());
     }
@@ -337,6 +417,24 @@ public class S7Tag implements PlcTag, Serializable {
      * @param byteOffset given byteOffset
      * @return given byteOffset if Ok, throws PlcInvalidTagException otherwise
      */
+    /**
+     * The byte offset a selection resolves to: the written offset plus the selection's start,
+     * scaled by what one element costs.
+     *
+     * <p>The parser accepts indices up to {@link Integer#MAX_VALUE} - it cannot know what a
+     * driver's elements cost - so the scaling has to happen in {@code long} and be checked before
+     * it is narrowed. In {@code int} a large index wrapped into a small, apparently valid offset,
+     * and the tag then read a different location without complaint.</p>
+     */
+    protected static int resolveByteOffset(int byteOffset, int elementOffset, int bytesPerElement) {
+        long resolved = (long) byteOffset + (long) elementOffset * bytesPerElement;
+        if ((resolved > MAX_BYTE_OFFSET) || (resolved < 0)) {
+            throw new PlcInvalidTagException("ByteOffset must be smaller than " + MAX_BYTE_OFFSET
+                + " and positive. The selection resolves to " + resolved);
+        }
+        return (int) resolved;
+    }
+
     protected static int checkByteOffset(int byteOffset) {
         // TODO: check the value or add reference
         if (byteOffset > MAX_BYTE_OFFSET || byteOffset < 0) {
@@ -380,12 +478,12 @@ public class S7Tag implements PlcTag, Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         S7Tag s7Tag = (S7Tag) o;
-        return blockNumber == s7Tag.blockNumber && byteOffset == s7Tag.byteOffset && bitOffset == s7Tag.bitOffset && numElements == s7Tag.numElements && dataType == s7Tag.dataType && memoryArea == s7Tag.memoryArea;
+        return blockNumber == s7Tag.blockNumber && byteOffset == s7Tag.byteOffset && bitOffset == s7Tag.bitOffset && numElements == s7Tag.numElements && explicitRange == s7Tag.explicitRange && dataType == s7Tag.dataType && memoryArea == s7Tag.memoryArea;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        return Objects.hash(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, explicitRange);
     }
 
     @Override

@@ -123,7 +123,7 @@ func readTag(t *testing.T, address string, endCode uint16, responseData []byte) 
 // on the wire for a given tag.
 func TestConnection_ReadBuildsABatchReadFrame(t *testing.T) {
 	// D350 as two words is the SH-080008 Batch Read worked example.
-	_, frame := readTag(t, "D350:WORD[2]", 0x0000, []byte{0xAB, 0x56, 0x0F, 0x17})
+	_, frame := readTag(t, "D350[0..1]:WORD", 0x0000, []byte{0xAB, 0x56, 0x0F, 0x17})
 
 	assert.Equal(t, commandBatchRead, frame.GetCommand())
 	assert.Equal(t, subCommandWordUnits, frame.GetSubCommand(), "this version only speaks word units")
@@ -138,7 +138,7 @@ func TestConnection_ReadBuildsABatchReadFrame(t *testing.T) {
 // TestConnection_ReadAsksForWordsNotElements is the one arithmetic mistake that would send a frame
 // half the size it needs: a REAL is two words, so a REAL[4] tag has to ask for eight points.
 func TestConnection_ReadAsksForWordsNotElements(t *testing.T) {
-	_, frame := readTag(t, "R200:REAL[4]", 0x0000, make([]byte, 16))
+	_, frame := readTag(t, "R200[0..3]:REAL", 0x0000, make([]byte, 16))
 	readRequest, ok := frame.GetRequestData().(readWriteModel.SlmpReadRequest)
 	require.True(t, ok)
 	assert.Equal(t, uint16(8), readRequest.GetNumberOfPoints())
@@ -179,7 +179,7 @@ func TestConnection_ReadDecodesTheResponse(t *testing.T) {
 			},
 		},
 		{
-			name: "two WORDs", address: "D350:WORD[2]", responseData: []byte{0xAB, 0x56, 0x0F, 0x17},
+			name: "two WORDs", address: "D350[0..1]:WORD", responseData: []byte{0xAB, 0x56, 0x0F, 0x17},
 			assert: func(t *testing.T, response apiModel.PlcReadResponse) {
 				value := response.GetValue("hurz")
 				require.True(t, value.IsList())
@@ -235,7 +235,7 @@ func TestConnection_ReadMapsAShortPayload(t *testing.T) {
 		{name: "nothing at all", address: "D350", responseData: nil},
 		{name: "half a word", address: "D350", responseData: []byte{0x01}},
 		{name: "one word for a REAL", address: "D350:REAL", responseData: []byte{0x01, 0x02}},
-		{name: "one word short of a list", address: "D350:WORD[2]", responseData: []byte{0x01, 0x02}},
+		{name: "one word short of a list", address: "D350[0..1]:WORD", responseData: []byte{0x01, 0x02}},
 	}
 	for _, testCase := range tests {
 		t.Run(testCase.name, func(t *testing.T) {
@@ -355,7 +355,7 @@ func writeTag(t *testing.T, address string, value any, endCode uint16, responseD
 }
 
 func TestConnection_WriteBuildsABatchWriteFrame(t *testing.T) {
-	response, frame := writeTag(t, "D350:WORD[2]", []uint16{0x1234, 0x5678}, 0x0000, nil)
+	response, frame := writeTag(t, "D350[0..1]:WORD", []uint16{0x1234, 0x5678}, 0x0000, nil)
 	assert.Equal(t, apiModel.PlcResponseCode_OK, response.GetResponseCode("hurz"))
 
 	assert.Equal(t, commandBatchWrite, frame.GetCommand())
@@ -383,7 +383,7 @@ func TestConnection_WriteEncodesTheValue(t *testing.T) {
 		{name: "a DINT over two words", address: "D350:DINT", value: int32(-2), want: []byte{0xFE, 0xFF, 0xFF, 0xFF}},
 		{name: "a REAL over two words", address: "D350:REAL", value: float32(1.0), want: []byte{0x00, 0x00, 0x80, 0x3F}},
 		{
-			name: "a list of REALs", address: "D350:REAL[2]", value: []float32{1.0, 2.0},
+			name: "a list of REALs", address: "D350[0..1]:REAL", value: []float32{1.0, 2.0},
 			want: []byte{0x00, 0x00, 0x80, 0x3F, 0x00, 0x00, 0x00, 0x40},
 		},
 	}
@@ -423,9 +423,9 @@ func TestConnection_WriteBuilderRefusesAnUncoercibleValue(t *testing.T) {
 	}{
 		{name: "a negative value for a WORD", address: "D350:WORD", value: int32(-1)},
 		{name: "a string for a REAL", address: "D350:REAL", value: "hurz"},
-		{name: "too few values for an array tag", address: "D350:WORD[3]", value: []uint16{1, 2}},
-		{name: "too many values for an array tag", address: "D350:WORD[2]", value: []uint16{1, 2, 3}},
-		{name: "a scalar for an array tag", address: "D350:WORD[2]", value: uint16(1)},
+		{name: "too few values for an array tag", address: "D350[0..2]:WORD", value: []uint16{1, 2}},
+		{name: "too many values for an array tag", address: "D350[0..1]:WORD", value: []uint16{1, 2, 3}},
+		{name: "a scalar for an array tag", address: "D350[0..1]:WORD", value: uint16(1)},
 	}
 	for _, testCase := range tests {
 		t.Run(testCase.name, func(t *testing.T) {
@@ -451,10 +451,10 @@ func TestConnection_WriteRefusesAnUnencodableValue(t *testing.T) {
 	}{
 		{name: "a negative value for a WORD", address: "D350:WORD", value: spiValues.NewPlcDINT(-1)},
 		{
-			name: "too few values for an array tag", address: "D350:WORD[3]",
+			name: "too few values for an array tag", address: "D350[0..2]:WORD",
 			value: spiValues.NewPlcList([]apiValues.PlcValue{spiValues.NewPlcWORD(1), spiValues.NewPlcWORD(2)}),
 		},
-		{name: "a scalar for an array tag", address: "D350:WORD[2]", value: spiValues.NewPlcWORD(1)},
+		{name: "a scalar for an array tag", address: "D350[0..1]:WORD", value: spiValues.NewPlcWORD(1)},
 		{name: "no value at all", address: "D350:WORD", value: nil},
 	}
 	for _, testCase := range tests {

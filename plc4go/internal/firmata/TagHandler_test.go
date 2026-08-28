@@ -48,14 +48,14 @@ func TestTagHandler_ParseTag(t *testing.T) {
 		},
 		{
 			name:        "a run of digital pins",
-			tagAddress:  "digital:4[3]",
-			want:        digitalTag{address: 4, quantity: 3},
+			tagAddress:  "digital:4[0..2]",
+			want:        digitalTag{address: 4, quantity: 3, explicitRange: true},
 			wantValue:   apiValues.BOOL,
-			wantAddress: "digital:4[3]",
+			wantAddress: "digital:4[0..2]",
 		},
 		{
 			name:        "a run of one digital pin is a scalar",
-			tagAddress:  "digital:4[1]",
+			tagAddress:  "digital:4",
 			want:        digitalTag{address: 4, quantity: 1},
 			wantValue:   apiValues.BOOL,
 			wantAddress: "digital:4",
@@ -69,10 +69,10 @@ func TestTagHandler_ParseTag(t *testing.T) {
 		},
 		{
 			name:        "a run of pullup digital pins",
-			tagAddress:  "digital:7[2]:PULLUP",
-			want:        digitalTag{address: 7, quantity: 2, pinMode: &pullup},
+			tagAddress:  "digital:7[0..1]:PULLUP",
+			want:        digitalTag{address: 7, quantity: 2, pinMode: &pullup, explicitRange: true},
 			wantValue:   apiValues.BOOL,
-			wantAddress: "digital:7[2]:PULLUP",
+			wantAddress: "digital:7[0..1]:PULLUP",
 		},
 		{
 			name:        "the last addressable digital pin",
@@ -90,10 +90,10 @@ func TestTagHandler_ParseTag(t *testing.T) {
 		},
 		{
 			name:        "a run of analog pins",
-			tagAddress:  "analog:2[4]",
-			want:        analogTag{address: 2, quantity: 4},
+			tagAddress:  "analog:2[0..3]",
+			want:        analogTag{address: 2, quantity: 4, explicitRange: true},
 			wantValue:   apiValues.INT,
-			wantAddress: "analog:2[4]",
+			wantAddress: "analog:2[0..3]",
 		},
 		{
 			name:        "the last addressable analog pin",
@@ -132,12 +132,14 @@ func TestTagHandler_ParseTagRejects(t *testing.T) {
 		{name: "trailing garbage", tagAddress: "digital:4nonsense"},
 		{name: "an unknown mode", tagAddress: "digital:4:OUTPUT"},
 		{name: "a mode on an analog pin", tagAddress: "analog:4:PULLUP"},
-		{name: "a quantity of zero", tagAddress: "digital:4[0]"},
+		// A run of zero pins has no spelling in the notation - a range is written with the
+		// indices it covers - but an inverted one is still nonsense.
+		{name: "an inverted range", tagAddress: "digital:4[3..1]"},
 		{name: "a digital pin past the last port", tagAddress: "digital:128"},
-		{name: "a run of digital pins past the last port", tagAddress: "digital:126[4]"},
+		{name: "a run of digital pins past the last port", tagAddress: "digital:126[0..3]"},
 		{name: "an analog pin past the 4 bit pin field", tagAddress: "analog:16"},
-		{name: "a run of analog pins past the 4 bit pin field", tagAddress: "analog:14[4]"},
-		{name: "a quantity larger than the whole pin range", tagAddress: "digital:0[129]"},
+		{name: "a run of analog pins past the 4 bit pin field", tagAddress: "analog:14[0..3]"},
+		{name: "a quantity larger than the whole pin range", tagAddress: "digital:0[0..128]"},
 	}
 	for _, testCase := range tests {
 		t.Run(testCase.name, func(t *testing.T) {
@@ -161,11 +163,13 @@ func TestTag_ArrayInfoAndSubscriptionDefaults(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(t, scalar.GetArrayInfo())
 
-	list, err := NewTagHandler().ParseTag("digital:4[3]")
+	list, err := NewTagHandler().ParseTag("digital:4[0..2]")
 	require.NoError(t, err)
 	require.Len(t, list.GetArrayInfo(), 1)
 	assert.Equal(t, uint32(0), list.GetArrayInfo()[0].GetLowerBound())
-	assert.Equal(t, uint32(3), list.GetArrayInfo()[0].GetUpperBound())
+	// Both bounds are inclusive, so three pins are 0..2.
+	assert.Equal(t, uint32(2), list.GetArrayInfo()[0].GetUpperBound())
+	assert.Equal(t, uint32(3), list.GetArrayInfo()[0].GetSize())
 
 	// A tag has to be usable in a subscription request, which only accepts tags that are a
 	// PlcSubscriptionTag. Firmata boards report a pin when it changes.
@@ -180,11 +184,40 @@ func TestTag_ArrayInfoAndSubscriptionDefaults(t *testing.T) {
 }
 
 func TestTag_String(t *testing.T) {
-	digital, err := NewTagHandler().ParseTag("digital:4[2]:PULLUP")
+	digital, err := NewTagHandler().ParseTag("digital:4[0..1]:PULLUP")
 	require.NoError(t, err)
 	assert.Contains(t, digital.String(), "PinModePullup")
 
 	analog, err := NewTagHandler().ParseTag("analog:4")
 	require.NoError(t, err)
 	assert.Contains(t, analog.String(), "analogTag")
+}
+
+// A firmata address is a pin number, so a selection that starts past the declared base is
+// resolved into the pin: "digital:2[4..7]" is the same run as "digital:6[0..3]".
+//
+// [n] used to mean "n pins" and now means "the pin at index n". Both forms parse, so nothing can
+// be rejected here - this is one of the two silent changes the release notes have to carry.
+func TestTagHandler_ParseTag_consumesTheSelectionOffset(t *testing.T) {
+	handler := NewTagHandler()
+
+	shifted, err := handler.ParseTag("digital:2[4..7]")
+	require.NoError(t, err)
+	equivalent, err := handler.ParseTag("digital:6[0..3]")
+	require.NoError(t, err)
+	assert.Equal(t, equivalent, shifted)
+	assert.Equal(t, "digital:6[0..3]", shifted.GetAddressString())
+
+	// A declared base is what the offset is measured from, so [4..7;4] shifts nothing.
+	fromDeclaredBase, err := handler.ParseTag("digital:2[4..7;4]")
+	require.NoError(t, err)
+	unshifted, err := handler.ParseTag("digital:2[0..3]")
+	require.NoError(t, err)
+	assert.Equal(t, unshifted, fromDeclaredBase)
+
+	// The silent change: [3] is the pin at index 3, which is pin 5 here - not three pins.
+	single, err := handler.ParseTag("digital:2[3]")
+	require.NoError(t, err)
+	assert.Equal(t, "digital:5", single.GetAddressString())
+	assert.Empty(t, single.GetArrayInfo(), "one pin is a scalar")
 }

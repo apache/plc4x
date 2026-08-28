@@ -39,7 +39,7 @@ final class SlmpResponseMapper {
             LOGGER.warn("SLMP device returned endCode {} for {}", String.format("0x%04X", endCode), tag);
             return new DefaultPlcResponseItem<>(PlcResponseCode.REMOTE_ERROR, null);
         }
-        PlcValue value = tag.getDataType().decode(responseData, tag.getQuantity());
+        PlcValue value = tag.getDataType().decode(responseData, tag.getQuantity(), tag.isExplicitRange());
         if (value == null) {
             LOGGER.warn("SLMP response too short for {} ({} bytes)", tag,
                 responseData == null ? 0 : responseData.length);

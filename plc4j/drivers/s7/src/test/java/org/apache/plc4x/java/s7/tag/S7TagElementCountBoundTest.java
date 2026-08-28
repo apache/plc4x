@@ -32,18 +32,43 @@ public class S7TagElementCountBoundTest {
 
     @Test
     void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
-        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0:INT[99999999999]"));
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0[0..99999999998]:INT"));
     }
 
     @Test
     void aCountSpanningMoreThanTheAddressableAreaIsRejected() {
         // Two million LREALs are sixteen megabytes, and no S7 area is that large.
-        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0:LREAL[2000000]"));
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0[0..1999999]:LREAL"));
     }
 
     @Test
     void theSameCountOfSingleBytesIsWithinTheAreaAndStillParses() {
-        assertEquals(2000000, S7Tag.of("%DB1:0:BYTE[2000000]").getNumberOfElements());
+        assertEquals(2000000, S7Tag.of("%DB1:0[0..1999999]:BYTE").getNumberOfElements());
+    }
+
+    /**
+     * A start index is scaled by what one element costs, and the parser accepts indices up to
+     * Integer.MAX_VALUE. Scaled in int, a large one wrapped into a small offset that looked
+     * perfectly valid, and the tag then read a different location without complaint.
+     */
+    @Test
+    void aSelectionOffsetThatOverflowsIsRejectedRatherThanWrapped() {
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0[268435456]:LREAL"));
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1.DBW0[536870912]:LREAL"));
+    }
+
+    /**
+     * The same scaling without an overflow still has to land inside the addressable area - it was
+     * not checked at all after the selection was applied.
+     */
+    @Test
+    void aSelectionOffsetPastTheAddressableAreaIsRejected() {
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0[1000000]:LREAL"));
+    }
+
+    @Test
+    void aSelectionOffsetInsideTheAddressableAreaStillParses() {
+        assertEquals(800, S7Tag.of("%DB1:0[100]:LREAL").getByteOffset());
     }
 
     @Test
@@ -51,30 +76,30 @@ public class S7TagElementCountBoundTest {
         // 9999 strings of 254 characters plus their two length bytes is past the area; the
         // optimizer would have multiplied that out in an int before anybody looked at it.
         assertThrows(PlcInvalidTagException.class,
-            () -> S7StringFixedLengthTag.of("%DB1:0:STRING(254)[9999]"));
+            () -> S7StringFixedLengthTag.of("%DB1:0[0..9998]:STRING(254)"));
     }
 
     @Test
     void aFixedLengthStringCountThatFitsStillParses() {
-        assertEquals(8000, S7StringFixedLengthTag.of("%DB1:0:STRING(254)[8000]").getNumberOfElements());
+        assertEquals(8000, S7StringFixedLengthTag.of("%DB1:0[0..7999]:STRING(254)").getNumberOfElements());
     }
 
     @Test
     void aVarLengthStringCountIsBoundedByTheLengthTheDriverAssumes() {
         assertThrows(PlcInvalidTagException.class,
-            () -> S7StringVarLengthTag.of("%DB1:0:STRING[9999]"));
+            () -> S7StringVarLengthTag.of("%DB1:0[0..9998]:STRING"));
     }
 
     @Test
     void aWideStringCostsTwiceAsMuchPerElement() {
         // The same count that fits as STRING does not fit as WSTRING.
-        assertEquals(8000, S7StringFixedLengthTag.of("%DB1:0:STRING(254)[8000]").getNumberOfElements());
+        assertEquals(8000, S7StringFixedLengthTag.of("%DB1:0[0..7999]:STRING(254)").getNumberOfElements());
         assertThrows(PlcInvalidTagException.class,
-            () -> S7StringFixedLengthTag.of("%DB1:0:WSTRING(254)[8000]"));
+            () -> S7StringFixedLengthTag.of("%DB1:0[0..7999]:WSTRING(254)"));
     }
 
     @Test
     void aPlausibleCountStillParses() {
-        assertEquals(64, S7Tag.of("%DB1:0:INT[64]").getNumberOfElements());
+        assertEquals(64, S7Tag.of("%DB1:0[0..63]:INT").getNumberOfElements());
     }
 }

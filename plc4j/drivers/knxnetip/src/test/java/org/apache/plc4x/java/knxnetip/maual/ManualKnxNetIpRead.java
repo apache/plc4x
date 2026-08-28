@@ -33,8 +33,8 @@ public class ManualKnxNetIpRead {
     public static void main(String[] args) throws Exception {
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(
             "knxnet-ip://192.168.42.28?" +
-            "knxproj-file-path=/Users/christoferdutz/Projects/Privat/NLNet/plc4x/plc4j/drivers/knxnetip/Stettiner-Str-13.knxproj&" +
-            "knxproj-password=cW171998$")) {
+            "knxproj-file-path=huiiiii&" +
+            "knxproj-password=lalala")) {
 
             PlcReadRequest readRequest = connection.readRequestBuilder()
                 .addTagAddress("Lade-Leistung Batterie", "1/1/210:DPT14")  // Temperature (2-byte float)

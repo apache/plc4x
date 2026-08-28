@@ -70,10 +70,15 @@ Note the transport, port and option fields are optional.
 In general all Modbus addresses have this format:
 
 ----
-{memory-Area}{start-address}:{data-type}[{array-size}]{name-value-tag-options}
+{memory-Area}{start-address}[{selection}]:{data-type}{name-value-tag-options}
 ----
 
-If the array-size part is omitted, the size-default of `1` is assumed.
+If the selection is omitted, a single element is read.
+The selection in brackets is the shared array notation - a single index, an inclusive
+range, and optionally the array's declared lower bound. See
+xref:array-notation.adoc[Addressing arrays] for the full set of forms and what this
+driver can express.
+
 If the data-type part is omitted, it defaults to BOOL for Coils and Discrete Inputs and INT for input, holding and extended registers.
 If the name-value-tag-options part is omitted, simply no configuration fine-tuning is applied.
 
@@ -184,7 +189,7 @@ NOTE: Coils and discrete inputs hold a single bit each and therefore support onl
 discrete-input tag declared with any other data type is accepted by the address parser, but the read
 returns the response code `UNSUPPORTED`.
 
-Reading an array of coils returns all of its elements: `coil:1:BOOL[8]` yields a list of 8 values.
+Reading an array of coils returns all of its elements: `coil:1[0..7]:BOOL` yields a list of 8 values.
 
 === Some useful tips
 
