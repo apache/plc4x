@@ -93,7 +93,7 @@ The project is currently split up into three repositories, the `plc4x`, `plc4x-b
 To be able to build all parts of the `plc4x-extras` repository, at least `Java 21` is required.
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
-[https://plc4x.apache.org/plc4x/latest/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
+[https://plc4x.apache.org/plc4x/latest/users/getting-started/plc4j.html](https://plc4x.apache.org/plc4x/latest/users/getting-started/plc4j.html)
 
 ## Developers
 
