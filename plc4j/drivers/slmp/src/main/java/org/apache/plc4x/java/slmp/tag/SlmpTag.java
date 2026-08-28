@@ -73,24 +73,22 @@ public class SlmpTag implements PlcTag, Serializable {
         }
         String deviceToken = matcher.group("device").toUpperCase();
         SlmpDeviceCode device;
-        int radix;
-        switch (deviceToken) {
-            case "D":
+        int radix = switch (deviceToken) {
+            case "D" -> {
                 device = SlmpDeviceCode.D;
-                radix = 10;
-                break;
-            case "R":
+                yield 10;
+            }
+            case "R" -> {
                 device = SlmpDeviceCode.R;
-                radix = 10;
-                break;
-            case "W":
+                yield 10;
+            }
+            case "W" -> {
                 device = SlmpDeviceCode.W;
-                radix = 16;
-                break;
-            default:
-                throw new PlcInvalidTagException(
-                    "device '" + deviceToken + "' not supported in this version (word devices D/W/R only)");
-        }
+                yield 16;
+            }
+            default -> throw new PlcInvalidTagException(
+                "device '" + deviceToken + "' not supported in this version (word devices D/W/R only)");
+        };
 
         boolean hasHexPrefix = matcher.group("hexPrefix") != null;
         if (hasHexPrefix && radix != 16) {
@@ -127,8 +125,12 @@ public class SlmpTag implements PlcTag, Serializable {
         int quantity = 1;
         if (arrayToken != null) {
             ArrayInfo dimension = ArrayNotationParser
-                .parse(arrayToken, addressString, AddressConstraints.SINGLE_DIMENSION).get(0);
-            deviceNumber += dimension.getLowerBound() - dimension.getBase();
+                .parse(arrayToken, addressString, AddressConstraints.SINGLE_DIMENSION).getFirst();
+            // The offset counts elements; a device number counts 16-bit words. They coincide only
+            // for a one-word type, which is why D100[4]:INT looked right while D100[4]:DINT read
+            // four words short of its target. This is the same scale getWordsPerElement() applies
+            // to the point count below, so the offset and the length cannot disagree.
+            deviceNumber += (dimension.getLowerBound() - dimension.getBase()) * dataType.getWordsPerElement();
             quantity = dimension.getSize();
         }
         if (quantity < 1) {

@@ -195,3 +195,17 @@ func TestGetArrayInfoDistinguishesAScalarFromAList(t *testing.T) {
 	assert.Len(t, list.GetArrayInfo(), 1)
 	assert.Equal(t, uint16(4), list.(PlcTag).GetElementNb())
 }
+
+// A CIP request carries its element count in 16 bits, so a selection larger than that cannot be
+// asked for. It used to be narrowed silently: "%arr[0..65535]" is 65536 elements, which is zero
+// in a uint16 - the device would have been asked for nothing at all.
+func TestParseTag_refusesACountTheRequestCannotCarry(t *testing.T) {
+	_, err := NewTagHandler().ParseTag("%arr[0..65535]:DINT")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "65535")
+
+	// One below the limit is still asked for in full.
+	tag, err := NewTagHandler().ParseTag("%arr[0..65534]:DINT")
+	require.NoError(t, err)
+	assert.Equal(t, uint16(65535), tag.(PlcTag).GetElementNb())
+}

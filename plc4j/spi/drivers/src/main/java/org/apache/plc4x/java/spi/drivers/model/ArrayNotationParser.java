@@ -235,6 +235,14 @@ public final class ArrayNotationParser {
                 "Invalid array range '%s' in tag '%s': the upper bound %d is below the lower bound %d",
                 bracket.group(), address, upperBound, lowerBound));
         }
+        // The inclusive size is computed in an int, so a range spanning more than Integer.MAX_VALUE
+        // elements would wrap to a negative count and be reported as a syntactically valid
+        // selection of minus two billion elements. No protocol here can carry such a range anyway.
+        if (((long) upperBound - lowerBound + 1) > Integer.MAX_VALUE) {
+            throw new PlcInvalidTagException(String.format(
+                "Invalid array range '%s' in tag '%s': it spans %d elements, more than can be counted",
+                bracket.group(), address, (long) upperBound - lowerBound + 1));
+        }
         if (lowerBound - base < 0) {
             throw new PlcInvalidTagException(String.format(
                 "Invalid array range '%s' in tag '%s': index %d lies below the declared lower bound %d",

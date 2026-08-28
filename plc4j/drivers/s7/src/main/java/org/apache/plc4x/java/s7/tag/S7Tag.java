@@ -84,9 +84,24 @@ public class S7Tag implements PlcTag, Serializable {
     private final byte bitOffset;
     private final int numElements;
 
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range, so
+     * the count cannot carry this: {@code [4]} and {@code [4..4]} both select one element.
+     */
+    private final boolean explicitRange;
+
     public S7Tag(TransportSize dataType, MemoryArea memoryArea,
                     int blockNumber, int byteOffset,
                     byte bitOffset, int numElements) {
+        this(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,
+            numElements != 1);
+    }
+
+    public S7Tag(TransportSize dataType, MemoryArea memoryArea,
+                    int blockNumber, int byteOffset,
+                    byte bitOffset, int numElements,
+                    boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
@@ -164,10 +179,17 @@ public class S7Tag implements PlcTag, Serializable {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if (numElements != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
+        // The flag decides the shape and the count only sizes it: a range is an array even when it
+        // spans one element, which no count can express.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1, 0, true));
         }
         return Collections.emptyList();
+    }
+
+    /** Whether the address wrote a range, as opposed to selecting a single element. */
+    public boolean isExplicitRange() {
+        return explicitRange;
     }
 
     public TransportSize getDataType() {
@@ -244,7 +266,7 @@ public class S7Tag implements PlcTag, Serializable {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
             String dataTypeName = matcher.group(DATA_TYPE);
             if("RAW_BYTE_ARRAY".equals(dataTypeName)) {
@@ -264,7 +286,7 @@ public class S7Tag implements PlcTag, Serializable {
             byteOffset += selection[0] * dataType.getSizeInBytes();
             int numElements = checkNumElements(dataType, selection[1]);
 
-            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
         } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches()) {
             try {
                 String hex = tagString.replace("-", "");
@@ -311,7 +333,7 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("A bit offset other than 0 is only supported for type BOOL");
             }
 
-            return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
+            return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, selection[2] == 1);
         }
         throw ArrayNotationParser.invalidAddress(tagString,
             "%{area}{offset}[selection]:{TYPE} - for example %DB42:28.0[0..3]:BYTE");
@@ -354,11 +376,12 @@ public class S7Tag implements PlcTag, Serializable {
     protected static int[] selectionOf(Matcher matcher, String address) {
         String expression = matcher.group(ARRAY);
         if (expression == null) {
-            return new int[]{0, 1};
+            return new int[]{0, 1, 0};
         }
         ArrayInfo dimension = ArrayNotationParser
             .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
-        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+            dimension.isRange() ? 1 : 0};
     }
 
     protected static int checkNumElements(TransportSize dataType, int numElements) {
@@ -437,12 +460,12 @@ public class S7Tag implements PlcTag, Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         S7Tag s7Tag = (S7Tag) o;
-        return blockNumber == s7Tag.blockNumber && byteOffset == s7Tag.byteOffset && bitOffset == s7Tag.bitOffset && numElements == s7Tag.numElements && dataType == s7Tag.dataType && memoryArea == s7Tag.memoryArea;
+        return blockNumber == s7Tag.blockNumber && byteOffset == s7Tag.byteOffset && bitOffset == s7Tag.bitOffset && numElements == s7Tag.numElements && explicitRange == s7Tag.explicitRange && dataType == s7Tag.dataType && memoryArea == s7Tag.memoryArea;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        return Objects.hash(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, explicitRange);
     }
 
     @Override

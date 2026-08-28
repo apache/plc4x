@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.eip.base.tag;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
 import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
@@ -74,6 +75,9 @@ public class EipTag implements PlcTag, Serializable {
     public record MemberElement(short index) implements PathElement {
     }
 
+    /** A CIP request carries its element count in 16 bits. */
+    private static final long MAX_ELEMENTS = 65535L;
+
     private final String tag;
     private final CIPDataTypeCode type;
     /**
@@ -112,6 +116,17 @@ public class EipTag implements PlcTag, Serializable {
         this.scalarSelection =
             ArrayNotationParser.selectsSingleElement(ArrayNotationParser.expressionPart(tag));
         this.pathElements = decomposePath(tag, this.selection);
+        // A CIP read request carries the element count in 16 bits, so a larger selection is
+        // narrowed on the way out - [0..65535] would ask the device for zero elements. Refuse it
+        // here rather than send a request that means something else.
+        long elements = 1;
+        for (ArrayInfo dimension : this.selection) {
+            elements *= dimension.getSize();
+        }
+        if (elements > MAX_ELEMENTS) {
+            throw new PlcInvalidTagException("Tag '" + tag + "' selects " + elements
+                + " elements, more than the " + MAX_ELEMENTS + " a CIP request can ask for.");
+        }
     }
 
     /**
@@ -208,11 +223,14 @@ public class EipTag implements PlcTag, Serializable {
      * selects nothing explicitly reads a single element.
      */
     public int getElementNb() {
-        int elements = 1;
+        // Computed as a long: the product of several dimensions overflows an int long before it
+        // reaches the wire, and the count is carried in 16 bits there - see the constructor, which
+        // refuses a selection that cannot be encoded.
+        long elements = 1;
         for (ArrayInfo dimension : selection) {
             elements *= dimension.getSize();
         }
-        return Math.max(elements, 1);
+        return (int) Math.max(elements, 1);
     }
 
     public String getTag() {

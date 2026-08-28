@@ -72,16 +72,26 @@ type plcTag struct {
 	DeviceNumber uint32
 	DataType     DataType
 	Quantity     uint16
+	// ExplicitRange records whether the address wrote the selection as a range. A one-element
+	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
+	ExplicitRange bool
 }
 
 var _ PlcTag = plcTag{}
 
 func NewTag(deviceCode readWriteModel.SlmpDeviceCode, deviceNumber uint32, dataType DataType, quantity uint16) PlcTag {
+	return NewTagWithShape(deviceCode, deviceNumber, dataType, quantity, quantity > 1)
+}
+
+// NewTagWithShape is NewTag plus what the address said about its shape: a range is an array even
+// when it spans one element, which the quantity alone cannot carry.
+func NewTagWithShape(deviceCode readWriteModel.SlmpDeviceCode, deviceNumber uint32, dataType DataType, quantity uint16, explicitRange bool) PlcTag {
 	return plcTag{
-		DeviceCode:   deviceCode,
-		DeviceNumber: deviceNumber,
-		DataType:     dataType,
-		Quantity:     quantity,
+		ExplicitRange: explicitRange,
+		DeviceCode:    deviceCode,
+		DeviceNumber:  deviceNumber,
+		DataType:      dataType,
+		Quantity:      quantity,
 	}
 }
 
@@ -148,7 +158,8 @@ func (m plcTag) GetValueType() apiValues.PlcValueType {
 // is a device number, so the driver folds the start of the selection into it when it resolves
 // the address.
 func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.Quantity > 1 {
+	// The flag decides the shape; the count only sizes it.
+	if m.ExplicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,

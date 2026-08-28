@@ -61,11 +61,23 @@ public class SimulatedTag implements PlcTag {
     private final PlcValueType dataType;
     private final int numElements;
 
+    /**
+     * Whether the address wrote the selection as a range. {@code [0]} and {@code [0..0]} both make
+     * one element, and only the range is an array, so the count cannot carry this.
+     */
+    private final boolean explicitRange;
+
     private SimulatedTag(SimulatedTagType type, String name, PlcValueType dataType, int numElements) {
+        this(type, name, dataType, numElements, numElements > 1);
+    }
+
+    private SimulatedTag(SimulatedTagType type, String name, PlcValueType dataType, int numElements,
+                         boolean explicitRange) {
         this.type = type;
         this.name = name;
         this.dataType = dataType;
         this.numElements = numElements;
+        this.explicitRange = explicitRange;
     }
 
 
@@ -74,6 +86,16 @@ public class SimulatedTag implements PlcTag {
      * named variable rather than a numeric offset, so a selection that does not start at the
      * first element has nothing to apply to and is reported rather than quietly ignored.
      */
+    /** Whether the address wrote a range. Not derivable from the count - see {@link #explicitRange}. */
+    private static boolean rangeWritten(Matcher matcher, String tagString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return false;
+        }
+        return ArrayNotationParser.parse(expression, tagString, AddressConstraints.SINGLE_DIMENSION)
+            .get(0).isRange();
+    }
+
     private static int elementsOf(Matcher matcher, String tagString) {
         String expression = matcher.group("array");
         if (expression == null) {
@@ -103,7 +125,7 @@ public class SimulatedTag implements PlcTag {
             }
 
             int numElements = checkNumElements(dataType, elementsOf(matcher, tagString));
-            return new SimulatedTag(type, name, dataType, numElements);
+            return new SimulatedTag(type, name, dataType, numElements, rangeWritten(matcher, tagString));
         }
         throw ArrayNotationParser.invalidAddress(tagString,
             "{type}/{name}[selection]:{TYPE} - for example RANDOM/foo[0..3]:INT");
@@ -156,8 +178,9 @@ public class SimulatedTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(numElements > 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
+        // A range is an array even when it spans one element; the count cannot express that.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1, 0, true));
         }
         return Collections.emptyList();
     }
@@ -180,6 +203,7 @@ public class SimulatedTag implements PlcTag {
         }
         SimulatedTag simulatedTag = (SimulatedTag) o;
         return numElements == simulatedTag.numElements &&
+            explicitRange == simulatedTag.explicitRange &&
             type == simulatedTag.type &&
             Objects.equals(name, simulatedTag.name) &&
             Objects.equals(dataType, simulatedTag.dataType);
@@ -187,7 +211,7 @@ public class SimulatedTag implements PlcTag {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, name, dataType, numElements);
+        return Objects.hash(type, name, dataType, numElements, explicitRange);
     }
 
     @Override

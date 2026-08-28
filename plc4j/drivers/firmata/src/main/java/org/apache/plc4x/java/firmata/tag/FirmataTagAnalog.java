@@ -37,6 +37,11 @@ public class FirmataTagAnalog extends FirmataTag {
         super(address, quantity);
     }
 
+    public FirmataTagAnalog(int address, Integer quantity, boolean explicitRange) {
+        super(address, quantity, explicitRange);
+        
+    }
+
     @Override
     public String getAddressString() {
         // The selection terminates the address; Firmata carries no type suffix.
@@ -50,8 +55,9 @@ public class FirmataTagAnalog extends FirmataTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1));
+        // A range is an array even when it spans one pin; the count cannot say which was written.
+        if (isExplicitRange()) {
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1, 0, true));
         }
         return Collections.emptyList();    }
 
@@ -65,7 +71,7 @@ public class FirmataTagAnalog extends FirmataTag {
         int[] selection = selectionOf(matcher, addressString);
         address += selection[0];
         Integer quantity = selection[1];
-        return new FirmataTagAnalog(address, quantity);
+        return new FirmataTagAnalog(address, quantity, selection[2] == 1);
     }
 
 }

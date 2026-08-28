@@ -353,3 +353,16 @@ func TestArrayNotationParser_ASelectionSurvivesBeingRenderedAndParsedAgain(t *te
 		})
 	}
 }
+
+// A range the syntax accepts but no count can hold must be refused at the parse, not silently
+// wrapped: [0..4294967295] spans 2^32 elements, which is zero in a uint32.
+func TestParseArrayExpression_refusesARangeThatCannotBeCounted(t *testing.T) {
+	_, err := ParseArrayExpression("[0..4294967295]", "%test[0..4294967295]", Unconstrained)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "more than can be counted")
+
+	// One below the limit still parses, and counts what it says.
+	dimensions, err := ParseArrayExpression("[0..4294967294]", "%test[0..4294967294]", Unconstrained)
+	require.NoError(t, err)
+	assert.Equal(t, uint32(4294967295), dimensions[0].GetSize())
+}

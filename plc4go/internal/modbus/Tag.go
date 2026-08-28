@@ -60,7 +60,10 @@ type modbusTag struct {
 	TagType  TagType
 	Address  uint16
 	Quantity uint16
-	Datatype readWriteModel.ModbusDataType
+	// ExplicitRange records whether the address wrote the selection as a range. A one-element
+	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
+	ExplicitRange bool
+	Datatype      readWriteModel.ModbusDataType
 	// StringLength is the declared length of a single string. Nothing on the wire announces it, so
 	// it is part of the address; for every data type that is not a string it is 1, which leaves the
 	// size arithmetic unchanged (plc4j ModbusTag).
@@ -88,18 +91,19 @@ func logicalAddressOffset(tagType TagType) uint16 {
 // NewTag builds a tag from the logical (user facing) address, which for every area but the
 // extended registers is one higher than the address that goes onto the wire.
 func NewTag(tagType TagType, address uint16, quantity uint16, datatype readWriteModel.ModbusDataType) apiModel.PlcTag {
-	return newTagFromWireAddress(tagType, address-logicalAddressOffset(tagType), quantity, datatype, 1, tagConfig{})
+	return newTagFromWireAddress(tagType, address-logicalAddressOffset(tagType), quantity, datatype, 1, tagConfig{}, quantity > 1)
 }
 
-func newTagFromWireAddress(tagType TagType, wireAddress uint16, quantity uint16, datatype readWriteModel.ModbusDataType, stringLength uint16, config tagConfig) modbusTag {
+func newTagFromWireAddress(tagType TagType, wireAddress uint16, quantity uint16, datatype readWriteModel.ModbusDataType, stringLength uint16, config tagConfig, explicitRange bool) modbusTag {
 	return modbusTag{
-		TagType:      tagType,
-		Address:      wireAddress,
-		Quantity:     quantity,
-		Datatype:     datatype,
-		StringLength: stringLength,
-		UnitId:       config.unitId,
-		ByteOrder:    config.byteOrder,
+		ExplicitRange: explicitRange,
+		TagType:       tagType,
+		Address:       wireAddress,
+		Quantity:      quantity,
+		Datatype:      datatype,
+		StringLength:  stringLength,
+		UnitId:        config.unitId,
+		ByteOrder:     config.byteOrder,
 	}
 }
 
@@ -224,16 +228,19 @@ var modbusConstraints = spiModel.SingleDimension
 // The offset is consumed into the address here, the way plc4j's per-area of() does: a Modbus
 // address is a register number, so "holding-register:1[4..7]" is the same read as
 // "holding-register:5[0..3]".
-func selectionOf(expression string, address string) (uint64, uint64, error) {
+func selectionOf(expression string, address string) (uint64, uint64, bool, error) {
 	if expression == "" {
-		return 0, 1, nil
+		return 0, 1, false, nil
 	}
 	dimensions, err := spiModel.ParseArrayExpression(expression, address, modbusConstraints)
 	if err != nil {
-		return 0, 0, err
+		return 0, 0, false, err
 	}
 	dimension := dimensions[0]
-	return uint64(dimension.GetLowerBound() - dimension.GetBase()), uint64(dimension.GetSize()), nil
+	// The third value is not derivable from the others: [4] and [4..4] both select one element,
+	// and only the range is an array.
+	return uint64(dimension.GetLowerBound() - dimension.GetBase()), uint64(dimension.GetSize()),
+		dimension.IsRange(), nil
 }
 
 func NewModbusPlcTagFromStrings(tagType TagType, addressString string, arrayExpression string, stringLengthString string, datatype readWriteModel.ModbusDataType, config tagConfig, _options ...options.WithOption) (apiModel.PlcTag, error) {
@@ -243,19 +250,37 @@ func NewModbusPlcTagFromStrings(tagType TagType, addressString string, arrayExpr
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
-	offset, quantity, err := selectionOf(arrayExpression, addressString+arrayExpression)
+	offset, quantity, explicitRange, err := selectionOf(arrayExpression, addressString+arrayExpression)
 	if err != nil {
-		return nil, err
-	}
-	address += offset
-	if err := validateAddressAndQuantity(tagType, address, quantity); err != nil {
 		return nil, err
 	}
 	stringLength, err := validateStringLength(datatype, stringLengthString)
 	if err != nil {
 		return nil, err
 	}
-	return newTagFromWireAddress(tagType, uint16(address-uint64(logicalAddressOffset(tagType))), uint16(quantity), datatype, stringLength, config), nil
+	// The offset counts elements; a register address counts registers. They are the same number
+	// only for a one-register type, so "holding-register:1[4]:DINT" would otherwise land four
+	// registers short of the fifth DINT. A bit area addresses bits, where one element is one
+	// address, so nothing is scaled there. This is the same width lengthWords uses for the read.
+	address += offset * uint64(registersPerElement(tagType, datatype, stringLength))
+	if err := validateAddressAndQuantity(tagType, address, quantity); err != nil {
+		return nil, err
+	}
+	return newTagFromWireAddress(tagType, uint16(address-uint64(logicalAddressOffset(tagType))), uint16(quantity), datatype, stringLength, config, explicitRange), nil
+}
+
+// registersPerElement is how many registers one element of this type occupies. A bit area
+// addresses individual bits, so its elements are one address apart whatever the type says.
+func registersPerElement(tagType TagType, dataType readWriteModel.ModbusDataType, stringLength uint16) uint16 {
+	switch tagType {
+	case Coil, DiscreteInput:
+		return 1
+	}
+	registers := (lengthInBytes(dataType, 1, stringLength) + 1) / 2
+	if registers < 1 {
+		return 1
+	}
+	return uint16(registers)
 }
 
 func (m modbusTag) GetAddressString() string {
@@ -301,7 +326,8 @@ func (m modbusTag) GetValueType() apiValues.PlcValueType {
 // address is a register number, so the driver consumes the start of the selection into the
 // address when it resolves it.
 func (m modbusTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.Quantity > 1 {
+	// The flag decides the shape; the count only sizes it.
+	if m.ExplicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,

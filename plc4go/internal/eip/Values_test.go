@@ -180,3 +180,29 @@ func TestDecodeResponseCode(t *testing.T) {
 	assert.Equal(t, apiModel.PlcResponseCode_OK, decodeResponseCode(0))
 	assert.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, decodeResponseCode(5))
 }
+
+// What the caller receives has to match what GetArrayInfo promises: a one-element range is a list
+// of one, a bare index is a scalar. The decoder used to decide from the element count, so both
+// came back as scalars and the response contradicted the tag.
+func TestParsePlcValue_shapeFollowsTheTagNotTheCount(t *testing.T) {
+	handler := NewTagHandler()
+	fourBytes := []byte{0x2A, 0x00, 0x00, 0x00}
+
+	scalar, err := handler.ParseTag("%rate[4]:DINT")
+	require.NoError(t, err)
+	value, err := parsePlcValue(scalar.(PlcTag), fourBytes, readWriteModel.CIPDataTypeCode_DINT)
+	require.NoError(t, err)
+	assert.False(t, value.IsList(), "a bare index selects one element and yields a scalar")
+	assert.Equal(t, int32(42), value.GetInt32())
+
+	oneElementRange, err := handler.ParseTag("%rate[4..4]:DINT")
+	require.NoError(t, err)
+	value, err = parsePlcValue(oneElementRange.(PlcTag), fourBytes, readWriteModel.CIPDataTypeCode_DINT)
+	require.NoError(t, err)
+	assert.True(t, value.IsList(), "a range is a list even when it spans one element")
+	require.Len(t, value.GetList(), 1)
+	assert.Equal(t, int32(42), value.GetList()[0].GetInt32())
+
+	// And the shape the tag reports is the one the value has.
+	assert.Equal(t, len(oneElementRange.GetArrayInfo()) > 0, value.IsList())
+}

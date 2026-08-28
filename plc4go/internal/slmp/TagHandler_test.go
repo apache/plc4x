@@ -314,3 +314,23 @@ func TestTagHandler_ParseTag_rejectsTheOldCountSuffix(t *testing.T) {
 		})
 	}
 }
+
+// A selection offset counts elements; an SLMP device number counts 16-bit words. The point count
+// already scales by WordsPerElement, so an unscaled offset moved the read rather than shortening it.
+func TestTagHandler_ParseTag_scalesTheOffsetByTheWordsPerElement(t *testing.T) {
+	handler := NewTagHandler()
+
+	oneWord, err := handler.ParseTag("D100[4]:INT")
+	require.NoError(t, err)
+	assert.Equal(t, "D104:INT", oneWord.GetAddressString())
+
+	// The fifth DINT begins eight words along, at D108.
+	twoWords, err := handler.ParseTag("D100[4]:DINT")
+	require.NoError(t, err)
+	assert.Equal(t, "D108:DINT", twoWords.GetAddressString())
+
+	// A declared base is measured in elements too, so [4..7;4] shifts nothing.
+	fromBase, err := handler.ParseTag("D100[4..7;4]:DINT")
+	require.NoError(t, err)
+	assert.Equal(t, "D100[0..3]:DINT", fromBase.GetAddressString())
+}

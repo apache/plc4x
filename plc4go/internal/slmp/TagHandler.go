@@ -120,18 +120,24 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	// so "D100[4..7]" is the same read as "D104[0..3]". An SLMP Batch Read covers one contiguous
 	// run of devices, so nothing deeper than a single dimension fits.
 	quantity := uint64(1)
+	explicitRange := false
 	if expression := match["array"]; expression != "" {
 		dimensions, err := spiModel.ParseArrayExpression(expression, tagAddress, spiModel.SingleDimension)
 		if err != nil {
 			return nil, err
 		}
 		dimension := dimensions[0]
-		deviceNumber += uint64(dimension.GetLowerBound() - dimension.GetBase())
+		// The offset counts elements; a device number counts 16-bit words. They coincide only for
+		// a one-word type, so D100[4]:DINT would otherwise land on D104 instead of D108. This is
+		// the same scale the point count below applies, so offset and length cannot disagree.
+		deviceNumber += uint64(dimension.GetLowerBound()-dimension.GetBase()) * uint64(dataType.WordsPerElement())
 		if deviceNumber > maxDeviceNumber {
 			return nil, errors.Errorf("device number %d exceeds the 24-bit SLMP device-address range [0..%d]: %s",
 				deviceNumber, maxDeviceNumber, tagAddress)
 		}
 		quantity = uint64(dimension.GetSize())
+		// A range is an array even when it spans one element, which the count cannot say.
+		explicitRange = dimension.IsRange()
 	}
 
 	// The point count is what the frame asks for, so it - not the quantity - is what has to stay
@@ -142,7 +148,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			numberOfPoints, maxPoints, tagAddress)
 	}
 
-	return NewTag(device.deviceCode, uint32(deviceNumber), dataType, uint16(quantity)), nil
+	return NewTagWithShape(device.deviceCode, uint32(deviceNumber), dataType, uint16(quantity), explicitRange), nil
 }
 
 // ParseQuery is not supported: neither this driver nor plc4j's browses an SLMP device. plc4j's

@@ -21,6 +21,7 @@ package model
 
 import (
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -183,6 +184,12 @@ func parseDimension(part string, address string, constraints AddressConstraints)
 	if upperBound < lowerBound {
 		return nil, fmt.Errorf("invalid array range '%s' in tag '%s': the upper bound %d is "+
 			"below the lower bound %d", part, address, upperBound, lowerBound)
+	}
+	// The inclusive size is computed in a uint32, so a range spanning more than that would wrap -
+	// [0..4294967295] would report zero elements from a selection the syntax accepted.
+	if (uint64(upperBound) - uint64(lowerBound) + 1) > math.MaxUint32 {
+		return nil, fmt.Errorf("invalid array range '%s' in tag '%s': it spans %d elements, more than can be counted",
+			part, address, uint64(upperBound)-uint64(lowerBound)+1)
 	}
 	if lowerBound < base {
 		return nil, fmt.Errorf("invalid array range '%s' in tag '%s': index %d lies below the "+

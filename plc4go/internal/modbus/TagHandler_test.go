@@ -411,3 +411,27 @@ func TestTagHandler_ParseTag_rejectsASecondDimension(t *testing.T) {
 	_, err := NewTagHandler().ParseTag("holding-register:1[0..1][2..3]:INT")
 	assert.Error(t, err)
 }
+
+// A selection offset counts elements; a Modbus address counts registers. They are the same number
+// only for a one-register type, which is why every example using INT looked right while
+// "holding-register:1[4]:DINT" silently addressed four registers short of its target.
+//
+// The read length already scales (lengthWords), so the unscaled offset did not shorten the read -
+// it moved it.
+func TestTagHandler_ParseTag_scalesTheOffsetByTheElementWidth(t *testing.T) {
+	// 40001 is wire address 0; the fifth INT is four registers along.
+	assert.Equal(t, uint16(4), parseTag(t, "holding-register:1[4]:INT").Address)
+	// The fifth DINT begins eight registers along.
+	assert.Equal(t, uint16(8), parseTag(t, "holding-register:1[4]:DINT").Address)
+	// And a LINT is four registers wide.
+	assert.Equal(t, uint16(8), parseTag(t, "holding-register:1[2]:LINT").Address)
+	// A STRING(20) occupies ten registers, so the third begins twenty along.
+	assert.Equal(t, uint16(20), parseTag(t, "holding-register:1[2]:STRING(20)").Address)
+
+	// The other register areas follow the same rule.
+	assert.Equal(t, uint16(8), parseTag(t, "input-register:1[4]:DINT").Address)
+
+	// A bit area addresses bits: one coil is one address, so there is nothing to scale by.
+	assert.Equal(t, uint16(4), parseTag(t, "coil:1[4]:BOOL").Address)
+	assert.Equal(t, uint16(4), parseTag(t, "discrete-input:1[4]:BOOL").Address)
+}

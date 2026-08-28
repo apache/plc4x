@@ -115,6 +115,12 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 			arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),
 				UpperBound: ai.GetUpperBound(),
+				// The device declared this an array, which is what Range records; without it the shape
+				// rule reads the dimension as a bare index and reports the array as a scalar. The
+				// declared lower bound is also the base, so an address using the PLC's own indices
+				// lines up with it.
+				Base:  ai.GetLowerBound(),
+				Range: true,
 			})
 		}
 		foundTag := spiModel.NewDefaultPlcBrowseItem(

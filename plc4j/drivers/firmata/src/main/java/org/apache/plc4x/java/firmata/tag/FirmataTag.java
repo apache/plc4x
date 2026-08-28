@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class FirmataTag implements PlcTag {
@@ -42,6 +41,12 @@ public abstract class FirmataTag implements PlcTag {
     private final int address;
 
     private final int quantity;
+
+    /**
+     * Whether the address wrote the selection as a range. {@code 3[4]} and {@code 3[4..4]} both
+     * select one pin, and only the range is an array, so the count cannot carry this.
+     */
+    private final boolean explicitRange;
 
     public static FirmataTag of(String tagString) {
         Matcher matcher = FirmataTagAnalog.ADDRESS_PATTERN.matcher(tagString);
@@ -59,19 +64,26 @@ public abstract class FirmataTag implements PlcTag {
      * Resolves the address's array expression to the offset of the first pin and the number of
      * pins. Firmata addresses carry no type, so the expression terminates the address.
      *
-     * @return {@code {offset, quantity}}
+     * @return {@code {offset, quantity, rangeWritten}} - the last is 1 or 0, and is not
+     *         derivable from the others: {@code [4]} and {@code [4..4]} both select one element
      */
     protected static int[] selectionOf(Matcher matcher, String address) {
         String expression = matcher.group("array");
         if (expression == null) {
-            return new int[]{0, 1};
+            return new int[]{0, 1, 0};
         }
         ArrayInfo dimension = ArrayNotationParser
-            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
-        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
+            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).getFirst();
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+            dimension.isRange() ? 1 : 0};
     }
 
     protected FirmataTag(int address, Integer quantity) {
+        this(address, quantity, (quantity != null) && (quantity > 1));
+    }
+
+    protected FirmataTag(int address, Integer quantity, boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.address = address;
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
@@ -90,6 +102,11 @@ public abstract class FirmataTag implements PlcTag {
         return address;
     }
 
+    /** Whether the address wrote a range, as opposed to selecting a single pin. */
+    public boolean isExplicitRange() {
+        return explicitRange;
+    }
+
     public int getNumberOfElements() {
         return quantity;
     }
@@ -99,11 +116,10 @@ public abstract class FirmataTag implements PlcTag {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FirmataTag)) {
-            return false;
+        if (o instanceof FirmataTag that) {
+            return address == that.address;
         }
-        FirmataTag that = (FirmataTag) o;
-        return address == that.address;
+        return false;
     }
 
     @Override

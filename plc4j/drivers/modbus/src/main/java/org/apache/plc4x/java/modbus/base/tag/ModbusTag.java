@@ -53,6 +53,13 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     private final int quantity;
 
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range -
+     * {@code [4]} yields a scalar and {@code [4..4]} a list of one - and the count alone cannot
+     * say which was written, so the parser's answer is carried here.
+     */
+    private final boolean explicitRange;
+
     /** The declared length of a single string; 1 for every other data type. */
     private final int stringLength;
 
@@ -61,19 +68,42 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     private final ModbusByteOrder byteOrder;
 
     /**
-     * Resolves the address's array expression to the offset from the base address and the number
-     * of elements. An absent expression selects one element at the address itself.
+     * Resolves the address's array expression to the offset from the base address, the number of
+     * elements, and whether a range was written. An absent expression selects one element at the
+     * address itself.
      *
-     * @return {@code {offset, quantity}}
+     * <p>The third value is not derivable from the other two: {@code [4]} and {@code [4..4]} both
+     * select one element, and only the range is an array.</p>
+     *
+     * @return {@code {offset, quantity, rangeWritten}}, the last being 1 or 0
      */
     protected static int[] selectionOf(Matcher matcher, String addressString) {
         String expression = matcher.group("array");
         if (expression == null) {
-            return new int[]{0, 1};
+            return new int[]{0, 1, 0};
         }
         ArrayInfo dimension = ArrayNotationParser
-            .parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION).get(0);
-        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize()};
+            .parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION).getFirst();
+        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+            dimension.isRange() ? 1 : 0};
+    }
+
+    /**
+     * How many registers one element of the given type occupies.
+     *
+     * <p>A selection offset counts elements, but a register-area address counts registers, so the
+     * two have to be reconciled before the offset is applied. They coincide for a one-register
+     * type, which is why every example using INT looked right while {@code [4]:DINT} silently read
+     * four registers short of its target.</p>
+     *
+     * <p>The arithmetic is the same one {@link #getLengthWords()} uses for the read length - a
+     * string occupies its declared length, anything else its data type's size - so the offset and
+     * the length can no longer disagree.</p>
+     */
+    protected static int registersPerElement(ModbusDataType dataType, Integer stringLength) {
+        int bytes = ((stringLength != null) ? stringLength : 1) * dataType.getDataTypeSize();
+        // Round up: a single-byte string still occupies a whole register.
+        return Math.max(1, (bytes + 1) / 2);
     }
 
     public static ModbusTag of(String addressString) {
@@ -125,6 +155,12 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     protected ModbusTag(int address, Integer quantity, Integer stringLength, ModbusDataType dataType,
                         Map<String, String> config) {
+        this(address, quantity, stringLength, dataType, config, (quantity != null) && (quantity > 1));
+    }
+
+    protected ModbusTag(int address, Integer quantity, Integer stringLength, ModbusDataType dataType,
+                        Map<String, String> config, boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.address = address;
         if (getLogicalAddress() <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + getLogicalAddress());
@@ -213,10 +249,18 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(quantity != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1));
+        // A range is an array even when it spans one element, so the flag decides the shape and
+        // the count only sizes it. Deriving the shape from the count alone reported [4..4] as a
+        // scalar, contradicting the notation's own rule.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1, 0, true));
         }
         return Collections.emptyList();
+    }
+
+    /** Whether the address wrote a range, as opposed to selecting a single element. */
+    public boolean isExplicitRange() {
+        return explicitRange;
     }
 
     @Override
@@ -224,15 +268,15 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ModbusTag)) {
-            return false;
+        if (o instanceof ModbusTag that) {
+            return address == that.address &&
+                quantity == that.quantity &&
+            explicitRange == that.explicitRange &&
+                dataType == that.dataType &&
+                Objects.equals(unitId, that.unitId) &&
+                getClass() == that.getClass(); // MUST be identical
         }
-        ModbusTag that = (ModbusTag) o;
-        return address == that.address &&
-            quantity == that.quantity &&
-            dataType == that.dataType &&
-            unitId == that.unitId &&
-            getClass() == that.getClass(); // MUST be identical
+        return false;
     }
 
     @Override

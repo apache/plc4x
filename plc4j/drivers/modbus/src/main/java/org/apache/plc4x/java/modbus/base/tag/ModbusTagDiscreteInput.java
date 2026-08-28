@@ -43,6 +43,10 @@ public class ModbusTagDiscreteInput extends ModbusTag {
         super(address, quantity, stringLength, dataType, config);
     }
 
+    public ModbusTagDiscreteInput(int address, Integer quantity, Integer stringLength, ModbusDataType dataType, Map<String, String> config, boolean explicitRange) {
+        super(address, quantity, stringLength, dataType, config, explicitRange);
+    }
+
     protected String getAddressStringPrefix() {
         return ADDRESS_PREFIX;
     }
@@ -98,6 +102,6 @@ public class ModbusTagDiscreteInput extends ModbusTag {
         String stringLengthString = matcher.group("stringLength");
         Integer stringLength = (stringLengthString != null) ? Integer.parseInt(stringLengthString) : null;
 
-        return new ModbusTagDiscreteInput(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString));
+        return new ModbusTagDiscreteInput(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString), selection[2] == 1);
     }
 }

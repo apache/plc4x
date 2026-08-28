@@ -43,6 +43,10 @@ public class ModbusTagInputRegister extends ModbusTag {
         super(address, quantity, stringLength, dataType, config);
     }
 
+    public ModbusTagInputRegister(int address, Integer quantity, Integer stringLength, ModbusDataType dataType, Map<String, String> config, boolean explicitRange) {
+        super(address, quantity, stringLength, dataType, config, explicitRange);
+    }
+
     protected String getAddressStringPrefix() {
         return ADDRESS_PREFIX;
     }
@@ -81,8 +85,14 @@ public class ModbusTagInputRegister extends ModbusTag {
             throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
         }
 
+        ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
+
+        String stringLengthString = matcher.group("stringLength");
+        Integer stringLength = (stringLengthString != null) ? Integer.parseInt(stringLengthString) : null;
+
         int[] selection = selectionOf(matcher, addressString);
-        address += selection[0];
+        // The offset counts elements; the address counts registers.
+        address += selection[0] * registersPerElement(dataType, stringLength);
         int quantity = selection[1];
         if ((address + quantity) > REGISTER_MAXADDRESS) {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
@@ -92,11 +102,7 @@ public class ModbusTagInputRegister extends ModbusTag {
             throw new IllegalArgumentException("quantity may not be larger than 125. Was " + quantity);
         }
 
-        ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
 
-        String stringLengthString = matcher.group("stringLength");
-        Integer stringLength = (stringLengthString != null) ? Integer.parseInt(stringLengthString) : null;
-
-        return new ModbusTagInputRegister(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString));
+        return new ModbusTagInputRegister(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString), selection[2] == 1);
     }
 }

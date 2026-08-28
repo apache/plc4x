@@ -41,7 +41,18 @@ public class ProfinetTag implements PlcTag {
     private final PlcValueType dataType;
     private final int numElements;
 
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range,
+     * which no count can express.
+     */
+    private final boolean explicitRange;
+
     public ProfinetTag(int slot, int subSlot, Direction direction, int index, PlcValueType dataType, int numElements) {
+        this(slot, subSlot, direction, index, dataType, numElements, numElements > 1);
+    }
+
+    public ProfinetTag(int slot, int subSlot, Direction direction, int index, PlcValueType dataType, int numElements, boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.slot = slot;
         this.subSlot = subSlot;
         this.direction = direction;
@@ -59,6 +70,19 @@ public class ProfinetTag implements PlcTag {
      * named variable rather than a numeric offset, so a selection that does not start at the
      * first element has nothing to apply to and is reported rather than quietly ignored.
      */
+    /**
+     * Whether the address wrote a range. Not derivable from the element count: {@code [4]} and
+     * {@code [4..4]} both select one element, and only the range is an array.
+     */
+    private static boolean rangeWritten(Matcher matcher, String addressString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return false;
+        }
+        return ArrayNotationParser.parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION)
+            .get(0).isRange();
+    }
+
     private static int elementsOf(Matcher matcher, String addressString) {
         String expression = matcher.group("array");
         if (expression == null) {
@@ -96,7 +120,8 @@ public class ProfinetTag implements PlcTag {
         PlcValueType dataType = PlcValueType.valueOf(matcher.group("dataType"));
         int numElements = elementsOf(matcher, addressString);
 
-        return new ProfinetTag(slot, subSlot, direction, index, dataType, numElements);
+        return new ProfinetTag(slot, subSlot, direction, index, dataType, numElements,
+            rangeWritten(matcher, addressString));
     }
 
     public int getSlot() {
@@ -131,8 +156,9 @@ public class ProfinetTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if (numElements > 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
+        // A range is an array even when it spans one element; the count cannot express that.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1, 0, true));
         }
         return Collections.emptyList();
     }

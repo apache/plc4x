@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -116,6 +117,10 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
+		indexOffset, err = applySelectionOffset(indexOffset, arrayInfo, match["adsDataType"], stringLength, query)
+		if err != nil {
+			return nil, err
+		}
 
 		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, stringLength, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.directAdsTag, query); match != nil {
@@ -163,6 +168,10 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		// The selection goes through the shared parser, so plc4go accepts exactly what plc4j
 		// accepts. A direct address names a memory location, so it carries one dimension.
 		arrayInfo, err := spiModel.ParseArrayExpression(match["array"], query, spiModel.SingleDimension)
+		if err != nil {
+			return nil, err
+		}
+		indexOffset, err = applySelectionOffset(indexOffset, arrayInfo, adsDataTypeName, 0, query)
 		if err != nil {
 			return nil, err
 		}
@@ -218,6 +227,48 @@ var directAddressShape = regexp.MustCompile(`^(?:0[xX][0-9a-fA-F]+|\d+)/(?:0[xX]
 
 func looksLikeADirectAddress(query string) bool {
 	return directAddressShape.MatchString(query)
+}
+
+// applySelectionOffset moves a direct address to the element the selection starts at.
+//
+// An ADS index offset is a *byte* offset while a selection counts elements, so the two have to be
+// reconciled - and until now they were not reconciled at all here: the selection was parsed, put
+// on the tag, and the offset left untouched, so every element of an array resolved to the first.
+//
+// The device's data-type table is not available while an address is being parsed, so only the
+// types ADS defines itself can be measured. A selection on anything else is refused rather than
+// applied at a guessed offset; an address without a selection needs no offset and is unaffected.
+func applySelectionOffset(indexOffset uint32, arrayInfo []apiModel.ArrayInfo,
+	adsDataTypeName string, stringLength int32, query string) (uint32, error) {
+	if len(arrayInfo) == 0 {
+		return indexOffset, nil
+	}
+	elements := arrayInfo[0].GetLowerBound() - arrayInfo[0].GetBase()
+	if elements == 0 {
+		return indexOffset, nil
+	}
+	bytesPerElement, err := bytesPerElement(adsDataTypeName, stringLength, query)
+	if err != nil {
+		return 0, err
+	}
+	return indexOffset + (elements * bytesPerElement), nil
+}
+
+// bytesPerElement is the storage one element of the named type occupies. A string occupies its
+// declared length plus the terminator, doubled for WSTRING - the same size the reader asks for.
+func bytesPerElement(adsDataTypeName string, stringLength int32, query string) (uint32, error) {
+	switch adsDataTypeName {
+	case "STRING":
+		return uint32(stringLength + 1), nil
+	case "WSTRING":
+		return uint32(stringLength+1) * 2, nil
+	}
+	if dataType, ok := readWriteModel.AdsDataTypeByName(adsDataTypeName); ok {
+		return uint32(dataType.NumBytes()), nil
+	}
+	return 0, errors.Errorf("Cannot place a selection in '%s': the size of type '%s' is only known "+
+		"to the device, so the element's offset cannot be computed here. Address the element directly instead.",
+		query, adsDataTypeName)
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

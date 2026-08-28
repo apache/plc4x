@@ -25,6 +25,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
@@ -78,6 +79,18 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	selection, err := spiModel.ParseArrayExpression(arrayExpression, tagAddress, eipConstraints)
 	if err != nil {
 		return nil, err
+	}
+
+	// A CIP request carries its element count in 16 bits, so a larger selection would be narrowed
+	// on the way out - "%arr[0..65535]" would ask the device for zero elements. Refuse it rather
+	// than send a request that means something else.
+	elements := uint64(1)
+	for _, dimension := range selection {
+		elements *= uint64(dimension.GetSize())
+	}
+	if elements > maxElements {
+		return nil, errors.Errorf("tag '%s' selects %d elements, more than the %d a CIP request can ask for",
+			tagAddress, elements, maxElements)
 	}
 
 	return NewTagWithSelection(tagName, dataType, selection), nil

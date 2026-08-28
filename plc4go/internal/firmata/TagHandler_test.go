@@ -49,7 +49,7 @@ func TestTagHandler_ParseTag(t *testing.T) {
 		{
 			name:        "a run of digital pins",
 			tagAddress:  "digital:4[0..2]",
-			want:        digitalTag{address: 4, quantity: 3},
+			want:        digitalTag{address: 4, quantity: 3, explicitRange: true},
 			wantValue:   apiValues.BOOL,
 			wantAddress: "digital:4[0..2]",
 		},
@@ -70,7 +70,7 @@ func TestTagHandler_ParseTag(t *testing.T) {
 		{
 			name:        "a run of pullup digital pins",
 			tagAddress:  "digital:7[0..1]:PULLUP",
-			want:        digitalTag{address: 7, quantity: 2, pinMode: &pullup},
+			want:        digitalTag{address: 7, quantity: 2, pinMode: &pullup, explicitRange: true},
 			wantValue:   apiValues.BOOL,
 			wantAddress: "digital:7[0..1]:PULLUP",
 		},
@@ -91,7 +91,7 @@ func TestTagHandler_ParseTag(t *testing.T) {
 		{
 			name:        "a run of analog pins",
 			tagAddress:  "analog:2[0..3]",
-			want:        analogTag{address: 2, quantity: 4},
+			want:        analogTag{address: 2, quantity: 4, explicitRange: true},
 			wantValue:   apiValues.INT,
 			wantAddress: "analog:2[0..3]",
 		},

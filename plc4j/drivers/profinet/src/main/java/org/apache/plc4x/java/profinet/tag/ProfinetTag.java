@@ -36,9 +36,20 @@ public class ProfinetTag implements PlcTag {
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>[\\w\\-. ]+)" + ArrayNotationParser.ARRAY_GROUP + "(:(?<datatype>[a-zA-Z_]+)){1}");
     private final String address;
     private final int quantity;
+
+    /**
+     * Whether the address wrote the selection as a range. A one-element range is still a range,
+     * which no count can express.
+     */
+    private final boolean explicitRange;
     private final PlcValueType dataType;
 
     protected ProfinetTag(String address, Integer quantity, PlcValueType dataType) {
+        this(address, quantity, dataType, (quantity != null) && (quantity > 1));
+    }
+
+    protected ProfinetTag(String address, Integer quantity, PlcValueType dataType, boolean explicitRange) {
+        this.explicitRange = explicitRange;
         this.address = address;
         this.quantity = (quantity != null) ? quantity : 1;
         if (this.quantity <= 0) {
@@ -53,6 +64,19 @@ public class ProfinetTag implements PlcTag {
      * named variable rather than a numeric offset, so a selection that does not start at the
      * first element has nothing to apply to and is reported rather than quietly ignored.
      */
+    /**
+     * Whether the address wrote a range. Not derivable from the element count: {@code [4]} and
+     * {@code [4..4]} both select one element, and only the range is an array.
+     */
+    private static boolean rangeWritten(Matcher matcher, String addressString) {
+        String expression = matcher.group("array");
+        if (expression == null) {
+            return false;
+        }
+        return ArrayNotationParser.parse(expression, addressString, AddressConstraints.SINGLE_DIMENSION)
+            .get(0).isRange();
+    }
+
     private static int elementsOf(Matcher matcher, String addressString) {
         String expression = matcher.group("array");
         if (expression == null) {
@@ -78,7 +102,8 @@ public class ProfinetTag implements PlcTag {
         int quantity = elementsOf(matcher, addressString);
         PlcValueType plcValueType = PlcValueType.valueOf(matcher.group("datatype"));
 
-        return new ProfinetTag(matcher.group("address"), quantity, plcValueType);
+        return new ProfinetTag(matcher.group("address"), quantity, plcValueType,
+            rangeWritten(matcher, addressString));
     }
 
     @Override
@@ -95,8 +120,9 @@ public class ProfinetTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if (quantity > 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1));
+        // A range is an array even when it spans one element; the count cannot express that.
+        if (explicitRange) {
+            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1, 0, true));
         }
         return Collections.emptyList();
     }

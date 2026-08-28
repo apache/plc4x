@@ -74,26 +74,27 @@ func NewTagHandler() TagHandler {
 // The count is carried as a uint16 from here on, so it is bounded as one: an unchecked cast
 // turned a count above 65535 into whatever the low two bytes happened to be, handing back a tag
 // of 4464 elements for a request of 70000 and an empty one for 65536.
-func elementsOf(expression string, tagAddress string) (uint16, error) {
+func elementsOf(expression string, tagAddress string) (uint16, bool, error) {
 	if expression == "" {
-		return 1, nil
+		return 1, false, nil
 	}
 	dimensions, err := spiModel.ParseArrayExpression(expression, tagAddress, spiModel.SingleDimension)
 	if err != nil {
-		return 0, err
+		return 0, false, err
 	}
 	dimension := dimensions[0]
 	if dimension.GetLowerBound() != dimension.GetBase() {
-		return 0, errors.Errorf("Array selection '%s' in tag '%s' must start at the first element: "+
+		return 0, false, errors.Errorf("Array selection '%s' in tag '%s' must start at the first element: "+
 			"this driver addresses a named variable, so there is no offset to start from",
 			expression, tagAddress)
 	}
 	elements := dimension.GetSize()
 	if elements < 1 || elements > 0xFFFF {
-		return 0, errors.Errorf("A tag of %d elements in '%s' is more than a simulated tag may hold",
+		return 0, false, errors.Errorf("A tag of %d elements in '%s' is more than a simulated tag may hold",
 			elements, tagAddress)
 	}
-	return uint16(elements), nil
+	// A range is an array even when it spans one element, which the count cannot say.
+	return uint16(elements), dimension.IsRange(), nil
 }
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
@@ -123,11 +124,11 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 				return nil, errors.New("unknown tag data-type '" + tagDataTypeName + "'")
 			}
 		}
-		tagNumElements, err := elementsOf(match["array"], tagAddress)
+		tagNumElements, explicitRange, err := elementsOf(match["array"], tagAddress)
 		if err != nil {
 			return nil, err
 		}
-		return NewSimulatedTag(tagType, tagName, tagDataType, tagNumElements), nil
+		return NewSimulatedTagWithShape(tagType, tagName, tagDataType, tagNumElements, explicitRange), nil
 	}
 	// "RANDOM/foo:INT[4]" - the count after the type - no longer parses, so name the form to
 	// write rather than reporting only that nothing matched.

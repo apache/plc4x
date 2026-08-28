@@ -147,7 +147,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
-		offset, numElements, err := selectionOf(match, tagAddress, bytesPerString(dataType, stringLength))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, bytesPerString(dataType, stringLength))
 		if err != nil {
 			return nil, err
 		}
@@ -160,7 +160,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
 
-		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+		return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType, explicitRange), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -189,7 +189,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
-		offset, numElements, err := selectionOf(match, tagAddress, bytesPerString(dataType, stringLength))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, bytesPerString(dataType, stringLength))
 		if err != nil {
 			return nil, err
 		}
@@ -198,7 +198,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
 
-		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+		return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType, explicitRange), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringVarLengthAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -230,7 +230,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			}
 			bitOffset = uint8(parsedBitOffset)
 		}
-		offset, numElements, err := selectionOf(match, tagAddress, assumedBytesPerVarLengthString(dataType))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, assumedBytesPerVarLengthString(dataType))
 		if err != nil {
 			return nil, err
 		}
@@ -244,7 +244,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		}
 
 		// Var-length strings behave like fixed-length strings with the maximum length of 254.
-		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, 254, dataType), nil
+		return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, 254, dataType, explicitRange), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringVarLengthShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -268,7 +268,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
-		offset, numElements, err := selectionOf(match, tagAddress, assumedBytesPerVarLengthString(dataType))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, assumedBytesPerVarLengthString(dataType))
 		if err != nil {
 			return nil, err
 		}
@@ -278,7 +278,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		}
 
 		// Var-length strings behave like fixed-length strings with the maximum length of 254.
-		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, 254, dataType), nil
+		return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, 254, dataType, explicitRange), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -312,7 +312,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
-		offset, numElements, err := selectionOf(match, tagAddress, uint32(dataType.SizeInBytes()))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, uint32(dataType.SizeInBytes()))
 		if err != nil {
 			return nil, err
 		}
@@ -325,7 +325,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
 
-		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+		return NewTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, explicitRange), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -358,7 +358,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
-		offset, numElements, err := selectionOf(match, tagAddress, uint32(dataType.SizeInBytes()))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, uint32(dataType.SizeInBytes()))
 		if err != nil {
 			return nil, err
 		}
@@ -367,7 +367,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
 
-		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+		return NewTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, explicitRange), nil
 	} else if match := utils.GetSubgroupMatches(m.plcProxyAddressPattern, tagAddress); match != nil {
 		addressData, err := hex.DecodeString(strings.ReplaceAll(tagAddress, "[-]", ""))
 		if err != nil {
@@ -419,7 +419,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
-		offset, numElements, err := selectionOf(match, tagAddress, uint32(dataType.SizeInBytes()))
+		offset, numElements, explicitRange, err := selectionOf(match, tagAddress, uint32(dataType.SizeInBytes()))
 		if err != nil {
 			return nil, err
 		}
@@ -435,7 +435,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
 
-		return NewTag(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
+		return NewTagWithShape(memoryArea, 0, byteOffset, bitOffset, numElements, dataType, explicitRange), nil
 	}
 	// "%M100:INT[10]" - the count after the type - no longer parses, so say what to write
 	// instead of reporting only that nothing matched.
@@ -466,14 +466,14 @@ var s7Constraints = spiModel.SingleDimension
 // The offset is consumed here rather than reported: an S7 address names a byte offset, so
 // "%DB1.DBW20[4..7]" is the same read as "%DB1.DBW28[0..3]". What the caller sees afterwards is
 // the resolved address, which is why GetArrayInfo reports the shape and not the written indices.
-func selectionOf(match map[string]string, address string, bytesPerElement uint32) (uint32, uint16, error) {
+func selectionOf(match map[string]string, address string, bytesPerElement uint32) (uint32, uint16, bool, error) {
 	expression := match[ARRAY]
 	if expression == "" {
-		return 0, 1, nil
+		return 0, 1, false, nil
 	}
 	dimensions, err := spiModel.ParseArrayExpression(expression, address, s7Constraints)
 	if err != nil {
-		return 0, 0, err
+		return 0, 0, false, err
 	}
 	dimension := dimensions[0]
 	elements := dimension.GetSize()
@@ -484,10 +484,12 @@ func selectionOf(match map[string]string, address string, bytesPerElement uint32
 		elementSize = 1
 	}
 	if elements < 1 || elements > (maxByteOffset+1)/elementSize {
-		return 0, 0, errors.Errorf("A tag of %d elements of %d bytes in '%s' spans more than the addressable %d bytes",
+		return 0, 0, false, errors.Errorf("A tag of %d elements of %d bytes in '%s' spans more than the addressable %d bytes",
 			elements, elementSize, address, maxByteOffset+1)
 	}
-	return (dimension.GetLowerBound() - dimension.GetBase()) * bytesPerElement, uint16(elements), nil
+	// The range flag is not derivable from the count: [4] and [4..4] both select one element.
+	return (dimension.GetLowerBound() - dimension.GetBase()) * bytesPerElement, uint16(elements),
+		dimension.IsRange(), nil
 }
 
 // bytesPerString is what one string of the given declared length occupies: the characters plus

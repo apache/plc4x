@@ -334,4 +334,19 @@ class ArrayNotationParserTest {
         assertEquals("", ArrayNotationParser.render(List.of()));
         assertTrue(ArrayNotationParser.parse("", "tag").isEmpty());
     }
+
+    @Test
+    void refusesARangeThatCannotBeCounted() {
+        // getSize() is inclusive and computed in an int, so [0..2147483647] would wrap to a
+        // negative element count from a selection the syntax accepted.
+        PlcInvalidTagException thrown = assertThrows(PlcInvalidTagException.class,
+            () -> ArrayNotationParser.parse("[0..2147483647]", "%test[0..2147483647]",
+                AddressConstraints.UNCONSTRAINED));
+        assertTrue(thrown.getMessage().contains("more than can be counted"), thrown.getMessage());
+
+        // One below the limit still parses, and counts what it says.
+        assertEquals(Integer.MAX_VALUE, ArrayNotationParser
+            .parse("[0..2147483646]", "%test[0..2147483646]", AddressConstraints.UNCONSTRAINED)
+            .get(0).getSize());
+    }
 }

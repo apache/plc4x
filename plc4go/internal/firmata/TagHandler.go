@@ -63,7 +63,7 @@ func NewTagHandler(_options ...options.WithOption) TagHandler {
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.digitalPattern, tagAddress); match != nil {
-		address, quantity, err := parseAddressAndQuantity(match, tagAddress, maxDigitalPin)
+		address, quantity, explicitRange, err := parseAddressAndQuantity(match, tagAddress, maxDigitalPin)
 		if err != nil {
 			return nil, err
 		}
@@ -72,14 +72,14 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			pullup := readWriteModel.PinMode_PinModePullup
 			pinMode = &pullup
 		}
-		return NewDigitalTag(address, quantity, pinMode), nil
+		return NewDigitalTagWithShape(address, quantity, pinMode, explicitRange), nil
 	}
 	if match := utils.GetSubgroupMatches(m.analogPattern, tagAddress); match != nil {
-		address, quantity, err := parseAddressAndQuantity(match, tagAddress, maxAnalogPin)
+		address, quantity, explicitRange, err := parseAddressAndQuantity(match, tagAddress, maxAnalogPin)
 		if err != nil {
 			return nil, err
 		}
-		return NewAnalogTag(address, quantity), nil
+		return NewAnalogTagWithShape(address, quantity, explicitRange), nil
 	}
 	// "digital:2[4]" still parses, but it now selects the pin at index 4 rather than four pins;
 	// a form that no longer parses at all gets the shape it should have been written in.
@@ -99,28 +99,31 @@ func (m TagHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
 //
 // The selection's offset moves the pin, so "digital:2[4..7]" is the same run as "digital:6[0..3]".
 // A firmata run is consecutive pins, so nothing deeper than a single dimension fits.
-func parseAddressAndQuantity(match map[string]string, address string, maxPin uint64) (uint8, uint8, error) {
+func parseAddressAndQuantity(match map[string]string, address string, maxPin uint64) (uint8, uint8, bool, error) {
 	pin, err := strconv.ParseUint(match["address"], 10, 32)
 	if err != nil {
-		return 0, 0, errors.Wrapf(err, "Error parsing address %s", match["address"])
+		return 0, 0, false, errors.Wrapf(err, "Error parsing address %s", match["address"])
 	}
 	quantity := uint64(1)
+	explicitRange := false
 	if expression := match["array"]; expression != "" {
 		dimensions, err := spiModel.ParseArrayExpression(expression, address, spiModel.SingleDimension)
 		if err != nil {
-			return 0, 0, err
+			return 0, 0, false, err
 		}
 		pin += uint64(dimensions[0].GetLowerBound() - dimensions[0].GetBase())
 		quantity = uint64(dimensions[0].GetSize())
+		// A range is an array even when it spans one pin, which the count cannot say.
+		explicitRange = dimensions[0].IsRange()
 	}
 	if quantity > maxQuantity {
-		return 0, 0, errors.Errorf("quantity may not be larger than %d. Was %d", maxQuantity, quantity)
+		return 0, 0, false, errors.Errorf("quantity may not be larger than %d. Was %d", maxQuantity, quantity)
 	}
 	if pin > maxPin {
-		return 0, 0, errors.Errorf("pin %d is out of range, the highest addressable pin is %d", pin, maxPin)
+		return 0, 0, false, errors.Errorf("pin %d is out of range, the highest addressable pin is %d", pin, maxPin)
 	}
 	if pin+quantity-1 > maxPin {
-		return 0, 0, errors.Errorf("a run of %d pins starting at pin %d reaches past the highest addressable pin %d", quantity, pin, maxPin)
+		return 0, 0, false, errors.Errorf("a run of %d pins starting at pin %d reaches past the highest addressable pin %d", quantity, pin, maxPin)
 	}
-	return uint8(pin), uint8(quantity), nil
+	return uint8(pin), uint8(quantity), explicitRange, nil
 }

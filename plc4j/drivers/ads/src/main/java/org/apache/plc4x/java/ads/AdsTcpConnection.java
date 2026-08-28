@@ -1121,8 +1121,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                 List<ArrayInfo> arrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
                 List<ArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
                 for (AdsDataTypeArrayInfo a : dataType.getArrayInfo()) {
-                    arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
-                    itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
+                    arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
+                    itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
                 }
                 DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(
                     new SymbolicAdsTag(symbol.getName(), plcValueType, arrayInfo), symbol.getName(),
@@ -1178,8 +1178,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             List<ArrayInfo> arrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
             List<ArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
             for (AdsDataTypeArrayInfo a : childDataType.getArrayInfo()) {
-                arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
-                itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
+                arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
+                itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
             }
             values.add(new DefaultPlcBrowseItem(
                 new SymbolicAdsTag(basePath + "." + child.getMainName(), plc4xPlcValueType, arrayInfo),

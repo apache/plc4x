@@ -42,6 +42,9 @@ type PlcTag interface {
 	GetSelection() []apiModel.ArrayInfo
 }
 
+// maxElements is what a CIP request can ask for: the element count is carried in 16 bits.
+const maxElements = 65535
+
 type plcTag struct {
 	Tag       string
 	Type      readWriteModel.CIPDataTypeCode
@@ -118,12 +121,18 @@ func (m plcTag) GetType() readWriteModel.CIPDataTypeCode {
 // GetElementNb is how many elements the request asks the device for, derived from the selection;
 // a tag that selects nothing explicitly reads a single element.
 func (m plcTag) GetElementNb() uint16 {
-	elements := uint32(1)
+	// Computed as a uint64: the product of several dimensions wraps a uint32 long before it
+	// reaches the wire, and the count is carried in 16 bits there. The handler refuses a selection
+	// larger than that, so the conversion below cannot narrow a value anyone asked for.
+	elements := uint64(1)
 	for _, dimension := range m.Selection {
-		elements *= dimension.GetSize()
+		elements *= uint64(dimension.GetSize())
 	}
 	if elements < 1 {
 		return 1
+	}
+	if elements > maxElements {
+		return maxElements
 	}
 	return uint16(elements)
 }

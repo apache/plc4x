@@ -280,7 +280,9 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 			elementType := *groupAddressTag.GetTagType()
 			numElements := uint16(1)
 			if len(groupAddressTag.GetArrayInfo()) > 0 {
-				numElements = uint16(groupAddressTag.GetArrayInfo()[0].GetUpperBound() - groupAddressTag.GetArrayInfo()[0].GetLowerBound())
+				// GetSize, not upper minus lower: both bounds are inclusive, so subtracting them
+				// decodes one element short of what was asked for - [0..3] would yield three.
+				numElements = uint16(groupAddressTag.GetArrayInfo()[0].GetSize())
 			}
 
 			tags[tagName] = groupAddressTag

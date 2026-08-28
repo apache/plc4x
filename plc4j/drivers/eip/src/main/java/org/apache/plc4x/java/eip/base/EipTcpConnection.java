@@ -914,8 +914,8 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         int lengthBytes = 0;
         for (EipTag.PathElement element : elements) {
             PathSegment segment;
-            if (element instanceof EipTag.MemberElement member) {
-                segment = new LogicalSegment(new MemberID((byte) 0x00, member.index()));
+            if (element instanceof EipTag.MemberElement(short index)) {
+                segment = new LogicalSegment(new MemberID((byte) 0x00, index));
             } else {
                 String name = ((EipTag.SymbolElement) element).name();
                 segment = new DataSegment(new AnsiExtendedSymbolSegment(name,
@@ -936,7 +936,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         List<String> sendable = sendableTagNames(readRequest);
         if (p instanceof CipReadResponse resp) {
             if (sendable.isEmpty()) {
-                return new DefaultPlcReadResponse((DefaultPlcReadRequest) readRequest, values);
+                return new DefaultPlcReadResponse(readRequest, values);
             }
             String tagName = sendable.getFirst();
             EipTag tag = (EipTag) readRequest.getTag(tagName);
@@ -1117,8 +1117,14 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         int nb = tag.getElementNb();
         TypeCodec codec = FIXED_SIZE_CODECS.get(type);
 
+        // Whether the caller gets a list is decided by the shape the tag reports, not by how many
+        // elements it holds: "%arr[4..4]" selects one element and is still a list of one, while
+        // "%arr[4]" is a scalar. Deciding from the count alone made the response contradict
+        // getArrayInfo(), which is what a consumer reads to tell the two apart.
+        boolean asList = !tag.getArrayInfo().isEmpty();
+
         // Handle array reads.
-        if (nb > 1) {
+        if (asList) {
             if (codec == null) {
                 // STRING and STRUCTURED carry their own length rather than being laid out element
                 // by element, so only the first one can be decoded from the reply.
@@ -1140,7 +1146,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             return new PlcList(list);
         }
 
-        // If it wasn't an array, then handle single-element reads, which are not wrapped in a PlcList.
+        // Not an array: a single element, which is not wrapped in a PlcList.
         if (codec != null) {
             if (rawData.length < type.getSize()) {
                 LOGGER.warn("Device returned {} bytes for tag '{}', expected {} for a {}.",

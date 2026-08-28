@@ -65,6 +65,9 @@ type digitalTag struct {
 	// pinMode is the mode a subscription configures the pin as. Nil means the plc4j default of
 	// INPUT; the address syntax lets the user ask for PULLUP instead.
 	pinMode *readWriteModel.PinMode
+	// explicitRange records whether the address wrote a range; a one-element range is still
+	// a range, which the quantity cannot say.
+	explicitRange bool
 }
 
 // analogTag addresses one or more analog pins, which report a 14 bit sample. Ported from plc4j's
@@ -72,6 +75,9 @@ type digitalTag struct {
 type analogTag struct {
 	address  uint8
 	quantity uint8
+	// explicitRange records whether the address wrote a range; a one-element range is still
+	// a range, which the quantity cannot say.
+	explicitRange bool
 }
 
 var (
@@ -82,12 +88,23 @@ var (
 // NewDigitalTag builds a digital tag. A nil pinMode means the pin is configured as a plain INPUT
 // when it is subscribed to.
 func NewDigitalTag(address uint8, quantity uint8, pinMode *readWriteModel.PinMode) Tag {
-	return digitalTag{address: address, quantity: quantity, pinMode: pinMode}
+	return NewDigitalTagWithShape(address, quantity, pinMode, quantity > 1)
+}
+
+// NewDigitalTagWithShape is NewDigitalTag plus what the address said about its shape: a range is
+// an array even when it spans one pin, which the quantity alone cannot carry.
+func NewDigitalTagWithShape(address uint8, quantity uint8, pinMode *readWriteModel.PinMode, explicitRange bool) Tag {
+	return digitalTag{address: address, quantity: quantity, pinMode: pinMode, explicitRange: explicitRange}
 }
 
 // NewAnalogTag builds an analog tag.
 func NewAnalogTag(address uint8, quantity uint8) Tag {
-	return analogTag{address: address, quantity: quantity}
+	return NewAnalogTagWithShape(address, quantity, quantity > 1)
+}
+
+// NewAnalogTagWithShape is NewAnalogTag plus the shape the address wrote.
+func NewAnalogTagWithShape(address uint8, quantity uint8, explicitRange bool) Tag {
+	return analogTag{address: address, quantity: quantity, explicitRange: explicitRange}
 }
 
 func (t digitalTag) GetAddress() uint8 {
@@ -120,7 +137,7 @@ func (t digitalTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (t digitalTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return arrayInfoFor(t.quantity)
+	return arrayInfoFor(t.quantity, t.explicitRange)
 }
 
 // GetPlcSubscriptionType is what a tag which wasn't added through one of the typed builder methods
@@ -159,7 +176,7 @@ func (t analogTag) GetValueType() apiValues.PlcValueType {
 }
 
 func (t analogTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return arrayInfoFor(t.quantity)
+	return arrayInfoFor(t.quantity, t.explicitRange)
 }
 
 // GetPlcSubscriptionType is what a tag which wasn't added through one of the typed builder methods
@@ -182,8 +199,9 @@ func (t analogTag) String() string {
 // arrayInfoFor reports the shape of the value the caller receives: a run of pins is a list, a
 // single pin is a scalar. The indices are relative to the value, not to the address - a firmata
 // address is a pin number, so the driver folds the start of the selection into it.
-func arrayInfoFor(quantity uint8) []apiModel.ArrayInfo {
-	if quantity > 1 {
+func arrayInfoFor(quantity uint8, explicitRange bool) []apiModel.ArrayInfo {
+	// The flag decides the shape; the count only sizes it.
+	if explicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,

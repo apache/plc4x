@@ -70,8 +70,11 @@ class DirectAdsStringTagTest {
     void getAddressStringFormatsBase() {
         DirectAdsStringTag single = DirectAdsStringTag.of(1, 2, "STRING", 10, 1);
         assertFalse(single.getAddressString().contains("["));
+        // The selection is written as the range it is, before the type - not as the trailing count
+        // this used to assert, which the address pattern no longer accepts.
         DirectAdsStringTag array = DirectAdsStringTag.of(1, 2, "STRING", 10, 4);
-        assertTrue(array.getAddressString().contains("[4]"));
+        assertTrue(array.getAddressString().contains("[0..3]"), array.getAddressString());
+        assertTrue(array.getAddressString().endsWith(":STRING(10)"), array.getAddressString());
     }
 
     @Test

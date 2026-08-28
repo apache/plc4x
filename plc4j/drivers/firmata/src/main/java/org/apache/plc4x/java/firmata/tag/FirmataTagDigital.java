@@ -40,10 +40,14 @@ public class FirmataTagDigital extends FirmataTag {
     protected final PinMode pinMode;
 
     public FirmataTagDigital(int address, Integer quantity, PinMode pinMode) {
-        super(address, quantity);
+        this(address, quantity, pinMode, (quantity != null) && (quantity > 1));
+    }
+
+    public FirmataTagDigital(int address, Integer quantity, PinMode pinMode, boolean explicitRange) {
+        super(address, quantity, explicitRange);
         // Translate the address into a bit-set.
         bitSet = new BitSet();
-        for(int i = getAddress(); i < getAddress() + getNumberOfElements(); i++) {
+        for (int i = getAddress(); i < getAddress() + getNumberOfElements(); i++) {
             bitSet.set(i, true);
         }
         this.pinMode = pinMode;
@@ -62,8 +66,9 @@ public class FirmataTagDigital extends FirmataTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1));
+        // A range is an array even when it spans one pin; the count cannot say which was written.
+        if (isExplicitRange()) {
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1, 0, true));
         }
         return Collections.emptyList();
     }
@@ -89,7 +94,7 @@ public class FirmataTagDigital extends FirmataTag {
 
         PinMode pinMode = ("PULLUP".equals(matcher.group("mode"))) ? PinMode.PinModePullup : null;
 
-        return new FirmataTagDigital(address, quantity, pinMode);
+        return new FirmataTagDigital(address, quantity, pinMode, selection[2] == 1);
     }
 
 }
