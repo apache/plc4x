@@ -53,7 +53,10 @@ type Configuration struct {
 	KeyStoreFile     string
 	CertDirectory    string
 	KeyStorePassword string `secret:"true"`
-	Ckp              *CertificateKeyPair
+	// Ckp holds the client's private key. Rendering it prints pointer addresses rather than key
+	// material, so nothing leaks today - but a struct that holds a key by value later would, and
+	// a field whose contents must never be printed should say so where it is declared.
+	Ckp *CertificateKeyPair `secret:"true"`
 	// AllowUnverifiedSecurityPolicies is an explicit opt-in for security policies other than "None".
 	// The plc4go OPC UA secure-channel implementation does not verify server certificates or message
 	// signatures yet, so any other policy is refused unless this is set to true.
@@ -62,22 +65,33 @@ type Configuration struct {
 	log zerolog.Logger
 }
 
+// fieldForOption maps a connection-string option to the Configuration field it sets.
+//
+// The names are the ones PLC4J declares and the documentation lists, not this struct's Go field
+// names. Deriving them from the field names is what made this driver read "keyStoreFile" and
+// "keyStorePassword": the documented "tls.keystore" and "tls.keystore-password" reached it as
+// unknown options and were ignored, so the two bindings disagreed about the same string.
+//
+// Keys are lower-case; lookup lower-cases the option, which keeps the case-insensitive matching
+// this driver has always had.
+var fieldForOption = map[string]string{
+	"discovery":             "Discovery",
+	"username":              "Username",
+	"password":              "Password",
+	"security-policy":       "SecurityPolicy",
+	"tls.keystore":          "KeyStoreFile",
+	"tls.keystore-password": "KeyStorePassword",
+	// No PLC4J counterpart: this binding generates its certificate into a directory rather than
+	// taking a key store, so the name is this binding's own - in the shared spelling.
+	"cert-directory":                     "CertDirectory",
+	"allow-unverified-security-policies": "AllowUnverifiedSecurityPolicies",
+}
+
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
-	// Match option keys case-insensitively against the exported Configuration field names.
-	// (Option keys were previously title-cased, which silently broke camelCase keys like
-	// securityPolicy and thereby dropped requested security settings.)
-	fieldNamesByLowerCase := map[string]string{}
-	for i := 0; i < reflectConfiguration.NumField(); i++ {
-		field := reflectConfiguration.Type().Field(i)
-		if !field.IsExported() {
-			continue
-		}
-		fieldNamesByLowerCase[strings.ToLower(field.Name)] = field.Name
-	}
 	for optionKey := range options {
-		fieldName, ok := fieldNamesByLowerCase[strings.ToLower(optionKey)]
+		fieldName, ok := fieldForOption[strings.ToLower(optionKey)]
 		if !ok {
 			// Read by the transport rather than by this driver. The names come from the
 			// transports themselves, which register what they read, so this driver does not
@@ -138,8 +152,8 @@ func (c *Configuration) validateSecurityPolicy() error {
 		return nil
 	}
 	if !c.AllowUnverifiedSecurityPolicies {
-		return errors.Errorf("securityPolicy %s is not supported: the plc4go OPC UA driver does not verify server certificates or message signatures yet. "+
-			"Set allowUnverifiedSecurityPolicies=true to connect anyway (NOT recommended for production use)", c.SecurityPolicy)
+		return errors.Errorf("security-policy %s is not supported: the plc4go OPC UA driver does not verify server certificates or message signatures yet. "+
+			"Set allow-unverified-security-policies=true to connect anyway (NOT recommended for production use)", c.SecurityPolicy)
 	}
 	c.log.Warn().
 		Str("securityPolicy", c.SecurityPolicy).

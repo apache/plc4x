@@ -19,7 +19,10 @@
 
 package options
 
-import "regexp"
+import (
+	"net/url"
+	"regexp"
+)
 
 // RedactConnectionString removes credentials from a connection string before it is logged.
 //
@@ -35,7 +38,9 @@ import "regexp"
 // psk-identity is deliberately not matched: it says which key was refused, which is what an
 // operator needs when a handshake fails, and hiding it protects nothing.
 var (
-	secretParameter = regexp.MustCompile(`(?i)([?&][^=&]*(password|passwd|secret|token|psk-key|passphrase)[^=&]*=)[^&]*`)
+	secretName = regexp.MustCompile(`(?i)password|passwd|secret|token|psk-key|passphrase`)
+	// One parameter of a connection string: its separator, its name as written, and its value.
+	parameter = regexp.MustCompile(`([?&])([^=&]*)=([^&]*)`)
 	// Credentials in a URI authority have no parameter name to match, so they are removed
 	// structurally: everything between the first ':' of the userinfo and the '@' that ends it.
 	// The user segment excludes ':' so that the first colon separates it from the password; were
@@ -50,5 +55,18 @@ const Redacted = "******"
 // RedactConnectionString returns the connection string with every credential replaced.
 func RedactConnectionString(connectionString string) string {
 	redacted := userinfo.ReplaceAllString(connectionString, "${1}"+Redacted+"${3}")
-	return secretParameter.ReplaceAllString(redacted, "${1}"+Redacted)
+	return parameter.ReplaceAllStringFunc(redacted, func(match string) string {
+		parts := parameter.FindStringSubmatch(match)
+		// Decided from the decoded name, not the name as written: "?%70assword=hunter2" is the
+		// password parameter by the time url.Values has decoded it and a driver reads it, but no
+		// pattern over the raw string sees the word. The value is a credential either way.
+		name := parts[2]
+		if decoded, err := url.QueryUnescape(name); err == nil {
+			name = decoded
+		}
+		if !secretName.MatchString(name) {
+			return match
+		}
+		return parts[1] + parts[2] + "=" + Redacted
+	})
 }

@@ -125,10 +125,27 @@ type Configuration struct {
 // are matched case-insensitively so users can write "localDeviceId", "LocalDeviceId",
 // or "localdeviceid" interchangeably in the connection string.
 func ParseFromOptions(log zerolog.Logger, optionsMap map[string][]string) (Configuration, error) {
+	return parseFromOptions(log, optionsMap, true)
+}
+
+// ParseFromOptionsQuietly is ParseFromOptions without the report of options nothing read.
+//
+// This driver parses the same options twice: the driver reads them early to give the discoverer
+// its timeout, and the connection reads them again when it is built. Reporting from both printed
+// every warning twice, so one bad option told the operator about itself twice - which reads like
+// two problems. The connection's parse is the one that reports, being the one whose result the
+// connection actually uses.
+func ParseFromOptionsQuietly(log zerolog.Logger, optionsMap map[string][]string) (Configuration, error) {
+	return parseFromOptions(log, optionsMap, false)
+}
+
+func parseFromOptions(log zerolog.Logger, optionsMap map[string][]string, report bool) (Configuration, error) {
 	// Every option this driver reads goes through the reader, so the ones nothing read can be
 	// reported rather than silently discarded. Deferred, so no return path can skip it.
 	reader := spiOptions.NewOptionReader(log, optionsMap).CaseInsensitive()
-	defer reader.ReportUnknown("bacnet-ip")
+	if report {
+		defer reader.ReportUnknown("bacnet-ip")
+	}
 
 	configuration := createDefaultConfiguration()
 	rv := reflect.ValueOf(&configuration).Elem()

@@ -25,13 +25,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * What is redacted is decided by the {@link Secret} markings on the configuration classes, with a
  * name-based backstop for parameters no configuration declares.
  */
 class ConnectionStringRedactorTest {
+
+    private static final String REDACTED = "******";
+    private static final String NESTED = "s7%3A%2F%2Foperator%3Ahunter2%40plc%3A102%3Fpassword%3Dhunter2";
 
     static class DriverConfig implements Configuration {
         @Secret
@@ -169,6 +174,35 @@ class ConnectionStringRedactorTest {
         // everything after it is the password; a greedy one would publish "operator:hun".
         assertEquals("s7://operator:******@plc:102",
             redact("s7://operator:hun:ter2@plc:102"));
+    }
+
+    @Test
+    @DisplayName("masks a percent-encoded parameter name")
+    void masksAPercentEncodedName() {
+        // The driver reads this as "password" once the query is decoded, so the value is a
+        // credential however the name was written.
+        assertEquals("plc4x://host?%70assword=" + REDACTED,
+            redact("plc4x://host?%70assword=hunter2"));
+    }
+
+    @Test
+    @DisplayName("masks credentials nested in a connection string passed as a value")
+    void masksCredentialsInsideANestedConnectionString() {
+        // The PLC4X proxy driver takes a whole PLC URL as a parameter. Nothing about the outer
+        // name says "secret", and the encoding hides the inner one from every pattern.
+        String redacted = redact("plc4x://proxy?remote-connection-string=" + NESTED);
+
+        assertFalse(redacted.contains("hunter2"), redacted);
+        assertTrue(redacted.contains("remote-connection-string="), "the parameter is still named");
+    }
+
+    @Test
+    @DisplayName("keeps a nested connection string readable apart from its credentials")
+    void keepsTheNestedEndpointVisible() {
+        String redacted = redact("plc4x://proxy?remote-connection-string=s7://operator:hunter2@plc:102");
+
+        assertFalse(redacted.contains("hunter2"), redacted);
+        assertTrue(redacted.contains("plc:102"), "which PLC the proxy talks to is the diagnosis");
     }
 
     @Test

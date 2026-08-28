@@ -21,6 +21,10 @@ package org.apache.plc4x.java.spi.drivers;
 import org.apache.plc4x.java.spi.config.SecretParameters;
 import org.apache.plc4x.java.spi.config.annotations.Secret;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -80,11 +84,79 @@ public final class ConnectionStringRedactor {
         if (connectionString == null) {
             return null;
         }
-        String redacted = redactUserinfo(connectionString);
+        Set<String> secretNames = new LinkedHashSet<>();
         for (String name : secretParameterNames(driverConfigurationClass, transportCode, transportConfigurationClass)) {
-            redacted = redactParameter(redacted, name);
+            secretNames.add(name.toLowerCase(Locale.ROOT));
         }
-        return redactSecretLookingNames(redacted);
+        return redactParameters(redactUserinfo(connectionString), secretNames, true);
+    }
+
+    /**
+     * Walks the parameters once, deciding each from its <em>decoded</em> name.
+     *
+     * <p>Deciding from the name as written would miss a percent-encoded one:
+     * {@code ?%70assword=hunter2} is the {@code password} parameter by the time
+     * {@code URI.getQuery()} has decoded it and the driver reads it, but no pattern over the raw
+     * string sees the word. The value is a real credential either way.</p>
+     */
+    private static String redactParameters(String connectionString, Set<String> secretNames,
+                                           boolean redactNestedValues) {
+        Matcher matcher = PARAMETER.matcher(connectionString);
+        StringBuilder redacted = new StringBuilder();
+        while (matcher.find()) {
+            String name = decode(matcher.group(2));
+            String value = isSecret(name, secretNames) ? REDACTED
+                : redactNestedValues ? redactNested(matcher.group(3)) : matcher.group(3);
+            matcher.appendReplacement(redacted,
+                Matcher.quoteReplacement(matcher.group(1) + matcher.group(2) + "=" + value));
+        }
+        matcher.appendTail(redacted);
+        return redacted.toString();
+    }
+
+    /**
+     * A parameter whose value is itself a connection string carries that string's credentials.
+     *
+     * <p>The PLC4X proxy driver takes a whole PLC URL as {@code remote-connection-string}, encoded
+     * so the outer string can hold it. Nothing about the outer parameter's name says "secret", and
+     * the encoded value hides the inner {@code password=} from every pattern here - so the inner
+     * credential was logged in clear. Redacting the value as a connection string in its own right
+     * keeps what an operator needs (which PLC the proxy talks to) and removes what they must not
+     * see, which marking the whole parameter secret would not.</p>
+     */
+    private static String redactNested(String value) {
+        String decoded;
+        try {
+            decoded = URLDecoder.decode(value, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            return value;
+        }
+        if (!decoded.contains("://")) {
+            return value;
+        }
+        // One level: a connection string inside a connection string is the case that exists, and
+        // a bound depth cannot be talked into recursing on crafted input.
+        String redacted = redactParameters(redactUserinfo(decoded), Set.of(), false);
+        if (decoded.equals(redacted)) {
+            return value;
+        }
+        // Rendered back the way it was written, so the log line still looks like the string the
+        // user supplied.
+        return decoded.equals(value) ? redacted : URLEncoder.encode(redacted, StandardCharsets.UTF_8);
+    }
+
+    private static boolean isSecret(String name, Set<String> secretNames) {
+        return secretNames.contains(name.toLowerCase(Locale.ROOT))
+            || SECRET_LOOKING_NAME.matcher(name).find();
+    }
+
+    /** The name as the driver will read it, or as written when it is not valid encoding. */
+    private static String decode(String name) {
+        try {
+            return URLDecoder.decode(name, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            return name;
+        }
     }
 
     /**
@@ -106,20 +178,14 @@ public final class ConnectionStringRedactor {
      * key was refused, which is the one thing an operator needs when a handshake fails.
      */
     private static final Pattern SECRET_LOOKING_NAME = Pattern.compile(
-        "(?i)([?&][^=&]*(?:password|passwd|secret|token|psk-key|passphrase)[^=&]*=)[^&]*");
+        "(?i)password|passwd|secret|token|psk-key|passphrase");
 
-    private static String redactParameter(String connectionString, String name) {
-        // The name sits between a '?' or '&' and its '='; the value runs to the next '&'. Matched
-        // without regard to case: a wrongly-cased parameter does not bind, but the value the user
-        // typed is a real secret either way and must not reach the log.
-        Pattern parameter = Pattern.compile("(?i)([?&]" + Pattern.quote(name) + "=)[^&]*");
-        return parameter.matcher(connectionString).replaceAll("$1" + REDACTED);
-    }
-
-    /** The backstop: anything named like a credential that the markings did not already cover. */
-    private static String redactSecretLookingNames(String connectionString) {
-        return SECRET_LOOKING_NAME.matcher(connectionString).replaceAll("$1" + REDACTED);
-    }
+    /**
+     * One parameter of a connection string: its separator, its name as written, and its value.
+     * Names are compared without regard to case - a wrongly-cased parameter does not bind, but
+     * the value the user typed is a real secret either way and must not reach the log.
+     */
+    private static final Pattern PARAMETER = Pattern.compile("([?&])([^=&]*)=([^&]*)");
 
     private static String redactUserinfo(String connectionString) {
         Matcher matcher = USERINFO.matcher(connectionString);

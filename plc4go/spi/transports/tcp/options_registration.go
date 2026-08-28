@@ -22,9 +22,15 @@ package tcp
 import "github.com/apache/plc4x/plc4go/spi/options"
 
 // The options this transport reads, declared beside the code that reads them so a driver's report
-// of unread connection-string options does not name them. Keep in step with Transport.CreateTransportInstance.
+// of unread connection-string options does not name them.
+//
+// A user addresses a transport's option under the transport's own code, as PLC4J does and as the
+// documentation says: "tcp.connect-timeout-ms", not "connect-timeout-ms". An option a driver
+// injects into the map itself is not addressed by anyone and carries no prefix.
 func init() {
 	options.RegisterTransportOptions(
-		"defaultTcpPort", "connect-timeout-ms",
+		"tcp.connect-timeout-ms",
+		// Injected by a driver rather than written by a user, so it carries no prefix.
+		"defaultTcpPort",
 	)
 }

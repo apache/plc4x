@@ -202,7 +202,46 @@ Incompatible changes
 - Fixed PLC4Go logging connection strings verbatim. A password in a Go
   connection string reached the log in clear at debug level, at twenty
   call sites across the driver manager and the connection cache. They are
-  redacted now, along with credentials in a URI's userinfo.
+  redacted now, along with credentials in a URI's userinfo. The parsed
+  URL and the connection container render redacted too - both reached the
+  same log lines by another route, so a redacted field sat beside the
+  credential it was hiding.
+
+- PLC4Go addresses a transport's connection-string options under the
+  transport's own code, as PLC4J does and as the documentation has always
+  said: "tcp.connect-timeout-ms", "serial.baud-rate", "udp.so-reuse",
+  "pcap.speed-factor". They were read unprefixed, so every documented
+  transport setting was ignored in PLC4Go and left at its default. The
+  unprefixed names are now reported as unknown rather than silently
+  doing nothing. Options a driver injects into the map itself
+  ("defaultTcpPort") are not addressed by anyone and keep their bare
+  names.
+
+- PLC4Go's OPC UA driver reads the parameter names PLC4J declares and the
+  documentation lists - "tls.keystore", "tls.keystore-password",
+  "security-policy", "allow-unverified-security-policies" - rather than
+  names derived from its own Go struct fields ("keyStoreFile",
+  "securityPolicy"). The documented connection string reached it as a
+  set of unknown options and was ignored.
+
+- A secret marking in PLC4Go applies whatever the field's type is. The
+  generator honoured "secret:\"true\"" only where it rendered a string, so
+  the tag on any other kind of field was accepted and silently did
+  nothing. The OPC UA key pair now carries the marking in both the
+  configuration and the secure channel.
+
+- Redaction decides from the parameter name the driver will read, not the
+  name as written: "?%70assword=hunter2" is the password parameter once
+  the query is decoded, and was previously logged in clear. A connection
+  string nested inside another (the PLC4X proxy driver's
+  "remote-connection-string") is redacted as a connection string in its
+  own right, so its credentials no longer travel through the outer one -
+  while which PLC the proxy talks to stays visible.
+
+- A BACnet/IP connection reported each unknown option once rather than
+  twice. Its options are parsed both by the driver, for the discovery
+  timeout, and by the connection; both reported, so one mistake read as
+  two.
 - The connection-creating methods of the API moved from
   "PlcConnectionManager" to a new "PlcConnectionFactory"
   interface, which the "PlcDriverManager" hands out via

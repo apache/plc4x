@@ -51,16 +51,53 @@ func TestParseFromOptions_reportsAnUnknownOptionAndCarriesOn(t *testing.T) {
 	assert.Contains(t, logged.String(), "scurityPolicy", "the ignored option must be named")
 }
 
+// The names PLC4J declares and the documentation lists are the ones that bind here. They used to
+// be derived from this struct's Go field names, so "tls.keystore" reached the driver as an unknown
+// option while "keyStoreFile" - a name no document mentions - was what actually worked.
+func TestParseFromOptions_readsTheDocumentedNames(t *testing.T) {
+	var logged bytes.Buffer
+	log := zerolog.New(&logged)
+
+	configuration, err := ParseFromOptions(log, map[string][]string{
+		"security-policy":                    {"Basic256Sha256"},
+		"allow-unverified-security-policies": {"true"},
+		"tls.keystore":                       {"/etc/plc4x/client.p12"},
+		"tls.keystore-password":              {"hunter2"},
+		"username":                           {"operator"},
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, "Basic256Sha256", configuration.SecurityPolicy)
+	assert.True(t, configuration.AllowUnverifiedSecurityPolicies, "the opt-in binds under its documented name too")
+	assert.Equal(t, "/etc/plc4x/client.p12", configuration.KeyStoreFile)
+	assert.Equal(t, "hunter2", configuration.KeyStorePassword)
+	assert.Equal(t, "operator", configuration.Username)
+	assert.NotContains(t, logged.String(), "not known", "every documented name is read")
+}
+
+// The pre-migration spelling is reported like any other unknown option, so an upgraded connection
+// string says what it lost rather than quietly falling back to a default.
+func TestParseFromOptions_reportsTheOldFieldNameSpelling(t *testing.T) {
+	var logged bytes.Buffer
+	log := zerolog.New(&logged)
+
+	configuration, err := ParseFromOptions(log, map[string][]string{"keyStoreFile": {"/etc/old.p12"}})
+
+	require.NoError(t, err)
+	assert.Empty(t, configuration.KeyStoreFile)
+	assert.Contains(t, logged.String(), "keyStoreFile")
+}
+
 // A transport-level option belongs to another consumer and is not this driver's to report. The
 // TCP transport, linked in above, is what declares that it reads this one.
 func TestParseFromOptions_saysNothingAboutTransportOptions(t *testing.T) {
 	var logged bytes.Buffer
 	log := zerolog.New(&logged)
 
-	_, err := ParseFromOptions(log, map[string][]string{"connect-timeout-ms": {"5000"}})
+	_, err := ParseFromOptions(log, map[string][]string{"tcp.connect-timeout-ms": {"5000"}})
 
 	require.NoError(t, err)
-	assert.NotContains(t, logged.String(), "connect-timeout-ms")
+	assert.NotContains(t, logged.String(), "tcp.connect-timeout-ms")
 }
 
 // A password must never appear in a rendering. The opcua Configuration and SecureChannel render

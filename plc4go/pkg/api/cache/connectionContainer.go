@@ -387,5 +387,9 @@ func (c *connectionContainer) idleExpired() bool {
 }
 
 func (c *connectionContainer) String() string {
-	return fmt.Sprintf("connectionContainer{%s:%s, leaseCounter: %d, closed: %t, state: %s}", c.connectionString, c.connection, c.leaseCounter, c.closed, c.state)
+	// Redacted here rather than at the call sites: this rendering is reached by any log event
+	// that carries the container, and one that also logs a redacted connectionString field would
+	// otherwise print the credential beside it.
+	return fmt.Sprintf("connectionContainer{%s:%s, leaseCounter: %d, closed: %t, state: %s}",
+		spiOptions.RedactConnectionString(c.connectionString), c.connection, c.leaseCounter, c.closed, c.state)
 }

@@ -338,7 +338,7 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
         }
 
         if (message.contains("PKIX") || message.contains("certificate")) {
-            return String.format("Server certificate not trusted for %s:%d. Use verify=false for self-signed certificates. Error: %s",
+            return String.format("Server certificate not trusted for %s:%d. Use tls.verify=false for self-signed certificates. Error: %s",
                 remoteAddress.getHostName(), remoteAddress.getPort(), message);
         } else if (message.contains("handshake") || message.contains("Handshake")) {
             return String.format("TLS handshake failed with %s:%d. Server may not support TLS on this port. Error: %s",

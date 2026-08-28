@@ -273,6 +273,19 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("\td.%s.Lock()\n", field.hasLocker)
 			g.Printf("\tdefer d.%s.Unlock()\n", field.hasLocker)
 		}
+		// A marking applies whatever the field's type is. Handling it only where a string is
+		// rendered made the tag silently do nothing on every other kind of field - so a marking
+		// could be applied, reviewed, and still render the value.
+		if field.isSecret {
+			g.Printf(indent(0, secretFieldSerialize), fieldNameUntitled)
+			if field.hasLocker != "" {
+				g.Printf("\treturn nil\n")
+				g.Printf("}(); err != nil {\n")
+				g.Printf("\treturn err\n")
+				g.Printf("}\n")
+			}
+			continue
+		}
 		needsDereference := false
 		if starFieldType, ok := fieldType.(*ast.StarExpr); ok {
 			fieldType = starFieldType.X
@@ -450,11 +463,7 @@ func (g *Generator) generate(typeName string) {
 			case "bool":
 				g.Printf(indent(indentTimes, boolFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "string":
-				if field.isSecret {
-					g.Printf(indent(indentTimes, secretFieldSerialize), fieldNameUntitled)
-				} else {
-					g.Printf(indent(indentTimes, stringFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
-				}
+				g.Printf(indent(indentTimes, stringFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "error":
 				g.Printf(indent(indentTimes, errorFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			default:

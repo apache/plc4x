@@ -126,14 +126,9 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteString("keyStorePassword", uint32(len("<redacted>")*8), "<redacted>", utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
-	if d.Ckp != nil {
-		{
-			_value := fmt.Sprintf("%v", d.Ckp)
 
-			if err := writeBuffer.WriteString("ckp", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
-				return err
-			}
-		}
+	if err := writeBuffer.WriteString("ckp", uint32(len("<redacted>")*8), "<redacted>", utils.WithEncoding("UTF-8")); err != nil {
+		return err
 	}
 
 	if err := writeBuffer.WriteBit("allowUnverifiedSecurityPolicies", d.AllowUnverifiedSecurityPolicies); err != nil {

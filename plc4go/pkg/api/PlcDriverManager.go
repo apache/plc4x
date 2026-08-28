@@ -197,7 +197,7 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 		m.log.Error().Err(err).Msg("Error parsing connection")
 		return nil, errors.Wrap(err, "error parsing connection string")
 	}
-	m.log.Debug().Stringer("connectionUrl", connectionUrl).Msg("parsed connection URL")
+	m.log.Debug().Str("connectionUrl", options.RedactConnectionString(connectionUrl.String())).Msg("parsed connection URL")
 
 	// The options will be used to configure both the transports as well as the connections/drivers
 	configOptions := connectionUrl.Query()
@@ -209,7 +209,7 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 		m.log.Err(err).Str("driverName", driverName).Msg("Couldn't get driver for driverName")
 		return nil, errors.Wrap(err, "error getting driver for connection string")
 	}
-	m.log.Debug().Stringer("connectionUrl", connectionUrl).Str("protocolName", driver.GetProtocolName()).Msg("got driver protocolName")
+	m.log.Debug().Str("connectionUrl", options.RedactConnectionString(connectionUrl.String())).Str("protocolName", driver.GetProtocolName()).Msg("got driver protocolName")
 
 	// If a transport is provided alongside the driver, the URL content is decoded as "opaque" data
 	// Then we have to re-parse that to get the transport code as well as the host & port information.

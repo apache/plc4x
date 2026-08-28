@@ -22,11 +22,16 @@ package serial
 import "github.com/apache/plc4x/plc4go/spi/options"
 
 // The options this transport reads, declared beside the code that reads them so a driver's report
-// of unread connection-string options does not name them. Keep in step with parseSerialOptions.
+// of unread connection-string options does not name them.
+//
+// A user addresses a transport's option under the transport's own code, as PLC4J does and as the
+// documentation says: "tcp.connect-timeout-ms", not "connect-timeout-ms". An option a driver
+// injects into the map itself is not addressed by anyone and carries no prefix.
 func init() {
 	options.RegisterTransportOptions(
-		"baud-rate", "data-bits", "stop-bits", "parity", "flow-control", "dtr", "rts",
-		"read-timeout-ms", "write-timeout-ms", "connect-timeout-ms", "reuse-port",
-		"interframe-delay",
+		"serial.baud-rate", "serial.data-bits", "serial.stop-bits", "serial.parity",
+		"serial.flow-control", "serial.dtr", "serial.rts", "serial.read-timeout-ms",
+		"serial.write-timeout-ms", "serial.connect-timeout-ms", "serial.reuse-port",
+		"serial.interframe-delay",
 	)
 }

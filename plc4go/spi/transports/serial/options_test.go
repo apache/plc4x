@@ -44,16 +44,16 @@ func TestParseSerialOptions(t *testing.T) {
 		{
 			name: "full happy path",
 			options: map[string][]string{
-				"baud-rate":          {"19200"},
-				"data-bits":          {"7"},
-				"stop-bits":          {"2"},
-				"parity":             {"even"},
-				"flow-control":       {"rts-cts"},
-				"dtr":                {"true"},
-				"rts":                {"true"},
-				"read-timeout-ms":    {"250"},
-				"write-timeout-ms":   {"0"},
-				"connect-timeout-ms": {"5000"},
+				"serial.baud-rate":          {"19200"},
+				"serial.data-bits":          {"7"},
+				"serial.stop-bits":          {"2"},
+				"serial.parity":             {"even"},
+				"serial.flow-control":       {"rts-cts"},
+				"serial.dtr":                {"true"},
+				"serial.rts":                {"true"},
+				"serial.read-timeout-ms":    {"250"},
+				"serial.write-timeout-ms":   {"0"},
+				"serial.connect-timeout-ms": {"5000"},
 			},
 			want: serialConfig{
 				port: serialport.Config{
@@ -68,7 +68,7 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "enum values are case-insensitive and accept underscores",
-			options: map[string][]string{"parity": {"EVEN"}, "flow-control": {"XON_XOFF"}},
+			options: map[string][]string{"serial.parity": {"EVEN"}, "serial.flow-control": {"XON_XOFF"}},
 			want: func() serialConfig {
 				c := defaultSerialConfig()
 				c.port.Parity = serialport.ParityEven
@@ -78,7 +78,7 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "mark and space parity",
-			options: map[string][]string{"parity": {"Mark"}},
+			options: map[string][]string{"serial.parity": {"Mark"}},
 			want: func() serialConfig {
 				c := defaultSerialConfig()
 				c.port.Parity = serialport.ParityMark
@@ -87,7 +87,7 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "read-timeout-ms zero means blocking",
-			options: map[string][]string{"read-timeout-ms": {"0"}},
+			options: map[string][]string{"serial.read-timeout-ms": {"0"}},
 			want: func() serialConfig {
 				c := defaultSerialConfig()
 				c.readTimeout = 0
@@ -96,47 +96,47 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "invalid baud rate",
-			options: map[string][]string{"baud-rate": {"fast"}},
-			wantErr: `"baud-rate"`,
+			options: map[string][]string{"serial.baud-rate": {"fast"}},
+			wantErr: `"serial.baud-rate"`,
 		},
 		{
 			name:    "zero baud rate rejected",
-			options: map[string][]string{"baud-rate": {"0"}},
-			wantErr: `"baud-rate"`,
+			options: map[string][]string{"serial.baud-rate": {"0"}},
+			wantErr: `"serial.baud-rate"`,
 		},
 		{
 			name:    "data-bits out of range",
-			options: map[string][]string{"data-bits": {"9"}},
-			wantErr: `"data-bits"`,
+			options: map[string][]string{"serial.data-bits": {"9"}},
+			wantErr: `"serial.data-bits"`,
 		},
 		{
 			name:    "stop-bits out of range",
-			options: map[string][]string{"stop-bits": {"3"}},
-			wantErr: `"stop-bits"`,
+			options: map[string][]string{"serial.stop-bits": {"3"}},
+			wantErr: `"serial.stop-bits"`,
 		},
 		{
 			name:    "unknown parity value",
-			options: map[string][]string{"parity": {"strong"}},
-			wantErr: `"parity"`,
+			options: map[string][]string{"serial.parity": {"strong"}},
+			wantErr: `"serial.parity"`,
 		},
 		{
 			name:    "combined flow control value rejected",
-			options: map[string][]string{"flow-control": {"rts-cts-xon-xoff"}},
-			wantErr: `"flow-control"`,
+			options: map[string][]string{"serial.flow-control": {"rts-cts-xon-xoff"}},
+			wantErr: `"serial.flow-control"`,
 		},
 		{
 			name:    "invalid dtr boolean",
-			options: map[string][]string{"dtr": {"yes-please"}},
-			wantErr: `"dtr"`,
+			options: map[string][]string{"serial.dtr": {"yes-please"}},
+			wantErr: `"serial.dtr"`,
 		},
 		{
 			name:    "invalid read-timeout-ms",
-			options: map[string][]string{"read-timeout-ms": {"-5"}},
-			wantErr: `"read-timeout-ms"`,
+			options: map[string][]string{"serial.read-timeout-ms": {"-5"}},
+			wantErr: `"serial.read-timeout-ms"`,
 		},
 		{
 			name:    "empty value slice ignored like absent option",
-			options: map[string][]string{"parity": {}},
+			options: map[string][]string{"serial.parity": {}},
 			want:    defaultSerialConfig(),
 		},
 		{
@@ -146,7 +146,7 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "reuse-port accepted",
-			options: map[string][]string{"reuse-port": {"true"}},
+			options: map[string][]string{"serial.reuse-port": {"true"}},
 			want: func() serialConfig {
 				c := defaultSerialConfig()
 				c.reusePort = true
@@ -155,7 +155,7 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "interframe-delay accepted",
-			options: map[string][]string{"interframe-delay": {"50"}},
+			options: map[string][]string{"serial.interframe-delay": {"50"}},
 			want: func() serialConfig {
 				c := defaultSerialConfig()
 				c.interframeDelay = 50 * time.Millisecond
@@ -164,13 +164,13 @@ func TestParseSerialOptions(t *testing.T) {
 		},
 		{
 			name:    "invalid reuse-port",
-			options: map[string][]string{"reuse-port": {"maybe"}},
-			wantErr: `"reuse-port"`,
+			options: map[string][]string{"serial.reuse-port": {"maybe"}},
+			wantErr: `"serial.reuse-port"`,
 		},
 		{
 			name:    "invalid interframe-delay",
-			options: map[string][]string{"interframe-delay": {"-1"}},
-			wantErr: `"interframe-delay"`,
+			options: map[string][]string{"serial.interframe-delay": {"-1"}},
+			wantErr: `"serial.interframe-delay"`,
 		},
 	}
 	for _, tt := range tests {

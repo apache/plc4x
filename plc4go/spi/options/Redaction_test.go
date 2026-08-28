@@ -65,6 +65,12 @@ func TestRedactConnectionString(t *testing.T) {
 		// still a username, and masking it would cost an operator the account name.
 		{"a name that merely looks similar", "opcua://host?username=secretive-bob",
 			"opcua://host?username=secretive-bob"},
+		// url.Values decodes the name before a driver reads it, so this is the password parameter
+		// however it was written. Matching the raw string alone would log the value untouched.
+		{"a percent-encoded name", "opcua://host?%70assword=hunter2",
+			"opcua://host?%70assword=******"},
+		{"a percent-encoded name among others", "opcua://host?a=1&pass%77ord=hunter2&b=2",
+			"opcua://host?a=1&pass%77ord=******&b=2"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			assert.Equal(t, c.want, RedactConnectionString(c.given))

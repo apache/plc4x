@@ -165,8 +165,8 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 			args: args{
 				transportUrl: url.URL{Host: "127.0.0.1"},
 				options: map[string][]string{
-					"defaultTcpPort":     {"123"},
-					"connect-timeout-ms": {"123"},
+					"defaultTcpPort":         {"123"},
+					"tcp.connect-timeout-ms": {"123"},
 				},
 			},
 			want: func() transports.TransportInstance {
@@ -187,8 +187,8 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 			args: args{
 				transportUrl: url.URL{Host: "127.0.0.1"},
 				options: map[string][]string{
-					"defaultTcpPort":     {"123"},
-					"connect-timeout-ms": {"banana"},
+					"defaultTcpPort":         {"123"},
+					"tcp.connect-timeout-ms": {"banana"},
 				},
 			},
 			wantErr: true,

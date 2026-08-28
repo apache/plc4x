@@ -152,9 +152,16 @@ func (r *OptionReader) suggestionFor(unknown string) string {
 //
 // A transport that is not linked in registers nothing, and its options are then reported as
 // unknown. That is the honest answer: a connection whose transport is not present cannot be
-// using them. What this still cannot do is subtract what the transport *actually consumed*, the
-// way plc4j does at its connect site: a Go driver parses its configuration before the transport
-// instance exists, so at report time there is nothing yet to ask.
+// using them.
+//
+// The names are registered under the transport's own code ("tcp.connect-timeout-ms"), which is
+// how a user addresses them, so an option of one transport is no longer mistaken for an option of
+// another - "serial.baud-rate" is not something the TCP transport reads. What remains is that the
+// exemption covers every linked transport rather than the one in use, so "tcp.no-delay" on a
+// serial connection passes unremarked while doing nothing. Narrowing it needs the active
+// transport's code at report time, and a Go driver parses its configuration before the transport
+// instance exists - the same reason this cannot subtract what the transport actually consumed,
+// the way plc4j does at its connect site.
 var (
 	transportOptionsMutex sync.RWMutex
 	transportOptions      = map[string]bool{}

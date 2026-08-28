@@ -304,11 +304,11 @@ func TestParseAndCreate_OptionsReachInstance(t *testing.T) {
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: "/dev/ttyTest0"},
 		map[string][]string{
-			"baud-rate":       {"19200"},
-			"data-bits":       {"7"},
-			"parity":          {"even"},
-			"stop-bits":       {"2"},
-			"read-timeout-ms": {"250"},
+			"serial.baud-rate":       {"19200"},
+			"serial.data-bits":       {"7"},
+			"serial.parity":          {"even"},
+			"serial.stop-bits":       {"2"},
+			"serial.read-timeout-ms": {"250"},
 		},
 	)
 	require.NoError(t, err)
@@ -326,10 +326,10 @@ func TestParseAndCreate_InvalidOptionFailsFast(t *testing.T) {
 	transport := NewTransport()
 	_, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: "/dev/ttyTest0"},
-		map[string][]string{"parity": {"strong"}},
+		map[string][]string{"serial.parity": {"strong"}},
 	)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), `"parity"`)
+	assert.Contains(t, err.Error(), `"serial.parity"`)
 }
 
 func TestWrite_FallbackWriteDeadline(t *testing.T) {
