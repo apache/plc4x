@@ -432,6 +432,30 @@ Incompatible changes
 - Fixed `getArrayInfo()` reporting one element too many on the ADS direct and
   Firmata drivers, whose inclusive bounds were built from the element count
   rather than the last index.
+- Fixed a direct ADS array selection transferring every element it asked for
+  and decoding only the first, in both PLC4J and PLC4Go. The size of the
+  request was multiplied by the element count while the decoder was given no
+  shape, so `0x4020/0[0..3]:DINT` returned one value for four elements' worth
+  of bytes - a well-formed answer to a question nobody asked.
+- Fixed a symbolic ADS selection being ignored in PLC4Go. `MAIN.arr[1..4]`
+  resolved like `MAIN.arr`: the whole array, from its original offset. The
+  selection now moves the read to the first selected element and transfers
+  only what it spans, across as many dimensions as the address names
+  (`MAIN.grid[3,1..3]`), and a selection outside what the device declares is
+  refused rather than approximated.
+- Fixed the shape of a partly selected multi-dimensional ADS array in PLC4J.
+  `MAIN.grid[1..2]` on an `ARRAY [0..9,0..4]` reported two elements rather
+  than two rows of five: the dimensions the selection did not name were
+  dropped from the shape while their bytes were still transferred. They are
+  selected whole, and are part of the value.
+- A dimension of an ADS selection written as a bare index now collapses,
+  where before every named dimension added a level of list. `grid[3,1..3]` is
+  a list of three, not a list of one list of three, and `grid[3,2]` is a
+  scalar. This is the same rule the notation states for a single dimension.
+- Fixed SLMP reporting a one-element range as a scalar in PLC4J. `D100[4..4]`
+  now returns a list of one, as `D100[4]` returns a scalar and as PLC4Go's
+  SLMP driver already did. Its shape came from the element count, which
+  cannot express the difference.
 - PLC4Go now uses the same array notation as PLC4J, so one address means one
   thing in either language. The grammar, the rules and the rendering are the
   ones described above; the two share a specification rather than code, and

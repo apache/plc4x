@@ -61,6 +61,46 @@ type DirectPlcTag struct {
 	ValueType    apiValues.PlcValueType
 	StringLength int32
 	DataType     readWriteModel.AdsDataTypeTableEntry
+
+	// SelectedArrayInfo is the shape to transfer and decode when the address selected part of a
+	// location, rather than the whole of what DataType declares. It is nil when the address
+	// selected nothing, and the declared shape governs as before.
+	//
+	// Without it a selection was parsed, rendered and then ignored: a symbolic MAIN.arr[1..4]
+	// read the whole array from its original offset, and a direct 0x4020/0[0..3]:DINT asked the
+	// device for four elements and decoded one. Both returned a well-formed value for a location
+	// nobody asked about, which is the failure that cannot be seen from the outside.
+	SelectedArrayInfo []readWriteModel.AdsDataTypeArrayInfo
+
+	// SelectedSizeInBytes is how many bytes the selection spans; it is meaningless, and zero,
+	// when SelectedArrayInfo is nil.
+	SelectedSizeInBytes uint32
+}
+
+// TransferSizeInBytes is how many bytes to ask the device for.
+//
+// A non-zero SelectedSizeInBytes is what marks a narrowed location, rather than a non-empty
+// SelectedArrayInfo: selecting one element of an array narrows the transfer to that element while
+// leaving no shape at all, because a bare index is a scalar.
+func (m DirectPlcTag) TransferSizeInBytes() uint32 {
+	if m.SelectedSizeInBytes > 0 {
+		return m.SelectedSizeInBytes
+	}
+	if m.DataType == nil {
+		return 0
+	}
+	return m.DataType.GetSize()
+}
+
+// DecodeArrayInfo is the shape to decode into, which the address may have narrowed.
+func (m DirectPlcTag) DecodeArrayInfo() []readWriteModel.AdsDataTypeArrayInfo {
+	if m.SelectedSizeInBytes > 0 {
+		return m.SelectedArrayInfo
+	}
+	if m.DataType == nil {
+		return nil
+	}
+	return m.DataType.GetArrayInfo()
 }
 
 func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValues.PlcValueType, stringLength int32, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {

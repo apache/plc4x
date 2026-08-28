@@ -70,6 +70,16 @@ public enum SlmpDataType {
      * Returns {@code null} when {@code responseData} is shorter than required (caller maps to INVALID_DATA).
      */
     public PlcValue decode(byte[] responseData, int quantity) {
+        return decode(responseData, quantity, quantity > 1);
+    }
+
+    /**
+     * Decode {@code quantity} elements, rendering them as a list when {@code asList} says the
+     * address selected a range. A one-element range is still a range - {@code D100[4..4]} is a
+     * list of one - which the count alone cannot express, so the caller passes what the address
+     * said.
+     */
+    public PlcValue decode(byte[] responseData, int quantity, boolean asList) {
         int requiredBytes = quantity * wordsPerElement * 2;
         if (responseData == null || responseData.length < requiredBytes) {
             return null;
@@ -80,7 +90,7 @@ public enum SlmpDataType {
             WithOption.WithSignedIntegerEncoding("twos-complement"),
             WithOption.WithFloatEncoding("IEEE754"));
         try {
-            if (quantity == 1) {
+            if (!asList) {
                 return readOne(buffer);
             }
             List<PlcValue> values = new ArrayList<>(quantity);
@@ -100,6 +110,14 @@ public enum SlmpDataType {
      * (caller maps to INVALID_DATA), symmetric with {@link #decode}.
      */
     public byte[] encode(PlcValue value, int quantity) {
+        return encode(value, quantity, quantity > 1);
+    }
+
+    /**
+     * Encode {@code quantity} elements, expecting a list when {@code asList} says the address
+     * selected a range - symmetric with {@link #decode(byte[], int, boolean)}.
+     */
+    public byte[] encode(PlcValue value, int quantity, boolean asList) {
         int totalBytes = quantity * wordsPerElement * 2;
         WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[totalBytes],
             WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"),
@@ -107,7 +125,7 @@ public enum SlmpDataType {
             WithOption.WithSignedIntegerEncoding("twos-complement"),
             WithOption.WithFloatEncoding("IEEE754"));
         try {
-            if (quantity == 1) {
+            if (!asList) {
                 if (value == null || value.isList()) {
                     return null;
                 }

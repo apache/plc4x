@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.resolution;
 import org.apache.plc4x.java.ads.readwrite.AdsDataTypeArrayInfo;
 import org.apache.plc4x.java.ads.readwrite.AdsDataTypeTableEntry;
 import org.apache.plc4x.java.ads.readwrite.AdsSymbolTableEntry;
+import org.apache.plc4x.java.ads.tag.DirectAdsTag;
 import org.apache.plc4x.java.ads.tag.SymbolicAdsTag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
@@ -214,6 +215,66 @@ class TagResolverTest {
         assertEquals(3, dim.getNumElements());
     }
 
+    /**
+     * A range before the last dimension is refused while the address is parsed: ADS carries one
+     * element count for the whole address, so [1..2,2..3] would ask for two elements of each of
+     * two rows in a single count. This is the guarantee the resolver's own contiguity check
+     * stands behind, for a tag built without going through the parser.
+     */
+    @Test
+    void multiDim_rangeBeforeTheLastDimensionRejected() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> SymbolicAdsTag.of("MAIN.g_matI16_2x3[1..2,2..3]"));
+    }
+
+    /** A bare index collapses, so row 2 in full is a flat list of three. */
+    @Test
+    void multiDim_oneWholeRow() {
+        ResolvedAdsTag t = resolver.resolve(
+            new SymbolicAdsTag("MAIN.g_matI16_2x3[2,1..3]", null, List.of()));
+
+        assertEquals(0x300 + 6, t.indexOffset(), "the second row");
+        assertEquals(6, t.sizeInBytes());
+        assertEquals(1, t.remainingArrayInfo().size(), "the row index collapses");
+        assertEquals(3, t.remainingArrayInfo().get(0).getNumElements());
+    }
+
+    /** Part of one row is still one run of memory. */
+    @Test
+    void multiDim_partOfOneRow() {
+        ResolvedAdsTag t = resolver.resolve(
+            new SymbolicAdsTag("MAIN.g_matI16_2x3[2,2..3]", null, List.of()));
+
+        assertEquals(0x300 + 6 + 2, t.indexOffset(), "row 2, column 2");
+        assertEquals(4, t.sizeInBytes(), "two elements");
+        assertEquals(1, t.remainingArrayInfo().size());
+        assertEquals(2, t.remainingArrayInfo().get(0).getNumElements());
+    }
+
+    /**
+     * A selection may name only the outer dimensions; the rest are selected whole. The dimensions
+     * it did not name stay in the shape - two rows of three, not a flat two, whose bytes would
+     * have been transferred and then dropped.
+     */
+    @Test
+    void multiDim_selectionOfRowsKeepsTheColumns() {
+        ResolvedAdsTag t = resolver.resolve(
+            new SymbolicAdsTag("MAIN.g_matI16_2x3[1..2]", null, List.of()));
+
+        assertEquals(0x300, t.indexOffset());
+        assertEquals(12, t.sizeInBytes(), "two whole rows");
+        assertEquals(2, t.remainingArrayInfo().size(), "the unnamed dimension is still a dimension");
+        assertEquals(2, t.remainingArrayInfo().get(0).getNumElements());
+        assertEquals(3, t.remainingArrayInfo().get(1).getNumElements());
+    }
+
+    /** Bounds are held per dimension, not only on the first. */
+    @Test
+    void multiDim_outOfBoundsColumnRejected() {
+        assertThrows(PlcInvalidTagException.class,
+            () -> resolver.resolve(new SymbolicAdsTag("MAIN.g_matI16_2x3[1,2..4]", null, List.of())));
+    }
+
     @Test
     void multiDim_fullIndex_returnsScalar() {
         // matrix[2][3] is the last element: row 1 (0-based) * 6 bytes + col 2 * 2 = 6 + 4 = 10.
@@ -354,5 +415,37 @@ class TagResolverTest {
         assertEquals(0, TagResolver.extractStringLength("DINT"));
         assertEquals(0, TagResolver.extractStringLength(null));
         assertEquals(0, TagResolver.extractStringLength("STRING(abc)"));
+    }
+
+    /**
+     * A direct array tag asks the device for every element it selected, so it has to decode every
+     * one of them. The request size was already multiplied by the count while the decoder was
+     * given no shape at all, so the extra elements were read from the wire and dropped - a short
+     * value that looks like a valid one.
+     */
+    @Test
+    void aDirectSelectionBecomesTheDecodedShape() {
+        ResolvedAdsTag scalar = new ResolvedAdsTag(0x4020, 0, 16, "DINT", PlcValueType.DINT,
+            0, List.of());
+
+        ResolvedAdsTag shaped = TagResolver.withDirectSelection(scalar,
+            DirectAdsTag.of("0x4020/0[0..3]:DINT").getArrayInfo());
+
+        assertEquals(PlcValueType.List, shaped.plcValueType(), "decoded as a list");
+        assertEquals(1, shaped.remainingArrayInfo().size(), "one dimension");
+        assertEquals(4, shaped.remainingArrayInfo().get(0).getNumElements(), "all four elements");
+        assertEquals(16, shaped.sizeInBytes(), "the request size is unchanged");
+    }
+
+    @Test
+    void aDirectScalarKeepsItsScalarShape() {
+        ResolvedAdsTag scalar = new ResolvedAdsTag(0x4020, 0, 4, "DINT", PlcValueType.DINT,
+            0, List.of());
+
+        ResolvedAdsTag shaped = TagResolver.withDirectSelection(scalar,
+            DirectAdsTag.of("0x4020/0[3]:DINT").getArrayInfo());
+
+        assertEquals(PlcValueType.DINT, shaped.plcValueType());
+        assertTrue(shaped.remainingArrayInfo().isEmpty());
     }
 }

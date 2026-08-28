@@ -50,6 +50,24 @@ class S7ArrayParityTest {
         assertTrue(S7Tag.of("%DB42:28.0[4]:BYTE").getArrayInfo().isEmpty());
     }
 
+    /**
+     * The case the notation exists to distinguish: a range spanning one element is an array of
+     * one, while a bare index is a scalar. No element count can tell them apart, so a driver that
+     * derives its shape from the count alone silently collapses them - which is how the SLMP tag
+     * reported a one-element range as a scalar while plc4go's reported a list.
+     */
+    @Test
+    void aOneElementRangeIsAnArrayOfOne() {
+        List<ArrayInfo> dimensions = S7Tag.of("%DB42:28.0[4..4]:BYTE").getArrayInfo();
+
+        assertEquals(1, dimensions.size(), "one dimension");
+        assertEquals(1, dimensions.get(0).getSize(), "one element");
+        assertTrue(dimensions.get(0).isRange(), "written as a range");
+
+        assertTrue(S7Tag.of("%DB42:28.0[4]:BYTE").getArrayInfo().isEmpty(),
+            "while the bare index of the same element stays a scalar");
+    }
+
     @Test
     void anOmittedSelectionIsAScalar() {
         assertTrue(S7Tag.of("%DB42:28.0:BYTE").getArrayInfo().isEmpty());

@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId;
 import org.apache.plc4x.java.ads.discovery.readwrite.Constants;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
+import org.apache.plc4x.java.ads.readwrite.AdsDataTypeArrayInfo;
 import org.apache.plc4x.java.ads.resolution.ResolvedAdsTag;
 import org.apache.plc4x.java.ads.resolution.TagResolver;
 import org.apache.plc4x.java.ads.resolution.ValueDecoder;
@@ -40,6 +41,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.*;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
@@ -74,6 +76,7 @@ import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
+import java.util.ArrayList;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
@@ -510,14 +513,14 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
         return switch (tag) {
             case null -> throw new PlcInvalidTagException("Tag could not be parsed");
             case SymbolicAdsTag s -> resolver.resolve(s);
-            case DirectAdsStringTag s -> new ResolvedAdsTag(s.getIndexGroup(), s.getIndexOffset(),
+            case DirectAdsStringTag s -> TagResolver.withDirectSelection(new ResolvedAdsTag(s.getIndexGroup(), s.getIndexOffset(),
                 computeDirectSize(s.getPlcDataType(), s.getStringLength(), s.getNumberOfElements()),
                 s.getPlcDataType(), TagResolver.plcValueTypeForName(s.getPlcDataType(), null),
-                s.getStringLength(), Collections.emptyList());
-            case DirectAdsTag d -> new ResolvedAdsTag(d.getIndexGroup(), d.getIndexOffset(),
+                s.getStringLength(), Collections.emptyList()), s.getArrayInfo());
+            case DirectAdsTag d -> TagResolver.withDirectSelection(new ResolvedAdsTag(d.getIndexGroup(), d.getIndexOffset(),
                 computeDirectSize(d.getPlcDataType(), 0, d.getNumberOfElements()),
                 d.getPlcDataType(), TagResolver.plcValueTypeForName(d.getPlcDataType(), null),
-                0, Collections.emptyList());
+                0, Collections.emptyList()), d.getArrayInfo());
             default -> throw new PlcInvalidTagException("Unsupported tag type: " + tag.getClass().getName());
         };
     }

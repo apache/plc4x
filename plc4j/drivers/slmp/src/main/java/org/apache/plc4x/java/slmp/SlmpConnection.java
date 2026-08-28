@@ -303,7 +303,7 @@ public class SlmpConnection extends PollingSubscriptionConnectionBase<SlmpConfig
     }
 
     private CompletableFuture<PlcResponseCode> writeSingleTag(SlmpTag tag, PlcValue value) {
-        byte[] payload = tag.getDataType().encode(value, tag.getQuantity());
+        byte[] payload = tag.getDataType().encode(value, tag.getQuantity(), tag.isExplicitRange());
         if (payload == null) {
             return CompletableFuture.completedFuture(PlcResponseCode.INVALID_DATA);
         }
