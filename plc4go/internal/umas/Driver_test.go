@@ -97,7 +97,7 @@ func TestDriver_ReportsBadDriverOptions(t *testing.T) {
 	}
 	connection, err := driver.GetConnection(testutils.TestContext(t),
 		url.URL{Scheme: "test", Host: "localhost"}, availableTransports,
-		map[string][]string{"request-timeout": {"never"}})
+		map[string][]string{"request-timeout-ms": {"never"}})
 	assert.Error(t, err)
 	assert.Nil(t, connection)
 }

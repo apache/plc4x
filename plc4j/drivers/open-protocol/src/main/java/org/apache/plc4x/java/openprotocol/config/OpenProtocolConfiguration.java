@@ -25,7 +25,7 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
 public class OpenProtocolConfiguration implements Configuration {
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @Description("Maximum time (in milliseconds) to wait for a reply during the Open-Protocol session setup or any per-request exchange.")
     @IntDefaultValue(10_000)
     private int requestTimeout;

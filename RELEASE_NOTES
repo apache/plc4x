@@ -97,6 +97,156 @@ New Features
 Incompatible changes
 --------------------
 
+- Configuration parameters now use one vocabulary across PLC4J and PLC4Go.
+  A duration in milliseconds ends in "-ms", TLS settings live under "tls.",
+  and a parameter aimed at a transport no longer repeats that transport's
+  code. Old names are removed rather than deprecated: supplying one is
+  reported as an unknown parameter, naming the replacement, and the setting
+  does not apply. The full table is below.
+
+  Durations:
+
+    request-timeout           -> request-timeout-ms
+    timeout-request (ads)     -> request-timeout-ms
+    connect-timeout           -> connect-timeout-ms
+    read-timeout              -> read-timeout-ms
+    write-timeout             -> write-timeout-ms
+    session-timeout           -> session-timeout-ms
+    channel-lifetime          -> channel-lifetime-ms
+    min-channel-lifetime      -> min-channel-lifetime-ms
+    ha-heartbeat-interval     -> ha-heartbeat-interval-ms
+    ha-failover-timeout       -> ha-failover-timeout-ms
+
+  Establishing a socket and completing a protocol handshake are two
+  settings, not one, so they now have two names. "connect-timeout-ms" is
+  the socket connect; the COTP handshake and the OPC UA negotiation steps
+  are "handshake-timeout-ms":
+
+    cotp.cotp-connection-timeout -> cotp.handshake-timeout-ms
+    negotiation-timeout (opcua)  -> handshake-timeout-ms
+
+  Transport parameters no longer repeat their transport's code, which the
+  prefix already supplies:
+
+    tcp.tcp-no-delay          -> tcp.no-delay
+    cotp.cotp-tpdu-size       -> cotp.tpdu-size
+    tls.tls-version           -> tls.version
+
+  TLS settings are addressed under "tls.":
+
+    tls.verify-ssl            -> tls.verify
+    key-store-file (opcua)    -> tls.keystore
+    key-store-password        -> tls.keystore-password
+    key-store-type            -> tls.keystore-type
+    trust-store-file          -> tls.trust-store
+    trust-store-password      -> tls.trust-store-password
+    trust-store-type          -> tls.trust-store-type
+
+  The trust store drops "-file" for the same reason the key store does:
+  every one of these names a store, so saying so adds nothing. The TLS
+  transport already spelled them "tls.trust-store-file"; that becomes
+  "tls.trust-store" too, so the opcua and ctrlx drivers, which declare
+  their own, now agree with it.
+
+  A name a protocol specification fixes keeps its own spelling and units:
+  SLMP's "monitoring-timer" is a field of the 3E request frame in the
+  protocol's own units, not a value in milliseconds, so it is unchanged and
+  carries a comment at its declaration saying why.
+
+- The OPC UA driver's "insecure-certificate-verification" became
+  "tls.verify", with the opposite sense. A connection that set
+  "insecure-certificate-verification=true" must now set "tls.verify=false".
+  This one is not just a rename: if it is missed, the new default applies,
+  which is to verify the server certificate. That fails loudly against a
+  server whose certificate does not validate rather than connecting
+  insecurely, but it is a behaviour change and not a silent one.
+
+- An unrecognised connection-string parameter is now reported in PLC4Go as
+  well as PLC4J, naming the parameter and, where it can, the nearest known
+  one. It remains a warning: a stray parameter does not fail a connection
+  that would otherwise work. PLC4Go's OPC UA driver previously *refused*
+  the connection on an unknown option; it now warns like every other
+  driver, so a connection string accepted by PLC4J is no longer rejected
+  there.
+
+  In PLC4Go this covers the drivers that parse their configuration in one
+  place: ab-eth, bacnet-ip, c-bus, EtherNet/IP, firmata, IEC 60870-5-104,
+  Modbus, OPC UA, S7, SLMP and UMAS. The ADS, KNXnet/IP and simulated
+  drivers read their options where they are used rather than parsing a
+  configuration, so there is no point at which the leftovers are known;
+  they are unchanged and still report nothing.
+
+  The report also knows which transport the connection actually uses, so a
+  parameter that belongs to a different transport - "serial.baud-rate" on a
+  TCP connection - is called out as misdirected instead of being silently
+  excused as "some transport's".
+
+  A suggestion is offered only among the names the consumer that reported
+  actually read, so a parameter belonging to a transport is named as
+  unknown with nothing to suggest. PLC4J does better here: it draws the
+  known names from the driver, the transport, the audit log and the
+  connection-control options, and matches on the last segment, so a
+  missing prefix is recognised for what it is.
+
+- Configuration values carrying secrets are marked at their declaration -
+  "@Secret" in PLC4J, a `secret:"true"` struct tag in PLC4Go - and render
+  as "<redacted>" wherever a configuration is rendered. This replaces
+  guessing from parameter names, which could only ever be one parameter
+  behind: a pre-shared key was logged in clear until its name was added to
+  the list by hand. A name-based check remains for parameters no
+  configuration declares, since a credential passed under an unknown name
+  is still a credential.
+
+- PLC4Go's S7 driver reads the rack and slot as "cotp.local-rack",
+  "cotp.local-slot", "cotp.remote-rack" and "cotp.remote-slot". It read
+  them unprefixed, while PLC4J declares them on the COTP transport's
+  configuration and every S7 example in the documentation spells them with
+  the prefix - so the documented connection string set nothing in PLC4Go
+  and said so nowhere. The unprefixed names are now reported as unknown.
+
+- Fixed PLC4Go logging connection strings verbatim. A password in a Go
+  connection string reached the log in clear at debug level, at twenty
+  call sites across the driver manager and the connection cache. They are
+  redacted now, along with credentials in a URI's userinfo. The parsed
+  URL and the connection container render redacted too - both reached the
+  same log lines by another route, so a redacted field sat beside the
+  credential it was hiding.
+
+- PLC4Go addresses a transport's connection-string options under the
+  transport's own code, as PLC4J does and as the documentation has always
+  said: "tcp.connect-timeout-ms", "serial.baud-rate", "udp.so-reuse",
+  "pcap.speed-factor". They were read unprefixed, so every documented
+  transport setting was ignored in PLC4Go and left at its default. The
+  unprefixed names are now reported as unknown rather than silently
+  doing nothing. Options a driver injects into the map itself
+  ("defaultTcpPort") are not addressed by anyone and keep their bare
+  names.
+
+- PLC4Go's OPC UA driver reads the parameter names PLC4J declares and the
+  documentation lists - "tls.keystore", "tls.keystore-password",
+  "security-policy", "allow-unverified-security-policies" - rather than
+  names derived from its own Go struct fields ("keyStoreFile",
+  "securityPolicy"). The documented connection string reached it as a
+  set of unknown options and was ignored.
+
+- A secret marking in PLC4Go applies whatever the field's type is. The
+  generator honoured "secret:\"true\"" only where it rendered a string, so
+  the tag on any other kind of field was accepted and silently did
+  nothing. The OPC UA key pair now carries the marking in both the
+  configuration and the secure channel.
+
+- Redaction decides from the parameter name the driver will read, not the
+  name as written: "?%70assword=hunter2" is the password parameter once
+  the query is decoded, and was previously logged in clear. A connection
+  string nested inside another (the PLC4X proxy driver's
+  "remote-connection-string") is redacted as a connection string in its
+  own right, so its credentials no longer travel through the outer one -
+  while which PLC the proxy talks to stays visible.
+
+- A BACnet/IP connection reported each unknown option once rather than
+  twice. Its options are parsed both by the driver, for the discovery
+  timeout, and by the connection; both reported, so one mistake read as
+  two.
 - The connection-creating methods of the API moved from
   "PlcConnectionManager" to a new "PlcConnectionFactory"
   interface, which the "PlcDriverManager" hands out via
@@ -185,7 +335,7 @@ Incompatible changes
   Together this means a connection that names no certificate now
   fails where it previously came up unprotected. Name one with
   "server-certificate-file", or a trust store with
-  "trust-store-file"; or set "discovery=false" if the endpoint needs
+  "tls.trust-store"; or set "discovery=false" if the endpoint needs
   no discovery; or ask for "security-policy=NONE" to accept an
   unprotected channel as before.
   Note that a protected channel also needs a client key pair:
@@ -219,8 +369,8 @@ Incompatible changes
   now fail. The new "allow-factory-default-certificate" parameter
   restores the old behaviour, with a warning; alternatively
   "server-certificate-file" names a single PEM certificate to
-  trust, or "trust-store-file" (with "trust-store-password" and
-  "trust-store-type") a key store of them, matching the names used
+  trust, or "tls.trust-store" (with "tls.trust-store-password" and
+  "tls.trust-store-type") a key store of them, matching the names used
   by the OPC UA driver and the TLS transport.
   "ignore-common-name" is also available if the certificate is
   trusted but names a different host.
@@ -235,8 +385,8 @@ Incompatible changes
   than the address it is reached at will now fail where it
   previously succeeded.
   Two new parameters make the check usable where a device carries
-  its own certificate: "trust-store-file" (with
-  "trust-store-password" and "trust-store-type") names the
+  its own certificate: "tls.trust-store" (with
+  "tls.trust-store-password" and "tls.trust-store-type") names the
   certificates to trust instead of the public authorities the JVM
   ships with. Previously the only way past a private CA was
   "verify-ssl=false", which turns off both the chain check and

@@ -30,6 +30,7 @@ import (
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 //go:generate go tool plc4xGenerator -type=Configuration
@@ -45,12 +46,17 @@ type Configuration struct {
 	SenderCertificate []byte
 	Discovery         bool
 	Username          string
-	Password          string
-	SecurityPolicy    string
-	KeyStoreFile      string
-	CertDirectory     string
-	KeyStorePassword  string
-	Ckp               *CertificateKeyPair
+	// The credentials below render as <redacted>, never as their values - see the generator's
+	// secret tag. Username is not marked: it says who is connecting, which is a diagnostic.
+	Password         string `secret:"true"`
+	SecurityPolicy   string
+	KeyStoreFile     string
+	CertDirectory    string
+	KeyStorePassword string `secret:"true"`
+	// Ckp holds the client's private key. Rendering it prints pointer addresses rather than key
+	// material, so nothing leaks today - but a struct that holds a key by value later would, and
+	// a field whose contents must never be printed should say so where it is declared.
+	Ckp *CertificateKeyPair `secret:"true"`
 	// AllowUnverifiedSecurityPolicies is an explicit opt-in for security policies other than "None".
 	// The plc4go OPC UA secure-channel implementation does not verify server certificates or message
 	// signatures yet, so any other policy is refused unless this is set to true.
@@ -59,44 +65,57 @@ type Configuration struct {
 	log zerolog.Logger
 }
 
-// transportLevelOptionKeys are option keys (lower-cased) which are consumed by the transport
-// layer (or injected by the driver itself) rather than mapping to Configuration fields, so
-// they must not be reported as unknown options.
-var transportLevelOptionKeys = map[string]struct{}{
-	"defaulttcpport":       {},
-	"defaultudpport":       {},
-	"connect-timeout":      {},
-	"so-reuse":             {},
-	"transport-type":       {},
-	"transport-port-range": {},
-	"speed-factor":         {},
-	"failtesttransport":    {},
-	"simulatedlatency":     {},
+// fieldForOption maps a connection-string option to the Configuration field it sets.
+//
+// The names are the ones PLC4J declares and the documentation lists, not this struct's Go field
+// names. Deriving them from the field names is what made this driver read "keyStoreFile" and
+// "keyStorePassword": the documented "tls.keystore" and "tls.keystore-password" reached it as
+// unknown options and were ignored, so the two bindings disagreed about the same string.
+//
+// Keys are lower-case; lookup lower-cases the option, which keeps the case-insensitive matching
+// this driver has always had.
+var fieldForOption = map[string]string{
+	"discovery":             "Discovery",
+	"username":              "Username",
+	"password":              "Password",
+	"security-policy":       "SecurityPolicy",
+	"tls.keystore":          "KeyStoreFile",
+	"tls.keystore-password": "KeyStorePassword",
+	// No PLC4J counterpart: this binding generates its certificate into a directory rather than
+	// taking a key store, so the name is this binding's own - in the shared spelling.
+	"cert-directory":                     "CertDirectory",
+	"allow-unverified-security-policies": "AllowUnverifiedSecurityPolicies",
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
-	// Match option keys case-insensitively against the exported Configuration field names.
-	// (Option keys were previously title-cased, which silently broke camelCase keys like
-	// securityPolicy and thereby dropped requested security settings.)
-	fieldNamesByLowerCase := map[string]string{}
-	for i := 0; i < reflectConfiguration.NumField(); i++ {
-		field := reflectConfiguration.Type().Field(i)
-		if !field.IsExported() {
-			continue
-		}
-		fieldNamesByLowerCase[strings.ToLower(field.Name)] = field.Name
-	}
 	for optionKey := range options {
-		fieldName, ok := fieldNamesByLowerCase[strings.ToLower(optionKey)]
+		fieldName, ok := fieldForOption[strings.ToLower(optionKey)]
 		if !ok {
-			if _, isTransportOption := transportLevelOptionKeys[strings.ToLower(optionKey)]; isTransportOption {
+			// The driver manager's bookkeeping, not a user option.
+			if optionKey == spiOptions.ActiveTransportOption {
 				continue
 			}
-			// Fail on unknown options instead of silently ignoring them: a typo in a
-			// security-relevant option must not silently fall back to defaults.
-			return Configuration{}, errors.Errorf("unknown option %s", optionKey)
+			// Read by the transport rather than by this driver. The names come from the
+			// transports themselves, which register what they read, so this driver does not
+			// keep its own copy of a list that would drift from them.
+			if spiOptions.IsTransportOption(optionKey) {
+				continue
+			}
+			// Warn rather than fail, matching plc4j, which reports an unknown parameter and
+			// carries on for every driver. This driver used to be the only one anywhere in
+			// PLC4X that refused the connection, which meant one connection string was
+			// accepted by plc4j and rejected here.
+			//
+			// The reason it refused is still real and is now carried by the warning instead:
+			// a typo in a security-relevant option (securityPolicy, allowUnverified...) falls
+			// back to a default, and the operator has to see that it did. An unread option is
+			// reported by name, so it is visible - but it no longer stops the connection.
+			log.Warn().
+				Str("option", optionKey).
+				Msg("Connection string option is not known to the opcua driver and is ignored")
+			continue
 		}
 		optionValue := getFromOptions(log, options, optionKey)
 		if optionValue == "" {
@@ -137,8 +156,8 @@ func (c *Configuration) validateSecurityPolicy() error {
 		return nil
 	}
 	if !c.AllowUnverifiedSecurityPolicies {
-		return errors.Errorf("securityPolicy %s is not supported: the plc4go OPC UA driver does not verify server certificates or message signatures yet. "+
-			"Set allowUnverifiedSecurityPolicies=true to connect anyway (NOT recommended for production use)", c.SecurityPolicy)
+		return errors.Errorf("security-policy %s is not supported: the plc4go OPC UA driver does not verify server certificates or message signatures yet. "+
+			"Set allow-unverified-security-policies=true to connect anyway (NOT recommended for production use)", c.SecurityPolicy)
 	}
 	c.log.Warn().
 		Str("securityPolicy", c.SecurityPolicy).

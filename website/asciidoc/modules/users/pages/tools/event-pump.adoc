@@ -71,7 +71,7 @@ PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault().getConnec
 TagBatch batch = TagBatch.builder()
     .withBatchId("boiler")
     .withConnectionFactory(connectionFactory)
-    .withConnectionString("opcua:tcp://192.168.1.1:4840?request-timeout=10000")
+    .withConnectionString("opcua:tcp://192.168.1.1:4840?request-timeout-ms=10000")
     .addTagAddress("temperature", "ns=2;i=1001")
     .addTagAddress("pressure", "ns=2;i=1002")
     .withTrigger(new TimerTrigger(5, TimeUnit.SECONDS))
@@ -128,7 +128,7 @@ Rather than assembling batches in code, a whole pump can be described in a YAML,
 ----
 connections:
   - id: plc1
-    url: "opcua:tcp://192.168.1.1:4840?request-timeout=10000"
+    url: "opcua:tcp://192.168.1.1:4840?request-timeout-ms=10000"
 
 batches:
   - id: boiler
@@ -213,7 +213,7 @@ The Event-Pump does not impose a request timeout of its own.
 How long a read may take is the driver's decision, configured as a parameter on the connection URL, for example:
 
 ----
-opcua:tcp://192.168.1.1:4840?request-timeout=10000
+opcua:tcp://192.168.1.1:4840?request-timeout-ms=10000
 ----
 
 Consult the documentation of the driver you are using for the parameter it supports.
@@ -272,7 +272,7 @@ The concepts map over fairly directly:
 | `TimerTrigger` interval
 
 | `futureTimeOut` constructor argument
-| the driver's own `request-timeout` connection string parameter
+| the driver's own `request-timeout-ms` connection string parameter
 |===
 
 The last row is the one to pay attention to.

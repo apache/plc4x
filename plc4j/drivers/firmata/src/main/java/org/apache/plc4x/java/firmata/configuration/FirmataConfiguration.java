@@ -25,7 +25,7 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
 public class FirmataConfiguration implements Configuration {
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(10_000)
     @Description("Maximum time (in milliseconds) to wait for the initial firmware-report reply during connection setup.")
     private int requestTimeout;

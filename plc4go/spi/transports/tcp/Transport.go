@@ -78,10 +78,10 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[st
 		}
 	}
 	var connectTimeout uint32 = 1000
-	if val, ok := options["connect-timeout"]; ok {
+	if val, ok := options["tcp.connect-timeout-ms"]; ok {
 		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
 		if err != nil {
-			return nil, errors.Wrap(err, "error setting connect-timeout")
+			return nil, errors.Wrap(err, "error setting tcp.connect-timeout-ms")
 		}
 		connectTimeout = uint32(parsedConnectTimeout)
 	}

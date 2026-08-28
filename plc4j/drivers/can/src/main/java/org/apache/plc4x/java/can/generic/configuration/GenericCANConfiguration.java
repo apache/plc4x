@@ -29,7 +29,7 @@ public class GenericCANConfiguration implements Configuration {
     @Description("Node id of the target device.")
     private int nodeId;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(1000)
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;

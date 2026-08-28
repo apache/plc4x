@@ -99,7 +99,7 @@ public class SlmpConnection extends PollingSubscriptionConnectionBase<SlmpConfig
         }
         int requestTimeout = configuration.getRequestTimeout();
         if (requestTimeout <= 0) {
-            throw new PlcConnectionException("request-timeout must be > 0 ms but was " + requestTimeout
+            throw new PlcConnectionException("request-timeout-ms must be > 0 ms but was " + requestTimeout
                 + " (a non-positive value would time out every request immediately)");
         }
     }

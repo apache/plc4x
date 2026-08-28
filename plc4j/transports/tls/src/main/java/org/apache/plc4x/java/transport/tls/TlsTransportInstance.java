@@ -80,11 +80,11 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
 
     public TlsTransportInstance(InetSocketAddress remoteAddress, TlsTransportConfiguration configuration, AuditLog auditLog) throws TransportException {
         super(configuration, auditLog);
-        LOGGER.debug("TlsTransportInstance: Creating TLS connection (verify-ssl={})", configuration.isVerifySsl());
+        LOGGER.debug("TlsTransportInstance: Creating TLS connection (verify={})", configuration.isVerifySsl());
         this.ringBuffer = new RingBuffer(configuration.receiveBufferSize);
 
         auditLog.write(AuditLogEventType.SYSTEM, String.format(
-            "TLS configuration: target=%s:%d, verify-ssl=%s, tls-version=%s, connect-timeout=%d, read-timeout=%d",
+            "TLS configuration: target=%s:%d, verify=%s, version=%s, connect-timeout-ms=%d, read-timeout-ms=%d",
             remoteAddress.getHostName(), remoteAddress.getPort(),
             configuration.isVerifySsl(),
             configuration.getTlsVersion() != null ? configuration.getTlsVersion() : "auto (TLSv1.3/TLSv1.2)",
@@ -96,7 +96,7 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
             SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
             auditLog.write(AuditLogEventType.SYSTEM, String.format(
-                "SSLContext initialized: provider=%s, protocol=%s, verify-ssl=%s",
+                "SSLContext initialized: provider=%s, protocol=%s, verify=%s",
                 sslContext.getProvider().getName(), sslContext.getProtocol(), configuration.isVerifySsl()));
 
             // Create plain socket first for timeout control
@@ -268,7 +268,7 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
     }
 
     /**
-     * Loads the trust managers for the certificates named by {@code trust-store-file}.
+     * Loads the trust managers for the certificates named by {@code tls.trust-store}.
      */
     private TrustManager[] loadTrustManagers(TlsTransportConfiguration configuration)
             throws TransportException {
@@ -338,7 +338,7 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
         }
 
         if (message.contains("PKIX") || message.contains("certificate")) {
-            return String.format("Server certificate not trusted for %s:%d. Use verify-ssl=false for self-signed certificates. Error: %s",
+            return String.format("Server certificate not trusted for %s:%d. Use tls.verify=false for self-signed certificates. Error: %s",
                 remoteAddress.getHostName(), remoteAddress.getPort(), message);
         } else if (message.contains("handshake") || message.contains("Handshake")) {
             return String.format("TLS handshake failed with %s:%d. Server may not support TLS on this port. Error: %s",

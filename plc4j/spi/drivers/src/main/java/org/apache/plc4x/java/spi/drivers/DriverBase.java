@@ -29,7 +29,6 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.types.OptionType;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.ConfigurationFactory;
-import org.apache.plc4x.java.spi.config.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.Required;
@@ -69,8 +68,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * Abstract base class for PLC4X drivers.
  * <p>
@@ -82,20 +79,6 @@ public abstract class DriverBase implements PlcDriver {
     public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9\\-]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
-    /**
-     * Matches the value of connection-string query parameters that carry secrets so they can be
-     * masked before logging. Covers any parameter whose name contains "password", "passwd",
-     * "secret", "token", "psk-key" or "passphrase" (optionally with a transport prefix like
-     * "tls.").
-     *
-     * <p>"psk-key" is named in full rather than matching "key" or "psk" alone, which would take
-     * "key-store-file", "key-store-type", "generated-key-size", "log-session-keys" and
-     * "psk-identity" with it. Those are a path, a store type, a number, a boolean and an
-     * identifier - masking them protects nothing and costs an operator the diagnosis, the identity
-     * most of all, since it says which key was refused.</p>
-     */
-    private static final Pattern SECRET_PARAM_PATTERN = Pattern.compile(
-        "(?i)([?&][^=&]*(?:password|passwd|secret|token|psk-key|passphrase)[^=&]*=)[^&]*");
 
     private static final Logger log = LoggerFactory.getLogger(DriverBase.class);
 
@@ -171,8 +154,6 @@ public abstract class DriverBase implements PlcDriver {
             throw new PlcConnectionException(
                 "Connection string doesn't match the format '{protocol-code}(:{transport-code})?://{transport-config}(?{parameter-string)?'");
         }
-        log.info("Using connection string: {}", redactSecrets(connectionString));
-
         final String protocolCode = matcher.group("protocolCode");
         String transportCodeMatch = matcher.group("transportCode");
         if (transportCodeMatch == null && getMetadata().getDefaultTransportCode().isEmpty()) {
@@ -229,6 +210,13 @@ public abstract class DriverBase implements PlcDriver {
         // no field for, so a misspelt or misplaced parameter looks accepted and silently leaves the
         // default in place - 'remote-slot=2' instead of 'cotp.remote-slot=2' being the classic case.
         warnAboutUnknownParameters(paramString, transportCode, transportConfigType);
+
+        // Logged here rather than on entry: the transport's secrets - a PSK key, a keystore
+        // password - are declared on its configuration class, which is only known once the
+        // transport has been resolved. Logging earlier would mean redacting without knowing what
+        // half the secrets are called.
+        log.info("Using connection string: {}", ConnectionStringRedactor.redact(
+            connectionString, getConfigurationClass(), transportCode, transportConfigType));
         this.auditLog = AuditLog.builder()
             .withSource(getProtocolCode())
             .withConfiguration(auditLogConfiguration)
@@ -266,12 +254,6 @@ public abstract class DriverBase implements PlcDriver {
      * Masks the values of secret-bearing query parameters (passwords, tokens, …) in a connection
      * string so credentials never reach the logs.
      */
-    static String redactSecrets(String connectionString) {
-        if (connectionString == null) {
-            return null;
-        }
-        return SECRET_PARAM_PATTERN.matcher(connectionString).replaceAll("$1***");
-    }
 
     public AuditLog getAuditLog() {
         return auditLog;
@@ -326,156 +308,27 @@ public abstract class DriverBase implements PlcDriver {
 
     /**
      * Logs a warning for every parameter in the connection string that none of the configurations
-     * involved declares, listing what was expected.
-     * <p>
-     * This is deliberately a warning and not an exception: the driver, the transport, the audit log
-     * and the connection control options are the configurations this class knows about, but a driver
-     * is free to read further prefixed configurations of its own, and those parameters would look
-     * unknown from here. Failing the connection over that would break working setups; saying
-     * something turns a silent misconfiguration into a visible one.
+     * involved declares.
+     *
+     * <p>The logic lives in {@link UnknownParameterReporter}, which is public so the one driver
+     * that implements {@code PlcDriver} directly rather than extending this class can report too.
+     * The two package-private methods below stay as delegates because this class's tests drive
+     * them directly, and keeping them is what shows the extraction changed no behaviour.</p>
      */
     private void warnAboutUnknownParameters(String paramString, String transportCode,
                                             Class<? extends TransportConfiguration> transportConfigType) {
-        List<String> unknown = findUnknownParameters(
-            paramString, getConfigurationClass(), transportConfigType, transportCode);
-        if (unknown.isEmpty()) {
-            return;
-        }
-        Set<String> known = knownParameterNames(getConfigurationClass(), transportConfigType, transportCode);
-        for (String name : unknown) {
-            String suggestion = suggestionFor(name, known);
-            if (suggestion == null) {
-                log.warn("Connection string parameter '{}' is not known to driver '{}' and is ignored.",
-                    name, getProtocolCode());
-            } else {
-                log.warn("Connection string parameter '{}' is not known to driver '{}' and is ignored - "
-                    + "did you mean '{}'?", name, getProtocolCode(), suggestion);
-            }
-        }
-        if (log.isDebugEnabled()) {
-            List<String> sorted = new ArrayList<>(known);
-            Collections.sort(sorted);
-            log.debug("Parameters driver '{}' accepts over transport '{}': {}",
-                getProtocolCode(), transportCode, sorted);
-        }
+        UnknownParameterReporter.report(
+            getProtocolCode(), paramString, transportCode, getConfigurationClass(), transportConfigType);
     }
 
-    /**
-     * The known parameter the given unknown one was most likely meant to be, or {@code null} when
-     * nothing is close enough to be worth suggesting.
-     * <p>
-     * A missing or wrong prefix is the mistake that actually happens - {@code remote-slot} for
-     * {@code cotp.remote-slot} - so a name that matches some known parameter's last segment wins
-     * outright. Otherwise a short edit distance catches ordinary typos.
-     */
-    static String suggestionFor(String unknown, Set<String> known) {
-        String unknownLeaf = leafOf(unknown);
-        List<String> byLeaf = known.stream()
-            .filter(candidate -> !candidate.equals(unknown) && leafOf(candidate).equals(unknownLeaf))
-            .sorted()
-            .collect(toList());
-        if (!byLeaf.isEmpty()) {
-            return byLeaf.get(0);
-        }
-
-        // Allow roughly one edit per four characters, so short names don't match everything.
-        int budget = Math.min(3, Math.max(1, unknown.length() / 4));
-        String best = null;
-        int bestDistance = Integer.MAX_VALUE;
-        for (String candidate : known) {
-            int distance = editDistance(unknown, candidate);
-            if (distance <= budget && ((best == null) || (distance < bestDistance)
-                || ((distance == bestDistance) && (candidate.compareTo(best) < 0)))) {
-                best = candidate;
-                bestDistance = distance;
-            }
-        }
-        return best;
-    }
-
-    /** The part after the last dot - the parameter name without any prefix. */
-    private static String leafOf(String name) {
-        int lastDot = name.lastIndexOf('.');
-        return (lastDot < 0) ? name : name.substring(lastDot + 1);
-    }
-
-    /**
-     * Levenshtein distance. Hand-rolled to keep the SPI free of another dependency; the strings
-     * involved are parameter names, so the quadratic cost is irrelevant.
-     */
-    private static int editDistance(String left, String right) {
-        int[] previous = new int[right.length() + 1];
-        int[] current = new int[right.length() + 1];
-        for (int j = 0; j <= right.length(); j++) {
-            previous[j] = j;
-        }
-        for (int i = 1; i <= left.length(); i++) {
-            current[0] = i;
-            for (int j = 1; j <= right.length(); j++) {
-                int substitution = previous[j - 1] + (left.charAt(i - 1) == right.charAt(j - 1) ? 0 : 1);
-                current[j] = Math.min(substitution, Math.min(previous[j] + 1, current[j - 1] + 1));
-            }
-            int[] swap = previous;
-            previous = current;
-            current = swap;
-        }
-        return previous[right.length()];
-    }
-
-    /**
-     * The parameters in {@code paramString} that none of the configurations involved declares, in the
-     * order they were supplied. Package-private so it can be tested without a registered transport.
-     */
     static List<String> findUnknownParameters(String paramString, Class<?> driverConfigClass,
                                               Class<?> transportConfigClass, String transportCode) {
-        Set<String> supplied = ConfigurationFactory.parameterNames(paramString);
-        if (supplied.isEmpty()) {
-            return Collections.emptyList();
-        }
-        Set<String> known = knownParameterNames(driverConfigClass, transportConfigClass, transportCode);
-        return supplied.stream().filter(name -> !known.contains(name)).collect(toList());
+        return UnknownParameterReporter.findUnknownParameters(
+            paramString, driverConfigClass, transportConfigClass, transportCode);
     }
 
-    private static Set<String> knownParameterNames(Class<?> driverConfigClass, Class<?> transportConfigClass,
-                                                   String transportCode) {
-        Set<String> known = new HashSet<>();
-        collectParameterNames(driverConfigClass, "", known);
-        collectParameterNames(transportConfigClass, transportCode + ".", known);
-        collectParameterNames(AuditLogConfiguration.class, "log.", known);
-        collectParameterNames(ConnectionControlConfiguration.class, "", known);
-        return known;
-    }
-
-    /**
-     * Adds every parameter name the given configuration class declares to {@code names}, prefixed
-     * with {@code prefix}. Complex parameters contribute their nested names under their own prefix,
-     * so an OPC UA {@code encoding.*} parameter is recognised rather than reported as unknown.
-     */
-    private static void collectParameterNames(Class<?> configurationClass, String prefix, Set<String> names) {
-        if (configurationClass == null) {
-            return;
-        }
-        Class<?> current = configurationClass;
-        while (current != null && current != Object.class) {
-            for (Field field : current.getDeclaredFields()) {
-                if (Modifier.isStatic(field.getModifiers())) {
-                    continue;
-                }
-                ConfigurationParameter parameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
-                if (parameterAnnotation != null && !parameterAnnotation.value().isEmpty()) {
-                    names.add(prefix + parameterAnnotation.value());
-                    continue;
-                }
-                ComplexConfigurationParameter complexAnnotation =
-                    field.getAnnotation(ComplexConfigurationParameter.class);
-                if (complexAnnotation != null) {
-                    String nestedPrefix = complexAnnotation.prefix().isEmpty()
-                        ? prefix : prefix + complexAnnotation.prefix() + ".";
-                    collectParameterNames(field.getType(), nestedPrefix, names);
-                }
-            }
-            current = current.getSuperclass();
-        }
+    static String suggestionFor(String unknown, Set<String> known) {
+        return UnknownParameterReporter.suggestionFor(unknown, known);
     }
 
     /**

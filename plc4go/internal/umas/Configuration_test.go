@@ -28,7 +28,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// The defaults are plc4j's UmasConfiguration annotations: unit-identifier 0, request-timeout 4000 ms,
+// The defaults are plc4j's UmasConfiguration annotations: unit-identifier 0, request-timeout-ms 4000 ms,
 // max-frame-size 65535.
 func TestDefaultConfiguration(t *testing.T) {
 	configuration := DefaultConfiguration()
@@ -61,17 +61,17 @@ func TestParseFromOptions(t *testing.T) {
 		},
 		{
 			name:    "the request timeout is spelled in milliseconds",
-			options: map[string][]string{"request-timeout": {"1500"}},
+			options: map[string][]string{"request-timeout-ms": {"1500"}},
 			want:    Configuration{unitIdentifier: 0, requestTimeout: 1500 * time.Millisecond, maxFrameSize: defaultMaxFrameSize},
 		},
 		{
 			name:    "a request timeout of zero would never wait for an answer",
-			options: map[string][]string{"request-timeout": {"0"}},
+			options: map[string][]string{"request-timeout-ms": {"0"}},
 			wantErr: true,
 		},
 		{
 			name:    "a non numeric request timeout is refused",
-			options: map[string][]string{"request-timeout": {"soon"}},
+			options: map[string][]string{"request-timeout-ms": {"soon"}},
 			wantErr: true,
 		},
 		{
@@ -94,9 +94,9 @@ func TestParseFromOptions(t *testing.T) {
 		{
 			name: "every option at once",
 			options: map[string][]string{
-				"unit-identifier": {"1"},
-				"request-timeout": {"250"},
-				"max-frame-size":  {"1024"},
+				"unit-identifier":    {"1"},
+				"request-timeout-ms": {"250"},
+				"max-frame-size":     {"1024"},
 			},
 			want: Configuration{unitIdentifier: 1, requestTimeout: 250 * time.Millisecond, maxFrameSize: 1024},
 		},

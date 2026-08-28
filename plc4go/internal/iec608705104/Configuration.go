@@ -26,10 +26,11 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 const (
-	// defaultRequestTimeout is plc4j's Iec608705014Configuration request-timeout default of four
+	// defaultRequestTimeout is plc4j's Iec608705014Configuration request-timeout-ms default of four
 	// seconds. It bounds the two handshake round trips (test frame and start-data-transfer) which
 	// are the only request/response interactions the protocol has - everything after them is
 	// unsolicited.
@@ -45,7 +46,7 @@ const (
 )
 
 // Configuration is what an IEC 60870-5-104 connection string can say about the connection as a
-// whole. plc4j's Iec608705014Configuration knows only request-timeout; the acknowledgement window
+// whole. plc4j's Iec608705014Configuration knows only request-timeout-ms; the acknowledgement window
 // is added here because it is a real protocol parameter ('w') that plc4j buried in a constant, and
 // a station which insists on a smaller window otherwise drops the connection.
 type Configuration struct {
@@ -68,20 +69,25 @@ func DefaultConfiguration() Configuration {
 // ParseFromOptions reads the connection options out of a parsed connection string. The timeout is
 // spelled in milliseconds, the way plc4j's @IntDefaultValue(4000) does.
 func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLog, connectionOptions)
+	defer reader.ReportUnknown("iec-60870-5-104")
+
 	configuration := DefaultConfiguration()
 
-	if requestTimeoutString := getFromOptions(localLog, connectionOptions, "request-timeout"); requestTimeoutString != "" {
+	if requestTimeoutString := reader.Get("request-timeout-ms"); requestTimeoutString != "" {
 		parsedInt, err := strconv.ParseUint(requestTimeoutString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout %s", requestTimeoutString)
+			return Configuration{}, errors.Wrapf(err, "Error parsing request-timeout-ms %s", requestTimeoutString)
 		}
 		if parsedInt == 0 {
-			return Configuration{}, errors.New("request-timeout must be greater than zero")
+			return Configuration{}, errors.New("request-timeout-ms must be greater than zero")
 		}
 		configuration.requestTimeout = time.Duration(parsedInt) * time.Millisecond
 	}
 
-	if ackThresholdString := getFromOptions(localLog, connectionOptions, "ack-threshold"); ackThresholdString != "" {
+	if ackThresholdString := reader.Get("ack-threshold"); ackThresholdString != "" {
 		parsedInt, err := strconv.ParseUint(ackThresholdString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing ack-threshold %s", ackThresholdString)
@@ -96,18 +102,4 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 	}
 
 	return configuration, nil
-}
-
-// getFromOptions plucks a single-valued option out of the parsed connection string.
-func getFromOptions(localLog zerolog.Logger, connectionOptions map[string][]string, key string) string {
-	if optionValues, ok := connectionOptions[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Option must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

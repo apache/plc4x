@@ -151,7 +151,7 @@ class SlmpConnectionFailurePathTest {
 
         SlmpConnection connection = newDisconnectedConnection(config);
         assertThrows(PlcConnectionException.class, connection::connect,
-            "a non-positive request-timeout must be rejected at connect rather than failing every read");
+            "a non-positive request-timeout-ms must be rejected at connect rather than failing every read");
     }
 
     @Test

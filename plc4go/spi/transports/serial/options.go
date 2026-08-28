@@ -67,31 +67,31 @@ func defaultSerialConfig() serialConfig {
 func parseSerialOptions(options map[string][]string) (serialConfig, error) {
 	cfg := defaultSerialConfig()
 
-	if raw, ok := firstValue(options, "baud-rate"); ok {
+	if raw, ok := firstValue(options, "serial.baud-rate"); ok {
 		value, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil || value == 0 {
-			return cfg, optionError("baud-rate", raw, "must be a positive integer")
+			return cfg, optionError("serial.baud-rate", raw, "must be a positive integer")
 		}
 		cfg.port.BaudRate = uint(value)
 	}
-	if raw, ok := firstValue(options, "data-bits"); ok {
+	if raw, ok := firstValue(options, "serial.data-bits"); ok {
 		value, err := strconv.ParseUint(raw, 10, 8)
 		if err != nil || value < 5 || value > 8 {
-			return cfg, optionError("data-bits", raw, "must be 5..8")
+			return cfg, optionError("serial.data-bits", raw, "must be 5..8")
 		}
 		cfg.port.DataBits = uint(value)
 	}
-	if raw, ok := firstValue(options, "stop-bits"); ok {
+	if raw, ok := firstValue(options, "serial.stop-bits"); ok {
 		switch raw {
 		case "1":
 			cfg.port.StopBits = serialport.StopBitsOne
 		case "2":
 			cfg.port.StopBits = serialport.StopBitsTwo
 		default:
-			return cfg, optionError("stop-bits", raw, "must be 1 or 2")
+			return cfg, optionError("serial.stop-bits", raw, "must be 1 or 2")
 		}
 	}
-	if raw, ok := firstValue(options, "parity"); ok {
+	if raw, ok := firstValue(options, "serial.parity"); ok {
 		switch normalizeEnum(raw) {
 		case "none":
 			cfg.port.Parity = serialport.ParityNone
@@ -104,10 +104,10 @@ func parseSerialOptions(options map[string][]string) (serialConfig, error) {
 		case "space":
 			cfg.port.Parity = serialport.ParitySpace
 		default:
-			return cfg, optionError("parity", raw, "must be one of none, odd, even, mark, space")
+			return cfg, optionError("serial.parity", raw, "must be one of none, odd, even, mark, space")
 		}
 	}
-	if raw, ok := firstValue(options, "flow-control"); ok {
+	if raw, ok := firstValue(options, "serial.flow-control"); ok {
 		switch normalizeEnum(raw) {
 		case "none":
 			// defaults already off
@@ -116,55 +116,55 @@ func parseSerialOptions(options map[string][]string) (serialConfig, error) {
 		case "xon-xoff":
 			cfg.port.XONXOFFFlowControl = true
 		default:
-			return cfg, optionError("flow-control", raw, "must be one of none, rts-cts, xon-xoff")
+			return cfg, optionError("serial.flow-control", raw, "must be one of none, rts-cts, xon-xoff")
 		}
 	}
-	if raw, ok := firstValue(options, "dtr"); ok {
+	if raw, ok := firstValue(options, "serial.dtr"); ok {
 		value, err := strconv.ParseBool(raw)
 		if err != nil {
-			return cfg, optionError("dtr", raw, "must be true or false")
+			return cfg, optionError("serial.dtr", raw, "must be true or false")
 		}
 		cfg.dtr = value
 	}
-	if raw, ok := firstValue(options, "rts"); ok {
+	if raw, ok := firstValue(options, "serial.rts"); ok {
 		value, err := strconv.ParseBool(raw)
 		if err != nil {
-			return cfg, optionError("rts", raw, "must be true or false")
+			return cfg, optionError("serial.rts", raw, "must be true or false")
 		}
 		cfg.rts = value
 	}
-	if raw, ok := firstValue(options, "read-timeout"); ok {
+	if raw, ok := firstValue(options, "serial.read-timeout-ms"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("read-timeout", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("serial.read-timeout-ms", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.readTimeout = time.Duration(millis) * time.Millisecond
 	}
-	if raw, ok := firstValue(options, "write-timeout"); ok {
+	if raw, ok := firstValue(options, "serial.write-timeout-ms"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("write-timeout", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("serial.write-timeout-ms", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.writeTimeout = time.Duration(millis) * time.Millisecond
 	}
-	if raw, ok := firstValue(options, "connect-timeout"); ok {
+	if raw, ok := firstValue(options, "serial.connect-timeout-ms"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("connect-timeout", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("serial.connect-timeout-ms", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.connectTimeout = uint32(millis)
 	}
-	if raw, ok := firstValue(options, "reuse-port"); ok {
+	if raw, ok := firstValue(options, "serial.reuse-port"); ok {
 		value, err := strconv.ParseBool(raw)
 		if err != nil {
-			return cfg, optionError("reuse-port", raw, "must be true or false")
+			return cfg, optionError("serial.reuse-port", raw, "must be true or false")
 		}
 		cfg.reusePort = value
 	}
-	if raw, ok := firstValue(options, "interframe-delay"); ok {
+	if raw, ok := firstValue(options, "serial.interframe-delay"); ok {
 		millis, err := strconv.ParseUint(raw, 10, 32)
 		if err != nil {
-			return cfg, optionError("interframe-delay", raw, "must be a non-negative integer (milliseconds)")
+			return cfg, optionError("serial.interframe-delay", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.interframeDelay = time.Duration(millis) * time.Millisecond
 	}

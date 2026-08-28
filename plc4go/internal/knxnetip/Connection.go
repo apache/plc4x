@@ -110,7 +110,7 @@ type KnxMemoryReadFragment struct {
 // (Java: KnxNetIpConnection#HEARTBEAT_INTERVAL_MS)
 const connectionStateInterval = 60 * time.Second
 
-// defaultRequestTimeout mirrors the "request-timeout" default of the java driver
+// defaultRequestTimeout mirrors the "request-timeout-ms" default of the java driver
 // (KnxNetIpConfiguration#requestTimeout = 10_000ms).
 const defaultRequestTimeout = 10 * time.Second
 

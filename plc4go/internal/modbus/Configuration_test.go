@@ -50,13 +50,14 @@ func TestParseFromOptions_defaults(t *testing.T) {
 // plc4j spells the option default-unit-identifier, the Go driver has always called it
 // unit-identifier. Both work, so that neither an existing connection string nor one copied from
 // plc4j breaks.
-func TestParseFromOptions_unitIdentifierAndItsAlias(t *testing.T) {
-	assert.Equal(t, uint8(9), parseConfiguration(t, map[string][]string{"unit-identifier": {"9"}}).unitIdentifier)
+// One name, the same one plc4j declares. This driver used to accept "unit-identifier" as well,
+// which plc4j never did - so that connection string set the unit here and was silently ignored
+// there. It is now reported as an unknown option like any other name nothing reads.
+func TestParseFromOptions_unitIdentifier(t *testing.T) {
 	assert.Equal(t, uint8(9), parseConfiguration(t, map[string][]string{"default-unit-identifier": {"9"}}).unitIdentifier)
 
-	// With both spelled out the plc4j one wins.
-	both := parseConfiguration(t, map[string][]string{"unit-identifier": {"9"}, "default-unit-identifier": {"3"}})
-	assert.Equal(t, uint8(3), both.unitIdentifier)
+	// The old spelling no longer binds; the default stands.
+	assert.Equal(t, defaultUnitIdentifier, parseConfiguration(t, map[string][]string{"unit-identifier": {"9"}}).unitIdentifier)
 }
 
 func TestParseFromOptions_defaultPayloadByteOrder(t *testing.T) {
@@ -77,7 +78,7 @@ func TestParseFromOptions_pingAddress(t *testing.T) {
 
 // The request timeout is stated in milliseconds, as it is in plc4j.
 func TestParseFromOptions_requestTimeout(t *testing.T) {
-	configuration := parseConfiguration(t, map[string][]string{"request-timeout": {"250"}})
+	configuration := parseConfiguration(t, map[string][]string{"request-timeout-ms": {"250"}})
 	assert.Equal(t, 250*time.Millisecond, configuration.requestTimeout)
 }
 
@@ -88,12 +89,12 @@ func TestParseFromOptions_rejectsBadValues(t *testing.T) {
 		name              string
 		connectionOptions map[string][]string
 	}{
-		{"unit identifier beyond a byte", map[string][]string{"unit-identifier": {"256"}}},
+		{"unit identifier beyond a byte", map[string][]string{"default-unit-identifier": {"256"}}},
 		{"unit identifier that isn't a number", map[string][]string{"default-unit-identifier": {"nope"}}},
 		{"unknown byte order", map[string][]string{"default-payload-byte-order": {"MIDDLE_ENDIAN"}}},
 		{"unparsable ping address", map[string][]string{"ping-address": {"this is not an address"}}},
-		{"request timeout that isn't a number", map[string][]string{"request-timeout": {"soon"}}},
-		{"request timeout of zero", map[string][]string{"request-timeout": {"0"}}},
+		{"request timeout that isn't a number", map[string][]string{"request-timeout-ms": {"soon"}}},
+		{"request timeout of zero", map[string][]string{"request-timeout-ms": {"0"}}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			_, err := ParseFromOptions(zerolog.Nop(), test.connectionOptions)

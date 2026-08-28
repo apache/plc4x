@@ -28,7 +28,7 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
 public class ModbusTcpConfiguration implements Configuration {
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(5_000)
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;

@@ -38,7 +38,7 @@
  - `tcp`
 5+|Config options:
 |`remote-connection-string` |STRING | | |URL-Encoded connection string to use on the proxy side to reach the given PLC.
-|`request-timeout` |INT |5000| |Default timeout for all types of requests.
+|`request-timeout-ms` |INT |5000| |Default timeout for all types of requests.
 |`username` |STRING | | |Username for authenticating against the PLC4X proxy server. Authentication is mandatory.
 |`password` |STRING | | |Password for authenticating against the PLC4X proxy server. Authentication is mandatory.
 5+|Transport config options:
@@ -46,20 +46,20 @@
 +++
 <h4>tls</h4>
 +++
-|`tls.verify-ssl` |BOOLEAN |true| |
+|`tls.verify` |BOOLEAN |true| |
 |`tls.ignore-common-name` |BOOLEAN |false| |Accept a server certificate issued for a different host than the one connected to
-|`tls.trust-store-file` |STRING | | |Key store of certificates to trust, instead of the JVM's public authorities
-|`tls.trust-store-password` |STRING | | |Password of the trust store named by trust-store-file
-|`tls.trust-store-type` |STRING |PKCS12| |Type of the trust store named by trust-store-file
-|`tls.tls-version` |STRING | | |TLS protocol version (e.g., 'TLSv1.2', 'TLSv1.3'). If not set, uses TLS 1.3 with fallback to TLS 1.2.
+|`tls.trust-store` |STRING | | |Key store of certificates to trust, instead of the JVM's public authorities
+|`tls.trust-store-password` |STRING | | |Password of the trust store named by tls.trust-store
+|`tls.trust-store-type` |STRING |PKCS12| |Type of the trust store named by tls.trust-store
+|`tls.version` |STRING | | |TLS protocol version (e.g., 'TLSv1.2', 'TLSv1.3'). If not set, uses TLS 1.3 with fallback to TLS 1.2.
 |`tls.keystore` |STRING | | |Path to keystore (PKCS12/JKS) containing the client certificate and private key for mutual TLS.
 |`tls.keystore-password` |STRING | | |Password for the client keystore.
 |`tls.keystore-type` |STRING | | |Keystore type (e.g., 'PKCS12', 'JKS'). Defaults to PKCS12.
 |`tls.log-session-keys` |BOOLEAN |false| |Log TLS session keys to the audit log in SSLKEYLOGFILE format for Wireshark decryption.
-|`tls.connect-timeout` |INT |5000| |
-|`tls.read-timeout` |INT |0| |
-|`tls.write-timeout` |INT |0| |
-|`tls.tcp-no-delay` |BOOLEAN |true| |
+|`tls.connect-timeout-ms` |INT |5000| |
+|`tls.read-timeout-ms` |INT |0| |
+|`tls.write-timeout-ms` |INT |0| |
+|`tls.no-delay` |BOOLEAN |true| |
 |`tls.keep-alive` |BOOLEAN |false| |
 |`tls.send-buffer-size` |INT |81920| |
 |`tls.receive-buffer-size` |INT |81920| |
@@ -69,10 +69,10 @@
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout` |INT |5000| |
-|`tcp.read-timeout` |INT |0| |
-|`tcp.write-timeout` |INT |0| |
-|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.connect-timeout-ms` |INT |5000| |
+|`tcp.read-timeout-ms` |INT |0| |
+|`tcp.write-timeout-ms` |INT |0| |
+|`tcp.no-delay` |BOOLEAN |true| |
 |`tcp.keep-alive` |BOOLEAN |false| |
 |`tcp.send-buffer-size` |INT |81920| |
 |`tcp.receive-buffer-size` |INT |81920| |

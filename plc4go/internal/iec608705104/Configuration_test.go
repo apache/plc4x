@@ -42,7 +42,7 @@ func TestParseFromOptions(t *testing.T) {
 		},
 		{
 			name:              "a request timeout in milliseconds",
-			connectionOptions: map[string][]string{"request-timeout": {"1500"}},
+			connectionOptions: map[string][]string{"request-timeout-ms": {"1500"}},
 			want:              Configuration{requestTimeout: 1500 * time.Millisecond, ackThreshold: 8},
 		},
 		{
@@ -65,8 +65,8 @@ func TestParseFromOptions(t *testing.T) {
 			connectionOptions: map[string][]string{"ack-threshold": {}},
 			want:              Configuration{requestTimeout: 4 * time.Second, ackThreshold: 8},
 		},
-		{name: "a request timeout which isn't a number", connectionOptions: map[string][]string{"request-timeout": {"soon"}}, wantErr: true},
-		{name: "a request timeout of zero", connectionOptions: map[string][]string{"request-timeout": {"0"}}, wantErr: true},
+		{name: "a request timeout which isn't a number", connectionOptions: map[string][]string{"request-timeout-ms": {"soon"}}, wantErr: true},
+		{name: "a request timeout of zero", connectionOptions: map[string][]string{"request-timeout-ms": {"0"}}, wantErr: true},
 		{name: "a window which isn't a number", connectionOptions: map[string][]string{"ack-threshold": {"lots"}}, wantErr: true},
 		{name: "a window of zero", connectionOptions: map[string][]string{"ack-threshold": {"0"}}, wantErr: true},
 		{name: "a window past the sequence number", connectionOptions: map[string][]string{"ack-threshold": {"32768"}}, wantErr: true},

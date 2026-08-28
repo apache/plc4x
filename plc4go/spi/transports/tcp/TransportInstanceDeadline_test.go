@@ -77,7 +77,7 @@ func TestTransportInstance_WriteHonorsContextDeadline(t *testing.T) {
 	// A single large write is not guaranteed to block everywhere: Windows'
 	// loopback fast path ignores post-connect buffer sizes and absorbs even a
 	// 64MB payload before a 200ms deadline. Write in a loop instead (like Go's
-	// own net write-timeout tests): on Linux/macOS the first write blocks and
+	// own net write-timeout-ms tests): on Linux/macOS the first write blocks and
 	// is interrupted mid-flight, on Windows either an in-flight send is
 	// cancelled at the deadline or the next write fails instantly - both must
 	// surface a timeout error.

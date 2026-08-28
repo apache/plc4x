@@ -148,7 +148,7 @@ public class RawSocketTransportConfiguration implements TransportConfiguration {
     /**
      * Read timeout for blocking reads in milliseconds. 0 means no timeout.
      */
-    @ConfigurationParameter( "read-timeout")
+    @ConfigurationParameter( "read-timeout-ms")
     @Description( "Read timeout for blocking reads in milliseconds.")
     @IntDefaultValue(0)
     public int readTimeout;

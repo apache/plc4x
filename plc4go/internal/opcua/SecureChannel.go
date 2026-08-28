@@ -89,10 +89,10 @@ type SecureChannel struct {
 	discovery                 bool
 	certFile                  string
 	keyStoreFile              string
-	ckp                       CertificateKeyPair
+	ckp                       CertificateKeyPair `secret:"true"` // the client's private key - see Configuration.Ckp
 	endpoint                  readWriteModel.PascalString
 	username                  string
-	password                  string
+	password                  string `secret:"true"`
 	securityPolicy            string
 	publicCertificate         readWriteModel.PascalByteString
 	thumbprint                readWriteModel.PascalByteString

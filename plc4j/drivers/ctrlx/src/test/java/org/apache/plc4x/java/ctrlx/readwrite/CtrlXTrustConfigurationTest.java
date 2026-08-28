@@ -66,7 +66,7 @@ class CtrlXTrustConfigurationTest {
     @Test
     void aTrustStoreCanBeNamedTheSameWayAsElsewhere() {
         CtrlXConfiguration configuration = configFrom(
-            "trust-store-file=/etc/plc4x/trust.p12&trust-store-password=secret&trust-store-type=JKS");
+            "tls.trust-store=/etc/plc4x/trust.p12&tls.trust-store-password=secret&tls.trust-store-type=JKS");
         assertEquals("/etc/plc4x/trust.p12", configuration.getTrustStoreFile());
         assertEquals("secret", configuration.getTrustStorePassword());
         assertEquals("JKS", configuration.getTrustStoreType());
@@ -74,7 +74,7 @@ class CtrlXTrustConfigurationTest {
 
     @Test
     void theTrustStoreTypeDefaultsToTheSameAsTheOtherDrivers() {
-        CtrlXConfiguration configuration = configFrom("trust-store-file=/etc/plc4x/trust.p12");
+        CtrlXConfiguration configuration = configFrom("tls.trust-store=/etc/plc4x/trust.p12");
         assertEquals("PKCS12", configuration.getTrustStoreType());
     }
 }

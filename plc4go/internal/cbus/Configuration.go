@@ -28,6 +28,7 @@ import (
 	"golang.org/x/text/language"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 //go:generate go tool plc4xGenerator -type=Configuration
@@ -48,13 +49,18 @@ type Configuration struct {
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(log, options)
+	defer reader.ReportUnknown("c-bus")
+
 	titleOptions(options)
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
 	for i := 0; i < reflectConfiguration.NumField(); i++ {
 		field := reflectConfiguration.Type().Field(i)
 		key := field.Name
-		if optionValue := getFromOptions(log, options, key); optionValue != "" {
+		if optionValue := reader.Get(key); optionValue != "" {
 			switch field.Type.Kind() {
 			case reflect.Uint8:
 				parseUint, err := strconv.ParseUint(optionValue, 0, 8)
@@ -96,17 +102,4 @@ func createDefaultConfiguration() Configuration {
 		MonitoredApplication1: 0xFF,
 		MonitoredApplication2: 0xFF,
 	}
-}
-
-func getFromOptions(localLog zerolog.Logger, options map[string][]string, key string) string {
-	if optionValues, ok := options[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLog.Warn().Str("key", key).Msg("Options key must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
 }

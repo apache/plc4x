@@ -59,7 +59,7 @@ public class AdsConfiguration implements Configuration {
     @Description("AMS port of the source.")
     protected int sourceAmsPort;
 
-    @ConfigurationParameter("timeout-request")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(4000)
     @Description("Default timeout for all types of requests.")
     protected int timeoutRequest;

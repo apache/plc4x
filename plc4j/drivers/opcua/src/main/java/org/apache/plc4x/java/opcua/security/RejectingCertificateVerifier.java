@@ -25,10 +25,10 @@ import java.security.cert.X509Certificate;
 /**
  * Fail-closed certificate verifier used as the secure default: it rejects every
  * server certificate because no trust anchor has been configured. To establish
- * trust, configure either a {@code trust-store-file} (chain validation) or a
+ * trust, configure either a {@code tls.trust-store} (chain validation) or a
  * {@code server-certificate-file} (certificate pinning). As a last resort,
  * certificate verification can be disabled entirely with
- * {@code insecure-certificate-verification=true}, which is unsafe and leaves the
+ * {@code tls.verify=false}, which is unsafe and leaves the
  * connection open to man-in-the-middle attacks.
  */
 public class RejectingCertificateVerifier implements CertificateVerifier {
@@ -36,8 +36,8 @@ public class RejectingCertificateVerifier implements CertificateVerifier {
     @Override
     public void checkCertificateTrusted(X509Certificate certificate) throws CertificateException {
         throw new CertificateException("No trust anchor configured for OPC UA server certificate verification. "
-            + "Configure 'trust-store-file' or 'server-certificate-file' to establish trust, or set "
-            + "'insecure-certificate-verification=true' to disable verification (unsafe).");
+            + "Configure 'tls.trust-store' or 'server-certificate-file' to establish trust, or set "
+            + "'tls.verify=false' to disable verification (unsafe).");
     }
 
 }

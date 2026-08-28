@@ -134,7 +134,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	// Parse Configuration early so we can propagate the discovery timeout to
 	// the Discoverer for the lifetime of this Driver instance. (Discovery is a
 	// driver-level call, but the timeout is naturally part of Configuration.)
-	if cfg, cfgErr := ParseFromOptions(connectionLog, driverOptions); cfgErr == nil {
+	if cfg, cfgErr := ParseFromOptionsQuietly(connectionLog, driverOptions); cfgErr == nil {
 		d.discoverer.SetDiscoveryTimeout(time.Duration(cfg.DiscoveryTimeoutSeconds) * time.Second)
 	}
 

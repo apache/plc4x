@@ -502,10 +502,10 @@ public class SecureChannel {
         if (revisedLifetime > 0 && revisedLifetime < effective && !shortLifetimeWarned) {
             shortLifetimeWarned = true;
             LOGGER.warn("Server asked for a secure channel lifetime of {} ms; using {} ms instead, "
-                    + "because min-channel-lifetime is {} ms. Renewals share one executor with every "
+                    + "because min-channel-lifetime-ms is {} ms. Renewals share one executor with every "
                     + "OPC UA connection in this JVM, which is what that minimum protects. The server "
                     + "may treat the channel as expired before the first renewal - if this server "
-                    + "genuinely needs renewal that often, lower min-channel-lifetime to {} or less.",
+                    + "genuinely needs renewal that often, lower min-channel-lifetime-ms to {} or less.",
                 revisedLifetime, effective, minimum, revisedLifetime);
         }
         return effective;
@@ -525,12 +525,12 @@ public class SecureChannel {
      *       before our first renewal is due, so the connection may fail at that point. That is the
      *       trade being made - the renewals run on an executor shared by every OPC UA connection
      *       in the JVM, so one peer does not get to set the pace for all of them. An operator who
-     *       needs such a server lowers {@code min-channel-lifetime} and accepts the cost
+     *       needs such a server lowers {@code min-channel-lifetime-ms} and accepts the cost
      *       knowingly.</li>
      * </ul>
      *
      * <p>The minimum is bounded by the requested lifetime, so a deliberately short
-     * {@code channel-lifetime} is still honoured: this only ever declines to go <em>below</em>
+     * {@code channel-lifetime-ms} is still honoured: this only ever declines to go <em>below</em>
      * what the operator asked for, never above it.</p>
      */
     static long effectiveChannelLifetime(long revisedLifetime, long requestedLifetime, long minimumLifetime) {

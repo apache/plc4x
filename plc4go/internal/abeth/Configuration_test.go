@@ -48,12 +48,12 @@ func TestParseFromOptions(t *testing.T) {
 		},
 		{
 			name:    "a request timeout in milliseconds",
-			options: map[string][]string{"request-timeout": {"2500"}},
+			options: map[string][]string{"request-timeout-ms": {"2500"}},
 			want:    Configuration{station: 0, requestTimeout: 2500 * time.Millisecond},
 		},
 		{
 			name:    "both options",
-			options: map[string][]string{"station": {"255"}, "request-timeout": {"1"}},
+			options: map[string][]string{"station": {"255"}, "request-timeout-ms": {"1"}},
 			want:    Configuration{station: 255, requestTimeout: time.Millisecond},
 		},
 		{
@@ -74,12 +74,12 @@ func TestParseFromOptions(t *testing.T) {
 		},
 		{
 			name:    "a zero request timeout",
-			options: map[string][]string{"request-timeout": {"0"}},
+			options: map[string][]string{"request-timeout-ms": {"0"}},
 			wantErr: true,
 		},
 		{
 			name:    "a non-numeric request timeout",
-			options: map[string][]string{"request-timeout": {"soon"}},
+			options: map[string][]string{"request-timeout-ms": {"soon"}},
 			wantErr: true,
 		},
 	}

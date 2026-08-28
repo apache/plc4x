@@ -25,6 +25,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Configuration struct {
@@ -37,41 +38,46 @@ type Configuration struct {
 }
 
 func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (Configuration, error) {
+	// Every option this driver reads goes through the reader, so the ones nothing read can be
+	// reported rather than silently discarded. Deferred, so no return path can skip it.
+	reader := spiOptions.NewOptionReader(localLogger, options)
+	defer reader.ReportUnknown("eip")
+
 	configuration := Configuration{
 		backplane: 1,
 		slot:      0,
 		bigEndian: true,
 	}
-	if localRackString := getFromOptions(localLogger, options, "backplane"); localRackString != "" {
+	if localRackString := reader.Get("backplane"); localRackString != "" {
 		parsedBackplane, err := strconv.ParseInt(localRackString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing backplane")
 		}
 		configuration.backplane = int8(parsedBackplane)
 	}
-	if localSlotString := getFromOptions(localLogger, options, "slot"); localSlotString != "" {
+	if localSlotString := reader.Get("slot"); localSlotString != "" {
 		parsedSlot, err := strconv.ParseInt(localSlotString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing slot")
 		}
 		configuration.slot = int8(parsedSlot)
 	}
-	if bigEndianString := getFromOptionsAliases(localLogger, options, "bigEndian", "big-endian"); bigEndianString != "" {
+	if bigEndianString := getFromOptionsAliases(reader, "bigEndian", "big-endian"); bigEndianString != "" {
 		parsedBigEndian, err := strconv.ParseBool(bigEndianString)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing bigEndian")
 		}
 		configuration.bigEndian = parsedBigEndian
 	}
-	if forceUnconnectedString := getFromOptionsAliases(localLogger, options, "forceUnconnectedOperation", "force-unconnected-operation"); forceUnconnectedString != "" {
+	if forceUnconnectedString := getFromOptionsAliases(reader, "forceUnconnectedOperation", "force-unconnected-operation"); forceUnconnectedString != "" {
 		parsedForceUnconnected, err := strconv.ParseBool(forceUnconnectedString)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing forceUnconnectedOperation")
 		}
 		configuration.forceUnconnectedOperation = parsedForceUnconnected
 	}
-	configuration.communicationPath = getFromOptionsAliases(localLogger, options, "communicationPath", "communication-path")
-	if serialNumberString := getFromOptionsAliases(localLogger, options, "connectionSerialNumber", "connection-serial-number"); serialNumberString != "" {
+	configuration.communicationPath = getFromOptionsAliases(reader, "communicationPath", "communication-path")
+	if serialNumberString := getFromOptionsAliases(reader, "connectionSerialNumber", "connection-serial-number"); serialNumberString != "" {
 		parsedSerialNumber, err := strconv.ParseUint(serialNumberString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing connectionSerialNumber")
@@ -81,22 +87,9 @@ func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (
 	return configuration, nil
 }
 
-func getFromOptions(localLogger zerolog.Logger, options map[string][]string, key string) string {
-	if optionValues, ok := options[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
-		}
-		if len(optionValues) > 1 {
-			localLogger.Warn().Str("key", key).Msg("Options %s must be unique")
-		}
-		return optionValues[0]
-	}
-	return ""
-}
-
-func getFromOptionsAliases(localLogger zerolog.Logger, options map[string][]string, keys ...string) string {
+func getFromOptionsAliases(reader *spiOptions.OptionReader, keys ...string) string {
 	for _, key := range keys {
-		if value := getFromOptions(localLogger, options, key); value != "" {
+		if value := reader.Get(key); value != "" {
 			return value
 		}
 	}

@@ -28,7 +28,7 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
 public class ModbusRtuConfiguration implements Configuration {
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(5_000)
     @Description("Default timeout for all types of requests. The timeout covers the full time from submission including queueing; queued requests whose remaining budget falls below a small dispatch margin (at most a quarter of the timeout, capped at 50 ms) fail fast instead of being sent.")
     private int requestTimeout;

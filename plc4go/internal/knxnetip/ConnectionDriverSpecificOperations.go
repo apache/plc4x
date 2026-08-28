@@ -112,7 +112,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 //
 // The returned channel is always completed exactly once: with a nil error if the gateway
 // acknowledged and confirmed the frame, and with an error on any failure, including the
-// request-timeout which is applied here. (Java: KnxNetIpConnection#onWrite)
+// request-timeout-ms which is applied here. (Java: KnxNetIpConnection#onWrite)
 func (m *Connection) WriteGroupAddress(ctx context.Context, groupAddress []byte, datapointType *driverModel.KnxDatapointType, value values.PlcValue) <-chan KnxWriteResult {
 	result := make(chan KnxWriteResult, 1)
 

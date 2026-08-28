@@ -93,7 +93,7 @@ public class TagBatch implements AutoCloseable {
 
     // Upper bound on a single fetch cycle. This is NOT a replacement for the driver's
     // own request timeout (configure that in the connection string, e.g.
-    // "?request-timeout=10000") — it is deliberately set an order of magnitude higher,
+    // "?request-timeout-ms=10000") — it is deliberately set an order of magnitude higher,
     // and exists only so that a driver which never completes its read future cannot
     // wedge this batch forever: fetchInProgress would stay true and every later trigger
     // would be skipped, silently killing the batch with no recovery.
@@ -228,7 +228,7 @@ public class TagBatch implements AutoCloseable {
          * This is a watchdog, not a request timeout: it only exists so a driver that never
          * completes its read future cannot wedge the batch permanently. Configure the actual
          * request timeout on the connection string instead (for example
-         * {@code "opcua:tcp://host:4840?request-timeout=10000"}), and leave this comfortably
+         * {@code "opcua:tcp://host:4840?request-timeout-ms=10000"}), and leave this comfortably
          * above it — the default is 5 minutes.
          *
          * @param timeout The timeout, or a value &lt;= 0 to disable the watchdog entirely

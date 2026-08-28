@@ -412,6 +412,25 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 	}
 }
 
+// The manager is the one place that knows which transport the connection string selected, and it
+// knows it before any configuration is parsed. Stamping it into the options lets ReportUnknown
+// excuse the active transport's options and no other's.
+func Test_plcDriverManger_GetConnectionStampsTheActiveTransport(t *testing.T) {
+	driver := NewMockPlcDriver(t)
+	expect := driver.EXPECT()
+	expect.GetProtocolName().Return("test")
+	expect.GetDefaultTransport().Return("test")
+	expect.GetConnection(mock.Anything, mock.Anything, mock.Anything, mock.MatchedBy(func(configOptions map[string][]string) bool {
+		values := configOptions[options.ActiveTransportOption]
+		return len(values) == 1 && values[0] == "test"
+	})).Return(nil, nil)
+	m := &plcDriverManger{drivers: map[string]PlcDriver{"test": driver}}
+	m.log = produceTestingLogger(t)
+
+	_, err := m.GetConnection(t.Context(), "test://something?some-option=1")
+	assert.NoError(t, err)
+}
+
 func Test_plcDriverManger_GetDriver(t *testing.T) {
 	type fields struct {
 		drivers    map[string]PlcDriver

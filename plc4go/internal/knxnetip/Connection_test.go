@@ -235,10 +235,10 @@ func Test_Connection_getRequestTimeout(t *testing.T) {
 		want    time.Duration
 	}{
 		{"no option", nil, defaultRequestTimeout},
-		{"empty option", map[string][]string{"request-timeout": {}}, defaultRequestTimeout},
-		{"explicit value", map[string][]string{"request-timeout": {"1500"}}, 1500 * time.Millisecond},
-		{"zero falls back", map[string][]string{"request-timeout": {"0"}}, defaultRequestTimeout},
-		{"garbage falls back", map[string][]string{"request-timeout": {"soon"}}, defaultRequestTimeout},
+		{"empty option", map[string][]string{"request-timeout-ms": {}}, defaultRequestTimeout},
+		{"explicit value", map[string][]string{"request-timeout-ms": {"1500"}}, 1500 * time.Millisecond},
+		{"zero falls back", map[string][]string{"request-timeout-ms": {"0"}}, defaultRequestTimeout},
+		{"garbage falls back", map[string][]string{"request-timeout-ms": {"soon"}}, defaultRequestTimeout},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

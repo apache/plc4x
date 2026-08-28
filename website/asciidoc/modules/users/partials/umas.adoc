@@ -37,7 +37,7 @@
  - `tcp`
 5+|Config options:
 |`unit-identifier` |INT |0| |Modbus unit identifier (slave address). UMAS typically uses 0.
-|`request-timeout` |INT |4000| |Timeout in milliseconds for UMAS requests.
+|`request-timeout-ms` |INT |4000| |Timeout in milliseconds for UMAS requests.
 |`max-frame-size` |INT |65535| |Maximum UMAS frame size. The PLC reports its actual limit during InitComms.
 |`browser-generate-array-nodes` |BOOLEAN |true| |Tells the browser to generate artificial child nodes representing individual array elements.
 5+|Transport config options:
@@ -45,10 +45,10 @@
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout` |INT |5000| |
-|`tcp.read-timeout` |INT |0| |
-|`tcp.write-timeout` |INT |0| |
-|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.connect-timeout-ms` |INT |5000| |
+|`tcp.read-timeout-ms` |INT |0| |
+|`tcp.write-timeout-ms` |INT |0| |
+|`tcp.no-delay` |BOOLEAN |true| |
 |`tcp.keep-alive` |BOOLEAN |false| |
 |`tcp.send-buffer-size` |INT |81920| |
 |`tcp.receive-buffer-size` |INT |81920| |

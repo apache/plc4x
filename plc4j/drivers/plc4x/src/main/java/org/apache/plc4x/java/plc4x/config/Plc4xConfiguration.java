@@ -20,6 +20,7 @@ package org.apache.plc4x.java.plc4x.config;
 
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Secret;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
@@ -29,7 +30,7 @@ public class Plc4xConfiguration implements Configuration {
     @Description("URL-Encoded connection string to use on the proxy side to reach the given PLC.")
     private String remoteConnectionString;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(5_000)
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;
@@ -38,6 +39,7 @@ public class Plc4xConfiguration implements Configuration {
     @Description("Username for authenticating against the PLC4X proxy server. Authentication is mandatory.")
     private String username;
 
+    @Secret
     @ConfigurationParameter("password")
     @Description("Password for authenticating against the PLC4X proxy server. Authentication is mandatory.")
     private String password;

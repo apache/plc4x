@@ -713,7 +713,7 @@ class TlsTransportInstanceTest {
 
     @Test
     void testCertificateVerificationFailure() {
-        // Connect with verify-ssl=true to our self-signed server — should fail with PKIX error
+        // Connect with verify=true to our self-signed server — should fail with PKIX error
         Future<SSLSocket> serverFuture = acceptConnection();
 
         TlsTransportConfiguration config = createConfig();
