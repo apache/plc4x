@@ -61,18 +61,18 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
      * it the only way past a private CA is to turn verification off entirely, which is why
      * {@code verify=false} tends to end up in configurations and stay there.</p>
      */
-    @ConfigurationParameter("trust-store-file")
+    @ConfigurationParameter("trust-store")
     @Description("Key store of certificates to trust, instead of the JVM's public authorities")
     public String trustStoreFile;
 
     @Secret
     @ConfigurationParameter("trust-store-password")
-    @Description("Password of the trust store named by trust-store-file")
+    @Description("Password of the trust store named by tls.trust-store")
     public String trustStorePassword;
 
     @ConfigurationParameter("trust-store-type")
     @StringDefaultValue("PKCS12")
-    @Description("Type of the trust store named by trust-store-file")
+    @Description("Type of the trust store named by tls.trust-store")
     public String trustStoreType;
 
     /**

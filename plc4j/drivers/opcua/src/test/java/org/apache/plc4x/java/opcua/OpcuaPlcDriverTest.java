@@ -995,7 +995,7 @@ public class OpcuaPlcDriverTest {
 
         @Test
         void securedConnectionWithoutTrustAnchorIsRejected() {
-            // No trust-store-file and no server-certificate-file: the driver must fail
+            // No tls.trust-store and no server-certificate-file: the driver must fail
             // closed rather than blindly trusting whatever certificate the server presents.
             String options = params(
                 entry("discovery", "false"),

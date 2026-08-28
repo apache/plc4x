@@ -83,12 +83,24 @@ func TestTheCanonicalNamesAreRecognisedHere(t *testing.T) {
 	// unknown, which is the truth: setting it here would do nothing. Parity is that a capability
 	// *both* have is spelled the same, not that the capability sets match.
 	logged = parseReporting(t, s7Parse, map[string][]string{
-		"controller-type": {"S7_1200"},
-		"remote-rack":     {"0"},
-		"remote-slot":     {"1"},
-		"pdu-size":        {"1024"},
+		"controller-type":  {"S7_1200"},
+		"cotp.remote-rack": {"0"},
+		"cotp.remote-slot": {"1"},
+		"pdu-size":         {"1024"},
 	})
 	assert.NotContains(t, logged, "not known", "the s7 settings both bindings implement")
+}
+
+// The rack and slot carry the "cotp." prefix in PLC4J, which declares them on the COTP transport's
+// configuration, and every s7 example in the documentation spells them that way. This binding read
+// them unprefixed, so the documented connection string set nothing here and said nothing about it.
+// This is the divergence this package was written to find; it is fixed, and pinned here.
+func TestTheUnprefixedS7RackAndSlotAreNotAccepted(t *testing.T) {
+	logged := parseReporting(t, s7Parse, map[string][]string{
+		"remote-rack": {"0"}, "remote-slot": {"1"},
+	})
+	assert.Contains(t, logged, "remote-rack")
+	assert.Contains(t, logged, "remote-slot")
 }
 
 // The other half of that: a PLC4J parameter this binding does not implement is reported, so an

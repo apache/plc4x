@@ -84,20 +84,20 @@ PlcConnection connection = new DefaultPlcDriverManager()
 |===
 |Name |Type |Default |Description
 
-|`trust-store-file`
+|`tls.trust-store`
 |STRING
 |
 |Key store of certificates to trust, instead of the JVM's public authorities.
 
-|`trust-store-password`
+|`tls.trust-store-password`
 |STRING
 |
-|Password of the trust store named by `trust-store-file`.
+|Password of the trust store named by `tls.trust-store`.
 
-|`trust-store-type`
+|`tls.trust-store-type`
 |STRING
 |`PKCS12`
-|Type of the trust store named by `trust-store-file`.
+|Type of the trust store named by `tls.trust-store`.
 
 |`server-certificate-file`
 |STRING

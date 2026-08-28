@@ -268,7 +268,7 @@ public class TlsTransportInstance extends BaseTransportInstance<TlsTransportConf
     }
 
     /**
-     * Loads the trust managers for the certificates named by {@code trust-store-file}.
+     * Loads the trust managers for the certificates named by {@code tls.trust-store}.
      */
     private TrustManager[] loadTrustManagers(TlsTransportConfiguration configuration)
             throws TransportException {

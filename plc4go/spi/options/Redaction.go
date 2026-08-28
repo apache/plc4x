@@ -37,8 +37,11 @@ import "regexp"
 var (
 	secretParameter = regexp.MustCompile(`(?i)([?&][^=&]*(password|passwd|secret|token|psk-key|passphrase)[^=&]*=)[^&]*`)
 	// Credentials in a URI authority have no parameter name to match, so they are removed
-	// structurally: everything between the ':' of the userinfo and the '@' that ends it.
-	userinfo = regexp.MustCompile(`(//[^/@\s]*:)([^/@\s]*)(@)`)
+	// structurally: everything between the first ':' of the userinfo and the '@' that ends it.
+	// The user segment excludes ':' so that the first colon separates it from the password; were
+	// it greedy, a password containing a colon would keep everything up to its last one, and
+	// "bob:pa:ss@" would redact to "bob:pa:******@" - half the credential, published.
+	userinfo = regexp.MustCompile(`(//[^/@\s:]*:)([^/@\s]*)(@)`)
 )
 
 // Redacted is what a removed value is replaced with.

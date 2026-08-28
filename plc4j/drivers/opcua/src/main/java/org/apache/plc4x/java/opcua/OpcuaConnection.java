@@ -213,7 +213,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                         "Cannot establish a %s channel: the server's certificate is not known in "
                             + "advance, so the connection would fall back to an unprotected channel. "
                             + "Name the certificate with 'server-certificate-file' or a trust store "
-                            + "with 'trust-store-file', or set 'discovery=false' if the endpoint "
+                            + "with 'tls.trust-store', or set 'discovery=false' if the endpoint "
                             + "needs no discovery, or ask for 'security-policy=NONE' to accept an "
                             + "unprotected channel.",
                         configuration.getSecurityPolicy()));

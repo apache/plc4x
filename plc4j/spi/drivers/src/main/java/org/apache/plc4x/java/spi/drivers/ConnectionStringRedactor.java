@@ -53,10 +53,15 @@ public final class ConnectionStringRedactor {
     private static final String REDACTED = "******";
 
     /**
-     * The credentials of a URI authority: everything between the scheme's {@code //} and the
-     * {@code @} that ends the userinfo component.
+     * The credentials of a URI authority: everything between the first {@code :} after the
+     * scheme's {@code //} and the {@code @} that ends the userinfo component.
+     *
+     * <p>The user segment excludes {@code :} so that the <em>first</em> colon separates it from
+     * the password. A greedy user segment would let a password containing a colon keep everything
+     * up to its last one - {@code bob:pa:ss@} would be redacted to {@code bob:pa:******@}, which
+     * publishes half the credential while looking like it hid it.</p>
      */
-    private static final Pattern USERINFO = Pattern.compile("(//)([^/@\\s]*:)([^/@\\s]*)(@)");
+    private static final Pattern USERINFO = Pattern.compile("(//)([^/@\\s:]*:)([^/@\\s]*)(@)");
 
     private ConnectionStringRedactor() {
         // Utility class.

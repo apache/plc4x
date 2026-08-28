@@ -101,12 +101,33 @@ func TestOptionReader_SuggestsNothingWhenNothingIsClose(t *testing.T) {
 
 // A transport option belongs to another consumer. Reporting it would warn about every connection
 // string that sets a timeout, which would teach operators to ignore the warning.
+//
+// The names are registered here rather than by importing a transport: the transports import this
+// package, so a test in it cannot import them back. Each transport registers its own in an init(),
+// beside the code that reads them.
 func TestOptionReader_SaysNothingAboutTransportOptions(t *testing.T) {
+	RegisterTransportOptions("connect-timeout-ms", "read-timeout-ms", "reuse-port")
+
 	reader, logged := readerFor(map[string][]string{
 		"connect-timeout-ms": {"5000"}, "read-timeout-ms": {"1000"}, "reuse-port": {"true"},
 	})
 	reader.ReportUnknown("modbus-tcp")
 	assert.Empty(t, logged.String())
+}
+
+// The exemption covers what some transport registered, and nothing else. An option no transport
+// reads is the driver's to report - which is what a hand-kept central list of every transport's
+// options could not say.
+func TestOptionReader_ReportsAnOptionNoTransportRegistered(t *testing.T) {
+	RegisterTransportOptions("baud-rate")
+
+	reader, logged := readerFor(map[string][]string{
+		"baud-rate": {"9600"}, "baud-rat": {"9600"},
+	})
+	reader.ReportUnknown("modbus-tcp")
+
+	assert.NotContains(t, logged.String(), `"option":"baud-rate"`)
+	assert.Contains(t, logged.String(), `"option":"baud-rat"`)
 }
 
 // What a driver parses itself - a nested or prefixed group it handles by hand - is its to claim.

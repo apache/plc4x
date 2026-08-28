@@ -36,18 +36,18 @@ public class CtrlXConfiguration implements Configuration {
      * <p>Named the same as the equivalent in the OPC UA driver and the TLS transport, so that
      * pinning a device's own certificate reads the same wherever it is done.</p>
      */
-    @ConfigurationParameter("trust-store-file")
+    @ConfigurationParameter("tls.trust-store")
     @Description("Key store of certificates to trust, instead of the JVM's public authorities")
     public String trustStoreFile;
 
     @Secret
-    @ConfigurationParameter("trust-store-password")
-    @Description("Password of the trust store named by trust-store-file")
+    @ConfigurationParameter("tls.trust-store-password")
+    @Description("Password of the trust store named by tls.trust-store")
     public String trustStorePassword;
 
-    @ConfigurationParameter("trust-store-type")
+    @ConfigurationParameter("tls.trust-store-type")
     @StringDefaultValue("PKCS12")
-    @Description("Type of the trust store named by trust-store-file")
+    @Description("Type of the trust store named by tls.trust-store")
     public String trustStoreType;
 
     /**

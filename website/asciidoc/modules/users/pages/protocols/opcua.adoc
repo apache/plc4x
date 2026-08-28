@@ -81,7 +81,7 @@ The OPC UA specification defines its own procedures for certificate validation.
 The driver verifies the server certificate by default and fails closed: if no trust anchor is
 configured, the server certificate is rejected and the connection fails. Configure one of:
 
-* `trust-store-file` - validate the certificate chain against the given trust store. The acceptance
+* `tls.trust-store` - validate the certificate chain against the given trust store. The acceptance
 relies on regular TLS checks (expiry date, certificate path etc.); it does not validate OPC UA
 specific parts such as the application URI.
 * `server-certificate-file` - pin trust to exactly that certificate. Only the certificate read from

@@ -51,7 +51,7 @@ The discovery phase is always conducted using `NONE` security policy.
 Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`. +
 `NONE` means the channel is neither signed nor encrypted, so anything on the path can read and +
 change what is exchanged; it also leaves the server unauthenticated. A policy that signs and +
-encrypts needs a trust anchor for the server's certificate - see `trust-store-file` and +
+encrypts needs a trust anchor for the server's certificate - see `tls.trust-store` and +
 `server-certificate-file`.
 |`message-security` |STRING |SIGN_ENCRYPT| |The security policy applied to messages exchanged after handshake phase. +
 Possible options are `NONE`, `SIGN`, `SIGN_ENCRYPT`. +
@@ -62,10 +62,10 @@ Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`tls.keystore-password` |STRING | | |Java keystore password used to access keystore and private key.
 |`generated-key-size` |INT |2048| |Size in bits of the RSA key of the certificate the driver generates when no `tls.keystore` is configured. It is ignored when a key store is supplied, as the key then comes from that store. Some servers require a minimum size; 4096 is a common requirement.
 |`server-certificate-file` |STRING | | |Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.
-|`trust-store-file` |STRING | | |The trust store file used to verify server certificates and its chain.
-|`trust-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +
+|`tls.trust-store` |STRING | | |The trust store file used to verify server certificates and its chain.
+|`tls.trust-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +
 Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
-|`trust-store-password` |STRING | | |Password used to open trust store.
+|`tls.trust-store-password` |STRING | | |Password used to open trust store.
 |`allow-insecure-credentials` |BOOLEAN |false| |Allows a username and password to be sent over a channel that neither signs nor encrypts. +
 Without this, a connection configured with credentials over an unprotected channel fails rather +
 than putting the password on the wire where anything on the path can read it. Setting it warns.
@@ -84,7 +84,7 @@ every level describes a tree with no bottom. Set to 0 for no limit.
 |`tls.verify` |BOOLEAN |true| |Verifies the OPC UA server's certificate. Set to false to trust any certificate the server presents. +
 This is UNSAFE: it leaves the connection open to man-in-the-middle attacks and defeats the integrity/authenticity +
 guarantees of a signed secure channel. Only enable it for local testing. In production, establish trust with +
-`trust-store-file` (chain validation) or `server-certificate-file` (certificate pinning) instead.
+`tls.trust-store` (chain validation) or `server-certificate-file` (certificate pinning) instead.
 |`channel-lifetime-ms` |LONG |3600000| |Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.
 |`min-channel-lifetime-ms` |LONG |5000| |Shortest secure-channel lifetime this client will work with, in milliseconds. A server may revise the requested channel-lifetime-ms downwards, and the renewal schedule is derived from whatever it returns - so a very short lifetime means very frequent renewals, on an executor shared by every OPC UA connection in this JVM. A server-supplied lifetime below this value is raised to it and a warning is logged. If a server genuinely needs faster renewal, lower this value to accept it; the default is far below any lifetime a conforming server negotiates.
 |`session-timeout-ms` |LONG |120000| |Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.

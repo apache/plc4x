@@ -73,7 +73,7 @@ public class OpcuaConfiguration implements Configuration {
         Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.
         `NONE` means the channel is neither signed nor encrypted, so anything on the path can read and
         change what is exchanged; it also leaves the server unauthenticated. A policy that signs and
-        encrypts needs a trust anchor for the server's certificate - see `trust-store-file` and
+        encrypts needs a trust anchor for the server's certificate - see `tls.trust-store` and
         `server-certificate-file`.""")
     private SecurityPolicy securityPolicy;
 
@@ -109,18 +109,18 @@ public class OpcuaConfiguration implements Configuration {
     @Description("Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.")
     private String serverCertificateFile;
 
-    @ConfigurationParameter("trust-store-file")
+    @ConfigurationParameter("tls.trust-store")
     @Description("The trust store file used to verify server certificates and its chain.")
     private String trustStoreFile;
 
-    @ConfigurationParameter("trust-store-type")
+    @ConfigurationParameter("tls.trust-store-type")
     @StringDefaultValue("pkcs12")
     @Description("Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).\n" +
         "Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.")
     private String trustStoreType;
 
     @Secret
-    @ConfigurationParameter("trust-store-password")
+    @ConfigurationParameter("tls.trust-store-password")
     @Description("Password used to open trust store.")
     private String trustStorePassword;
 

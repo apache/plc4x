@@ -46,6 +46,12 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 	reader := spiOptions.NewOptionReader(localLog, options)
 	defer reader.ReportUnknown("s7")
 
+	// The rack and slot names carry the "cotp." prefix because that is the spelling PLC4J
+	// declares (S7CotpTransportConfiguration, resolved under the COTP transport's prefix) and the
+	// one every s7 example in the documentation uses. This binding read them unprefixed, so the
+	// documented connection string silently did nothing here - the divergence the configuration
+	// parity test exists to catch. The unprefixed names are now reported as unknown.
+
 	configuration := Configuration{
 		localRack:      1,
 		localSlot:      1,
@@ -56,31 +62,31 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		maxAmqCallee:   8,
 		controllerType: readWriteModel.ControllerType_ANY,
 	}
-	if localRackString := reader.Get("local-rack"); localRackString != "" {
+	if localRackString := reader.Get("cotp.local-rack"); localRackString != "" {
 		parsedInt, err := strconv.ParseInt(localRackString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrap(err, "Error parsing local-rack")
+			return Configuration{}, errors.Wrap(err, "Error parsing cotp.local-rack")
 		}
 		configuration.localRack = int32(parsedInt)
 	}
-	if localSlotString := reader.Get("local-slot"); localSlotString != "" {
+	if localSlotString := reader.Get("cotp.local-slot"); localSlotString != "" {
 		parsedInt, err := strconv.ParseInt(localSlotString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrap(err, "Error parsing local-slot")
+			return Configuration{}, errors.Wrap(err, "Error parsing cotp.local-slot")
 		}
 		configuration.localSlot = int32(parsedInt)
 	}
-	if remoteRackString := reader.Get("remote-rack"); remoteRackString != "" {
+	if remoteRackString := reader.Get("cotp.remote-rack"); remoteRackString != "" {
 		parsedInt, err := strconv.ParseInt(remoteRackString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrap(err, "Error parsing remote-rack")
+			return Configuration{}, errors.Wrap(err, "Error parsing cotp.remote-rack")
 		}
 		configuration.remoteRack = int32(parsedInt)
 	}
-	if remoteSlotString := reader.Get("remote-slot"); remoteSlotString != "" {
+	if remoteSlotString := reader.Get("cotp.remote-slot"); remoteSlotString != "" {
 		parsedInt, err := strconv.ParseInt(remoteSlotString, 10, 32)
 		if err != nil {
-			return Configuration{}, errors.Wrap(err, "Error parsing remote-slot")
+			return Configuration{}, errors.Wrap(err, "Error parsing cotp.remote-slot")
 		}
 		configuration.remoteSlot = int32(parsedInt)
 	}

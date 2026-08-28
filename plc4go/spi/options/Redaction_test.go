@@ -43,6 +43,10 @@ func TestRedactConnectionString(t *testing.T) {
 			"opcua://host?PassWord=******"},
 		{"credentials in the authority, which have no parameter name",
 			"s7://operator:hunter2@plc:102", "s7://operator:******@plc:102"},
+		// A colon is legal inside a password. The user segment stops at the first colon so the
+		// rest of the credential is the password; a greedy one would publish "operator:hun".
+		{"a password containing a colon", "s7://operator:hun:ter2@plc:102",
+			"s7://operator:******@plc:102"},
 		{"both at once", "opcua://op:hunter2@host?password=abc&read-timeout-ms=5000",
 			"opcua://op:******@host?password=******&read-timeout-ms=5000"},
 		{"nothing to redact", "modbus-tcp://host:502?unit-identifier=1",

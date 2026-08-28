@@ -30,6 +30,7 @@ import (
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 )
 
 //go:generate go tool plc4xGenerator -type=Configuration
@@ -61,21 +62,6 @@ type Configuration struct {
 	log zerolog.Logger
 }
 
-// transportLevelOptionKeys are option keys (lower-cased) which are consumed by the transport
-// layer (or injected by the driver itself) rather than mapping to Configuration fields, so
-// they must not be reported as unknown options.
-var transportLevelOptionKeys = map[string]struct{}{
-	"defaulttcpport":       {},
-	"defaultudpport":       {},
-	"connect-timeout-ms":   {},
-	"so-reuse":             {},
-	"transport-type":       {},
-	"transport-port-range": {},
-	"speed-factor":         {},
-	"failtesttransport":    {},
-	"simulatedlatency":     {},
-}
-
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
@@ -93,7 +79,10 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 	for optionKey := range options {
 		fieldName, ok := fieldNamesByLowerCase[strings.ToLower(optionKey)]
 		if !ok {
-			if _, isTransportOption := transportLevelOptionKeys[strings.ToLower(optionKey)]; isTransportOption {
+			// Read by the transport rather than by this driver. The names come from the
+			// transports themselves, which register what they read, so this driver does not
+			// keep its own copy of a list that would drift from them.
+			if spiOptions.IsTransportOption(optionKey) {
 				continue
 			}
 			// Warn rather than fail, matching plc4j, which reports an unknown parameter and

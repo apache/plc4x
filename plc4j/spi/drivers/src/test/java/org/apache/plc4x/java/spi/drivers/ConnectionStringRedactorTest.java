@@ -163,6 +163,15 @@ class ConnectionStringRedactorTest {
     }
 
     @Test
+    @DisplayName("masks a userinfo password that contains a colon")
+    void masksUserinfoCredentialsContainingAColon() {
+        // A colon is legal inside a password. The user segment stops at the first colon, so
+        // everything after it is the password; a greedy one would publish "operator:hun".
+        assertEquals("s7://operator:******@plc:102",
+            redact("s7://operator:hun:ter2@plc:102"));
+    }
+
+    @Test
     @DisplayName("leaves a connection string without parameters untouched")
     void leavesNoParamStringUntouched() {
         String url = "plc4x:tls://host:59837";

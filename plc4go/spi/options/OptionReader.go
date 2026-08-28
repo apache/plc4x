@@ -22,6 +22,7 @@ package options
 import (
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/rs/zerolog"
 )
@@ -141,19 +142,45 @@ func (r *OptionReader) suggestionFor(unknown string) string {
 }
 
 // transportOptions are read by the transport layer rather than by a driver, so a driver must not
-// report them. They are listed here rather than in each driver because every driver's connection
-// string may carry them.
-var transportOptions = map[string]bool{
-	"baud-rate": true, "connect-timeout-ms": true, "data-bits": true, "defaulttcpport": true,
-	"defaultudpport": true, "dtr": true, "flow-control": true, "interframe-delay": true,
-	"parity": true, "read-timeout-ms": true, "reuse-port": true, "rts": true, "so-reuse": true,
-	"speed-factor": true, "stop-bits": true, "transport-port-range": true, "transport-type": true,
-	"write-timeout-ms": true,
-	// Injected by the test harness rather than supplied by a user.
-	"failtesttransport": true, "simulatedlatency": true,
+// report them as unknown.
+//
+// Each transport registers its own names beside the code that reads them, rather than this file
+// carrying one list of every transport's options. A central list is a second description of what
+// the transports read and drifts from them - the very thing OptionReader exists to avoid on the
+// driver side - and it exempts every name from every transport on every connection, so a serial
+// option on a TCP connection would pass unremarked.
+//
+// A transport that is not linked in registers nothing, and its options are then reported as
+// unknown. That is the honest answer: a connection whose transport is not present cannot be
+// using them. What this still cannot do is subtract what the transport *actually consumed*, the
+// way plc4j does at its connect site: a Go driver parses its configuration before the transport
+// instance exists, so at report time there is nothing yet to ask.
+var (
+	transportOptionsMutex sync.RWMutex
+	transportOptions      = map[string]bool{}
+)
+
+// RegisterTransportOptions records the connection-string options a transport reads. Call it from
+// the transport's package initialisation, listing the names that package looks up.
+func RegisterTransportOptions(keys ...string) {
+	transportOptionsMutex.Lock()
+	defer transportOptionsMutex.Unlock()
+	for _, key := range keys {
+		transportOptions[strings.ToLower(key)] = true
+	}
+}
+
+// IsTransportOption says whether some linked-in transport reads the given option name. Drivers
+// using an OptionReader get this applied for them; it is exported for the OPC UA driver, which
+// matches option names against its Configuration's fields by reflection rather than by reading
+// them one at a time, and so does its own reporting.
+func IsTransportOption(key string) bool {
+	return isTransportOption(key)
 }
 
 func isTransportOption(key string) bool {
+	transportOptionsMutex.RLock()
+	defer transportOptionsMutex.RUnlock()
 	return transportOptions[strings.ToLower(key)]
 }
 

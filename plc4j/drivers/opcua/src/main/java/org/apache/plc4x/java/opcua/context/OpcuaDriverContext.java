@@ -145,7 +145,7 @@ public class OpcuaDriverContext {
             LOGGER.info("Pinning OPC UA server certificate trust to {}", configuration.getServerCertificateFile());
             return new PinnedCertificateVerifier(configuration.getServerCertificate());
         }
-        LOGGER.warn("No OPC UA trust anchor configured ('trust-store-file' or 'server-certificate-file'); "
+        LOGGER.warn("No OPC UA trust anchor configured ('tls.trust-store' or 'server-certificate-file'); "
             + "server certificates will be rejected. Set 'tls.verify=false' to bypass "
             + "verification for local testing only.");
         return new RejectingCertificateVerifier();

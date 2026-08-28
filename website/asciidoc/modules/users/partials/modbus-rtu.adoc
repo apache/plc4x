@@ -90,9 +90,9 @@ Allowed values are:  +
 +++
 |`tls.verify` |BOOLEAN |true| |
 |`tls.ignore-common-name` |BOOLEAN |false| |Accept a server certificate issued for a different host than the one connected to
-|`tls.trust-store-file` |STRING | | |Key store of certificates to trust, instead of the JVM's public authorities
-|`tls.trust-store-password` |STRING | | |Password of the trust store named by trust-store-file
-|`tls.trust-store-type` |STRING |PKCS12| |Type of the trust store named by trust-store-file
+|`tls.trust-store` |STRING | | |Key store of certificates to trust, instead of the JVM's public authorities
+|`tls.trust-store-password` |STRING | | |Password of the trust store named by tls.trust-store
+|`tls.trust-store-type` |STRING |PKCS12| |Type of the trust store named by tls.trust-store
 |`tls.version` |STRING | | |TLS protocol version (e.g., 'TLSv1.2', 'TLSv1.3'). If not set, uses TLS 1.3 with fallback to TLS 1.2.
 |`tls.keystore` |STRING | | |Path to keystore (PKCS12/JKS) containing the client certificate and private key for mutual TLS.
 |`tls.keystore-password` |STRING | | |Password for the client keystore.

@@ -41,9 +41,13 @@ import java.lang.annotation.Target;
  *       names from the annotated fields of the driver's and the transports' configuration
  *       classes.</li>
  *   <li>{@code toString()} - an annotated field must render as {@code <redacted>}, never as its
- *       value. A reflective test plants a sentinel in every annotated field and fails the build if
- *       the sentinel appears in the output, so a hand-written {@code toString()} cannot silently
- *       leak a newly added secret.</li>
+ *       value. {@link org.apache.plc4x.java.spi.config.SecretParameters#fieldsOf(Class)} gives a renderer the fields to mask.
+ *       <strong>This one is a rule, not yet an enforcement.</strong> Nothing in the build plants a
+ *       sentinel in every annotated field of every configuration and fails if it surfaces: no
+ *       plc4j module both sees every driver's configuration classes and runs tests, so such a
+ *       sweep has nowhere to live. Until it does, a hand-written {@code toString()} that renders
+ *       a newly marked field verbatim will not be caught here. PLC4Go's equivalent leak test is
+ *       per-driver for the same reason.</li>
  * </ol>
  *
  * <p><strong>What is not a secret.</strong> An identifier that says <em>which</em> credential was
@@ -64,6 +68,7 @@ import java.lang.annotation.Target;
  * annotation.</p>
  *
  * @see ConfigurationParameter
+ * @see org.apache.plc4x.java.spi.config.SecretParameters
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

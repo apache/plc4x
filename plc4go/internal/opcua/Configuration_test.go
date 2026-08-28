@@ -26,6 +26,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	_ "github.com/apache/plc4x/plc4go/spi/transports/tcp"
 )
 
 // An option this driver does not know is reported and ignored, rather than refusing the
@@ -49,7 +51,8 @@ func TestParseFromOptions_reportsAnUnknownOptionAndCarriesOn(t *testing.T) {
 	assert.Contains(t, logged.String(), "scurityPolicy", "the ignored option must be named")
 }
 
-// A transport-level option belongs to another consumer and is not this driver's to report.
+// A transport-level option belongs to another consumer and is not this driver's to report. The
+// TCP transport, linked in above, is what declares that it reads this one.
 func TestParseFromOptions_saysNothingAboutTransportOptions(t *testing.T) {
 	var logged bytes.Buffer
 	log := zerolog.New(&logged)
