@@ -368,10 +368,41 @@ func TestModbusTag_lengthWordsCountsTheStringLength(t *testing.T) {
 }
 
 // A payload that doesn't fit into the 16 bit quantity field of a request is an error, not a
-// truncated request that would silently read the wrong amount of data.
+// truncated request that would silently read the wrong amount of data. The register count the
+// selection resolves to is now checked while the address is parsed, so this is reported there -
+// 125 strings of 65535 bytes are 4095938 registers, far past the end of the address space.
 func TestModbusTag_lengthWordsRejectsAnOversizedPayload(t *testing.T) {
-	_, err := parseTag(t, "holding-register:1[0..124]:STRING(65535)").lengthWords()
+	_, err := NewTagHandler().ParseTag("holding-register:1[0..124]:STRING(65535)")
 	assert.Error(t, err)
+}
+
+// The per-request ceiling and the address space are counted in registers, not in elements. 63
+// DINTs are 126 registers and do not fit into the 125 a read carries, however few elements that
+// is; counting elements let this through and truncated the request on the wire.
+func TestTagHandler_ParseTag_limitsAreCountedInRegisters(t *testing.T) {
+	_, err := NewTagHandler().ParseTag("holding-register:1[0..62]:DINT")
+	assert.Error(t, err)
+
+	// 62 DINTs are 124 registers and still fit.
+	_, err = NewTagHandler().ParseTag("holding-register:1[0..61]:DINT")
+	assert.NoError(t, err)
+
+	// A bit area addresses bits, where one element is one address, so its own ceiling still
+	// applies to the element count.
+	_, err = NewTagHandler().ParseTag("coil:1[0..1999]")
+	assert.NoError(t, err)
+}
+
+// A selection whose start does not land on a register boundary cannot be addressed by a read at
+// all. The register codec packs a CHAR into 8 bits, so an odd element offset falls inside a
+// register; rounding each element up to a whole one placed the start where nothing was written.
+func TestTagHandler_ParseTag_rejectsASelectionStartingInsideARegister(t *testing.T) {
+	_, err := NewTagHandler().ParseTag("holding-register:1[1..2]:CHAR")
+	assert.Error(t, err)
+
+	// An even offset lands on a boundary and stays legal.
+	_, err = NewTagHandler().ParseTag("holding-register:1[2..3]:CHAR")
+	assert.NoError(t, err)
 }
 
 // A Modbus address is a register number, so a selection that starts past the declared base is

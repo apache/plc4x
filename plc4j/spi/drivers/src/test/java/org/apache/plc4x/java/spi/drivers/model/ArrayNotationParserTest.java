@@ -171,6 +171,14 @@ class ArrayNotationParserTest {
         assertDoesNotThrow(() -> ArrayNotationParser.parse("[1][0..3]", "tag[1][0..3]", trailingOnly));
         assertThrows(PlcInvalidTagException.class,
             () -> ArrayNotationParser.parse("[0..3][1]", "tag[0..3][1]", trailingOnly));
+
+        // A one-element range is still a range. Judging this by the span let "[1..1][2]" through,
+        // handing the driver a leading range it has no element count for.
+        assertThrows(PlcInvalidTagException.class,
+            () -> ArrayNotationParser.parse("[1..1][2]", "tag[1..1][2]", trailingOnly));
+
+        // A single index in the same position stays legal, which is what the constraint is for.
+        assertDoesNotThrow(() -> ArrayNotationParser.parse("[1][2]", "tag[1][2]", trailingOnly));
     }
 
     // --- splitting an address ---

@@ -176,6 +176,15 @@ func TestArrayNotationParser_InteriorRangeIsRejectedWhereOnlyTheTrailingDimensio
 
 	_, err = ParseArrayExpression("[0..3][1]", "tag[0..3][1]", trailingOnly)
 	require.Error(t, err)
+
+	// A one-element range is still a range. Judging this by the span let "[1..1][2]" through,
+	// handing the driver a leading range it has no element count for.
+	_, err = ParseArrayExpression("[1..1][2]", "tag[1..1][2]", trailingOnly)
+	require.Error(t, err)
+
+	// A single index in the same position stays legal, which is what the constraint is for.
+	_, err = ParseArrayExpression("[1][2]", "tag[1][2]", trailingOnly)
+	require.NoError(t, err)
 }
 
 // --- splitting an address ---

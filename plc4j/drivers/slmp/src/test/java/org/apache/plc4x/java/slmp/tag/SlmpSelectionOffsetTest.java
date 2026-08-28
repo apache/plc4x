@@ -21,7 +21,10 @@ package org.apache.plc4x.java.slmp.tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * A selection offset counts elements; an SLMP device number counts 16-bit words. The read length
@@ -47,6 +50,22 @@ class SlmpSelectionOffsetTest {
     @DisplayName("a REAL advances by its two words as well")
     void realsAdvanceByTwoWords() {
         assertEquals(104, SlmpTag.of("D100[2]:REAL").getDeviceNumber());
+    }
+
+    @Test
+    @DisplayName("a selection that scales past the device-address limit is rejected")
+    void aScaledOffsetPastTheLimitIsRejected() {
+        // The base is legal on its own; the selection carries it past the 24-bit field, where the
+        // int result would have been truncated on serialization into some other, valid-looking
+        // device.
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D16777215[1]:INT"));
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D16777214[1]:DINT"));
+    }
+
+    @Test
+    @DisplayName("a selection that stays inside the device-address limit still parses")
+    void aScaledOffsetInsideTheLimitStillParses() {
+        assertEquals(16777215, SlmpTag.of("D16777214[1]:INT").getDeviceNumber());
     }
 
     @Test

@@ -140,7 +140,7 @@ public class S7StringFixedLengthTag extends S7Tag {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, address);
-            byteOffset += selection[0] * bytesPerString(dataType, stringLength);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], bytesPerString(dataType, stringLength));
             int numElements = checkNumElements(selection[1],
                 bytesPerString(dataType, stringLength),
                 dataType.name() + "(" + stringLength + ")");
@@ -159,7 +159,7 @@ public class S7StringFixedLengthTag extends S7Tag {
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             int[] selection = selectionOf(matcher, address);
-            byteOffset += selection[0] * bytesPerString(dataType, stringLength);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], bytesPerString(dataType, stringLength));
             int numElements = checkNumElements(selection[1],
                 bytesPerString(dataType, stringLength),
                 dataType.name() + "(" + stringLength + ")");

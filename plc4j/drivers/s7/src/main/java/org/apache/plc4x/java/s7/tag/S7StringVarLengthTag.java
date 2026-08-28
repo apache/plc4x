@@ -105,7 +105,7 @@ public class S7StringVarLengthTag extends S7Tag {
             }
             int[] selection = selectionOf(matcher, address);
             int bytesPerElement = ASSUMED_MAX_LENGTH * (dataType == TransportSize.WSTRING ? 2 : 1);
-            byteOffset += selection[0] * bytesPerElement;
+            byteOffset = resolveByteOffset(byteOffset, selection[0], bytesPerElement);
             int numElements = checkNumElements(selection[1], bytesPerElement, dataType.name());
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -122,7 +122,7 @@ public class S7StringVarLengthTag extends S7Tag {
             byte bitOffset = 0;
             int[] selection = selectionOf(matcher, address);
             int bytesPerElement = ASSUMED_MAX_LENGTH * (dataType == TransportSize.WSTRING ? 2 : 1);
-            byteOffset += selection[0] * bytesPerElement;
+            byteOffset = resolveByteOffset(byteOffset, selection[0], bytesPerElement);
             int numElements = checkNumElements(selection[1], bytesPerElement, dataType.name());
 
             return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,

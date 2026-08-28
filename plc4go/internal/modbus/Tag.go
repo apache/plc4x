@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -183,8 +184,10 @@ func (m modbusTag) resolveByteOrder(defaultByteOrder ByteOrder) ByteOrder {
 // ModbusTagExtendedRegister.of) reject an address beyond the 16 bit address space, a range running
 // past the end of it and a quantity beyond what a single request can carry - 2000 for the bit
 // areas, 125 for the register areas.
-// Both arguments are the values as written by the user, i.e. address is the logical address.
-func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64) error {
+// address is the logical address as written by the user and quantity the number of elements the
+// user selected; registers is what those elements occupy on the wire, which is what the address
+// space and the per-request ceilings are measured in.
+func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64, registers uint64) error {
 	// plc4j checks getLogicalAddress() <= 0 in the ModbusTag constructor, which covers the
 	// extended register area too even though that one is addressed starting at zero on the wire.
 	if address < 1 {
@@ -200,18 +203,18 @@ func validateAddressAndQuantity(tagType TagType, address uint64, quantity uint64
 	}
 	// plc4j rejects a range whose last address reaches maxWireAddress, and the strict bound keeps
 	// the quantity well inside the 16 bit field it is written into further down.
-	if wireAddress+quantity > maxWireAddress {
+	if wireAddress+registers > maxWireAddress {
 		return errors.Errorf("last requested address is out of range, should be between %d and %d. Was %d",
-			offset, maxWireAddress, wireAddress+quantity)
+			offset, maxWireAddress, wireAddress+registers)
 	}
 	switch tagType {
 	case Coil, DiscreteInput:
-		if quantity > maxCoilQuantity {
-			return errors.Errorf("quantity may not be larger than %d. Was %d", maxCoilQuantity, quantity)
+		if registers > maxCoilQuantity {
+			return errors.Errorf("quantity may not be larger than %d. Was %d", maxCoilQuantity, registers)
 		}
 	default:
-		if quantity > maxRegisterQuantity {
-			return errors.Errorf("quantity may not be larger than %d. Was %d", maxRegisterQuantity, quantity)
+		if registers > maxRegisterQuantity {
+			return errors.Errorf("quantity may not be larger than %d registers. Was %d", maxRegisterQuantity, registers)
 		}
 	}
 	return nil
@@ -260,27 +263,65 @@ func NewModbusPlcTagFromStrings(tagType TagType, addressString string, arrayExpr
 	}
 	// The offset counts elements; a register address counts registers. They are the same number
 	// only for a one-register type, so "holding-register:1[4]:DINT" would otherwise land four
-	// registers short of the fifth DINT. A bit area addresses bits, where one element is one
-	// address, so nothing is scaled there. This is the same width lengthWords uses for the read.
-	address += offset * uint64(registersPerElement(tagType, datatype, stringLength))
-	if err := validateAddressAndQuantity(tagType, address, quantity); err != nil {
+	// registers short of the fifth DINT.
+	registerOffset, err := registerOffsetOf(tagType, offset, datatype, stringLength)
+	if err != nil {
+		return nil, err
+	}
+	address += registerOffset
+	// The wire carries registers, not elements. The address-space and per-request limits are
+	// about what a request can hold, so they have to be checked against the register count: 63
+	// DINTs are 126 registers and do not fit into the 125 a read carries, however few elements
+	// that is.
+	registers := registerCountOf(tagType, datatype, quantity, stringLength)
+	if err := validateAddressAndQuantity(tagType, address, quantity, registers); err != nil {
 		return nil, err
 	}
 	return newTagFromWireAddress(tagType, uint16(address-uint64(logicalAddressOffset(tagType))), uint16(quantity), datatype, stringLength, config, explicitRange), nil
 }
 
-// registersPerElement is how many registers one element of this type occupies. A bit area
-// addresses individual bits, so its elements are one address apart whatever the type says.
-func registersPerElement(tagType TagType, dataType readWriteModel.ModbusDataType, stringLength uint16) uint16 {
+// registerOffsetOf is how far into the area a selection starts, in addresses.
+//
+// A bit area addresses individual bits, so one element is one address there and nothing is
+// scaled. A register area addresses registers, and the conversion goes through the total bit
+// offset rather than rounding each element up on its own: the register codec packs elements
+// narrower than a register - widthBits reports 8 for a CHAR and 1 for a BOOL - so rounding per
+// element would place the start where nothing was written. An offset that does not land on a
+// register boundary cannot be addressed by a Modbus read at all, and is reported rather than
+// quietly moved to the register before or after it.
+func registerOffsetOf(tagType TagType, elementOffset uint64, dataType readWriteModel.ModbusDataType, stringLength uint16) (uint64, error) {
 	switch tagType {
 	case Coil, DiscreteInput:
-		return 1
+		return elementOffset, nil
 	}
-	registers := (lengthInBytes(dataType, 1, stringLength) + 1) / 2
+	bits := elementOffset * widthBits(dataType, stringLength)
+	if bits%16 != 0 {
+		return 0, errors.Errorf("selection starts %d bits into the address, which is not a register "+
+			"boundary - a read starts at a register, so this offset cannot be addressed", bits)
+	}
+	return bits / 16, nil
+}
+
+// registerCountOf is how many addresses the selection occupies on the wire: bits in a bit area,
+// where one element is one address, and registers everywhere else. This is the count the request
+// carries, and so the one the address-space and per-request limits apply to.
+func registerCountOf(tagType TagType, dataType readWriteModel.ModbusDataType, quantity uint64, stringLength uint16) uint64 {
+	switch tagType {
+	case Coil, DiscreteInput:
+		return quantity
+	}
+	if quantity > math.MaxUint16 {
+		// Too large for lengthInBytes to be asked, and far beyond any request. Reported as-is so
+		// the quantity limits below reject it rather than a truncated conversion passing.
+		return quantity
+	}
+	registers := (lengthInBytes(dataType, uint16(quantity), stringLength) + 1) / 2
 	if registers < 1 {
+		// A value narrower than a register still occupies a whole one, and every request has to
+		// ask for something.
 		return 1
 	}
-	return uint16(registers)
+	return registers
 }
 
 func (m modbusTag) GetAddressString() string {

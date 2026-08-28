@@ -144,7 +144,18 @@ public class SlmpTag implements PlcTag, Serializable {
             // for a one-word type, which is why D100[4]:INT looked right while D100[4]:DINT read
             // four words short of its target. This is the same scale getWordsPerElement() applies
             // to the point count below, so the offset and the length cannot disagree.
-            deviceNumber += (dimension.getLowerBound() - dimension.getBase()) * dataType.getWordsPerElement();
+            //
+            // Done in long and re-checked: the scaled offset can carry a base that was itself
+            // legal past the 24-bit device-address limit, and the int result would then be
+            // truncated on serialization into some other, apparently valid, device.
+            long scaled = (long) deviceNumber
+                + (long) (dimension.getLowerBound() - dimension.getBase()) * dataType.getWordsPerElement();
+            if (scaled > MAX_DEVICE_NUMBER) {
+                throw new PlcInvalidTagException("selection resolves to device number " + scaled
+                    + ", which exceeds the 24-bit SLMP device-address range [0.." + MAX_DEVICE_NUMBER
+                    + "]: " + addressString);
+            }
+            deviceNumber = (int) scaled;
             quantity = dimension.getSize();
             explicitRange = dimension.isRange();
         }

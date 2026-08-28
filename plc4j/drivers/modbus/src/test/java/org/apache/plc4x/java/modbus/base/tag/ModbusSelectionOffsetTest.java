@@ -21,7 +21,9 @@ package org.apache.plc4x.java.modbus.base.tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -76,6 +78,37 @@ class ModbusSelectionOffsetTest {
         // One coil is one address; there is no element size to multiply by.
         assertEquals(4, ModbusTagCoil.of("coil:1[4]:BOOL").getAddress());
         assertEquals(4, ModbusTagDiscreteInput.of("discrete-input:1[4]:BOOL").getAddress());
+    }
+
+    @Test
+    @DisplayName("the per-request and address-space limits count registers, not elements")
+    void limitsAreCountedInRegisters() {
+        // 63 DINTs are 126 registers and do not fit into the 125 a read carries, however few
+        // elements that is. Counting elements let this through and truncated the request.
+        assertThrows(IllegalArgumentException.class,
+            () -> ModbusTagHoldingRegister.of("holding-register:1[0..62]:DINT"));
+        // 62 DINTs are 124 registers and still fit.
+        assertDoesNotThrow(() -> ModbusTagHoldingRegister.of("holding-register:1[0..61]:DINT"));
+    }
+
+    @Test
+    @DisplayName("a selection starting inside a register is rejected, not rounded")
+    void aSelectionStartingInsideARegisterIsRejected() {
+        // Two CHARs share one register - getLengthWords() reports one for them - so an odd
+        // element offset falls inside a register. Rounding each element up to a whole one placed
+        // the start where nothing was written.
+        assertThrows(IllegalArgumentException.class,
+            () -> ModbusTagHoldingRegister.of("holding-register:1[1..2]:CHAR"));
+        // An even offset lands on a boundary: two CHARs along is one register along.
+        assertEquals(1, ModbusTagHoldingRegister.of("holding-register:1[2..3]:CHAR").getAddress());
+    }
+
+    @Test
+    @DisplayName("a value narrower than a register still occupies a whole one")
+    void aSubRegisterValueStillOccupiesARegister() {
+        // Halving the byte count and truncating asked for no registers at all.
+        assertEquals(1, ModbusTagHoldingRegister.of("holding-register:1:CHAR").getLengthWords());
+        assertEquals(1, ModbusTagHoldingRegister.of("holding-register:1[0..1]:CHAR").getLengthWords());
     }
 
     @Test

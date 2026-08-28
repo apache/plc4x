@@ -466,7 +466,7 @@ var s7Constraints = spiModel.SingleDimension
 // The offset is consumed here rather than reported: an S7 address names a byte offset, so
 // "%DB1.DBW20[4..7]" is the same read as "%DB1.DBW28[0..3]". What the caller sees afterwards is
 // the resolved address, which is why GetArrayInfo reports the shape and not the written indices.
-func selectionOf(match map[string]string, address string, bytesPerElement uint32) (uint32, uint16, bool, error) {
+func selectionOf(match map[string]string, address string, bytesPerElement uint32) (uint64, uint16, bool, error) {
 	expression := match[ARRAY]
 	if expression == "" {
 		return 0, 1, false, nil
@@ -487,8 +487,12 @@ func selectionOf(match map[string]string, address string, bytesPerElement uint32
 		return 0, 0, false, errors.Errorf("A tag of %d elements of %d bytes in '%s' spans more than the addressable %d bytes",
 			elements, elementSize, address, maxByteOffset+1)
 	}
+	// Widened before the multiplication and returned wide, so the caller's checkByteOffset sees
+	// the real offset: in uint32 an index the parser accepts (up to MaxInt32) times an eight byte
+	// type wraps, and 536870912 elements of eight bytes came out as zero - the original address,
+	// looking perfectly valid.
 	// The range flag is not derivable from the count: [4] and [4..4] both select one element.
-	return (dimension.GetLowerBound() - dimension.GetBase()) * bytesPerElement, uint16(elements),
+	return uint64(dimension.GetLowerBound()-dimension.GetBase()) * uint64(bytesPerElement), uint16(elements),
 		dimension.IsRange(), nil
 }
 

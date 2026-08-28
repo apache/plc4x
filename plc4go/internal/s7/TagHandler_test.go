@@ -101,6 +101,15 @@ func TestTagHandlerParseTag(t *testing.T) {
 }
 
 // An S7 address names a byte offset, so a selection that starts past the declared base is
+// A large index must be reported rather than wrapped. Scaling in uint32 turned 536870912 elements
+// of an eight byte type into a byte offset of zero, so the tag resolved to the address it was
+// written at and read the wrong location while looking entirely valid.
+func TestTagHandler_ParseTag_rejectsASelectionOffsetThatOverflows(t *testing.T) {
+	handler := NewTagHandler()
+	_, err := handler.ParseTag("%DB1.DBW0[536870912]:LREAL")
+	assert.Error(t, err)
+}
+
 // resolved into the address itself: "%DB1.DBW20[4..7]" is the same read as "%DB1.DBW28[0..3]",
 // four words further in. The written indices are gone by the time the tag exists, which is why
 // GetArrayInfo reports a shape rather than the indices - see Tag.GetArrayInfo.

@@ -94,14 +94,17 @@ public class ModbusTagExtendedRegister extends ModbusTag {
 
         int[] selection = selectionOf(matcher, addressString);
         // The offset counts elements; the address counts registers.
-        address += selection[0] * registersPerElement(dataType, stringLength);
+        address += registerOffsetOf(selection[0], dataType, stringLength, addressString);
         int quantity = selection[1];
-        if ((address + quantity) > REGISTER_MAXADDRESS) {
-            throw new IllegalArgumentException("Last requested address is out of range, should be between 0 and " + REGISTER_MAXADDRESS + ". Was " + (address + (quantity - 1)));
+        // The wire carries registers, not elements: the limits below are about how much a request
+        // can hold and where the address space ends, so both have to be measured in registers.
+        int registers = registerCountOf(quantity, dataType, stringLength);
+        if ((address + registers) > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between 0 and " + REGISTER_MAXADDRESS + ". Was " + (address + (registers - 1)));
         }
 
-        if (quantity > 125) {
-            throw new IllegalArgumentException("quantity may not be larger than 125. Was " + quantity);
+        if (registers > 125) {
+            throw new IllegalArgumentException("quantity may not be larger than 125 registers. Was " + registers);
         }
 
 

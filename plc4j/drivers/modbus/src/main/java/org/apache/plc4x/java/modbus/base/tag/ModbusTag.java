@@ -89,21 +89,51 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     }
 
     /**
-     * How many registers one element of the given type occupies.
+     * How many bytes one element of the given type occupies on the wire: a string its declared
+     * length, anything else its data type's size.
+     */
+    protected static int bytesPerElement(ModbusDataType dataType, Integer stringLength) {
+        return ((stringLength != null) ? stringLength : 1) * dataType.getDataTypeSize();
+    }
+
+    /**
+     * How far into the register area a selection starts, in registers.
      *
      * <p>A selection offset counts elements, but a register-area address counts registers, so the
      * two have to be reconciled before the offset is applied. They coincide for a one-register
      * type, which is why every example using INT looked right while {@code [4]:DINT} silently read
      * four registers short of its target.</p>
      *
-     * <p>The arithmetic is the same one {@link #getLengthWords()} uses for the read length - a
-     * string occupies its declared length, anything else its data type's size - so the offset and
-     * the length can no longer disagree.</p>
+     * <p>The conversion goes through the total byte offset rather than rounding each element up
+     * on its own. Elements narrower than a register are packed - two {@code CHAR}s share one
+     * register, which is what {@link #getLengthWords()} reports for the length - so rounding per
+     * element would place the start where nothing was written. An offset that does not land on a
+     * register boundary cannot be addressed by a Modbus read at all, and is rejected here rather
+     * than silently moved to the register before or after it.</p>
      */
-    protected static int registersPerElement(ModbusDataType dataType, Integer stringLength) {
-        int bytes = ((stringLength != null) ? stringLength : 1) * dataType.getDataTypeSize();
-        // Round up: a single-byte string still occupies a whole register.
-        return Math.max(1, (bytes + 1) / 2);
+    protected static int registerOffsetOf(int elementOffset, ModbusDataType dataType,
+                                          Integer stringLength, String addressString) {
+        long bytes = (long) elementOffset * bytesPerElement(dataType, stringLength);
+        if ((bytes % 2) != 0) {
+            throw new IllegalArgumentException("Selection starts " + bytes + " bytes into the "
+                + "address, which is not a register boundary. A Modbus read starts at a register, "
+                + "so an odd byte offset cannot be addressed. Was " + addressString);
+        }
+        return (int) (bytes / 2);
+    }
+
+    /**
+     * How many registers a selection of the given number of elements occupies.
+     *
+     * <p>This is the count the wire carries, and the one the address-space and per-request limits
+     * have to be checked against - 63 {@code DINT}s are 126 registers and do not fit into a
+     * request that carries 125, however few elements that is.</p>
+     */
+    protected static int registerCountOf(int quantity, ModbusDataType dataType, Integer stringLength) {
+        long bytes = (long) quantity * bytesPerElement(dataType, stringLength);
+        // Round the total up, and never to nothing: a value narrower than a register still
+        // occupies a whole one, and every request has to ask for something.
+        return (int) Math.max(1, (bytes + 1) / 2);
     }
 
     public static ModbusTag of(String addressString) {
@@ -235,7 +265,11 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     }
 
     public int getLengthWords() {
-        return (int) ((quantity * stringLength * (float) dataType.getDataTypeSize()) / 2.0f);
+        // Rounded up, and never to zero: a single CHAR is one byte and still occupies a whole
+        // register, where truncating the halved byte count asked for none at all. This is the
+        // same arithmetic registerOffsetOf() applies to the start, so the offset and the length
+        // cannot disagree.
+        return registerCountOf(quantity, dataType, stringLength);
     }
 
     public ModbusDataType getDataType() {

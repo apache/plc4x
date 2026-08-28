@@ -46,6 +46,31 @@ public class S7TagElementCountBoundTest {
         assertEquals(2000000, S7Tag.of("%DB1:0[0..1999999]:BYTE").getNumberOfElements());
     }
 
+    /**
+     * A start index is scaled by what one element costs, and the parser accepts indices up to
+     * Integer.MAX_VALUE. Scaled in int, a large one wrapped into a small offset that looked
+     * perfectly valid, and the tag then read a different location without complaint.
+     */
+    @Test
+    void aSelectionOffsetThatOverflowsIsRejectedRatherThanWrapped() {
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0[268435456]:LREAL"));
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1.DBW0[536870912]:LREAL"));
+    }
+
+    /**
+     * The same scaling without an overflow still has to land inside the addressable area - it was
+     * not checked at all after the selection was applied.
+     */
+    @Test
+    void aSelectionOffsetPastTheAddressableAreaIsRejected() {
+        assertThrows(PlcInvalidTagException.class, () -> S7Tag.of("%DB1:0[1000000]:LREAL"));
+    }
+
+    @Test
+    void aSelectionOffsetInsideTheAddressableAreaStillParses() {
+        assertEquals(800, S7Tag.of("%DB1:0[100]:LREAL").getByteOffset());
+    }
+
     @Test
     void aFixedLengthStringCountIsBoundedByWhatOneStringCosts() {
         // 9999 strings of 254 characters plus their two length bytes is past the area; the

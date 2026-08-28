@@ -258,7 +258,7 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
-            byteOffset += selection[0] * dataType.getSizeInBytes();
+            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
             int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -283,7 +283,7 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
-            byteOffset += selection[0] * dataType.getSizeInBytes();
+            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
             int numElements = checkNumElements(dataType, selection[1]);
 
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
@@ -322,7 +322,7 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
-            byteOffset += selection[0] * dataType.getSizeInBytes();
+            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
             int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -417,6 +417,24 @@ public class S7Tag implements PlcTag, Serializable {
      * @param byteOffset given byteOffset
      * @return given byteOffset if Ok, throws PlcInvalidTagException otherwise
      */
+    /**
+     * The byte offset a selection resolves to: the written offset plus the selection's start,
+     * scaled by what one element costs.
+     *
+     * <p>The parser accepts indices up to {@link Integer#MAX_VALUE} - it cannot know what a
+     * driver's elements cost - so the scaling has to happen in {@code long} and be checked before
+     * it is narrowed. In {@code int} a large index wrapped into a small, apparently valid offset,
+     * and the tag then read a different location without complaint.</p>
+     */
+    protected static int resolveByteOffset(int byteOffset, int elementOffset, int bytesPerElement) {
+        long resolved = (long) byteOffset + (long) elementOffset * bytesPerElement;
+        if ((resolved > MAX_BYTE_OFFSET) || (resolved < 0)) {
+            throw new PlcInvalidTagException("ByteOffset must be smaller than " + MAX_BYTE_OFFSET
+                + " and positive. The selection resolves to " + resolved);
+        }
+        return (int) resolved;
+    }
+
     protected static int checkByteOffset(int byteOffset) {
         // TODO: check the value or add reference
         if (byteOffset > MAX_BYTE_OFFSET || byteOffset < 0) {

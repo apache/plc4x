@@ -210,12 +210,15 @@ public final class ArrayNotationParser {
         }
         if (constraints.onlyTrailingDimensionMayBeRange()) {
             for (int i = 0; i < dimensions.size() - 1; i++) {
-                if (dimensions.get(i).getSize() > 1) {
+                // What matters is how the dimension was written, not how wide it turned out to
+                // be: "[1..1]" is a range that happens to span one element, and letting it pass
+                // here would hand the driver a leading range it has no element count for.
+                if (dimensions.get(i).isRange()) {
                     throw new PlcInvalidTagException(String.format(
-                        "Array expression '%s' in tag '%s' spans %d elements in dimension %d, but "
+                        "Array expression '%s' in tag '%s' writes dimension %d as a range, but "
                             + "this protocol carries one element count for the whole address, so "
                             + "only the last dimension may be a range",
-                        expression, address, dimensions.get(i).getSize(), i + 1));
+                        expression, address, i + 1));
                 }
             }
         }
