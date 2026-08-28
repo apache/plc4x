@@ -27,6 +27,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 	_ "github.com/apache/plc4x/plc4go/spi/transports/tcp"
 )
 
@@ -98,6 +99,18 @@ func TestParseFromOptions_saysNothingAboutTransportOptions(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotContains(t, logged.String(), "tcp.connect-timeout-ms")
+}
+
+// The driver manager stamps the transport it selected into the options; that marker is its
+// bookkeeping, not a user option, and must not be reported as one.
+func TestParseFromOptions_saysNothingAboutTheActiveTransportMarker(t *testing.T) {
+	var logged bytes.Buffer
+	log := zerolog.New(&logged)
+
+	_, err := ParseFromOptions(log, map[string][]string{spiOptions.ActiveTransportOption: {"tcp"}})
+
+	require.NoError(t, err)
+	assert.Empty(t, logged.String())
 }
 
 // A password must never appear in a rendering. The opcua Configuration and SecureChannel render

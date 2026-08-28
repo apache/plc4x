@@ -27,6 +27,12 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// ActiveTransportOption is the option under which the driver manager records the transport code
+// this connection actually uses ("tcp", "serial", ...). It is stamped by the manager, never
+// written by a user - the leading '~' keeps it out of any documented option's namespace - and
+// ReportUnknown consumes it to narrow the transport-option exemption to the transport on duty.
+const ActiveTransportOption = "~active-transport"
+
 // OptionReader reads connection-string options and remembers which ones were asked for, so the
 // ones nothing asked for can be reported.
 //
@@ -96,15 +102,31 @@ func (r *OptionReader) Ignore(keys ...string) {
 // otherwise work, which is the rule plc4j settled on for the same report. The operator is told,
 // and decides.
 func (r *OptionReader) ReportUnknown(protocolCode string) {
-	var unknown []string
+	activeTransport := ""
+	if values := r.options[ActiveTransportOption]; len(values) > 0 {
+		activeTransport = values[0]
+	}
+	var unknown, misdirected []string
 	for key := range r.options {
-		if r.consumed[key] || isTransportOption(key) {
+		// The marker is matched without regard to case: c-bus title-cases the shared map's
+		// keys in place, and the "~Active-Transport" that produces is still not a user option.
+		if strings.EqualFold(key, ActiveTransportOption) || r.consumed[key] {
+			continue
+		}
+		if isTransportOption(key) {
+			// A transport's own option is excused; another transport's is misdirected and
+			// worth its own report - naming the owner beats calling it unknown. An unprefixed
+			// registered name was injected by a driver, never written by a user, so no
+			// mismatch with it can be worth reporting. Without the marker (options parsed
+			// outside a manager connect, discovery among them) the wide exemption stands.
+			owner := transportPrefixOf(key)
+			if owner == "" || activeTransport == "" || strings.EqualFold(owner, activeTransport) {
+				continue
+			}
+			misdirected = append(misdirected, key)
 			continue
 		}
 		unknown = append(unknown, key)
-	}
-	if len(unknown) == 0 {
-		return
 	}
 	sort.Strings(unknown)
 	for _, key := range unknown {
@@ -114,6 +136,24 @@ func (r *OptionReader) ReportUnknown(protocolCode string) {
 		}
 		event.Msg("Connection string option is not known to this driver and is ignored")
 	}
+	sort.Strings(misdirected)
+	for _, key := range misdirected {
+		r.log.Warn().
+			Str("option", key).
+			Str("driver", protocolCode).
+			Str("optionTransport", transportPrefixOf(key)).
+			Str("activeTransport", activeTransport).
+			Msg("Connection string option belongs to a transport this connection does not use and is ignored")
+	}
+}
+
+// transportPrefixOf is the transport code a registered option is addressed under - the part
+// before the first '.' - or "" for an unprefixed name a driver injected itself.
+func transportPrefixOf(key string) string {
+	if i := strings.IndexByte(key, '.'); i > 0 {
+		return key[:i]
+	}
+	return ""
 }
 
 // suggestionFor is the option the given unknown one was most likely meant to be, or "" when
@@ -156,12 +196,12 @@ func (r *OptionReader) suggestionFor(unknown string) string {
 //
 // The names are registered under the transport's own code ("tcp.connect-timeout-ms"), which is
 // how a user addresses them, so an option of one transport is no longer mistaken for an option of
-// another - "serial.baud-rate" is not something the TCP transport reads. What remains is that the
-// exemption covers every linked transport rather than the one in use, so "tcp.no-delay" on a
-// serial connection passes unremarked while doing nothing. Narrowing it needs the active
-// transport's code at report time, and a Go driver parses its configuration before the transport
-// instance exists - the same reason this cannot subtract what the transport actually consumed,
-// the way plc4j does at its connect site.
+// another - "serial.baud-rate" is not something the TCP transport reads. Which transport is in
+// use is known before any configuration is parsed - it is the scheme of the transport URL - and
+// the driver manager stamps it into the options as ActiveTransportOption, so ReportUnknown can
+// excuse the active transport's options and call out another transport's as misdirected. Only a
+// transport instance exists too late for this; its code does not. Options parsed outside a
+// manager connect carry no stamp, and the exemption then falls back to every registered name.
 var (
 	transportOptionsMutex sync.RWMutex
 	transportOptions      = map[string]bool{}

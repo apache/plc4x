@@ -130,6 +130,68 @@ func TestOptionReader_ReportsAnOptionNoTransportRegistered(t *testing.T) {
 	assert.Contains(t, logged.String(), `"option":"baud-rat"`)
 }
 
+// The manager stamps which transport the connection string selected. With that known, the
+// exemption narrows from "every linked transport" to the one on duty: another transport's
+// option is doing nothing on this connection, which is exactly what the report exists to say.
+func TestOptionReader_ReportsAnotherTransportsOptionWhenTheActiveTransportIsKnown(t *testing.T) {
+	RegisterTransportOptions("serial.baud-rate", "tcp.connect-timeout-ms")
+
+	reader, logged := readerFor(map[string][]string{
+		"serial.baud-rate":    {"9600"},
+		ActiveTransportOption: {"tcp"},
+	})
+	reader.ReportUnknown("modbus-tcp")
+
+	assert.Contains(t, logged.String(), `"option":"serial.baud-rate"`)
+	assert.Contains(t, logged.String(), `"optionTransport":"serial"`, "the report names the transport the option belongs to")
+	assert.Contains(t, logged.String(), `"activeTransport":"tcp"`, "and the one the connection uses")
+}
+
+func TestOptionReader_SaysNothingAboutTheActiveTransportsOwnOptions(t *testing.T) {
+	RegisterTransportOptions("tcp.connect-timeout-ms")
+
+	reader, logged := readerFor(map[string][]string{
+		"tcp.connect-timeout-ms": {"5000"},
+		ActiveTransportOption:    {"tcp"},
+	})
+	reader.ReportUnknown("modbus-tcp")
+	assert.Empty(t, logged.String())
+}
+
+// A registered name without a transport prefix is one a driver injected into the map itself
+// (defaultTcpPort); no user wrote it, so no transport mismatch can be worth reporting.
+func TestOptionReader_SaysNothingAboutUnprefixedInjectedOptionsRegardlessOfTransport(t *testing.T) {
+	RegisterTransportOptions("defaultTcpPort")
+
+	reader, logged := readerFor(map[string][]string{
+		"defaultTcpPort":      {"502"},
+		ActiveTransportOption: {"serial"},
+	})
+	reader.ReportUnknown("modbus-rtu")
+	assert.Empty(t, logged.String())
+}
+
+// The marker is the manager's bookkeeping, not a user option. Matched without regard to case:
+// the c-bus driver title-cases every key of the shared map in place, so the marker can reappear
+// as "~Active-Transport", and that duplicate is no more a user option than the original.
+func TestOptionReader_TheActiveTransportMarkerIsNeverReported(t *testing.T) {
+	reader, logged := readerFor(map[string][]string{
+		ActiveTransportOption: {"tcp"}, "~Active-Transport": {"tcp"},
+	})
+	reader.ReportUnknown("modbus-tcp")
+	assert.Empty(t, logged.String())
+}
+
+// Options parsed outside a manager connect - discovery, or a hand-built map - carry no marker.
+// The wide exemption then stands: any linked transport's name passes unremarked.
+func TestOptionReader_ExemptsEveryRegisteredTransportOptionWithoutTheMarker(t *testing.T) {
+	RegisterTransportOptions("serial.baud-rate")
+
+	reader, logged := readerFor(map[string][]string{"serial.baud-rate": {"9600"}})
+	reader.ReportUnknown("modbus-tcp")
+	assert.Empty(t, logged.String())
+}
+
 // What a driver parses itself - a nested or prefixed group it handles by hand - is its to claim.
 func TestOptionReader_SaysNothingAboutOptionsTheDriverClaims(t *testing.T) {
 	reader, logged := readerFor(map[string][]string{"browser.depth": {"2"}})

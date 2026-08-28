@@ -251,6 +251,11 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 	}
 	m.log.Debug().Stringer("transportUrl", &transportUrl).Msg("Assembled transport url")
 
+	// Tell option reporting which transport is on duty, so it can excuse that transport's
+	// options and no other's. Stamped unconditionally: a user-supplied value here would be a
+	// lie about the connection.
+	configOptions[options.ActiveTransportOption] = []string{transportName}
+
 	// Create a new connection
 	return driver.GetConnection(ctx, transportUrl, m.transports, configOptions)
 }

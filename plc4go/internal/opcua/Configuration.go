@@ -93,6 +93,10 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 	for optionKey := range options {
 		fieldName, ok := fieldForOption[strings.ToLower(optionKey)]
 		if !ok {
+			// The driver manager's bookkeeping, not a user option.
+			if optionKey == spiOptions.ActiveTransportOption {
+				continue
+			}
 			// Read by the transport rather than by this driver. The names come from the
 			// transports themselves, which register what they read, so this driver does not
 			// keep its own copy of a list that would drift from them.

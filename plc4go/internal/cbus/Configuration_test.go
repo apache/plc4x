@@ -20,11 +20,14 @@
 package cbus
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
+	spiOptions "github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
@@ -141,6 +144,18 @@ func TestParseFromOptions(t *testing.T) {
 			assert.Equalf(t, tt.want, got, "ParseFromOptions(%v)", tt.args.options)
 		})
 	}
+}
+
+// titleOptions title-cases every key in place, marker included, so the exact-match skip in
+// ReportUnknown is not enough here: the title-cased duplicate must not surface as unknown.
+func TestParseFromOptions_saysNothingAboutTheActiveTransportMarker(t *testing.T) {
+	var logged bytes.Buffer
+	log := zerolog.New(&logged)
+
+	_, err := ParseFromOptions(log, map[string][]string{spiOptions.ActiveTransportOption: {"tcp"}})
+
+	assert.NoError(t, err)
+	assert.Empty(t, logged.String())
 }
 
 func Test_createDefaultConfiguration(t *testing.T) {

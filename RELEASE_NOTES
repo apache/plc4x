@@ -176,6 +176,11 @@ Incompatible changes
   configuration, so there is no point at which the leftovers are known;
   they are unchanged and still report nothing.
 
+  The report also knows which transport the connection actually uses, so a
+  parameter that belongs to a different transport - "serial.baud-rate" on a
+  TCP connection - is called out as misdirected instead of being silently
+  excused as "some transport's".
+
   A suggestion is offered only among the names the consumer that reported
   actually read, so a parameter belonging to a transport is named as
   unknown with nothing to suggest. PLC4J does better here: it draws the
