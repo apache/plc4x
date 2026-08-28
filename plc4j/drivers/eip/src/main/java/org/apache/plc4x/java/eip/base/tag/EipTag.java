@@ -80,6 +80,7 @@ public class EipTag implements PlcTag, Serializable {
 
     private final String tag;
     private final CIPDataTypeCode type;
+    private final int elementsNb;
     /**
      * What the address selects. Drives the CIP path and the element count. Not what
      * {@link #getArrayInfo()} reports - see there.
@@ -116,17 +117,22 @@ public class EipTag implements PlcTag, Serializable {
         this.scalarSelection =
             ArrayNotationParser.selectsSingleElement(ArrayNotationParser.expressionPart(tag));
         this.pathElements = decomposePath(tag, this.selection);
+        this.elementsNb = computetElementsNb(tag, this.selection);
+    }
+
+    public static int computetElementsNb(String tag, List<ArrayInfo> selection) {
         // A CIP read request carries the element count in 16 bits, so a larger selection is
         // narrowed on the way out - [0..65535] would ask the device for zero elements. Refuse it
         // here rather than send a request that means something else.
         long elements = 1;
-        for (ArrayInfo dimension : this.selection) {
+        for (ArrayInfo dimension : selection) {
             elements *= dimension.getSize();
         }
         if (elements > MAX_ELEMENTS) {
             throw new PlcInvalidTagException("Tag '" + tag + "' selects " + elements
                 + " elements, more than the " + MAX_ELEMENTS + " a CIP request can ask for.");
         }
+        return (int)elements;
     }
 
     /**
@@ -137,7 +143,7 @@ public class EipTag implements PlcTag, Serializable {
         String expression = tag == null ? "" : ArrayNotationParser.expressionPart(tag);
         int start = 0;
         if (!expression.isEmpty()) {
-            ArrayInfo first = ArrayNotationParser.parse(expression, tag, CONSTRAINTS).get(0);
+            ArrayInfo first = ArrayNotationParser.parse(expression, tag, CONSTRAINTS).getFirst();
             start = first.getLowerBound() - first.getBase();
         } else if (count <= 1) {
             return Collections.emptyList();
@@ -170,7 +176,7 @@ public class EipTag implements PlcTag, Serializable {
             }
         }
         if (!ArrayNotationParser.expressionPart(tag).isEmpty() && !arrayInfo.isEmpty()) {
-            ArrayInfo first = arrayInfo.get(0);
+            ArrayInfo first = arrayInfo.getFirst();
             short offset = (short) (first.getLowerBound() - first.getBase());
             // A member segment says where the selection starts. Starting at the first element is
             // what a request with no member segment already means, so emitting MemberID(0) would
@@ -223,14 +229,7 @@ public class EipTag implements PlcTag, Serializable {
      * selects nothing explicitly reads a single element.
      */
     public int getElementNb() {
-        // Computed as a long: the product of several dimensions overflows an int long before it
-        // reaches the wire, and the count is carried in 16 bits there - see the constructor, which
-        // refuses a selection that cannot be encoded.
-        long elements = 1;
-        for (ArrayInfo dimension : selection) {
-            elements *= dimension.getSize();
-        }
-        return (int) Math.max(elements, 1);
+        return elementsNb;
     }
 
     public String getTag() {
