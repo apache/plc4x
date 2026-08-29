@@ -21,8 +21,26 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 == Current Releases
 
+[#release-0_13_1]
+=== 0.13.1 Official https://www.apache.org/dyn/closer.lua/plc4x/0.13.1/apache-plc4x-0.13.1-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.13.1/apache-plc4x-0.13.1-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.13.1/apache-plc4x-0.13.1-source-release.zip.asc[ASC] ]
+
+==== New Features
+
+- Extended the PlcRawByteArray to provide access to a List of USINT objects.
+
+==== Incompatible changes
+
+==== Bug Fixes
+
+- When reading an array of bits, the old s7 driver seems to hang.
+- The s7 driver causes issues when writing arrays of bits.
+- The block optimizer used in s7-light causes errors, if a tag references the same byte multiple times.
+- When using the new block-optimizer in the s7-light driver, when reading multiple BOOL values located in the same byte produces errors
+
+== Previous Releases
+
 [#release-0_13_0]
-=== 0.13.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip.asc[ASC] ]
+=== 0.13.0 Official https://archive.apache.org/dist/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip.asc[ASC] ]
 
 ==== New Features
 
@@ -82,7 +100,6 @@ individual consumers for each tag.
 
 ==== Bug Fixes
 
-== Previous Releases
 
 [#release-0_12_0]
 === 0.12.0 Official https://archive.apache.org/dist/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.asc[ASC] ]
