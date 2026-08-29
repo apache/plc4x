@@ -17,7 +17,12 @@
 # under the License.
 #
 name: plc4x
-version: 'latest'
+# The concrete version this branch documents - the last release made from it. The
+# "urls.latest_version_segment" key in website/antora-playbook.yml publishes whichever
+# non-prerelease version is newest under ".../plc4x/latest/", so this branch must not
+# claim that segment for itself.
+version: '0.13.1'
+prerelease: False
 title: PLC4X
 start_page: users:index.adoc
 nav:
