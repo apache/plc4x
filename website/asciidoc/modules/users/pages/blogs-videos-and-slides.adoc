@@ -38,8 +38,7 @@
 - https://youtu.be/fkfc3tAe4AM[Mittelstand meets Open Source - Einführung in das Industrial IoT (IIoT) (GERMAN)]
 - https://www.youtube.com/watch?v=RWKggid25ds[Apache Kafka, KSQL and Apache PLC4X for IIoT Data Integration and Processing]
 - https://www.youtube.com/watch?v=pjBYtJJmWq0[Episode IV - A New Hope: Industry 4.0 done our way]
-- https://aceu19.apachecon.com/session/idea-apache-tlp[From an idea to an Apache TLP]
-- https://mediathek.hhu.de/watch/6014a3fd-aadf-4bcf-adf6-3134162aef1b[Wie wir mit Apache PLC4X die Silos in der Automatisierungsindustrie aufbechen]
+- https://youtu.be/mD0Lh7si5Hc?si=J1Sf1VAj8pyzLzpH[From an idea to an Apache TLP]
 
 == Slides
 

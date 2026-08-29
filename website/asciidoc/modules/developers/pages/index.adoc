@@ -35,17 +35,17 @@ Using the `Maven-Wrapper` you don't even need a `Maven` installation. The build 
 
 As part of the build we have an initial build step that will do a `prerequisite check`. Depending on the activated modules, it will check if all preconditions are met and tell you what's missing.
 
-For details please have a look at the link:preparing/index.html[Preparing your Computer] page.
+For details please have a look at the xref:preparing/index.adoc[Preparing your Computer] page.
 
 == Building PLC4X
 
-We have a dedicated page on link:building.html[Building PLC4X].
+We have a dedicated page on xref:building.adoc[Building PLC4X].
 
 Please read this page on information about how to build Apache PLC4X.
 
 == Contributing
 
-If you want to work on Apache PLC4X in order to `fix things`, `add things` and start `contributing` in general, please have a look at our link:contributing.html[Contributing] page. It should contain all the information you need.
+If you want to work on Apache PLC4X in order to `fix things`, `add things` and start `contributing` in general, please have a look at our xref:contributing.adoc[Contributing] page. It should contain all the information you need.
 
 == Getting Help
 
@@ -54,6 +54,10 @@ The primary source for getting help definitely is our project mailing list dev@p
 You can search previous content in our link:++https://lists.apache.org/list.html?dev@plc4x.apache.org++[Mail Archive]
 
 In order to post to the list you first need to subscribe. This can be done by sending an empty Email to dev-subscribe@plc4x.apache.org.
+
+The xref:users:contact.adoc[Getting in Contact] page lists all of the project's mailing lists and
+what each of them is for, as well as the other ways to reach us: the `#plc4x` channel on the Apache
+Slack, GitHub Discussions, GitHub Issues and Pull Requests.
 
 
 

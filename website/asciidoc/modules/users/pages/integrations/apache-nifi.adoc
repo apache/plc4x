@@ -74,13 +74,13 @@ As soon as your new processor is added to the canvas you need to configure it. D
 
 Here you now need to provide a `PLC4X connection string` and a `PLC resource address String`.
 
-The `PLC connection String` is just a normal PLC4X connection string. Please consult the documentation on using the different types of supported connections link:https://plc4x.apache.org/users/protocols/index.html[Here]
+The `PLC connection String` is just a normal PLC4X connection string. Please consult the documentation on using the different types of supported connections xref:protocols/index.adoc[Here]
 
 The `PLC resource address String` is a `;`-separarated list of `name-value-pairs`, where each `name` is assigned a `plc4x addrress`.
 
 [NOTE]
 ====
-For information on how an address string looks for the type of driver you are using, please check the documentation for the driver you are using link:https://plc4x.apache.org/users/protocols/index.html[Here]
+For information on how an address string looks for the type of driver you are using, please check the documentation for the driver you are using xref:protocols/index.adoc[Here]
 ====
 
 Example:

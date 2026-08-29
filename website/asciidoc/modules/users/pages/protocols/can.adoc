@@ -22,8 +22,8 @@
 image::users/protocols/can_banner.png[banner,512,167]
 
 NOTE: This page describes how the CAN drivers are put together. There is no driver with the
-protocol code `can` - connect with xref:canopen.adoc[CANopen] (`canopen`) or
-xref:genericcan.adoc[GenericCAN] (`genericcan`) instead.
+protocol code `can` - connect with xref:protocols/canopen.adoc[CANopen] (`canopen`) or
+xref:protocols/genericcan.adoc[GenericCAN] (`genericcan`) instead.
 
 CAN differs from the other buses PLC4X supports in that the wire carries short, identifier-tagged
 frames rather than a request/response stream. The transports own the bus access and hand the
@@ -32,7 +32,7 @@ application-layer protocol.
 
 == Transport and frame model
 
-The link:../transports/can.html[CAN transport facade] provides a single frame representation that
+The xref:transports/can.adoc[CAN transport facade] provides a single frame representation that
 all CAN drivers work against:
 
 * `CanFrame` (`plc4j/transports/can`) - an identifier, up to 8 data bytes, and the standard/extended
@@ -51,9 +51,9 @@ components against each other without a physical interface).
 Each CAN driver is a `ConnectionBase` implementation that owns a message codec translating between
 `CanFrame` and its own protocol frame:
 
-* xref:canopen.adoc[CANopen] - `CANOpenConnection` with `CANOpenMessageCodec`, implementing the
+* xref:protocols/canopen.adoc[CANopen] - `CANOpenConnection` with `CANOpenMessageCodec`, implementing the
 CANopen service model (SDO, PDO, NMT, heartbeat).
-* xref:genericcan.adoc[GenericCAN] - `GenericCANConnection`, which applies no application-layer
+* xref:protocols/genericcan.adoc[GenericCAN] - `GenericCANConnection`, which applies no application-layer
 semantics at all and simply maps identifiers to typed payload slices.
 
 Incoming frames arrive from the codec and are dispatched to the subscriptions registered for the

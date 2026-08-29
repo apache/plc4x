@@ -17,7 +17,10 @@
 # under the License.
 #
 name: plc4x
-version: 'pre-release'
+# The concrete version this branch documents. The "urls.latest_prerelease_version_segment"
+# key in the playbook publishes it under ".../plc4x/pre-release/" for as long as it is
+# flagged as a prerelease. "release-1-create-branch.sh" maintains both values.
+version: '1.0.0'
 prerelease: True
 title: PLC4X
 start_page: users:index.adoc

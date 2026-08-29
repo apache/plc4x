@@ -1,0 +1,125 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+
+= Getting in Contact
+
+There is no single "support address" for Apache PLC4X - where to ask depends on what you want to
+do. Everything below is public and archived, with the one exception noted under
+<<_private_plc4x_apache_org,private@>>.
+
+== Mailing Lists
+
+The mailing lists are the official channels of the project.
+Anything that has to be on the record - decisions, releases, votes - happens on `dev@`, because
+that is the only place the whole community can follow along and the archives are permanent.
+
+To subscribe to a list, send an empty mail to `<list>-subscribe@plc4x.apache.org` and reply to the
+confirmation you get back; to leave one again, use `<list>-unsubscribe@plc4x.apache.org`.
+You do not have to be subscribed to read a list - all of them are archived at
+https://lists.apache.org/[lists.apache.org].
+
+[IMPORTANT]
+====
+Posting without being subscribed works, but please subscribe first if you intend to take part in a
+discussion at all.
+
+* *Every* mail from a non-subscriber has to be approved by a moderator by hand - not just the
+first one. That is work for a small number of volunteers, every single time, so treat it as the
+exceptional path rather than the normal way to write to a list.
+* You will not receive any replies. Answers go to the list, and the list only delivers to its
+subscribers, so you would have to go and look your own thread up on
+https://lists.apache.org/[lists.apache.org] to find out whether anybody answered.
+====
+
+[cols="1,3"]
+|===
+|List |What it is for
+
+|dev@plc4x.apache.org
+|The development list. All official discussions happen here: design questions, release votes,
+proposals and anything else that needs a decision. If you are unsure where something belongs, it
+belongs here.
+
+|issues@plc4x.apache.org
+|Where the traffic from GitHub Issues goes. Subscribe if you want to follow what is being reported
+without watching the repository on GitHub.
+
+|commits@plc4x.apache.org
+|Where commits and pull-request related posts go. This is a firehose - useful if you want to see
+every change as it lands.
+
+|[[_private_plc4x_apache_org]]private@plc4x.apache.org
+|*Not a public list.* Only PMC members and members of the foundation can post to or read it. It is
+used for the few things that cannot be discussed in public, such as personnel matters and security
+reports before they are disclosed.
+|===
+
+=== If your mails do not seem to arrive
+
+A mailing list forwards your message on to every subscriber, which means the mail that reaches them
+was sent by the list rather than directly by you. Mail providers with strict security settings -
+Proton is one example - tell the rest of the world to treat anything not sent directly by them as
+suspicious, and the receiving mail services then apply that to the forwarded copy: it can end up in
+somebody's spam folder or be quarantined before they ever see it.
+
+The confusing part is that from your side everything looks fine. Your mail is accepted, it shows up
+in the archives on https://lists.apache.org/[lists.apache.org], and yet some subscribers never got
+it and nobody answers.
+
+If that happens to you, the archive is the thing to check first: if your message is there, it
+reached the list and the problem is on the delivery side rather than something you did wrong.
+
+[TIP]
+====
+If you have an Apache account - which you do if you are a committer on at least one Apache project -
+sign in at https://lists.apache.org/[lists.apache.org] and write your mail from there.
+It is then sent by the foundation's own infrastructure instead of being forwarded on from your
+provider, so it is guaranteed to reach every subscriber.
+
+Without an Apache account, sending from a different address is the usual way around it.
+====
+
+NOTE: We are aware of this and are working on a solution.
+
+== Slack
+
+We have a `#plc4x` channel on the Apache Slack instance, which is a good place for quick questions
+that do not warrant a mail to `dev@`.
+
+If you are a committer on at least one Apache project you can sign yourself up at
+https://s.apache.org/slack-invite[s.apache.org/slack-invite] using your `@apache.org` address.
+If you are not, ask one of the active PMC members of the project for an invite.
+
+IMPORTANT: Slack is convenient, but it is not the record. Anything that needs a decision has to
+make its way to `dev@` - see the note about official discussions above.
+
+== GitHub
+
+The project uses GitHub for everything that is code:
+
+* https://github.com/apache/plc4x/discussions[GitHub Discussions] for questions and open-ended
+conversations that do not fit a mailing list thread.
+* https://github.com/apache/plc4x/issues[GitHub Issues] for reporting bugs and requesting features.
+See xref:issues.adoc[] for more on the issue tracker.
+* https://github.com/apache/plc4x/pulls[Pull Requests] for contributing changes.
+The xref:developers:contributing.adoc[contribution guide] describes how to prepare one.
+
+== Reporting a security issue
+
+Security problems must *not* be reported through GitHub Issues or any of the public lists.
+Please follow the process described on the xref:security.adoc[security] page instead.

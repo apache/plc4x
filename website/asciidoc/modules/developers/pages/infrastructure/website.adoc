@@ -36,7 +36,7 @@ The site content itself is generated from `asciidoc` files (ending `.adoc`) whic
 
 Beyond the basic goodies, the build is also configured to generate images from ASCII data using the `asciidoctor-diagram` plugin.
 
-This allows us to generate images like the ones on the http://plc4x.apache.org/protocols/s7/index.html[S7 Protocol Description page]
+This allows us to generate images like the ones on the xref:users:protocols/s7.adoc[S7 Protocol Description page]
 
 == Providing new content
 
@@ -52,14 +52,14 @@ So if we wanted to add a new page on some (hopefully non existent) `Wombat PLC P
 
 For example with this content:
 
-```
+----
 = Wombat PLC Protocol
 
 If you want to waste your money, brains and time, feel free to use a `Wombat PLC`.
 
 In order to help you waste even more of that, we'll skip documenting anything.
 
-```
+----
 
 Notice the double equals sign? This is the site Title. It seems the level `One` with only one equals sign is only used for ebook output.
 
@@ -83,7 +83,7 @@ In order to add links to the menus, you have to create or modify the `site.xml` 
 
 The simplest form would probably be something like this:
 
-```
+----
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
 
@@ -112,7 +112,7 @@ The simplest form would probably be something like this:
   </body>
 
 </project>
-```
+----
 
 This will generate a `Wombat` menu at the end, and this has one link named `lalala`.
 
@@ -120,7 +120,7 @@ Notice that the link has to have a file ending of `.html` and not `.adoc`.
 
 If you want to insert the menu somewhere else, you will have to re-define the entire menu.
 
-```
+----
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
 
@@ -156,7 +156,7 @@ If you want to insert the menu somewhere else, you will have to re-define the en
   </body>
 
 </project>
-```
+----
 
 The `menu ref` items hereby reference standard menus provided by the `Maven` build.
 

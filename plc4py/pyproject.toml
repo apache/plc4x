@@ -56,7 +56,7 @@ authors=[
 [project.urls]
 HomePage="https://plc4x.apache.org"
 Repository="https://github.com/apache/plc4x"
-Documentation = "https://plc4x.apache.org/users/getting-started/plc4py.html"
+Documentation = "https://plc4x.apache.org/plc4x/latest/users/getting-started/plc4py.html"
 
 [project.optional-dependencies]
 dev = [

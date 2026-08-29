@@ -70,7 +70,7 @@ Manual tests proven that driver is able to communicate with OPC UA server launch
 
 Depending on actual configuration of remote end there might be necessity to prepare client certificate.
 Preparation of certificate is beyond driver, however in case when no client certificate is provided, it will be auto-generated to establish a session.
-Please follow our tutorial link:../getting-started/opcua-client-certificate.html[on provisioning of client private key and certificate].
+Please follow our tutorial xref:getting-started/opcua-client-certificate.adoc[on provisioning of client private key and certificate].
 By following it you will be able to create self-signed certificate for use with both hardware and software based OPC-UA servers.
 Please note that there are multiple appearances of certificates within specification.
 There is the application instance certificate securing the communication channel, which is provided through the keystore options described below, and there is a X509 certificate identifying the *user*, which is supplied separately - see <<User authentication>>.
@@ -112,7 +112,7 @@ opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256&message-security=SIGN
 A generated certificate is fresh for every connection, so a server that keeps a trust list will
 reject it until it is trusted there. For anything beyond a first connection attempt, supply your own
 certificate through `tls.keystore` instead - see
-link:../getting-started/opcua-client-certificate.html[the client certificate tutorial].
+xref:getting-started/opcua-client-certificate.adoc[the client certificate tutorial].
 
 == User authentication
 
@@ -350,7 +350,7 @@ So far Apache PLC4X OPC-UA client have been confirmed to be working with below s
 - https://github.com/OPCFoundation/UA-.NETStandard[OPC Foundation UA-.NET Standard]
 - Simocode OPC UA server
 * versions prior 0.12
-- https://eclipse.org/milo[Eclipse Milo]
+- https://eclipse.dev/milo/[Eclipse Milo]
 
 
 == More details on OPC UA

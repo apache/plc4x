@@ -34,11 +34,11 @@ This will effectively only create a `go.mod` file, which is sort of like Go's co
 
 This should look like this:
 
-```
+----
 module main
 
 go 1.16
-```
+----
 
 Now we need to create a `app.go` file which will be our main program.
 

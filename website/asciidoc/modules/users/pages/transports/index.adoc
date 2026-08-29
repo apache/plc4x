@@ -21,10 +21,10 @@
 
 
 
-- link:tcp.html[TCP]
-- link:udp.html[UDP]
-- link:raw-socket.html[Raw Socket]
-- link:serial.html[Serial Port]
-- link:can.html[CAN bus]
-- link:socketcan.html[SocketCAN]
-- link:pcap-replay.html[PCAP replay]
+- xref:transports/tcp.adoc[TCP]
+- xref:transports/udp.adoc[UDP]
+- xref:transports/raw-socket.adoc[Raw Socket]
+- xref:transports/serial.adoc[Serial Port]
+- xref:transports/can.adoc[CAN bus]
+- xref:transports/socketcan.adoc[SocketCAN]
+- xref:transports/pcap-replay.adoc[PCAP replay]

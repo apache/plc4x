@@ -83,9 +83,9 @@ For example with a `TCP` and `UDP` transport, this will be the `IP address` or `
 
 For a `Serial` transport this will be the `name of the serial interface`. `Raw Sockets` will require the `device name` or a `MAC address` and so on.
 
-For a full description of all transports and their options, please consult the `Transport Documentation` link:../transports/index.html[here].
+For a full description of all transports and their options, please consult the `Transport Documentation` xref:transports/index.adoc[here].
 
-The last segment - `options` - can be used to fine tune some protocol or transport options to non-default values. Usually these vary quite a bit from protocol to protocol. For details on these options, please have a look at the `Protocol Documentation` link:../protocols/index.html[here]. Even if most transports also have common options, their defaults vary quite a bit, depending on the protocol being used. So, instead of having a look at the general `Transport Documentation` link:../transports/index.html[here], wach protocol documentation also contains a list of all supported transports as well as the transport configuration options and their defaults.
+The last segment - `options` - can be used to fine tune some protocol or transport options to non-default values. Usually these vary quite a bit from protocol to protocol. For details on these options, please have a look at the `Protocol Documentation` xref:protocols/index.adoc[here]. Even if most transports also have common options, their defaults vary quite a bit, depending on the protocol being used. So, instead of having a look at the general `Transport Documentation` xref:transports/index.adoc[here], wach protocol documentation also contains a list of all supported transports as well as the transport configuration options and their defaults.
 
 The general structure of this part is always the same:
 
@@ -108,7 +108,7 @@ For more information on the default settings for a given protocol or transport, 
 == Individual Resource Addresses (Tags)
 
 Addresses for individual tags on a PLC are extremely dependent on the used protocol.
-As we usually decided to stick to the address formats that are used in those particular environments, please check the `Protocol Documentation` on details about these address formats link:../protocols/index.html[here].
+As we usually decided to stick to the address formats that are used in those particular environments, please check the `Protocol Documentation` on details about these address formats xref:protocols/index.adoc[here].
 
 The tag syntax is fairly generic and can be summarized as `type:address`.
 Some protocols might support tag attributes which are specified as key-value pairs after primary tag address.

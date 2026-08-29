@@ -66,9 +66,9 @@ Also will PLC4X build with any Maven version starting with `Maven 3.6.0`.
 
 The following pages will describe how to provide these requirements for your operating system.
 
-* link:linux.html[Linux]
-* link:macos.html[MacOS]
-* link:windows.html[Windows]
+* xref:preparing/linux.adoc[Linux]
+* xref:preparing/macos.adoc[MacOS]
+* xref:preparing/windows.adoc[Windows]
 
 == Preparing your IDE
 

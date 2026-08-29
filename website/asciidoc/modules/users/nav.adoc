@@ -18,6 +18,7 @@
 ** xref:download.adoc[]
 ** xref:adopters.adoc[Adopters]
 ** xref:issues.adoc[]
+** xref:contact.adoc[Getting in Contact]
 ** xref:commercial-support.adoc[Commercial Support]
 
 ** xref:getting-started/index.adoc[]

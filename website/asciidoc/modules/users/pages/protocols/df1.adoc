@@ -44,7 +44,7 @@ builds a connection, transport or tag handler on top of it.
 
 == Related: AB-ETH
 
-The DF1 *command* layer is reused by the xref:ab-eth.adoc[AB-ETH] driver, which tunnels DF1
+The DF1 *command* layer is reused by the xref:protocols/ab-eth.adoc[AB-ETH] driver, which tunnels DF1
 commands inside CIP encapsulation over Ethernet. That is a working driver in Java, and it is what
 you want if your device is reachable over Ethernet rather than a serial port. The DF1 message types
 it uses are generated into the ab-eth module rather than shared from here.

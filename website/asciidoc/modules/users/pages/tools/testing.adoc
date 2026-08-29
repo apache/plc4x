@@ -40,7 +40,7 @@ The connection string Syntax for the mock driver is `mock:{name-of-the-connectio
 The Mock Driver does nothing else than forwarding all Requests to a `Virtual Device which we can provide to control all responses and also Monitor them, e.g. for unit tests.
 The Interface for the Mock Device is
 
-```
+----
 public interface MockDevice {
 
     Pair<PlcResponseCode, PlcValue> read(String fieldQuery);
@@ -54,7 +54,7 @@ public interface MockDevice {
     // ...
 
 }
-```
+----
 
 == Simple Example
 
@@ -62,17 +62,17 @@ Imagine we have some Code which we cannot control or whose functionality we want
 This can be done with the Mock Driver in the following way.
 
 First, a new Mock Connection is established (like any other connection also would be):
-```
+----
 PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionFactory().getConnection("mock:my-mock-connection");
-```
+----
 You see, that we directly cast the Connection to a `PlcMockConnection`. This is done, because we need to _connect_ a Device to this Mock Connection.
 
 This is done in the following Snippet
-```
+----
 connection.setDevice(mockDevice);
-```
+----
 Here, we pass it an instance of `MockDevice` which could be a simple Implementation of the interface like
-```
+----
 MockDevice mockDevice = new MockDevice() {
 
     Pair<PlcResponseCode, PlcValue> read(String fieldQuery) {
@@ -88,7 +88,7 @@ MockDevice mockDevice = new MockDevice() {
     // ...
 
 }
-```
+----
 This would just return a String Value `hello` for every request and print all read and write requests to the Console.
 
 == Unit Testing with the Mock Driver
@@ -96,7 +96,7 @@ This would just return a String Value `hello` for every request and print all re
 To use the Mock driver in Unit Tests the easiest way is to generate the `MockDriver` instance as Mockito (or any other Framework) Mock.
 Like in the following Example
 
-```
+----
 MockDevice mockDevice = Mockito.mock(MockDevice.class);
 
 PlcMockConnection connection = (PlcMockConnection) PlcDriverManager.getDefault().getConnectionFactory().getConnection("mock:my-mock-connection");
@@ -117,11 +117,11 @@ connection
 
 // Check that the we really issued a Read request to the Field "MyAdress"
 verify(mockDevice).read(eq("MyAdress"));
-```
+----
 
 But as the `MockDriver` uses a static Mock Connection registry the following Code works also
 
-```
+----
 MockDevice mockDevice = Mockito.mock(MockDevice.class);
 
 // Setup
@@ -147,7 +147,7 @@ try (PlcConnection conn = PlcDriverManager.getDefault().getConnectionFactory().g
 
 // Check that the we really issued a Read request to the Field "MyAdress"
 verify(mockDevice).read(eq("MyAdress"));
-```
+----
 
 The Snippet above shows that the part under test really has to share nothing with the test code except for the connection string.
 

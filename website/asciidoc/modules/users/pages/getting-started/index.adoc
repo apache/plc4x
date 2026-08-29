@@ -23,12 +23,12 @@ Depending on the programming language, the usage will differ, therefore please g
 
 == Go/Golang
 
-For guides on how to write PLC4X applications with Go, please go to the link:plc4go.html[Go Getting Started]
+For guides on how to write PLC4X applications with Go, please go to the xref:getting-started/plc4go.adoc[Go Getting Started]
 
 == Java
 
-For guides on how to write PLC4X applications with Java, please go to the link:plc4j.html[Java Getting Started]
+For guides on how to write PLC4X applications with Java, please go to the xref:getting-started/plc4j.adoc[Java Getting Started]
 
 == Python
 
-For guides on how to write PLC4X applications with Python, please go to the link:plc4py.html[Python Getting Started]
+For guides on how to write PLC4X applications with Python, please go to the xref:getting-started/plc4py.adoc[Python Getting Started]

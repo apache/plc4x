@@ -28,7 +28,7 @@ The main `pom.xml` in the root directory is mainly for allowing to import all mo
 If you want to release a part of the build-tools, please execute the following release steps in the parts sub-directory.
 
 In general the preparation steps for releasing a build-tool is equal to those of the main project.
-So please check link:release.html[here] (Chapters: `Preparing your system for being able to release` and `Preparing the codebase for a release`)
+So please check xref:release/release.adoc[here] (Chapters: `Preparing your system for being able to release` and `Preparing the codebase for a release`)
 
 The rest of the steps are a lot simpler than those of the main project as there aren't any profiles involved.
 
