@@ -31,12 +31,17 @@ namespace org.apache.plc4net.test.knxnetip.readwrite.model
         [Fact]
         public void DecodeKnxData1()
         {
-            var input = StrToByteArray("41b00000");
+            // DPT 14.019 is a reserved byte followed by an IEEE-754 float32, so the
+            // frame is five bytes. The test previously passed only the four float
+            // bytes; it never showed up because the suite was not being executed
+            // (the test project had no Microsoft.NET.Test.Sdk reference).
+            var input = StrToByteArray("0041b00000");
             IPlcValue expected = new PlcREAL(22.0f);
-            
+
             var actual = KnxDatapoint.StaticParse(new ReadBuffer(input), KnxDatapointType.DPT_Value_Electric_Current);
-            
+
             Assert.Equal(expected, actual);
+            Assert.Equal(22.0f, actual.GetFloat());
         }
         
         private static byte[] StrToByteArray(string str)
