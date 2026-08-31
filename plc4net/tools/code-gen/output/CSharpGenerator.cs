@@ -485,6 +485,10 @@ namespace org.apache.plc4net.tools.codegen.output
                     c.Line($"{CSharpTypeMapper.WriteCall(d.Type, d.Name, Pascal(d.Name))};");
                     break;
 
+                case SimpleField when f.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.VString, LengthExpression: { } len }:
+                    c.Line($"writeBuffer.WriteString(\"{f.Name}\", (int) ({r.Render(len)}), \"{VStringEncoding(f)}\", {Pascal(f.Name)});");
+                    break;
+
                 case SimpleField:
                     c.Line($"{CSharpTypeMapper.WriteCall(f.Type, f.Name, Pascal(f.Name))};");
                     break;
@@ -704,11 +708,15 @@ namespace org.apache.plc4net.tools.codegen.output
                     {
                         return bits.ToString();
                     }
+                    if (f.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.VString, LengthExpression: { } vlen })
+                    {
+                        return $"({r.Render(vlen)})";
+                    }
                     if (f.Type is ComplexTypeReference)
                     {
                         return $"{Pascal(f.Name)}.GetLengthInBits()";
                     }
-                    return null; // vstring / unmodelled - length not computed
+                    return null; // vstring without a length / unmodelled - not computed
 
                 case VirtualField:
                     return null;
@@ -883,7 +891,9 @@ namespace org.apache.plc4net.tools.codegen.output
                     }
                     if (term is VariableLiteral { Child: null, IsCall: false } sv)
                     {
-                        return "\"" + sv.Name + "\"";
+                        return sv.Name == MspecReader.EmptyStringSentinel
+                            ? "\"\""
+                            : "\"" + sv.Name + "\"";
                     }
                     return r.Render(term);
 
@@ -1061,7 +1071,12 @@ namespace org.apache.plc4net.tools.codegen.output
             var props = cs.PropertyFields.ToList();
             var valueField = props.Count == 1 ? props[0] : null;
             var listField = valueField as ArrayField;
+            // The temporal bodies are a transcription of plc4j's S7 DataItem date
+            // logic - they only fit S7's field layout, so gate them on S7's
+            // discriminator. KNX's KnxDatapoint has DATE / TIME cases too, with a
+            // completely different (segmented, struct-valued) shape.
             var temporal = TemporalPlcValueCases.Contains(cs.Name)
+                           && dio.Arguments.Any(a => a.Name == "dataProtocolId")
                            && props.All(f => f is not ArrayField);
             var scalar = valueField is not (null or ArrayField) && ScalarPlcValueCases.Contains(cs.Name);
 
@@ -1074,18 +1089,25 @@ namespace org.apache.plc4net.tools.codegen.output
                 return;
             }
 
+            // A dataIo with a `bit bigEndian` argument (Modbus's DataItem) reads
+            // and writes its multi-byte values little-endian when it is false.
+            // plc4j leaves this to the driver's buffer context; plc4net has no
+            // buffer context, so the codec does the swap itself.
+            var le = dio.Arguments.Any(a => a.Name == "bigEndian"
+                && a.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.Bit });
+
             switch (mode)
             {
                 case DataIoMode.Parse when temporal:
                     EmitDataIoTemporalParse(c, cs, r);
                     break;
                 case DataIoMode.Parse when listField != null:
-                    EmitDataIoListParse(c, listField, r);
+                    EmitDataIoListParse(c, listField, r, le);
                     break;
                 case DataIoMode.Parse:
                     foreach (var f in cs.Fields)
                     {
-                        EmitDataIoFieldParse(c, f, r);
+                        EmitDataIoFieldParse(c, f, r, le);
                     }
                     c.Line($"return {DataIoReturnValue(cs, valueField)};");
                     break;
@@ -1094,12 +1116,12 @@ namespace org.apache.plc4net.tools.codegen.output
                     EmitDataIoTemporalSerialize(c, cs, helper);
                     break;
                 case DataIoMode.Serialize when listField != null:
-                    EmitDataIoListSerialize(c, listField);
+                    EmitDataIoListSerialize(c, listField, le);
                     break;
                 case DataIoMode.Serialize:
                     foreach (var f in cs.Fields)
                     {
-                        EmitDataIoFieldSerialize(c, cs, f, valueField, r);
+                        EmitDataIoFieldSerialize(c, cs, f, valueField, r, le);
                     }
                     break;
 
@@ -1242,7 +1264,7 @@ namespace org.apache.plc4net.tools.codegen.output
         /// <summary>A <c>numberOfValues &gt; 1</c> dataIo case (Modbus's
         /// <c>DataItem</c> List cases) - a counted array of one primitive,
         /// wrapped element-by-element into a <see cref="PlcList"/>.</summary>
-        private void EmitDataIoListParse(CodeWriter c, ArrayField af, CSharpExpressionRenderer r)
+        private void EmitDataIoListParse(CodeWriter c, ArrayField af, CSharpExpressionRenderer r, bool le = false)
         {
             var element = (SimpleTypeReference) af.Type;
             var wrap = DataIoPlcWrapper(element);
@@ -1258,7 +1280,7 @@ namespace org.apache.plc4net.tools.codegen.output
             }
             else
             {
-                c.Line($"value.Add(new {wrap}({CSharpTypeMapper.ReadCall(element, "value")}));");
+                c.Line($"value.Add(new {wrap}({ByteOrdered(element, CSharpTypeMapper.ReadCall(element, "value"), le)}));");
             }
 
             c.Outdent();
@@ -1266,7 +1288,7 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("return new PlcList(value);");
         }
 
-        private void EmitDataIoListSerialize(CodeWriter c, ArrayField af)
+        private void EmitDataIoListSerialize(CodeWriter c, ArrayField af, bool le = false)
         {
             var element = (SimpleTypeReference) af.Type;
             c.Line("foreach (var _e in _value.GetList())");
@@ -1274,7 +1296,7 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Indent();
             var item = element.BaseType is SimpleTypeReference.Base.String
                 ? "_e.GetString()"
-                : $"({CSharpTypeMapper.SimpleCSharpType(element)}) _e.{PlcValueGetter(element)}";
+                : ByteOrdered(element, $"({CSharpTypeMapper.SimpleCSharpType(element)}) _e.{PlcValueGetter(element)}", le);
             c.Line(element.BaseType is SimpleTypeReference.Base.String
                 ? $"writeBuffer.WriteString(\"value\", {element.SizeInBits}, \"{element.Encoding ?? "UTF8"}\", {item});"
                 : $"{CSharpTypeMapper.WriteCall(element, "value", item)};");
@@ -1320,7 +1342,7 @@ namespace org.apache.plc4net.tools.codegen.output
             return conds.Count == 0 ? "true" : string.Join(" && ", conds);
         }
 
-        private void EmitDataIoFieldParse(CodeWriter c, Field f, CSharpExpressionRenderer r)
+        private void EmitDataIoFieldParse(CodeWriter c, Field f, CSharpExpressionRenderer r, bool le = false)
         {
             switch (f)
             {
@@ -1339,13 +1361,13 @@ namespace org.apache.plc4net.tools.codegen.output
                     break;
 
                 case SimpleField sf:
-                    c.Line($"var {Camel(sf.Name)} = {DataIoSimpleRead(sf)};");
+                    c.Line($"var {Camel(sf.Name)} = {ByteOrdered(sf.Type, DataIoSimpleRead(sf), le)};");
                     break;
             }
         }
 
         private void EmitDataIoFieldSerialize(
-            CodeWriter c, ComplexTypeDefinition cs, Field f, Field valueField, CSharpExpressionRenderer r)
+            CodeWriter c, ComplexTypeDefinition cs, Field f, Field valueField, CSharpExpressionRenderer r, bool le = false)
         {
             switch (f)
             {
@@ -1360,7 +1382,7 @@ namespace org.apache.plc4net.tools.codegen.output
                 case SimpleField sf when sf.Type is SimpleTypeReference st:
                     var getter = st.BaseType is SimpleTypeReference.Base.String or SimpleTypeReference.Base.VString
                         ? "_value.GetString()"
-                        : $"({CSharpTypeMapper.SimpleCSharpType(st)}) _value.{PlcValueGetter(st)}";
+                        : ByteOrdered(st, $"({CSharpTypeMapper.SimpleCSharpType(st)}) _value.{PlcValueGetter(st)}", le);
                     if (st.BaseType is SimpleTypeReference.Base.String)
                     {
                         c.Line($"writeBuffer.WriteString(\"{sf.Name}\", {st.SizeInBits}, \"{FieldEncoding(sf)}\", {getter});");
@@ -1371,6 +1393,29 @@ namespace org.apache.plc4net.tools.codegen.output
                     }
                     break;
             }
+        }
+
+        /// <summary>Wraps a read / write value expression so a
+        /// <c>bigEndian == false</c> frame is byte-swapped. A no-op unless the
+        /// dataIo carries the <c>bigEndian</c> flag and the type is a
+        /// multi-byte number.</summary>
+        private static string ByteOrdered(TypeReference type, string valueExpr, bool le)
+        {
+            if (!le || type is not SimpleTypeReference s
+                || s.SizeInBits < 16 || s.SizeInBits % 8 != 0
+                || s.BaseType is not (SimpleTypeReference.Base.UInt or SimpleTypeReference.Base.Int
+                    or SimpleTypeReference.Base.Float or SimpleTypeReference.Base.UFloat))
+            {
+                return valueExpr;
+            }
+            var swapped = s.BaseType switch
+            {
+                SimpleTypeReference.Base.Float or SimpleTypeReference.Base.UFloat => s.SizeInBits <= 32
+                    ? $"BitConverter.Int32BitsToSingle(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits({valueExpr})))"
+                    : $"BitConverter.Int64BitsToDouble(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits({valueExpr})))",
+                _ => $"System.Buffers.Binary.BinaryPrimitives.ReverseEndianness({valueExpr})",
+            };
+            return $"(bigEndian ? {valueExpr} : {swapped})";
         }
 
         private string DataIoFieldLength(Field f, CSharpExpressionRenderer r)
@@ -1604,7 +1649,13 @@ namespace org.apache.plc4net.tools.codegen.output
         // ── helpers ─────────────────────────────────────────────
 
         private string ReadFieldValue(Field f, CSharpExpressionRenderer r) =>
-            CSharpTypeMapper.ReadCall(f.Type, f.Name, ComplexArgs(f.Type, r));
+            f.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.VString, LengthExpression: { } len }
+                ? $"readBuffer.ReadString(\"{f.Name}\", (int) ({r.Render(len)}), {CSharpTypeMapper.EncodingExpr(VStringEncoding(f))})"
+                : CSharpTypeMapper.ReadCall(f.Type, f.Name, ComplexArgs(f.Type, r));
+
+        private static string VStringEncoding(Field f) =>
+            (f.Type as SimpleTypeReference)?.Encoding
+            ?? (f.Attributes.TryGetValue("encoding", out var e) && e is StringLiteral s ? s.Value : "UTF8");
 
         /// <summary>Reads an <c>enum</c> field. With a key accessor
         /// (<c>[enum TransportSize transportSize code]</c>) the wire value is

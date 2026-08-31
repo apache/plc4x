@@ -34,8 +34,18 @@ namespace org.apache.plc4net.tools.codegen
         /// <summary>
         /// Parses the content of an mspec file and returns the parse tree root.
         /// </summary>
+        /// <summary>
+        /// The empty-string literal <c>''</c> - which the shared expression
+        /// grammar's <c>TICK innerExpression TICK</c> rule cannot match (the
+        /// inner is not optional) - rewritten to a sentinel the model builder
+        /// maps back to <c>""</c>. It appears only in knx-master-data.mspec's
+        /// <c>KnxDatapointType</c> table, for the IEC-type rows with no DPST id.
+        /// </summary>
+        public const string EmptyStringSentinel = "__plc4net_empty_string__";
+
         public static MSpecParser.FileContext Read(string mspecContent, bool strict = true)
         {
+            mspecContent = mspecContent.Replace("''", "'" + EmptyStringSentinel + "'");
             var inputStream = new AntlrInputStream(mspecContent);
             var lexer = new MSpecLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);

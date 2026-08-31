@@ -178,6 +178,23 @@ namespace org.apache.plc4net.spi.test.codegen
         }
 
         [Fact]
+        public void A_vstring_field_uses_its_run_time_length_expression()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type T
+    [simple uint 16 len]
+    [simple vstring 'len * 8' text stringEncoding='""UTF8""']
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("public string Text { get; }", code);
+            Assert.Contains("readBuffer.ReadString(\"text\", (int) ((len * 8)), System.Text.Encoding.UTF8)", code);
+            Assert.Contains("writeBuffer.WriteString(\"text\", (int) ((Len * 8)), \"UTF8\", Text)", code);
+            Assert.Contains("lengthInBits += ((Len * 8));", code);
+        }
+
+        [Fact]
         public void The_real_modbus_mspec_generates_without_throwing()
         {
             var repoRoot = RepoPaths.FindRepoRoot();

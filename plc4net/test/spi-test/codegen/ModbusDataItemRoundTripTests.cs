@@ -65,6 +65,11 @@ namespace org.apache.plc4net.spi.test.codegen
             { "REAL x2",          "REAL",   "3fc00000bfc00000", 2,            true },
             { "CHAR x2",          "CHAR",   "4142",           2,              true },
             { "WCHAR x2",         "WCHAR",  "00410042",       2,              true },
+            // bigEndian == false -> the multi-byte value is little-endian on the wire.
+            { "WORD LE",          "WORD",   "3412",           1,              false },
+            { "DINT LE",          "DINT",   "04030201",       1,              false },
+            { "REAL LE",          "REAL",   "0000c03f",       1,              false },
+            { "UINT x2 LE",       "UINT",   "01000200",       2,              false },
         };
 
         [Theory]
@@ -110,6 +115,18 @@ namespace org.apache.plc4net.spi.test.codegen
 
             var chars = DataItem.StaticParse(new ReadBuffer(FromHex("4142")), ModbusDataType.CHAR, 2, true);
             Assert.Equal("AB", string.Concat(chars.GetList().Select(v => v.GetString())));
+        }
+
+        [Fact]
+        public void Little_endian_and_big_endian_decode_the_same_value()
+        {
+            // 0x1234 as a WORD: "1234" big-endian, "3412" little-endian.
+            Assert.Equal((ushort) 0x1234,
+                DataItem.StaticParse(new ReadBuffer(FromHex("1234")), ModbusDataType.WORD, 1, true).GetUshort());
+            Assert.Equal((ushort) 0x1234,
+                DataItem.StaticParse(new ReadBuffer(FromHex("3412")), ModbusDataType.WORD, 1, false).GetUshort());
+            Assert.Equal(1.5f,
+                DataItem.StaticParse(new ReadBuffer(FromHex("0000c03f")), ModbusDataType.REAL, 1, false).GetFloat());
         }
 
         // ── helpers ─────────────────────────────────────────────

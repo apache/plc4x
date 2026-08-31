@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **322** |
-| Passing | 322 |
+| Total test cases | **328** |
+| Passing | 328 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,7 +37,7 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 321 | SPI framework, value model, bit/buffer I/O, transports, Modbus driver, S7 driver, code-gen pipeline, Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/spi-test` | `plc4net-spi-test` | 327 | SPI framework, value model, bit/buffer I/O, transports, Modbus driver, S7 driver, code-gen pipeline, Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
 | `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 1 | KNX DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following
@@ -194,7 +194,7 @@ test vectors derive from Wireshark captures of real S7-1500 communication.
 | mspec parser, testsuite loader | ~7 | `spi-test/codegen/` (MspecParserTests, TestsuiteRunnerTests) |
 | **Modbus round-trip** — the six shared TCP `ParserSerializerTestsuite.xml` vectors, parsed and serialized back byte-identical through the generated model | 7 | `spi-test/codegen/ModbusGeneratedRoundTripTests.cs` |
 | **S7 round-trip** — the eleven shared `ParserSerializerTestsuite.xml` vectors (TPKT → COTP → S7 message → parameter / payload), parsed and serialized back byte-identical through the generated model | 12 | `spi-test/codegen/S7GeneratedRoundTripTests.cs` |
-| **`DataItem` `dataIo` round-trip** — the generated `IPlcValue` codec: S7 keyed on `dataProtocolId`, Modbus keyed on `dataType` / `numberOfValues` / `bigEndian`. Every S7 case round-trips byte-identical from a hand-built IEC-61131 vector — scalars (incl. negative / NaN / ±Inf floats), strings, and the whole TIA date / time family (`S5TIME` canonicalisation, the Siemens epoch, BCD, nanosecond-exact `LTIME` / `DTL`), with value-level assertions on each. Modbus covers the scalar cases and the `numberOfValues > 1` list cases (a `PlcList` of the wrapped primitive) | 40 + 22 | `spi-test/codegen/{S7,Modbus}DataItemRoundTripTests.cs` |
+| **`DataItem` `dataIo` round-trip** — the generated `IPlcValue` codec: S7 keyed on `dataProtocolId`, Modbus keyed on `dataType` / `numberOfValues` / `bigEndian`. Every S7 case round-trips byte-identical from a hand-built IEC-61131 vector — scalars (incl. negative / NaN / ±Inf floats), strings, and the whole TIA date / time family (`S5TIME` canonicalisation, the Siemens epoch, BCD, nanosecond-exact `LTIME` / `DTL`), with value-level assertions on each. Modbus covers the scalar and `numberOfValues > 1` list cases (a `PlcList` of the wrapped primitive), and the little-endian variant (`bigEndian` false → the multi-byte value is byte-swapped) | 40 + 27 | `spi-test/codegen/{S7,Modbus}DataItemRoundTripTests.cs` |
 
 > The generated Modbus and S7 models are compiled for real by
 > `plc4net-driver-modbus` / `plc4net-driver-s7`, so a bad emit is a build

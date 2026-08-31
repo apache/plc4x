@@ -344,7 +344,16 @@ namespace org.apache.plc4net.tools.codegen
                 _ => (SimpleTypeReference.Base.UInt, size),
             };
 
-            return new SimpleTypeReference { BaseType = baseType, SizeInBits = bits };
+            return new SimpleTypeReference
+            {
+                BaseType = baseType,
+                SizeInBits = bits,
+                // `vstring 'expr'` - the length in bits is a run-time expression
+                // (ADS: `vstring 'stringLength * 8' value`).
+                LengthExpression = baseType == SimpleTypeReference.Base.VString && dt.length != null
+                    ? ParseExpression(dt.length)
+                    : null,
+            };
         }
 
         /// <summary>Promotes a <see cref="ComplexTypeReference"/> to an

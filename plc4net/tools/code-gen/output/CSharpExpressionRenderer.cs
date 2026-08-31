@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using org.apache.plc4net.tools.codegen;
 using org.apache.plc4net.tools.codegen.model.terms;
 
 namespace org.apache.plc4net.tools.codegen.output
@@ -135,6 +136,11 @@ namespace org.apache.plc4net.tools.codegen.output
 
         private string RenderVariable(VariableLiteral v)
         {
+            if (v.Name == MspecReader.EmptyStringSentinel && !v.IsCall && v.Child == null)
+            {
+                return "\"\"";
+            }
+
             string head;
             if (v.IsCall && RenderBuiltin(v) is { } expanded)
             {
