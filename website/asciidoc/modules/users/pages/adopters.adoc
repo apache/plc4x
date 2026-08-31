@@ -46,6 +46,7 @@ a|image::users/companies/logo-pragmatic-minds.svg[pm, 200, 200] |https://www.pra
 
 a|image::users/companies/logo_record_evolution_single_dark_bgfont.png[re, 200, 200]|https://www.record-evolution.de/[Record Evolution GmbH^,opts=nofollow] | Iot / Industry 4.0 / Data Science |We developed a platform for IoT development and Data Science. We are using PLC4X to enable IoT devices in our platform to extract data from PLCs of different vendors, using different protocols.
 
+a|image::users/companies/logo-toddysoft.png[toddysoft, 200, 159] |https://toddysoft.com/[ToddySoft GmbH,opts=nofollow] | Iot / Industry 4.0 / Data Science | We're building a commercial driver-suite which is based on the PLC4X API and using the core PLC4X principles. Based on these drivers we also provide integration modules for various existing industry platforms.
 
 // TODO: Add your company in alphabetical order ...
 
