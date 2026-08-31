@@ -17,19 +17,22 @@
  * under the License.
  */
 
-namespace org.apache.plc4net.messages
+using System;
+
+namespace org.apache.plc4net.exceptions
 {
-    /// <summary>
-    /// Builds requests for reading values from a PLC
-    /// </summary>
-    public interface IPlcReadRequestBuilder: IPlcRequestBuilder<IPlcReadRequest>
-    {
-        /// <summary>
-        /// Add an item to the request
-        /// </summary>
-        /// <param name="name">Name of the field to add</param>
-        /// <param name="fieldQuery">Query string for the field parameter</param>
-        /// <returns>Request builder to allow fluent API calls</returns>
-        IPlcReadRequestBuilder AddItem(string name, string fieldQuery);
+    public class PlcInvalidFieldException : PlcException
+    {        
+        public PlcInvalidFieldException()
+        {
+        }
+
+        public PlcInvalidFieldException(string message) : base(message)
+        {
+        }
+
+        public PlcInvalidFieldException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }

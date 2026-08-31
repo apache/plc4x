@@ -17,33 +17,12 @@
  * under the License.
  */
 
-using System.Collections.Generic;
-using org.apache.plc4net.model;
-using org.apache.plc4net.types;
-
 namespace org.apache.plc4net.messages
 {
     /// <summary>
-    /// Interface for responses to requests realted to
-    /// a specific PLC field
+    /// Response for write requests <see cref="IPlcWriteRequest"/>
     /// </summary>
-    public interface IPlcFieldResponse: IPlcResponse
+    public interface IPlcWriteResponse : IPlcResponse
     {
-        /// <summary>
-        /// Enumeration of fields in the response
-        /// </summary>
-        IEnumerable<string> FieldNames { get; }
-
-        /// <summary>
-        /// Get a field by name
-        /// </summary>
-        /// <param name="name">Name of the field to retrieve</param>
-        /// <returns>Field with the given name</returns>
-        IPlcField GetFieldByName(string name);
-
-        /// <summary>
-        /// Get the response code from the PLC
-        /// </summary>
-        PlcResponseCode ResponseCode { get; }
     }
 }

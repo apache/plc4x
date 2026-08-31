@@ -17,13 +17,26 @@
  * under the License.
  */
 
+using System.Collections.Generic;
+using org.apache.plc4net.model;
+
 namespace org.apache.plc4net.messages
 {
     /// <summary>
-    /// Interface for requests to subscribe to value changes
+    /// Response to a <see cref="IPlcSubscriptionRequest"/>
     /// </summary>
-    public interface IPlcSubscriptionRequest: IPlcFieldRequest
+    public interface IPlcSubscriptionResponse: IPlcTagResponse
     {
+        /// <summary>
+        /// Get the handle for the subscription with the given name
+        /// </summary>
+        /// <param name="name">Name of the subscription</param>
+        /// <returns>Subscription handle</returns>
+        IPlcSubscriptionHandle GetSubscriptionHandle(string name);
 
+        /// <summary>
+        /// Get all subscription handles
+        /// </summary>
+        IEnumerable<IPlcSubscriptionHandle> SubscriptionHandles { get; }
     }
 }

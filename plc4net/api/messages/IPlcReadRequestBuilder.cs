@@ -17,30 +17,19 @@
  * under the License.
  */
 
-using System;
-using System.Runtime.Serialization;
-
-namespace org.apache.plc4net.exceptions
+namespace org.apache.plc4net.messages
 {
-    [Serializable]
-    public class PlcInvalidFieldException : PlcException
-    {        
-        public PlcInvalidFieldException()
-        {
-        }
-
-        public PlcInvalidFieldException(string message) : base(message)
-        {
-        }
-
-        public PlcInvalidFieldException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected PlcInvalidFieldException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
-        }
+    /// <summary>
+    /// Builds requests for reading values from a PLC
+    /// </summary>
+    public interface IPlcReadRequestBuilder: IPlcRequestBuilder<IPlcReadRequest>
+    {
+        /// <summary>
+        /// Add a tag address to the read request.
+        /// </summary>
+        /// <param name="name">Name of the tag to read</param>
+        /// <param name="tagAddress">Address string for the tag</param>
+        /// <returns>Request builder to allow fluent API calls</returns>
+        IPlcReadRequestBuilder AddTagAddress(string name, string tagAddress);
     }
 }

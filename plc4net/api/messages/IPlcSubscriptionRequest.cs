@@ -17,34 +17,13 @@
  * under the License.
  */
 
-using System;
-using System.Runtime.Serialization;
-
-namespace org.apache.plc4net.exceptions
+namespace org.apache.plc4net.messages
 {
     /// <summary>
-    /// Exception raised when the connection to a
-    /// PLC fails
+    /// Interface for requests to subscribe to value changes
     /// </summary>
-    [Serializable]
-    public class PlcConnectionException : PlcException
+    public interface IPlcSubscriptionRequest: IPlcTagRequest
     {
-        public PlcConnectionException()
-        {
-        }
 
-        public PlcConnectionException(string message) : base(message)
-        {
-        }
-
-        public PlcConnectionException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected PlcConnectionException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

@@ -35,100 +35,100 @@ namespace org.apache.plc4net.messages
         /// <summary>
         /// Add item with bool value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params bool[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params bool[] values);
         
         /// <summary>
         /// Add item with byte value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params byte[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params byte[] values);
 
         /// <summary>
         /// Add item with short value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params short[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params short[] values);
         
         /// <summary>
         /// Add item with int value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params int[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params int[] values);
 
         /// <summary>
         /// Add item with long value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params long[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params long[] values);
 
         /// <summary>
         /// Add item with float value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params float[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params float[] values);
 
         /// <summary>
         /// Add item with double value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params double[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params double[] values);
 
         /// <summary>
         /// Add item with Decimal value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params Decimal[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params Decimal[] values);
 
         /// <summary>
         /// Add item with string value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params string[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params string[] values);
 
         /// <summary>
         /// Add item with DateTime value
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem(string name, string fieldQuery, params DateTime[] values);
+        IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params DateTime[] values);
 
         /// <summary>
         /// Add item with value of generic type
         /// </summary>
-        /// <param name="name">Identifying name of the field</param>
-        /// <param name="fieldQuery">Query string for the field</param>
+        /// <param name="name">Identifying name of the tag</param>
+        /// <param name="fieldQuery">Query string for the tag</param>
         /// <param name="values">Values to set</param>        
         /// <returns>Own instance to allow Fluid API calls</returns>
-        IPlcWriteRequestBuilder AddItem<T>(string name, string fieldQuery, params T[] values);
+        IPlcWriteRequestBuilder AddTag<T>(string name, string tagAddress, params T[] values);
     }
 }

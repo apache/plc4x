@@ -17,36 +17,26 @@
  * under the License.
  */
 
-using System.Collections.Generic;
-using org.apache.plc4net.model;
+using System;
 
-namespace org.apache.plc4net.messages
+namespace org.apache.plc4net.exceptions
 {
     /// <summary>
-    /// Request for certain fields inside the PLC
+    /// Exception raised when the connection to a
+    /// PLC fails
     /// </summary>
-    public interface IPlcFieldRequest: IPlcRequest
+    public class PlcConnectionException : PlcException
     {
-        /// <summary>
-        /// Number of fields in the request
-        /// </summary>
-        int FieldCount { get; }
+        public PlcConnectionException()
+        {
+        }
 
-        /// <summary>
-        /// Enumeration of field names
-        /// </summary>
-        IEnumerable<string> FieldNames { get; }
+        public PlcConnectionException(string message) : base(message)
+        {
+        }
 
-        /// <summary>
-        /// Get a field inside the request by its name
-        /// </summary>
-        /// <param name="name">Name of the PLC field to return</param>
-        /// <returns></returns>
-        IPlcField GetFieldByName(string name);
-
-        /// <summary>
-        /// Returns all fields inside the request
-        /// </summary>
-        IEnumerable<IPlcField> Fields { get; }
+        public PlcConnectionException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }

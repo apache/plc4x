@@ -17,34 +17,36 @@
  * under the License.
  */
 
-using System;
-using System.Runtime.Serialization;
+using System.Collections.Generic;
+using org.apache.plc4net.model;
 
-namespace org.apache.plc4net.exceptions
+namespace org.apache.plc4net.messages
 {
     /// <summary>
-    /// General exception that gets thrown when errors while communicating
-    /// with PLC
+    /// Request for certain tags inside the PLC
     /// </summary>
-    [Serializable]
-    public class PlcException : Exception
-    {        
-        public PlcException()
-        {
-        }
+    public interface IPlcTagRequest: IPlcRequest
+    {
+        /// <summary>
+        /// Number of tags in the request
+        /// </summary>
+        int TagCount { get; }
 
-        public PlcException(string message) : base(message)
-        {
-        }
+        /// <summary>
+        /// Enumeration of tag names
+        /// </summary>
+        IEnumerable<string> TagNames { get; }
 
-        public PlcException(string message, Exception inner) : base(message, inner)
-        {
-        }
+        /// <summary>
+        /// Get a tag inside the request by its name
+        /// </summary>
+        /// <param name="name">Name of the PLC tag to return</param>
+        /// <returns></returns>
+        IPlcTag GetTagByName(string name);
 
-        protected PlcException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
-        }
-    }              
+        /// <summary>
+        /// Returns all tags inside the request
+        /// </summary>
+        IEnumerable<IPlcTag> Tags { get; }
+    }
 }

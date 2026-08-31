@@ -17,26 +17,26 @@
  * under the License.
  */
 
-using System.Collections.Generic;
-using org.apache.plc4net.model;
+using System;
 
-namespace org.apache.plc4net.messages
+namespace org.apache.plc4net.exceptions
 {
     /// <summary>
-    /// Response to a <see cref="IPlcSubscriptionRequest"/>
+    /// General exception that gets thrown when errors while communicating
+    /// with PLC
     /// </summary>
-    public interface IPlcSubscriptionResponse: IPlcFieldResponse
-    {
-        /// <summary>
-        /// Get the handle for the subscription with the given name
-        /// </summary>
-        /// <param name="name">Name of the subscription</param>
-        /// <returns>Subscription handle</returns>
-        IPlcSubscriptionHandle GetSubscriptionHandle(string name);
+    public class PlcException : Exception
+    {        
+        public PlcException()
+        {
+        }
 
-        /// <summary>
-        /// Get all subscription handles
-        /// </summary>
-        IEnumerable<IPlcSubscriptionHandle> SubscriptionHandles { get; }
+        public PlcException(string message) : base(message)
+        {
+        }
+
+        public PlcException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }
