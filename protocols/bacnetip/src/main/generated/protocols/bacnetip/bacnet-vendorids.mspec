@@ -1664,6 +1664,9 @@
   ['1651' LOGICALLY_US_LTD ['1651', '"Logically Us Ltd"']]
   ['1652' SOLABORATE_INCDBAHELLOCAREAI ['1652', '"Solaborate, Inc. d/b/a hellocare.ai"']]
   ['1653' LUMEN_RADIOAB ['1653', '"Lumen Radio AB"']]
+  ['1654' CORE_CONTROLS_AILLC ['1654', '"CoreControlsAi, LLC"']]
+  ['1655' MODUTROL_PTY_LTD ['1655', '"Modutrol Pty Ltd"']]
+  ['1656' KAESER_KOMPRESSORENSE ['1656', '"Kaeser Kompressoren SE"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

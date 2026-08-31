@@ -3311,6 +3311,12 @@ public enum BACnetVendorId {
 
   LUMEN_RADIOAB((int) 1653, (int) 1653, "Lumen Radio AB"),
 
+  CORE_CONTROLS_AILLC((int) 1654, (int) 1654, "CoreControlsAi, LLC"),
+
+  MODUTROL_PTY_LTD((int) 1655, (int) 1655, "Modutrol Pty Ltd"),
+
+  KAESER_KOMPRESSORENSE((int) 1656, (int) 1656, "Kaeser Kompressoren SE"),
+
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
   private static final Map<Integer, BACnetVendorId> map;

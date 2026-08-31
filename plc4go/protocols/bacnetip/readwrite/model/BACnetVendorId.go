@@ -1686,6 +1686,9 @@ const (
 	BACnetVendorId_LOGICALLY_US_LTD                                                             BACnetVendorId = 1651
 	BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI                                                 BACnetVendorId = 1652
 	BACnetVendorId_LUMEN_RADIOAB                                                                BACnetVendorId = 1653
+	BACnetVendorId_CORE_CONTROLS_AILLC                                                          BACnetVendorId = 1654
+	BACnetVendorId_MODUTROL_PTY_LTD                                                             BACnetVendorId = 1655
+	BACnetVendorId_KAESER_KOMPRESSORENSE                                                        BACnetVendorId = 1656
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3337,6 +3340,9 @@ func init() {
 		BACnetVendorId_LOGICALLY_US_LTD,
 		BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI,
 		BACnetVendorId_LUMEN_RADIOAB,
+		BACnetVendorId_CORE_CONTROLS_AILLC,
+		BACnetVendorId_MODUTROL_PTY_LTD,
+		BACnetVendorId_KAESER_KOMPRESSORENSE,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6242,6 +6248,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1653:
 		{ /* '1653' */
 			return 1653
+		}
+	case 1654:
+		{ /* '1654' */
+			return 1654
+		}
+	case 1655:
+		{ /* '1655' */
+			return 1655
+		}
+	case 1656:
+		{ /* '1656' */
+			return 1656
 		}
 	case 166:
 		{ /* '166' */
@@ -12837,6 +12855,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1653' */
 			return "Lumen Radio AB"
 		}
+	case 1654:
+		{ /* '1654' */
+			return "CoreControlsAi, LLC"
+		}
+	case 1655:
+		{ /* '1655' */
+			return "Modutrol Pty Ltd"
+		}
+	case 1656:
+		{ /* '1656' */
+			return "Kaeser Kompressoren SE"
+		}
 	case 166:
 		{ /* '166' */
 			return "Cooper Controls"
@@ -17980,6 +18010,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI, true
 	case 1653:
 		return BACnetVendorId_LUMEN_RADIOAB, true
+	case 1654:
+		return BACnetVendorId_CORE_CONTROLS_AILLC, true
+	case 1655:
+		return BACnetVendorId_MODUTROL_PTY_LTD, true
+	case 1656:
+		return BACnetVendorId_KAESER_KOMPRESSORENSE, true
 	case 166:
 		return BACnetVendorId_COOPER_CONTROLS, true
 	case 167:
@@ -21274,6 +21310,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SOLABORATE_INCDBAHELLOCAREAI, true
 	case "LUMEN_RADIOAB":
 		return BACnetVendorId_LUMEN_RADIOAB, true
+	case "CORE_CONTROLS_AILLC":
+		return BACnetVendorId_CORE_CONTROLS_AILLC, true
+	case "MODUTROL_PTY_LTD":
+		return BACnetVendorId_MODUTROL_PTY_LTD, true
+	case "KAESER_KOMPRESSORENSE":
+		return BACnetVendorId_KAESER_KOMPRESSORENSE, true
 	case "COOPER_CONTROLS":
 		return BACnetVendorId_COOPER_CONTROLS, true
 	case "DUKSAN_MECASYS_CO_LTD":
@@ -24640,6 +24682,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "SOLABORATE_INCDBAHELLOCAREAI"
 	case BACnetVendorId_LUMEN_RADIOAB:
 		return "LUMEN_RADIOAB"
+	case BACnetVendorId_CORE_CONTROLS_AILLC:
+		return "CORE_CONTROLS_AILLC"
+	case BACnetVendorId_MODUTROL_PTY_LTD:
+		return "MODUTROL_PTY_LTD"
+	case BACnetVendorId_KAESER_KOMPRESSORENSE:
+		return "KAESER_KOMPRESSORENSE"
 	case BACnetVendorId_COOPER_CONTROLS:
 		return "COOPER_CONTROLS"
 	case BACnetVendorId_DUKSAN_MECASYS_CO_LTD:
