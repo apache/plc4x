@@ -121,7 +121,9 @@ namespace org.apache.plc4net.tools.codegen.output
                     : s.SizeInBits <= 32 ? $"readBuffer.ReadInt({q}, {s.SizeInBits})"
                     : $"readBuffer.ReadLong({q}, {s.SizeInBits})",
                 SimpleTypeReference.Base.Float or SimpleTypeReference.Base.UFloat =>
-                    s.SizeInBits <= 32 ? $"readBuffer.ReadFloat({q}, 32)" : $"readBuffer.ReadDouble({q}, 64)",
+                    s.SizeInBits <= 16 ? $"readBuffer.ReadFloat({q}, 16)"
+                        : s.SizeInBits <= 32 ? $"readBuffer.ReadFloat({q}, 32)"
+                        : $"readBuffer.ReadDouble({q}, 64)",
                 SimpleTypeReference.Base.String =>
                     $"readBuffer.ReadString({q}, {s.SizeInBits}, {EncodingExpr(s.Encoding)})",
                 _ => throw new NotSupportedException($"No read for {s}"),
@@ -156,7 +158,8 @@ namespace org.apache.plc4net.tools.codegen.output
                             : s.SizeInBits <= 32 ? $"writeBuffer.WriteInt({q}, {s.SizeInBits}, {valueExpr})"
                             : $"writeBuffer.WriteLong({q}, {s.SizeInBits}, {valueExpr})",
                         SimpleTypeReference.Base.Float or SimpleTypeReference.Base.UFloat =>
-                            s.SizeInBits <= 32 ? $"writeBuffer.WriteFloat({q}, 32, {valueExpr})"
+                            s.SizeInBits <= 16 ? $"writeBuffer.WriteFloat({q}, 16, {valueExpr})"
+                                : s.SizeInBits <= 32 ? $"writeBuffer.WriteFloat({q}, 32, {valueExpr})"
                                 : $"writeBuffer.WriteDouble({q}, 64, {valueExpr})",
                         SimpleTypeReference.Base.String =>
                             $"writeBuffer.WriteString({q}, {s.SizeInBits}, \"{s.Encoding ?? "UTF8"}\", {valueExpr})",

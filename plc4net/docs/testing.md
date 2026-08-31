@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **328** |
-| Passing | 328 |
+| Total test cases | **337** |
+| Passing | 337 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,7 +37,7 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 327 | SPI framework, value model, bit/buffer I/O, transports, Modbus driver, S7 driver, code-gen pipeline, Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/spi-test` | `plc4net-spi-test` | 336 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports, Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
 | `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 1 | KNX DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following

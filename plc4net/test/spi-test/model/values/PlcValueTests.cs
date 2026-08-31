@@ -18,6 +18,8 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.spi.model.values;
 using Xunit;
@@ -137,6 +139,60 @@ namespace org.apache.plc4net.spi.test.model.values
             Assert.True(value.IsFloat());
             Assert.Equal(1.5f, value.GetFloat());
             Assert.Equal(1.5d, value.GetDouble(), 6);
+        }
+
+        [Fact]
+        public void Struct_exposes_its_members_through_the_interface()
+        {
+            // PlcStruct stored the dictionary but overrode none of the struct
+            // accessors, so IsStruct()/GetValue() answered off the base.
+            IPlcValue value = new PlcStruct(new Dictionary<string, IPlcValue>
+            {
+                ["control"] = new PlcBOOL(true),
+                ["level"] = new PlcUSINT(7),
+            });
+
+            Assert.True(value.IsStruct());
+            Assert.True(value.HasKey("control"));
+            Assert.False(value.HasKey("missing"));
+            Assert.True(value.GetValue("control").GetBool());
+            Assert.Equal((byte) 7, value.GetValue("level").GetByte());
+            Assert.Equal(new[] { "control", "level" }, value.GetKeys().OrderBy(k => k));
+        }
+
+        [Fact]
+        public void Structs_are_equal_regardless_of_member_order()
+        {
+            var a = new PlcStruct(new Dictionary<string, IPlcValue>
+            {
+                ["x"] = new PlcBOOL(true),
+                ["y"] = new PlcUSINT(1),
+            });
+            var b = new PlcStruct(new Dictionary<string, IPlcValue>
+            {
+                ["y"] = new PlcUSINT(1),
+                ["x"] = new PlcBOOL(true),
+            });
+
+            Assert.Equal(a, b);
+            Assert.Equal(a.GetHashCode(), b.GetHashCode());
+        }
+
+        [Fact]
+        public void Raw_byte_array_reads_back_and_compares_by_content()
+        {
+            // PlcRawByteArray discarded its bytes behind the base GetRaw() and
+            // compared by reference.
+            IPlcValue value = new PlcRawByteArray(new byte[] { 0x0A, 0x0B });
+
+            Assert.Equal(new byte[] { 0x0A, 0x0B }, value.GetRaw());
+            Assert.Equal(2, value.GetLength());
+            Assert.Equal(
+                new PlcRawByteArray(new byte[] { 0x0A, 0x0B }),
+                new PlcRawByteArray(new byte[] { 0x0A, 0x0B }));
+            Assert.NotEqual(
+                new PlcRawByteArray(new byte[] { 0x0A, 0x0B }),
+                new PlcRawByteArray(new byte[] { 0x0A, 0x0C }));
         }
     }
 }

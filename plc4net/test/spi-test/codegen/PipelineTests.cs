@@ -215,5 +215,141 @@ namespace org.apache.plc4net.spi.test.codegen
             Assert.Contains("model/ModbusPDU.cs", files.Keys);
             Assert.All(files.Values, src => Assert.Contains("DO NOT EDIT", src));
         }
+
+        // ── dataIo struct cases (KnxDatapoint / KnxProperty) ────
+
+        [Fact]
+        public void A_dataIo_struct_case_bundles_its_fields_into_a_PlcStruct()
+        {
+            var model = MspecModelBuilder.Build(@"
+[dataIo Composite(vstring kind)
+    [typeSwitch kind
+        ['SWITCH' Struct
+            [reserved uint 6 '0x00']
+            [simple   bit    control]
+            [simple   bit    onOff  ]
+        ]
+    ]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Composite.cs"];
+
+            Assert.DoesNotContain("NotImplementedException", code);
+            Assert.Contains("var _map = new System.Collections.Generic.Dictionary<string, IPlcValue>();", code);
+            Assert.Contains("_map[\"control\"] = new PlcBOOL((bool) control);", code);
+            Assert.Contains("_map[\"onOff\"] = new PlcBOOL((bool) onOff);", code);
+            Assert.Contains("return new PlcStruct(_map);", code);
+            // serialize reads each field back off the struct
+            Assert.Contains("_value.GetValue(\"control\").GetBool()", code);
+        }
+
+        [Fact]
+        public void A_dataIo_struct_case_with_a_byte_array_uses_PlcRawByteArray()
+        {
+            var model = MspecModelBuilder.Build(@"
+[dataIo Composite(vstring kind)
+    [typeSwitch kind
+        ['POLL' Struct
+            [array    byte   groupAddress count '2']
+            [simple   bit    disable          ]
+            [reserved uint 3 '0x00'            ]
+            [simple   uint 4 pollingSoftNr     ]
+        ]
+    ]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Composite.cs"];
+
+            Assert.DoesNotContain("NotImplementedException", code);
+            Assert.Contains("readBuffer.ReadByteArray(\"groupAddress\", (int) (2) * 8)", code);
+            Assert.Contains("_map[\"groupAddress\"] = new PlcRawByteArray(groupAddress);", code);
+            Assert.Contains("writeBuffer.WriteByteArray(\"groupAddress\", _value.GetValue(\"groupAddress\").GetRaw())", code);
+            Assert.Contains("lengthInBits += ((2) * 8);", code);
+        }
+
+        [Fact]
+        public void A_dataIo_case_with_no_discriminator_is_the_else_branch()
+        {
+            // KnxProperty ends with a `[* … List]` catch-all; emitting it as
+            // `else if (true)` left an unreachable fallback return (CS0162).
+            var model = MspecModelBuilder.Build(@"
+[dataIo Prop(KnxT kind, uint 8 len)
+    [typeSwitch kind
+        ['A' USINT
+            [simple uint 8 value]
+        ]
+        [       List
+            [array byte value count 'len']
+        ]
+    ]
+]
+[enum uint 8 KnxT ['1' A]]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Prop.cs"];
+
+            Assert.Contains("else\n", code.Replace("\r\n", "\n"));
+            Assert.DoesNotContain("else if (true)", code);
+            // the fallback return is only for a chain that can fall through
+            var parseBody = code.Split("StaticSerialize")[0];
+            Assert.DoesNotContain("return new PlcNULL();", parseBody);
+        }
+
+        [Fact]
+        public void An_external_enum_is_left_to_the_SPI()
+        {
+            var model = MspecModelBuilder.Build(@"
+[enum PlcValueType external='true']
+[enum uint 8 E(PlcValueType t) ['1' A ['BOOL']]]
+");
+            var files = new CSharpGenerator(model, "demo", "demo.readwrite").Generate();
+
+            Assert.DoesNotContain("model/PlcValueType.cs", files.Keys);
+            // and no accessor that would return the type we cannot see
+            Assert.DoesNotContain("GetT(this E value)", files["model/E.cs"]);
+        }
+
+        [Fact]
+        public void A_hyphenated_enum_id_round_trips_as_a_string_literal()
+        {
+            // 'DPST-1-1' lexes as `DPST - 1 - 1`; a string-typed parameter can
+            // only mean the literal text.
+            var model = MspecModelBuilder.Build(@"
+[enum uint 16 DptId(vstring id, string 8 code) ['1' FIRST ['DPST-1-1', '409']]]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/DptId.cs"];
+
+            Assert.Contains("\"DPST-1-1\"", code);
+            Assert.DoesNotContain("DPST - 1", code);
+            // a bare number for a string parameter is the literal too
+            Assert.Contains("\"409\"", code);
+        }
+
+        [Fact]
+        public void The_real_knx_mspec_generates_compilable_datapoints()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            if (repoRoot == null)
+            {
+                return;
+            }
+            var knxDir = Path.Combine(repoRoot,
+                "protocols", "knxnetip", "src", "main");
+            var model = MspecModelBuilder.BuildFiles(
+                Directory.GetFiles(Path.Combine(knxDir, "resources", "protocols", "knxnetip"), "*.mspec")
+                    .Concat(Directory.GetFiles(Path.Combine(knxDir, "generated", "protocols", "knxnetip"), "*.mspec"))
+                    .ToArray());
+            var files = new CSharpGenerator(
+                model, "knxnetip", "org.apache.plc4net.drivers.knxnetip.readwrite").Generate();
+
+            // external enum: not emitted
+            Assert.DoesNotContain("model/PlcValueType.cs", files.Keys);
+            // hyphenated id: a literal, not subtraction
+            Assert.Contains("\"DPST-1-1\"", files["model/KnxDatapointType.cs"]);
+            Assert.DoesNotContain("DPST - 1", files["model/KnxDatapointType.cs"]);
+            // struct dataIo cases populate the map
+            Assert.Contains("return new PlcStruct(_map);", files["model/KnxDatapoint.cs"]);
+            Assert.Contains("new PlcRawByteArray(groupAddress)", files["model/KnxProperty.cs"]);
+            Assert.DoesNotContain("NotImplementedException", files["model/KnxProperty.cs"]);
+        }
     }
 }

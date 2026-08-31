@@ -17,20 +17,35 @@
 // under the License.
 //
 
+using System;
+using System.Linq;
+
 namespace org.apache.plc4net.spi.model.values
 {
+    /// <summary>An opaque run of bytes - a KNX property's raw group address, a
+    /// datapoint field with no finer structure.</summary>
     public class PlcRawByteArray : PlcValueAdapter
     {
-        private byte[] value;
+        private readonly byte[] value;
 
         public PlcRawByteArray(byte[] value)
         {
-            this.value = value;
+            this.value = value ?? Array.Empty<byte>();
         }
-        
+
+        public override byte[] GetRaw()
+        {
+            return value;
+        }
+
+        public override int GetLength()
+        {
+            return value.Length;
+        }
+
         protected bool Equals(PlcRawByteArray other)
         {
-            return value == other.value;
+            return value.SequenceEqual(other.value);
         }
 
         public override bool Equals(object obj)
@@ -38,13 +53,18 @@ namespace org.apache.plc4net.spi.model.values
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return value.Equals(obj as byte[]);
+            return Equals((PlcRawByteArray) obj);
         }
 
         public override int GetHashCode()
         {
-            return value.GetHashCode();
+            var hash = 17;
+            foreach (var b in value)
+            {
+                hash = hash * 31 + b;
+            }
+
+            return hash;
         }
-        
     }
 }

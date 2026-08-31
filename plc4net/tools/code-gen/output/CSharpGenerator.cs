@@ -52,6 +52,12 @@ namespace org.apache.plc4net.tools.codegen.output
 
             foreach (var e in _protocol.Enums)
             {
+                // An external enum (PlcValueType) is hand-written in the SPI;
+                // emitting a stub here would shadow it with an empty type.
+                if (e.IsExternal)
+                {
+                    continue;
+                }
                 files[$"model/{e.Name}.cs"] = EmitEnum(e);
             }
             foreach (var t in _protocol.Types)
@@ -795,6 +801,12 @@ namespace org.apache.plc4net.tools.codegen.output
                 for (var ai = 0; ai < e.Arguments.Count; ai++)
                 {
                     var arg = e.Arguments[ai];
+                    // The accessor would return an external enum whose members
+                    // the generator cannot see; nothing consumes it, so skip it.
+                    if (IsExternalEnum(arg.Type))
+                    {
+                        continue;
+                    }
                     var rows = e.Values.Where(v => v.ConstantValues.Count > ai).ToList();
                     var nullable = IsValueType(arg.Type)
                         && rows.Any(v => v.ConstantValues[ai] is NullLiteral);
@@ -895,6 +907,22 @@ namespace org.apache.plc4net.tools.codegen.output
                             ? "\"\""
                             : "\"" + sv.Name + "\"";
                     }
+                    // A string-typed parameter table entry is always a literal, but
+                    // an unquoted one is parsed as an expression: a bare number
+                    // ('409') as an IntegerLiteral, a hyphenated id ('DPST-1-1') as
+                    // a '-' chain. Fold both back to the string they spell.
+                    if (term is StringLiteral strLit)
+                    {
+                        return "\"" + strLit.Value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                    }
+                    if (term is IntegerLiteral or FloatLiteral or BooleanLiteral)
+                    {
+                        return "\"" + term + "\"";
+                    }
+                    if (TryFlattenHyphenatedId(term, out var id))
+                    {
+                        return "\"" + id + "\"";
+                    }
                     return r.Render(term);
 
                 case SimpleTypeReference { IsIntegerLike: true } it:
@@ -908,6 +936,44 @@ namespace org.apache.plc4net.tools.codegen.output
                     return r.Render(term);
             }
         }
+
+        /// <summary>An mspec enum id like <c>'DPST-1-1'</c> lexes as
+        /// <c>DPST - 1 - 1</c>: the grammar has no hyphen in an identifier and no
+        /// bare string. Rebuild the original text from a subtraction chain whose
+        /// leaves are all bare names or integers - the only way a string-typed
+        /// parameter can carry a <c>-</c>.</summary>
+        private static bool TryFlattenHyphenatedId(Term term, out string id)
+        {
+            var parts = new List<string>();
+            id = null;
+            if (!Collect(term) || parts.Count < 2)
+            {
+                return false;
+            }
+            id = string.Join("-", parts);
+            return true;
+
+            bool Collect(Term t)
+            {
+                switch (t)
+                {
+                    case BinaryExpression { Operator: "-" } b:
+                        return Collect(b.Left) && Collect(b.Right);
+                    case VariableLiteral { Child: null, IsCall: false, Index.Count: 0 } v:
+                        parts.Add(v.Name);
+                        return true;
+                    case IntegerLiteral i:
+                        parts.Add(i.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        private bool IsExternalEnum(TypeReference t) =>
+            t is EnumTypeReference et
+            && _protocol.Enums.Any(e => e.Name == et.Name && e.IsExternal);
 
         private static bool IsValueType(TypeReference t) =>
             t is EnumTypeReference
@@ -998,14 +1064,22 @@ namespace org.apache.plc4net.tools.codegen.output
                 .ToList();
             var argNames = dio.Arguments.Select(a => Camel(a.Name)).ToList();
 
+            // A dataIo case with no discriminator values (KNX's KnxProperty) is
+            // the catch-all: it compiles to `else { … }`, and the trailing
+            // fallback `return` after it would be unreachable.
+            var caughtAll = dio.Cases.Count > 0 && IsWildcardCase(dio.Cases[^1]);
+
             c.Line($"public static IPlcValue StaticParse(ReadBuffer readBuffer{Comma(argDecls)})");
             c.Line("{");
             c.Indent();
             for (var i = 0; i < dio.Cases.Count; i++)
             {
-                EmitDataIoCase(c, dio, dio.Cases[i], helper, DataIoMode.Parse, i == 0);
+                EmitDataIoCase(c, dio, dio.Cases[i], helper, DataIoMode.Parse, i == 0, i == dio.Cases.Count - 1);
             }
-            c.Line("return new PlcNULL();");
+            if (!caughtAll)
+            {
+                c.Line("return new PlcNULL();");
+            }
             c.Outdent();
             c.Line("}");
             c.Line();
@@ -1015,7 +1089,7 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Indent();
             for (var i = 0; i < dio.Cases.Count; i++)
             {
-                EmitDataIoCase(c, dio, dio.Cases[i], helper, DataIoMode.Serialize, i == 0);
+                EmitDataIoCase(c, dio, dio.Cases[i], helper, DataIoMode.Serialize, i == 0, i == dio.Cases.Count - 1);
             }
             c.Outdent();
             c.Line("}");
@@ -1032,7 +1106,7 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("var lengthInBits = 0;");
             for (var i = 0; i < dio.Cases.Count; i++)
             {
-                EmitDataIoCase(c, dio, dio.Cases[i], helper, DataIoMode.Length, i == 0);
+                EmitDataIoCase(c, dio, dio.Cases[i], helper, DataIoMode.Length, i == 0, i == dio.Cases.Count - 1);
             }
             c.Line("return lengthInBits;");
             c.Outdent();
@@ -1047,8 +1121,15 @@ namespace org.apache.plc4net.tools.codegen.output
 
         private enum DataIoMode { Parse, Serialize, Length }
 
+        /// <summary>A dataIo case that lists no discriminator values - the
+        /// <c>[* …]</c> catch-all. KNX's <c>KnxProperty</c> ends with one.</summary>
+        private static bool IsWildcardCase(ComplexTypeDefinition cs) =>
+            cs.DiscriminatorValues == null
+            || cs.DiscriminatorValues.Count == 0
+            || cs.DiscriminatorValues.All(v => v == null);
+
         private void EmitDataIoCase(
-            CodeWriter c, DataIoTypeDefinition dio, ComplexTypeDefinition cs, string helper, DataIoMode mode, bool first)
+            CodeWriter c, DataIoTypeDefinition dio, ComplexTypeDefinition cs, string helper, DataIoMode mode, bool first, bool last = false)
         {
             var serialize = mode != DataIoMode.Parse;
             var synthetic = new ComplexTypeDefinition { Name = dio.Name };
@@ -1063,7 +1144,21 @@ namespace org.apache.plc4net.tools.codegen.output
             }
             var r = new CSharpExpressionRenderer(scope) { StaticHelperClass = helper };
 
-            c.Line($"{(first ? "if" : "else if")} ({DataIoCaseTest(dio, cs, r)})");
+            // The catch-all case compiles to `else { … }` (or just `{ … }` when
+            // it is the only case) so the compiler sees no unreachable fallback.
+            var test = DataIoCaseTest(dio, cs, r);
+            if (last && test == "true" && !first)
+            {
+                c.Line("else");
+            }
+            else if (last && test == "true")
+            {
+                // sole unconditional case: no wrapper needed
+            }
+            else
+            {
+                c.Line($"{(first ? "if" : "else if")} ({test})");
+            }
             c.Line("{");
             c.Indent();
             c.Line($"// {cs.Name}");
@@ -1079,8 +1174,19 @@ namespace org.apache.plc4net.tools.codegen.output
                            && dio.Arguments.Any(a => a.Name == "dataProtocolId")
                            && props.All(f => f is not ArrayField);
             var scalar = valueField is not (null or ArrayField) && ScalarPlcValueCases.Contains(cs.Name);
+            // A KnxDatapoint / KnxProperty composite case ([… Struct …]): each
+            // field is a plain simple field or a fixed-count byte array, so it
+            // maps to a PlcStruct keyed by name.
+            var structCase = cs.Name == "Struct"
+                             && props.Count > 0
+                             && props.All(f => f is SimpleField { Type: SimpleTypeReference }
+                                 || f is ArrayField
+                                 {
+                                     Type: SimpleTypeReference { BaseType: SimpleTypeReference.Base.Byte },
+                                     LoopType: ArrayField.Loop.Count,
+                                 });
 
-            if (!temporal && !scalar
+            if (!temporal && !scalar && !structCase
                 && !(listField?.Type is SimpleTypeReference && listField.LoopType == ArrayField.Loop.Count))
             {
                 c.Line($"throw new NotImplementedException(\"{dio.Name} '{cs.Name}' is not a shape the generator emits yet (design.md GAP-8)\");");
@@ -1101,6 +1207,9 @@ namespace org.apache.plc4net.tools.codegen.output
                 case DataIoMode.Parse when temporal:
                     EmitDataIoTemporalParse(c, cs, r);
                     break;
+                case DataIoMode.Parse when structCase:
+                    EmitDataIoStructParse(c, cs, r);
+                    break;
                 case DataIoMode.Parse when listField != null:
                     EmitDataIoListParse(c, listField, r, le);
                     break;
@@ -1114,6 +1223,9 @@ namespace org.apache.plc4net.tools.codegen.output
 
                 case DataIoMode.Serialize when temporal:
                     EmitDataIoTemporalSerialize(c, cs, helper);
+                    break;
+                case DataIoMode.Serialize when structCase:
+                    EmitDataIoStructSerialize(c, cs, r);
                     break;
                 case DataIoMode.Serialize when listField != null:
                     EmitDataIoListSerialize(c, listField, le);
@@ -1304,6 +1416,61 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("}");
         }
 
+        // ── dataIo struct cases (KnxDatapoint composites) ───────
+
+        /// <summary>Parses a <c>[… Struct …]</c> case: read each field, then
+        /// bundle the simple ones into a <c>PlcStruct</c> keyed by field name.
+        /// Mirrors plc4j's KNX <c>KnxDatapoint</c> struct branch.</summary>
+        private void EmitDataIoStructParse(CodeWriter c, ComplexTypeDefinition cs, CSharpExpressionRenderer r)
+        {
+            foreach (var f in cs.Fields)
+            {
+                switch (f)
+                {
+                    case ArrayField af:
+                        c.Line($"var {Camel(af.Name)} = readBuffer.ReadByteArray(\"{af.Name}\", (int) ({r.Render(af.LoopExpression)}) * 8);");
+                        break;
+                    default:
+                        EmitDataIoFieldParse(c, f, r);
+                        break;
+                }
+            }
+            c.Line("var _map = new System.Collections.Generic.Dictionary<string, IPlcValue>();");
+            foreach (var f in cs.Fields)
+            {
+                switch (f)
+                {
+                    case ArrayField af:
+                        c.Line($"_map[\"{af.Name}\"] = new PlcRawByteArray({Camel(af.Name)});");
+                        break;
+                    case SimpleField sf when sf.Type is SimpleTypeReference st:
+                        c.Line($"_map[\"{sf.Name}\"] = new {DataIoPlcWrapper(st)}(({CSharpTypeMapper.SimpleCSharpType(st)}) {Camel(sf.Name)});");
+                        break;
+                }
+            }
+            c.Line("return new PlcStruct(_map);");
+        }
+
+        private void EmitDataIoStructSerialize(CodeWriter c, ComplexTypeDefinition cs, CSharpExpressionRenderer r)
+        {
+            foreach (var f in cs.Fields)
+            {
+                switch (f)
+                {
+                    case ReservedField rf:
+                        c.Line($"{CSharpTypeMapper.WriteCall(rf.Type, "reserved", WithType(r.Render(rf.ReferenceValue), rf.Type))};");
+                        break;
+                    case ArrayField af:
+                        c.Line($"writeBuffer.WriteByteArray(\"{af.Name}\", _value.GetValue(\"{af.Name}\").GetRaw());");
+                        break;
+                    case SimpleField sf when sf.Type is SimpleTypeReference st:
+                        var v = $"({CSharpTypeMapper.SimpleCSharpType(st)}) _value.GetValue(\"{sf.Name}\").{PlcValueGetter(st)}";
+                        c.Line($"{CSharpTypeMapper.WriteCall(sf.Type, sf.Name, v)};");
+                        break;
+                }
+            }
+        }
+
         /// <summary>The <c>Plc…</c> wrapper for one element of a dataIo list,
         /// keyed on the wire type (<c>bit</c> → <c>PlcBOOL</c>, <c>int 16</c> →
         /// <c>PlcINT</c>, <c>string 16</c> → <c>PlcWCHAR</c>, …).</summary>
@@ -1425,6 +1592,9 @@ namespace org.apache.plc4net.tools.codegen.output
                 case ReservedField or SimpleField:
                     var bits = CSharpTypeMapper.FixedBitLength(f.Type);
                     return bits >= 0 ? bits.ToString() : null;
+                case ArrayField { LoopType: ArrayField.Loop.Count } af:
+                    // a fixed-count byte array in a struct case
+                    return $"(({r.Render(af.LoopExpression)}) * 8)";
                 case ManualField mf:
                     // A dataIo manual length expression is already in bits
                     // (plc4j's DataItem: `(stringLength * 8) + 16`).

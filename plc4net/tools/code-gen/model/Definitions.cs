@@ -153,6 +153,13 @@ namespace org.apache.plc4net.tools.codegen.model
         public List<Argument> Arguments { get; } = new List<Argument>();
 
         public List<EnumValue> Values { get; } = new List<EnumValue>();
+
+        /// <summary><c>[enum PlcValueType external='true']</c>: the type lives
+        /// outside the mspec (hand-written in the SPI). The generator emits no
+        /// file for it and skips any accessor that would return it.</summary>
+        public bool IsExternal =>
+            GetAttribute("external") is terms.BooleanLiteral { Value: true }
+            || GetAttribute("external") is terms.StringLiteral { Value: "true" };
     }
 
     /// <summary>One constant in an enum.</summary>
