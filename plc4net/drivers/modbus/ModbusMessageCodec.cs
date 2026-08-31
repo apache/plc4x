@@ -1,0 +1,62 @@
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using System;
+using org.apache.plc4net.drivers.modbus.messages;
+using org.apache.plc4net.spi.drivers;
+using org.apache.plc4net.spi.generation;
+using org.apache.plc4net.spi.transports;
+
+namespace org.apache.plc4net.drivers.modbus
+{
+    /// <summary>
+    /// Modbus TCP message codec — peeks the MBAP header to find the
+    /// frame length, then parses the complete ADU.
+    /// </summary>
+    public class ModbusMessageCodec : MessageCodecBase<ModbusADU>
+    {
+        public ModbusMessageCodec(ITransportInstance transport, Action<ModbusADU> handler)
+            : base("Modbus TCP", transport, handler)
+        {
+        }
+
+        /// <summary>
+        /// MBAP header: Transaction ID (2) + Protocol ID (2) + Length (2) = 6 bytes.
+        /// The Unit ID follows, but the Length field tells us the total remaining
+        /// bytes (UID + PDU), so we can compute the total frame size from the
+        /// header alone.
+        /// </summary>
+        protected override int GetMinimumHeaderSize() => 6;
+
+        protected override int CalculateTotalMessageSize(byte[] header, int availableBytes)
+        {
+            if (header.Length < 6) return -1;
+
+            // MBAP Length is at bytes 4-5 (big-endian), counting Unit ID + PDU.
+            var payloadLength = (ushort)((header[4] << 8) | header[5]);
+            // Total: 6-byte MBAP header + payload (UID + PDU).
+            return 6 + payloadLength;
+        }
+
+        protected override ModbusADU ParseMessage(ReadBuffer readBuffer)
+        {
+            return ModbusADU.StaticParse(readBuffer, false);
+        }
+    }
+}
