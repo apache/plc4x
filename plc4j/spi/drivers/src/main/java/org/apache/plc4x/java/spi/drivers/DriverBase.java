@@ -29,10 +29,7 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.types.OptionType;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.ConfigurationFactory;
-import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.config.annotations.Description;
-import org.apache.plc4x.java.spi.config.annotations.Required;
-import org.apache.plc4x.java.spi.config.annotations.Since;
+import org.apache.plc4x.java.spi.config.annotations.*;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.DoubleDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.FloatDefaultValue;
@@ -373,7 +370,9 @@ public abstract class DriverBase implements PlcDriver {
         Since sinceAnnotation = field.getAnnotation(Since.class);
         String since = (sinceAnnotation != null) ? sinceAnnotation.value() : null;
 
-        return new DefaultOption(key, type, description, required, defaultValue, since);
+        boolean secret = field.getAnnotation(Secret.class) != null;
+
+        return new DefaultOption(key, type, description, required, defaultValue, since, secret);
     }
 
     private static OptionType mapOptionType(Class<?> fieldType) {

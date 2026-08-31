@@ -31,15 +31,22 @@ public class DefaultOption implements Option {
     private final boolean required;
     private final Object defaultValue;
     private final String since;
+    private final boolean secret;
 
     public DefaultOption(String key, OptionType type, String description, boolean required,
                          Object defaultValue, String since) {
+        this(key, type, description, required, defaultValue, since, false);
+    }
+
+    public DefaultOption(String key, OptionType type, String description,
+                         boolean required, Object defaultValue, String since, boolean secret) {
         this.key = key;
         this.type = type;
         this.description = description;
         this.required = required;
         this.defaultValue = defaultValue;
         this.since = since;
+        this.secret = secret;
     }
 
     @Override
@@ -70,6 +77,11 @@ public class DefaultOption implements Option {
     @Override
     public Optional<String> getSince() {
         return Optional.ofNullable(since);
+    }
+
+    @Override
+    public boolean isSecret() {
+        return secret;
     }
 
 }
