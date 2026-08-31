@@ -42,6 +42,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\drivers\knxnetip\knxnetip.csproj" />
+    <ProjectReference Include="..\..\spi\spi.csproj" />
+    <ProjectReference Include="..\..\transports\udp\udp.csproj" />
   </ItemGroup>
 
 </Project>

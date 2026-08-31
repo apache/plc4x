@@ -100,12 +100,20 @@ jobs:
           plc4net/drivers/s7/src/drivers/s7/readwrite
           org.apache.plc4net.drivers.s7.readwrite
 
+      - name: Regenerate the KNXnet/IP model
+        run: >
+          dotnet run --project plc4net/tools/code-gen --configuration Release --
+          knxnetip
+          "protocols/knxnetip/src/main/resources/protocols/knxnetip;protocols/knxnetip/src/main/generated/protocols/knxnetip"
+          plc4net/drivers/knxnetip/src/drivers/knxnetip/readwrite
+          org.apache.plc4net.drivers.knxnetip.readwrite
+
       - name: Fail if the generated model drifted
         # `git diff --exit-code` alone misses a brand-new file the generator
         # started emitting, so stage first and diff the index.
         run: |
-          git add -A -- plc4net/drivers/modbus/src plc4net/drivers/s7/src
-          git diff --cached --exit-code -- plc4net/drivers/modbus/src plc4net/drivers/s7/src
+          git add -A -- plc4net/drivers/modbus/src plc4net/drivers/s7/src plc4net/drivers/knxnetip/src
+          git diff --cached --exit-code -- plc4net/drivers/modbus/src plc4net/drivers/s7/src plc4net/drivers/knxnetip/src
 
   test:
     name: "build + test"

@@ -28,10 +28,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\api\api.csproj" />
     <ProjectReference Include="..\..\spi\spi.csproj" />
+    <ProjectReference Include="..\..\transports\udp\udp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="plc4net-driver-knxnetip-test" />
   </ItemGroup>
 
 </Project>

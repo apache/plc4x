@@ -39,6 +39,7 @@
     <ProjectReference Include="..\..\api\api.csproj" />
     <ProjectReference Include="..\..\spi\spi.csproj" />
     <ProjectReference Include="..\..\transports\tcp\tcp.csproj" />
+    <ProjectReference Include="..\..\transports\udp\udp.csproj" />
     <ProjectReference Include="..\..\transports\test\test.csproj" />
     <ProjectReference Include="..\..\tools\code-gen\code-gen.csproj" />
     <ProjectReference Include="..\..\drivers\modbus\modbus.csproj" />
