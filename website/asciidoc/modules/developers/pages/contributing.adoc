@@ -67,6 +67,45 @@ image::contributing-github-create-pull-request.png[]
 If you click on this, we will receive a notification on your changes and can review them.
 We also can discuss your changes and have you perfect your pull request before we accept and merge it into PLC4X.
 
+=== AI-Assisted and AI-Generated Pull-Requests
+
+AI coding assistants have made it a lot easier to produce a pull-request, and the number of such
+pull-requests reaching us has been growing steadily.
+Please read this section before submitting one.
+
+PLC4X is maintained by a very small number of people.
+Reviewing a pull-request costs us far more time than generating one costs you: we have to
+understand the change, judge it against protocol specifications and hardware we may have to get
+out of the cupboard, check it for side effects in a polyglot monorepo, and take responsibility for
+it afterwards.
+Most of these AI-generated pull-requests are not wrong - they are simply arriving faster than the
+few of us can process them, and that has become a real source of stress for the project.
+
+We want to be explicit about the distinction we make:
+
+* If you are using AI to overcome a gap in your toolbox, you are very welcome.
+A typical example is an OT engineer with deep insight into a protocol but only rudimentary Java
+skills - that protocol knowledge is exactly what this project needs, and we are more than happy to
+provide mentoring to get the code side into shape.
+* If you are scanning open-source projects for arbitrary places to contribute in order to build up
+a "contribution reputation", please pick a different project.
+We do not have the review capacity to subsidise that.
+
+==== Please introduce yourself first
+
+Before we accept pull-requests from you, we expect you to subscribe to our developer mailing list
+`dev@plc4x.apache.org` and to introduce yourself there: who you are, what your background is, and
+what your interest in PLC4X is.
+See the xref:users:contact.adoc[Getting in Contact] page for how to subscribe.
+
+This is not a formality.
+It tells us whom we are working with, what you already know and where mentoring would help, and it
+is the point at which a contribution turns into a conversation instead of a queue item.
+
+Pull-requests submitted without such an introduction may be rejected.
+If such a pull-request contains a valid finding, we reserve the right to simply apply the proposed
+change ourselves, in order to avoid encouraging further drive-by AI submissions.
+
 === Keeping your fork up to date
 
 As we are continuously working on PLC4X and you created a copy of our repo, this will become out-of-date pretty soon.
