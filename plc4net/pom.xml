@@ -42,37 +42,43 @@
 
   <build>
     <plugins>
-      <!-- Copy the test-resources in here -->
+      <!--
+        A Visual Studio solution file cannot carry a license header: its
+        "Format Version" marker is positional and has to appear within the first
+        two lines, so anything prepended above it makes the file unreadable to
+        the .Net tooling.
+
+        The ANTLR side-car files emitted next to the generated parsers cannot
+        carry one either. A ".tokens" file is a bare "name=value" table with no
+        comment syntax at all, and a ".interp" file is a positional dump of the
+        serialized ATN, so any line prepended to either one is read as data and
+        corrupts the grammar. Both are regenerated from the ".g4" sources, which
+        do carry the header.
+      -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-protocol-test-suites</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.plc4x</groupId>
-                  <artifactId>plc4x-protocols-knxnetip</artifactId>
-                  <classifier>tests</classifier>
-                  <type>test-jar</type>
-                  <outputDirectory>${project.basedir}/drivers/knxnetip-test/resources</outputDirectory>
-                  <includes>**/*.xml</includes>
-                  <excludes>META-INF/**,org/**</excludes>
-                  <overWrite>true</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <ignorePermissions>true</ignorePermissions>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <inputExcludes combine.children="append">
+            <inputExclude>**/*.sln</inputExclude>
+            <inputExclude>**/generated/*.interp</inputExclude>
+            <inputExclude>**/generated/*.tokens</inputExclude>
+          </inputExcludes>
+        </configuration>
       </plugin>
 
-      <!-- Build the project -->
+      <!--
+        The reactor bridge: `./mvnw -Pwith-dotnet install` shells out to the
+        .NET SDK so the release build still covers this module. Day-to-day
+        development needs none of this - `dotnet build` / `dotnet test` on
+        plc4net.sln is the whole story, and CI (.github/workflows/dotnet-platform.yml)
+        runs no JDK and no Maven.
+
+        The protocol test-suite XML (ParserSerializerTestsuite.xml) used to be
+        unpacked here from the plc4x-protocols-knxnetip test-jar; it is now
+        checked in under test/knxnetip-test/resources/, so neither the unpack
+        step nor the test-jar dependency is needed.
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -95,71 +101,102 @@
               </arguments>
             </configuration>
           </execution>
+          <execution>
+            <id>dotnet-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <executable>dotnet</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>test</argument>
+                <argument>plc4net.sln</argument>
+                <argument>--configuration=Debug</argument>
+              </arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
   <profiles>
+    <!--
+      Regenerate the checked-in driver models from the mspec descriptions.
+      This used to run the Java plc4x-maven-plugin with languageName=C#; that
+      generator only ever emitted data classes (its io-template is
+      un-migrated Java and unregistered). It is replaced by the pure-.NET
+      generator under tools/code-gen: no JDK, no freemarker. Run it directly
+      with `dotnet run` on that project (protocol, mspec path, output dir,
+      namespace); this profile is only the reactor wrapper:
+
+        ./mvnw -P'with-dotnet,update-generated-code' -pl :plc4net install
+
+      knxnetip is not regenerated yet: its mspec spans three files including
+      the machine-generated knx-master-data.mspec, and dataIo emission is
+      still open (see docs/design.md).
+    -->
     <profile>
       <id>update-generated-code</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.plc4x.plugins</groupId>
-            <artifactId>plc4x-maven-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>generate-driver-knxnetip</id>
+                <id>generate-modbus</id>
                 <phase>generate-sources</phase>
                 <goals>
-                  <goal>generate-driver</goal>
+                  <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <protocolName>knxnetip</protocolName>
-                  <languageName>C#</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>${project.basedir}/drivers/knxnetip/src</outputDir>
-                  <options>
-                    <externalTypes>
-                      <PlcValueType>org.apache.plc4net.types</PlcValueType>
-                    </externalTypes>
-                  </options>
+                  <executable>dotnet</executable>
+                  <workingDirectory>${project.basedir}</workingDirectory>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>--project</argument>
+                    <argument>tools/code-gen</argument>
+                    <argument>--configuration</argument>
+                    <argument>Release</argument>
+                    <argument>--</argument>
+                    <argument>modbus</argument>
+                    <argument>${project.basedir}/../protocols/modbus/src/main/resources/protocols/modbus/modbus.mspec</argument>
+                    <argument>${project.basedir}/drivers/modbus/src/drivers/modbus/readwrite</argument>
+                    <argument>org.apache.plc4net.drivers.modbus.readwrite</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-s7</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>dotnet</executable>
+                  <workingDirectory>${project.basedir}</workingDirectory>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>--project</argument>
+                    <argument>tools/code-gen</argument>
+                    <argument>--configuration</argument>
+                    <argument>Release</argument>
+                    <argument>--</argument>
+                    <argument>s7</argument>
+                    <argument>${project.basedir}/../protocols/s7/src/main/resources/protocols/s7/s7.mspec</argument>
+                    <argument>${project.basedir}/drivers/s7/src/drivers/s7/readwrite</argument>
+                    <argument>org.apache.plc4net.drivers.s7.readwrite</argument>
+                  </arguments>
                 </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-cs</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-knxnetip</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 
