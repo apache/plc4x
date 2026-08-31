@@ -17,28 +17,36 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+
+  <!--
+    Properties shared by every PLC4Net project. Keeping them here means a
+    framework or version bump is a one-line change instead of a sweep over
+    every .csproj.
+  -->
+  <PropertyGroup>
+    <!--
+      net8.0 (LTS) replaces the previous net452 target. .NET Framework 4.5.2
+      went out of support in April 2022 and cannot be built on the Linux and
+      macOS CI runners, which is what kept PLC4Net off the CI matrix.
+    -->
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>annotations</Nullable>
+    <!-- The module builds warning-clean today; keep it that way in CI so a
+         later change cannot quietly regress it. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>org.apache.plc4net</RootNamespace>
+  </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
-    <RootNamespace>org.apache.plc4net</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Apache PLC4X</Authors>
     <Copyright>The Apache Software Foundation</Copyright>
     <PackageProjectUrl>https://plc4x.apache.org</PackageProjectUrl>
-    <Title>PLC4Net: Driver: KNXNet/IP</Title>
-    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <PackageVersion>0.8.0-SNAPSHOT</PackageVersion>
-    <LangVersion>11.0</LangVersion>
+    <!-- PackageLicenseUrl is deprecated (NU5125); the SPDX expression replaces it. -->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <!-- Overridden by the Maven build via -p:Version=${project.version}. -->
+    <Version>1.0.0-SNAPSHOT</Version>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\api\plc4net-api.csproj" />
-    <ProjectReference Include="..\..\spi\plc4net-spi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.13" />
-  </ItemGroup>
 
 </Project>
