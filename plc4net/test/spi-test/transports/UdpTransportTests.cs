@@ -132,12 +132,14 @@ namespace org.apache.plc4net.spi.test.transports
             var from = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
             _peer.ReceiveFrom(rx, ref from);
 
-            var first = new byte[3000];
+            // Different sizes so the buffered count changes observably once the
+            // second datagram is processed (avoids racing the receive loop).
+            var first = new byte[2000];
             var second = new byte[3000];
             second[0] = 0x06;
             second[1] = 0x10;
             _peer.SendTo(first, from);
-            Assert.True(WaitFor(() => instance.GetNumBytesAvailable() == 3000));
+            Assert.True(WaitFor(() => instance.GetNumBytesAvailable() == 2000));
             _peer.SendTo(second, from);
 
             // After the overflow the buffer holds exactly the second datagram,
