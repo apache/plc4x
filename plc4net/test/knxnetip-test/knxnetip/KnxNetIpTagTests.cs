@@ -20,6 +20,7 @@
 using System;
 using org.apache.plc4net.drivers.knxnetip;
 using org.apache.plc4net.drivers.knxnetip.readwrite.model;
+using org.apache.plc4net.exceptions;
 using Xunit;
 
 namespace org.apache.plc4net.test.knxnetip
@@ -60,6 +61,9 @@ namespace org.apache.plc4net.test.knxnetip
         [InlineData("not an address")]
         [InlineData("1/2/3/4")]
         [InlineData("1/2/3:NOPE")]
+        [InlineData("١/٢/٣")]          // Arabic-Indic digits: \d would match, [0-9] does not
+        [InlineData("１/２/３")]        // fullwidth digits
+        [InlineData("1/2/3\n")]        // trailing newline (\z, not $)
         public void Rejects_a_string_that_is_not_a_group_address(string address)
         {
             Assert.Throws<ArgumentException>(() => KnxNetIpTag.Parse(address));
@@ -75,9 +79,37 @@ namespace org.apache.plc4net.test.knxnetip
         }
 
         [Fact]
+        public void Encodes_a_two_level_and_a_free_level_address()
+        {
+            // 3/1801 -> main 3 (5 bits), sub 1801 (11 bits) = 0b00011_00111001001
+            Assert.Equal(new byte[] { 0x1F, 0x09 }, KnxNetIpTag.Parse("3/1801").ToWireAddress(2));
+            // 42 -> 16 bits
+            Assert.Equal(new byte[] { 0x00, 0x2A }, KnxNetIpTag.Parse("42").ToWireAddress(1));
+        }
+
+        [Theory]
+        [InlineData("32/1/1", 3)]   // main > 31
+        [InlineData("1/8/1", 3)]    // middle > 7
+        [InlineData("1/1/256", 3)]  // sub > 255
+        [InlineData("31/2048", 2)]  // 2-level sub > 2047
+        public void Rejects_an_out_of_range_segment_instead_of_truncating_it(string address, int levels)
+        {
+            var tag = KnxNetIpTag.Parse(address);
+            Assert.Throws<PlcInvalidFieldException>(() => tag.ToWireAddress(levels));
+        }
+
+        [Fact]
+        public void Rejects_a_tag_whose_level_count_differs_from_the_connection()
+        {
+            // A 3-level tag on a 2-level connection would silently drop the middle group.
+            Assert.Throws<PlcInvalidFieldException>(() => KnxNetIpTag.Parse("1/2/3").ToWireAddress(2));
+            Assert.Throws<PlcInvalidFieldException>(() => KnxNetIpTag.Parse("1/2").ToWireAddress(3));
+        }
+
+        [Fact]
         public void Encoding_a_wildcard_address_is_an_error()
         {
-            Assert.Throws<InvalidOperationException>(() => KnxNetIpTag.Parse("1/*/3").ToWireAddress(3));
+            Assert.Throws<PlcInvalidFieldException>(() => KnxNetIpTag.Parse("1/*/3").ToWireAddress(3));
         }
 
         [Fact]
@@ -86,6 +118,19 @@ namespace org.apache.plc4net.test.knxnetip
             var tag = KnxNetIpTag.Parse("2/*/*");
             Assert.True(tag.MatchesWireAddress(new byte[] { 0x12, 0x0C }, 3));   // 2/2/12
             Assert.False(tag.MatchesWireAddress(new byte[] { 0x1A, 0x0C }, 3));  // 3/2/12
+        }
+
+        [Fact]
+        public void Matches_an_inbound_wire_address_written_with_leading_zeros()
+        {
+            Assert.True(KnxNetIpTag.Parse("1/2/03").MatchesWireAddress(new byte[] { 0x0A, 0x03 }, 3));
+        }
+
+        [Fact]
+        public void MatchesWireAddress_tolerates_a_short_buffer()
+        {
+            Assert.False(KnxNetIpTag.Parse("1/2/3").MatchesWireAddress(new byte[] { 0x0A }, 3));
+            Assert.False(KnxNetIpTag.Parse("1/2/3").MatchesWireAddress(null, 3));
         }
 
         [Fact]

@@ -44,6 +44,7 @@
     <ProjectReference Include="..\..\tools\code-gen\code-gen.csproj" />
     <ProjectReference Include="..\..\drivers\modbus\modbus.csproj" />
     <ProjectReference Include="..\..\drivers\s7\s7.csproj" />
+    <ProjectReference Include="..\..\drivers\knxnetip\knxnetip.csproj" />
   </ItemGroup>
 
 </Project>
