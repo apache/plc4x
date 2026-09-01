@@ -94,11 +94,11 @@ func CastBACnetFileAccessMethod(structType any) BACnetFileAccessMethod {
 	return castFunc(structType)
 }
 
-func (m BACnetFileAccessMethod) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetFileAccessMethod) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetFileAccessMethod) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetFileAccessMethod) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

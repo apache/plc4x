@@ -247,8 +247,8 @@ func (m *_BACnetVTSession) GetPlx4xTypeName() string {
 	return "BACnetVTSession"
 }
 
-func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (localVtSessionId)
 	lengthInBits += m.LocalVtSessionId.GetLengthInBits(ctx)
@@ -262,7 +262,7 @@ func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetVTSession) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetVTSession) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

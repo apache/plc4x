@@ -78,7 +78,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: numberOfState
-    BACnetApplicationTagUnsignedInteger numberOfState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("numberOfState"));
+    BACnetApplicationTagUnsignedInteger numberOfState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("numberOfState"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagUnsignedInteger.class, numberOfState, WithOption.WithName("actualValue"));

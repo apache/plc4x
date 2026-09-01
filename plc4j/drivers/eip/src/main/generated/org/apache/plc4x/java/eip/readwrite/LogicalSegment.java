@@ -58,7 +58,7 @@ public class LogicalSegment extends PathSegment implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: segmentType
-    LogicalSegmentType segmentType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LogicalSegmentType) LogicalSegmentType.staticParse(readBuffer), readBuffer), WithOption.WithName("segmentType"));
+    LogicalSegmentType segmentType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LogicalSegmentType.class, LogicalSegmentType.staticParse(readBuffer)), readBuffer), WithOption.WithName("segmentType"));
 
     readBuffer.popContext();
     return new PathSegmentBuilderImpl(segmentType);

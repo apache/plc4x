@@ -34,6 +34,19 @@ public class ChunkFactory {
 
     public Chunk create(boolean asymmetric, boolean encrypted, boolean signed, SecurityPolicy securityPolicy,
         OpcuaProtocolLimits limits, X509Certificate localCertificate, X509Certificate remoteCertificate) {
+        return create(asymmetric, encrypted, signed, securityPolicy, limits, localCertificate, remoteCertificate,
+            certificateBytes(localCertificate).length);
+    }
+
+    /**
+     * @param sentCertificateSize number of bytes the {@code SenderCertificate} field occupies. That
+     *                            is the local certificate on its own, unless a CA-signed
+     *                            certificate travels together with the certificates that signed it,
+     *                            in which case the header grows accordingly.
+     */
+    public Chunk create(boolean asymmetric, boolean encrypted, boolean signed, SecurityPolicy securityPolicy,
+        OpcuaProtocolLimits limits, X509Certificate localCertificate, X509Certificate remoteCertificate,
+        int sentCertificateSize) {
 
         if (securityPolicy == SecurityPolicy.NONE) {
             return new Chunk(
@@ -64,7 +77,7 @@ public class ChunkFactory {
                 + "RSA certificate is available to encrypt the OpenSecureChannel request. Provide the server "
                 + "certificate via 'server-certificate-file', or use security-policy=NONE.");
         }
-        int localCertificateSize = asymmetric ? certificateBytes(localCertificate).length : 0;
+        int localCertificateSize = asymmetric ? sentCertificateSize : 0;
         int serverCertificateThumbprint = asymmetric ? certificateThumbprint(remoteCertificate).length : 0;
 
         int asymmetricSecurityHeaderSize = (12 + securityPolicy.getSecurityPolicyUri().length() + localCertificateSize + serverCertificateThumbprint);

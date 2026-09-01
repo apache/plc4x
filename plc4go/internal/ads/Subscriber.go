@@ -62,6 +62,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			symbolicTag := tag.(dirverModel.SymbolicPlcTag)
 			directTagPtr, err := m.driverContext.getDirectTagForSymbolTag(symbolicTag)
 			if err != nil {
+				m.log.Warn().Err(err).Str("tagName", tagName).Msg("error resolving symbolic tag for subscription")
 				subResults[tagName] = spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Wrap(err, "error resolving symbolic tag"))
 				continue
 			}
@@ -84,20 +85,18 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		)
 	}
 
-	// If this is a single item request, we can take a shortcut.
-	if len(subSubscriptionRequests) == 1 {
+	// If this is a single item request with a successfully resolved tag, we can take a shortcut.
+	// (Indexing by the request's first tag name would be wrong here: with multiple tags where
+	// all but one failed resolution, the surviving entry is not necessarily the first tag.)
+	if len(subSubscriptionRequests) == 1 && len(subscriptionRequest.GetTagNames()) == 1 {
 		tagName := subscriptionRequest.GetTagNames()[0]
 		subSubscriptionRequest := subSubscriptionRequests[tagName]
 		return m.subscribe(ctx, subSubscriptionRequest)
 	}
 
-	// Create a sub-result-channel map and prepare execute the subscriptions.
-	subResultChannels := map[string]<-chan apiModel.PlcSubscriptionRequestResult{}
-	for tagName, subSubscriptionRequest := range subSubscriptionRequests {
-		subResultChannels[tagName] = m.subscribe(ctx, subSubscriptionRequest)
-	}
-
-	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
+	// Create a new result-channel, which completes as soon as all sub-requests are done.
+	// The sub-requests are executed sequentially in request order: each is a single
+	// round-trip anyway, and it keeps the order of the requests on the wire deterministic.
 	globalResultChannel := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	m.wg.Go(func() {
 		defer func() {
@@ -108,15 +107,17 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 					Msg("panic-ed")
 			}
 		}()
-		// Iterate over all sub-results
-		for _, subResultChannel := range subResultChannels {
+		for _, tagName := range subscriptionRequest.GetTagNames() {
+			subSubscriptionRequest, ok := subSubscriptionRequests[tagName]
+			if !ok {
+				// Tag resolution failed; its error result is already recorded in subResults.
+				continue
+			}
 			select {
 			case <-ctx.Done():
 				utils.DeliverResult(m.log, globalResultChannel, spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, ctx.Err()))
 				return
-			case subResult := <-subResultChannel:
-				// These are all single value requests ... so it's safe to assume this shortcut.
-				tagName := subResult.GetRequest().GetTagNames()[0]
+			case subResult := <-m.subscribe(ctx, subSubscriptionRequest):
 				subResults[tagName] = subResult
 			}
 		}
@@ -141,16 +142,29 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 		tagName := subscriptionRequest.GetTagNames()[0]
 		directTag := subscriptionRequest.GetTag(tagName).(dirverModel.DirectPlcTag)
 		if directTag.DataType == nil {
-			directTag.DataType = m.driverContext.dataTypeTable[directTag.ValueType.String()]
+			dataType, ok := m.driverContext.dataTypeTable[directTag.ValueType.String()]
+			if !ok {
+				utils.DeliverResult(m.log, responseChan, spiModel.NewDefaultPlcSubscriptionRequestResult(
+					subscriptionRequest,
+					nil,
+					errors.Errorf("no entry for data type %s of tag %s in the data type table", directTag.ValueType, tagName),
+				))
+				return
+			}
+			directTag.DataType = dataType
 		}
 
-		response, err := m.ExecuteAdsAddDeviceNotificationRequest(ctx, directTag.IndexGroup, directTag.IndexOffset, directTag.DataType.GetSize(), model.AdsTransMode_ON_CHANGE, 0, 0)
+		// The requested interval is the device's cycle time for checking the value (in ms on
+		// the wire, matching the Java driver); 0 leaves the check cycle to the device.
+		cycleTime := uint32(subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest).GetInterval(tagName).Milliseconds())
+		response, err := m.ExecuteAdsAddDeviceNotificationRequest(ctx, directTag.IndexGroup, directTag.IndexOffset, directTag.DataType.GetSize(), model.AdsTransMode_ON_CHANGE, 0, cycleTime)
 		if err != nil {
 			utils.DeliverResult(m.log, responseChan, spiModel.NewDefaultPlcSubscriptionRequestResult(
 				subscriptionRequest,
 				nil,
 				err,
 			))
+			return
 		}
 		// Create a new subscription handle.
 		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(

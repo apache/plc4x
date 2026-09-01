@@ -211,8 +211,8 @@ func (m *_KnxGroupAddressFreeLevel) GetPlx4xTypeName() string {
 	return "KnxGroupAddressFreeLevel"
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxGroupAddressContract.(*_KnxGroupAddress).getLengthInBits(ctx))
+func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxGroupAddressContract.(*_KnxGroupAddress).getLengthInBits(ctx))
 
 	// Simple field (subGroup)
 	lengthInBits += 16
@@ -220,7 +220,7 @@ func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

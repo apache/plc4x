@@ -188,8 +188,8 @@ func (m *_AmsTCPPacket) GetPlx4xTypeName() string {
 	return "AmsTCPPacket"
 }
 
-func (m *_AmsTCPPacket) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AmsTCPPacket) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -203,7 +203,7 @@ func (m *_AmsTCPPacket) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsTCPPacket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AmsTCPPacket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

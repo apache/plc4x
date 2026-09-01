@@ -30,6 +30,13 @@ This initial version is *read-only* and supports reading word devices (D, W and 
 
 == Connection String Options
 
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
+
 include::partial$slmp.adoc[]
 
 == Supported Operations

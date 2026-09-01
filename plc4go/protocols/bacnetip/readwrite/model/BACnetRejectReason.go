@@ -148,11 +148,11 @@ func CastBACnetRejectReason(structType any) BACnetRejectReason {
 	return castFunc(structType)
 }
 
-func (m BACnetRejectReason) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetRejectReason) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetRejectReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetRejectReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

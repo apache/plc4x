@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.security.GeneralSecurityException;
 import java.security.Signature;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Comparator;
@@ -39,6 +40,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.authentication.PlcCertificateAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
@@ -49,11 +51,13 @@ import org.apache.plc4x.java.opcua.security.SecurityPolicy.SignatureAlgorithm;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.opcua.protocol.chunk.PayloadConverter;
-import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -62,7 +66,6 @@ import java.util.regex.Pattern;
 public class SecureChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureChannel.class);
-    private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
     public static final PascalString NULL_STRING = new PascalString("");
     public static final PascalByteString NULL_BYTE_STRING = new PascalByteString(-1, null);
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(.(?<transportCode>tcp|https?))?://" +
@@ -88,10 +91,19 @@ public class SecureChannel {
     private final String password;
     private final OpcuaConfiguration configuration;
     private final OpcuaDriverContext driverContext;
+    /** The user certificate and key of an X509IdentityToken, or null when not authenticating with one. */
+    private final CertificateKeyPair userIdentity;
     private final Conversation conversation;
     private ScheduledFuture<?> keepAlive;
     private double sessionTimeout;
     private long revisedLifetime;
+
+    /**
+     * Set once the server's lifetime has been raised to the configured minimum, so the warning is
+     * emitted once per channel rather than on every renewal - which, by the nature of the
+     * condition, would be every few seconds.
+     */
+    private boolean shortLifetimeWarned;
 
     public SecureChannel(Conversation conversation, OpcuaDriverContext driverContext, OpcuaConfiguration configuration, PlcAuthentication authentication) {
         this.conversation = conversation;
@@ -99,16 +111,25 @@ public class SecureChannel {
         this.driverContext = driverContext;
         this.endpoint = new PascalString(driverContext.getEndpoint());
         this.sessionTimeout = configuration.getSessionTimeout();
-        if (authentication != null) {
-            if (authentication instanceof PlcUsernamePasswordAuthentication) {
-                this.username = ((PlcUsernamePasswordAuthentication) authentication).getUsername();
-                this.password = ((PlcUsernamePasswordAuthentication) authentication).getPassword();
-            } else {
-                throw new PlcRuntimeException("This type of connection only supports username-password authentication");
-            }
-        } else {
+        if (authentication instanceof PlcUsernamePasswordAuthentication) {
+            this.username = ((PlcUsernamePasswordAuthentication) authentication).getUsername();
+            this.password = ((PlcUsernamePasswordAuthentication) authentication).getPassword();
+            this.userIdentity = null;
+        } else if (authentication instanceof PlcCertificateAuthentication certificateAuthentication) {
+            // The user identity of an X509IdentityToken. It is deliberately separate from the
+            // application instance certificate in driverContext: that one secures the channel and
+            // says which installation is talking, this one says who is talking (OPC UA Part 4).
+            this.username = null;
+            this.password = null;
+            this.userIdentity = loadUserIdentity(certificateAuthentication);
+        } else if (authentication == null) {
             this.username = configuration.getUsername();
             this.password = configuration.getPassword();
+            this.userIdentity = null;
+        } else {
+            throw new PlcRuntimeException("This type of connection only supports anonymous,"
+                + " username-password and certificate authentication, got "
+                + authentication.getClass().getSimpleName());
         }
 
         if (conversation.getSecurityPolicy() == SecurityPolicy.NONE) {
@@ -117,12 +138,20 @@ public class SecureChannel {
         } else {
             CertificateKeyPair keyPair = driverContext.getCertificateKeyPair();
             this.remoteCertificateThumbprint = driverContext.getThumbprint();
-            try {
-                byte[] encoded = keyPair.getCertificate().getEncoded();
-                this.localCertificateString = new PascalByteString(encoded.length, encoded);
-            } catch (CertificateEncodingException e) {
-                throw new PlcRuntimeException("Could not decode certificate", e);
-            }
+            // Send the whole chain: a CA-signed certificate is not verifiable on its own by a
+            // server that only trusts the issuing CA (OPC UA Part 6, SenderCertificate). For a
+            // self-signed certificate this is just that one certificate.
+            byte[] encoded = keyPair.getEncodedCertificateChain();
+            this.localCertificateString = new PascalByteString(encoded.length, encoded);
+        }
+    }
+
+    private static CertificateKeyPair loadUserIdentity(PlcCertificateAuthentication authentication) {
+        try {
+            return KeyStoreCredentials.load(authentication.getKeyStore(), authentication.getKeyStorePassword(),
+                authentication.getKeyAlias(), "the supplied PlcCertificateAuthentication", "user certificates");
+        } catch (GeneralSecurityException e) {
+            throw new PlcRuntimeException("Could not read the user certificate to authenticate with", e);
         }
     }
 
@@ -209,7 +238,7 @@ public class SecureChannel {
                 conversation.setRemoteNonce(openSecureChannelResponse.getServerNonce().getStringValue());
                 conversation.setLocalNonce(localNonce);
                 conversation.setSecurityHeader(new SecurityHeader(securityToken.getChannelId(), securityToken.getTokenId()));
-                revisedLifetime = securityToken.getRevisedLifetime();
+                revisedLifetime = adoptChannelLifetime(securityToken.getRevisedLifetime());
                 return openSecureChannelResponse;
             });
     }
@@ -303,36 +332,48 @@ public class SecureChannel {
 
     private CompletableFuture<ActivateSessionResponse> onConnectActivateSessionRequest(CreateSessionResponse sessionResponse) {
         LOGGER.debug("Sending activate session request to {}", this.driverContext.getEndpoint());
-        conversation.setRemoteCertificate(getX509Certificate(sessionResponse.getServerCertificate().getStringValue()));
+        // Adopted whatever the channel policy says, because a user token can be encrypted to this
+        // even when the channel itself is not - the token carries a security policy of its own.
+        List<X509Certificate> serverChain =
+            getX509CertificateChain(sessionResponse.getServerCertificate().getStringValue());
+        if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
+            // Judged before it is adopted, since this becomes what we encrypt to and check
+            // signatures against. The issuers the server sent with it go into the check too:
+            // without them a chain reaching the anchor through intermediates cannot be validated.
+            try {
+                driverContext.getCertificateVerifier().checkCertificateChainTrusted(serverChain);
+            } catch (CertificateException e) {
+                throw new PlcRuntimeException(
+                    "The certificate in the create-session response is not trusted", e);
+            }
+        }
+        conversation.setRemoteCertificate(serverChain.get(0));
         conversation.setRemoteNonce(sessionResponse.getServerNonce().getStringValue());
 
         Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint = selectEndpoint(sessionResponse.getServerEndpoints(),
             configuration.getSecurityPolicy(), configuration.getMessageSecurity());
         if (selectedEndpoint == null) {
-            throw new PlcRuntimeException("Unable to find endpoint matching  " + driverContext.getEndpoint());
+            // Endpoints are matched on the host as written in the connection string; the driver
+            // performs no name resolution. Servers commonly advertise a different name than the
+            // one that was dialed, so say what was offered and how to point the driver at it.
+            String advertised = sessionResponse.getServerEndpoints().stream()
+                .map(endpoint -> endpoint.getEndpointUrl().getStringValue()
+                    + " (" + endpoint.getSecurityPolicyUri().getStringValue()
+                    + ", " + endpoint.getSecurityMode()
+                    + ", user tokens: " + endpoint.getUserIdentityTokens().stream()
+                        .map(policy -> String.valueOf(policy.getTokenType()))
+                        .collect(Collectors.joining("/")) + ")")
+                .collect(Collectors.joining("\n  "));
+            throw new PlcRuntimeException("Unable to find an endpoint matching " + driverContext.getEndpoint()
+                + " with security policy " + configuration.getSecurityPolicy()
+                + ", message security " + configuration.getMessageSecurity()
+                + " and " + requestedTokenType() + " authentication"
+                + ". The server offered:\n  " + advertised
+                + "\nIf the server advertises a different host name than the one you connect to, set"
+                + " 'endpoint-host' (and 'endpoint-port' if it differs) to the name shown above.");
         }
 
-        PascalString policyId = selectedEndpoint.getValue().getPolicyId();
-        UserTokenType tokenType = selectedEndpoint.getValue().getTokenType();
-        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
-        RequestHeader requestHeader = conversation.createRequestHeader();
-        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
-        if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
-            try {
-                clientSignature = conversation.createClientSignature();
-            } catch (GeneralSecurityException e) {
-                throw new PlcRuntimeException("Could not create client signature", e);
-            }
-        }
-
-        ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest(
-            requestHeader,
-            clientSignature,
-            null,
-            null,
-            userIdentityToken,
-            clientSignature
-        );
+        ActivateSessionRequest activateSessionRequest = createActivateSessionRequest(selectedEndpoint);
 
         return conversation.submit(activateSessionRequest, ActivateSessionResponse.class).thenApply(responseMessage -> {
             conversation.setRemoteNonce(responseMessage.getServerNonce().getStringValue());
@@ -437,8 +478,7 @@ public class SecureChannel {
             ReadBufferByteBased readBuffer = toBuffer(opcuaOpenResponse::getMessage);
             ExtensionObject message = ExtensionObject.staticParse(readBuffer, false);
 
-            if (message.getBody() instanceof ServiceFault) {
-                ServiceFault fault = (ServiceFault) message.getBody();
+            if (message.getBody() instanceof ServiceFault fault) {
                 throw new PlcRuntimeException(Conversation.toProtocolException(fault));
             }
 
@@ -449,12 +489,73 @@ public class SecureChannel {
         }
     }
 
+    /**
+     * Apply {@link #effectiveChannelLifetime(long, long, long)} to a server-supplied lifetime and
+     * tell the operator when their configured minimum overruled the server - including what to
+     * change if they would rather honour it.
+     */
+    private long adoptChannelLifetime(long revisedLifetime) {
+        long requested = configuration.getChannelLifetime();
+        long minimum = configuration.getMinChannelLifetime();
+        long effective = effectiveChannelLifetime(revisedLifetime, requested, minimum);
+
+        if (revisedLifetime > 0 && revisedLifetime < effective && !shortLifetimeWarned) {
+            shortLifetimeWarned = true;
+            LOGGER.warn("Server asked for a secure channel lifetime of {} ms; using {} ms instead, "
+                    + "because min-channel-lifetime-ms is {} ms. Renewals share one executor with every "
+                    + "OPC UA connection in this JVM, which is what that minimum protects. The server "
+                    + "may treat the channel as expired before the first renewal - if this server "
+                    + "genuinely needs renewal that often, lower min-channel-lifetime-ms to {} or less.",
+                revisedLifetime, effective, minimum, revisedLifetime);
+        }
+        return effective;
+    }
+
+    /**
+     * Reconcile the lifetime the server came back with against the one we asked for.
+     *
+     * <p>Two different situations, deliberately handled differently:</p>
+     * <ul>
+     *   <li><strong>Not a lifetime at all</strong> - zero, negative, or longer than we offered.
+     *       OPC UA lets a server revise the requested lifetime <em>downwards</em>; none of these
+     *       is a revision, so what we requested stands. Nothing is lost by ignoring them.</li>
+     *   <li><strong>A lifetime shorter than {@code minimumLifetime}</strong> - a real answer, but
+     *       one that would put the renewal schedule on a treadmill. It is raised to the minimum
+     *       and the caller warns. Note the consequence: the server considers the channel expired
+     *       before our first renewal is due, so the connection may fail at that point. That is the
+     *       trade being made - the renewals run on an executor shared by every OPC UA connection
+     *       in the JVM, so one peer does not get to set the pace for all of them. An operator who
+     *       needs such a server lowers {@code min-channel-lifetime-ms} and accepts the cost
+     *       knowingly.</li>
+     * </ul>
+     *
+     * <p>The minimum is bounded by the requested lifetime, so a deliberately short
+     * {@code channel-lifetime-ms} is still honoured: this only ever declines to go <em>below</em>
+     * what the operator asked for, never above it.</p>
+     */
+    static long effectiveChannelLifetime(long revisedLifetime, long requestedLifetime, long minimumLifetime) {
+        if (revisedLifetime <= 0 || revisedLifetime > requestedLifetime) {
+            return requestedLifetime;
+        }
+        return Math.max(revisedLifetime, Math.min(minimumLifetime, requestedLifetime));
+    }
+
+    /**
+     * Renewal interval for a channel lifetime: three quarters of it, leaving a quarter of the
+     * lifetime as margin for the renewal exchange itself. Never returns a non-positive period -
+     * {@code scheduleAtFixedRate} rejects those, and it would do so from inside a completion stage
+     * where the failure is easy to lose.
+     */
+    static long keepAliveInterval(long channelLifetime) {
+        return Math.max(1L, (long) Math.ceil(channelLifetime * 0.75f));
+    }
+
     private void renewToken() {
         if (keepAlive != null) {
             // cancel earlier renew feature
             keepAlive.cancel(true);
         }
-        long keepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
+        long keepAliveTime = keepAliveInterval(revisedLifetime);
         LOGGER.debug("Scheduling session keep alive to happen within {}s", TimeUnit.MILLISECONDS.toSeconds(keepAliveTime));
         keepAlive = KEEP_ALIVE_EXECUTOR.scheduleAtFixedRate(() -> {
             int securityChannelId = this.conversation.getSecurityChannelId();
@@ -467,7 +568,7 @@ public class SecureChannel {
                     }
                     // Honor any new lifetime the server gave us — if it differs
                     // from what's currently scheduled, reschedule the next renew.
-                    long newKeepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
+                    long newKeepAliveTime = keepAliveInterval(revisedLifetime);
                     if (newKeepAliveTime != keepAliveTime) {
                         renewToken();
                     }
@@ -502,12 +603,16 @@ public class SecureChannel {
                 boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(securityPolicy.getSecurityPolicyUri());
                 boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(effectiveMessageSecurity);
 
-                if (!policyMatch && !msgSecurityMatch) {
+                // Both, not either. Skipping only when both failed meant an endpoint offering the
+                // right message security under a weaker policy - or the right policy without the
+                // message security asked for - was treated as a match, and the connection came up
+                // with less protection than the configuration asked for.
+                if (!policyMatch || !msgSecurityMatch) {
                     continue;
                 }
 
                 for (UserTokenPolicy userTokenPolicy : endpointDescription.getUserIdentityTokens()) {
-                    if (isUserTokenPolicyCompatible(userTokenPolicy, this.username)) {
+                    if (isUserTokenPolicyCompatible(userTokenPolicy, this.username, this.userIdentity != null)) {
                         serverEndpoints.add(entry(endpointDescription, userTokenPolicy));
                     }
                 }
@@ -518,8 +623,51 @@ public class SecureChannel {
             return null;
         }
 
-        serverEndpoints.sort(Comparator.comparing(e -> e.getKey().getSecurityLevel()));
-        return serverEndpoints.get(0);
+        // The strongest of the endpoints that match, not the weakest. Sorting ascending and taking
+        // the first picked the lowest security level a server offered - and a server that offers a
+        // level 0 endpoint alongside a good one is the normal case, not an unusual one.
+        //
+        // Among the token policies of an equally strong endpoint, prefer one that protects the
+        // token: matching on token type alone would bind a password to a policy of None and send it
+        // in the clear.
+        return strongestOf(serverEndpoints);
+    }
+
+    /**
+     * Picks the endpoint that protects the connection best out of those that matched.
+     *
+     * <p>Sorting by security level and taking the first picked the <em>lowest</em> level the server
+     * offered, and a server offering a level 0 endpoint alongside a good one is the ordinary case.
+     * Where two are equally strong, the one that also protects the user token wins.</p>
+     */
+    static Entry<EndpointDescription, UserTokenPolicy> strongestOf(
+        List<Entry<EndpointDescription, UserTokenPolicy>> candidates) {
+        if (candidates == null || candidates.isEmpty()) {
+            return null;
+        }
+        List<Entry<EndpointDescription, UserTokenPolicy>> ranked = new ArrayList<>(candidates);
+        ranked.sort(Comparator
+            .comparingInt((Entry<EndpointDescription, UserTokenPolicy> e) -> e.getKey().getSecurityLevel())
+            .thenComparingInt(e -> protectsUserToken(e) ? 1 : 0));
+        return ranked.getLast();
+    }
+
+    /**
+     * Whether the user token policy of this endpoint protects the token it carries.
+     *
+     * <p>A token policy names its own security policy, separately from the channel's. One naming
+     * None leaves the token unprotected by the channel's own encryption - which matters most for a
+     * password.</p>
+     */
+    static boolean protectsUserToken(Entry<EndpointDescription, UserTokenPolicy> candidate) {
+        PascalString tokenPolicyUri = candidate.getValue().getSecurityPolicyUri();
+        if (tokenPolicyUri == null || tokenPolicyUri.getStringValue() == null
+            || tokenPolicyUri.getStringValue().isEmpty()) {
+            // Nothing said, so the channel's policy governs the token as well.
+            return !SecurityPolicy.NONE.getSecurityPolicyUri()
+                .equals(candidate.getKey().getSecurityPolicyUri().getStringValue());
+        }
+        return !SecurityPolicy.NONE.getSecurityPolicyUri().equals(tokenPolicyUri.getStringValue());
     }
 
     private boolean isMatchingEndpointDescription(EndpointDescription endpointDescription) {
@@ -547,20 +695,125 @@ public class SecureChannel {
      */
     private static boolean isMatchingEndpoint(EndpointDescription endpoint, String host, String port, String transportEndpoint) throws PlcRuntimeException {
         String portAddition = port == null ? "" : ":" + port;
-        return endpoint.getEndpointUrl().getStringValue().startsWith("opc.tcp://" + host + portAddition + transportEndpoint);
+        String expected = "opc.tcp://" + host + portAddition + transportEndpoint;
+        // Host names are case insensitive, so a server advertising "opc.tcp://MyServer:4840" has
+        // to match a connection string that says "myserver".
+        return endpoint.getEndpointUrl().getStringValue().toLowerCase(Locale.ROOT)
+            .startsWith(expected.toLowerCase(Locale.ROOT));
     }
 
     /**
-     * Confirms that given policy matches the connection string used by client.
+     * The token type the supplied credentials ask for, named in the error when no endpoint offers it.
+     */
+    private String requestedTokenType() {
+        if (userIdentity != null) {
+            return "certificate";
+        }
+        return username != null ? "username" : "anonymous";
+    }
+
+    /**
+     * Confirms that the given policy matches the credentials the client was given. Which of the
+     * three token types is wanted follows from those credentials alone: a user certificate asks for
+     * a certificate policy, a user name for a username policy, and neither for anonymous access.
      *
-     * @param policy - UserTokenPolicy configured for server endpoint.
+     * @param policy                 UserTokenPolicy configured for server endpoint.
+     * @param username               the user name to authenticate with, or null for none.
+     * @param userCertificatePresent whether a user certificate was supplied to authenticate with.
      * @return True if given token policy matches client configuration.
      */
-    private static boolean isUserTokenPolicyCompatible(UserTokenPolicy policy, String username) {
-        if ((policy.getTokenType() == UserTokenType.userTokenTypeAnonymous) && username == null) {
-            return true;
+    static boolean isUserTokenPolicyCompatible(UserTokenPolicy policy, String username,
+        boolean userCertificatePresent) {
+        if (userCertificatePresent) {
+            return policy.getTokenType() == UserTokenType.userTokenTypeCertificate;
         }
-        return policy.getTokenType() == UserTokenType.userTokenTypeUserName && username != null;
+        if (username != null) {
+            return policy.getTokenType() == UserTokenType.userTokenTypeUserName;
+        }
+        return policy.getTokenType() == UserTokenType.userTokenTypeAnonymous;
+    }
+
+    /**
+     * Builds the {@code ActivateSession} request for the user token policy that was selected.
+     */
+    ActivateSessionRequest createActivateSessionRequest(Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint) {
+        PascalString policyId = selectedEndpoint.getValue().getPolicyId();
+        UserTokenType tokenType = selectedEndpoint.getValue().getTokenType();
+        SecurityPolicy tokenSecurityPolicy = userTokenSecurityPolicy(selectedEndpoint);
+        if (tokenType == UserTokenType.userTokenTypeUserName
+            && tokenSecurityPolicy == SecurityPolicy.NONE) {
+            // Nothing signs or encrypts this, so the password goes out in the clear where anything
+            // on the path can read it - and unlike data, a password read once is useful forever.
+            if (!configuration.isAllowInsecureCredentials()) {
+                throw new PlcRuntimeException("Refusing to send the username and password over a "
+                    + "channel that neither signs nor encrypts. Configure a security-policy that "
+                    + "does, or set allow-insecure-credentials=true to send them anyway.");
+            }
+            LOGGER.warn("allow-insecure-credentials is set: sending the username and password over "
+                + "a channel that neither signs nor encrypts");
+        }
+        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue(), tokenSecurityPolicy);
+        RequestHeader requestHeader = conversation.createRequestHeader();
+
+        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
+        if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
+            try {
+                clientSignature = conversation.createClientSignature();
+            } catch (GeneralSecurityException e) {
+                throw new PlcRuntimeException("Could not create client signature", e);
+            }
+        }
+
+        return new ActivateSessionRequest(
+            requestHeader,
+            clientSignature,
+            null,
+            null,
+            userIdentityToken,
+            userTokenSignature(tokenType, tokenSecurityPolicy, clientSignature)
+        );
+    }
+
+    /**
+     * An X509IdentityToken is only accepted together with proof that the client holds the private
+     * key of the certificate it just sent (OPC UA Part 4, 5.6.3). The other token types carry no
+     * such proof, and keep sending the application instance signature the driver has always sent.
+     */
+    private SignatureData userTokenSignature(UserTokenType tokenType, SecurityPolicy tokenSecurityPolicy,
+                                             SignatureData clientSignature) {
+        if (tokenType != UserTokenType.userTokenTypeCertificate) {
+            return clientSignature;
+        }
+        if (tokenSecurityPolicy == SecurityPolicy.NONE) {
+            throw new PlcRuntimeException("The server offers certificate authentication with a security policy"
+                + " of None, which leaves no algorithm to prove possession of the user certificate's private key."
+                + " Connect with a security policy other than NONE, or authenticate with a username instead.");
+        }
+        try {
+            return conversation.createUserTokenSignature(userIdentity.getPrivateKey(), tokenSecurityPolicy);
+        } catch (GeneralSecurityException e) {
+            throw new PlcRuntimeException("Could not sign the user certificate identity token", e);
+        }
+    }
+
+    /**
+     * The security policy governing the user identity token. A UserTokenPolicy may name its own
+     * securityPolicyUri; when it doesn't, the endpoint's own policy applies.
+     */
+    private SecurityPolicy userTokenSecurityPolicy(Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint) {
+        PascalString tokenPolicyUri = selectedEndpoint.getValue().getSecurityPolicyUri();
+        if (tokenPolicyUri != null && tokenPolicyUri.getStringValue() != null
+            && !tokenPolicyUri.getStringValue().isEmpty()) {
+            Optional<SecurityPolicy> policy = SecurityPolicy.findByUri(tokenPolicyUri.getStringValue());
+            if (policy.isPresent()) {
+                LOGGER.debug("User token policy declares security policy {}", policy.get());
+                return policy.get();
+            }
+            LOGGER.warn("Unknown user token security policy '{}', falling back to the endpoint policy",
+                tokenPolicyUri.getStringValue());
+        }
+        return SecurityPolicy.findByUri(selectedEndpoint.getKey().getSecurityPolicyUri().getStringValue())
+            .orElseGet(conversation::getSecurityPolicy);
     }
 
     /**
@@ -569,8 +822,16 @@ public class SecureChannel {
      * @param tokenType      the token type
      * @param securityPolicy the security policy
      * @return returns an ExtensionObject with an IdentityToken.
+     * <p>
+     * Builds the user identity token for the selected user token policy.
+     * <p>
+     * The password encryption is dictated by the security policy of the <em>user token policy</em>,
+     * which is not necessarily the one securing the channel: a token policy may name its own, and
+     * only when it doesn't, does the endpoint's policy apply (OPC UA Part 4, UserNameIdentityToken).
+     * A policy of None means the password travels in plain text - see GH-2154.
      */
-    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy,
+                                             SecurityPolicy tokenSecurityPolicy) {
         ExpandedNodeId extExpandedNodeId;
         switch (tokenType) {
             case userTokenTypeAnonymous:
@@ -589,7 +850,7 @@ public class SecureChannel {
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] remoteNonce = conversation.getRemoteNonce();
-                byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
+                byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes(StandardCharsets.UTF_8);
                 ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + remoteNonce.length);
                 encodeableBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
                 encodeableBuffer.putInt(passwordBytes.length + remoteNonce.length);
@@ -599,12 +860,21 @@ public class SecureChannel {
                 encodeableBuffer.position(0);
                 encodeableBuffer.get(encodeablePassword);
 
-                byte[] encryptedPassword = conversation.encryptPassword(encodeablePassword);
+                byte[] tokenPassword;
+                String encryptionAlgorithm;
+                if (tokenSecurityPolicy == SecurityPolicy.NONE) {
+                    // No encryption: the password is sent as-is and no algorithm is declared.
+                    tokenPassword = encodeablePassword;
+                    encryptionAlgorithm = "";
+                } else {
+                    tokenPassword = conversation.encryptPassword(encodeablePassword, tokenSecurityPolicy);
+                    encryptionAlgorithm = tokenSecurityPolicy.getAsymmetricEncryptionAlgorithm().getUri();
+                }
                 UserNameIdentityToken userNameIdentityToken = new UserNameIdentityToken(
                     new PascalString(securityPolicy),
                     new PascalString(this.username),
-                    new PascalByteString(encryptedPassword.length, encryptedPassword),
-                    new PascalString(PASSWORD_ENCRYPTION_ALGORITHM)
+                    new PascalByteString(tokenPassword.length, tokenPassword),
+                    new PascalString(encryptionAlgorithm)
                 );
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
@@ -614,17 +884,64 @@ public class SecureChannel {
                     null);
 
                 return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, userNameIdentityToken);
+            case userTokenTypeCertificate:
+                // Only the user certificate itself travels here - OPC UA Part 4 defines
+                // certificateData as the certificate, not the chain that signed it. Possession of
+                // the matching private key is proven by the userTokenSignature of ActivateSession.
+                byte[] userCertificate;
+                try {
+                    userCertificate = userIdentity.getCertificate().getEncoded();
+                } catch (CertificateEncodingException e) {
+                    throw new PlcRuntimeException("Could not encode the user certificate to authenticate with", e);
+                }
+                X509IdentityToken x509IdentityToken = new X509IdentityToken(
+                    new PascalString(securityPolicy),
+                    new PascalByteString(userCertificate.length, userCertificate)
+                );
+
+                extExpandedNodeId = new ExpandedNodeId(
+                    false,           //Namespace Uri Specified
+                    false,            //Server Index Specified
+                    new NodeIdFourByte((short) 0, x509IdentityToken.getExtensionId()),
+                    null,
+                    null
+                );
+
+                return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, x509IdentityToken);
         }
         return null;
     }
 
     public static X509Certificate getX509Certificate(byte[] certificate) {
+        return getX509CertificateChain(certificate).get(0);
+    }
+
+    /**
+     * Reads every certificate out of an OPC UA certificate blob: the peer's own first, then the
+     * issuers it sent with it. Only the first used to be read, so a chain reaching an anchor
+     * through intermediates could not be validated even when it was entirely trustworthy.
+     *
+     * <p>An unreadable blob fails here rather than coming back as null. What this is used for is
+     * deciding whether to trust the peer and encrypting to its key, and neither has a sensible
+     * answer for "no certificate".</p>
+     */
+    public static List<X509Certificate> getX509CertificateChain(byte[] certificate) {
+        if (certificate == null || certificate.length == 0) {
+            throw new PlcRuntimeException("The peer sent no certificate where one was required");
+        }
         try {
             CertificateFactory factory = CertificateFactory.getInstance("X.509");
-            return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(certificate));
-        } catch (Exception e) {
-            LOGGER.error("Unable to get certificate from String {}", certificate);
-            return null;
+            List<X509Certificate> chain = factory
+                .generateCertificates(new ByteArrayInputStream(certificate)).stream()
+                .filter(X509Certificate.class::isInstance)
+                .map(X509Certificate.class::cast)
+                .collect(Collectors.toList());
+            if (chain.isEmpty()) {
+                throw new PlcRuntimeException("The peer's certificate blob held no X.509 certificate");
+            }
+            return chain;
+        } catch (GeneralSecurityException e) {
+            throw new PlcRuntimeException("Could not read the certificate the peer sent", e);
         }
     }
 

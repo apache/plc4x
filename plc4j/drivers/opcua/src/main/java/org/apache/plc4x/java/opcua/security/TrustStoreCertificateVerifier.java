@@ -23,6 +23,8 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
@@ -49,7 +51,19 @@ public class TrustStoreCertificateVerifier implements CertificateVerifier {
 
     @Override
     public void checkCertificateTrusted(X509Certificate certificate) throws CertificateException {
-        trustManager.checkClientTrusted(new X509Certificate[]{ certificate }, "UNKNOWN");
+        checkCertificateChainTrusted(Collections.singletonList(certificate));
+    }
+
+    @Override
+    public void checkCertificateChainTrusted(List<X509Certificate> chain) throws CertificateException {
+        if (chain == null || chain.isEmpty()) {
+            throw new CertificateException("No certificate to check");
+        }
+        // checkServerTrusted, not checkClientTrusted: this certificate belongs to the server we
+        // are talking to. The two differ in which extended key usage they accept, so asking the
+        // client question of a server certificate accepts one marked for client authentication
+        // only - and turns away one correctly marked for a server.
+        trustManager.checkServerTrusted(chain.toArray(new X509Certificate[0]), "RSA");
     }
 
 }

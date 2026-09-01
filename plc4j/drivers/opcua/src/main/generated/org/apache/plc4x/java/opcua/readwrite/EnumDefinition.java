@@ -63,7 +63,7 @@ public class EnumDefinition extends ExtensionObjectDefinition implements Message
     int noOfFields = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfFields"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: fields
-    List<EnumField> fields = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (EnumField) EnumField.staticParse(readBuffer, (int) (104)), readBuffer), noOfFields, WithOption.WithName("fields"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<EnumField> fields = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(EnumField.class, EnumField.staticParse(readBuffer, (int) (104))), readBuffer), noOfFields, WithOption.WithName("fields"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(fields);

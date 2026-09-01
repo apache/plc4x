@@ -70,8 +70,8 @@ type ExtensionObjectContract interface {
 
 // ExtensionObjectRequirements provides a set of functions which need to be implemented by a sub struct
 type ExtensionObjectRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIncludeEncodingMask returns IncludeEncodingMask (discriminator field)
 	GetIncludeEncodingMask() bool
 	// GetBody returns Body (abstract field)
@@ -311,8 +311,8 @@ func (m *_ExtensionObject) GetPlx4xTypeName() string {
 	return "ExtensionObject"
 }
 
-func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (typeId)
 	lengthInBits += m.TypeId.GetLengthInBits(ctx)
@@ -324,11 +324,11 @@ func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObject) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ExtensionObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ExtensionObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -392,11 +392,11 @@ func (m *_ExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child ExtensionObject
 	switch {
 	case includeEncodingMask == bool(false): // RootExtensionObject
-		if _child, err = new(_RootExtensionObject).parse(ctx, readBuffer, m, extensionId, includeEncodingMask); err != nil {
+		if _child, err = new(_RootExtensionObject).parse(ctx, readBuffer, m, int32(extensionId), includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RootExtensionObject for type-switch of ExtensionObject")
 		}
 	case includeEncodingMask == bool(true): // ExtensionObjectWithMask
-		if _child, err = new(_ExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_ExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensionObjectWithMask for type-switch of ExtensionObject")
 		}
 	default:

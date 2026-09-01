@@ -213,8 +213,8 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BVLCWriteBroadcastDistributionTable"
 }
 
-func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {
@@ -226,7 +226,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

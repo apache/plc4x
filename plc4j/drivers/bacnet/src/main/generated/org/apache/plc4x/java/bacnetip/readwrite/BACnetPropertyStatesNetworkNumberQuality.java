@@ -52,7 +52,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkNumberQuality
-    BACnetNetworkNumberQualityTagged networkNumberQuality = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNetworkNumberQualityTagged) BACnetNetworkNumberQualityTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("networkNumberQuality"));
+    BACnetNetworkNumberQualityTagged networkNumberQuality = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNetworkNumberQualityTagged.class, BACnetNetworkNumberQualityTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("networkNumberQuality"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(networkNumberQuality);

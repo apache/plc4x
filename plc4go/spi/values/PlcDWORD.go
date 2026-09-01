@@ -218,7 +218,7 @@ func (m PlcDWORD) Serialize() ([]byte, error) {
 }
 
 func (m PlcDWORD) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint32("PlcDINT", 32, m.value)
+	return writeBuffer.WriteUint32("PlcDWORD", 32, m.value)
 }
 
 func (m PlcDWORD) String() string {

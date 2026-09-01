@@ -80,16 +80,16 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectId
-    NodeId objectId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("objectId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId objectId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("objectId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: methodId
-    NodeId methodId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("methodId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId methodId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("methodId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfInputArguments
     int noOfInputArguments = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfInputArguments"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: inputArguments
-    List<Variant> inputArguments = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (Variant) Variant.staticParse(readBuffer), readBuffer), noOfInputArguments, WithOption.WithName("inputArguments"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<Variant> inputArguments = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Variant.class, Variant.staticParse(readBuffer)), readBuffer), noOfInputArguments, WithOption.WithName("inputArguments"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(objectId, methodId, inputArguments);

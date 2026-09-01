@@ -123,7 +123,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: responseHeader
-    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ResponseHeader) ResponseHeader.staticParse(readBuffer, (int) (394)), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ResponseHeader.class, ResponseHeader.staticParse(readBuffer, (int) (394))), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: subscriptionId
     long subscriptionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("subscriptionId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -141,19 +141,19 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     boolean moreNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("moreNotifications"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: notificationMessage
-    NotificationMessage notificationMessage = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NotificationMessage) NotificationMessage.staticParse(readBuffer, (int) (805)), readBuffer), WithOption.WithName("notificationMessage"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NotificationMessage notificationMessage = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NotificationMessage.class, NotificationMessage.staticParse(readBuffer, (int) (805))), readBuffer), WithOption.WithName("notificationMessage"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfResults
     int noOfResults = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfResults"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: results
-    List<StatusCode> results = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (StatusCode) StatusCode.staticParse(readBuffer), readBuffer), noOfResults, WithOption.WithName("results"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<StatusCode> results = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusCode.class, StatusCode.staticParse(readBuffer)), readBuffer), noOfResults, WithOption.WithName("results"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfDiagnosticInfos
     int noOfDiagnosticInfos = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfDiagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: diagnosticInfos
-    List<DiagnosticInfo> diagnosticInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (DiagnosticInfo) DiagnosticInfo.staticParse(readBuffer), readBuffer), noOfDiagnosticInfos, WithOption.WithName("diagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<DiagnosticInfo> diagnosticInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DiagnosticInfo.class, DiagnosticInfo.staticParse(readBuffer)), readBuffer), noOfDiagnosticInfos, WithOption.WithName("diagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(responseHeader, subscriptionId, availableSequenceNumbers, moreNotifications, notificationMessage, results, diagnosticInfos);

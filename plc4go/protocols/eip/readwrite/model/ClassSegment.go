@@ -207,8 +207,8 @@ func (m *_ClassSegment) GetPlx4xTypeName() string {
 	return "ClassSegment"
 }
 
-func (m *_ClassSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ClassSegment) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (pathSegmentType)
 	lengthInBits += 3
@@ -225,7 +225,7 @@ func (m *_ClassSegment) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ClassSegment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ClassSegment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

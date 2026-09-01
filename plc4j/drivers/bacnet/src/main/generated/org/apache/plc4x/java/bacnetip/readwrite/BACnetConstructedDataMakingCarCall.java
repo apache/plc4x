@@ -100,10 +100,10 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: makingCarCall
-    List<BACnetApplicationTagUnsignedInteger> makingCarCall = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("makingCarCall"));
+    List<BACnetApplicationTagUnsignedInteger> makingCarCall = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("makingCarCall"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(numberOfDataElements, makingCarCall);

@@ -213,18 +213,18 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandGAVPhysicalAddresses"
 }
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Values) > 0 {
-		lengthInBits += 8 * uint16(len(m.Values))
+		lengthInBits += 8 * uint64(len(m.Values))
 	}
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

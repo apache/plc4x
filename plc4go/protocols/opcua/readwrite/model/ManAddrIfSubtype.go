@@ -106,11 +106,11 @@ func CastManAddrIfSubtype(structType any) ManAddrIfSubtype {
 	return castFunc(structType)
 }
 
-func (m ManAddrIfSubtype) GetLengthInBits(ctx context.Context) uint16 {
+func (m ManAddrIfSubtype) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m ManAddrIfSubtype) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ManAddrIfSubtype) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

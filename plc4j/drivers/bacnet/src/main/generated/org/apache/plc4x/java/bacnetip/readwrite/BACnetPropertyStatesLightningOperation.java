@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lightningOperation
-    BACnetLightingOperationTagged lightningOperation = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingOperationTagged) BACnetLightingOperationTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("lightningOperation"));
+    BACnetLightingOperationTagged lightningOperation = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingOperationTagged.class, BACnetLightingOperationTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("lightningOperation"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(lightningOperation);

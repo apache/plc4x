@@ -99,10 +99,10 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: sourceNodeId
-    NodeId sourceNodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("sourceNodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId sourceNodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("sourceNodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: referenceTypeId
-    NodeId referenceTypeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("referenceTypeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId referenceTypeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("referenceTypeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 7), (byte) 0x00, WithOption.WithName("DeleteReferencesItem.reserved2"));
@@ -111,7 +111,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     boolean isForward = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("isForward"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: targetNodeId
-    ExpandedNodeId targetNodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExpandedNodeId) ExpandedNodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("targetNodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExpandedNodeId targetNodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExpandedNodeId.class, ExpandedNodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("targetNodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 7), (byte) 0x00, WithOption.WithName("DeleteReferencesItem.reserved5"));

@@ -229,8 +229,8 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Get
 	return "BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues"
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -248,7 +248,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Get
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

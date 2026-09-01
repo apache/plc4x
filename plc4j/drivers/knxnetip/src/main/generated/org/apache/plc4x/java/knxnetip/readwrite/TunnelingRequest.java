@@ -69,10 +69,10 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: tunnelingRequestDataBlock
-    TunnelingRequestDataBlock tunnelingRequestDataBlock = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TunnelingRequestDataBlock) TunnelingRequestDataBlock.staticParse(readBuffer), readBuffer), WithOption.WithName("tunnelingRequestDataBlock"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    TunnelingRequestDataBlock tunnelingRequestDataBlock = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TunnelingRequestDataBlock.class, TunnelingRequestDataBlock.staticParse(readBuffer)), readBuffer), WithOption.WithName("tunnelingRequestDataBlock"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: cemi
-    CEMI cemi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CEMI) CEMI.staticParse(readBuffer, (int) ((totalLength) - (((6) + (tunnelingRequestDataBlock.getLengthInBytes()))))), readBuffer), WithOption.WithName("cemi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CEMI cemi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CEMI.class, CEMI.staticParse(readBuffer, (int) ((totalLength) - (((6) + (tunnelingRequestDataBlock.getLengthInBytes())))))), readBuffer), WithOption.WithName("cemi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(tunnelingRequestDataBlock, cemi);

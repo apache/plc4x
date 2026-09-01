@@ -86,16 +86,16 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovS
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: monitoredObjectIdentifier
-    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
+    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
 
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("openingTag"));
 
     // Array Field: listOfCovReferences
-    List<BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference> listOfCovReferences = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, 1), WithOption.WithName("listOfCovReferences"));
+    List<BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference> listOfCovReferences = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference.class, BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, 1), WithOption.WithName("listOfCovReferences"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications(monitoredObjectIdentifier, openingTag, listOfCovReferences, closingTag);

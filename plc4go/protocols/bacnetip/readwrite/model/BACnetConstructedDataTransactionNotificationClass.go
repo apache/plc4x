@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) GetPlx4xTypeName() 
 	return "BACnetConstructedDataTransactionNotificationClass"
 }
 
-func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (transactionNotificationClass)
 	lengthInBits += m.TransactionNotificationClass.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

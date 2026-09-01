@@ -91,19 +91,19 @@ public class UpdateEventDetails extends ExtensionObjectDefinition implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nodeId
-    NodeId nodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("nodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId nodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("nodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field (enum): performInsertReplace
     PerformUpdateType performInsertReplace = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(PerformUpdateType::enumForValue, DataReaderFactory.readUnsignedLong(readBuffer, 32)), WithOption.WithName("performInsertReplace"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: filter
-    EventFilter filter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (EventFilter) EventFilter.staticParse(readBuffer, (int) (727)), readBuffer), WithOption.WithName("filter"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    EventFilter filter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(EventFilter.class, EventFilter.staticParse(readBuffer, (int) (727))), readBuffer), WithOption.WithName("filter"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfEventData
     int noOfEventData = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfEventData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: eventData
-    List<HistoryEventFieldList> eventData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (HistoryEventFieldList) HistoryEventFieldList.staticParse(readBuffer, (int) (922)), readBuffer), noOfEventData, WithOption.WithName("eventData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<HistoryEventFieldList> eventData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HistoryEventFieldList.class, HistoryEventFieldList.staticParse(readBuffer, (int) (922))), readBuffer), noOfEventData, WithOption.WithName("eventData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(nodeId, performInsertReplace, filter, eventData);

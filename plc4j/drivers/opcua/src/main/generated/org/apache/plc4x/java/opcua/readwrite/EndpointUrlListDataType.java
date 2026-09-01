@@ -63,7 +63,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     int noOfEndpointUrlList = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfEndpointUrlList"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: endpointUrlList
-    List<PascalString> endpointUrlList = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfEndpointUrlList, WithOption.WithName("endpointUrlList"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> endpointUrlList = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfEndpointUrlList, WithOption.WithName("endpointUrlList"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(endpointUrlList);

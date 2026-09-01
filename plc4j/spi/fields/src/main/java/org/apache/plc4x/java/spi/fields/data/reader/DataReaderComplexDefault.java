@@ -50,6 +50,12 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
     }
 
     public T read(ComplexTypeSupplier<T> complexSupplier, WithOption... options) throws BufferException {
+        // Array elements carry the render-as-list marker: the serializer writes them without a
+        // logical-name wrapper (the element type's own serialize provides the element), so
+        // skip the wrapper context here as well to keep parse and serialize symmetric.
+        if (WithOption.extractRenderAsList(options).orElse(false)) {
+            return complexSupplier.get();
+        }
         readBuffer.pushContext(options);
         final T t = complexSupplier.get();
         readBuffer.popContext(options);

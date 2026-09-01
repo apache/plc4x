@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesEventType) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesEventType"
 }
 
-func (m *_BACnetPropertyStatesEventType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesEventType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (eventType)
 	lengthInBits += m.EventType.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesEventType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEventType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesEventType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

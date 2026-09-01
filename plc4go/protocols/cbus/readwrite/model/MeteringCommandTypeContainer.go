@@ -231,11 +231,11 @@ func CastMeteringCommandTypeContainer(structType any) MeteringCommandTypeContain
 	return castFunc(structType)
 }
 
-func (m MeteringCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m MeteringCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m MeteringCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MeteringCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -326,8 +326,8 @@ func (m *_AxisInformation) GetPlx4xTypeName() string {
 	return "AxisInformation"
 }
 
-func (m *_AxisInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AxisInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (engineeringUnits)
 	lengthInBits += m.EngineeringUnits.GetLengthInBits(ctx)
@@ -346,13 +346,13 @@ func (m *_AxisInformation) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.AxisSteps) > 0 {
-		lengthInBits += 64 * uint16(len(m.AxisSteps))
+		lengthInBits += 64 * uint64(len(m.AxisSteps))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AxisInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AxisInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

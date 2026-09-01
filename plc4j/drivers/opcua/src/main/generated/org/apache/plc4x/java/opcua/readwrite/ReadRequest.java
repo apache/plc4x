@@ -91,7 +91,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestHeader
-    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RequestHeader) RequestHeader.staticParse(readBuffer, (int) (391)), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RequestHeader.class, RequestHeader.staticParse(readBuffer, (int) (391))), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: maxAge
     double maxAge = FieldReaderFactory.readSimpleField(DataReaderFactory.readDouble(readBuffer, 64), WithOption.WithName("maxAge"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -103,7 +103,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     int noOfNodesToRead = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfNodesToRead"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: nodesToRead
-    List<ReadValueId> nodesToRead = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ReadValueId) ReadValueId.staticParse(readBuffer, (int) (628)), readBuffer), noOfNodesToRead, WithOption.WithName("nodesToRead"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ReadValueId> nodesToRead = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ReadValueId.class, ReadValueId.staticParse(readBuffer, (int) (628))), readBuffer), noOfNodesToRead, WithOption.WithName("nodesToRead"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(requestHeader, maxAge, timestampsToReturn, nodesToRead);

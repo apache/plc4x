@@ -37,7 +37,7 @@ class SlmpErrorMappingTest {
 
     @Test
     void normalCompletionDecodesValue() {
-        SlmpTag tag = SlmpTag.of("D350:WORD[2]");
+        SlmpTag tag = SlmpTag.of("D350[0..1]:WORD");
         var item = SlmpResponseMapper.mapTag(tag, 0x0000, hex("ab560f17"));
         assertEquals(PlcResponseCode.OK, item.getResponseCode());
         assertEquals(0x56AB, item.getValue().getList().get(0).getInt());
@@ -53,7 +53,7 @@ class SlmpErrorMappingTest {
 
     @Test
     void shortResponseMapsToInvalidData() {
-        SlmpTag tag = SlmpTag.of("D350:WORD[2]");      // wants 2 words
+        SlmpTag tag = SlmpTag.of("D350[0..1]:WORD");      // wants 2 words
         var item = SlmpResponseMapper.mapTag(tag, 0x0000, hex("ab56")); // only 1
         assertEquals(PlcResponseCode.INVALID_DATA, item.getResponseCode());
     }

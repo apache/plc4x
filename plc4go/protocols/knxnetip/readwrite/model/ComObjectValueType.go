@@ -250,11 +250,11 @@ func CastComObjectValueType(structType any) ComObjectValueType {
 	return castFunc(structType)
 }
 
-func (m ComObjectValueType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ComObjectValueType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ComObjectValueType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ComObjectValueType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

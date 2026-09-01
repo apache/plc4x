@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesBinaryLightningValue"
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (binaryLightningValue)
 	lengthInBits += m.BinaryLightningValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

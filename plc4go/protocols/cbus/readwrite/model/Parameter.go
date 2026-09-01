@@ -7875,11 +7875,11 @@ func CastParameter(structType any) Parameter {
 	return castFunc(structType)
 }
 
-func (m Parameter) GetLengthInBits(ctx context.Context) uint16 {
+func (m Parameter) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m Parameter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m Parameter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -72,7 +72,7 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: recipientList
-    List<BACnetDestination> recipientList = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetDestination) BACnetDestination.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("recipientList"));
+    List<BACnetDestination> recipientList = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDestination.class, BACnetDestination.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("recipientList"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(recipientList);

@@ -52,7 +52,7 @@ public class BACnetPropertyStatesSystemStatus extends BACnetPropertyStates imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: systemStatus
-    BACnetDeviceStatusTagged systemStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceStatusTagged) BACnetDeviceStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("systemStatus"));
+    BACnetDeviceStatusTagged systemStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceStatusTagged.class, BACnetDeviceStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("systemStatus"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(systemStatus);

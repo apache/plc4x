@@ -104,7 +104,7 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
     short year1 = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("year1"));
 
     // Simple Field: timeStamp
-    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DateAndTime) DateAndTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeStamp"));
+    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DateAndTime.class, DateAndTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeStamp"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(res, year1, timeStamp);

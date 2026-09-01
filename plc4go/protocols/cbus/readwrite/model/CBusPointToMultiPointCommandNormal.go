@@ -244,8 +244,8 @@ func (m *_CBusPointToMultiPointCommandNormal) GetPlx4xTypeName() string {
 	return "CBusPointToMultiPointCommandNormal"
 }
 
-func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).getLengthInBits(ctx))
+func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).getLengthInBits(ctx))
 
 	// Simple field (application)
 	lengthInBits += 8
@@ -259,7 +259,7 @@ func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

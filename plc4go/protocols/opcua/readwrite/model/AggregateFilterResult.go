@@ -260,8 +260,8 @@ func (m *_AggregateFilterResult) GetPlx4xTypeName() string {
 	return "AggregateFilterResult"
 }
 
-func (m *_AggregateFilterResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AggregateFilterResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (revisedStartTime)
 	lengthInBits += 64
@@ -275,7 +275,7 @@ func (m *_AggregateFilterResult) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AggregateFilterResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AggregateFilterResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

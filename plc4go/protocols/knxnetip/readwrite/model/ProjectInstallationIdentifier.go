@@ -179,8 +179,8 @@ func (m *_ProjectInstallationIdentifier) GetPlx4xTypeName() string {
 	return "ProjectInstallationIdentifier"
 }
 
-func (m *_ProjectInstallationIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ProjectInstallationIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (projectNumber)
 	lengthInBits += 8
@@ -191,7 +191,7 @@ func (m *_ProjectInstallationIdentifier) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ProjectInstallationIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ProjectInstallationIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

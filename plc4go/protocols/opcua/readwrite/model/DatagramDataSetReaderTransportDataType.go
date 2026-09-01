@@ -311,8 +311,8 @@ func (m *_DatagramDataSetReaderTransportDataType) GetPlx4xTypeName() string {
 	return "DatagramDataSetReaderTransportDataType"
 }
 
-func (m *_DatagramDataSetReaderTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DatagramDataSetReaderTransportDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += m.Address.GetLengthInBits(ctx)
@@ -337,7 +337,7 @@ func (m *_DatagramDataSetReaderTransportDataType) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_DatagramDataSetReaderTransportDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DatagramDataSetReaderTransportDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

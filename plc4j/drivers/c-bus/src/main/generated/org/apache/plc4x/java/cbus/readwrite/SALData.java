@@ -112,7 +112,7 @@ public abstract class SALData implements Message {
     }
 
     // Optional Field: salData
-    SALData salData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (SALData) SALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.ApplicationId) (applicationId)), readBuffer), WithOption.WithName("salData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    SALData salData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SALData.class, SALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.ApplicationId) (applicationId))), readBuffer), WithOption.WithName("salData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return builder.build(salData);

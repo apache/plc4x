@@ -154,11 +154,11 @@ func CastBACnetLightingOperation(structType any) BACnetLightingOperation {
 	return castFunc(structType)
 }
 
-func (m BACnetLightingOperation) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLightingOperation) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetLightingOperation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLightingOperation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

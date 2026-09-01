@@ -89,13 +89,13 @@ public class EnumDescription extends ExtensionObjectDefinition implements Messag
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dataTypeId
-    NodeId dataTypeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("dataTypeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId dataTypeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("dataTypeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: name
-    QualifiedName name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifiedName) QualifiedName.staticParse(readBuffer), readBuffer), WithOption.WithName("name"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    QualifiedName name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifiedName.class, QualifiedName.staticParse(readBuffer)), readBuffer), WithOption.WithName("name"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: enumDefinition
-    EnumDefinition enumDefinition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (EnumDefinition) EnumDefinition.staticParse(readBuffer, (int) (102)), readBuffer), WithOption.WithName("enumDefinition"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    EnumDefinition enumDefinition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(EnumDefinition.class, EnumDefinition.staticParse(readBuffer, (int) (102))), readBuffer), WithOption.WithName("enumDefinition"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: builtInType
     short builtInType = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("builtInType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

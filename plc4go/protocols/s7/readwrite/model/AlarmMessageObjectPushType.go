@@ -365,8 +365,8 @@ func (m *_AlarmMessageObjectPushType) GetPlx4xTypeName() string {
 	return "AlarmMessageObjectPushType"
 }
 
-func (m *_AlarmMessageObjectPushType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AlarmMessageObjectPushType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (variableSpec)
 	lengthInBits += 8
@@ -406,7 +406,7 @@ func (m *_AlarmMessageObjectPushType) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_AlarmMessageObjectPushType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AlarmMessageObjectPushType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

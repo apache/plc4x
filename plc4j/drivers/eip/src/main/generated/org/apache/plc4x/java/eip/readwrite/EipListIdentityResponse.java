@@ -81,7 +81,7 @@ public class EipListIdentityResponse extends EipPacket implements Message {
     int itemCount = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("itemCount"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: items
-    List<CommandSpecificDataItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (CommandSpecificDataItem) CommandSpecificDataItem.staticParse(readBuffer), readBuffer), itemCount, WithOption.WithName("items"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<CommandSpecificDataItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CommandSpecificDataItem.class, CommandSpecificDataItem.staticParse(readBuffer)), readBuffer), itemCount, WithOption.WithName("items"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new EipPacketBuilderImpl(items);

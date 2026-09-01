@@ -62,7 +62,7 @@ func (d *DefaultPlcWriteRequestResult) SerializeWithWriteBuffer(ctx context.Cont
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.Request)
-			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -81,7 +81,7 @@ func (d *DefaultPlcWriteRequestResult) SerializeWithWriteBuffer(ctx context.Cont
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.Response)
-			if err := writeBuffer.WriteString("response", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("response", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -89,7 +89,7 @@ func (d *DefaultPlcWriteRequestResult) SerializeWithWriteBuffer(ctx context.Cont
 
 	if d.Err != nil {
 		_errString := d.Err.Error()
-		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), _errString); err != nil {
+		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), _errString, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}

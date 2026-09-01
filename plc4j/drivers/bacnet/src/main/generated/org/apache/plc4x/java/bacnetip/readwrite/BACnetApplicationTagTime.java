@@ -51,7 +51,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadTime payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadTime) BACnetTagPayloadTime.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadTime payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadTime.class, BACnetTagPayloadTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new BACnetApplicationTagBuilderImpl(payload);

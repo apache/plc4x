@@ -78,7 +78,7 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: resolution
-    BACnetApplicationTagUnsignedInteger resolution = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("resolution"));
+    BACnetApplicationTagUnsignedInteger resolution = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("resolution"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagUnsignedInteger.class, resolution, WithOption.WithName("actualValue"));

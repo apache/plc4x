@@ -78,7 +78,7 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: localDate
-    BACnetApplicationTagDate localDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), WithOption.WithName("localDate"));
+    BACnetApplicationTagDate localDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("localDate"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDate actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDate.class, localDate, WithOption.WithName("actualValue"));

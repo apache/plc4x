@@ -106,11 +106,11 @@ func CastApplicationType(structType any) ApplicationType {
 	return castFunc(structType)
 }
 
-func (m ApplicationType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ApplicationType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m ApplicationType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ApplicationType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

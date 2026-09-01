@@ -81,7 +81,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: responseHeader
-    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ResponseHeader) ResponseHeader.staticParse(readBuffer, (int) (394)), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ResponseHeader.class, ResponseHeader.staticParse(readBuffer, (int) (394))), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: lastCounterResetTime
     long lastCounterResetTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedLong(readBuffer, 64), WithOption.WithName("lastCounterResetTime"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -90,7 +90,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     int noOfServers = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfServers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: servers
-    List<ServerOnNetwork> servers = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ServerOnNetwork) ServerOnNetwork.staticParse(readBuffer, (int) (12191)), readBuffer), noOfServers, WithOption.WithName("servers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ServerOnNetwork> servers = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ServerOnNetwork.class, ServerOnNetwork.staticParse(readBuffer, (int) (12191))), readBuffer), noOfServers, WithOption.WithName("servers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(responseHeader, lastCounterResetTime, servers);

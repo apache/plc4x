@@ -73,13 +73,13 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bridgeAddress
-    BridgeAddress bridgeAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BridgeAddress) BridgeAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("bridgeAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    BridgeAddress bridgeAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BridgeAddress.class, BridgeAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("bridgeAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: networkRoute
-    NetworkRoute networkRoute = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NetworkRoute) NetworkRoute.staticParse(readBuffer), readBuffer), WithOption.WithName("networkRoute"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NetworkRoute networkRoute = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NetworkRoute.class, NetworkRoute.staticParse(readBuffer)), readBuffer), WithOption.WithName("networkRoute"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: unitAddress
-    UnitAddress unitAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (UnitAddress) UnitAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("unitAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    UnitAddress unitAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UnitAddress.class, UnitAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("unitAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CBusPointToPointCommandBuilderImpl(bridgeAddress, networkRoute, unitAddress);

@@ -58,8 +58,8 @@ type LogicalSegmentTypeContract interface {
 
 // LogicalSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type LogicalSegmentTypeRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetLogicalSegmentType returns LogicalSegmentType (discriminator field)
 	GetLogicalSegmentType() uint8
 }
@@ -95,6 +95,8 @@ type LogicalSegmentTypeBuilder interface {
 	AsInstanceID() InstanceIDBuilder
 	// AsMemberID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
 	AsMemberID() MemberIDBuilder
+	// AsAttributeID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
+	AsAttributeID() AttributeIDBuilder
 	// Build builds the LogicalSegmentType or returns an error if something is wrong
 	PartialBuild() (LogicalSegmentTypeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -175,6 +177,16 @@ func (b *_LogicalSegmentTypeBuilder) AsMemberID() MemberIDBuilder {
 	return cb
 }
 
+func (b *_LogicalSegmentTypeBuilder) AsAttributeID() AttributeIDBuilder {
+	if cb, ok := b.childBuilder.(AttributeIDBuilder); ok {
+		return cb
+	}
+	cb := NewAttributeIDBuilder().(*_AttributeIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_LogicalSegmentTypeBuilder) Build() (LogicalSegmentType, error) {
 	v, err := b.PartialBuild()
 	if err != nil {
@@ -233,19 +245,19 @@ func (m *_LogicalSegmentType) GetPlx4xTypeName() string {
 	return "LogicalSegmentType"
 }
 
-func (m *_LogicalSegmentType) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LogicalSegmentType) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (logicalSegmentType)
 	lengthInBits += 3
 
 	return lengthInBits
 }
 
-func (m *_LogicalSegmentType) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_LogicalSegmentType) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_LogicalSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LogicalSegmentType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -306,6 +318,10 @@ func (m *_LogicalSegmentType) parse(ctx context.Context, readBuffer utils.ReadBu
 	case logicalSegmentType == 0x02: // MemberID
 		if _child, err = new(_MemberID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MemberID for type-switch of LogicalSegmentType")
+		}
+	case logicalSegmentType == 0x04: // AttributeID
+		if _child, err = new(_AttributeID).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AttributeID for type-switch of LogicalSegmentType")
 		}
 	default:
 		return nil, errors.Errorf("Unmapped type for parameters [logicalSegmentType=%v]", logicalSegmentType)

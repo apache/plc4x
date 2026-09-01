@@ -226,21 +226,21 @@ func (m *_ApduDataGroupValueResponse) GetPlx4xTypeName() string {
 	return "ApduDataGroupValueResponse"
 }
 
-func (m *_ApduDataGroupValueResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataGroupValueResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ApduDataGroupValueResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataGroupValueResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -810,8 +810,8 @@ func (m *_AdsDataTypeTableEntry) GetPlx4xTypeName() string {
 	return "AdsDataTypeTableEntry"
 }
 
-func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (entryLength)
 	lengthInBits += 32
@@ -943,19 +943,19 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 16
 
 	// Simple field (mainName)
-	lengthInBits += uint16(int32(uint16(len(m.GetMainName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetMainName()))) * int32(int32(8)))
 
 	// Const Field (mainNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (secondaryName)
-	lengthInBits += uint16(int32(uint16(len(m.GetSecondaryName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetSecondaryName()))) * int32(int32(8)))
 
 	// Const Field (secondaryNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
-	lengthInBits += uint16(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
@@ -978,7 +978,7 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Guid) > 0 {
-		lengthInBits += 8 * uint16(len(m.Guid))
+		lengthInBits += 8 * uint64(len(m.Guid))
 	}
 
 	// Optional Field (methodInfos)
@@ -998,35 +998,35 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Rest) > 0 {
-		lengthInBits += 8 * uint16(len(m.Rest))
+		lengthInBits += 8 * uint64(len(m.Rest))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDataTypeTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDataTypeTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDataTypeTableEntryParse(ctx context.Context, theBytes []byte) (AdsDataTypeTableEntry, error) {
-	return AdsDataTypeTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsDataTypeTableEntryParse(ctx context.Context, theBytes []byte, maxDepth uint16) (AdsDataTypeTableEntry, error) {
+	return AdsDataTypeTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), maxDepth)
 }
 
-func AdsDataTypeTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
+func AdsDataTypeTableEntryParseWithBufferProducer(maxDepth uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
-		return AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
+		return AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer, maxDepth)
 	}
 }
 
-func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
-	v, err := (new(_AdsDataTypeTableEntry)).parse(ctx, readBuffer)
+func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, maxDepth uint16) (AdsDataTypeTableEntry, error) {
+	v, err := (new(_AdsDataTypeTableEntry)).parse(ctx, readBuffer, maxDepth)
 	if err != nil {
 		return nil, err
 	}
 	return v, nil
 }
 
-func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDataTypeTableEntry AdsDataTypeTableEntry, err error) {
+func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer, maxDepth uint16) (__adsDataTypeTableEntry AdsDataTypeTableEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeTableEntry"); pullErr != nil {
@@ -1036,6 +1036,11 @@ func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
+
+	// Validation
+	if !(bool((maxDepth) > (0))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "maximum data type table nesting depth exceeded"})
+	}
 
 	entryLength, err := ReadSimpleField(ctx, "entryLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
@@ -1337,7 +1342,7 @@ func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.ArrayInfo = arrayInfo
 
-	children, err := ReadCountArrayField[AdsDataTypeTableEntry](ctx, "children", ReadComplex[AdsDataTypeTableEntry](AdsDataTypeTableEntryParseWithBuffer, readBuffer), uint64(numChildren), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	children, err := ReadCountArrayField[AdsDataTypeTableEntry](ctx, "children", ReadComplex[AdsDataTypeTableEntry](AdsDataTypeTableEntryParseWithBufferProducer((uint16)(uint16(maxDepth)-uint16(uint16(1)))), readBuffer), uint64(numChildren), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'children' field"))
 	}
@@ -1379,7 +1384,7 @@ func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.Rea
 		m.ExtendedInfos = extendedInfos
 	}
 
-	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((int32((positionAware.GetPos()-startPos))/int32(int32(8))))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((positionAware.GetPos()-startPos))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rest' field"))
 	}

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorHighLimit"
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (highLimit)
 	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

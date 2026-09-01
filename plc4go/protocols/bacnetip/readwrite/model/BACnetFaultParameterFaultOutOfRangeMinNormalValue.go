@@ -66,8 +66,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueContract interface {
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -369,8 +369,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetPlx4xTypeName() 
 	return "BACnetFaultParameterFaultOutOfRangeMinNormalValue"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -383,11 +383,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) getLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -456,19 +456,19 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) parse(ctx context.C
 	var _child BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	switch {
 	case peekedTagNumber == 0x4: // BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueReal for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	case peekedTagNumber == 0x2: // BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	case peekedTagNumber == 0x5: // BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	case peekedTagNumber == 0x3: // BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	default:

@@ -207,8 +207,8 @@ func (m *_MeteringDataOtherWaterConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataOtherWaterConsumption"
 }
 
-func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	// Simple field (kL)
 	lengthInBits += 32
@@ -216,7 +216,7 @@ func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_MeteringDataOtherWaterConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeteringDataOtherWaterConsumption) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

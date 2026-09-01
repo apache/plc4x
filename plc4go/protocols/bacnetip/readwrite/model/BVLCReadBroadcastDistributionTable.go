@@ -185,13 +185,13 @@ func (m *_BVLCReadBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BVLCReadBroadcastDistributionTable"
 }
 
-func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

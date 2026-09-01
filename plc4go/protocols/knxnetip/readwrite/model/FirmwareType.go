@@ -178,11 +178,11 @@ func CastFirmwareType(structType any) FirmwareType {
 	return castFunc(structType)
 }
 
-func (m FirmwareType) GetLengthInBits(ctx context.Context) uint16 {
+func (m FirmwareType) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m FirmwareType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m FirmwareType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

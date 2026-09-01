@@ -64,8 +64,8 @@ type BACnetChannelValueContract interface {
 
 // BACnetChannelValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetChannelValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
 	GetPeekedIsContextTag() bool
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
@@ -436,8 +436,8 @@ func (m *_BACnetChannelValue) GetPlx4xTypeName() string {
 	return "BACnetChannelValue"
 }
 
-func (m *_BACnetChannelValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetChannelValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -446,11 +446,11 @@ func (m *_BACnetChannelValue) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetChannelValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetChannelValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetChannelValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

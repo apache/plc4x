@@ -154,22 +154,22 @@ public class ServerEndpointDataType extends ExtensionObjectDefinition implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: name
-    PascalString name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("name"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalString name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("name"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfRecordProperties
     int noOfRecordProperties = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfRecordProperties"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: recordProperties
-    List<KeyValuePair> recordProperties = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (KeyValuePair) KeyValuePair.staticParse(readBuffer, (int) (14535)), readBuffer), noOfRecordProperties, WithOption.WithName("recordProperties"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<KeyValuePair> recordProperties = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(KeyValuePair.class, KeyValuePair.staticParse(readBuffer, (int) (14535))), readBuffer), noOfRecordProperties, WithOption.WithName("recordProperties"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfDiscoveryUrls
     int noOfDiscoveryUrls = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfDiscoveryUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: discoveryUrls
-    List<PascalString> discoveryUrls = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfDiscoveryUrls, WithOption.WithName("discoveryUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> discoveryUrls = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfDiscoveryUrls, WithOption.WithName("discoveryUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: networkName
-    PascalString networkName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("networkName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalString networkName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("networkName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: port
     int port = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("port"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -178,28 +178,28 @@ public class ServerEndpointDataType extends ExtensionObjectDefinition implements
     int noOfEndpointUrls = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfEndpointUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: endpointUrls
-    List<PascalString> endpointUrls = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfEndpointUrls, WithOption.WithName("endpointUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> endpointUrls = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfEndpointUrls, WithOption.WithName("endpointUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfSecuritySettingNames
     int noOfSecuritySettingNames = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfSecuritySettingNames"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: securitySettingNames
-    List<PascalString> securitySettingNames = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfSecuritySettingNames, WithOption.WithName("securitySettingNames"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> securitySettingNames = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfSecuritySettingNames, WithOption.WithName("securitySettingNames"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: transportProfileUri
-    PascalString transportProfileUri = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("transportProfileUri"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalString transportProfileUri = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("transportProfileUri"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfUserTokenSettingNames
     int noOfUserTokenSettingNames = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfUserTokenSettingNames"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: userTokenSettingNames
-    List<PascalString> userTokenSettingNames = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfUserTokenSettingNames, WithOption.WithName("userTokenSettingNames"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> userTokenSettingNames = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfUserTokenSettingNames, WithOption.WithName("userTokenSettingNames"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfReverseConnectUrls
     int noOfReverseConnectUrls = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfReverseConnectUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: reverseConnectUrls
-    List<PascalString> reverseConnectUrls = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfReverseConnectUrls, WithOption.WithName("reverseConnectUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> reverseConnectUrls = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfReverseConnectUrls, WithOption.WithName("reverseConnectUrls"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(name, recordProperties, discoveryUrls, networkName, port, endpointUrls, securitySettingNames, transportProfileUri, userTokenSettingNames, reverseConnectUrls);

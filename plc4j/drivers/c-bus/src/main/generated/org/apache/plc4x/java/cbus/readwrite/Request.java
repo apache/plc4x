@@ -138,7 +138,7 @@ public abstract class Request implements Message {
     }
 
     // Simple Field: termination
-    RequestTermination termination = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RequestTermination) RequestTermination.staticParse(readBuffer), readBuffer), WithOption.WithName("termination"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    RequestTermination termination = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RequestTermination.class, RequestTermination.staticParse(readBuffer)), readBuffer), WithOption.WithName("termination"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return builder.build(peekedByte, startingCR, resetMode, secondPeek, termination);

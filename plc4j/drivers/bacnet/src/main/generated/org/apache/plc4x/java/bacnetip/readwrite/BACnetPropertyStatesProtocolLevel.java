@@ -52,7 +52,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: protocolLevel
-    BACnetProtocolLevelTagged protocolLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProtocolLevelTagged) BACnetProtocolLevelTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("protocolLevel"));
+    BACnetProtocolLevelTagged protocolLevel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProtocolLevelTagged.class, BACnetProtocolLevelTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("protocolLevel"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(protocolLevel);

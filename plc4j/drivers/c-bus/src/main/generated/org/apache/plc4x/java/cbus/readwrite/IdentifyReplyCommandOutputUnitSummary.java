@@ -91,7 +91,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: unitFlags
-    IdentifyReplyCommandUnitSummary unitFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IdentifyReplyCommandUnitSummary) IdentifyReplyCommandUnitSummary.staticParse(readBuffer), readBuffer), WithOption.WithName("unitFlags"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    IdentifyReplyCommandUnitSummary unitFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IdentifyReplyCommandUnitSummary.class, IdentifyReplyCommandUnitSummary.staticParse(readBuffer)), readBuffer), WithOption.WithName("unitFlags"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Optional Field (conditional): gavStoreEnabledByte1
     Byte gavStoreEnabledByte1 = FieldReaderFactory.readOptionalField(DataReaderFactory.readByte(readBuffer, 8), (numBytes) > (1), WithOption.WithName("gavStoreEnabledByte1"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

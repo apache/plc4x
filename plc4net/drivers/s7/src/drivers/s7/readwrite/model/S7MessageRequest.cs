@@ -42,7 +42,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
                 parameter = S7Parameter.StaticParse(readBuffer, (byte) (messageType));
             }
             S7Payload? payload = null;
-            if ((payloadLength > 0))
+            if (((payloadLength > 0) && (parameter != null)))
             {
                 payload = S7Payload.StaticParse(readBuffer, (byte) (messageType), parameter);
             }

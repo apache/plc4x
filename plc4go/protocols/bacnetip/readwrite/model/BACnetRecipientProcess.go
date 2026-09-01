@@ -209,8 +209,8 @@ func (m *_BACnetRecipientProcess) GetPlx4xTypeName() string {
 	return "BACnetRecipientProcess"
 }
 
-func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (recipient)
 	lengthInBits += m.Recipient.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetRecipientProcess) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetRecipientProcess) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

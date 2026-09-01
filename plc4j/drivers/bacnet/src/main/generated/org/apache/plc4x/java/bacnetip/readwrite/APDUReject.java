@@ -76,7 +76,7 @@ public class APDUReject extends APDU implements Message {
     short originalInvokeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("originalInvokeId"));
 
     // Simple Field: rejectReason
-    BACnetRejectReasonTagged rejectReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRejectReasonTagged) BACnetRejectReasonTagged.staticParse(readBuffer, (long) (1L)), readBuffer), WithOption.WithName("rejectReason"));
+    BACnetRejectReasonTagged rejectReason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRejectReasonTagged.class, BACnetRejectReasonTagged.staticParse(readBuffer, (long) (1L))), readBuffer), WithOption.WithName("rejectReason"));
 
     readBuffer.popContext();
     return new APDUBuilderImpl(originalInvokeId, rejectReason);

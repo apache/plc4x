@@ -84,7 +84,7 @@ func TestSimulatedField_GetAddressString(t1 *testing.T) {
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
 			},
-			want: "RANDOM/test:BOOL[1]",
+			want: "RANDOM/test:BOOL",
 		},
 	}
 	for _, tt := range tests {

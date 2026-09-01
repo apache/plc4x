@@ -59,7 +59,7 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: table
-    List<BVLCBroadcastDistributionTableEntry> table = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (BVLCBroadcastDistributionTableEntry) BVLCBroadcastDistributionTableEntry.staticParse(readBuffer), readBuffer), bvlcPayloadLength, WithOption.WithName("table"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<BVLCBroadcastDistributionTableEntry> table = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BVLCBroadcastDistributionTableEntry.class, BVLCBroadcastDistributionTableEntry.staticParse(readBuffer)), readBuffer), bvlcPayloadLength, WithOption.WithName("table"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new BVLCBuilderImpl(table);

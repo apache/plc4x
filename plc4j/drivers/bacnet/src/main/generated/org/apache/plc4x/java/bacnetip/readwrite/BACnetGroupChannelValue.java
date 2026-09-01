@@ -70,13 +70,13 @@ public class BACnetGroupChannelValue implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: channel
-    BACnetContextTagUnsignedInteger channel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("channel"));
+    BACnetContextTagUnsignedInteger channel = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("channel"));
 
     // Optional Field: overridingPriority
-    BACnetContextTagUnsignedInteger overridingPriority = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("overridingPriority"));
+    BACnetContextTagUnsignedInteger overridingPriority = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("overridingPriority"));
 
     // Simple Field: value
-    BACnetChannelValue value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetChannelValue) BACnetChannelValue.staticParse(readBuffer), readBuffer), WithOption.WithName("value"));
+    BACnetChannelValue value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetChannelValue.class, BACnetChannelValue.staticParse(readBuffer)), readBuffer), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new BACnetGroupChannelValue(channel, overridingPriority, value);

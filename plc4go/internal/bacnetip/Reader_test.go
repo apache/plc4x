@@ -318,7 +318,8 @@ func TestReassembledSegments_RoundTrip(t *testing.T) {
 	assert.InDelta(t, 23.5, val.GetFloat32(), 0.001)
 }
 
-func ptrU8(v uint8) *uint8 { return &v }
+//go:fix inline
+func ptrU8(v uint8) *uint8 { return new(v) }
 
 // ── ValueDecoder unit tests ───────────────────────────────────────────────
 

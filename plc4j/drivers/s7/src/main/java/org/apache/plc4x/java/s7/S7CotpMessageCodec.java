@@ -64,10 +64,10 @@ public class S7CotpMessageCodec extends MessageCodecBase<S7Message> {
 
     @Override
     protected int calculateTotalMessageSize(byte[] header, int availableBytes) {
-        // Sanity check for the magic. If misaligned, swallow the byte by returning availableBytes+1
-        // to force the framework to consume it (not ideal, but signals corruption).
+        // No S7 message starts with anything else, and no byte arriving later changes the one
+        // already here, so say so and let the byte be dropped.
         if (header[0] != S7_MAGIC) {
-            return -1;
+            return DESYNCHRONIZED;
         }
         int msgType = header[1] & 0xFF;
         int paramLen = ((header[6] & 0xFF) << 8) | (header[7] & 0xFF);

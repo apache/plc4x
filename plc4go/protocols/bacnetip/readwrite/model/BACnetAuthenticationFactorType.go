@@ -232,11 +232,11 @@ func CastBACnetAuthenticationFactorType(structType any) BACnetAuthenticationFact
 	return castFunc(structType)
 }
 
-func (m BACnetAuthenticationFactorType) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAuthenticationFactorType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAuthenticationFactorType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAuthenticationFactorType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

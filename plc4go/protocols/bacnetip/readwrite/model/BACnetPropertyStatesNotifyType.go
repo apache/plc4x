@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesNotifyType) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesNotifyType"
 }
 
-func (m *_BACnetPropertyStatesNotifyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesNotifyType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (notifyType)
 	lengthInBits += m.NotifyType.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesNotifyType) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesNotifyType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesNotifyType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

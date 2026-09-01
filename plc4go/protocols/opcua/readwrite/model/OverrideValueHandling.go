@@ -100,11 +100,11 @@ func CastOverrideValueHandling(structType any) OverrideValueHandling {
 	return castFunc(structType)
 }
 
-func (m OverrideValueHandling) GetLengthInBits(ctx context.Context) uint16 {
+func (m OverrideValueHandling) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OverrideValueHandling) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OverrideValueHandling) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

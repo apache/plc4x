@@ -45,7 +45,7 @@
 +++
 |`udp.local-address` |STRING | | |Local address to bind to. If not set, binds to all interfaces.
 |`udp.local-port` |INT |0| |Local port to bind to. 0 uses ephemeral port.
-|`udp.read-timeout` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`udp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
 |`udp.max-packet-size` |INT |65507| |Maximum UDP packet size in bytes.
 |`udp.send-buffer-size` |INT |0| |Send buffer size in bytes. 0 uses system default.
 |`udp.receive-buffer-size` |INT |0| |Receive buffer size in bytes. 0 uses system default.

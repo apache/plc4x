@@ -222,8 +222,8 @@ func (m *_CycServiceItemDbReadType) GetPlx4xTypeName() string {
 	return "CycServiceItemDbReadType"
 }
 
-func (m *_CycServiceItemDbReadType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
+func (m *_CycServiceItemDbReadType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
 
 	// Simple field (numberOfAreas)
 	lengthInBits += 8
@@ -239,7 +239,7 @@ func (m *_CycServiceItemDbReadType) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_CycServiceItemDbReadType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CycServiceItemDbReadType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

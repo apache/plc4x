@@ -91,13 +91,13 @@ public class ServiceCertificateDataType extends ExtensionObjectDefinition implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: certificate
-    PascalByteString certificate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalByteString) PascalByteString.staticParse(readBuffer), readBuffer), WithOption.WithName("certificate"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalByteString certificate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalByteString.class, PascalByteString.staticParse(readBuffer)), readBuffer), WithOption.WithName("certificate"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfIssuers
     int noOfIssuers = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfIssuers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: issuers
-    List<PascalByteString> issuers = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalByteString) PascalByteString.staticParse(readBuffer), readBuffer), noOfIssuers, WithOption.WithName("issuers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalByteString> issuers = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalByteString.class, PascalByteString.staticParse(readBuffer)), readBuffer), noOfIssuers, WithOption.WithName("issuers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: validFrom
     long validFrom = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedLong(readBuffer, 64), WithOption.WithName("validFrom"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

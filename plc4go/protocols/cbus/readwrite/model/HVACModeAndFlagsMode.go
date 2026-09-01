@@ -112,11 +112,11 @@ func CastHVACModeAndFlagsMode(structType any) HVACModeAndFlagsMode {
 	return castFunc(structType)
 }
 
-func (m HVACModeAndFlagsMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m HVACModeAndFlagsMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 3
 }
 
-func (m HVACModeAndFlagsMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m HVACModeAndFlagsMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

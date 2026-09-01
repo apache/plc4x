@@ -100,10 +100,10 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: carDoorCommand
-    List<BACnetLiftCarDoorCommandTagged> carDoorCommand = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetLiftCarDoorCommandTagged) BACnetLiftCarDoorCommandTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("carDoorCommand"));
+    List<BACnetLiftCarDoorCommandTagged> carDoorCommand = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarDoorCommandTagged.class, BACnetLiftCarDoorCommandTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("carDoorCommand"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(numberOfDataElements, carDoorCommand);

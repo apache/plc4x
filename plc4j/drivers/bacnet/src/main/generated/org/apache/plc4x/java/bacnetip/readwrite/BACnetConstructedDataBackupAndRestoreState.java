@@ -78,7 +78,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: backupAndRestoreState
-    BACnetBackupStateTagged backupAndRestoreState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetBackupStateTagged) BACnetBackupStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("backupAndRestoreState"));
+    BACnetBackupStateTagged backupAndRestoreState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetBackupStateTagged.class, BACnetBackupStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("backupAndRestoreState"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetBackupStateTagged actualValue = FieldReaderFactory.readVirtualField(BACnetBackupStateTagged.class, backupAndRestoreState, WithOption.WithName("actualValue"));

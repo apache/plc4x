@@ -70,7 +70,7 @@ public class SerialTransportConfiguration implements TransportConfiguration {
     /**
      * Read timeout in milliseconds. 0 means blocking read.
      */
-    @ConfigurationParameter( "read-timeout")
+    @ConfigurationParameter( "read-timeout-ms")
     @Description( "Read timeout in milliseconds. 0 means blocking read.")
     @IntDefaultValue(1000)
     public int readTimeout;
@@ -78,7 +78,7 @@ public class SerialTransportConfiguration implements TransportConfiguration {
     /**
      * Write timeout in milliseconds.
      */
-    @ConfigurationParameter( "write-timeout")
+    @ConfigurationParameter( "write-timeout-ms")
     @Description( "Write timeout in milliseconds.")
     @IntDefaultValue(1000)
     public int writeTimeout;

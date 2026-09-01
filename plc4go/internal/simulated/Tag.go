@@ -41,14 +41,24 @@ type simulatedTag struct {
 	Name         string
 	DataTypeSize model.SimulatedDataTypeSizes
 	Quantity     uint16
+	// ExplicitRange records whether the address wrote the selection as a range. A one-element
+	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
+	ExplicitRange bool
 }
 
 func NewSimulatedTag(tagType TagType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) Tag {
+	return NewSimulatedTagWithShape(tagType, name, dataTypeSize, quantity, quantity > 1)
+}
+
+// NewSimulatedTagWithShape is NewSimulatedTag plus what the address said about its shape: a range
+// is an array even when it spans one element, which the quantity alone cannot carry.
+func NewSimulatedTagWithShape(tagType TagType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16, explicitRange bool) Tag {
 	return simulatedTag{
-		TagType:      tagType,
-		Name:         name,
-		DataTypeSize: dataTypeSize,
-		Quantity:     quantity,
+		ExplicitRange: explicitRange,
+		TagType:       tagType,
+		Name:          name,
+		DataTypeSize:  dataTypeSize,
+		Quantity:      quantity,
 	}
 }
 
@@ -65,7 +75,8 @@ func (t simulatedTag) GetDataTypeSize() model.SimulatedDataTypeSizes {
 }
 
 func (t simulatedTag) GetAddressString() string {
-	return fmt.Sprintf("%s/%s:%s[%d]", t.TagType.Name(), t.Name, t.DataTypeSize.String(), t.Quantity)
+	return fmt.Sprintf("%s/%s%s:%s", t.TagType.Name(), t.Name,
+		spiModel.RenderArrayExpression(t.GetArrayInfo()), t.DataTypeSize.String())
 }
 
 func (t simulatedTag) GetValueType() values.PlcValueType {
@@ -76,11 +87,13 @@ func (t simulatedTag) GetValueType() values.PlcValueType {
 }
 
 func (t simulatedTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if t.Quantity != 1 {
+	// The flag decides the shape; the count only sizes it.
+	if t.ExplicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(t.Quantity),
+				UpperBound: uint32(t.Quantity) - 1,
+				Range:      true,
 			},
 		}
 	}

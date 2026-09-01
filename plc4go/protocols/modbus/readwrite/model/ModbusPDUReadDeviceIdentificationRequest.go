@@ -253,8 +253,8 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadDeviceIdentificationRequest"
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Const Field (meiType)
 	lengthInBits += 8
@@ -268,7 +268,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

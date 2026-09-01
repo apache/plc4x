@@ -60,8 +60,8 @@ type PayloadContract interface {
 
 // PayloadRequirements provides a set of functions which need to be implemented by a sub struct
 type PayloadRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetBinary returns Binary (discriminator field)
 	GetBinary() bool
 }
@@ -263,8 +263,8 @@ func (m *_Payload) GetPlx4xTypeName() string {
 	return "Payload"
 }
 
-func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Payload) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (sequenceHeader)
 	lengthInBits += m.SequenceHeader.GetLengthInBits(ctx)
@@ -272,11 +272,11 @@ func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Payload) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_Payload) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_Payload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Payload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -328,11 +328,11 @@ func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, binar
 	var _child Payload
 	switch {
 	case binary == bool(false): // ExtensiblePayload
-		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
+		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, uint32(byteCount)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
 		}
 	case binary == bool(true): // BinaryPayload
-		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
+		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, uint32(byteCount)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
 		}
 	default:

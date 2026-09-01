@@ -36,7 +36,7 @@ public class ManualKnxNetIpSubscription {
     // */*/101: Power Line 1[10..15]
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("knxnet-ip://192.168.42.28?knxproj-file-path=/Users/christoferdutz/Projects/Privat/NLNet/plc4x/plc4j/drivers/knxnetip/Stettiner-Str-13.knxproj&knxproj-password=cW171998$");
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("knxnet-ip://192.168.42.28?knxproj-file-path=huiiiii&knxproj-password=lalala");
         //final PlcConnection connection = new DefaultPlcDriverManager().getConnection("knxnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Recording-01.03.2020-2.pcapng?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
         // Make sure we hang up correctly when terminating.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

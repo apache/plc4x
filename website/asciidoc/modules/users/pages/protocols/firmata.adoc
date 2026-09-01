@@ -29,6 +29,14 @@ This driver is built to be compatible with the `StandardFirmata Arduino Sketch` 
 
 == Connection String Options
 
+[WARNING]
+====
+Firmata addresses carry no type, so the brackets did not move when the notation was
+unified - and their meaning changed with nothing to reject. `3[4]` used to mean four pins
+starting at pin 3; it now means one pin, the fifth. Rewrite these as `3[0..3]`.
+See xref:array-notation.adoc[Addressing arrays].
+====
+
 include::partial$firmata.adoc[]
 
 [cols="2,2a,5a"]
@@ -59,7 +67,7 @@ Booleans are used for the digital IO pins and short values for the analog inputs
 The full format for a digital address has the following format:
 
 ----
-digital:{start-address}[{array-size}]:{special-config}
+digital:{start-address}[{selection}]:{special-config}
 ----
 
 The `start-address` and `array-size` are simple integer values.
@@ -84,7 +92,7 @@ WARNING: However in case of using the serial port (which will always be the case
 The full format for an analog address is as follows:
 
 ----
-analog:{start-address}[{array-size}]
+analog:{start-address}[{selection}]
 ----
 
 The `start-address` and `array-size` are simple integer values.

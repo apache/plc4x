@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_COUNTER_INTERROGATION_COMMAND extends 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: qcc
-    QualifierOfCounterInterrogationCommand qcc = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfCounterInterrogationCommand) QualifierOfCounterInterrogationCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("qcc"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfCounterInterrogationCommand qcc = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfCounterInterrogationCommand.class, QualifierOfCounterInterrogationCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("qcc"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(qcc);

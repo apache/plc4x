@@ -241,8 +241,8 @@ func (m *_BACnetObjectPropertyReference) GetPlx4xTypeName() string {
 	return "BACnetObjectPropertyReference"
 }
 
-func (m *_BACnetObjectPropertyReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetObjectPropertyReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetObjectPropertyReference) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

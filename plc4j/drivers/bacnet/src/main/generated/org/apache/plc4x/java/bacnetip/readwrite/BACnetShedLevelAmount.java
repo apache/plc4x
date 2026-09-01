@@ -51,7 +51,7 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: amount
-    BACnetContextTagReal amount = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("amount"));
+    BACnetContextTagReal amount = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("amount"));
 
     readBuffer.popContext();
     return new BACnetShedLevelBuilderImpl(amount);

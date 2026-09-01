@@ -39,7 +39,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             SourceReference = sourceReference;
         }
 
-        public static COTPPacketDisconnectResponse StaticParse(ReadBuffer readBuffer, ushort cotpLen, byte headerLength, int _startPos)
+        public static COTPPacketDisconnectResponse StaticParse(ReadBuffer readBuffer, uint cotpLen, byte headerLength, int _startPos)
         {
             var destinationReference = readBuffer.ReadUshort("destinationReference", 16);
             var sourceReference = readBuffer.ReadUshort("sourceReference", 16);

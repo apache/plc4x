@@ -306,8 +306,8 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetPlx4xTypeName() stri
 	return "AirConditioningDataSetHumidityUpperGuardLimit"
 }
 
-func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
+func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -324,7 +324,7 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

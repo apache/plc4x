@@ -139,13 +139,13 @@ func (m *_EncodedTicket) GetPlx4xTypeName() string {
 	return "EncodedTicket"
 }
 
-func (m *_EncodedTicket) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_EncodedTicket) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_EncodedTicket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EncodedTicket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

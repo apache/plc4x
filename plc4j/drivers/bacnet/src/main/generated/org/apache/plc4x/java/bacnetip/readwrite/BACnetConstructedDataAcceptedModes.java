@@ -72,7 +72,7 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: acceptedModes
-    List<BACnetLifeSafetyModeTagged> acceptedModes = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetLifeSafetyModeTagged) BACnetLifeSafetyModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("acceptedModes"));
+    List<BACnetLifeSafetyModeTagged> acceptedModes = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLifeSafetyModeTagged.class, BACnetLifeSafetyModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("acceptedModes"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(acceptedModes);

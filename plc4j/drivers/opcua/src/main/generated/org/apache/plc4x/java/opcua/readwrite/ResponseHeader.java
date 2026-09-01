@@ -118,19 +118,19 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     long requestHandle = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("requestHandle"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: serviceResult
-    StatusCode serviceResult = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (StatusCode) StatusCode.staticParse(readBuffer), readBuffer), WithOption.WithName("serviceResult"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    StatusCode serviceResult = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusCode.class, StatusCode.staticParse(readBuffer)), readBuffer), WithOption.WithName("serviceResult"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: serviceDiagnostics
-    DiagnosticInfo serviceDiagnostics = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DiagnosticInfo) DiagnosticInfo.staticParse(readBuffer), readBuffer), WithOption.WithName("serviceDiagnostics"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    DiagnosticInfo serviceDiagnostics = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DiagnosticInfo.class, DiagnosticInfo.staticParse(readBuffer)), readBuffer), WithOption.WithName("serviceDiagnostics"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfStringTable
     int noOfStringTable = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfStringTable"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: stringTable
-    List<PascalString> stringTable = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfStringTable, WithOption.WithName("stringTable"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> stringTable = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfStringTable, WithOption.WithName("stringTable"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: additionalHeader
-    ExtensionObject additionalHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExtensionObject) ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer), WithOption.WithName("additionalHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExtensionObject additionalHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObject.class, ExtensionObject.staticParse(readBuffer, (boolean) (true))), readBuffer), WithOption.WithName("additionalHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(timestamp, requestHandle, serviceResult, serviceDiagnostics, stringTable, additionalHeader);

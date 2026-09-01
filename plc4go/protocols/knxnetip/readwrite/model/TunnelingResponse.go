@@ -231,8 +231,8 @@ func (m *_TunnelingResponse) GetPlx4xTypeName() string {
 	return "TunnelingResponse"
 }
 
-func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (tunnelingResponseDataBlock)
 	lengthInBits += m.TunnelingResponseDataBlock.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_TunnelingResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TunnelingResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

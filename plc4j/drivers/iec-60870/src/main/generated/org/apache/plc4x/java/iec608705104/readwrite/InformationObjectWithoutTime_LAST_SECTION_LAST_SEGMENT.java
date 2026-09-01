@@ -92,16 +92,16 @@ public class InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT extends Info
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nof
-    NameOfFile nof = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NameOfFile) NameOfFile.staticParse(readBuffer), readBuffer), WithOption.WithName("nof"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NameOfFile nof = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NameOfFile.class, NameOfFile.staticParse(readBuffer)), readBuffer), WithOption.WithName("nof"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: nos
-    NameOfSection nos = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NameOfSection) NameOfSection.staticParse(readBuffer), readBuffer), WithOption.WithName("nos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NameOfSection nos = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NameOfSection.class, NameOfSection.staticParse(readBuffer)), readBuffer), WithOption.WithName("nos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: lsq
-    LastSectionOrSegmentQualifier lsq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LastSectionOrSegmentQualifier) LastSectionOrSegmentQualifier.staticParse(readBuffer), readBuffer), WithOption.WithName("lsq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    LastSectionOrSegmentQualifier lsq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LastSectionOrSegmentQualifier.class, LastSectionOrSegmentQualifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("lsq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: chs
-    Checksum chs = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Checksum) Checksum.staticParse(readBuffer), readBuffer), WithOption.WithName("chs"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    Checksum chs = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Checksum.class, Checksum.staticParse(readBuffer)), readBuffer), WithOption.WithName("chs"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(nof, nos, lsq, chs);

@@ -213,8 +213,8 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandLogicalAssignment"
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.LogicAssigment) > 0 {
@@ -227,7 +227,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

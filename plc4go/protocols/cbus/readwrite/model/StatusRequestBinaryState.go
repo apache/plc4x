@@ -212,8 +212,8 @@ func (m *_StatusRequestBinaryState) GetPlx4xTypeName() string {
 	return "StatusRequestBinaryState"
 }
 
-func (m *_StatusRequestBinaryState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
+func (m *_StatusRequestBinaryState) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -227,7 +227,7 @@ func (m *_StatusRequestBinaryState) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_StatusRequestBinaryState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusRequestBinaryState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

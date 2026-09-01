@@ -63,7 +63,7 @@ public class PublishedDataItemsDataType extends ExtensionObjectDefinition implem
     int noOfPublishedData = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfPublishedData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: publishedData
-    List<PublishedVariableDataType> publishedData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PublishedVariableDataType) PublishedVariableDataType.staticParse(readBuffer, (int) (14275)), readBuffer), noOfPublishedData, WithOption.WithName("publishedData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PublishedVariableDataType> publishedData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PublishedVariableDataType.class, PublishedVariableDataType.staticParse(readBuffer, (int) (14275))), readBuffer), noOfPublishedData, WithOption.WithName("publishedData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(publishedData);

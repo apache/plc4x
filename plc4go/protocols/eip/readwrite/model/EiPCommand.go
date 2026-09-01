@@ -100,11 +100,11 @@ func CastEiPCommand(structType any) EiPCommand {
 	return castFunc(structType)
 }
 
-func (m EiPCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m EiPCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m EiPCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m EiPCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -245,8 +245,8 @@ func (m *_AdsMultiRequestItemWrite) GetPlx4xTypeName() string {
 	return "AdsMultiRequestItemWrite"
 }
 
-func (m *_AdsMultiRequestItemWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).getLengthInBits(ctx))
+func (m *_AdsMultiRequestItemWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).getLengthInBits(ctx))
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -260,7 +260,7 @@ func (m *_AdsMultiRequestItemWrite) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_AdsMultiRequestItemWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItemWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

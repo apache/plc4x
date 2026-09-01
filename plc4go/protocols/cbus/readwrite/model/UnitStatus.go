@@ -100,11 +100,11 @@ func CastUnitStatus(structType any) UnitStatus {
 	return castFunc(structType)
 }
 
-func (m UnitStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m UnitStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m UnitStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m UnitStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

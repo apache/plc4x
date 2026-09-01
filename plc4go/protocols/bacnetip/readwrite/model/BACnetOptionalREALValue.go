@@ -225,8 +225,8 @@ func (m *_BACnetOptionalREALValue) GetPlx4xTypeName() string {
 	return "BACnetOptionalREALValue"
 }
 
-func (m *_BACnetOptionalREALValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).getLengthInBits(ctx))
+func (m *_BACnetOptionalREALValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetOptionalREALValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalREALValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetOptionalREALValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

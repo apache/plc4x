@@ -78,7 +78,7 @@ public class BACnetConstructedDataActiveText extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: activeText
-    BACnetApplicationTagCharacterString activeText = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("activeText"));
+    BACnetApplicationTagCharacterString activeText = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("activeText"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagCharacterString.class, activeText, WithOption.WithName("actualValue"));

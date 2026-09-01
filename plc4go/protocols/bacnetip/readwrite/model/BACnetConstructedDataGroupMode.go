@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataGroupMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGroupMode"
 }
 
-func (m *_BACnetConstructedDataGroupMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataGroupMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (groupMode)
 	lengthInBits += m.GroupMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataGroupMode) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataGroupMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataGroupMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

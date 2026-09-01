@@ -51,7 +51,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: none
-    BACnetContextTagNull none = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagNull) BACnetContextTagNull.staticParse(readBuffer, (short) (20), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.NULL)), readBuffer), WithOption.WithName("none"));
+    BACnetContextTagNull none = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagNull.class, BACnetContextTagNull.staticParse(readBuffer, (short) (20), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.NULL))), readBuffer), WithOption.WithName("none"));
 
     readBuffer.popContext();
     return new BACnetEventParameterBuilderImpl(none);

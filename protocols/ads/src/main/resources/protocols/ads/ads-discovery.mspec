@@ -135,9 +135,12 @@
 ]
 
 [type AmsString
-    [implicit uint 16                    strLen    'STR_LEN(text) + 1']
-    [simple   vstring '8 * (strLen - 1)' text                         ]
-    [reserved uint 8                     '0x00'                       ]
+    [implicit    uint 16                    strLen    'STR_LEN(text) + 1'                          ]
+    // strLen is wire-controlled on parse; strLen == 0 would underflow the '8 * (strLen - 1)'
+    // vstring length expression into a huge allocation, so reject it before the string is read.
+    [validation  'strLen >= 1'              "AmsString length must be at least 1"                  ]
+    [simple      vstring '8 * (strLen - 1)' text                                                   ]
+    [reserved    uint 8                     '0x00'                                                  ]
 ]
 
 [type AmsNetId

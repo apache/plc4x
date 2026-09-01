@@ -75,7 +75,7 @@ public class VariantByteString extends Variant implements Message {
     Integer arrayLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedInt(readBuffer, 32), arrayLengthSpecified, WithOption.WithName("arrayLength"));
 
     // Array Field: value
-    List<ByteStringArray> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ByteStringArray) ByteStringArray.staticParse(readBuffer), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
+    List<ByteStringArray> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ByteStringArray.class, ByteStringArray.staticParse(readBuffer)), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new VariantBuilderImpl(arrayLength, value);

@@ -32,7 +32,8 @@ public class FieldReaderPadding<T> implements FieldCommons {
 
     public void readPaddingField(DataReader<T> dataReader, int timesPadding, WithOption... options) throws BufferException {
         LOGGER.debug("reading field padding");
-        dataReader.pushContext(WithOption.AddOptions(options, WithOption.WithRenderAsList(true)));
+        // Mirror FieldWriterPadding, which names the context "padding" explicitly.
+        dataReader.pushContext(WithOption.AddOptions(options, WithOption.WithRenderAsList(true), WithOption.WithName("padding")));
         while (timesPadding-- > 0) {
             // Just read the padding data and ignore it
             try {
@@ -44,7 +45,7 @@ public class FieldReaderPadding<T> implements FieldCommons {
                 // last field item, then the packet might end here.
             }
         }
-        dataReader.popContext(WithOption.AddOptions(options, WithOption.WithRenderAsList(true)));
+        dataReader.popContext(WithOption.AddOptions(options, WithOption.WithRenderAsList(true), WithOption.WithName("padding")));
     }
 
 }

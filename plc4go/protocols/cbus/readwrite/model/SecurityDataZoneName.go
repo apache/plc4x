@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,8 +223,8 @@ func (m *_SecurityDataZoneName) GetPlx4xTypeName() string {
 	return "SecurityDataZoneName"
 }
 
-func (m *_SecurityDataZoneName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataZoneName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (zoneNumber)
 	lengthInBits += 8
@@ -234,7 +235,7 @@ func (m *_SecurityDataZoneName) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityDataZoneName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataZoneName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -255,7 +256,7 @@ func (m *_SecurityDataZoneName) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.ZoneNumber = zoneNumber
 
-	zoneName, err := ReadSimpleField(ctx, "zoneName", ReadString(readBuffer, uint32(88)))
+	zoneName, err := ReadSimpleField(ctx, "zoneName", ReadString(readBuffer, uint32(88)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneName' field"))
 	}
@@ -290,7 +291,7 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(err, "Error serializing 'zoneNumber' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "zoneName", m.GetZoneName(), WriteString(writeBuffer, 88)); err != nil {
+		if err := WriteSimpleField[string](ctx, "zoneName", m.GetZoneName(), WriteString(writeBuffer, 88), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'zoneName' field")
 		}
 

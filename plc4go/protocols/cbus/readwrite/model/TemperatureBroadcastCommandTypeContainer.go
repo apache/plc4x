@@ -343,11 +343,11 @@ func CastTemperatureBroadcastCommandTypeContainer(structType any) TemperatureBro
 	return castFunc(structType)
 }
 
-func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

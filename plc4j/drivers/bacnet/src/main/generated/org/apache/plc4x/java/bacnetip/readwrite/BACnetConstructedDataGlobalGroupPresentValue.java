@@ -100,10 +100,10 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: presentValue
-    List<BACnetPropertyAccessResult> presentValue = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetPropertyAccessResult) BACnetPropertyAccessResult.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("presentValue"));
+    List<BACnetPropertyAccessResult> presentValue = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPropertyAccessResult.class, BACnetPropertyAccessResult.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("presentValue"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(numberOfDataElements, presentValue);

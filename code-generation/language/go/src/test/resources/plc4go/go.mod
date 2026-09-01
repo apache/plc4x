@@ -19,9 +19,9 @@
 
 module github.com/apache/plc4x/plc4go
 
-go 1.26
+go 1.27
 
-toolchain go1.26.3
+toolchain go1.27.0
 
 require (
 	github.com/ajankovic/xdiff v0.0.1

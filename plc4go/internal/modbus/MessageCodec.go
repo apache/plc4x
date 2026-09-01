@@ -101,7 +101,10 @@ func isEOF(err error) (matched bool) {
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
-	tcpAdu := message.(model.ModbusTcpADU)
+	tcpAdu, ok := message.(model.ModbusTcpADU)
+	if !ok {
+		return errors.Errorf("message is not a ModbusTcpADU, got %T", message)
+	}
 	// Serialize the request
 	theBytes, err := tcpAdu.Serialize()
 	if err != nil {
@@ -183,7 +186,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 
 	// Perform Consistency Check
 	if !m.checkPacketConsistency(checkBytes) {
-		return m.handleDesync(ctx, "Sanity Check Failed", map[string]interface{}{
+		return m.handleDesync(ctx, "Sanity Check Failed", map[string]any{
 			"data": utils.Base64Stringer(checkBytes),
 		})
 	}
@@ -399,7 +402,7 @@ func (m *MessageCodec) checkPacketConsistency(data []byte) bool {
 // It strictly scans the available buffer for a valid MBAP header using checkPacketConsistency.
 // If one is found, it realigns the stream.
 // If NO valid header is found in the *entire* buffer, it trims the garbage and waits for more data.
-func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields map[string]interface{}) (spi.Message, error) {
+func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields map[string]any) (spi.Message, error) {
 	ti := m.GetTransportInstance()
 
 	// Get total available bytes

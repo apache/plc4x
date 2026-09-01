@@ -52,7 +52,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName extends BACnetUncon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectName
-    BACnetContextTagCharacterString objectName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("objectName"));
+    BACnetContextTagCharacterString objectName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("objectName"));
 
     readBuffer.popContext();
     return new BACnetUnconfirmedServiceRequestWhoHasObjectBuilderImpl(objectName);

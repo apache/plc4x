@@ -215,8 +215,8 @@ func (m *_S7ParameterReadVarResponse) GetPlx4xTypeName() string {
 	return "S7ParameterReadVarResponse"
 }
 
-func (m *_S7ParameterReadVarResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
+func (m *_S7ParameterReadVarResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -224,7 +224,7 @@ func (m *_S7ParameterReadVarResponse) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_S7ParameterReadVarResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7ParameterReadVarResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

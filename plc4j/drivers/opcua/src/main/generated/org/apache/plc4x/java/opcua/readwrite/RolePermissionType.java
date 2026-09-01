@@ -68,7 +68,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: roleId
-    NodeId roleId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("roleId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId roleId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("roleId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field (enum): permissions
     PermissionType permissions = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(PermissionType::enumForValue, DataReaderFactory.readUnsignedLong(readBuffer, 32)), WithOption.WithName("permissions"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

@@ -231,8 +231,8 @@ func (m *_DF1CommandRequestMessage) GetPlx4xTypeName() string {
 	return "DF1CommandRequestMessage"
 }
 
-func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1RequestMessageContract.(*_DF1RequestMessage).getLengthInBits(ctx))
+func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1RequestMessageContract.(*_DF1RequestMessage).getLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_DF1CommandRequestMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1CommandRequestMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

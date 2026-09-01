@@ -72,7 +72,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: landingCallStatus
-    List<BACnetLandingCallStatus> landingCallStatus = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetLandingCallStatus) BACnetLandingCallStatus.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("landingCallStatus"));
+    List<BACnetLandingCallStatus> landingCallStatus = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLandingCallStatus.class, BACnetLandingCallStatus.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("landingCallStatus"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(landingCallStatus);

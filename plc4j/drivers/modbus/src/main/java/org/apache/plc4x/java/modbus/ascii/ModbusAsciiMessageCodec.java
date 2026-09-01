@@ -47,6 +47,14 @@ public class ModbusAsciiMessageCodec extends MessageCodecBase<ModbusAsciiADU> {
     // Minimum ASCII message: ':' (1) + address (2) + function (2) + LRC (2) + CR (1) + LF (1) = 9 bytes
     private static final int MODBUS_ASCII_MIN_SIZE = 9;
 
+    /**
+     * A Modbus ASCII frame is a colon, an address and function as two hex digits each, at most 252
+     * data bytes as two hex digits each, an LRC as two, and CR LF - so 513 characters is the most a
+     * frame can be. Past that there is no terminator coming and scanning further only means
+     * scanning the same bytes again on the next cycle.
+     */
+    private static final int MODBUS_ASCII_MAX_SIZE = 513;
+
     private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
 
     public ModbusAsciiMessageCodec(TransportInstance<?> transportInstance, Consumer<ModbusAsciiADU> messageHandler) {
@@ -68,10 +76,15 @@ public class ModbusAsciiMessageCodec extends MessageCodecBase<ModbusAsciiADU> {
                     return i + 2; // include CR+LF in the message
                 }
             }
+            if (availableBytes > MODBUS_ASCII_MAX_SIZE) {
+                // Longer than any frame can be and still no terminator, so these bytes do not
+                // begin one. Waiting would mean rescanning a buffer that only grows.
+                return DESYNCHRONIZED;
+            }
             // CR+LF not found yet — wait for more data
-            return -1;
+            return NEED_MORE_DATA;
         } catch (Exception e) {
-            return -1;
+            return NEED_MORE_DATA;
         }
     }
 

@@ -89,7 +89,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: referenceTypeId
-    NodeId referenceTypeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("referenceTypeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId referenceTypeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("referenceTypeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 6), (byte) 0x00, WithOption.WithName("RelativePathElement.reserved1"));
@@ -101,7 +101,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     boolean isInverse = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("isInverse"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: targetName
-    QualifiedName targetName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifiedName) QualifiedName.staticParse(readBuffer), readBuffer), WithOption.WithName("targetName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    QualifiedName targetName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifiedName.class, QualifiedName.staticParse(readBuffer)), readBuffer), WithOption.WithName("targetName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(referenceTypeId, includeSubtypes, isInverse, targetName);

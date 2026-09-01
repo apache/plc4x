@@ -50,6 +50,7 @@ func (f *FieldReaderManualArray[T]) ReadManualByteArrayField(ctx context.Context
 	}
 	var result = make([]byte, 0)
 	for !termination(result) {
+		positionBefore := readBuffer.GetPos()
 		read, err := parse(ctx)
 		if err != nil {
 			return nil, errors.Wrapf(err, "error reading item")
@@ -60,6 +61,13 @@ func (f *FieldReaderManualArray[T]) ReadManualByteArrayField(ctx context.Context
 			return nil, errors.Wrapf(err, "parse supplier didn't return bool. Was %T", a)
 		}
 		result = append(result, elems)
+		// The loop ends only when the termination sequence turns up, so a parse supplier that
+		// reports the end of the data as a value would spin forever on data that never contains it.
+		// Termination by count is legitimate and consumes nothing, so only give up once there is
+		// also nothing left to read.
+		if readBuffer.GetPos() == positionBefore && !readBuffer.HasMore(1) {
+			return nil, errors.Errorf("ran out of data reading %s after %d items", logicalName, len(result))
+		}
 	}
 	if err := readBuffer.CloseContext(logicalName, readerArgs...); err != nil {
 		return nil, errors.Wrapf(err, "error closing context for %s", logicalName)
@@ -77,6 +85,7 @@ func (f *FieldReaderManualArray[T]) ReadManualArrayField(ctx context.Context, lo
 	}
 	var result = make([]T, 0)
 	for !termination(result) {
+		positionBefore := readBuffer.GetPos()
 		read, err := parse(ctx)
 		if err != nil {
 			return nil, errors.Wrapf(err, "error reading item")
@@ -88,6 +97,13 @@ func (f *FieldReaderManualArray[T]) ReadManualArrayField(ctx context.Context, lo
 			return nil, errors.Wrapf(err, "parse supplier didn't return %T. Was %T", t, a)
 		}
 		result = append(result, elems)
+		// The loop ends only when the termination sequence turns up, so a parse supplier that
+		// reports the end of the data as a value would spin forever on data that never contains it.
+		// Termination by count is legitimate and consumes nothing, so only give up once there is
+		// also nothing left to read.
+		if readBuffer.GetPos() == positionBefore && !readBuffer.HasMore(1) {
+			return nil, errors.Errorf("ran out of data reading %s after %d items", logicalName, len(result))
+		}
 	}
 	if err := readBuffer.CloseContext(logicalName, readerArgs...); err != nil {
 		return nil, errors.Wrapf(err, "error closing context for %s", logicalName)

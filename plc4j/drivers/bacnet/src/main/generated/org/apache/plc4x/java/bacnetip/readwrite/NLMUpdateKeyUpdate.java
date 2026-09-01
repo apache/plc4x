@@ -162,7 +162,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: controlFlags
-    NLMUpdateKeyUpdateControlFlags controlFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NLMUpdateKeyUpdateControlFlags) NLMUpdateKeyUpdateControlFlags.staticParse(readBuffer), readBuffer), WithOption.WithName("controlFlags"));
+    NLMUpdateKeyUpdateControlFlags controlFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLMUpdateKeyUpdateControlFlags.class, NLMUpdateKeyUpdateControlFlags.staticParse(readBuffer)), readBuffer), WithOption.WithName("controlFlags"));
 
     // Optional Field (conditional): set1KeyRevision
     Byte set1KeyRevision = FieldReaderFactory.readOptionalField(DataReaderFactory.readByte(readBuffer, 8), controlFlags.getSet1KeyRevisionActivationTimeExpirationTimePresent(), WithOption.WithName("set1KeyRevision"));
@@ -177,7 +177,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     Short set1KeyCount = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedShort(readBuffer, 8), controlFlags.getSet1KeyCountKeyParametersPresent(), WithOption.WithName("set1KeyCount"));
 
     // Array Field: set1Keys
-    List<NLMUpdateKeyUpdateKeyEntry> set1Keys = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer), (((set1KeyCount) != (null)) ? set1KeyCount : 0), WithOption.WithName("set1Keys"));
+    List<NLMUpdateKeyUpdateKeyEntry> set1Keys = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLMUpdateKeyUpdateKeyEntry.class, NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer)), readBuffer), (((set1KeyCount) != (null)) ? set1KeyCount : 0), WithOption.WithName("set1Keys"));
 
     // Optional Field (conditional): set2KeyRevision
     Byte set2KeyRevision = FieldReaderFactory.readOptionalField(DataReaderFactory.readByte(readBuffer, 8), controlFlags.getSet1KeyRevisionActivationTimeExpirationTimePresent(), WithOption.WithName("set2KeyRevision"));
@@ -192,7 +192,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     Short set2KeyCount = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedShort(readBuffer, 8), controlFlags.getSet1KeyCountKeyParametersPresent(), WithOption.WithName("set2KeyCount"));
 
     // Array Field: set2Keys
-    List<NLMUpdateKeyUpdateKeyEntry> set2Keys = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer), (((set1KeyCount) != (null)) ? set1KeyCount : 0), WithOption.WithName("set2Keys"));
+    List<NLMUpdateKeyUpdateKeyEntry> set2Keys = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLMUpdateKeyUpdateKeyEntry.class, NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer)), readBuffer), (((set1KeyCount) != (null)) ? set1KeyCount : 0), WithOption.WithName("set2Keys"));
 
     readBuffer.popContext();
     return new NLMBuilderImpl(controlFlags, set1KeyRevision, set1ActivationTime, set1ExpirationTime, set1KeyCount, set1Keys, set2KeyRevision, set2ActivationTime, set2ExpirationTime, set2KeyCount, set2Keys);

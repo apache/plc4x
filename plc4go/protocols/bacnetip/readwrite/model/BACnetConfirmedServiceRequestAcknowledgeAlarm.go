@@ -394,8 +394,8 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetPlx4xTypeName() stri
 	return "BACnetConfirmedServiceRequestAcknowledgeAlarm"
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (acknowledgingProcessIdentifier)
 	lengthInBits += m.AcknowledgingProcessIdentifier.GetLengthInBits(ctx)
@@ -418,7 +418,7 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

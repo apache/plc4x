@@ -85,16 +85,16 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: innerOpeningTag
-    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)), readBuffer), WithOption.WithName("innerOpeningTag"));
+    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber))), readBuffer), WithOption.WithName("innerOpeningTag"));
 
     // Simple Field: changeOfBitString
-    BACnetContextTagBitString changeOfBitString = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBitString) BACnetContextTagBitString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BIT_STRING)), readBuffer), WithOption.WithName("changeOfBitString"));
+    BACnetContextTagBitString changeOfBitString = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBitString.class, BACnetContextTagBitString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BIT_STRING))), readBuffer), WithOption.WithName("changeOfBitString"));
 
     // Simple Field: statusFlags
-    BACnetStatusFlagsTagged statusFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetStatusFlagsTagged) BACnetStatusFlagsTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("statusFlags"));
+    BACnetStatusFlagsTagged statusFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetStatusFlagsTagged.class, BACnetStatusFlagsTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("statusFlags"));
 
     // Simple Field: innerClosingTag
-    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)), readBuffer), WithOption.WithName("innerClosingTag"));
+    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber))), readBuffer), WithOption.WithName("innerClosingTag"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersBuilderImpl(innerOpeningTag, changeOfBitString, statusFlags, innerClosingTag);

@@ -71,13 +71,13 @@ public class BACnetPropertyStatesEnclosed implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: propertyState
-    BACnetPropertyStates propertyState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPropertyStates) BACnetPropertyStates.staticParse(readBuffer), readBuffer), WithOption.WithName("propertyState"));
+    BACnetPropertyStates propertyState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPropertyStates.class, BACnetPropertyStates.staticParse(readBuffer)), readBuffer), WithOption.WithName("propertyState"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesEnclosed(openingTag, propertyState, closingTag);

@@ -60,7 +60,7 @@ public class SALDataVentilation extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ventilationData
-    LightingData ventilationData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LightingData) LightingData.staticParse(readBuffer), readBuffer), WithOption.WithName("ventilationData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    LightingData ventilationData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LightingData.class, LightingData.staticParse(readBuffer)), readBuffer), WithOption.WithName("ventilationData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(ventilationData);

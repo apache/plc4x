@@ -84,7 +84,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: triggerControlOptions
-    TriggerControlLabelOptions triggerControlOptions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TriggerControlLabelOptions) TriggerControlLabelOptions.staticParse(readBuffer), readBuffer), WithOption.WithName("triggerControlOptions"));
+    TriggerControlLabelOptions triggerControlOptions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TriggerControlLabelOptions.class, TriggerControlLabelOptions.staticParse(readBuffer)), readBuffer), WithOption.WithName("triggerControlOptions"));
 
     // Simple Field: actionSelector
     byte actionSelector = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("actionSelector"));

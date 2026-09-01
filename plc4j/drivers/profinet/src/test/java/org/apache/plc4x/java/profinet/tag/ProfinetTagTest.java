@@ -38,7 +38,7 @@ class ProfinetTagTest {
 
     @Test
     void parsesQuantitySuffix() {
-        ProfinetTag tag = ProfinetTag.of("foo:INT[4]");
+        ProfinetTag tag = ProfinetTag.of("foo[0..3]:INT");
         assertThat(tag.getPlcValueType()).isEqualTo(PlcValueType.INT);
     }
 
@@ -78,5 +78,11 @@ class ProfinetTagTest {
         static ProfinetTag of(String address, int quantity) {
             return new ProfinetTagWithExposedCtor(address, quantity, PlcValueType.INT);
         }
+    }
+
+    @Test
+    void aCountTooWideToBeANumberIsAnInvalidTagNotANumberFormatError() {
+        assertThatThrownBy(() -> ProfinetTag.of("foo[0..99999999998]:BOOL"))
+            .isInstanceOf(PlcInvalidTagException.class);
     }
 }

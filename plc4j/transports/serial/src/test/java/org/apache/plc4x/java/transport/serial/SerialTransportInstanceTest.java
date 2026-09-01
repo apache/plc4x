@@ -28,6 +28,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -44,6 +49,11 @@ class SerialTransportInstanceTest {
     private SerialTransportInstance transportInstance;
     private SerialTransportConfiguration config;
 
+    private Path masterLink;
+    private Path slaveLink;
+    /** Path of the pty this test talks to; unique per test, see {@link #setUp()}. */
+    private String portPath;
+
     @BeforeEach
     void setUp() throws Exception {
         boolean socatAvailable = false;
@@ -57,11 +67,20 @@ class SerialTransportInstanceTest {
         }
         assumeTrue(socatAvailable, "socat is not installed - skipping serial transport integration tests (install socat to enable)");
 
+        // Every test gets its own pty pair. These used to be two fixed paths shared by all of
+        // them, and since tearDown did not wait for socat to exit, one still shutting down could
+        // remove the link the next test's socat had just created - which showed up as rare
+        // "Failed to open serial port" errors.
+        String unique = "plc4x-serial-test-" + UUID.randomUUID();
+        Path tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+        masterLink = tempDir.resolve(unique + "-a");
+        slaveLink = tempDir.resolve(unique + "-b");
+        portPath = masterLink.toString();
+
         process = new ProcessBuilder("socat", "-d", "-d",
-            "pty,raw,echo=0,link=/tmp/ttyV0",
-            "pty,raw,echo=0,link=/tmp/ttyV1").start();
-        // Give socat a moment to create links; optionally read its stderr for "N PTY is ..."
-        Thread.sleep(500);
+            "pty,raw,echo=0,link=" + masterLink,
+            "pty,raw,echo=0,link=" + slaveLink).start();
+        awaitPtyLinks();
 
         config = new SerialTransportConfiguration();
         config.baudRate = 9600;
@@ -70,7 +89,7 @@ class SerialTransportInstanceTest {
         config.parity = "NONE";
         config.flowControl = "NONE";
 
-        transportInstance = new SerialTransportInstance(new SharedSerialPortManager(), "/tmp/ttyV0"/*port.getSystemPortName()*/, config, AuditLog.builder().build());
+        transportInstance = new SerialTransportInstance(new SharedSerialPortManager(), portPath, config, AuditLog.builder().build());
     }
 
     @AfterEach
@@ -80,8 +99,38 @@ class SerialTransportInstanceTest {
         }
 
         if (process != null) {
+            // Wait for socat to really be gone: it removes its links while shutting down, so
+            // returning before that finishes is what let one test disturb the next.
             process.destroy();
+            if (!process.waitFor(5, TimeUnit.SECONDS)) {
+                process.destroyForcibly().waitFor(5, TimeUnit.SECONDS);
+            }
         }
+        // socat normally removes these itself; clean up in case it was killed before it could.
+        if (masterLink != null) {
+            Files.deleteIfExists(masterLink);
+        }
+        if (slaveLink != null) {
+            Files.deleteIfExists(slaveLink);
+        }
+    }
+
+    /**
+     * Waits until socat has published both pty links, rather than assuming a fixed pause is long
+     * enough. Fails with the reason rather than letting the port open fail further down.
+     */
+    private void awaitPtyLinks() throws Exception {
+        Instant deadline = Instant.now().plusSeconds(10);
+        while (Instant.now().isBefore(deadline)) {
+            if (Files.exists(masterLink) && Files.exists(slaveLink)) {
+                return;
+            }
+            if (!process.isAlive()) {
+                fail("socat exited with code " + process.exitValue() + " before creating the pty links");
+            }
+            Thread.sleep(20);
+        }
+        fail("socat did not create the pty links " + masterLink + " and " + slaveLink + " within 10s");
     }
 
     @Test
@@ -299,7 +348,7 @@ class SerialTransportInstanceTest {
         configWithSignals.reusePort = false;
 
         SerialTransportInstance instanceWithSignals = new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithSignals, AuditLog.builder().build());
+            new SharedSerialPortManager(), portPath, configWithSignals, AuditLog.builder().build());
 
         assertTrue(instanceWithSignals.isOpen());
         instanceWithSignals.close();
@@ -322,7 +371,7 @@ class SerialTransportInstanceTest {
         configWithUnknownParity.reusePort = false;
 
         assertThrows(TransportException.class, () -> new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithUnknownParity, AuditLog.builder().build()));
+            new SharedSerialPortManager(), portPath, configWithUnknownParity, AuditLog.builder().build()));
     }
 
     @Test
@@ -342,7 +391,7 @@ class SerialTransportInstanceTest {
         configWithUnknownFlowControl.reusePort = false;
 
         assertThrows(TransportException.class, () -> new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithUnknownFlowControl, AuditLog.builder().build()));
+            new SharedSerialPortManager(), portPath, configWithUnknownFlowControl, AuditLog.builder().build()));
     }
 
     @Test
@@ -362,7 +411,7 @@ class SerialTransportInstanceTest {
         configWithXonXoff.reusePort = false;
 
         SerialTransportInstance instanceWithXonXoff = new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithXonXoff, AuditLog.builder().build());
+            new SharedSerialPortManager(), portPath, configWithXonXoff, AuditLog.builder().build());
 
         assertTrue(instanceWithXonXoff.isOpen());
         instanceWithXonXoff.close();
@@ -385,7 +434,7 @@ class SerialTransportInstanceTest {
         configWithCombinedFlowControl.reusePort = false;
 
         assertThrows(TransportException.class, () -> new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithCombinedFlowControl, AuditLog.builder().build()));
+            new SharedSerialPortManager(), portPath, configWithCombinedFlowControl, AuditLog.builder().build()));
     }
 
     @Test
@@ -407,7 +456,7 @@ class SerialTransportInstanceTest {
             configWithParity.reusePort = false;
 
             SerialTransportInstance instanceWithParity = new SerialTransportInstance(
-                new SharedSerialPortManager(), "/tmp/ttyV0", configWithParity, AuditLog.builder().build());
+                new SharedSerialPortManager(), portPath, configWithParity, AuditLog.builder().build());
 
             assertTrue(instanceWithParity.isOpen(), "Instance with parity " + parity + " should be open");
             instanceWithParity.close();

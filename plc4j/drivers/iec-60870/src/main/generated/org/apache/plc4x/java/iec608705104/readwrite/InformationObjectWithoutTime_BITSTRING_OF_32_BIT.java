@@ -72,10 +72,10 @@ public class InformationObjectWithoutTime_BITSTRING_OF_32_BIT extends Informatio
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bsi
-    BinaryStateInformation bsi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BinaryStateInformation) BinaryStateInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("bsi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    BinaryStateInformation bsi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BinaryStateInformation.class, BinaryStateInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("bsi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: qds
-    QualityDescriptor qds = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualityDescriptor) QualityDescriptor.staticParse(readBuffer), readBuffer), WithOption.WithName("qds"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualityDescriptor qds = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualityDescriptor.class, QualityDescriptor.staticParse(readBuffer)), readBuffer), WithOption.WithName("qds"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(bsi, qds);

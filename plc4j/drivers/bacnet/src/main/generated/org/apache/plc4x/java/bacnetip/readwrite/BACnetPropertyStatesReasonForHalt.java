@@ -52,7 +52,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reasonForHalt
-    BACnetProgramErrorTagged reasonForHalt = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProgramErrorTagged) BACnetProgramErrorTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("reasonForHalt"));
+    BACnetProgramErrorTagged reasonForHalt = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProgramErrorTagged.class, BACnetProgramErrorTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("reasonForHalt"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(reasonForHalt);

@@ -60,7 +60,7 @@ These modules are also maintained in a link:https://github.com/apache/plc4x-buil
 
 This is generally only due to some restrictions in the Maven build system. If you are interested in understanding the reasons - please read the chapter on `Problems with Maven` near the end of this page.
 
-Concrete link:https://github.com/apache/plc4x/tree/develop/code-generation/protocol-base-mspec[protocol spec parsers], link:https://github.com/apache/plc4x/tree/develop/code-generation/language-base-freemarker[code generators] as well as link:https://github.com/apache/plc4x/tree/develop/code-generation/language-java[templates] that actually generate code are implemented in derived modules all located under the link:https://github.com/apache/plc4x/tree/develop/code-generation[code-generation] part of the main project repository.
+Concrete link:https://github.com/apache/plc4x/tree/develop/code-generation/protocol-base-mspec[protocol spec parsers], link:https://github.com/apache/plc4x/tree/develop/code-generation/language-base-freemarker[code generators] as well as link:https://github.com/apache/plc4x/tree/develop/code-generation/language/java[templates] that actually generate code are implemented in derived modules all located under the link:https://github.com/apache/plc4x/tree/develop/code-generation[code-generation] part of the main project repository.
 
 We didn't want to tie ourselves to only one way to specify protocols and to generate code. Generally multiple types of formats for specifying drivers are thinkable and the same way, multiple ways of generating code are possible. Currently, however we only have one parser: `MSpec` and one generator: `Freemarker`.
 
@@ -141,7 +141,7 @@ With this we were able to provide first driver versions fully specified in XML.
 
 The downside was, that the PLC4X community regarded this XML format as pretty complicated and when implementing an experimental code generator we quickly noticed that generating a nice object model would not be possible, due to the lack of an ability to model inheritance of types into a DFDL schema.
 
-In the end we came up with our own format which we called `MSpec` and is described in the link:protocol/mspec.html[MSpec Format description].
+In the end we came up with our own format which we called `MSpec` and is described in the xref:code-gen/protocol/mspec.adoc[MSpec Format description].
 
 == Configuration
 

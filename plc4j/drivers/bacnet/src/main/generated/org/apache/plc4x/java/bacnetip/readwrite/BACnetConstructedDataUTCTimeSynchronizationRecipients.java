@@ -72,7 +72,7 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: utcTimeSynchronizationRecipients
-    List<BACnetRecipient> utcTimeSynchronizationRecipients = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetRecipient) BACnetRecipient.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("utcTimeSynchronizationRecipients"));
+    List<BACnetRecipient> utcTimeSynchronizationRecipients = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRecipient.class, BACnetRecipient.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("utcTimeSynchronizationRecipients"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(utcTimeSynchronizationRecipients);

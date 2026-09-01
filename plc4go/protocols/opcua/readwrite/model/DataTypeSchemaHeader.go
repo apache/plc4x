@@ -257,8 +257,8 @@ func (m *_DataTypeSchemaHeader) GetPlx4xTypeName() string {
 	return "DataTypeSchemaHeader"
 }
 
-func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfNamespaces)
 	lengthInBits += 32
@@ -307,7 +307,7 @@ func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DataTypeSchemaHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DataTypeSchemaHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

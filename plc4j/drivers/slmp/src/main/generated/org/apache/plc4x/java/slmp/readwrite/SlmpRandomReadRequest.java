@@ -96,10 +96,10 @@ public class SlmpRandomReadRequest extends SlmpRequestData implements Message {
     short numberOfDoubleWordAccessPoints = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfDoubleWordAccessPoints"));
 
     // Array Field: wordAccessDevices
-    List<SlmpDeviceSpec> wordAccessDevices = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SlmpDeviceSpec) SlmpDeviceSpec.staticParse(readBuffer), readBuffer), numberOfWordAccessPoints, WithOption.WithName("wordAccessDevices"));
+    List<SlmpDeviceSpec> wordAccessDevices = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SlmpDeviceSpec.class, SlmpDeviceSpec.staticParse(readBuffer)), readBuffer), numberOfWordAccessPoints, WithOption.WithName("wordAccessDevices"));
 
     // Array Field: doubleWordAccessDevices
-    List<SlmpDeviceSpec> doubleWordAccessDevices = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SlmpDeviceSpec) SlmpDeviceSpec.staticParse(readBuffer), readBuffer), numberOfDoubleWordAccessPoints, WithOption.WithName("doubleWordAccessDevices"));
+    List<SlmpDeviceSpec> doubleWordAccessDevices = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SlmpDeviceSpec.class, SlmpDeviceSpec.staticParse(readBuffer)), readBuffer), numberOfDoubleWordAccessPoints, WithOption.WithName("doubleWordAccessDevices"));
 
     readBuffer.popContext();
     return new SlmpRequestDataBuilderImpl(numberOfWordAccessPoints, numberOfDoubleWordAccessPoints, wordAccessDevices, doubleWordAccessDevices);

@@ -59,7 +59,7 @@ public class ExtensiblePayload extends Payload implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    RootExtensionObject payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RootExtensionObject) RootExtensionObject.staticParse(readBuffer, (boolean) (false)), readBuffer), WithOption.WithName("payload"));
+    RootExtensionObject payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RootExtensionObject.class, RootExtensionObject.staticParse(readBuffer, (boolean) (false))), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new PayloadBuilderImpl(payload);

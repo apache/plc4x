@@ -213,8 +213,8 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandFirmwareVersion"
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (firmwareVersion)
 	lengthInBits += 64
@@ -222,7 +222,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

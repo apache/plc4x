@@ -124,11 +124,11 @@ func CastDataSetFieldContentMask(structType any) DataSetFieldContentMask {
 	return castFunc(structType)
 }
 
-func (m DataSetFieldContentMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m DataSetFieldContentMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m DataSetFieldContentMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DataSetFieldContentMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

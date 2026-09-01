@@ -232,8 +232,8 @@ func (m *_SALDataHeating) GetPlx4xTypeName() string {
 	return "SALDataHeating"
 }
 
-func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (heatingData)
 	lengthInBits += m.HeatingData.GetLengthInBits(ctx)
@@ -241,7 +241,7 @@ func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

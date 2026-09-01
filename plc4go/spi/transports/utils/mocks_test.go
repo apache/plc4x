@@ -172,7 +172,7 @@ type MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call struc
 
 // SetReadDeadline is a helper method to define mock.On call
 //   - deadline time.Time
-func (_e *MockDefaultBufferedTransportInstanceRequirements_Expecter) SetReadDeadline(deadline interface{}) *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call {
+func (_e *MockDefaultBufferedTransportInstanceRequirements_Expecter) SetReadDeadline(deadline any) *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call {
 	return &MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call{Call: _e.mock.On("SetReadDeadline", deadline)}
 }
 
@@ -251,7 +251,7 @@ type MockDefaultBufferedTransportInstance_FillBuffer_Call struct {
 // FillBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
-func (_e *MockDefaultBufferedTransportInstance_Expecter) FillBuffer(ctx interface{}, until interface{}) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
+func (_e *MockDefaultBufferedTransportInstance_Expecter) FillBuffer(ctx any, until any) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
 	return &MockDefaultBufferedTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", ctx, until)}
 }
 
@@ -372,7 +372,7 @@ type MockDefaultBufferedTransportInstance_PeekReadableBytes_Call struct {
 // PeekReadableBytes is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-func (_e *MockDefaultBufferedTransportInstance_Expecter) PeekReadableBytes(ctx interface{}, numBytes interface{}) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
+func (_e *MockDefaultBufferedTransportInstance_Expecter) PeekReadableBytes(ctx any, numBytes any) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
 	return &MockDefaultBufferedTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", ctx, numBytes)}
 }
 
@@ -440,7 +440,7 @@ type MockDefaultBufferedTransportInstance_Read_Call struct {
 // Read is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-func (_e *MockDefaultBufferedTransportInstance_Expecter) Read(ctx interface{}, numBytes interface{}) *MockDefaultBufferedTransportInstance_Read_Call {
+func (_e *MockDefaultBufferedTransportInstance_Expecter) Read(ctx any, numBytes any) *MockDefaultBufferedTransportInstance_Read_Call {
 	return &MockDefaultBufferedTransportInstance_Read_Call{Call: _e.mock.On("Read", ctx, numBytes)}
 }
 

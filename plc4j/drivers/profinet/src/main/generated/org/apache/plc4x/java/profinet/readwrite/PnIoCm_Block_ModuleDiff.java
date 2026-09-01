@@ -94,7 +94,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     int numApis = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numApis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: apis
-    List<PnIoCm_ModuleDiffBlockApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_ModuleDiffBlockApi) PnIoCm_ModuleDiffBlockApi.staticParse(readBuffer), readBuffer), numApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_ModuleDiffBlockApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_ModuleDiffBlockApi.class, PnIoCm_ModuleDiffBlockApi.staticParse(readBuffer)), readBuffer), numApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, apis);

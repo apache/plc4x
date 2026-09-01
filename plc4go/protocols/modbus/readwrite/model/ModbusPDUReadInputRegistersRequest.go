@@ -235,8 +235,8 @@ func (m *_ModbusPDUReadInputRegistersRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadInputRegistersRequest"
 }
 
-func (m *_ModbusPDUReadInputRegistersRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadInputRegistersRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -247,7 +247,7 @@ func (m *_ModbusPDUReadInputRegistersRequest) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadInputRegistersRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadInputRegistersRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

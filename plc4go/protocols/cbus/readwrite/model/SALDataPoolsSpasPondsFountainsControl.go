@@ -232,8 +232,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetPlx4xTypeName() string {
 	return "SALDataPoolsSpasPondsFountainsControl"
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (poolsSpaPondsFountainsData)
 	lengthInBits += m.PoolsSpaPondsFountainsData.GetLengthInBits(ctx)
@@ -241,7 +241,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

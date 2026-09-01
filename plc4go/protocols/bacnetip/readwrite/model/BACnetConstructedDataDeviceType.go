@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDeviceType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceType"
 }
 
-func (m *_BACnetConstructedDataDeviceType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDeviceType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (deviceType)
 	lengthInBits += m.DeviceType.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDeviceType) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDeviceType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDeviceType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

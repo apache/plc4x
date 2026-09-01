@@ -92,13 +92,13 @@ public class OpenChannelMessageResponse extends OpenChannelMessage implements Me
     int secureChannelId = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("secureChannelId"));
 
     // Simple Field: securityPolicyUri
-    PascalString securityPolicyUri = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("securityPolicyUri"));
+    PascalString securityPolicyUri = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("securityPolicyUri"));
 
     // Simple Field: senderCertificate
-    PascalByteString senderCertificate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalByteString) PascalByteString.staticParse(readBuffer), readBuffer), WithOption.WithName("senderCertificate"));
+    PascalByteString senderCertificate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalByteString.class, PascalByteString.staticParse(readBuffer)), readBuffer), WithOption.WithName("senderCertificate"));
 
     // Simple Field: receiverCertificateThumbprint
-    PascalByteString receiverCertificateThumbprint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalByteString) PascalByteString.staticParse(readBuffer), readBuffer), WithOption.WithName("receiverCertificateThumbprint"));
+    PascalByteString receiverCertificateThumbprint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalByteString.class, PascalByteString.staticParse(readBuffer)), readBuffer), WithOption.WithName("receiverCertificateThumbprint"));
 
     readBuffer.popContext();
     return new OpenChannelMessageBuilderImpl(secureChannelId, securityPolicyUri, senderCertificate, receiverCertificateThumbprint);

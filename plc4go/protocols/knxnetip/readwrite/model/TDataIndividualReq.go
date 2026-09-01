@@ -184,13 +184,13 @@ func (m *_TDataIndividualReq) GetPlx4xTypeName() string {
 	return "TDataIndividualReq"
 }
 
-func (m *_TDataIndividualReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_TDataIndividualReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TDataIndividualReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TDataIndividualReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

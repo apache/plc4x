@@ -71,13 +71,13 @@ public class MdnsDiscoveryConfiguration extends ExtensionObjectDefinition implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: mdnsServerName
-    PascalString mdnsServerName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("mdnsServerName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalString mdnsServerName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("mdnsServerName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfServerCapabilities
     int noOfServerCapabilities = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfServerCapabilities"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: serverCapabilities
-    List<PascalString> serverCapabilities = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), noOfServerCapabilities, WithOption.WithName("serverCapabilities"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<PascalString> serverCapabilities = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), noOfServerCapabilities, WithOption.WithName("serverCapabilities"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(mdnsServerName, serverCapabilities);

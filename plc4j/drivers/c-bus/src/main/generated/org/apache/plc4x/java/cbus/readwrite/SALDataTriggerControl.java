@@ -60,7 +60,7 @@ public class SALDataTriggerControl extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: triggerControlData
-    TriggerControlData triggerControlData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TriggerControlData) TriggerControlData.staticParse(readBuffer), readBuffer), WithOption.WithName("triggerControlData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    TriggerControlData triggerControlData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TriggerControlData.class, TriggerControlData.staticParse(readBuffer)), readBuffer), WithOption.WithName("triggerControlData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(triggerControlData);

@@ -25,12 +25,15 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
 public class SlmpConfiguration implements Configuration {
 
+    // No "-ms": this is not a duration in milliseconds but a field of the 3E request frame, in
+    // SLMP's own units, where 0 means "wait infinitely". The name is the protocol's. Renaming it
+    // to monitoring-timer-ms would state a unit it does not have.
     @ConfigurationParameter("monitoring-timer")
     @IntDefaultValue(0x0000)
     @Description("SLMP monitoring timer written into each 3E request frame (0 = wait infinitely).")
     private int monitoringTimer;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(5_000)
     @Description("Client-side timeout in milliseconds awaiting a response.")
     private int requestTimeout;

@@ -51,20 +51,20 @@ func (d *DriverContext) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	{
 		_value := fmt.Sprintf("%v", d.configuration)
 
-		if err := writeBuffer.WriteString("configuration", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("configuration", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.WriteString("maxApduLengthAccepted", uint32(len(d.maxApduLengthAccepted.String())*8), d.maxApduLengthAccepted.String()); err != nil {
+	if err := writeBuffer.WriteString("maxApduLengthAccepted", uint32(len(d.maxApduLengthAccepted.String())*8), d.maxApduLengthAccepted.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("segmentation", uint32(len(d.segmentation.String())*8), d.segmentation.String()); err != nil {
+	if err := writeBuffer.WriteString("segmentation", uint32(len(d.segmentation.String())*8), d.segmentation.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("maxSegmentsAccepted", uint32(len(d.maxSegmentsAccepted.String())*8), d.maxSegmentsAccepted.String()); err != nil {
+	if err := writeBuffer.WriteString("maxSegmentsAccepted", uint32(len(d.maxSegmentsAccepted.String())*8), d.maxSegmentsAccepted.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 

@@ -49,7 +49,7 @@ public class Plc4xTagRequest implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: tag
-    Plc4xTag tag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Plc4xTag) Plc4xTag.staticParse(readBuffer), readBuffer), WithOption.WithName("tag"));
+    Plc4xTag tag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Plc4xTag.class, Plc4xTag.staticParse(readBuffer)), readBuffer), WithOption.WithName("tag"));
 
     readBuffer.popContext();
     return new Plc4xTagRequest(tag);

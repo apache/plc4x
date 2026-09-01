@@ -78,7 +78,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dutyWindow
-    BACnetApplicationTagUnsignedInteger dutyWindow = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("dutyWindow"));
+    BACnetApplicationTagUnsignedInteger dutyWindow = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("dutyWindow"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagUnsignedInteger.class, dutyWindow, WithOption.WithName("actualValue"));

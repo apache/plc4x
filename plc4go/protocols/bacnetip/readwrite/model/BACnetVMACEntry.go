@@ -203,8 +203,8 @@ func (m *_BACnetVMACEntry) GetPlx4xTypeName() string {
 	return "BACnetVMACEntry"
 }
 
-func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Optional Field (virtualMacAddress)
 	if m.VirtualMacAddress != nil {
@@ -219,7 +219,7 @@ func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetVMACEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetVMACEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

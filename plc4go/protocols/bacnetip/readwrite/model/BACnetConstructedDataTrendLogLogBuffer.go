@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogLogBuffer"
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FloorText) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

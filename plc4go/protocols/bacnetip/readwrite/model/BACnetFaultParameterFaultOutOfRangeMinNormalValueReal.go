@@ -225,8 +225,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetPlx4xTypeNam
 	return "BACnetFaultParameterFaultOutOfRangeMinNormalValueReal"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -70,10 +70,10 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: vtClass
-    BACnetVTClassTagged vtClass = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetVTClassTagged) BACnetVTClassTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("vtClass"));
+    BACnetVTClassTagged vtClass = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVTClassTagged.class, BACnetVTClassTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("vtClass"));
 
     // Simple Field: localVtSessionIdentifier
-    BACnetApplicationTagUnsignedInteger localVtSessionIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("localVtSessionIdentifier"));
+    BACnetApplicationTagUnsignedInteger localVtSessionIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("localVtSessionIdentifier"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(vtClass, localVtSessionIdentifier);

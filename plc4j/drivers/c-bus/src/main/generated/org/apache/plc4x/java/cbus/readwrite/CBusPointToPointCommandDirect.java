@@ -55,7 +55,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: unitAddress
-    UnitAddress unitAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (UnitAddress) UnitAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("unitAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    UnitAddress unitAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UnitAddress.class, UnitAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("unitAddress"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("CBusPointToPointCommandDirect.reserved1"));

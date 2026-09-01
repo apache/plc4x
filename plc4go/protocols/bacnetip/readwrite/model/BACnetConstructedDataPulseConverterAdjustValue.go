@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetPlx4xTypeName() str
 	return "BACnetConstructedDataPulseConverterAdjustValue"
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

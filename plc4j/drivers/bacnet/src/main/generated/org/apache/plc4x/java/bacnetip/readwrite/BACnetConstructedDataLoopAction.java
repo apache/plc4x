@@ -77,7 +77,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: action
-    BACnetActionTagged action = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetActionTagged) BACnetActionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("action"));
+    BACnetActionTagged action = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetActionTagged.class, BACnetActionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("action"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetActionTagged actualValue = FieldReaderFactory.readVirtualField(BACnetActionTagged.class, action, WithOption.WithName("actualValue"));

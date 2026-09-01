@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetPlx4xTypeName(
 	return "BACnetConstructedDataDefaultSubordinateRelationship"
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (defaultSubordinateRelationship)
 	lengthInBits += m.DefaultSubordinateRelationship.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

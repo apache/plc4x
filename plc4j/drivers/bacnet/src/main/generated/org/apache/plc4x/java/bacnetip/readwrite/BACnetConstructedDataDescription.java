@@ -78,7 +78,7 @@ public class BACnetConstructedDataDescription extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: description
-    BACnetApplicationTagCharacterString description = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("description"));
+    BACnetApplicationTagCharacterString description = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("description"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagCharacterString.class, description, WithOption.WithName("actualValue"));

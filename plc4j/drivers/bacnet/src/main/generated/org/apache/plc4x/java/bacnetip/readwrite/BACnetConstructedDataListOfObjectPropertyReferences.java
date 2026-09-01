@@ -72,7 +72,7 @@ public class BACnetConstructedDataListOfObjectPropertyReferences extends BACnetC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: references
-    List<BACnetDeviceObjectPropertyReference> references = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReference) BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("references"));
+    List<BACnetDeviceObjectPropertyReference> references = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReference.class, BACnetDeviceObjectPropertyReference.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("references"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(references);

@@ -21,9 +21,11 @@ package org.apache.plc4x.java.tools.eventpump.triggers;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Timer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -217,6 +219,90 @@ class TimerTriggerTest {
 
         // Cleanup
         trigger.close();
+    }
+
+    /**
+     * Listener code must not run on the timer thread: a listener may block (leasing a
+     * connection does), and blocking the timer thread delays this trigger's next tick and,
+     * with a shared Timer, every other batch scheduled on it.
+     */
+    @Test
+    void listenerDoesNotRunOnTheTimerThread() throws Exception {
+        CountDownLatch fired = new CountDownLatch(1);
+        AtomicReference<String> threadName = new AtomicReference<>();
+
+        TimerTrigger trigger = new TimerTrigger(50, TimeUnit.MILLISECONDS);
+        trigger.start(t -> {
+            threadName.set(Thread.currentThread().getName());
+            fired.countDown();
+        });
+
+        assertTrue(fired.await(2, TimeUnit.SECONDS), "Trigger should fire");
+        assertTrue(threadName.get().contains("dispatch"),
+            "listener must run on the dispatcher, but ran on '" + threadName.get() + "'");
+
+        trigger.close();
+    }
+
+    /**
+     * A shared Timer must keep serving other triggers even while one trigger's listener is
+     * blocked.
+     */
+    @Test
+    void aBlockedListenerDoesNotStallOtherTriggersOnASharedTimer() throws Exception {
+        Timer sharedTimer = new Timer("shared-test-timer", true);
+        CountDownLatch blockedStarted = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        CountDownLatch otherFired = new CountDownLatch(3);
+
+        TimerTrigger blocking = new TimerTrigger(50, 0, TimeUnit.MILLISECONDS, sharedTimer);
+        TimerTrigger other = new TimerTrigger(50, 0, TimeUnit.MILLISECONDS, sharedTimer);
+
+        blocking.start(t -> {
+            blockedStarted.countDown();
+            try {
+                release.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        other.start(t -> otherFired.countDown());
+
+        assertTrue(blockedStarted.await(2, TimeUnit.SECONDS), "blocking listener should have started");
+        assertTrue(otherFired.await(3, TimeUnit.SECONDS),
+            "the second trigger must keep firing while the first one's listener is blocked");
+
+        release.countDown();
+        blocking.close();
+        other.close();
+        sharedTimer.cancel();
+    }
+
+    /**
+     * A listener slower than the interval must not build up a backlog of pending firings.
+     */
+    @Test
+    void slowListenerDoesNotAccumulateABacklog() throws Exception {
+        AtomicInteger fireCount = new AtomicInteger(0);
+        TimerTrigger trigger = new TimerTrigger(20, TimeUnit.MILLISECONDS);
+
+        trigger.start(t -> {
+            fireCount.incrementAndGet();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+
+        Thread.sleep(1_000);
+        trigger.close();
+
+        int fired = fireCount.get();
+        // ~50 ticks are scheduled in a second, but a 200ms listener can only serve ~5.
+        // Excess firings are discarded rather than queued.
+        assertTrue(fired <= 10, "expected the backlog to be discarded, but the listener ran " + fired + " times");
+        assertTrue(fired >= 1, "the listener should still have run");
     }
 
     @Test

@@ -81,16 +81,16 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nodeId
-    ExpandedNodeId nodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExpandedNodeId) ExpandedNodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("nodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExpandedNodeId nodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExpandedNodeId.class, ExpandedNodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("nodeId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: typeDefinitionNode
-    ExpandedNodeId typeDefinitionNode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExpandedNodeId) ExpandedNodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("typeDefinitionNode"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExpandedNodeId typeDefinitionNode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExpandedNodeId.class, ExpandedNodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("typeDefinitionNode"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfValues
     int noOfValues = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfValues"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: values
-    List<Variant> values = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (Variant) Variant.staticParse(readBuffer), readBuffer), noOfValues, WithOption.WithName("values"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<Variant> values = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Variant.class, Variant.staticParse(readBuffer)), readBuffer), noOfValues, WithOption.WithName("values"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(nodeId, typeDefinitionNode, values);

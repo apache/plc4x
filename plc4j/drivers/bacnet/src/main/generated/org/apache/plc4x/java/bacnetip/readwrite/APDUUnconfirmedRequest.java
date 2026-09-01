@@ -63,7 +63,7 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 4), (byte) 0, WithOption.WithName("APDUUnconfirmedRequest.reserved0"));
 
     // Simple Field: serviceRequest
-    BACnetUnconfirmedServiceRequest serviceRequest = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetUnconfirmedServiceRequest) BACnetUnconfirmedServiceRequest.staticParse(readBuffer, (int) ((apduLength) - (1))), readBuffer), WithOption.WithName("serviceRequest"));
+    BACnetUnconfirmedServiceRequest serviceRequest = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetUnconfirmedServiceRequest.class, BACnetUnconfirmedServiceRequest.staticParse(readBuffer, (int) ((apduLength) - (1)))), readBuffer), WithOption.WithName("serviceRequest"));
 
     readBuffer.popContext();
     return new APDUBuilderImpl(serviceRequest);

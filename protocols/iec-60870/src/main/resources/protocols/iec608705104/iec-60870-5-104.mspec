@@ -55,15 +55,23 @@
 
         // S-Format Frames
         ['0x01' *SFormat
-            [simple  uint 16 receiveSequenceNo               ]
+            // Both control fields carry their sequence number in the upper fifteen bits, with the
+            // lowest bit reserved to tell the frame formats apart. The number is therefore the
+            // field shifted down by one, and the field stays as it is on the wire so that writing
+            // one back out needs no special case.
+            [simple  uint 16 receiveSequenceNo                              ]
+            [virtual uint 15 receiveSequenceNumber 'receiveSequenceNo >> 1' ]
         ]
 
         // I-Format Frames (Catch-all for all other values)
-        [*      *IFormat
-            // TODO: Fix this ...
-            // [virtual uint 15 sendSequenceNo 'command >> 1']
-            // TODO: Shift this right by one bit to make it an uint 15
-            [simple  uint 16 receiveSequenceNo               ]
+        [*      *IFormat (uint 16 command)
+            // The send sequence number is in the command field: an I-format frame is one whose
+            // lowest bit is clear, and the number occupies the fifteen bits above it. Virtual
+            // rather than read, because those same two bytes are what tells the formats apart and
+            // are already consumed above - passed in so it is in scope where the parse happens.
+            [virtual uint 15 sendSequenceNumber 'command >> 1'              ]
+            [simple  uint 16 receiveSequenceNo                              ]
+            [virtual uint 15 receiveSequenceNumber 'receiveSequenceNo >> 1' ]
             // Payload
             [simple ASDU asdu]
         ]

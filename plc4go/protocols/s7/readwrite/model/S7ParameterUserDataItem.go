@@ -58,8 +58,8 @@ type S7ParameterUserDataItemContract interface {
 
 // S7ParameterUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
 type S7ParameterUserDataItemRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
 }
@@ -209,19 +209,19 @@ func (m *_S7ParameterUserDataItem) GetPlx4xTypeName() string {
 	return "S7ParameterUserDataItem"
 }
 
-func (m *_S7ParameterUserDataItem) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7ParameterUserDataItem) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_S7ParameterUserDataItem) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7ParameterUserDataItem) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7ParameterUserDataItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7ParameterUserDataItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

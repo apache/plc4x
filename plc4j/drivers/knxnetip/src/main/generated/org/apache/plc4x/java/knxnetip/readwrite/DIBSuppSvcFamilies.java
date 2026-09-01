@@ -66,7 +66,7 @@ public class DIBSuppSvcFamilies implements Message {
     short descriptionType = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("descriptionType"));
 
     // Array Field: serviceIds
-    List<ServiceId> serviceIds = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (ServiceId) ServiceId.staticParse(readBuffer), readBuffer), (structureLength) - (2), WithOption.WithName("serviceIds"));
+    List<ServiceId> serviceIds = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ServiceId.class, ServiceId.staticParse(readBuffer)), readBuffer), (structureLength) - (2), WithOption.WithName("serviceIds"));
 
     readBuffer.popContext();
     return new DIBSuppSvcFamilies(descriptionType, serviceIds);

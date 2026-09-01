@@ -71,7 +71,7 @@ public class LldpTlvType extends ExtensionObjectDefinition implements Message {
     long tlvType = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("tlvType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: tlvInfo
-    PascalByteString tlvInfo = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalByteString) PascalByteString.staticParse(readBuffer), readBuffer), WithOption.WithName("tlvInfo"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalByteString tlvInfo = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalByteString.class, PascalByteString.staticParse(readBuffer)), readBuffer), WithOption.WithName("tlvInfo"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(tlvType, tlvInfo);

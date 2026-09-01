@@ -154,3 +154,39 @@ func TestTagHandler_ParseQueryNotSupported(t *testing.T) {
 	_, err := h.ParseQuery("anything")
 	assert.Error(t, err)
 }
+
+// A rendered address must parse back to the same tag. It did not: the object separator came out
+// as ':' where the syntax wants ',', each property carried a leading ':' the syntax has no place
+// for, and the array index printed the address of the pointer holding it - so an address like
+// "ANALOG_OUTPUT:5/PRESENT_VALUE:[92527314467080]:{16}" came back out and parsed as nothing.
+func TestTagHandler_AddressStringRoundTrips(t *testing.T) {
+	h := NewTagHandler()
+
+	for _, address := range []string{
+		"ANALOG_VALUE,2/PRESENT_VALUE",
+		"ANALOG_VALUE,2/PRESENT_VALUE[3]",
+		"ANALOG_OUTPUT,5/PRESENT_VALUE[2]{16}",
+		"ANALOG_OUTPUT,1/PRESENT_VALUE{8}",
+		"ANALOG_VALUE,2/PRESENT_VALUE[1]&DESCRIPTION",
+	} {
+		t.Run(address, func(t *testing.T) {
+			tag, err := h.ParseTag(address)
+			require.NoError(t, err)
+			assert.Equal(t, address, tag.GetAddressString())
+
+			reparsed, err := h.ParseTag(tag.GetAddressString())
+			require.NoError(t, err, "the rendered address must parse")
+			assert.Equal(t, tag, reparsed)
+		})
+	}
+}
+
+// The bracket a BACnet address carries is an index into a property's array - one element, which
+// is a scalar. It already means what the unified notation says an index means, so nothing about
+// this driver's addresses changed.
+func TestTagHandler_APropertyArrayIndexIsAScalar(t *testing.T) {
+	tag, err := NewTagHandler().ParseTag("ANALOG_VALUE,2/PRESENT_VALUE[3]")
+	require.NoError(t, err)
+	assert.Empty(t, tag.GetArrayInfo())
+	assert.Equal(t, uint(3), *tag.(BacNetPlcTag).GetProperties()[0].ArrayIndex, "the element at index 3")
+}

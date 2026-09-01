@@ -127,28 +127,28 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: innerOpeningTag
-    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)), readBuffer), WithOption.WithName("innerOpeningTag"));
+    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber))), readBuffer), WithOption.WithName("innerOpeningTag"));
 
     // Simple Field: accessEvent
-    BACnetAccessEventTagged accessEvent = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessEventTagged) BACnetAccessEventTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("accessEvent"));
+    BACnetAccessEventTagged accessEvent = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessEventTagged.class, BACnetAccessEventTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("accessEvent"));
 
     // Simple Field: statusFlags
-    BACnetStatusFlagsTagged statusFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetStatusFlagsTagged) BACnetStatusFlagsTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("statusFlags"));
+    BACnetStatusFlagsTagged statusFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetStatusFlagsTagged.class, BACnetStatusFlagsTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("statusFlags"));
 
     // Simple Field: accessEventTag
-    BACnetContextTagUnsignedInteger accessEventTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("accessEventTag"));
+    BACnetContextTagUnsignedInteger accessEventTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("accessEventTag"));
 
     // Simple Field: accessEventTime
-    BACnetTimeStampEnclosed accessEventTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStampEnclosed) BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer), WithOption.WithName("accessEventTime"));
+    BACnetTimeStampEnclosed accessEventTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStampEnclosed.class, BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3))), readBuffer), WithOption.WithName("accessEventTime"));
 
     // Simple Field: accessCredential
-    BACnetDeviceObjectReferenceEnclosed accessCredential = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReferenceEnclosed) BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (4)), readBuffer), WithOption.WithName("accessCredential"));
+    BACnetDeviceObjectReferenceEnclosed accessCredential = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReferenceEnclosed.class, BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (4))), readBuffer), WithOption.WithName("accessCredential"));
 
     // Optional Field: authenticationFactor
-    BACnetAuthenticationFactorTypeTagged authenticationFactor = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorTypeTagged.staticParse(readBuffer, (short) (5), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("authenticationFactor"));
+    BACnetAuthenticationFactorTypeTagged authenticationFactor = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationFactorTypeTagged.class, BACnetAuthenticationFactorTypeTagged.staticParse(readBuffer, (short) (5), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("authenticationFactor"));
 
     // Simple Field: innerClosingTag
-    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)), readBuffer), WithOption.WithName("innerClosingTag"));
+    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber))), readBuffer), WithOption.WithName("innerClosingTag"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersBuilderImpl(innerOpeningTag, accessEvent, statusFlags, accessEventTag, accessEventTime, accessCredential, authenticationFactor, innerClosingTag);

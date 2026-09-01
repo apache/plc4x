@@ -76,13 +76,13 @@ public class BACnetServiceAckAtomicReadFileRecord extends BACnetServiceAckAtomic
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileStartRecord
-    BACnetApplicationTagSignedInteger fileStartRecord = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("fileStartRecord"));
+    BACnetApplicationTagSignedInteger fileStartRecord = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileStartRecord"));
 
     // Simple Field: returnedRecordCount
-    BACnetApplicationTagUnsignedInteger returnedRecordCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("returnedRecordCount"));
+    BACnetApplicationTagUnsignedInteger returnedRecordCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("returnedRecordCount"));
 
     // Array Field: fileRecordData
-    List<BACnetApplicationTagOctetString> fileRecordData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), returnedRecordCount.getPayload().getActualValue(), WithOption.WithName("fileRecordData"));
+    List<BACnetApplicationTagOctetString> fileRecordData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), returnedRecordCount.getPayload().getActualValue(), WithOption.WithName("fileRecordData"));
 
     readBuffer.popContext();
     return new BACnetServiceAckAtomicReadFileStreamOrRecordBuilderImpl(fileStartRecord, returnedRecordCount, fileRecordData);

@@ -130,11 +130,11 @@ func CastBACnetVTClass(structType any) BACnetVTClass {
 	return castFunc(structType)
 }
 
-func (m BACnetVTClass) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetVTClass) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetVTClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetVTClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -50,8 +50,14 @@ public class UmasMessageCodec extends MessageCodecBase<ModbusTcpADU> {
     private static final int LENGTH_OFFSET = 4;
     private static final int LENGTH_OVERHEAD = 6;
 
-    public UmasMessageCodec(TransportInstance<?> transportInstance, Consumer<ModbusTcpADU> messageHandler) {
+    /** The connection's tracker, not a shared one: a transaction id only means something within
+     * the connection that issued it. */
+    private final UmasFunctionKeyTracker functionKeyTracker;
+
+    public UmasMessageCodec(TransportInstance<?> transportInstance, Consumer<ModbusTcpADU> messageHandler,
+                            UmasFunctionKeyTracker functionKeyTracker) {
         super("UMAS", transportInstance, messageHandler);
+        this.functionKeyTracker = functionKeyTracker;
     }
 
     @Override
@@ -72,7 +78,7 @@ public class UmasMessageCodec extends MessageCodecBase<ModbusTcpADU> {
         // discrimination — without advancing the read position.
         byte[] all = readBuffer.getBytes();
         int transactionId = ((all[0] & 0xFF) << 8) | (all[1] & 0xFF);
-        short fk = UmasFunctionKeyTracker.consumeFunctionKey(transactionId);
+        short fk = functionKeyTracker.consumeFunctionKey(transactionId);
         return ModbusTcpADU.staticParse(readBuffer, fk);
     }
 

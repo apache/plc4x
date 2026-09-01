@@ -184,13 +184,13 @@ func (m *_TDataConnectedInd) GetPlx4xTypeName() string {
 	return "TDataConnectedInd"
 }
 
-func (m *_TDataConnectedInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_TDataConnectedInd) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TDataConnectedInd) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TDataConnectedInd) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

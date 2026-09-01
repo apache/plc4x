@@ -66,8 +66,8 @@ type BACnetLogDataContract interface {
 
 // BACnetLogDataRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetLogDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -357,8 +357,8 @@ func (m *_BACnetLogData) GetPlx4xTypeName() string {
 	return "BACnetLogData"
 }
 
-func (m *_BACnetLogData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLogData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -371,11 +371,11 @@ func (m *_BACnetLogData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLogData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetLogData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetLogData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -439,15 +439,15 @@ func (m *_BACnetLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child BACnetLogData
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
-		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogStatus for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
-		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogData for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
-		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogDataTimeChange for type-switch of BACnetLogData")
 		}
 	default:

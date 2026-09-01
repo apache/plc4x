@@ -290,11 +290,11 @@ func CastAirConditioningCommandType(structType any) AirConditioningCommandType {
 	return castFunc(structType)
 }
 
-func (m AirConditioningCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m AirConditioningCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m AirConditioningCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AirConditioningCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

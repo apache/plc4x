@@ -260,8 +260,8 @@ func (m *_DeleteMonitoredItemsResponse) GetPlx4xTypeName() string {
 	return "DeleteMonitoredItemsResponse"
 }
 
-func (m *_DeleteMonitoredItemsResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DeleteMonitoredItemsResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -291,7 +291,7 @@ func (m *_DeleteMonitoredItemsResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_DeleteMonitoredItemsResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeleteMonitoredItemsResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

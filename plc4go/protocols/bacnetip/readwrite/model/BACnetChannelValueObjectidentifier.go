@@ -225,8 +225,8 @@ func (m *_BACnetChannelValueObjectidentifier) GetPlx4xTypeName() string {
 	return "BACnetChannelValueObjectidentifier"
 }
 
-func (m *_BACnetChannelValueObjectidentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
+func (m *_BACnetChannelValueObjectidentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (objectidentifierValue)
 	lengthInBits += m.ObjectidentifierValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetChannelValueObjectidentifier) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueObjectidentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetChannelValueObjectidentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

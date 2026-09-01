@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.tools.eventpump;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.tools.eventpump.triggers.TimerTrigger;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
  */
 class TagBatchTest {
 
-    private PlcConnectionManager connectionManager;
+    private PlcConnectionFactory connectionFactory;
     private String connectionString;
     private PlcReadResponse mockReadResponse;
 
@@ -62,10 +62,153 @@ class TagBatchTest {
         PlcConnection connection = new StubPlcConnection(mockReadBuilder);
 
         // Create mock connection manager that returns our stub connection
-        connectionManager = mock(PlcConnectionManager.class);
-        when(connectionManager.getConnection(any())).thenReturn(connection);
+        connectionFactory = mock(PlcConnectionFactory.class);
+        when(connectionFactory.getConnection(any())).thenReturn(connection);
 
         connectionString = "test://localhost";
+    }
+
+    /**
+     * A long outage must not run the backoff off the end of its arithmetic. The previous
+     * formula (initialBackoffMs * (1L &lt;&lt; failures-1)) overflowed to a negative window
+     * from the 55th consecutive failure — putting the next allowed fetch time in the past
+     * and disabling the backoff entirely — and wrapped at 64 back to the initial window.
+     */
+    @Test
+    void backoffStaysCappedAcrossALongOutage() throws Exception {
+        long initialBackoffMs = 1;
+        long maxBackoffMs = 4;
+
+        PlcConnectionFactory failingManager = mock(PlcConnectionFactory.class);
+        when(failingManager.getConnection(any())).thenThrow(new RuntimeException("Connection refused"));
+
+        TagBatch batch = TagBatch.builder()
+            .withBatchId("outage")
+            .withConnectionFactory(failingManager)
+            .withConnectionString(connectionString)
+            .addTagAddress("tag1", "MAIN.tag1")
+            .withTrigger(new TimerTrigger(1, TimeUnit.HOURS))
+            .withListener((b, r) -> {})
+            .withInitialBackoffMs(initialBackoffMs)
+            .withMaxBackoffMs(maxBackoffMs)
+            .build();
+
+        // Drive well past both failure counts where the old arithmetic broke (55 and 65).
+        for (int failure = 1; failure <= 70; failure++) {
+            long beforeFetch = System.currentTimeMillis();
+            batch.fetchTags();
+
+            // Assert on the window that was computed, not on what is left of it: with a window
+            // of a few milliseconds, the time spent logging the failure is enough to consume it.
+            long windowMs = batch.getCurrentBackoffMs();
+
+            assertEquals(failure, batch.getConsecutiveFailures(),
+                "every attempt must be counted — a collapsed window would let extra ones through");
+            assertTrue(windowMs > 0,
+                "backoff window must stay positive at failure " + failure + " (was " + windowMs + "ms)");
+            assertTrue(windowMs <= maxBackoffMs,
+                "backoff window must stay capped at failure " + failure + " (was " + windowMs + "ms)");
+            assertTrue(batch.getNextAllowedFetchTimeMs() > beforeFetch,
+                "backoff must push the next attempt into the future at failure " + failure);
+
+            // Wait out the window so the next attempt is actually made.
+            Thread.sleep(maxBackoffMs + 1);
+        }
+
+        batch.close();
+    }
+
+    /**
+     * A driver that never completes its read future must not wedge the batch: without the
+     * watchdog, fetchInProgress stays true and every later trigger is skipped forever.
+     */
+    @Test
+    void fetchWatchdogRecoversWhenTheReadNeverCompletes() throws Exception {
+        PlcReadRequest.Builder hangingBuilder = mock(PlcReadRequest.Builder.class);
+        PlcReadRequest hangingRequest = mock(PlcReadRequest.class);
+        when(hangingBuilder.addTagAddress(any(), any())).thenReturn(hangingBuilder);
+        when(hangingBuilder.build()).thenReturn(hangingRequest);
+        // Never completes — models a driver whose own request timeout failed to fire.
+        when(hangingRequest.execute()).thenAnswer(inv -> new CompletableFuture<PlcReadResponse>());
+
+        PlcConnectionFactory hangingManager = mock(PlcConnectionFactory.class);
+        when(hangingManager.getConnection(any())).thenReturn(new StubPlcConnection(hangingBuilder));
+
+        List<Throwable> errors = Collections.synchronizedList(new ArrayList<>());
+        TagBatch batch = TagBatch.builder()
+            .withBatchId("hanging")
+            .withConnectionFactory(hangingManager)
+            .withConnectionString(connectionString)
+            .addTagAddress("tag1", "MAIN.tag1")
+            .withTrigger(new TimerTrigger(1, TimeUnit.HOURS))
+            .withFetchTimeout(150, TimeUnit.MILLISECONDS)
+            .withListener(new TagBatch.TagBatchListener() {
+                @Override
+                public void onTagsFetched(TagBatch b, PlcReadResponse response) {
+                }
+
+                @Override
+                public void onError(TagBatch b, Throwable error) {
+                    errors.add(error);
+                }
+            })
+            .build();
+
+        batch.fetchTags();
+        verify(hangingManager, times(1)).getConnection(any());
+
+        // Wait for the watchdog to fire and release the in-progress guard.
+        long deadline = System.currentTimeMillis() + 5_000;
+        while (errors.isEmpty() && System.currentTimeMillis() < deadline) {
+            Thread.sleep(10);
+        }
+        assertFalse(errors.isEmpty(), "watchdog must report the stalled fetch to the listener");
+
+        // The batch must accept work again rather than skipping every later trigger.
+        // A failed fetch enters backoff, so wait that out first.
+        Thread.sleep(Math.max(0, batch.getNextAllowedFetchTimeMs() - System.currentTimeMillis()) + 50);
+        batch.fetchTags();
+        verify(hangingManager, times(2)).getConnection(any());
+
+        batch.close();
+    }
+
+    /**
+     * getTags() previously handed out an unmodifiable view of the live tag map, so a caller
+     * iterating it while another thread added a tag got a ConcurrentModificationException.
+     */
+    @Test
+    void getTagsReturnsASnapshotNotALiveView() {
+        Trigger trigger = new TimerTrigger(1, TimeUnit.HOURS);
+        TagBatch batch = TagBatch.builder()
+            .withBatchId("snapshot")
+            .withConnectionFactory(connectionFactory)
+            .withConnectionString(connectionString)
+            .addTagAddress("tag1", "MAIN.tag1")
+            .withTrigger(trigger)
+            .withListener((b, r) -> {})
+            .build();
+
+        Map<String, String> tagSnapshot = batch.getTags();
+        Set<String> nameSnapshot = batch.getTagNames();
+
+        // Structurally modify the underlying map, then iterate what we handed out.
+        batch.addTag("tag2", "MAIN.tag2");
+
+        assertDoesNotThrow(() -> {
+            for (Map.Entry<String, String> entry : tagSnapshot.entrySet()) {
+                assertNotNull(entry.getValue());
+            }
+            for (String name : nameSnapshot) {
+                assertNotNull(name);
+            }
+        }, "snapshots must not be invalidated by concurrent tag mutation");
+
+        assertEquals(1, tagSnapshot.size(), "snapshot must not reflect later mutations");
+        assertEquals(1, nameSnapshot.size());
+        assertEquals(2, batch.getTagCount(), "the batch itself must see the new tag");
+
+        batch.close();
     }
 
     @Test
@@ -74,7 +217,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .addTagAddress("tag2", "MAIN.tag2")
@@ -103,7 +246,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -127,7 +270,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -147,7 +290,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .addTagAddress("tag2", "MAIN.tag2")
@@ -179,7 +322,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -203,7 +346,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -223,7 +366,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .addTagAddress("tag2", "MAIN.tag2")
@@ -252,7 +395,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -270,7 +413,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .addTagAddress("tag2", "MAIN.tag2")
@@ -294,7 +437,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .addTagAddress("tag2", "MAIN.tag2")
@@ -324,7 +467,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .addTagAddress("tag2", "MAIN.tag2")
@@ -357,7 +500,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -382,7 +525,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -404,7 +547,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -426,7 +569,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -448,7 +591,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -468,7 +611,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -498,7 +641,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -520,7 +663,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -542,7 +685,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -565,7 +708,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -598,7 +741,7 @@ class TagBatchTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -633,7 +776,7 @@ class TagBatchTest {
 
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -656,13 +799,13 @@ class TagBatchTest {
     @Test
     void testBackoffOnConsecutiveFailures() throws Exception {
         // Arrange — make getConnection throw to simulate network outage
-        PlcConnectionManager failingManager = mock(PlcConnectionManager.class);
+        PlcConnectionFactory failingManager = mock(PlcConnectionFactory.class);
         when(failingManager.getConnection(any())).thenThrow(new RuntimeException("Connection refused"));
 
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("backoff-test")
-            .withConnectionManager(failingManager)
+            .withConnectionFactory(failingManager)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -707,13 +850,13 @@ class TagBatchTest {
     @Test
     void testBackoffResetOnSuccess() throws Exception {
         // Arrange — start with a failing connection, then switch to success
-        PlcConnectionManager switchableManager = mock(PlcConnectionManager.class);
+        PlcConnectionFactory switchableManager = mock(PlcConnectionFactory.class);
         when(switchableManager.getConnection(any())).thenThrow(new RuntimeException("Connection refused"));
 
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("backoff-reset-test")
-            .withConnectionManager(switchableManager)
+            .withConnectionFactory(switchableManager)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -760,14 +903,14 @@ class TagBatchTest {
     @Test
     void testBackoffMaximumCap() throws Exception {
         // Arrange
-        PlcConnectionManager failingManager = mock(PlcConnectionManager.class);
+        PlcConnectionFactory failingManager = mock(PlcConnectionFactory.class);
         when(failingManager.getConnection(any())).thenThrow(new RuntimeException("Connection refused"));
 
         long maxBackoffMs = 200;
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("backoff-cap-test")
-            .withConnectionManager(failingManager)
+            .withConnectionFactory(failingManager)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)
@@ -801,13 +944,13 @@ class TagBatchTest {
     @Test
     void testBackoffSkipsTrigger() throws Exception {
         // Arrange
-        PlcConnectionManager failingManager = mock(PlcConnectionManager.class);
+        PlcConnectionFactory failingManager = mock(PlcConnectionFactory.class);
         when(failingManager.getConnection(any())).thenThrow(new RuntimeException("Connection refused"));
 
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("backoff-skip-test")
-            .withConnectionManager(failingManager)
+            .withConnectionFactory(failingManager)
             .withConnectionString(connectionString)
             .addTagAddress("tag1", "MAIN.tag1")
             .withTrigger(trigger)

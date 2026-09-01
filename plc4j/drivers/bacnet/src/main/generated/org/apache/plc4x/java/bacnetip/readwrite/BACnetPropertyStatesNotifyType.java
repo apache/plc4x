@@ -52,7 +52,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: notifyType
-    BACnetNotifyTypeTagged notifyType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNotifyTypeTagged) BACnetNotifyTypeTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("notifyType"));
+    BACnetNotifyTypeTagged notifyType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNotifyTypeTagged.class, BACnetNotifyTypeTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("notifyType"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(notifyType);

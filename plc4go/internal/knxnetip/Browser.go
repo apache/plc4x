@@ -37,6 +37,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Browser struct {
@@ -106,19 +107,25 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
+				deviceQuery := NewDeviceQuery(
+					strconv.Itoa(int(knxAddress.GetMainGroup())),
+					strconv.Itoa(int(knxAddress.GetMiddleGroup())),
+					strconv.Itoa(int(knxAddress.GetSubGroup())),
+				)
 				queryResult := spiModel.NewDefaultPlcBrowseItem(
-					NewDeviceQuery(
-						strconv.Itoa(int(knxAddress.GetMainGroup())),
-						strconv.Itoa(int(knxAddress.GetMiddleGroup())),
-						strconv.Itoa(int(knxAddress.GetSubGroup())),
-					),
-					"",
-					"",
+					deviceQuery,
+					// Java uses the address as name if the ETS project doesn't provide a better one
+					// (KnxNetIpConnection#createBrowseItem).
+					deviceQuery.GetAddressString(),
+					deviceQuery.GetValueType().String(),
 					false,
 					false,
 					false,
 					nil,
-					nil,
+					map[string]values.PlcValue{
+						"deviceDescriptor": spiValues.NewPlcUINT(deviceConnection.connection.deviceDescriptor),
+						"maxApdu":          spiValues.NewPlcUINT(deviceConnection.connection.maxApdu),
+					},
 				)
 
 				// Pass it to the callback
@@ -224,7 +231,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	// Read the data in the group address table
 	readRequest, err = m.connection.ReadRequestBuilder().
 		AddTagAddress("groupAddressTable",
-			fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses)).
+			fmt.Sprintf("%s#%X[0..%d]:UINT", knxAddressString, groupAddressTableStartAddress, numGroupAddresses-1)).
 		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
@@ -309,10 +316,10 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	// - Max 63 bytes readable in one request, due to max of count tag
 	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddTagAddress("groupAddressAssociationTable",
-			fmt.Sprintf("%s#%X:UDINT[%d]", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries))
+			fmt.Sprintf("%s#%X[0..%d]:UDINT", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries-1))
 	} else {
 		readRequestBuilder.AddTagAddress("groupAddressAssociationTable",
-			fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressAssociationTableAddress+1, numberOfGroupAddressAssociationTableEntries))
+			fmt.Sprintf("%s#%X[0..%d]:UINT", knxAddressString, groupAddressAssociationTableAddress+1, numberOfGroupAddressAssociationTableEntries-1))
 	}
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
@@ -456,7 +463,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			groupAddressMap[comObjectNumber] = append(groupAddressMap[comObjectNumber], groupAddress)
 			entryAddress := comObjectTableAddresses.ComObjectTableAddress() + 3 + (comObjectNumber * 4)
 			readRequestBuilder.AddTagAddress(strconv.Itoa(int(comObjectNumber)),
-				fmt.Sprintf("%s#%X:USINT[4]", knxAddressString, entryAddress))
+				fmt.Sprintf("%s#%X[0..3]:USINT", knxAddressString, entryAddress))
 		}
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {

@@ -198,8 +198,8 @@ func (m *_S7VarPayloadDataItem) GetPlx4xTypeName() string {
 	return "S7VarPayloadDataItem"
 }
 
-func (m *_S7VarPayloadDataItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7VarPayloadDataItem) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (returnCode)
 	lengthInBits += 8
@@ -212,7 +212,7 @@ func (m *_S7VarPayloadDataItem) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	// Padding Field (padding)
@@ -224,7 +224,7 @@ func (m *_S7VarPayloadDataItem) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7VarPayloadDataItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7VarPayloadDataItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -78,7 +78,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: escalatorMode
-    BACnetEscalatorModeTagged escalatorMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEscalatorModeTagged) BACnetEscalatorModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("escalatorMode"));
+    BACnetEscalatorModeTagged escalatorMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEscalatorModeTagged.class, BACnetEscalatorModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("escalatorMode"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetEscalatorModeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetEscalatorModeTagged.class, escalatorMode, WithOption.WithName("actualValue"));

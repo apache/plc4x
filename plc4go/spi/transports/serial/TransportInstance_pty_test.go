@@ -116,10 +116,10 @@ func TestTransportInstance_OptionsAppliedOnPTY(t *testing.T) {
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: slavePath},
 		map[string][]string{
-			"data-bits": {"7"},
-			"parity":    {"EVEN"}, // deliberately non-canonical case
-			"stop-bits": {"2"},
-			"dtr":       {"true"}, // must warn, not fail, on a pty
+			"serial.data-bits": {"7"},
+			"serial.parity":    {"EVEN"}, // deliberately non-canonical case
+			"serial.stop-bits": {"2"},
+			"serial.dtr":       {"true"}, // must warn, not fail, on a pty
 		},
 	)
 	require.NoError(t, err)
@@ -140,7 +140,7 @@ func TestTransportInstance_FallbackReadDeadlineBoundsSilentRead(t *testing.T) {
 	transport := NewTransport()
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"read-timeout": {"200"}},
+		map[string][]string{"serial.read-timeout-ms": {"200"}},
 	)
 	require.NoError(t, err)
 	require.NoError(t, instance.Connect(context.Background()))
@@ -160,7 +160,7 @@ func TestTransportInstance_ExplicitCtxDeadlineBeatsFallback(t *testing.T) {
 	transport := NewTransport()
 	instance, err := transport.CreateTransportInstance(
 		url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"read-timeout": {"60000"}},
+		map[string][]string{"serial.read-timeout-ms": {"60000"}},
 	)
 	require.NoError(t, err)
 	require.NoError(t, instance.Connect(context.Background()))
@@ -179,7 +179,7 @@ func TestTransportInstance_ExplicitCtxDeadlineBeatsFallback(t *testing.T) {
 func TestTransportInstance_ReusePortSharesOnePTY(t *testing.T) {
 	master, slavePath := openPTY(t)
 	transport := NewTransport()
-	options := map[string][]string{"reuse-port": {"true"}}
+	options := map[string][]string{"serial.reuse-port": {"true"}}
 
 	first, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath}, options)
 	require.NoError(t, err)
@@ -208,13 +208,13 @@ func TestTransportInstance_ReusePortConfigMismatch(t *testing.T) {
 	transport := NewTransport()
 
 	first, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"reuse-port": {"true"}, "baud-rate": {"9600"}})
+		map[string][]string{"serial.reuse-port": {"true"}, "serial.baud-rate": {"9600"}})
 	require.NoError(t, err)
 	require.NoError(t, first.Connect(context.Background()))
 	t.Cleanup(func() { _ = first.Close() })
 
 	second, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"reuse-port": {"true"}, "baud-rate": {"19200"}})
+		map[string][]string{"serial.reuse-port": {"true"}, "serial.baud-rate": {"19200"}})
 	require.NoError(t, err)
 	err = second.Connect(context.Background())
 	require.Error(t, err)
@@ -225,7 +225,7 @@ func TestTransportInstance_DedicatedInterframeDelayOnPTY(t *testing.T) {
 	master, slavePath := openPTY(t)
 	transport := NewTransport()
 	instance, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath},
-		map[string][]string{"interframe-delay": {"60"}})
+		map[string][]string{"serial.interframe-delay": {"60"}})
 	require.NoError(t, err)
 	require.NoError(t, instance.Connect(context.Background()))
 	t.Cleanup(func() { _ = instance.Close() })

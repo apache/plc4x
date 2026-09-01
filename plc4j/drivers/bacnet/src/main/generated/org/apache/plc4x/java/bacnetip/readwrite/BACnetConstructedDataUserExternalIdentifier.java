@@ -78,7 +78,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: userExternalIdentifier
-    BACnetApplicationTagCharacterString userExternalIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("userExternalIdentifier"));
+    BACnetApplicationTagCharacterString userExternalIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("userExternalIdentifier"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagCharacterString.class, userExternalIdentifier, WithOption.WithName("actualValue"));

@@ -83,7 +83,7 @@ public class BACnetResultFlagsTagged implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: header
-    BACnetTagHeader header = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("header"));
+    BACnetTagHeader header = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("header"));
 
     // Validation Field
     if(!((header.getTagClass()) == (tagClass))) {
@@ -96,7 +96,7 @@ public class BACnetResultFlagsTagged implements Message {
     }
 
     // Simple Field: payload
-    BACnetTagPayloadBitString payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadBitString) BACnetTagPayloadBitString.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadBitString payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadBitString.class, BACnetTagPayloadBitString.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: firstItem (doesn't parse anything, just makes the value available)
     boolean firstItem = FieldReaderFactory.readVirtualField(boolean.class, ((((StaticHelper.COUNT(payload.getData())) > (0))) ? payload.getData().get(0) : false), WithOption.WithName("firstItem"));

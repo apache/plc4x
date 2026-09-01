@@ -95,10 +95,10 @@ public class ManualFactoryS71200DriverTest extends BasicPlcTest {
         test.addTestCase("%DB4:58:TIME", new PlcTIME(Duration.parse("PT1.234S")));
         test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
         test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
-        test.addTestCase("%DB4:908:CHAR[5]", new PlcList(Arrays.asList(new PlcCHAR("w"), new PlcCHAR("i"), new PlcCHAR("e"), new PlcCHAR("s"), new PlcCHAR("e"))));
-        test.addTestCase("%DB4:914:RAW_BYTE_ARRAY[11]", new PlcRawByteArray(new byte[] {(byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10}));
+        test.addTestCase("%DB4:908[0..4]:CHAR", new PlcList(Arrays.asList(new PlcCHAR("w"), new PlcCHAR("i"), new PlcCHAR("e"), new PlcCHAR("s"), new PlcCHAR("e"))));
+        test.addTestCase("%DB4:914[0..10]:RAW_BYTE_ARRAY", new PlcRawByteArray(new byte[] {(byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10}));
         // Disabled, as we currently only have the large-array-splitting for read requests.
-        /*test.addTestCase("%DB4:926:DINT[100]", new PlcList(Arrays.asList(new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+        /*test.addTestCase("%DB4:926[0..99]:DINT", new PlcList(Arrays.asList(new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
             new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
             new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
             new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),

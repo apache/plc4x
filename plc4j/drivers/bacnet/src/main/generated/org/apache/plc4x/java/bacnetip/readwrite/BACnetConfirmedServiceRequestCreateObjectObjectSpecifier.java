@@ -105,10 +105,10 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Optional Field: rawObjectType
-    BACnetContextTagEnumerated rawObjectType = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagEnumerated) BACnetContextTagEnumerated.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.ENUMERATED)), readBuffer), WithOption.WithName("rawObjectType"));
+    BACnetContextTagEnumerated rawObjectType = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagEnumerated.class, BACnetContextTagEnumerated.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.ENUMERATED))), readBuffer), WithOption.WithName("rawObjectType"));
 
     // Virtual Field: isObjectType (doesn't parse anything, just makes the value available)
     boolean isObjectType = FieldReaderFactory.readVirtualField(boolean.class, (rawObjectType) != (null), WithOption.WithName("isObjectType"));
@@ -117,7 +117,7 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     BACnetObjectType objectType = FieldReaderFactory.readVirtualField(BACnetObjectType.class, StaticHelper.mapBACnetObjectType(rawObjectType), WithOption.WithName("objectType"));
 
     // Optional Field: objectIdentifier
-    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("objectIdentifier"));
+    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("objectIdentifier"));
 
     // Virtual Field: isObjectIdentifier (doesn't parse anything, just makes the value available)
     boolean isObjectIdentifier = FieldReaderFactory.readVirtualField(boolean.class, (objectIdentifier) != (null), WithOption.WithName("isObjectIdentifier"));
@@ -128,7 +128,7 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     }
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag, rawObjectType, objectIdentifier, closingTag);

@@ -73,4 +73,34 @@ class ModbusAsciiMessageCodecTest {
         when(transportInstance.peekReadableBytes(incompleteData.length)).thenReturn(incompleteData);
         assertEquals(-1, method.invoke(codec, new byte[9], incompleteData.length));
     }
+
+    /**
+     * The frame ends where the sender puts the terminator, so a sender that never puts one there
+     * used to have us rescanning a buffer that only grew, cycle after cycle, waiting on a frame
+     * that had already gone past the longest one Modbus ASCII can carry.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    void testCalculateTotalMessageSize_givesUpPastTheLongestPossibleFrame() throws Exception {
+        TransportInstance<?> transportInstance = mock(TransportInstance.class);
+        Consumer<ModbusAsciiADU> handler = mock(Consumer.class);
+        ModbusAsciiMessageCodec codec = new ModbusAsciiMessageCodec(transportInstance, handler);
+
+        Method method = codec.getClass().getDeclaredMethod("calculateTotalMessageSize", byte[].class, int.class);
+        method.setAccessible(true);
+
+        // 600 characters and not a terminator among them: longer than any frame can be.
+        byte[] unterminated = new byte[600];
+        java.util.Arrays.fill(unterminated, (byte) 'A');
+        when(transportInstance.peekReadableBytes(unterminated.length)).thenReturn(unterminated);
+        assertEquals(-2, method.invoke(codec, new byte[9], unterminated.length),
+            "past the longest possible frame this must resynchronise, not keep waiting");
+
+        // Still inside the possible length, so waiting is the right answer.
+        byte[] stillPlausible = new byte[400];
+        java.util.Arrays.fill(stillPlausible, (byte) 'A');
+        when(transportInstance.peekReadableBytes(stillPlausible.length)).thenReturn(stillPlausible);
+        assertEquals(-1, method.invoke(codec, new byte[9], stillPlausible.length),
+            "a frame that could still be completed must be waited for");
+    }
 }

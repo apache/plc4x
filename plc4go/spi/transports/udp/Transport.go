@@ -89,7 +89,7 @@ func (m *Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL,
 	}
 
 	var soReUse bool
-	if val, ok := options["so-reuse"]; ok {
+	if val, ok := options["udp.so-reuse"]; ok {
 		if parseBool, err := strconv.ParseBool(val[0]); err != nil {
 			return nil, errors.Wrap(err, "error setting so-reuse")
 		} else {

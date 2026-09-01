@@ -58,7 +58,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: routeName
-    AmsString routeName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsString) AmsString.staticParse(readBuffer), readBuffer), WithOption.WithName("routeName"));
+    AmsString routeName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsString.class, AmsString.staticParse(readBuffer)), readBuffer), WithOption.WithName("routeName"));
 
     readBuffer.popContext();
     return new AdsDiscoveryBlockBuilderImpl(routeName);

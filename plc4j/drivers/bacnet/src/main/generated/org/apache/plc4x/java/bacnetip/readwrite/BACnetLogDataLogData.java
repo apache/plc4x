@@ -75,13 +75,13 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: innerOpeningTag
-    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("innerOpeningTag"));
+    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("innerOpeningTag"));
 
     // Array Field: logData
-    List<BACnetLogDataLogDataEntry> logData = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetLogDataLogDataEntry) BACnetLogDataLogDataEntry.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, 1), WithOption.WithName("logData"));
+    List<BACnetLogDataLogDataEntry> logData = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLogDataLogDataEntry.class, BACnetLogDataLogDataEntry.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, 1), WithOption.WithName("logData"));
 
     // Simple Field: innerClosingTag
-    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("innerClosingTag"));
+    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("innerClosingTag"));
 
     readBuffer.popContext();
     return new BACnetLogDataBuilderImpl(innerOpeningTag, logData, innerClosingTag);

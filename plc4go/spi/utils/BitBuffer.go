@@ -93,10 +93,7 @@ func (b *ReadBitBuffer) ReadBits(n uint8) (uint64, error) {
 	// Partial first byte when the cursor is not byte-aligned
 	if bitOffset := b.bitPos % 8; bitOffset != 0 {
 		bitsAvail := uint8(8 - bitOffset)
-		bitsToRead := bitsAvail
-		if bitsToRead > bitsLeft {
-			bitsToRead = bitsLeft
-		}
+		bitsToRead := min(bitsAvail, bitsLeft)
 		byteVal := b.data[b.bitPos/8]
 		shift := bitsAvail - bitsToRead
 		mask := uint8((1 << bitsToRead) - 1)
@@ -162,10 +159,7 @@ func (w *WriteBitBuffer) WriteBits(val uint64, n uint8) error {
 
 	// Fill the in-progress pending byte first
 	if w.pendingBits > 0 {
-		bitsToWrite := uint8(8 - w.pendingBits)
-		if bitsToWrite > bitsLeft {
-			bitsToWrite = bitsLeft
-		}
+		bitsToWrite := min(uint8(8-w.pendingBits), bitsLeft)
 		shift := bitsLeft - bitsToWrite
 		bits := uint8((val >> shift) & ((1 << bitsToWrite) - 1))
 		w.pending |= bits << (8 - w.pendingBits - bitsToWrite)

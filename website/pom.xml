@@ -313,6 +313,24 @@
       </plugin>
 
       <!--
+        Makes the version of this project available as ${parsedVersion.*} properties, so
+        the release version (without any "-SNAPSHOT" qualifier) can be derived from it.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>parse-version</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
         The bootstrap uses "fonts" as directory for locating fonts and fontawesome uses "webfonts".
         This plugin updates the css to also use "fonts".
       -->
@@ -321,6 +339,40 @@
         <artifactId>replacer</artifactId>
         <version>1.5.3</version>
         <executions>
+          <!--
+            The documentation refers to the current version in a lot of places (dependency
+            snippets, download instructions, ...) via the "current-last-released-version" and
+            "current-full-version" AsciiDoc attributes. Both are defined in the component
+            descriptor "asciidoc/antora.yml", and were easy to forget when the version of the
+            project was bumped. This keeps them in sync with the version of the Maven project.
+
+            They can't simply be passed to Antora on the command line: the playbook builds the
+            released branches (rel/0.13, rel/0.12, ...) from git alongside this one, and each of
+            those has to keep documenting its own version rather than the one being built here.
+            So the value stays in the descriptor of each branch and this only maintains the copy
+            on the branch it is run on.
+          -->
+          <execution>
+            <id>sync-antora-version</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <file>${project.basedir}/asciidoc/antora.yml</file>
+              <regex>true</regex>
+              <replacements>
+                <replacement>
+                  <token>current-last-released-version: '[^']*'</token>
+                  <value>current-last-released-version: '${project.version}'</value>
+                </replacement>
+                <replacement>
+                  <token>current-full-version: '[^']*'</token>
+                  <value>current-full-version: '${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}'</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
           <execution>
             <id>streamline-font-urls</id>
             <!-- Only execute this for the parent module -->

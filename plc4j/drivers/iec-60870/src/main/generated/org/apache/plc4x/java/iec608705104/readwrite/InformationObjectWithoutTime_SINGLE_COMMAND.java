@@ -61,7 +61,7 @@ public class InformationObjectWithoutTime_SINGLE_COMMAND extends InformationObje
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: sco
-    SingleCommand sco = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SingleCommand) SingleCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("sco"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    SingleCommand sco = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SingleCommand.class, SingleCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("sco"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(sco);

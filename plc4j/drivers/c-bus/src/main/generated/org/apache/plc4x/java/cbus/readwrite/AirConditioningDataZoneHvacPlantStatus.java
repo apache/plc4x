@@ -97,13 +97,13 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
     byte zoneGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("zoneGroup"));
 
     // Simple Field: zoneList
-    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACZoneList) HVACZoneList.staticParse(readBuffer), readBuffer), WithOption.WithName("zoneList"));
+    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACZoneList.class, HVACZoneList.staticParse(readBuffer)), readBuffer), WithOption.WithName("zoneList"));
 
     // Simple Field (enum): hvacType
     HVACType hvacType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(HVACType::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("hvacType"));
 
     // Simple Field: hvacStatus
-    HVACStatusFlags hvacStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACStatusFlags) HVACStatusFlags.staticParse(readBuffer), readBuffer), WithOption.WithName("hvacStatus"));
+    HVACStatusFlags hvacStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACStatusFlags.class, HVACStatusFlags.staticParse(readBuffer)), readBuffer), WithOption.WithName("hvacStatus"));
 
     // Simple Field (enum): hvacErrorCode
     HVACError hvacErrorCode = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(HVACError::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("hvacErrorCode"));

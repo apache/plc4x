@@ -78,7 +78,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ipAddress
-    BACnetApplicationTagOctetString ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("ipAddress"));
+    BACnetApplicationTagOctetString ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipAddress"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagOctetString.class, ipAddress, WithOption.WithName("actualValue"));

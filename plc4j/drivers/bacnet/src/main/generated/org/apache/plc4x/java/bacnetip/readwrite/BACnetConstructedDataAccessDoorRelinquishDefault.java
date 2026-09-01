@@ -78,7 +78,7 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: relinquishDefault
-    BACnetDoorValueTagged relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDoorValueTagged) BACnetDoorValueTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("relinquishDefault"));
+    BACnetDoorValueTagged relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDoorValueTagged.class, BACnetDoorValueTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("relinquishDefault"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDoorValueTagged actualValue = FieldReaderFactory.readVirtualField(BACnetDoorValueTagged.class, relinquishDefault, WithOption.WithName("actualValue"));

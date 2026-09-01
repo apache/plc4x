@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lightningTransition
-    BACnetLightingTransitionTagged lightningTransition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingTransitionTagged) BACnetLightingTransitionTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("lightningTransition"));
+    BACnetLightingTransitionTagged lightningTransition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingTransitionTagged.class, BACnetLightingTransitionTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("lightningTransition"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(lightningTransition);

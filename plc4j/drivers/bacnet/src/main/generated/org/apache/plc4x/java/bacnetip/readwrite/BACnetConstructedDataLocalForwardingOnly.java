@@ -78,7 +78,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: localForwardingOnly
-    BACnetApplicationTagBoolean localForwardingOnly = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("localForwardingOnly"));
+    BACnetApplicationTagBoolean localForwardingOnly = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("localForwardingOnly"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, localForwardingOnly, WithOption.WithName("actualValue"));

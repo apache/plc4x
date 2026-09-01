@@ -50,7 +50,7 @@ public class BACnetAssignedLandingCalls implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: landingCalls
-    BACnetAssignedLandingCallsLandingCallsList landingCalls = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsLandingCallsList.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("landingCalls"));
+    BACnetAssignedLandingCallsLandingCallsList landingCalls = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAssignedLandingCallsLandingCallsList.class, BACnetAssignedLandingCallsLandingCallsList.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("landingCalls"));
 
     readBuffer.popContext();
     return new BACnetAssignedLandingCalls(landingCalls);

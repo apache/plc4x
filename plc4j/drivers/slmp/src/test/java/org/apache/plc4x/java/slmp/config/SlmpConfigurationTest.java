@@ -45,7 +45,7 @@ class SlmpConfigurationTest {
     @Test
     void overridesAreParsed() {
         SlmpConfiguration config = new ConfigurationFactory()
-            .createConfiguration(SlmpConfiguration.class, "monitoring-timer=4&request-timeout=2000");
+            .createConfiguration(SlmpConfiguration.class, "monitoring-timer=4&request-timeout-ms=2000");
         assertEquals(4, config.getMonitoringTimer());
         assertEquals(2_000, config.getRequestTimeout());
     }

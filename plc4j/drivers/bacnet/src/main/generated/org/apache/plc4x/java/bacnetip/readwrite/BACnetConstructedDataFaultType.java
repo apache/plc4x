@@ -78,7 +78,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: faultType
-    BACnetFaultTypeTagged faultType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetFaultTypeTagged) BACnetFaultTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("faultType"));
+    BACnetFaultTypeTagged faultType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetFaultTypeTagged.class, BACnetFaultTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("faultType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetFaultTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetFaultTypeTagged.class, faultType, WithOption.WithName("actualValue"));

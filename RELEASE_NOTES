@@ -85,10 +85,184 @@ New Features
   codecs/transports (TransportErrorKind).
 - Performance: Sped up byte-aligned integer read/write in the Java
   byte-based SPI buffers.
+- EtherNet/IP: The CIP bit-string types (BYTE, WORD, DWORD, LWORD)
+  and unsigned integer types (USINT, UINT, UDINT, ULINT) can now be
+  read and written, in both the Java and the Go drivers. They were
+  accepted by the address parser but not decoded, so reading such a
+  tag returned INTERNAL_ERROR. All eight are unsigned over their
+  full range: a DWORD reads as 0 to 4294967295 and an LWORD as 0 to
+  18446744073709551615. Their signed counterparts are unchanged - a
+  DINT of 0xFFFFFFFF still reads as -1.
 
 Incompatible changes
 --------------------
 
+- Configuration parameters now use one vocabulary across PLC4J and PLC4Go.
+  A duration in milliseconds ends in "-ms", TLS settings live under "tls.",
+  and a parameter aimed at a transport no longer repeats that transport's
+  code. Old names are removed rather than deprecated: supplying one is
+  reported as an unknown parameter, naming the replacement, and the setting
+  does not apply. The full table is below.
+
+  Durations:
+
+    request-timeout           -> request-timeout-ms
+    timeout-request (ads)     -> request-timeout-ms
+    connect-timeout           -> connect-timeout-ms
+    read-timeout              -> read-timeout-ms
+    write-timeout             -> write-timeout-ms
+    session-timeout           -> session-timeout-ms
+    channel-lifetime          -> channel-lifetime-ms
+    min-channel-lifetime      -> min-channel-lifetime-ms
+    ha-heartbeat-interval     -> ha-heartbeat-interval-ms
+    ha-failover-timeout       -> ha-failover-timeout-ms
+
+  Establishing a socket and completing a protocol handshake are two
+  settings, not one, so they now have two names. "connect-timeout-ms" is
+  the socket connect; the COTP handshake and the OPC UA negotiation steps
+  are "handshake-timeout-ms":
+
+    cotp.cotp-connection-timeout -> cotp.handshake-timeout-ms
+    negotiation-timeout (opcua)  -> handshake-timeout-ms
+
+  Transport parameters no longer repeat their transport's code, which the
+  prefix already supplies:
+
+    tcp.tcp-no-delay          -> tcp.no-delay
+    cotp.cotp-tpdu-size       -> cotp.tpdu-size
+    tls.tls-version           -> tls.version
+
+  TLS settings are addressed under "tls.":
+
+    tls.verify-ssl            -> tls.verify
+    key-store-file (opcua)    -> tls.keystore
+    key-store-password        -> tls.keystore-password
+    key-store-type            -> tls.keystore-type
+    trust-store-file          -> tls.trust-store
+    trust-store-password      -> tls.trust-store-password
+    trust-store-type          -> tls.trust-store-type
+
+  The trust store drops "-file" for the same reason the key store does:
+  every one of these names a store, so saying so adds nothing. The TLS
+  transport already spelled them "tls.trust-store-file"; that becomes
+  "tls.trust-store" too, so the opcua and ctrlx drivers, which declare
+  their own, now agree with it.
+
+  A name a protocol specification fixes keeps its own spelling and units:
+  SLMP's "monitoring-timer" is a field of the 3E request frame in the
+  protocol's own units, not a value in milliseconds, so it is unchanged and
+  carries a comment at its declaration saying why.
+
+- The OPC UA driver's "insecure-certificate-verification" became
+  "tls.verify", with the opposite sense. A connection that set
+  "insecure-certificate-verification=true" must now set "tls.verify=false".
+  This one is not just a rename: if it is missed, the new default applies,
+  which is to verify the server certificate. That fails loudly against a
+  server whose certificate does not validate rather than connecting
+  insecurely, but it is a behaviour change and not a silent one.
+
+- An unrecognised connection-string parameter is now reported in PLC4Go as
+  well as PLC4J, naming the parameter and, where it can, the nearest known
+  one. It remains a warning: a stray parameter does not fail a connection
+  that would otherwise work. PLC4Go's OPC UA driver previously *refused*
+  the connection on an unknown option; it now warns like every other
+  driver, so a connection string accepted by PLC4J is no longer rejected
+  there.
+
+  In PLC4Go this covers the drivers that parse their configuration in one
+  place: ab-eth, bacnet-ip, c-bus, EtherNet/IP, firmata, IEC 60870-5-104,
+  Modbus, OPC UA, S7, SLMP and UMAS. The ADS, KNXnet/IP and simulated
+  drivers read their options where they are used rather than parsing a
+  configuration, so there is no point at which the leftovers are known;
+  they are unchanged and still report nothing.
+
+  The report also knows which transport the connection actually uses, so a
+  parameter that belongs to a different transport - "serial.baud-rate" on a
+  TCP connection - is called out as misdirected instead of being silently
+  excused as "some transport's".
+
+  A suggestion is offered only among the names the consumer that reported
+  actually read, so a parameter belonging to a transport is named as
+  unknown with nothing to suggest. PLC4J does better here: it draws the
+  known names from the driver, the transport, the audit log and the
+  connection-control options, and matches on the last segment, so a
+  missing prefix is recognised for what it is.
+
+- Configuration values carrying secrets are marked at their declaration -
+  "@Secret" in PLC4J, a `secret:"true"` struct tag in PLC4Go - and render
+  as "<redacted>" wherever a configuration is rendered. This replaces
+  guessing from parameter names, which could only ever be one parameter
+  behind: a pre-shared key was logged in clear until its name was added to
+  the list by hand. A name-based check remains for parameters no
+  configuration declares, since a credential passed under an unknown name
+  is still a credential.
+
+- PLC4Go's S7 driver reads the rack and slot as "cotp.local-rack",
+  "cotp.local-slot", "cotp.remote-rack" and "cotp.remote-slot". It read
+  them unprefixed, while PLC4J declares them on the COTP transport's
+  configuration and every S7 example in the documentation spells them with
+  the prefix - so the documented connection string set nothing in PLC4Go
+  and said so nowhere. The unprefixed names are now reported as unknown.
+
+- Fixed PLC4Go logging connection strings verbatim. A password in a Go
+  connection string reached the log in clear at debug level, at twenty
+  call sites across the driver manager and the connection cache. They are
+  redacted now, along with credentials in a URI's userinfo. The parsed
+  URL and the connection container render redacted too - both reached the
+  same log lines by another route, so a redacted field sat beside the
+  credential it was hiding.
+
+- PLC4Go addresses a transport's connection-string options under the
+  transport's own code, as PLC4J does and as the documentation has always
+  said: "tcp.connect-timeout-ms", "serial.baud-rate", "udp.so-reuse",
+  "pcap.speed-factor". They were read unprefixed, so every documented
+  transport setting was ignored in PLC4Go and left at its default. The
+  unprefixed names are now reported as unknown rather than silently
+  doing nothing. Options a driver injects into the map itself
+  ("defaultTcpPort") are not addressed by anyone and keep their bare
+  names.
+
+- PLC4Go's OPC UA driver reads the parameter names PLC4J declares and the
+  documentation lists - "tls.keystore", "tls.keystore-password",
+  "security-policy", "allow-unverified-security-policies" - rather than
+  names derived from its own Go struct fields ("keyStoreFile",
+  "securityPolicy"). The documented connection string reached it as a
+  set of unknown options and was ignored.
+
+- A secret marking in PLC4Go applies whatever the field's type is. The
+  generator honoured "secret:\"true\"" only where it rendered a string, so
+  the tag on any other kind of field was accepted and silently did
+  nothing. The OPC UA key pair now carries the marking in both the
+  configuration and the secure channel.
+
+- Redaction decides from the parameter name the driver will read, not the
+  name as written: "?%70assword=hunter2" is the password parameter once
+  the query is decoded, and was previously logged in clear. A connection
+  string nested inside another (the PLC4X proxy driver's
+  "remote-connection-string") is redacted as a connection string in its
+  own right, so its credentials no longer travel through the outer one -
+  while which PLC the proxy talks to stays visible.
+
+- A BACnet/IP connection reported each unknown option once rather than
+  twice. Its options are parsed both by the driver, for the discovery
+  timeout, and by the connection; both reported, so one mistake read as
+  two.
+- The connection-creating methods of the API moved from
+  "PlcConnectionManager" to a new "PlcConnectionFactory"
+  interface, which the "PlcDriverManager" hands out via
+  "getConnectionFactory()" (formerly "getConnectionManager()").
+  "PlcConnectionManager" now extends "PlcConnectionFactory" and
+  adds the "close()" method, and is only implemented by managers
+  that keep the connections they hand out, such as the connection
+  cache.
+- The connection cache was renamed from
+  "CachedPlcConnectionManager" to "PlcConnectionCache", matching
+  the name the concept already has in PLC4Go. Its builder method
+  "withConnectionManager()" became "withConnectionFactory()", and
+  "PlcConnectionManagerClosedException" became
+  "PlcConnectionCacheClosedException". The Maven artifactId
+  ("plc4j-tools-connection-cache") and the package are
+  unchanged.
 - All drivers were migrated to a new shared SPI ("SPI3"):
   dependency-free Read/Write buffers, an updated code-generation
   framework, a pluggable-transport system and a layered
@@ -144,6 +318,355 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- The OPC UA driver's "security-policy" now defaults to
+  Basic256Sha256 instead of NONE. NONE means the channel is
+  neither signed nor encrypted, so anything on the network path
+  can read and alter what is exchanged, and the server is not
+  authenticated at all.
+  A protected channel needs the server's certificate to be known
+  before the channel is opened. The discovery phase that would
+  otherwise fetch it runs unprotected by necessity, and a
+  certificate learned from the peer it is meant to authenticate
+  establishes nothing - so the driver no longer proceeds from
+  discovery onto a channel weaker than the one configured. It used
+  to do exactly that, silently: a connection asking for
+  Basic256Sha256 got a session with neither signing nor encryption
+  and no indication of it.
+  Together this means a connection that names no certificate now
+  fails where it previously came up unprotected. Name one with
+  "server-certificate-file", or a trust store with
+  "tls.trust-store"; or set "discovery=false" if the endpoint needs
+  no discovery; or ask for "security-policy=NONE" to accept an
+  unprotected channel as before.
+  Note that a protected channel also needs a client key pair:
+  supply one with "key-store-file", or the driver generates a
+  throwaway self-signed certificate, which a server that
+  authenticates its clients will not accept.
+- The OPC UA driver refuses to send a username and password over a
+  channel that neither signs nor encrypts, because the password is
+  then readable by anything on the path and stays useful long after
+  it is read. The new "allow-insecure-credentials" parameter sends
+  them anyway, with a warning.
+- The OPC UA driver now requires an endpoint to match both the
+  requested security policy and the requested message security
+  mode, and selects the strongest endpoint that matches rather than
+  the weakest. It previously accepted an endpoint matching either
+  one and then chose the lowest security level on offer, so a
+  server publishing a wide-open endpoint beside a protected one was
+  usually reached over the wide-open one. Where two endpoints are
+  equally strong, one whose user token policy protects the token is
+  preferred.
+- The ctrlX driver no longer trusts the Bosch factory default
+  certificate that ships inside the driver jar, and no longer
+  accepts a certificate for any host regardless of the name it was
+  issued for. It also asks for a TLS context rather than the
+  legacy "SSL" one. That certificate identifies nobody - anything
+  presenting it and its key was trusted - and because it was the
+  only trust anchor, a device carrying a properly issued
+  certificate could not be reached at all. The credentials for the
+  connection travel over that channel.
+  Connections to a device still on its factory certificate will
+  now fail. The new "allow-factory-default-certificate" parameter
+  restores the old behaviour, with a warning; alternatively
+  "server-certificate-file" names a single PEM certificate to
+  trust, or "tls.trust-store" (with "tls.trust-store-password" and
+  "tls.trust-store-type") a key store of them, matching the names used
+  by the OPC UA driver and the TLS transport.
+  "ignore-common-name" is also available if the certificate is
+  trusted but names a different host.
+- The TLS transport now checks that the server's certificate was
+  issued for the host it connected to. The "ignore-common-name"
+  parameter was declared but never consulted, so this check did
+  not happen at all: with "verify-ssl" on, any certificate from a
+  trusted issuer was accepted for any host, which is what a
+  machine in the middle needs. Setting "ignore-common-name=true"
+  restores the old behaviour and logs a warning saying so.
+  A connection to a device whose certificate names something other
+  than the address it is reached at will now fail where it
+  previously succeeded.
+  Two new parameters make the check usable where a device carries
+  its own certificate: "tls.trust-store" (with
+  "tls.trust-store-password" and "tls.trust-store-type") names the
+  certificates to trust instead of the public authorities the JVM
+  ships with. Previously the only way past a private CA was
+  "verify-ssl=false", which turns off both the chain check and
+  this one.
+- The IEC 60870-5-104 driver now derives its S-format
+  acknowledgements from the send sequence number of the frames it
+  received, counted modulo 2^15 and encoded in the upper fifteen
+  bits of the control field, as the standard requires. It
+  previously sent the received frame's receive sequence number
+  plus one, which is the station reporting how much of our traffic
+  it had taken in - a different number, and one that said nothing
+  about how far we had read. This changes what the driver puts on
+  the wire in response to received telemetry, so a station that
+  checks acknowledgements will see different (correct) values, and
+  one that had adapted to the old behaviour may need attention.
+  The frame format itself is unchanged.
+- Tag addresses naming an implausible number of elements are now
+  rejected as invalid addresses rather than acted on. An element
+  count is a request to allocate, and it was taken at face value:
+  in the s7 driver a count is now measured against the 2097151
+  bytes an S7 address can reach (for the string forms, against
+  what one string of the declared length costs, which is the same
+  arithmetic the optimizer does in an int and where an unbounded
+  count overflowed); in the ads driver an index group, index
+  offset and element count must each fit the four bytes ADS
+  carries them in; in the firmata driver a digital tag must stay
+  within the 256 pins the protocol can name, having previously
+  turned its count into that many set bits at parse time. In all
+  three, a count too wide to be a number used to escape as a
+  NumberFormatException instead of the PlcInvalidTagException the
+  tag parsers promise.
+- The OPC UA driver bounds a browse, which previously walked
+  whatever tree the server described for as long as it described
+  one. "browse-max-references-per-node" (default 65536) limits the
+  references collected for one node and is now also asked of the
+  server, "browse-max-total-nodes" (default 1000000) limits how
+  many nodes one browse expands, and "browse-max-depth" (default
+  64) limits how deep it recurses. Set any of them to 0 for no
+  limit. Reaching one warns and returns what was found rather
+  than failing, so an address space within these sizes is
+  unaffected.
+- The ctrlX driver bounds a browse the same way, with
+  "browse-max-total-nodes" (default 1000000) and
+  "browse-max-depth" (default 64). Its browse also now always
+  completes its future: a node answering with no child list used
+  to throw inside the executor's task, where nothing caught it and
+  the caller was left waiting on a future that was never
+  completed. Such a node is now read as the leaf it says it is.
+- The simulated driver bounds how much data one tag may ask it to
+  make up. The count in the address was multiplied by the size of
+  one element in an int to size the array it fills, so a large
+  enough count asked for a negative array rather than a large one,
+  and anything below that got what it asked for - three hundred
+  million doubles being 2.4 GB. The product is now measured
+  against a budget of 16 MiB per tag.
+  The Go driver carries that count as a uint16, where a count
+  above it used to be truncated to its low two bytes rather than
+  refused - a request for 70000 elements handing back a tag of
+  4464, and one for 65536 handing back a tag of none. Both are
+  now invalid addresses, as is a count of zero, which the Java
+  driver already refused.
+- The modbus, profinet and profinet-ng tag parsers now report a
+  count, address or slot too wide to be a number as an invalid
+  tag. All three already bounded these values, but the checks ran
+  after the number was read, so anything too wide to read left as
+  a NumberFormatException instead. The digit widths are capped in
+  the address patterns, at what each field can hold.
+- Every generated parser now refuses a message that nests its
+  types deeper than 1024 levels, in both the Java and the Go
+  bindings. Several types contain themselves - BACnet constructed
+  data holds further constructed data, an OPC UA variant of type
+  24 holds further variants - so the depth of the value tree is
+  the sender's to choose and one level costs a single byte on the
+  wire. Deep enough, that ran the parser out of stack: in Java a
+  StackOverflowError, which is neither a parse failure the driver
+  can report nor an error the receive path contains, so a frame
+  that should have cost one frame ended the connection; in Go a
+  goroutine out of stack takes the process with it rather than
+  the request. Set PLC4X_MAX_NESTING_DEPTH for a device whose
+  messages genuinely nest deeper - it means the same thing in
+  both bindings, and a value that is not a positive number leaves
+  the default in place with a warning. The deepest message in the
+  project's own testsuites nests 36 levels, so this bounds only
+  what no real device sends. Note for Go consumers that the
+  default rose from 255 to 1024 in the process, so one setting of
+  the variable now means one depth whichever binding reads it.
+- plc4go now requires Go 1.27. The uuid package it used to take
+  from github.com/google/uuid now comes from the standard library,
+  which drops that dependency outright - it is gone from go.mod and
+  go.sum - at the cost of the version floor.
+- EtherNet/IP: Two CIP data type codes were wrong and are
+  corrected. LWORD moves from 0x00D3 to 0x00D4 and STRINGI from
+  0x00DD to 0x00DE. Each had been sharing its value with another
+  type (DWORD and ENGUNIT respectively), and a duplicate key is
+  silently dropped from the generated lookup tables, so LWORD and
+  STRINGI could not be resolved by name or by value at all. Anyone
+  who hardcoded the old LWORD value was addressing a DWORD.
+- EtherNet/IP: A string write now emits the structure the read path
+  parses - a 2-byte structure handle, a 4-byte length and then the
+  characters - so what the driver writes reads back as the same
+  value. Previously it wrote a bare length followed by the
+  characters, which no read could decode. The length is now the
+  number of UTF-8 bytes rather than of characters; the two differ
+  for any non-ASCII text, which used to read back truncated. Text
+  that does not fit the type's fixed payload is reported instead of
+  overflowing. Because CIPDataTypeCode.STRING declares a size of 0,
+  the serializer emits no payload for it at all, so a write
+  addressed as ":STRING" is now rejected rather than silently sent
+  empty - write strings as ":STRUCTURED".
+- Go: Several values now serialize under their own names and in
+  their canonical forms, which changes the output anything parsing
+  it will see. PlcDWORD, PlcSINT, PlcULINT and PlcWSTRING were
+  serialized as PlcDINT, PlcINT, PlcUINT and PlcSTRING; PlcTIME and
+  PlcLTIME render ISO-8601 with hours/minutes/seconds and a
+  sub-second fraction instead of truncating to whole seconds;
+  PlcDATE_AND_TIME renders the UTC wall time in ISO-8601 rather
+  than Go's local-zone default; and PlcStruct keeps a deterministic
+  member order. String-ish values now carry encoding="UTF-8".
+- Java: The unsigned bit-string values WORD, DWORD and LWORD now
+  serialize as dataType="uint" rather than through the signed
+  writers, PlcBYTE serializes as a bit string, and PlcTIME renders
+  as an ISO-8601 string like PlcLTIME. This aligns the Java and Go
+  renderings of the same value.
+- EtherNet/IP: EipTag is now immutable, matching every other
+  driver's tag in both bindings - it was the only tag class in
+  plc4j that exposed setters. setType(...) and setElementNb(...)
+  are gone; give the type and the element count to the
+  constructor instead. An element count below one is normalised
+  to one rather than kept, so a tag built as ":INT:0", or through
+  the (tag, type) constructor which used to leave the count at
+  zero, now reads one element instead of none.
+- All Java drivers now select array elements with one shared notation, written
+  before the data type: `[n]` for a single element, `[lo..hi]` for an
+  inclusive range, an optional `;base` for an array the PLC declares as
+  starting somewhere other than zero, and one bracket per dimension. The
+  dimensions of one array may also be written comma-separated inside a single
+  bracket - `[1..2,3..4]` is the same as `[1..2][3..4]` - which is the form
+  Allen-Bradley and others use; addresses are always rendered back in the
+  one-bracket-per-dimension form. See the "Addressing arrays" page.
+
+  This replaces four incompatible spellings. `[4]` meant "four elements" in
+  seven tag classes and "the fifth element" in two; it now means one element
+  everywhere, and a count is written as a range. Addresses in the old form no
+  longer parse, and the error names the address to write instead - so an
+  upgrade reports the change rather than quietly returning different data.
+  The affected forms, by driver:
+
+    S7           %DB42:28.0:BYTE[4]        -> %DB42:28.0[0..3]:BYTE
+    S7 (string)  %DB1:0:STRING(20)[4]      -> %DB1:0[0..3]:STRING(20)
+    Modbus       holding-register:1:INT[4] -> holding-register:1[0..3]:INT
+    SLMP         D100:INT[4]               -> D100[0..3]:INT
+    ADS (direct) 0x4020/0:DINT[4]          -> 0x4020/0[0..3]:DINT
+    EtherNet/IP  myArray[0]:DINT:4         -> myArray[0..3]:DINT
+    Profinet     tag:INT[4]                -> tag[0..3]:INT
+    Profinet-NG  1.2.INPUT.0:INT[4]        -> 1.2.INPUT.0[0..3]:INT
+    Simulated    RANDOM/foo:INT[4]         -> RANDOM/foo[0..3]:INT
+
+  OPC-UA addresses are unchanged - its implementation is the one the shared
+  notation was extracted from - and ADS and UMAS symbolic addresses keep
+  their existing form while gaining ranges.
+- Firmata is the one driver whose addresses change meaning silently. They
+  carry no data type (`3[4]`), so the brackets did not move and there is
+  nothing to reject: `3[4]` used to read four pins starting at pin 3 and now
+  reads one pin, the fifth. Rewrite these as `3[0..3]`.
+- An address that selects nothing now asks for the whole value rather than a
+  single element. For a scalar that is unchanged; for an array it is every
+  element, on the drivers that can determine the extent from the device
+  (OPC-UA, ADS, UMAS). The others read one element as before, because their
+  addresses are memory offsets with no declared array at them.
+- A single index and a one-element range are no longer the same thing.
+  `myTag[4]` selects one element and yields a scalar, while `myTag[4..4]`
+  yields a list of one. `PlcTag.getArrayInfo()` reports the shape of the
+  value received - empty for a scalar, one entry per dimension for an array -
+  so a consumer can tell the two apart without knowing the protocol.
+- `ArrayInfo` gains `getBase()` and `isRange()`, both as default methods, so
+  existing implementations keep compiling. Its javadoc described `[6]` as a
+  six-element array, which was never what the drivers did and is not what the
+  notation means.
+- EtherNet/IP rejects an array index above 255 while parsing the address; a
+  CIP MemberID carries a `uint 8`. A range may run past it, since the request
+  carries a start and a count, but it cannot begin there.
+- ADS and UMAS verify a `;base` written in the address against the bounds the
+  device declares, and report a disagreement. The device is authoritative; a
+  base that differs means the address was written against a different layout,
+  which would otherwise read silently shifted data.
+- ADS rejects an address that names a member of an array without saying which
+  element - `MAIN.g_arr.member` on an array `g_arr`. It previously resolved
+  against the first element and reported the result as though it were the
+  whole path.
+- Selecting array elements over UMAS is reported as UNSUPPORTED rather than
+  returning the whole variable. The driver has no per-element arithmetic yet;
+  the address parses, and the refusal is explicit.
+- Fixed `getArrayInfo()` reporting one element too many on the ADS direct and
+  Firmata drivers, whose inclusive bounds were built from the element count
+  rather than the last index.
+- Fixed a direct ADS array selection transferring every element it asked for
+  and decoding only the first, in both PLC4J and PLC4Go. The size of the
+  request was multiplied by the element count while the decoder was given no
+  shape, so `0x4020/0[0..3]:DINT` returned one value for four elements' worth
+  of bytes - a well-formed answer to a question nobody asked.
+- Fixed a symbolic ADS selection being ignored in PLC4Go. `MAIN.arr[1..4]`
+  resolved like `MAIN.arr`: the whole array, from its original offset. The
+  selection now moves the read to the first selected element and transfers
+  only what it spans, across as many dimensions as the address names
+  (`MAIN.grid[3,1..3]`), and a selection outside what the device declares is
+  refused rather than approximated.
+- Fixed the shape of a partly selected multi-dimensional ADS array in PLC4J.
+  `MAIN.grid[1..2]` on an `ARRAY [0..9,0..4]` reported two elements rather
+  than two rows of five: the dimensions the selection did not name were
+  dropped from the shape while their bytes were still transferred. They are
+  selected whole, and are part of the value.
+- A dimension of an ADS selection written as a bare index now collapses,
+  where before every named dimension added a level of list. `grid[3,1..3]` is
+  a list of three, not a list of one list of three, and `grid[3,2]` is a
+  scalar. This is the same rule the notation states for a single dimension.
+- Fixed SLMP reporting a one-element range as a scalar in PLC4J. `D100[4..4]`
+  now returns a list of one, as `D100[4]` returns a scalar and as PLC4Go's
+  SLMP driver already did. Its shape came from the element count, which
+  cannot express the difference.
+- PLC4Go now uses the same array notation as PLC4J, so one address means one
+  thing in either language. The grammar, the rules and the rendering are the
+  ones described above; the two share a specification rather than code, and
+  the Go parser is tested against the Java cases directly.
+
+  The forms that changed, by driver:
+
+    S7           %M100:INT[10]             -> %M100[0..9]:INT
+    S7 (string)  %DB69.DBX68:WSTRING[3]    -> %DB69.DBX68[0..2]:WSTRING
+    Modbus       holding-register:1:INT[4] -> holding-register:1[0..3]:INT
+    SLMP         D100:INT[4]               -> D100[0..3]:INT
+    EtherNet/IP  %rate:DINT:4              -> %rate[0..3]:DINT
+    Simulated    RANDOM/foo:INT[4]         -> RANDOM/foo[0..3]:INT
+    KNXnet/IP    1.2.3#4B1C:UINT[4]        -> 1.2.3#4B1C[0..3]:UINT
+    KNXnet/IP    1.2.3#11/1/1[4]           -> 1.2.3#11/1/1[0..3]
+
+  Addresses in the old form no longer parse, and the error names the address
+  to write instead - with two exceptions, below, where the address parses
+  either way and only its meaning moves.
+- Two Go drivers change the meaning of addresses that still parse, so there is
+  nothing to reject and nothing to warn about at runtime:
+
+    * ADS `[n]` was a *count* of n elements and is now the element at index n.
+      `MAIN.g_arr[3]` read three elements and now reads one. Rewrite as
+      `MAIN.g_arr[0..2]`. This also means Go and Java ADS now agree about the
+      same address; they did not before.
+    * Firmata `[n]` was a run of n pins and is now the pin at index n, exactly
+      as in PLC4J. `digital:2[3]` read three pins from pin 2 and now reads
+      pin 5. Rewrite as `digital:2[0..2]`.
+- ADS also drops the `[a:b]` start-and-count form, which had no counterpart in
+  PLC4J. `MAIN.g_arr[2:4]` is written `MAIN.g_arr[2..5]`.
+- A count of zero no longer has a spelling. Several Go drivers accepted `[0]`
+  and rejected it as "quantity must be greater than zero"; a range is written
+  with the indices it covers, so there is no way to ask for none, and `[0]`
+  now selects the first element.
+- `ArrayInfo` bounds are inclusive in PLC4Go, as they are in PLC4J:
+  `GetSize()` returns `UpperBound - LowerBound + 1`. They were exclusive,
+  documented as a deliberate divergence, so `[0..7]` reported eight elements
+  in Java and seven in Go - the same disagreement about the same address that
+  this change exists to remove. Code reading `GetUpperBound()` directly must
+  be revisited.
+- `ArrayInfo` gains `GetBase()` and `IsRange()`. Go has no default methods, so
+  any implementation outside PLC4Go must add them.
+- Addresses that a driver rendered back are now spelled the way its parser
+  reads them. Several never round-tripped: BACnet/IP rendered `:` where the
+  syntax wants `,`, gave every property a leading `:`, and printed the address
+  of the pointer holding an array index rather than the index; KNXnet/IP
+  device addresses rendered `/` where the syntax wants `.`; the ADS direct
+  form printed its index group as decimal digits behind an `0x` prefix, so
+  16416 came back as `0x16416` - a different address; and the S7 tag rendered
+  as "0:INT[8]", naming neither the memory area nor the offset it read.
+- Fixed the Go BACnet/IP driver asking for one element fewer than requested
+  when a read carried an element count, which followed from the bounds
+  becoming inclusive.
+- C-Bus addresses are unchanged. Its brackets carry the arguments of a CAL
+  command (`recall=[param, count]`), not a selection appended to an address.
+- KNXnet/IP group addresses are unchanged. Their brackets hold a set of group
+  addresses to match (`[1-3,5]`), not an array selection. Only the two device
+  address forms, which carry a real element count, moved to the new notation.
+- BACnet/IP addresses are unchanged. Its bracket is a property array index,
+  which already meant what the notation says an index means.
 
 Changed Maven Coordinates
 -------------------------
@@ -182,6 +705,23 @@ utilities). These are new artifacts, not renames.
 Bug Fixes
 ---------
 
+- Fixed the Java S7 driver's tags reporting no address at all:
+  "getAddressString()" returned null, so anything carrying a tag as a string -
+  a log line, a browse result, a serialized request - got nothing from an S7
+  tag. It now spells the address the way the parser reads it back, including
+  the declared length of a fixed-length string and the counter number of a
+  COUNTER address, which is stored split across the byte and bit offsets.
+- The Open Protocol driver's tag class now reports that it has no tag
+  addressing yet instead of returning null. "OpenProtocolTag.of()" handed a
+  null tag to callers of "prepareTag()", so the failure surfaced later as a
+  NullPointerException; it now throws PlcInvalidTagException, matching the
+  driver's tag handler, which already rejected every address.
+- Fixed the Go S7 driver reading a fixed-length string from the wrong data
+  block. The long-form address ("%DB69.DBX68:STRING(10)") built its tag with
+  a hard-coded block number of zero, so it read DB0 and reported the result
+  as though it had come from DB69. The short form ("%DB69:68:STRING(10)")
+  and every non-string address were unaffected, as is PLC4J, which parses
+  the block number for all of them.
 - Fixed serialization in the 'plc4x' proxy driver's message
   codec, which did not configure the buffer integer/string
   encodings under SPI3 and failed to serialize any message.
@@ -216,6 +756,39 @@ Bug Fixes
   leaks on Modbus reconnect, robust Modbus receive with
   desync/resync, TCP/UDP transport deadline and reset races, codec
   disconnect deadlock).
+- Go: Generated code ignored the string encoding declared in the
+  mspec and read and wrote every string as UTF-8. A WSTRING, which
+  ADS declares as UTF-16LE, stopped at the first NUL byte, so
+  "wolf" decoded as "w". The generated code now carries the real
+  encodings (UTF-16LE, UTF-16BE, ASCII, ISO-8859-1, Windows-1252),
+  and the byte-based write buffer passes the single-byte encodings
+  through instead of zero-filling anything it did not recognise.
+  Reading a string likewise honors the requested encoding, decoding
+  UTF-16 per code unit rather than per byte.
+- Java: The XML buffer could not read back everything its own
+  writer produced. A field discriminating on a typed enum was
+  written under the enum's name but read under the field's, and a
+  text node larger than the parser's chunk size - the ADS symbol
+  and data-type tables run to 70-80k characters - failed with
+  "Expected end element" because the reader was not coalescing.
+- ADS (Go): Several fixes. The connection accepts the same
+  kebab-case parameters as the Java driver (source-ams-net-id and
+  friends), and a missing targetAmsNetId is now reported as such
+  rather than as sourceAmsNetId. The device-info request uses the
+  configured AMS ports instead of a hardcoded 851/800. Multi-tag
+  subscriptions run in request order rather than in map order,
+  honor the requested interval as the notification cycle time, and
+  no longer panic when a data type is missing from the table. The
+  data type table is keyed by the name symbols actually reference.
+- ADS (Go): Direct-address reads and writes all failed with
+  "invalid tag item type" - the request paths expected a pointer
+  where the tag handler produced a value - and never filled in the
+  tag's data type. Hex address parts with an odd number of digits
+  (0x8) were rejected, though the Java driver accepts them.
+- EtherNet/IP: A reply carrying fewer bytes than a single-element
+  tag declares no longer throws out of the response handler; it is
+  reported as INTERNAL_ERROR for that tag, which is what a
+  truncated multi-element reply already did.
 
 ==============================================================
 Apache PLC4X 0.13.1

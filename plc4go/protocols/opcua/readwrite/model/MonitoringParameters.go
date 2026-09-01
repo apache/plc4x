@@ -292,8 +292,8 @@ func (m *_MonitoringParameters) GetPlx4xTypeName() string {
 	return "MonitoringParameters"
 }
 
-func (m *_MonitoringParameters) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_MonitoringParameters) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (clientHandle)
 	lengthInBits += 32
@@ -316,7 +316,7 @@ func (m *_MonitoringParameters) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MonitoringParameters) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoringParameters) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

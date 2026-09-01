@@ -78,7 +78,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: notificationThreshold
-    BACnetApplicationTagUnsignedInteger notificationThreshold = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("notificationThreshold"));
+    BACnetApplicationTagUnsignedInteger notificationThreshold = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("notificationThreshold"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagUnsignedInteger.class, notificationThreshold, WithOption.WithName("actualValue"));

@@ -78,7 +78,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: extendedTimeEnable
-    BACnetApplicationTagBoolean extendedTimeEnable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("extendedTimeEnable"));
+    BACnetApplicationTagBoolean extendedTimeEnable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("extendedTimeEnable"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, extendedTimeEnable, WithOption.WithName("actualValue"));

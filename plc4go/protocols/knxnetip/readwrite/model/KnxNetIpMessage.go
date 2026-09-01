@@ -63,8 +63,8 @@ type KnxNetIpMessageContract interface {
 
 // KnxNetIpMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type KnxNetIpMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
 }
@@ -408,8 +408,8 @@ func (m *_KnxNetIpMessage) GetPlx4xTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
@@ -425,11 +425,11 @@ func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -538,11 +538,11 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type DisconnectResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x020B: // UnknownMessage
-		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnknownMessage for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0311: // DeviceConfigurationAck
@@ -550,7 +550,7 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationAck for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0420: // TunnelingRequest
-		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TunnelingRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0421: // TunnelingResponse

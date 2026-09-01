@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.iec608705104;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.iec608705104.tag.Iec608705104Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Iec60870514PlcDriverTest {
@@ -46,9 +48,14 @@ class Iec60870514PlcDriverTest {
 
     @Test
     void prepareTagReturnsIecTag() {
-        // The grammar isn't wired yet — the handler returns a placeholder
-        // tag for any input. This test pins the wiring through the driver.
-        assertInstanceOf(Iec608705104Tag.class, driver.prepareTag("anything"));
+        Iec608705104Tag tag = assertInstanceOf(Iec608705104Tag.class, driver.prepareTag("1/2/3.4.5"));
+        assertEquals(513, tag.getAdsuAddress());
+        assertEquals(328707, tag.getObjectAddress());
+    }
+
+    @Test
+    void prepareTagRejectsGarbage() {
+        assertThrows(PlcInvalidTagException.class, () -> driver.prepareTag("anything"));
     }
 
 }

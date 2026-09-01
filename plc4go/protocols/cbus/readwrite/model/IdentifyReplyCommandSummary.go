@@ -243,8 +243,8 @@ func (m *_IdentifyReplyCommandSummary) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandSummary"
 }
 
-func (m *_IdentifyReplyCommandSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (partName)
 	lengthInBits += 48
@@ -258,7 +258,7 @@ func (m *_IdentifyReplyCommandSummary) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

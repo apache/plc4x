@@ -78,7 +78,7 @@ public class BACnetConstructedDataDateTimeValueRelinquishDefault extends BACnetC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: relinquishDefault
-    BACnetDateTime relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTime) BACnetDateTime.staticParse(readBuffer), readBuffer), WithOption.WithName("relinquishDefault"));
+    BACnetDateTime relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTime.class, BACnetDateTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("relinquishDefault"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDateTime actualValue = FieldReaderFactory.readVirtualField(BACnetDateTime.class, relinquishDefault, WithOption.WithName("actualValue"));

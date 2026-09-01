@@ -19,6 +19,18 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
+# Resolve the project directory from the location of this script, so that it does not matter which
+# directory it is started from.
+DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Values shared with the other release scripts (Nexus staging profile, dist.apache.org URLs).
+if [[ ! -f "$DIRECTORY/tools/release-common.sh" ]]; then
+    echo "❌ '$DIRECTORY/tools/release-common.sh' not found, aborting."
+    exit 1
+fi
+# shellcheck source=release-common.sh
+source "$DIRECTORY/tools/release-common.sh"
+
+
 ########################################################################################################################
 # 0. Check Docker Memory Availability
 ########################################################################################################################
@@ -43,8 +55,28 @@ if (( TOTAL_MEM < REQUIRED_MEM )); then
 fi
 
 ########################################################################################################################
-# 1. Check if the release properties file exists.
+# 1. Check that this is actually a release, and not a development checkout
 ########################################################################################################################
+
+# "artifact:compare" compares what is built here against what is staged in Nexus. That only means
+# anything if this really is the release: run against a "develop" checkout it would compare
+# SNAPSHOT artifacts against a release repository and report differences that say nothing about
+# the release candidate.
+
+# Maven 4 prefixes even quiet output with "[INFO] [stdout] ", so take the last token of the
+# last line rather than the whole output.
+PROJECT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec | tail -n 1 | awk '{print $NF}')
+if [[ -z "$PROJECT_VERSION" ]]; then
+    echo "❌ Could not determine the project version, aborting."
+    exit 1
+fi
+if [[ "$PROJECT_VERSION" =~ -SNAPSHOT$ ]]; then
+    echo "❌ This is a SNAPSHOT checkout ($PROJECT_VERSION), aborting."
+    echo "   Unpack the staged apache-plc4x-<version>-source-release.zip and run this in there,"
+    echo "   or check out the release tag."
+    exit 1
+fi
+echo "✅ Validating Apache PLC4X $PROJECT_VERSION"
 
 ########################################################################################################################
 # 2. Do a simple release-perform command skip signing of artifacts and deploy to local directory
@@ -52,9 +84,18 @@ fi
 ########################################################################################################################
 
 echo "Validate Release:"
-docker compose build
-if ! docker compose run releaser bash /ws/mvnw  -e -P with-java -Dmaven.repo.local=/ws/out/.repository -Dreference.repo=https://repository.apache.org/content/repositories/staging/ -Dbuildinfo.reproducible verify artifact:compare;
-then
+if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" build; then
+    echo "❌ Got non-0 exit code from building the release docker container, aborting."
+    exit 1
+fi
+
+# Only the Java artifacts are compared: the C, .Net and Python ones are either platform specific or
+# not published to Maven at all, so there is nothing in the staging repository to compare them to.
+if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
+        bash /ws/mvnw -e -P with-java -Dmaven.repo.local=/ws/out/.repository \
+        -Dreference.repo="$NEXUS_URL/content/repositories/staging/" \
+        -Dbuildinfo.reproducible verify artifact:compare; then
     echo "❌ Got non-0 exit code from docker compose, aborting."
     exit 1
 fi
+echo "✅ The build of $PROJECT_VERSION matches the staged artifacts."

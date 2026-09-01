@@ -228,12 +228,12 @@ func (m *_IdentifyReplyCommandDelays) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandDelays"
 }
 
-func (m *_IdentifyReplyCommandDelays) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandDelays) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.TerminalLevels) > 0 {
-		lengthInBits += 8 * uint16(len(m.TerminalLevels))
+		lengthInBits += 8 * uint64(len(m.TerminalLevels))
 	}
 
 	// Simple field (reStrikeDelay)
@@ -242,7 +242,7 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandDelays) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandDelays) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

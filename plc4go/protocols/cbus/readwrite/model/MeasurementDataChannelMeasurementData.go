@@ -307,8 +307,8 @@ func (m *_MeasurementDataChannelMeasurementData) GetPlx4xTypeName() string {
 	return "MeasurementDataChannelMeasurementData"
 }
 
-func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeasurementDataContract.(*_MeasurementData).getLengthInBits(ctx))
+func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MeasurementDataContract.(*_MeasurementData).getLengthInBits(ctx))
 
 	// Simple field (deviceId)
 	lengthInBits += 8
@@ -335,7 +335,7 @@ func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

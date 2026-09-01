@@ -254,8 +254,8 @@ func (m *_LevelInformationCorrupted) GetPlx4xTypeName() string {
 	return "LevelInformationCorrupted"
 }
 
-func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
 
 	// Simple field (corruptedNibble1)
 	lengthInBits += 4
@@ -272,7 +272,7 @@ func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

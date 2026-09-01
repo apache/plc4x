@@ -25,14 +25,23 @@ import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class Iec608705104TagHandler implements PlcTagHandler {
 
+    /**
+     * Parses an {@code <asdu>/<ioa>} address — see {@link Iec608705104Tag}
+     * for the accepted forms.
+     *
+     * @throws org.apache.plc4x.java.api.exceptions.PlcInvalidTagException if
+     *         the address is malformed or out of range.
+     */
     @Override
     public PlcTag parseTag(String tagAddress) {
-        return new Iec608705104Tag(0, 0);
+        return Iec608705104Tag.of(tagAddress);
     }
 
     @Override
     public PlcQuery parseQuery(String query) {
-        return null;
+        // IEC 60870-5-104 has no way of enumerating the information objects a
+        // station will report, so there is nothing to browse.
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

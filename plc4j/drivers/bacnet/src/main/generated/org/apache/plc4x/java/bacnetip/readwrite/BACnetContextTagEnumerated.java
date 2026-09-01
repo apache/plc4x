@@ -67,7 +67,7 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadEnumerated payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadEnumerated) BACnetTagPayloadEnumerated.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadEnumerated payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadEnumerated.class, BACnetTagPayloadEnumerated.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     long actualValue = FieldReaderFactory.readVirtualField(long.class, payload.getActualValue(), WithOption.WithName("actualValue"));

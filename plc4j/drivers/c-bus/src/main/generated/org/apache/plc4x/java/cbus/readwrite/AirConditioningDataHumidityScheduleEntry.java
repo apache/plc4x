@@ -128,7 +128,7 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     byte zoneGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("zoneGroup"));
 
     // Simple Field: zoneList
-    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACZoneList) HVACZoneList.staticParse(readBuffer), readBuffer), WithOption.WithName("zoneList"));
+    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACZoneList.class, HVACZoneList.staticParse(readBuffer)), readBuffer), WithOption.WithName("zoneList"));
 
     // Simple Field: entry
     short entry = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("entry"));
@@ -137,16 +137,16 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     byte format = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("format"));
 
     // Simple Field: humidityModeAndFlags
-    HVACHumidityModeAndFlags humidityModeAndFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACHumidityModeAndFlags) HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer), WithOption.WithName("humidityModeAndFlags"));
+    HVACHumidityModeAndFlags humidityModeAndFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACHumidityModeAndFlags.class, HVACHumidityModeAndFlags.staticParse(readBuffer)), readBuffer), WithOption.WithName("humidityModeAndFlags"));
 
     // Simple Field: startTime
-    HVACStartTime startTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACStartTime) HVACStartTime.staticParse(readBuffer), readBuffer), WithOption.WithName("startTime"));
+    HVACStartTime startTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACStartTime.class, HVACStartTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("startTime"));
 
     // Optional Field (conditional): level
-    HVACHumidity level = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (HVACHumidity) HVACHumidity.staticParse(readBuffer), readBuffer), humidityModeAndFlags.getIsLevelHumidity(), WithOption.WithName("level"));
+    HVACHumidity level = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACHumidity.class, HVACHumidity.staticParse(readBuffer)), readBuffer), humidityModeAndFlags.getIsLevelHumidity(), WithOption.WithName("level"));
 
     // Optional Field (conditional): rawLevel
-    HVACRawLevels rawLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (HVACRawLevels) HVACRawLevels.staticParse(readBuffer), readBuffer), humidityModeAndFlags.getIsLevelRaw(), WithOption.WithName("rawLevel"));
+    HVACRawLevels rawLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACRawLevels.class, HVACRawLevels.staticParse(readBuffer)), readBuffer), humidityModeAndFlags.getIsLevelRaw(), WithOption.WithName("rawLevel"));
 
     readBuffer.popContext();
     return new AirConditioningDataBuilderImpl(zoneGroup, zoneList, entry, format, humidityModeAndFlags, startTime, level, rawLevel);

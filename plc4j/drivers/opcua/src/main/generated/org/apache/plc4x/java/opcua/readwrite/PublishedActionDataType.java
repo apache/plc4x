@@ -71,13 +71,13 @@ public class PublishedActionDataType extends ExtensionObjectDefinition implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestDataSetMetaData
-    DataSetMetaDataType requestDataSetMetaData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DataSetMetaDataType) DataSetMetaDataType.staticParse(readBuffer, (int) (14525)), readBuffer), WithOption.WithName("requestDataSetMetaData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    DataSetMetaDataType requestDataSetMetaData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DataSetMetaDataType.class, DataSetMetaDataType.staticParse(readBuffer, (int) (14525))), readBuffer), WithOption.WithName("requestDataSetMetaData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfActionTargets
     int noOfActionTargets = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfActionTargets"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: actionTargets
-    List<ActionTargetDataType> actionTargets = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ActionTargetDataType) ActionTargetDataType.staticParse(readBuffer, (int) (18595)), readBuffer), noOfActionTargets, WithOption.WithName("actionTargets"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ActionTargetDataType> actionTargets = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ActionTargetDataType.class, ActionTargetDataType.staticParse(readBuffer, (int) (18595))), readBuffer), noOfActionTargets, WithOption.WithName("actionTargets"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(requestDataSetMetaData, actionTargets);

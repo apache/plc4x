@@ -245,8 +245,8 @@ func (m *_WriteRequest) GetPlx4xTypeName() string {
 	return "WriteRequest"
 }
 
-func (m *_WriteRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_WriteRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -265,7 +265,7 @@ func (m *_WriteRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_WriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_WriteRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

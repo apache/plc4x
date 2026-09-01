@@ -77,7 +77,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: activationTime
-    BACnetDateTime activationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTime) BACnetDateTime.staticParse(readBuffer), readBuffer), WithOption.WithName("activationTime"));
+    BACnetDateTime activationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTime.class, BACnetDateTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("activationTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDateTime actualValue = FieldReaderFactory.readVirtualField(BACnetDateTime.class, activationTime, WithOption.WithName("actualValue"));

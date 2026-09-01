@@ -78,7 +78,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: defaultSubordinateRelationship
-    BACnetRelationshipTagged defaultSubordinateRelationship = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRelationshipTagged) BACnetRelationshipTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("defaultSubordinateRelationship"));
+    BACnetRelationshipTagged defaultSubordinateRelationship = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRelationshipTagged.class, BACnetRelationshipTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("defaultSubordinateRelationship"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetRelationshipTagged actualValue = FieldReaderFactory.readVirtualField(BACnetRelationshipTagged.class, defaultSubordinateRelationship, WithOption.WithName("actualValue"));

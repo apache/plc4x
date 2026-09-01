@@ -215,8 +215,8 @@ func (m *_SysexCommandAnalogMappingQueryResponse) GetPlx4xTypeName() string {
 	return "SysexCommandAnalogMappingQueryResponse"
 }
 
-func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -224,7 +224,7 @@ func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

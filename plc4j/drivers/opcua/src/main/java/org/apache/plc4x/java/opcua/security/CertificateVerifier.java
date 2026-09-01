@@ -21,9 +21,27 @@ package org.apache.plc4x.java.opcua.security;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 public interface CertificateVerifier {
 
     void checkCertificateTrusted(X509Certificate certificate) throws CertificateException;
+
+    /**
+     * Checks a certificate together with the issuers the server sent alongside it.
+     *
+     * <p>A server certificate is often not signed by an anchor directly but through intermediates,
+     * and those intermediates arrive in the same blob. Judging the leaf alone rejects a chain that
+     * is perfectly trustworthy, which is the kind of failure that gets verification switched off.</p>
+     *
+     * <p>The default judges the leaf, which is all a verifier that pins one certificate can do
+     * anyway.</p>
+     */
+    default void checkCertificateChainTrusted(List<X509Certificate> chain) throws CertificateException {
+        if (chain == null || chain.isEmpty()) {
+            throw new CertificateException("No certificate to check");
+        }
+        checkCertificateTrusted(chain.get(0));
+    }
 
 }

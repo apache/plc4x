@@ -3285,6 +3285,38 @@ public enum BACnetVendorId {
 
   G_ASERV_GMBH((int) 1640, (int) 1640, "GAserv GmbH"),
 
+  LEEDS_ELECTRONICS_ENGINEERING_LIMITED((int) 1641, (int) 1641, "Leeds Electronics Engineering Limited"),
+
+  MITO_CONTRACTING_GROUP_INC((int) 1642, (int) 1642, "MITO Contracting Group Inc."),
+
+  CALECTROAB((int) 1643, (int) 1643, "Calectro AB"),
+
+  BMSOS_TECHNOLOGY_INC((int) 1644, (int) 1644, "bmsOS Technology Inc."),
+
+  VOSSLOH_SCHWABE_DEUTSCHAND_GMBH((int) 1645, (int) 1645, "Vossloh-Schwabe Deutschand GmbH"),
+
+  IVIVA_PTE_LTD((int) 1646, (int) 1646, "Iviva Pte Ltd"),
+
+  WITCONAB((int) 1647, (int) 1647, "Witcon AB"),
+
+  PIVOTAL_TECHNOLOGIES_PTY_LTD((int) 1648, (int) 1648, "Pivotal Technologies Pty Ltd"),
+
+  OTC_INDUSTRIAL_TECHNOLOGIES((int) 1649, (int) 1649, "OTC Industrial Technologies"),
+
+  LAPLACE_SOFTWARELLC((int) 1650, (int) 1650, "Laplace Software LLC"),
+
+  LOGICALLY_US_LTD((int) 1651, (int) 1651, "Logically Us Ltd"),
+
+  SOLABORATE_INCDBAHELLOCAREAI((int) 1652, (int) 1652, "Solaborate, Inc. d/b/a hellocare.ai"),
+
+  LUMEN_RADIOAB((int) 1653, (int) 1653, "Lumen Radio AB"),
+
+  CORE_CONTROLS_AILLC((int) 1654, (int) 1654, "CoreControlsAi, LLC"),
+
+  MODUTROL_PTY_LTD((int) 1655, (int) 1655, "Modutrol Pty Ltd"),
+
+  KAESER_KOMPRESSORENSE((int) 1656, (int) 1656, "Kaeser Kompressoren SE"),
+
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
   private static final Map<Integer, BACnetVendorId> map;

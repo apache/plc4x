@@ -83,7 +83,7 @@ type MockDefaultPlcSubscriptionEventRequirements_GetAddress_Call struct {
 
 // GetAddress is a helper method to define mock.On call
 //   - name string
-func (_e *MockDefaultPlcSubscriptionEventRequirements_Expecter) GetAddress(name interface{}) *MockDefaultPlcSubscriptionEventRequirements_GetAddress_Call {
+func (_e *MockDefaultPlcSubscriptionEventRequirements_Expecter) GetAddress(name any) *MockDefaultPlcSubscriptionEventRequirements_GetAddress_Call {
 	return &MockDefaultPlcSubscriptionEventRequirements_GetAddress_Call{Call: _e.mock.On("GetAddress", name)}
 }
 
@@ -190,7 +190,7 @@ type MockDefaultPlcSubscriptionEventRequirements_SerializeWithWriteBuffer_Call s
 // SerializeWithWriteBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeBuffer utils.WriteBuffer
-func (_e *MockDefaultPlcSubscriptionEventRequirements_Expecter) SerializeWithWriteBuffer(ctx interface{}, writeBuffer interface{}) *MockDefaultPlcSubscriptionEventRequirements_SerializeWithWriteBuffer_Call {
+func (_e *MockDefaultPlcSubscriptionEventRequirements_Expecter) SerializeWithWriteBuffer(ctx any, writeBuffer any) *MockDefaultPlcSubscriptionEventRequirements_SerializeWithWriteBuffer_Call {
 	return &MockDefaultPlcSubscriptionEventRequirements_SerializeWithWriteBuffer_Call{Call: _e.mock.On("SerializeWithWriteBuffer", ctx, writeBuffer)}
 }
 
@@ -276,7 +276,7 @@ type MockPlcBrowser_Browse_Call struct {
 // Browse is a helper method to define mock.On call
 //   - ctx context.Context
 //   - browseRequest model.PlcBrowseRequest
-func (_e *MockPlcBrowser_Expecter) Browse(ctx interface{}, browseRequest interface{}) *MockPlcBrowser_Browse_Call {
+func (_e *MockPlcBrowser_Expecter) Browse(ctx any, browseRequest any) *MockPlcBrowser_Browse_Call {
 	return &MockPlcBrowser_Browse_Call{Call: _e.mock.On("Browse", ctx, browseRequest)}
 }
 
@@ -336,7 +336,7 @@ type MockPlcBrowser_BrowseWithInterceptor_Call struct {
 //   - ctx context.Context
 //   - browseRequest model.PlcBrowseRequest
 //   - interceptor func(result model.PlcBrowseItem) bool
-func (_e *MockPlcBrowser_Expecter) BrowseWithInterceptor(ctx interface{}, browseRequest interface{}, interceptor interface{}) *MockPlcBrowser_BrowseWithInterceptor_Call {
+func (_e *MockPlcBrowser_Expecter) BrowseWithInterceptor(ctx any, browseRequest any, interceptor any) *MockPlcBrowser_BrowseWithInterceptor_Call {
 	return &MockPlcBrowser_BrowseWithInterceptor_Call{Call: _e.mock.On("BrowseWithInterceptor", ctx, browseRequest, interceptor)}
 }
 
@@ -427,7 +427,7 @@ type MockPlcReader_Read_Call struct {
 // Read is a helper method to define mock.On call
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
-func (_e *MockPlcReader_Expecter) Read(ctx interface{}, readRequest interface{}) *MockPlcReader_Read_Call {
+func (_e *MockPlcReader_Expecter) Read(ctx any, readRequest any) *MockPlcReader_Read_Call {
 	return &MockPlcReader_Read_Call{Call: _e.mock.On("Read", ctx, readRequest)}
 }
 
@@ -513,7 +513,7 @@ type MockPlcWriter_Write_Call struct {
 // Write is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
-func (_e *MockPlcWriter_Expecter) Write(ctx interface{}, writeRequest interface{}) *MockPlcWriter_Write_Call {
+func (_e *MockPlcWriter_Expecter) Write(ctx any, writeRequest any) *MockPlcWriter_Write_Call {
 	return &MockPlcWriter_Write_Call{Call: _e.mock.On("Write", ctx, writeRequest)}
 }
 
@@ -599,7 +599,7 @@ type MockPlcSubscriber_Register_Call struct {
 // Register is a helper method to define mock.On call
 //   - consumer model.PlcSubscriptionEventConsumer
 //   - handles []model.PlcSubscriptionHandle
-func (_e *MockPlcSubscriber_Expecter) Register(consumer interface{}, handles interface{}) *MockPlcSubscriber_Register_Call {
+func (_e *MockPlcSubscriber_Expecter) Register(consumer any, handles any) *MockPlcSubscriber_Register_Call {
 	return &MockPlcSubscriber_Register_Call{Call: _e.mock.On("Register", consumer, handles)}
 }
 
@@ -658,7 +658,7 @@ type MockPlcSubscriber_Subscribe_Call struct {
 // Subscribe is a helper method to define mock.On call
 //   - ctx context.Context
 //   - subscriptionRequest model.PlcSubscriptionRequest
-func (_e *MockPlcSubscriber_Expecter) Subscribe(ctx interface{}, subscriptionRequest interface{}) *MockPlcSubscriber_Subscribe_Call {
+func (_e *MockPlcSubscriber_Expecter) Subscribe(ctx any, subscriptionRequest any) *MockPlcSubscriber_Subscribe_Call {
 	return &MockPlcSubscriber_Subscribe_Call{Call: _e.mock.On("Subscribe", ctx, subscriptionRequest)}
 }
 
@@ -703,7 +703,7 @@ type MockPlcSubscriber_Unregister_Call struct {
 
 // Unregister is a helper method to define mock.On call
 //   - registration model.PlcConsumerRegistration
-func (_e *MockPlcSubscriber_Expecter) Unregister(registration interface{}) *MockPlcSubscriber_Unregister_Call {
+func (_e *MockPlcSubscriber_Expecter) Unregister(registration any) *MockPlcSubscriber_Unregister_Call {
 	return &MockPlcSubscriber_Unregister_Call{Call: _e.mock.On("Unregister", registration)}
 }
 
@@ -757,7 +757,7 @@ type MockPlcSubscriber_Unsubscribe_Call struct {
 // Unsubscribe is a helper method to define mock.On call
 //   - ctx context.Context
 //   - unsubscriptionRequest model.PlcUnsubscriptionRequest
-func (_e *MockPlcSubscriber_Expecter) Unsubscribe(ctx interface{}, unsubscriptionRequest interface{}) *MockPlcSubscriber_Unsubscribe_Call {
+func (_e *MockPlcSubscriber_Expecter) Unsubscribe(ctx any, unsubscriptionRequest any) *MockPlcSubscriber_Unsubscribe_Call {
 	return &MockPlcSubscriber_Unsubscribe_Call{Call: _e.mock.On("Unsubscribe", ctx, unsubscriptionRequest)}
 }
 
@@ -851,7 +851,7 @@ type MockPlcTagHandler_ParseQuery_Call struct {
 
 // ParseQuery is a helper method to define mock.On call
 //   - query string
-func (_e *MockPlcTagHandler_Expecter) ParseQuery(query interface{}) *MockPlcTagHandler_ParseQuery_Call {
+func (_e *MockPlcTagHandler_Expecter) ParseQuery(query any) *MockPlcTagHandler_ParseQuery_Call {
 	return &MockPlcTagHandler_ParseQuery_Call{Call: _e.mock.On("ParseQuery", query)}
 }
 
@@ -913,7 +913,7 @@ type MockPlcTagHandler_ParseTag_Call struct {
 
 // ParseTag is a helper method to define mock.On call
 //   - tagAddress string
-func (_e *MockPlcTagHandler_Expecter) ParseTag(tagAddress interface{}) *MockPlcTagHandler_ParseTag_Call {
+func (_e *MockPlcTagHandler_Expecter) ParseTag(tagAddress any) *MockPlcTagHandler_ParseTag_Call {
 	return &MockPlcTagHandler_ParseTag_Call{Call: _e.mock.On("ParseTag", tagAddress)}
 }
 
@@ -1003,7 +1003,7 @@ type MockPlcValueHandler_NewPlcValue_Call struct {
 // NewPlcValue is a helper method to define mock.On call
 //   - tag model.PlcTag
 //   - value any
-func (_e *MockPlcValueHandler_Expecter) NewPlcValue(tag interface{}, value interface{}) *MockPlcValueHandler_NewPlcValue_Call {
+func (_e *MockPlcValueHandler_Expecter) NewPlcValue(tag any, value any) *MockPlcValueHandler_NewPlcValue_Call {
 	return &MockPlcValueHandler_NewPlcValue_Call{Call: _e.mock.On("NewPlcValue", tag, value)}
 }
 
@@ -1750,7 +1750,7 @@ type MockReadRequestInterceptor_InterceptReadRequest_Call struct {
 // InterceptReadRequest is a helper method to define mock.On call
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
-func (_e *MockReadRequestInterceptor_Expecter) InterceptReadRequest(ctx interface{}, readRequest interface{}) *MockReadRequestInterceptor_InterceptReadRequest_Call {
+func (_e *MockReadRequestInterceptor_Expecter) InterceptReadRequest(ctx any, readRequest any) *MockReadRequestInterceptor_InterceptReadRequest_Call {
 	return &MockReadRequestInterceptor_InterceptReadRequest_Call{Call: _e.mock.On("InterceptReadRequest", ctx, readRequest)}
 }
 
@@ -1810,7 +1810,7 @@ type MockReadRequestInterceptor_ProcessReadResponses_Call struct {
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
 //   - readResults []model.PlcReadRequestResult
-func (_e *MockReadRequestInterceptor_Expecter) ProcessReadResponses(ctx interface{}, readRequest interface{}, readResults interface{}) *MockReadRequestInterceptor_ProcessReadResponses_Call {
+func (_e *MockReadRequestInterceptor_Expecter) ProcessReadResponses(ctx any, readRequest any, readResults any) *MockReadRequestInterceptor_ProcessReadResponses_Call {
 	return &MockReadRequestInterceptor_ProcessReadResponses_Call{Call: _e.mock.On("ProcessReadResponses", ctx, readRequest, readResults)}
 }
 
@@ -1901,7 +1901,7 @@ type MockWriteRequestInterceptor_InterceptWriteRequest_Call struct {
 // InterceptWriteRequest is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
-func (_e *MockWriteRequestInterceptor_Expecter) InterceptWriteRequest(ctx interface{}, writeRequest interface{}) *MockWriteRequestInterceptor_InterceptWriteRequest_Call {
+func (_e *MockWriteRequestInterceptor_Expecter) InterceptWriteRequest(ctx any, writeRequest any) *MockWriteRequestInterceptor_InterceptWriteRequest_Call {
 	return &MockWriteRequestInterceptor_InterceptWriteRequest_Call{Call: _e.mock.On("InterceptWriteRequest", ctx, writeRequest)}
 }
 
@@ -1961,7 +1961,7 @@ type MockWriteRequestInterceptor_ProcessWriteResponses_Call struct {
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
 //   - writeResults []model.PlcWriteRequestResult
-func (_e *MockWriteRequestInterceptor_Expecter) ProcessWriteResponses(ctx interface{}, writeRequest interface{}, writeResults interface{}) *MockWriteRequestInterceptor_ProcessWriteResponses_Call {
+func (_e *MockWriteRequestInterceptor_Expecter) ProcessWriteResponses(ctx any, writeRequest any, writeResults any) *MockWriteRequestInterceptor_ProcessWriteResponses_Call {
 	return &MockWriteRequestInterceptor_ProcessWriteResponses_Call{Call: _e.mock.On("ProcessWriteResponses", ctx, writeRequest, writeResults)}
 }
 

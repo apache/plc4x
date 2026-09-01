@@ -1757,11 +1757,11 @@ func CastCALCommandTypeContainer(structType any) CALCommandTypeContainer {
 	return castFunc(structType)
 }
 
-func (m CALCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m CALCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m CALCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m CALCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

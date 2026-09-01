@@ -72,8 +72,8 @@ type ExtensionObjectWithMaskContract interface {
 // ExtensionObjectWithMaskRequirements provides a set of functions which need to be implemented by a sub struct
 type ExtensionObjectWithMaskRequirements interface {
 	ExtensionObjectRequirements
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 }
 
 // _ExtensionObjectWithMask is the data-structure of this message
@@ -342,8 +342,8 @@ func (m *_ExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "ExtensionObjectWithMask"
 }
 
-func (m *_ExtensionObjectWithMask) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
+func (m *_ExtensionObjectWithMask) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
 
 	// Simple field (encodingMask)
 	lengthInBits += m.EncodingMask.GetLengthInBits(ctx)
@@ -353,11 +353,11 @@ func (m *_ExtensionObjectWithMask) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -389,15 +389,15 @@ func (m *_ExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.R
 	var _child ExtensionObjectWithMask
 	switch {
 	case bodyKind == int8(1): // BinaryExtensionObjectWithMask
-		if _child, err = new(_BinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_BinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	case bodyKind == int8(2): // RawBinaryExtensionObjectWithMask
-		if _child, err = new(_RawBinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_RawBinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RawBinaryExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	case bodyKind == int8(0): // NullExtensionObjectWithMask
-		if _child, err = new(_NullExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_NullExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	default:

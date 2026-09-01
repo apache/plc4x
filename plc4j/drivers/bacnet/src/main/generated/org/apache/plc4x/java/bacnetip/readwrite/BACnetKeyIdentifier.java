@@ -60,10 +60,10 @@ public class BACnetKeyIdentifier implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: algorithm
-    BACnetContextTagUnsignedInteger algorithm = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("algorithm"));
+    BACnetContextTagUnsignedInteger algorithm = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("algorithm"));
 
     // Simple Field: keyId
-    BACnetContextTagUnsignedInteger keyId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("keyId"));
+    BACnetContextTagUnsignedInteger keyId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("keyId"));
 
     readBuffer.popContext();
     return new BACnetKeyIdentifier(algorithm, keyId);

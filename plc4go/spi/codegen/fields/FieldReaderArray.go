@@ -31,6 +31,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+// maxInitialArrayCapacity caps the capacity allocated up front for a
+// wire-declared element count (mirrors MAX_INITIAL_CAPACITY in the Java
+// FieldReaderArray): the count is attacker-controlled, so a forged huge value
+// must not be able to demand gigabytes before a single element was read.
+const maxInitialArrayCapacity = 1024
+
 type FieldReaderArray[T any] struct {
 	codegen.FieldCommons[T]
 
@@ -54,9 +60,12 @@ func (f *FieldReaderArray[T]) ReadFieldCount(ctx context.Context, logicalName st
 		return nil, errors.Wrapf(err, "error pulling context for %s", logicalName)
 	}
 	itemCount := int(max(0, count))
-	var result = make([]T, itemCount)
-	if itemCount == 0 {
-		result = nil
+	// Cap the initial allocation and grow by append: reading an element consumes
+	// at least one bit, so an oversized forged count fails with a read error long
+	// before the slice can grow anywhere near the claimed size.
+	var result []T
+	if itemCount > 0 {
+		result = make([]T, 0, min(itemCount, maxInitialArrayCapacity))
 	}
 	for curItem := range itemCount {
 		// Make some variables available that would be otherwise challenging to forward.
@@ -67,7 +76,7 @@ func (f *FieldReaderArray[T]) ReadFieldCount(ctx context.Context, logicalName st
 		if err != nil {
 			return nil, errors.Wrapf(err, "error reading item %d", curItem)
 		}
-		result[curItem] = read
+		result = append(result, read)
 	}
 	if err := dataReader.CloseContext(logicalName, readerArgs...); err != nil {
 		return nil, errors.Wrapf(err, "error closing context for %s", logicalName)

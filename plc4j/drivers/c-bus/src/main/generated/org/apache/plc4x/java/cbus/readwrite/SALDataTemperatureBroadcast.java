@@ -61,7 +61,7 @@ public class SALDataTemperatureBroadcast extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: temperatureBroadcastData
-    TemperatureBroadcastData temperatureBroadcastData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TemperatureBroadcastData) TemperatureBroadcastData.staticParse(readBuffer), readBuffer), WithOption.WithName("temperatureBroadcastData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    TemperatureBroadcastData temperatureBroadcastData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TemperatureBroadcastData.class, TemperatureBroadcastData.staticParse(readBuffer)), readBuffer), WithOption.WithName("temperatureBroadcastData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(temperatureBroadcastData);

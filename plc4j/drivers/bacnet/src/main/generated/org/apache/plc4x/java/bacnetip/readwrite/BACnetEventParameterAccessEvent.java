@@ -85,16 +85,16 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (13)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (13))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: listOfAccessEvents
-    BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventParameterAccessEventListOfAccessEvents) BACnetEventParameterAccessEventListOfAccessEvents.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("listOfAccessEvents"));
+    BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventParameterAccessEventListOfAccessEvents.class, BACnetEventParameterAccessEventListOfAccessEvents.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("listOfAccessEvents"));
 
     // Simple Field: accessEventTimeReference
-    BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReferenceEnclosed) BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("accessEventTimeReference"));
+    BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReferenceEnclosed.class, BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("accessEventTimeReference"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (13)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (13))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetEventParameterBuilderImpl(openingTag, listOfAccessEvents, accessEventTimeReference, closingTag);

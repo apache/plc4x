@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: integerValue
-    BACnetApplicationTagSignedInteger integerValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("integerValue"));
+    BACnetApplicationTagSignedInteger integerValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("integerValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(integerValue);

@@ -150,11 +150,11 @@ func CastLightingCommandType(structType any) LightingCommandType {
 	return castFunc(structType)
 }
 
-func (m LightingCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m LightingCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m LightingCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LightingCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

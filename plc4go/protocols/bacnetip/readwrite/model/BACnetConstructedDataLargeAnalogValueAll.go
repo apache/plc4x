@@ -188,13 +188,13 @@ func (m *_BACnetConstructedDataLargeAnalogValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueAll"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"unicode/utf16"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -69,7 +70,10 @@ func (m PlcWSTRING) Serialize() ([]byte, error) {
 }
 
 func (m PlcWSTRING) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcSTRING", uint32(len(m.value)*8), m.value)
+	// The bit length is the UTF-16 size of the value including the byte order mark
+	// (2 bytes per code unit plus 2 for the BOM), matching the Java implementation.
+	bitLength := uint32((1 + len(utf16.Encode([]rune(m.value)))) * 16)
+	return writeBuffer.WriteString("PlcWSTRING", bitLength, m.value, utils.WithEncoding("UTF-8"))
 }
 
 func (m PlcWSTRING) String() string {

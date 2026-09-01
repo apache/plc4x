@@ -207,8 +207,8 @@ func (m *_SecurityDataZoneIsolated) GetPlx4xTypeName() string {
 	return "SecurityDataZoneIsolated"
 }
 
-func (m *_SecurityDataZoneIsolated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataZoneIsolated) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (zoneNumber)
 	lengthInBits += 8
@@ -216,7 +216,7 @@ func (m *_SecurityDataZoneIsolated) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_SecurityDataZoneIsolated) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataZoneIsolated) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

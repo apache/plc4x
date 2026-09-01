@@ -311,8 +311,8 @@ func (m *_DtlsPubSubConnectionDataType) GetPlx4xTypeName() string {
 	return "DtlsPubSubConnectionDataType"
 }
 
-func (m *_DtlsPubSubConnectionDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DtlsPubSubConnectionDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (clientCipherSuite)
 	lengthInBits += m.ClientCipherSuite.GetLengthInBits(ctx)
@@ -346,7 +346,7 @@ func (m *_DtlsPubSubConnectionDataType) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_DtlsPubSubConnectionDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DtlsPubSubConnectionDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

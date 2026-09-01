@@ -154,11 +154,11 @@ func CastHVACType(structType any) HVACType {
 	return castFunc(structType)
 }
 
-func (m HVACType) GetLengthInBits(ctx context.Context) uint16 {
+func (m HVACType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m HVACType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m HVACType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

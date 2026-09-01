@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataVarianceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVarianceValue"
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (varianceValue)
 	lengthInBits += m.VarianceValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataVarianceValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

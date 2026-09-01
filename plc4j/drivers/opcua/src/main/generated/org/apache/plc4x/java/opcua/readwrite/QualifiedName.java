@@ -62,7 +62,7 @@ public class QualifiedName implements Message {
     int namespaceIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("namespaceIndex"));
 
     // Simple Field: name
-    PascalString name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("name"));
+    PascalString name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("name"));
 
     readBuffer.popContext();
     return new QualifiedName(namespaceIndex, name);

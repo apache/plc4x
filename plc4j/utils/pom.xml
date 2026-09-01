@@ -38,18 +38,11 @@
   <subprojects>
     <subproject>audit-log</subproject>
     <subproject>subscription-emulation</subproject>
-    <!-- Non-default input options -->
-    <subproject>pcap-replay</subproject>
-    <subproject>pcap-shared</subproject>
     <subproject>raw-sockets</subproject>
 
     <!-- Utilities for building tests -->
     <subproject>test-generator</subproject>
     <subproject>test-utils</subproject>
-
-    <!-- Utilities for working with PLCs -->
-    <!-- TODO: Re-Enable as soon as we have ported the driver logic -->
-    <!--subproject>plc-simulator</subproject-->
   </subprojects>
 
 </project>

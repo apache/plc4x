@@ -94,11 +94,11 @@ func CastModbusDeviceInformationMoreFollows(structType any) ModbusDeviceInformat
 	return castFunc(structType)
 }
 
-func (m ModbusDeviceInformationMoreFollows) GetLengthInBits(ctx context.Context) uint16 {
+func (m ModbusDeviceInformationMoreFollows) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ModbusDeviceInformationMoreFollows) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ModbusDeviceInformationMoreFollows) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

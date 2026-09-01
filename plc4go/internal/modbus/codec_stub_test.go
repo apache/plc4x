@@ -23,6 +23,7 @@ import (
 	"context"
 
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // captureCodec is a minimal spi.MessageCodec stub that hands the callbacks
@@ -33,8 +34,10 @@ type captureCodec struct {
 }
 
 type capturedHandlers struct {
-	handleMessage spi.HandleMessage
-	handleError   spi.HandleError
+	message        spi.Message
+	acceptsMessage spi.AcceptsMessage
+	handleMessage  spi.HandleMessage
+	handleError    spi.HandleError
 }
 
 func newCaptureCodec(sendRequestErr error) *captureCodec {
@@ -52,8 +55,23 @@ func (c *captureCodec) Send(context.Context, string, spi.Message) error {
 }
 func (c *captureCodec) Expect(context.Context, string, spi.AcceptsMessage, spi.HandleMessage, spi.HandleError) {
 }
-func (c *captureCodec) SendRequest(_ context.Context, _ string, _ spi.Message, _ spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
-	c.handlers <- capturedHandlers{handleMessage: handleMessage, handleError: handleError}
+func (c *captureCodec) SendRequest(_ context.Context, _ string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
+	c.handlers <- capturedHandlers{
+		message:        message,
+		acceptsMessage: acceptsMessage,
+		handleMessage:  handleMessage,
+		handleError:    handleError,
+	}
 	return c.sendRequestErr
 }
 func (c *captureCodec) GetDefaultIncomingMessageChannel() chan spi.Message { return nil }
+
+// notAnAdu is a spi.Message that is not a modbus ADU, used to make sure nothing in the driver
+// type-asserts an incoming message without checking.
+type notAnAdu struct{}
+
+func (notAnAdu) String() string                                                    { return "notAnAdu" }
+func (notAnAdu) Serialize() ([]byte, error)                                        { return nil, nil }
+func (notAnAdu) SerializeWithWriteBuffer(context.Context, utils.WriteBuffer) error { return nil }
+func (notAnAdu) GetLengthInBytes(context.Context) uint64                           { return 0 }
+func (notAnAdu) GetLengthInBits(context.Context) uint64                            { return 0 }

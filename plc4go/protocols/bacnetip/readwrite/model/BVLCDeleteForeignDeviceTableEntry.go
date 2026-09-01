@@ -228,12 +228,12 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetPlx4xTypeName() string {
 	return "BVLCDeleteForeignDeviceTableEntry"
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Ip) > 0 {
-		lengthInBits += 8 * uint16(len(m.Ip))
+		lengthInBits += 8 * uint64(len(m.Ip))
 	}
 
 	// Simple field (port)
@@ -242,7 +242,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

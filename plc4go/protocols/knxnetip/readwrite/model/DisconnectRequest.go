@@ -248,8 +248,8 @@ func (m *_DisconnectRequest) GetPlx4xTypeName() string {
 	return "DisconnectRequest"
 }
 
-func (m *_DisconnectRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_DisconnectRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -263,7 +263,7 @@ func (m *_DisconnectRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DisconnectRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DisconnectRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

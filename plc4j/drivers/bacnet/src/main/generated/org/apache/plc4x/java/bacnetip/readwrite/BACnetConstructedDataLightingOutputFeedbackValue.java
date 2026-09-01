@@ -78,7 +78,7 @@ public class BACnetConstructedDataLightingOutputFeedbackValue extends BACnetCons
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: feedbackValue
-    BACnetApplicationTagReal feedbackValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), WithOption.WithName("feedbackValue"));
+    BACnetApplicationTagReal feedbackValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("feedbackValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagReal actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagReal.class, feedbackValue, WithOption.WithName("actualValue"));

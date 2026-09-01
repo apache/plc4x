@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataInProcess) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInProcess"
 }
 
-func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (inProcess)
 	lengthInBits += m.InProcess.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInProcess) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataInProcess) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

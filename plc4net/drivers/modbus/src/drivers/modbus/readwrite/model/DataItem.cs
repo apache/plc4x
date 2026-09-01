@@ -32,599 +32,239 @@ namespace org.apache.plc4net.drivers.modbus.readwrite.model
     /// </summary>
     public static class DataItem
     {
-        public static IPlcValue StaticParse(ReadBuffer readBuffer, ModbusDataType dataType, ushort numberOfValues, bool bigEndian)
+        public static IPlcValue StaticParse(ReadBuffer readBuffer, ModbusDataType dataType, ushort stringLength)
         {
-            if (Equals(dataType, ModbusDataType.BOOL) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
+            if (Equals(dataType, ModbusDataType.BOOL))
             {
                 // BOOL
-                {
-                    var reserved = readBuffer.ReadUshort("reserved", 15);
-                    if (!Equals(reserved, (ushort) (0x0000))) { /* mspec reserved: value differs from the spec default */ }
-                }
                 var value = readBuffer.ReadBit("value");
                 return new PlcBOOL(value);
-            }
-            else if (Equals(dataType, ModbusDataType.BOOL) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // BOOL
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 7);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                var value = readBuffer.ReadBit("value");
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                return new PlcBOOL(value);
-            }
-            else if (Equals(dataType, ModbusDataType.BOOL))
-            {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcBOOL(readBuffer.ReadBit("value")));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.BYTE) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // BYTE
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                var value = readBuffer.ReadByte("value", 8);
-                return new PlcBYTE(value);
-            }
-            else if (Equals(dataType, ModbusDataType.BYTE) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // BYTE
-                var value = readBuffer.ReadByte("value", 8);
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                return new PlcBYTE(value);
             }
             else if (Equals(dataType, ModbusDataType.BYTE))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) ((numberOfValues * 8));
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcBOOL(readBuffer.ReadBit("value")));
-                }
-                return new PlcList(value);
+                // BYTE
+                var value = readBuffer.ReadByte("value", 8);
+                return new PlcBYTE(value);
             }
             else if (Equals(dataType, ModbusDataType.WORD))
             {
                 // WORD
-                var value = (bigEndian ? readBuffer.ReadUshort("value", 16) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUshort("value", 16)));
+                var value = readBuffer.ReadUshort("value", 16);
                 return new PlcWORD(value);
             }
             else if (Equals(dataType, ModbusDataType.DWORD))
             {
                 // DWORD
-                var value = (bigEndian ? readBuffer.ReadUint("value", 32) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUint("value", 32)));
+                var value = readBuffer.ReadUint("value", 32);
                 return new PlcDWORD(value);
             }
             else if (Equals(dataType, ModbusDataType.LWORD))
             {
                 // LWORD
-                var value = (bigEndian ? readBuffer.ReadUlong("value", 64) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUlong("value", 64)));
+                var value = readBuffer.ReadUlong("value", 64);
                 return new PlcLWORD(value);
-            }
-            else if (Equals(dataType, ModbusDataType.SINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // SINT
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                var value = readBuffer.ReadSbyte("value", 8);
-                return new PlcSINT(value);
-            }
-            else if (Equals(dataType, ModbusDataType.SINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // SINT
-                var value = readBuffer.ReadSbyte("value", 8);
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                return new PlcSINT(value);
             }
             else if (Equals(dataType, ModbusDataType.SINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcSINT(readBuffer.ReadSbyte("value", 8)));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.INT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // INT
-                var value = (bigEndian ? readBuffer.ReadShort("value", 16) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadShort("value", 16)));
-                return new PlcINT(value);
+                // SINT
+                var value = readBuffer.ReadSbyte("value", 8);
+                return new PlcSINT(value);
             }
             else if (Equals(dataType, ModbusDataType.INT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcINT((bigEndian ? readBuffer.ReadShort("value", 16) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadShort("value", 16)))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.DINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // DINT
-                var value = (bigEndian ? readBuffer.ReadInt("value", 32) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadInt("value", 32)));
-                return new PlcDINT(value);
+                // INT
+                var value = readBuffer.ReadShort("value", 16);
+                return new PlcINT(value);
             }
             else if (Equals(dataType, ModbusDataType.DINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcDINT((bigEndian ? readBuffer.ReadInt("value", 32) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadInt("value", 32)))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.LINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // LINT
-                var value = (bigEndian ? readBuffer.ReadLong("value", 64) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadLong("value", 64)));
-                return new PlcLINT(value);
+                // DINT
+                var value = readBuffer.ReadInt("value", 32);
+                return new PlcDINT(value);
             }
             else if (Equals(dataType, ModbusDataType.LINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcLINT((bigEndian ? readBuffer.ReadLong("value", 64) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadLong("value", 64)))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.USINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // USINT
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                var value = readBuffer.ReadByte("value", 8);
-                return new PlcUSINT(value);
-            }
-            else if (Equals(dataType, ModbusDataType.USINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // USINT
-                var value = readBuffer.ReadByte("value", 8);
-                {
-                    var reserved = readBuffer.ReadByte("reserved", 8);
-                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
-                }
-                return new PlcUSINT(value);
+                // LINT
+                var value = readBuffer.ReadLong("value", 64);
+                return new PlcLINT(value);
             }
             else if (Equals(dataType, ModbusDataType.USINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcUSINT(readBuffer.ReadByte("value", 8)));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.UINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // UINT
-                var value = (bigEndian ? readBuffer.ReadUshort("value", 16) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUshort("value", 16)));
-                return new PlcUINT(value);
+                // USINT
+                var value = readBuffer.ReadByte("value", 8);
+                return new PlcUSINT(value);
             }
             else if (Equals(dataType, ModbusDataType.UINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcUINT((bigEndian ? readBuffer.ReadUshort("value", 16) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUshort("value", 16)))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.UDINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // UDINT
-                var value = (bigEndian ? readBuffer.ReadUint("value", 32) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUint("value", 32)));
-                return new PlcUDINT(value);
+                // UINT
+                var value = readBuffer.ReadUshort("value", 16);
+                return new PlcUINT(value);
             }
             else if (Equals(dataType, ModbusDataType.UDINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcUDINT((bigEndian ? readBuffer.ReadUint("value", 32) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUint("value", 32)))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.ULINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // ULINT
-                var value = (bigEndian ? readBuffer.ReadUlong("value", 64) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUlong("value", 64)));
-                return new PlcULINT(value);
+                // UDINT
+                var value = readBuffer.ReadUint("value", 32);
+                return new PlcUDINT(value);
             }
             else if (Equals(dataType, ModbusDataType.ULINT))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcULINT((bigEndian ? readBuffer.ReadUlong("value", 64) : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(readBuffer.ReadUlong("value", 64)))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.REAL) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // REAL
-                var value = (bigEndian ? readBuffer.ReadFloat("value", 32) : BitConverter.Int32BitsToSingle(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits(readBuffer.ReadFloat("value", 32)))));
-                return new PlcREAL(value);
+                // ULINT
+                var value = readBuffer.ReadUlong("value", 64);
+                return new PlcULINT(value);
             }
             else if (Equals(dataType, ModbusDataType.REAL))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcREAL((bigEndian ? readBuffer.ReadFloat("value", 32) : BitConverter.Int32BitsToSingle(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits(readBuffer.ReadFloat("value", 32)))))));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.LREAL) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // LREAL
-                var value = (bigEndian ? readBuffer.ReadDouble("value", 64) : BitConverter.Int64BitsToDouble(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(readBuffer.ReadDouble("value", 64)))));
-                return new PlcLREAL(value);
+                // REAL
+                var value = readBuffer.ReadFloat("value", 32);
+                return new PlcREAL(value);
             }
             else if (Equals(dataType, ModbusDataType.LREAL))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    value.Add(new PlcLREAL((bigEndian ? readBuffer.ReadDouble("value", 64) : BitConverter.Int64BitsToDouble(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(readBuffer.ReadDouble("value", 64)))))));
-                }
-                return new PlcList(value);
+                // LREAL
+                var value = readBuffer.ReadDouble("value", 64);
+                return new PlcLREAL(value);
             }
-            else if (Equals(dataType, ModbusDataType.CHAR) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.CHAR))
             {
                 // CHAR
                 var value = readBuffer.ReadString("value", 8, System.Text.Encoding.UTF8);
                 return new PlcCHAR(value.Length > 0 ? value[0] : '\0');
             }
-            else if (Equals(dataType, ModbusDataType.CHAR))
-            {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    var _e = readBuffer.ReadString("value", 8, System.Text.Encoding.UTF8);
-                    value.Add(new PlcCHAR(_e.Length > 0 ? _e[0] : '\0'));
-                }
-                return new PlcList(value);
-            }
-            else if (Equals(dataType, ModbusDataType.WCHAR) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.WCHAR))
             {
                 // WCHAR
                 var value = readBuffer.ReadString("value", 16, System.Text.Encoding.BigEndianUnicode);
                 return new PlcWCHAR(value.Length > 0 ? value[0] : '\0');
             }
-            else if (Equals(dataType, ModbusDataType.WCHAR))
+            else if (Equals(dataType, ModbusDataType.STRING))
             {
-                // List
-                var value = new System.Collections.Generic.List<IPlcValue>();
-                var _valueCnt = (int) (numberOfValues);
-                for (var _i = 0; _i < _valueCnt; _i++)
-                {
-                    var _e = readBuffer.ReadString("value", 16, System.Text.Encoding.BigEndianUnicode);
-                    value.Add(new PlcWCHAR(_e.Length > 0 ? _e[0] : '\0'));
-                }
-                return new PlcList(value);
+                // STRING
+                var value = readBuffer.ReadString("value", (int) ((stringLength * 8)), System.Text.Encoding.UTF8);
+                return new PlcSTRING(value);
+            }
+            else if (Equals(dataType, ModbusDataType.WSTRING))
+            {
+                // WSTRING
+                var value = readBuffer.ReadString("value", (int) ((stringLength * 16)), System.Text.Encoding.BigEndianUnicode);
+                return new PlcWSTRING(value);
             }
             return new PlcNULL();
         }
 
-        public static void StaticSerialize(WriteBuffer writeBuffer, IPlcValue _value, ModbusDataType dataType, ushort numberOfValues, bool bigEndian)
+        public static void StaticSerialize(WriteBuffer writeBuffer, IPlcValue _value, ModbusDataType dataType, ushort stringLength)
         {
-            if (Equals(dataType, ModbusDataType.BOOL) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
+            if (Equals(dataType, ModbusDataType.BOOL))
             {
                 // BOOL
-                writeBuffer.WriteUshort("reserved", 15, (ushort) (0x0000));
                 writeBuffer.WriteBit("value", (bool) _value.GetBool());
-            }
-            else if (Equals(dataType, ModbusDataType.BOOL) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // BOOL
-                writeBuffer.WriteByte("reserved", 7, (byte) (0x00));
-                writeBuffer.WriteBit("value", (bool) _value.GetBool());
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
-            }
-            else if (Equals(dataType, ModbusDataType.BOOL))
-            {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteBit("value", (bool) _e.GetBool());
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.BYTE) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // BYTE
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
-                writeBuffer.WriteByte("value", 8, (byte) _value.GetByte());
-            }
-            else if (Equals(dataType, ModbusDataType.BYTE) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // BYTE
-                writeBuffer.WriteByte("value", 8, (byte) _value.GetByte());
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
             }
             else if (Equals(dataType, ModbusDataType.BYTE))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteBit("value", (bool) _e.GetBool());
-                }
+                // BYTE
+                writeBuffer.WriteByte("value", 8, (byte) _value.GetByte());
             }
             else if (Equals(dataType, ModbusDataType.WORD))
             {
                 // WORD
-                writeBuffer.WriteUshort("value", 16, (bigEndian ? (ushort) _value.GetUshort() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((ushort) _value.GetUshort())));
+                writeBuffer.WriteUshort("value", 16, (ushort) _value.GetUshort());
             }
             else if (Equals(dataType, ModbusDataType.DWORD))
             {
                 // DWORD
-                writeBuffer.WriteUint("value", 32, (bigEndian ? (uint) _value.GetUint() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((uint) _value.GetUint())));
+                writeBuffer.WriteUint("value", 32, (uint) _value.GetUint());
             }
             else if (Equals(dataType, ModbusDataType.LWORD))
             {
                 // LWORD
-                writeBuffer.WriteUlong("value", 64, (bigEndian ? (ulong) _value.GetUlong() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((ulong) _value.GetUlong())));
-            }
-            else if (Equals(dataType, ModbusDataType.SINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // SINT
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
-                writeBuffer.WriteSbyte("value", 8, (sbyte) _value.GetSbyte());
-            }
-            else if (Equals(dataType, ModbusDataType.SINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // SINT
-                writeBuffer.WriteSbyte("value", 8, (sbyte) _value.GetSbyte());
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
+                writeBuffer.WriteUlong("value", 64, (ulong) _value.GetUlong());
             }
             else if (Equals(dataType, ModbusDataType.SINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteSbyte("value", 8, (sbyte) _e.GetSbyte());
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.INT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // INT
-                writeBuffer.WriteShort("value", 16, (bigEndian ? (short) _value.GetShort() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((short) _value.GetShort())));
+                // SINT
+                writeBuffer.WriteSbyte("value", 8, (sbyte) _value.GetSbyte());
             }
             else if (Equals(dataType, ModbusDataType.INT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteShort("value", 16, (bigEndian ? (short) _e.GetShort() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((short) _e.GetShort())));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.DINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // DINT
-                writeBuffer.WriteInt("value", 32, (bigEndian ? (int) _value.GetInt() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((int) _value.GetInt())));
+                // INT
+                writeBuffer.WriteShort("value", 16, (short) _value.GetShort());
             }
             else if (Equals(dataType, ModbusDataType.DINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteInt("value", 32, (bigEndian ? (int) _e.GetInt() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((int) _e.GetInt())));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.LINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // LINT
-                writeBuffer.WriteLong("value", 64, (bigEndian ? (long) _value.GetLong() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((long) _value.GetLong())));
+                // DINT
+                writeBuffer.WriteInt("value", 32, (int) _value.GetInt());
             }
             else if (Equals(dataType, ModbusDataType.LINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteLong("value", 64, (bigEndian ? (long) _e.GetLong() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((long) _e.GetLong())));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.USINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // USINT
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
-                writeBuffer.WriteByte("value", 8, (byte) _value.GetByte());
-            }
-            else if (Equals(dataType, ModbusDataType.USINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // USINT
-                writeBuffer.WriteByte("value", 8, (byte) _value.GetByte());
-                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
+                // LINT
+                writeBuffer.WriteLong("value", 64, (long) _value.GetLong());
             }
             else if (Equals(dataType, ModbusDataType.USINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteByte("value", 8, (byte) _e.GetByte());
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.UINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // UINT
-                writeBuffer.WriteUshort("value", 16, (bigEndian ? (ushort) _value.GetUshort() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((ushort) _value.GetUshort())));
+                // USINT
+                writeBuffer.WriteByte("value", 8, (byte) _value.GetByte());
             }
             else if (Equals(dataType, ModbusDataType.UINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteUshort("value", 16, (bigEndian ? (ushort) _e.GetUshort() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((ushort) _e.GetUshort())));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.UDINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // UDINT
-                writeBuffer.WriteUint("value", 32, (bigEndian ? (uint) _value.GetUint() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((uint) _value.GetUint())));
+                // UINT
+                writeBuffer.WriteUshort("value", 16, (ushort) _value.GetUshort());
             }
             else if (Equals(dataType, ModbusDataType.UDINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteUint("value", 32, (bigEndian ? (uint) _e.GetUint() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((uint) _e.GetUint())));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.ULINT) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // ULINT
-                writeBuffer.WriteUlong("value", 64, (bigEndian ? (ulong) _value.GetUlong() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((ulong) _value.GetUlong())));
+                // UDINT
+                writeBuffer.WriteUint("value", 32, (uint) _value.GetUint());
             }
             else if (Equals(dataType, ModbusDataType.ULINT))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteUlong("value", 64, (bigEndian ? (ulong) _e.GetUlong() : System.Buffers.Binary.BinaryPrimitives.ReverseEndianness((ulong) _e.GetUlong())));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.REAL) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // REAL
-                writeBuffer.WriteFloat("value", 32, (bigEndian ? (float) _value.GetFloat() : BitConverter.Int32BitsToSingle(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits((float) _value.GetFloat())))));
+                // ULINT
+                writeBuffer.WriteUlong("value", 64, (ulong) _value.GetUlong());
             }
             else if (Equals(dataType, ModbusDataType.REAL))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteFloat("value", 32, (bigEndian ? (float) _e.GetFloat() : BitConverter.Int32BitsToSingle(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits((float) _e.GetFloat())))));
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.LREAL) && Equals(numberOfValues, (ushort) (1)))
-            {
-                // LREAL
-                writeBuffer.WriteDouble("value", 64, (bigEndian ? (double) _value.GetDouble() : BitConverter.Int64BitsToDouble(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits((double) _value.GetDouble())))));
+                // REAL
+                writeBuffer.WriteFloat("value", 32, (float) _value.GetFloat());
             }
             else if (Equals(dataType, ModbusDataType.LREAL))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteDouble("value", 64, (bigEndian ? (double) _e.GetDouble() : BitConverter.Int64BitsToDouble(System.Buffers.Binary.BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits((double) _e.GetDouble())))));
-                }
+                // LREAL
+                writeBuffer.WriteDouble("value", 64, (double) _value.GetDouble());
             }
-            else if (Equals(dataType, ModbusDataType.CHAR) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.CHAR))
             {
                 // CHAR
                 writeBuffer.WriteString("value", 8, "UTF8", _value.GetString());
             }
-            else if (Equals(dataType, ModbusDataType.CHAR))
-            {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteString("value", 8, "UTF8", _e.GetString());
-                }
-            }
-            else if (Equals(dataType, ModbusDataType.WCHAR) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.WCHAR))
             {
                 // WCHAR
                 writeBuffer.WriteString("value", 16, "UTF16BE", _value.GetString());
             }
-            else if (Equals(dataType, ModbusDataType.WCHAR))
+            else if (Equals(dataType, ModbusDataType.STRING))
             {
-                // List
-                foreach (var _e in _value.GetList())
-                {
-                    writeBuffer.WriteString("value", 16, "UTF16BE", _e.GetString());
-                }
+                // STRING
+                writeBuffer.WriteString("value", (int) ((stringLength * 8)), "UTF8", _value.GetString());
+            }
+            else if (Equals(dataType, ModbusDataType.WSTRING))
+            {
+                // WSTRING
+                writeBuffer.WriteString("value", (int) ((stringLength * 16)), "UTF16BE", _value.GetString());
             }
         }
 
-        public static int GetLengthInBytes(IPlcValue _value, ModbusDataType dataType, ushort numberOfValues, bool bigEndian) =>
-            (GetLengthInBits(_value, dataType, numberOfValues, bigEndian) + 7) / 8;
+        public static int GetLengthInBytes(IPlcValue _value, ModbusDataType dataType, ushort stringLength) =>
+            (GetLengthInBits(_value, dataType, stringLength) + 7) / 8;
 
-        public static int GetLengthInBits(IPlcValue _value, ModbusDataType dataType, ushort numberOfValues, bool bigEndian)
+        public static int GetLengthInBits(IPlcValue _value, ModbusDataType dataType, ushort stringLength)
         {
             var lengthInBits = 0;
-            if (Equals(dataType, ModbusDataType.BOOL) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
+            if (Equals(dataType, ModbusDataType.BOOL))
             {
                 // BOOL
-                lengthInBits += 15;
                 lengthInBits += 1;
-            }
-            else if (Equals(dataType, ModbusDataType.BOOL) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // BOOL
-                lengthInBits += 7;
-                lengthInBits += 1;
-                lengthInBits += 8;
-            }
-            else if (Equals(dataType, ModbusDataType.BOOL))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 1;
-            }
-            else if (Equals(dataType, ModbusDataType.BYTE) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // BYTE
-                lengthInBits += 8;
-                lengthInBits += 8;
-            }
-            else if (Equals(dataType, ModbusDataType.BYTE) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // BYTE
-                lengthInBits += 8;
-                lengthInBits += 8;
             }
             else if (Equals(dataType, ModbusDataType.BYTE))
             {
-                // List
-                lengthInBits += _value.GetLength() * 1;
+                // BYTE
+                lengthInBits += 8;
             }
             else if (Equals(dataType, ModbusDataType.WORD))
             {
@@ -641,139 +281,75 @@ namespace org.apache.plc4net.drivers.modbus.readwrite.model
                 // LWORD
                 lengthInBits += 64;
             }
-            else if (Equals(dataType, ModbusDataType.SINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // SINT
-                lengthInBits += 8;
-                lengthInBits += 8;
-            }
-            else if (Equals(dataType, ModbusDataType.SINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // SINT
-                lengthInBits += 8;
-                lengthInBits += 8;
-            }
             else if (Equals(dataType, ModbusDataType.SINT))
             {
-                // List
-                lengthInBits += _value.GetLength() * 8;
+                // SINT
+                lengthInBits += 8;
             }
-            else if (Equals(dataType, ModbusDataType.INT) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.INT))
             {
                 // INT
                 lengthInBits += 16;
             }
-            else if (Equals(dataType, ModbusDataType.INT))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 16;
-            }
-            else if (Equals(dataType, ModbusDataType.DINT) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.DINT))
             {
                 // DINT
                 lengthInBits += 32;
             }
-            else if (Equals(dataType, ModbusDataType.DINT))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 32;
-            }
-            else if (Equals(dataType, ModbusDataType.LINT) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.LINT))
             {
                 // LINT
                 lengthInBits += 64;
             }
-            else if (Equals(dataType, ModbusDataType.LINT))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 64;
-            }
-            else if (Equals(dataType, ModbusDataType.USINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, true))
-            {
-                // USINT
-                lengthInBits += 8;
-                lengthInBits += 8;
-            }
-            else if (Equals(dataType, ModbusDataType.USINT) && Equals(numberOfValues, (ushort) (1)) && Equals(bigEndian, false))
-            {
-                // USINT
-                lengthInBits += 8;
-                lengthInBits += 8;
-            }
             else if (Equals(dataType, ModbusDataType.USINT))
             {
-                // List
-                lengthInBits += _value.GetLength() * 8;
+                // USINT
+                lengthInBits += 8;
             }
-            else if (Equals(dataType, ModbusDataType.UINT) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.UINT))
             {
                 // UINT
                 lengthInBits += 16;
             }
-            else if (Equals(dataType, ModbusDataType.UINT))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 16;
-            }
-            else if (Equals(dataType, ModbusDataType.UDINT) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.UDINT))
             {
                 // UDINT
                 lengthInBits += 32;
             }
-            else if (Equals(dataType, ModbusDataType.UDINT))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 32;
-            }
-            else if (Equals(dataType, ModbusDataType.ULINT) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.ULINT))
             {
                 // ULINT
                 lengthInBits += 64;
             }
-            else if (Equals(dataType, ModbusDataType.ULINT))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 64;
-            }
-            else if (Equals(dataType, ModbusDataType.REAL) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.REAL))
             {
                 // REAL
                 lengthInBits += 32;
             }
-            else if (Equals(dataType, ModbusDataType.REAL))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 32;
-            }
-            else if (Equals(dataType, ModbusDataType.LREAL) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.LREAL))
             {
                 // LREAL
                 lengthInBits += 64;
             }
-            else if (Equals(dataType, ModbusDataType.LREAL))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 64;
-            }
-            else if (Equals(dataType, ModbusDataType.CHAR) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.CHAR))
             {
                 // CHAR
                 lengthInBits += 8;
             }
-            else if (Equals(dataType, ModbusDataType.CHAR))
-            {
-                // List
-                lengthInBits += _value.GetLength() * 8;
-            }
-            else if (Equals(dataType, ModbusDataType.WCHAR) && Equals(numberOfValues, (ushort) (1)))
+            else if (Equals(dataType, ModbusDataType.WCHAR))
             {
                 // WCHAR
                 lengthInBits += 16;
             }
-            else if (Equals(dataType, ModbusDataType.WCHAR))
+            else if (Equals(dataType, ModbusDataType.STRING))
             {
-                // List
-                lengthInBits += _value.GetLength() * 16;
+                // STRING
+                lengthInBits += ((stringLength * 8));
+            }
+            else if (Equals(dataType, ModbusDataType.WSTRING))
+            {
+                // WSTRING
+                lengthInBits += ((stringLength * 16));
             }
             return lengthInBits;
         }

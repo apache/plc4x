@@ -56,6 +56,41 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
 
     private final Logger logger = LoggerFactory.getLogger(ModbusPlcDiscoverer.class);
 
+    /** MBAP header: transaction id, protocol id and the length field itself. */
+    private static final int MODBUS_TCP_HEADER_SIZE = 6;
+
+    /**
+     * The largest a Modbus TCP ADU can be - the MBAP header, a unit identifier and a PDU of at most
+     * 253 bytes. A declared length past this is not a Modbus response, whatever else it may be.
+     */
+    private static final int MODBUS_TCP_MAX_ADU_SIZE = 260;
+
+    /**
+     * Works out how long the ADU is from the two bytes of the MBAP length field.
+     *
+     * <p>Unsigned, and in int arithmetic. Read as a signed short and adjusted by the header size, a
+     * declared length near the top of the field came out negative - and the next thing done with it
+     * was to allocate an array that long.</p>
+     *
+     * @return the total ADU length, or -1 if the field cannot describe a Modbus ADU
+     */
+    static int aduLength(byte[] packetLengthBytes) {
+        int declared = ByteBuffer.wrap(packetLengthBytes).getShort() & 0xFFFF;
+        int total = declared + MODBUS_TCP_HEADER_SIZE;
+        if (total <= MODBUS_TCP_HEADER_SIZE || total > MODBUS_TCP_MAX_ADU_SIZE) {
+            return -1;
+        }
+        return total;
+    }
+
+    private static void sleepBriefly() {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
@@ -133,8 +168,14 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                     byte[] responseBytes = null;
                     final long endTime = System.currentTimeMillis() + 100;
                     while (responseBytes == null) {
-                        if (inputStream.available() >= 6) {
-                            inputStream.mark(6);
+                        // Checked here rather than in one branch of the wait: a host that sent six
+                        // bytes and then stopped kept the other branch busy forever, since it always
+                        // had enough for a header and never enough for a packet.
+                        if (System.currentTimeMillis() > endTime) {
+                            break;
+                        }
+                        if (inputStream.available() >= MODBUS_TCP_HEADER_SIZE) {
+                            inputStream.mark(MODBUS_TCP_HEADER_SIZE);
                             inputStream.skip(4);
                             byte[] packetLengthBytes = new byte[2];
                             int bytesRead = inputStream.read(packetLengthBytes);
@@ -142,7 +183,11 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                             if (bytesRead != 2) {
                                 continue;
                             }
-                            final short packetLength = (short) (ByteBuffer.wrap(packetLengthBytes).getShort() + 6);
+                            int packetLength = aduLength(packetLengthBytes);
+                            if (packetLength < 0) {
+                                // Whatever is answering, it is not answering Modbus.
+                                break;
+                            }
                             if (inputStream.available() >= packetLength) {
                                 responseBytes = new byte[packetLength];
                                 bytesRead = inputStream.read(responseBytes);
@@ -150,16 +195,11 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                                     responseBytes = null;
                                     break;
                                 }
+                            } else {
+                                sleepBriefly();
                             }
                         } else {
-                            try {
-                                Thread.sleep(1);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            }
-                            if (System.currentTimeMillis() > endTime) {
-                                break;
-                            }
+                            sleepBriefly();
                         }
                     }
                     if (responseBytes != null) {
@@ -187,8 +227,10 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                                 }
                                 break;
                             }
-                        } catch (BufferException e) {
-                            // Ignore parse errors.
+                        } catch (BufferException | RuntimeException e) {
+                            // Whatever answered is not a Modbus device we recognise. That is the
+                            // ordinary outcome of scanning an address, not a reason to stop.
+                            logger.debug("Ignoring an unreadable response from {}", possibleAddress, e);
                         }
                     }
                 }

@@ -112,11 +112,11 @@ func CastTsnStreamState(structType any) TsnStreamState {
 	return castFunc(structType)
 }
 
-func (m TsnStreamState) GetLengthInBits(ctx context.Context) uint16 {
+func (m TsnStreamState) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m TsnStreamState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TsnStreamState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

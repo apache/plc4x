@@ -833,11 +833,11 @@ func CastLightingCommandTypeContainer(structType any) LightingCommandTypeContain
 	return castFunc(structType)
 }
 
-func (m LightingCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m LightingCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m LightingCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LightingCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

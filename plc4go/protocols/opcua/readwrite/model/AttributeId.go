@@ -244,11 +244,11 @@ func CastAttributeId(structType any) AttributeId {
 	return castFunc(structType)
 }
 
-func (m AttributeId) GetLengthInBits(ctx context.Context) uint16 {
+func (m AttributeId) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m AttributeId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AttributeId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

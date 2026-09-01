@@ -504,8 +504,8 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetPlx4xTypeName() stri
 	return "IdentifyReplyCommandExtendedDiagnosticSummary"
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (lowApplication)
 	lengthInBits += 8
@@ -578,7 +578,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

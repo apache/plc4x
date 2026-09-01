@@ -466,8 +466,8 @@ func (m *_VariableAttributes) GetPlx4xTypeName() string {
 	return "VariableAttributes"
 }
 
-func (m *_VariableAttributes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_VariableAttributes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (specifiedAttributes)
 	lengthInBits += 32
@@ -498,7 +498,7 @@ func (m *_VariableAttributes) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.ArrayDimensions) > 0 {
-		lengthInBits += 32 * uint16(len(m.ArrayDimensions))
+		lengthInBits += 32 * uint64(len(m.ArrayDimensions))
 	}
 
 	// Simple field (accessLevel)
@@ -519,7 +519,7 @@ func (m *_VariableAttributes) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_VariableAttributes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariableAttributes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

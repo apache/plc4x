@@ -63,10 +63,10 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: monitoredObjectIdentifier
-    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
+    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
 
     // Simple Field: listOfCovReferences
-    BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences listOfCovReferences = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("listOfCovReferences"));
+    BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences listOfCovReferences = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences.class, BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("listOfCovReferences"));
 
     readBuffer.popContext();
     return new BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(monitoredObjectIdentifier, listOfCovReferences);

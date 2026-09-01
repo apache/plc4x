@@ -59,7 +59,7 @@ public class ApduDataContainer extends Apdu implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dataApdu
-    ApduData dataApdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ApduData) ApduData.staticParse(readBuffer, (short) (dataLength)), readBuffer), WithOption.WithName("dataApdu"));
+    ApduData dataApdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ApduData.class, ApduData.staticParse(readBuffer, (short) (dataLength))), readBuffer), WithOption.WithName("dataApdu"));
 
     readBuffer.popContext();
     return new ApduBuilderImpl(dataApdu);

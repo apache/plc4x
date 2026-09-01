@@ -51,7 +51,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: address
-    BACnetAddressEnclosed address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAddressEnclosed) BACnetAddressEnclosed.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("address"));
+    BACnetAddressEnclosed address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddressEnclosed.class, BACnetAddressEnclosed.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("address"));
 
     readBuffer.popContext();
     return new BACnetValueSourceBuilderImpl(address);

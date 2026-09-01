@@ -82,13 +82,13 @@ public class InformationObjectWithTreeByteTime_MEASURED_VALUE_NORMALIZED_VALUE e
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nva
-    NormalizedValue nva = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NormalizedValue) NormalizedValue.staticParse(readBuffer), readBuffer), WithOption.WithName("nva"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NormalizedValue nva = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NormalizedValue.class, NormalizedValue.staticParse(readBuffer)), readBuffer), WithOption.WithName("nva"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: qds
-    QualityDescriptor qds = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualityDescriptor) QualityDescriptor.staticParse(readBuffer), readBuffer), WithOption.WithName("qds"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualityDescriptor qds = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualityDescriptor.class, QualityDescriptor.staticParse(readBuffer)), readBuffer), WithOption.WithName("qds"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: cp24Time2a
-    ThreeOctetBinaryTime cp24Time2a = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ThreeOctetBinaryTime) ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer), WithOption.WithName("cp24Time2a"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    ThreeOctetBinaryTime cp24Time2a = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ThreeOctetBinaryTime.class, ThreeOctetBinaryTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("cp24Time2a"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithTreeByteTimeBuilderImpl(nva, qds, cp24Time2a);

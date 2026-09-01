@@ -56,6 +56,14 @@ func (d *DefaultArrayInfo) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	if err := writeBuffer.WriteUint32("upperBound", 32, d.UpperBound); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteUint32("base", 32, d.Base); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("range", d.Range); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("ArrayInfo"); err != nil {
 		return err
 	}

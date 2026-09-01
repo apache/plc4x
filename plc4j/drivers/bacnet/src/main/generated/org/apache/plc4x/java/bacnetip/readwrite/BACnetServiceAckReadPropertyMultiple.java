@@ -60,7 +60,7 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: data
-    List<BACnetReadAccessResult> data = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (BACnetReadAccessResult) BACnetReadAccessResult.staticParse(readBuffer), readBuffer), serviceAckPayloadLength, WithOption.WithName("data"));
+    List<BACnetReadAccessResult> data = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetReadAccessResult.class, BACnetReadAccessResult.staticParse(readBuffer)), readBuffer), serviceAckPayloadLength, WithOption.WithName("data"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(data);

@@ -59,7 +59,7 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: table
-    List<BVLCForeignDeviceTableEntry> table = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (BVLCForeignDeviceTableEntry) BVLCForeignDeviceTableEntry.staticParse(readBuffer), readBuffer), bvlcPayloadLength, WithOption.WithName("table"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<BVLCForeignDeviceTableEntry> table = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BVLCForeignDeviceTableEntry.class, BVLCForeignDeviceTableEntry.staticParse(readBuffer)), readBuffer), bvlcPayloadLength, WithOption.WithName("table"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new BVLCBuilderImpl(table);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: covPeriod
-    BACnetApplicationTagUnsignedInteger covPeriod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("covPeriod"));
+    BACnetApplicationTagUnsignedInteger covPeriod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("covPeriod"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagUnsignedInteger.class, covPeriod, WithOption.WithName("actualValue"));

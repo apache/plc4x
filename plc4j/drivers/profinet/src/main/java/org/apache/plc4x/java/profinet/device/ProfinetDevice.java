@@ -465,10 +465,15 @@ public class ProfinetDevice implements PlcSubscriber {
 
     public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
         logger.error("Received Alarm Low packet, attempting to re-connect");
-        if (alarmPdu.getVarPart()[3] == 0x18) {
+        // The sender says how long the variable part is, so it can say nothing at all and still
+        // claim to be an alarm. Read the reason out of it only if it is there.
+        byte[] varPart = alarmPdu.getVarPart();
+        if (varPart == null || varPart.length < 4) {
+            logger.error("- Alarm carries no reason ({} bytes)", varPart == null ? 0 : varPart.length);
+        } else if (varPart[3] == 0x18) {
             // Error from the device after not sending anything back ...
             logger.error("- AR RPC-Control Error");
-        } else if (alarmPdu.getVarPart()[3] == 0x06) {
+        } else if (varPart[3] == 0x06) {
             // Switches to the non-working connection here ...
             logger.error("- AR CMI TIMEOUT ...");
         } else {

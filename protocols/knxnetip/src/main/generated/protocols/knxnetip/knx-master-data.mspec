@@ -1573,8 +1573,16 @@
     ['818' M_READYKNX ['879', '"readyKNX"']]
     ['819' M_SMARTVOS ['880', '"smartVOS"']]
     ['820' M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH ['881', '"ISG Industrielle Steuerungstechnik GmbH"']]
-    ['821' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['822' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['821' M_CHINT ['883', '"CHINT"']]
+    ['822' M_BEEKER_TECH_GMBH_AND_CO__KG ['884', '"Beeker Tech GmbH & Co. KG"']]
+    ['823' M_CARBON_INTEGRATION ['885', '"Carbon Integration"']]
+    ['824' M_ALLSMART ['886', '"AllSmart"']]
+    ['825' M_BUTTONPlus ['887', '"Button+"']]
+    ['826' M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ ['888', '"Guangzhou YingLight technology Co.,Ltd."']]
+    ['827' M_RUEDIGER_WOLF_AB ['889', '"Rüdiger Wolf AB"']]
+    ['828' M_KOLORS_INDIA_PRIVATE_LIMITED ['890', '"KOLORS INDIA PRIVATE LIMITED"']]
+    ['829' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['830' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

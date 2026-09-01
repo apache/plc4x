@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultStepIncrement"
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (defaultStepIncrement)
 	lengthInBits += m.DefaultStepIncrement.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

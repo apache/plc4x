@@ -225,8 +225,8 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogDataEntryUnsignedValue"
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

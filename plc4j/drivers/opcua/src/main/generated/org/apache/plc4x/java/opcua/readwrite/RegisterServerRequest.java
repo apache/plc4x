@@ -68,10 +68,10 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestHeader
-    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RequestHeader) RequestHeader.staticParse(readBuffer, (int) (391)), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RequestHeader.class, RequestHeader.staticParse(readBuffer, (int) (391))), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: server
-    RegisteredServer server = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RegisteredServer) RegisteredServer.staticParse(readBuffer, (int) (434)), readBuffer), WithOption.WithName("server"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    RegisteredServer server = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RegisteredServer.class, RegisteredServer.staticParse(readBuffer, (int) (434))), readBuffer), WithOption.WithName("server"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(requestHeader, server);

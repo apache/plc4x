@@ -67,8 +67,8 @@ type CBusCommandContract interface {
 
 // CBusCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDestinationAddressType returns DestinationAddressType (discriminator field)
 	GetDestinationAddressType() DestinationAddressType
 	// GetIsDeviceManagement returns IsDeviceManagement (discriminator field)
@@ -319,8 +319,8 @@ func (m *_CBusCommand) GetPlx4xTypeName() string {
 	return "CBusCommand"
 }
 
-func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -332,11 +332,11 @@ func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

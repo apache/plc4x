@@ -225,8 +225,8 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetPlx4xTypeName(
 	return "BACnetEventParameterChangeOfValueCivCriteriaBitmask"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
 
 	// Simple field (bitmask)
 	lengthInBits += m.Bitmask.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

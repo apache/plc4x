@@ -21,6 +21,7 @@ package org.apache.plc4x.java.firmata.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.util.Collections;
@@ -36,13 +37,15 @@ public class FirmataTagAnalog extends FirmataTag {
         super(address, quantity);
     }
 
+    public FirmataTagAnalog(int address, Integer quantity, boolean explicitRange) {
+        super(address, quantity, explicitRange);
+        
+    }
+
     @Override
     public String getAddressString() {
-        String address = "analog:" + getAddress();
-        if(getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
-        return address;
+        // The selection terminates the address; Firmata carries no type suffix.
+        return "analog:" + getAddress() + ArrayNotationParser.render(getArrayInfo());
     }
 
     @Override
@@ -52,8 +55,9 @@ public class FirmataTagAnalog extends FirmataTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+        // A range is an array even when it spans one pin; the count cannot say which was written.
+        if (isExplicitRange()) {
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1, 0, true));
         }
         return Collections.emptyList();    }
 
@@ -64,9 +68,10 @@ public class FirmataTagAnalog extends FirmataTag {
         }
         int address = Integer.parseInt(matcher.group("address"));
 
-        String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new FirmataTagAnalog(address, quantity);
+        int[] selection = selectionOf(matcher, addressString);
+        address += selection[0];
+        Integer quantity = selection[1];
+        return new FirmataTagAnalog(address, quantity, selection[2] == 1);
     }
 
 }

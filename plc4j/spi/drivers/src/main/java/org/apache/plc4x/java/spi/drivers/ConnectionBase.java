@@ -239,29 +239,77 @@ public abstract class ConnectionBase<C extends Configuration> implements PlcConn
         return authentication;
     }
 
+    /**
+     * Derived from the operations the driver actually implements.
+     * <p>
+     * Every {@code on*} hook below has a default that fails the request with "... not supported",
+     * so a driver only supports an operation if it overrides the corresponding hook. Reporting
+     * a fixed {@code true} here - as this class used to - told every caller that every driver
+     * supports everything, which is wrong for most of them: a driver that connects but implements
+     * nothing claimed full support, and callers that check the metadata before deciding what to do
+     * were sent into requests that could only fail.
+     * <p>
+     * The lookup walks the class hierarchy up to (but excluding) {@link ConnectionBase}, so a hook
+     * inherited from an intermediate base counts as implemented - {@code PollingSubscriptionConnectionBase}
+     * for instance provides {@code onSubscribe} for drivers whose protocol has no native subscriptions.
+     * <p>
+     * What this can tell is what the <em>driver</em> implements, which is a property of the class.
+     * Where the answer depends on the device at the other end - a controller that does not offer an
+     * operation the driver otherwise speaks - only the driver can know, so it should override this
+     * method and answer from what it learned during connect. This derivation is the default for
+     * drivers that have no such distinction to make, and the result is deliberately computed per
+     * call so an override is free to vary per connection.
+     */
     @Override
     public PlcConnectionMetadata getMetadata() {
+        return deriveMetadata(getClass());
+    }
+
+    private static PlcConnectionMetadata deriveMetadata(Class<?> connectionClass) {
+        boolean read = overridesHook(connectionClass, "onRead", PlcReadRequest.class);
+        boolean write = overridesHook(connectionClass, "onWrite", PlcWriteRequest.class);
+        boolean subscribe = overridesHook(connectionClass, "onSubscribe", PlcSubscriptionRequest.class);
+        boolean browse = overridesHook(connectionClass, "onBrowse", PlcBrowseRequest.class)
+            || overridesHook(connectionClass, "onBrowseWithInterceptor", PlcBrowseRequest.class, PlcBrowseRequestInterceptor.class);
+        LOGGER.debug("Derived metadata for {}: read={}, write={}, subscribe={}, browse={}",
+            connectionClass.getSimpleName(), read, write, subscribe, browse);
         return new PlcConnectionMetadata() {
             @Override
             public boolean isReadSupported() {
-                return true;
+                return read;
             }
 
             @Override
             public boolean isWriteSupported() {
-                return true;
+                return write;
             }
 
             @Override
             public boolean isSubscribeSupported() {
-                return true;
+                return subscribe;
             }
 
             @Override
             public boolean isBrowseSupported() {
-                return true;
+                return browse;
             }
         };
+    }
+
+    /**
+     * Whether {@code connectionClass} or any class between it and {@link ConnectionBase} declares
+     * the given hook - i.e. whether the default "not supported" implementation has been replaced.
+     */
+    private static boolean overridesHook(Class<?> connectionClass, String name, Class<?>... parameterTypes) {
+        for (Class<?> current = connectionClass; (current != null) && (current != ConnectionBase.class); current = current.getSuperclass()) {
+            try {
+                current.getDeclaredMethod(name, parameterTypes);
+                return true;
+            } catch (NoSuchMethodException e) {
+                // Not declared here - keep walking up towards ConnectionBase.
+            }
+        }
+        return false;
     }
 
     @Override

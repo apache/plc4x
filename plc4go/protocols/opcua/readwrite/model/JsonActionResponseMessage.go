@@ -485,8 +485,8 @@ func (m *_JsonActionResponseMessage) GetPlx4xTypeName() string {
 	return "JsonActionResponseMessage"
 }
 
-func (m *_JsonActionResponseMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_JsonActionResponseMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (dataSetWriterId)
 	lengthInBits += 16
@@ -527,7 +527,7 @@ func (m *_JsonActionResponseMessage) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_JsonActionResponseMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_JsonActionResponseMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

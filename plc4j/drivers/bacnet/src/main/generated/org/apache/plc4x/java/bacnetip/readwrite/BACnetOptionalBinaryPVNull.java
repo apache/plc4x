@@ -52,7 +52,7 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nullValue
-    BACnetApplicationTagNull nullValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagNull) BACnetApplicationTagNull.staticParse(readBuffer), readBuffer), WithOption.WithName("nullValue"));
+    BACnetApplicationTagNull nullValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagNull.class, BACnetApplicationTagNull.staticParse(readBuffer)), readBuffer), WithOption.WithName("nullValue"));
 
     readBuffer.popContext();
     return new BACnetOptionalBinaryPVBuilderImpl(nullValue);

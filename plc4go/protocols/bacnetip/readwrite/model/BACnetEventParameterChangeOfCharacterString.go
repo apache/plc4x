@@ -324,8 +324,8 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetPlx4xTypeName() string
 	return "BACnetEventParameterChangeOfCharacterString"
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
+func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

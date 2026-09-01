@@ -78,7 +78,7 @@ public class BACnetConstructedDataLargeAnalogValueFaultHighLimit extends BACnetC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: faultHighLimit
-    BACnetApplicationTagDouble faultHighLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDouble) BACnetApplicationTagDouble.staticParse(readBuffer), readBuffer), WithOption.WithName("faultHighLimit"));
+    BACnetApplicationTagDouble faultHighLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDouble.class, BACnetApplicationTagDouble.staticParse(readBuffer)), readBuffer), WithOption.WithName("faultHighLimit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDouble.class, faultHighLimit, WithOption.WithName("actualValue"));

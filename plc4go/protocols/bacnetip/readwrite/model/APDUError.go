@@ -261,8 +261,8 @@ func (m *_APDUError) GetPlx4xTypeName() string {
 	return "APDUError"
 }
 
-func (m *_APDUError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -279,7 +279,7 @@ func (m *_APDUError) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

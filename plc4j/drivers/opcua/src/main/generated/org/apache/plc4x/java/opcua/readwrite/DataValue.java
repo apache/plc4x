@@ -184,10 +184,10 @@ public class DataValue implements Message {
     boolean valueSpecified = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("valueSpecified"));
 
     // Optional Field (conditional): value
-    Variant value = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (Variant) Variant.staticParse(readBuffer), readBuffer), valueSpecified, WithOption.WithName("value"));
+    Variant value = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Variant.class, Variant.staticParse(readBuffer)), readBuffer), valueSpecified, WithOption.WithName("value"));
 
     // Optional Field (conditional): statusCode
-    StatusCode statusCode = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (StatusCode) StatusCode.staticParse(readBuffer), readBuffer), statusCodeSpecified, WithOption.WithName("statusCode"));
+    StatusCode statusCode = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusCode.class, StatusCode.staticParse(readBuffer)), readBuffer), statusCodeSpecified, WithOption.WithName("statusCode"));
 
     // Optional Field (conditional): sourceTimestamp
     Long sourceTimestamp = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedLong(readBuffer, 64), sourceTimestampSpecified, WithOption.WithName("sourceTimestamp"));

@@ -109,8 +109,14 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                                                     }
                                                 }
                                             }
-                                        } catch (BufferException e) {
-                                            logger.error("Error parsing EIP discovery response", e);
+                                        } catch (BufferException | RuntimeException e) {
+                                            // RuntimeException too: a response that parses but is
+                                            // not the type the command claims fails the cast, and
+                                            // any host can send a datagram to a discovery port.
+                                            // One we cannot read costs that datagram, not discovery
+                                            // on this interface.
+                                            logger.warn("Ignoring an unreadable EIP discovery response from {}",
+                                                packet.getAddress(), e);
                                         }
                                     }
                                 } catch (SocketException e) {

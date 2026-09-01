@@ -226,8 +226,8 @@ func (m *_NLMInitializeRoutingTableAck) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTableAck"
 }
 
-func (m *_NLMInitializeRoutingTableAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMInitializeRoutingTableAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -243,7 +243,7 @@ func (m *_NLMInitializeRoutingTableAck) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_NLMInitializeRoutingTableAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMInitializeRoutingTableAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDateTimeValuePresentValue) GetPlx4xTypeName() str
 	return "BACnetConstructedDataDateTimeValuePresentValue"
 }
 
-func (m *_BACnetConstructedDataDateTimeValuePresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDateTimeValuePresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDateTimeValuePresentValue) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDateTimeValuePresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDateTimeValuePresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

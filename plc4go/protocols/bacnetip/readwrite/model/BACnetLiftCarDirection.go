@@ -124,11 +124,11 @@ func CastBACnetLiftCarDirection(structType any) BACnetLiftCarDirection {
 	return castFunc(structType)
 }
 
-func (m BACnetLiftCarDirection) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLiftCarDirection) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetLiftCarDirection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLiftCarDirection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

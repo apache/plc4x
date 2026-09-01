@@ -155,6 +155,13 @@ public class SimulatedConnection extends ConnectionBase<SimulatedConfiguration> 
     protected CompletableFuture<PlcReadResponse> onRead(PlcReadRequest readRequest) {
         Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
         for (String tagName : readRequest.getTagNames()) {
+            // A tag the builder couldn't parse is kept in the request with its error code and a
+            // null tag, so echo that code instead of dereferencing the tag (as onWrite does).
+            PlcResponseCode requestCode = readRequest.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                tags.put(tagName, new DefaultPlcResponseItem<>(requestCode, null));
+                continue;
+            }
             SimulatedTag tag = (SimulatedTag) readRequest.getTag(tagName);
             Optional<PlcValue> value = device.get(tag);
             tags.put(tagName, value
@@ -189,6 +196,9 @@ public class SimulatedConnection extends ConnectionBase<SimulatedConfiguration> 
     protected CompletableFuture<PlcSubscriptionResponse> onSubscribe(PlcSubscriptionRequest subscriptionRequest) {
         Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new LinkedHashMap<>();
         for (String name : subscriptionRequest.getTagNames()) {
+            // No invalid-address guard needed here: unlike the read/write builders, the
+            // subscription builder rejects an unparseable address by throwing, so a request
+            // that reaches this point only holds tags that parsed.
             SimulatedSubscriptionHandle handle = new SimulatedSubscriptionHandle(this, name);
             DefaultPlcSubscriptionTag subscriptionTag =
                 (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(name);

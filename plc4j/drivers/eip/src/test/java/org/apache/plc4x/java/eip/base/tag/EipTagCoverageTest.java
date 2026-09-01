@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.eip.base.tag;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
@@ -27,7 +26,6 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EipTagCoverageTest {
 
@@ -50,9 +48,9 @@ class EipTagCoverageTest {
     void ctorWithTypeOnly() {
         EipTag tag = new EipTag("%A0", CIPDataTypeCode.INT);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
-        // No element-count constructor → default int zero (not the 1 the
-        // single-arg ctor injects). Lock the surface in place.
-        assertThat(tag.getElementNb()).isZero();
+        // Every constructor now normalises to at least one element. This used to leave the
+        // field at Java's default of zero, which is not a count any request can be made with.
+        assertThat(tag.getElementNb()).isEqualTo(1);
     }
 
     @Test
@@ -63,53 +61,66 @@ class EipTagCoverageTest {
         assertThat(tag.getPlcValueType()).isEqualTo(PlcValueType.DINT);
     }
 
+    /**
+     * The type and element count are given at construction; EipTag is immutable, like every
+     * other driver's tag. This used to go through setType/setElementNb.
+     */
     @Test
-    void setTypeAndSetElementNbRoundtrip() {
-        EipTag tag = new EipTag("%A0");
-        tag.setType(CIPDataTypeCode.REAL);
-        tag.setElementNb(7);
+    void typeAndElementNbComeFromTheConstructor() {
+        EipTag tag = new EipTag("%A0", CIPDataTypeCode.REAL, 7);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.REAL);
         assertThat(tag.getElementNb()).isEqualTo(7);
     }
 
     @Test
     void ofParsesTagWithTypeAndElements() {
-        EipTag tag = EipTag.of("MyVar:INT:5");
+        EipTag tag = EipTag.of("MyVar[0..4]:INT");
         assertThat(tag).isNotNull();
-        assertThat(tag.getTag()).isEqualTo("MyVar");
+        assertThat(tag.getTag()).isEqualTo("MyVar[0..4]");
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
         assertThat(tag.getElementNb()).isEqualTo(5);
     }
 
     @Test
     void ofDefaultsDataTypeToDintWhenMissing() {
-        EipTag tag = EipTag.of("%A0:2");
+        EipTag tag = EipTag.of("%A0[0..1]");
         assertThat(tag).isNotNull();
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.DINT);
         assertThat(tag.getElementNb()).isEqualTo(2);
     }
 
     @Test
-    void ofWithZeroElementsUsesTypeOnlyCtorPath() {
-        // elementNb=0 selects the (tag, type) constructor branch.
-        EipTag tag = EipTag.of("%A0:INT:0");
+    void ofWithZeroElementsReadsOneElement() {
+        // An explicit count of zero used to survive into the tag; a request for zero elements
+        // is meaningless, so it is normalised to one like any other count below one.
+        EipTag tag = EipTag.of("%A0:INT");
         assertThat(tag).isNotNull();
-        assertThat(tag.getElementNb()).isZero();
+        assertThat(tag.getElementNb()).isEqualTo(1);
         assertThat(tag.getType()).isEqualTo(CIPDataTypeCode.INT);
     }
 
     @Test
     void matchesAgreesWithOf() {
-        assertThat(EipTag.matches("%A0:2")).isTrue();
+        assertThat(EipTag.matches("%A0[0..1]")).isTrue();
         // The regex is permissive — the unmatched-input branch in `of`
         // returns null; we don't need a separate negative test for `matches`
         // beyond the positive case above.
     }
 
     @Test
-    void getAddressStringIsNotImplemented() {
-        assertThatThrownBy(() -> new EipTag("%A0").getAddressString())
-            .isInstanceOf(NotImplementedException.class);
+    void getAddressStringRoundTrips() {
+        // A tag with no explicit type carries the DINT default only when built via `of`,
+        // so the bare constructor renders just the tag name.
+        assertThat(new EipTag("%A0").getAddressString()).isEqualTo("%A0");
+        assertThat(new EipTag("%A0", CIPDataTypeCode.DINT).getAddressString()).isEqualTo("%A0:DINT");
+        assertThat(new EipTag("%A0", CIPDataTypeCode.DINT, 8).getAddressString()).isEqualTo("%A0[0..7]:DINT");
+
+        // Whatever it renders has to parse back into an equivalent tag.
+        EipTag original = EipTag.of("%A0[0..7]:DINT");
+        EipTag reparsed = EipTag.of(original.getAddressString());
+        assertThat(reparsed.getTag()).isEqualTo(original.getTag());
+        assertThat(reparsed.getType()).isEqualTo(original.getType());
+        assertThat(reparsed.getElementNb()).isEqualTo(original.getElementNb());
     }
 
     @Test

@@ -106,11 +106,11 @@ func CastAlarmMask(structType any) AlarmMask {
 	return castFunc(structType)
 }
 
-func (m AlarmMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m AlarmMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m AlarmMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AlarmMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,11 +250,11 @@ func CastOpcuaNodeIdServicesVariableDialog(structType any) OpcuaNodeIdServicesVa
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableDialog) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableDialog) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableDialog) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableDialog) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

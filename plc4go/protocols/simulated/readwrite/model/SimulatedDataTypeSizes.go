@@ -371,11 +371,11 @@ func CastSimulatedDataTypeSizes(structType any) SimulatedDataTypeSizes {
 	return castFunc(structType)
 }
 
-func (m SimulatedDataTypeSizes) GetLengthInBits(ctx context.Context) uint16 {
+func (m SimulatedDataTypeSizes) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m SimulatedDataTypeSizes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SimulatedDataTypeSizes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

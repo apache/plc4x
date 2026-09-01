@@ -50,7 +50,7 @@ func (f *FieldWriterPadding[T]) WritePaddingField(ctx context.Context, logicalNa
 			return errors.Wrap(err, "error pushing context for "+logicalName)
 		}
 		for range timesPadding {
-			if err := dataWriter.Write(ctx, logicalName, value, writerArgs...); err != nil {
+			if err := dataWriter.Write(ctx, "value", value, writerArgs...); err != nil {
 				return errors.Wrap(err, "error writing value for "+logicalName)
 			}
 		}

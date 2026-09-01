@@ -414,8 +414,8 @@ func (m *_CipIdentity) GetPlx4xTypeName() string {
 	return "CipIdentity"
 }
 
-func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
+func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 16
@@ -431,7 +431,7 @@ func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.SocketAddressAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.SocketAddressAddress))
+		lengthInBits += 8 * uint64(len(m.SocketAddressAddress))
 	}
 
 	// Const Field (zeroes1)
@@ -465,7 +465,7 @@ func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 8
 
 	// Simple field (productName)
-	lengthInBits += uint16(int32(uint8(len(m.GetProductName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetProductName()))) * int32(int32(8)))
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -473,7 +473,7 @@ func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipIdentity) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipIdentity) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -578,7 +578,7 @@ func (m *_CipIdentity) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	}
 	_ = productNameLength
 
-	productName, err := ReadSimpleField(ctx, "productName", ReadString(readBuffer, uint32(int32(productNameLength)*int32(int32(8)))))
+	productName, err := ReadSimpleField(ctx, "productName", ReadString(readBuffer, uint32(int32(productNameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productName' field"))
 	}
@@ -675,7 +675,7 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(err, "Error serializing 'productNameLength' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "productName", m.GetProductName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetProductName())))*int32(int32(8))))); err != nil {
+		if err := WriteSimpleField[string](ctx, "productName", m.GetProductName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetProductName())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'productName' field")
 		}
 

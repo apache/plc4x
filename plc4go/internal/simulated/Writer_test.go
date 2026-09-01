@@ -77,7 +77,7 @@ func TestWriter_Write(t *testing.T) {
 					"test": apiModel.PlcResponseCode_OK,
 				}),
 			newState: map[simulatedTag]*apiValues.PlcValue{
-				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 			},
 			delayAtLeast: 0,
 		},
@@ -87,7 +87,7 @@ func TestWriter_Write(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 					},
 				},
 				options: map[string][]string{},
@@ -106,7 +106,7 @@ func TestWriter_Write(t *testing.T) {
 					"test": apiModel.PlcResponseCode_OK,
 				}),
 			newState: map[simulatedTag]*apiValues.PlcValue{
-				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(false)),
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(false))),
 			},
 			delayAtLeast: 0,
 		},
@@ -116,7 +116,7 @@ func TestWriter_Write(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 					},
 				},
 				options: map[string][]string{
@@ -137,7 +137,7 @@ func TestWriter_Write(t *testing.T) {
 					"test": apiModel.PlcResponseCode_OK,
 				}),
 			newState: map[simulatedTag]*apiValues.PlcValue{
-				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(false)),
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(false))),
 			},
 			delayAtLeast: 1000,
 		},
@@ -148,7 +148,7 @@ func TestWriter_Write(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 					},
 				},
 				options: map[string][]string{},
@@ -167,7 +167,7 @@ func TestWriter_Write(t *testing.T) {
 					"test": apiModel.PlcResponseCode_INVALID_ADDRESS,
 				}),
 			newState: map[simulatedTag]*apiValues.PlcValue{
-				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): new(apiValues.PlcValue(spiValues.NewPlcBOOL(true))),
 			},
 			delayAtLeast: 0,
 		},

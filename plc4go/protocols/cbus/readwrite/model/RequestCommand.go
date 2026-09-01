@@ -357,19 +357,19 @@ func (m *_RequestCommand) GetPlx4xTypeName() string {
 	return "RequestCommand"
 }
 
-func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Const Field (initiator)
 	lengthInBits += 8
 
 	// Manual Field (cbusCommand)
-	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint64(int32((int32(m.GetCbusCommand().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf((m.GetCBusOptions().GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf((m.GetCBusOptions().GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -381,7 +381,7 @@ func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

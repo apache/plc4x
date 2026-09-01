@@ -9358,11 +9358,11 @@ func CastOpcuaNodeIdServicesVariableCertificate(structType any) OpcuaNodeIdServi
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableCertificate) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableCertificate) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableCertificate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableCertificate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

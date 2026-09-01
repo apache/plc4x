@@ -78,7 +78,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: authenticationStatus
-    BACnetAuthenticationStatusTagged authenticationStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationStatusTagged) BACnetAuthenticationStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("authenticationStatus"));
+    BACnetAuthenticationStatusTagged authenticationStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationStatusTagged.class, BACnetAuthenticationStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("authenticationStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAuthenticationStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAuthenticationStatusTagged.class, authenticationStatus, WithOption.WithName("actualValue"));

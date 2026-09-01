@@ -160,11 +160,11 @@ func CastAdsPortNumbers(structType any) AdsPortNumbers {
 	return castFunc(structType)
 }
 
-func (m AdsPortNumbers) GetLengthInBits(ctx context.Context) uint16 {
+func (m AdsPortNumbers) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m AdsPortNumbers) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AdsPortNumbers) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

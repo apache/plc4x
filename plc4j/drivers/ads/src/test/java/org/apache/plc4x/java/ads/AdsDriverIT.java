@@ -19,13 +19,11 @@
 package org.apache.plc4x.java.ads;
 
 import org.apache.plc4x.java.utils.testutils.driver.DriverTestsuiteRunner;
-import org.junit.jupiter.api.Disabled;
 
-@Disabled
 public class AdsDriverIT extends DriverTestsuiteRunner {
 
     public AdsDriverIT() {
-        super("/protocols/ads/DriverTestsuite.xml", "org.apache.plc4x.java.ads.readwrite", true);
+        super("/protocols/ads/DriverTestsuite.xml", "org.apache.plc4x.java.ads.readwrite", false);
     }
 
 }

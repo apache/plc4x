@@ -188,13 +188,13 @@ func (m *_BACnetConstructedDataCalendarAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCalendarAll"
 }
 
-func (m *_BACnetConstructedDataCalendarAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCalendarAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCalendarAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCalendarAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

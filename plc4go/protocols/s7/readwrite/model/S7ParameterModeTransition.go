@@ -277,8 +277,8 @@ func (m *_S7ParameterModeTransition) GetPlx4xTypeName() string {
 	return "S7ParameterModeTransition"
 }
 
-func (m *_S7ParameterModeTransition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
+func (m *_S7ParameterModeTransition) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -304,7 +304,7 @@ func (m *_S7ParameterModeTransition) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_S7ParameterModeTransition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7ParameterModeTransition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

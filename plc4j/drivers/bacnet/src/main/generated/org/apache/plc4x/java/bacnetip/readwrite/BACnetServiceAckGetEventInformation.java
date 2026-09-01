@@ -70,10 +70,10 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: listOfEventSummaries
-    BACnetEventSummariesList listOfEventSummaries = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventSummariesList) BACnetEventSummariesList.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("listOfEventSummaries"));
+    BACnetEventSummariesList listOfEventSummaries = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventSummariesList.class, BACnetEventSummariesList.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("listOfEventSummaries"));
 
     // Simple Field: moreEvents
-    BACnetContextTagBoolean moreEvents = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBoolean) BACnetContextTagBoolean.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN)), readBuffer), WithOption.WithName("moreEvents"));
+    BACnetContextTagBoolean moreEvents = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBoolean.class, BACnetContextTagBoolean.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN))), readBuffer), WithOption.WithName("moreEvents"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(listOfEventSummaries, moreEvents);

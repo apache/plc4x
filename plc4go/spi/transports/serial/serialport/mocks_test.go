@@ -133,7 +133,7 @@ type MockPort_Read_Call struct {
 
 // Read is a helper method to define mock.On call
 //   - p []byte
-func (_e *MockPort_Expecter) Read(p interface{}) *MockPort_Read_Call {
+func (_e *MockPort_Expecter) Read(p any) *MockPort_Read_Call {
 	return &MockPort_Read_Call{Call: _e.mock.On("Read", p)}
 }
 
@@ -184,7 +184,7 @@ type MockPort_SetReadDeadline_Call struct {
 
 // SetReadDeadline is a helper method to define mock.On call
 //   - t time.Time
-func (_e *MockPort_Expecter) SetReadDeadline(t interface{}) *MockPort_SetReadDeadline_Call {
+func (_e *MockPort_Expecter) SetReadDeadline(t any) *MockPort_SetReadDeadline_Call {
 	return &MockPort_SetReadDeadline_Call{Call: _e.mock.On("SetReadDeadline", t)}
 }
 
@@ -235,7 +235,7 @@ type MockPort_SetWriteDeadline_Call struct {
 
 // SetWriteDeadline is a helper method to define mock.On call
 //   - t time.Time
-func (_e *MockPort_Expecter) SetWriteDeadline(t interface{}) *MockPort_SetWriteDeadline_Call {
+func (_e *MockPort_Expecter) SetWriteDeadline(t any) *MockPort_SetWriteDeadline_Call {
 	return &MockPort_SetWriteDeadline_Call{Call: _e.mock.On("SetWriteDeadline", t)}
 }
 
@@ -295,7 +295,7 @@ type MockPort_Write_Call struct {
 
 // Write is a helper method to define mock.On call
 //   - p []byte
-func (_e *MockPort_Expecter) Write(p interface{}) *MockPort_Write_Call {
+func (_e *MockPort_Expecter) Write(p any) *MockPort_Write_Call {
 	return &MockPort_Write_Call{Call: _e.mock.On("Write", p)}
 }
 
@@ -611,7 +611,7 @@ type MockControlPort_Read_Call struct {
 
 // Read is a helper method to define mock.On call
 //   - p []byte
-func (_e *MockControlPort_Expecter) Read(p interface{}) *MockControlPort_Read_Call {
+func (_e *MockControlPort_Expecter) Read(p any) *MockControlPort_Read_Call {
 	return &MockControlPort_Read_Call{Call: _e.mock.On("Read", p)}
 }
 
@@ -662,7 +662,7 @@ type MockControlPort_SendBreak_Call struct {
 
 // SendBreak is a helper method to define mock.On call
 //   - d time.Duration
-func (_e *MockControlPort_Expecter) SendBreak(d interface{}) *MockControlPort_SendBreak_Call {
+func (_e *MockControlPort_Expecter) SendBreak(d any) *MockControlPort_SendBreak_Call {
 	return &MockControlPort_SendBreak_Call{Call: _e.mock.On("SendBreak", d)}
 }
 
@@ -713,7 +713,7 @@ type MockControlPort_SetConfig_Call struct {
 
 // SetConfig is a helper method to define mock.On call
 //   - cfg Config
-func (_e *MockControlPort_Expecter) SetConfig(cfg interface{}) *MockControlPort_SetConfig_Call {
+func (_e *MockControlPort_Expecter) SetConfig(cfg any) *MockControlPort_SetConfig_Call {
 	return &MockControlPort_SetConfig_Call{Call: _e.mock.On("SetConfig", cfg)}
 }
 
@@ -764,7 +764,7 @@ type MockControlPort_SetDTR_Call struct {
 
 // SetDTR is a helper method to define mock.On call
 //   - assert bool
-func (_e *MockControlPort_Expecter) SetDTR(assert interface{}) *MockControlPort_SetDTR_Call {
+func (_e *MockControlPort_Expecter) SetDTR(assert any) *MockControlPort_SetDTR_Call {
 	return &MockControlPort_SetDTR_Call{Call: _e.mock.On("SetDTR", assert)}
 }
 
@@ -815,7 +815,7 @@ type MockControlPort_SetRTS_Call struct {
 
 // SetRTS is a helper method to define mock.On call
 //   - assert bool
-func (_e *MockControlPort_Expecter) SetRTS(assert interface{}) *MockControlPort_SetRTS_Call {
+func (_e *MockControlPort_Expecter) SetRTS(assert any) *MockControlPort_SetRTS_Call {
 	return &MockControlPort_SetRTS_Call{Call: _e.mock.On("SetRTS", assert)}
 }
 
@@ -866,7 +866,7 @@ type MockControlPort_SetReadDeadline_Call struct {
 
 // SetReadDeadline is a helper method to define mock.On call
 //   - t time.Time
-func (_e *MockControlPort_Expecter) SetReadDeadline(t interface{}) *MockControlPort_SetReadDeadline_Call {
+func (_e *MockControlPort_Expecter) SetReadDeadline(t any) *MockControlPort_SetReadDeadline_Call {
 	return &MockControlPort_SetReadDeadline_Call{Call: _e.mock.On("SetReadDeadline", t)}
 }
 
@@ -917,7 +917,7 @@ type MockControlPort_SetWriteDeadline_Call struct {
 
 // SetWriteDeadline is a helper method to define mock.On call
 //   - t time.Time
-func (_e *MockControlPort_Expecter) SetWriteDeadline(t interface{}) *MockControlPort_SetWriteDeadline_Call {
+func (_e *MockControlPort_Expecter) SetWriteDeadline(t any) *MockControlPort_SetWriteDeadline_Call {
 	return &MockControlPort_SetWriteDeadline_Call{Call: _e.mock.On("SetWriteDeadline", t)}
 }
 
@@ -977,7 +977,7 @@ type MockControlPort_Write_Call struct {
 
 // Write is a helper method to define mock.On call
 //   - p []byte
-func (_e *MockControlPort_Expecter) Write(p interface{}) *MockControlPort_Write_Call {
+func (_e *MockControlPort_Expecter) Write(p any) *MockControlPort_Write_Call {
 	return &MockControlPort_Write_Call{Call: _e.mock.On("Write", p)}
 }
 

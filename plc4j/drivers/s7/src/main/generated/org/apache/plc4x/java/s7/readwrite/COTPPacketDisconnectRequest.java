@@ -75,7 +75,7 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
     return protocolClass;
   }
 
-  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, int cotpLen)
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, long cotpLen)
       throws BufferException {
     readBuffer.pushContext(WithOption.WithName("COTPPacketDisconnectRequest"));
     int startPos = readBuffer.getPositionInBits();

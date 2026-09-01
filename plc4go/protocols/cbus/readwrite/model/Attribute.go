@@ -280,11 +280,11 @@ func CastAttribute(structType any) Attribute {
 	return castFunc(structType)
 }
 
-func (m Attribute) GetLengthInBits(ctx context.Context) uint16 {
+func (m Attribute) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m Attribute) GetLengthInBytes(ctx context.Context) uint16 {
+func (m Attribute) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

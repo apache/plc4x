@@ -37,16 +37,16 @@
  - `tcp`
 5+|Config options:
 |`monitoring-timer` |INT |0| |SLMP monitoring timer written into each 3E request frame (0 = wait infinitely).
-|`request-timeout` |INT |5000| |Client-side timeout in milliseconds awaiting a response.
+|`request-timeout-ms` |INT |5000| |Client-side timeout in milliseconds awaiting a response.
 5+|Transport config options:
 5+|
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout` |INT |5000| |
-|`tcp.read-timeout` |INT |0| |
-|`tcp.write-timeout` |INT |0| |
-|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.connect-timeout-ms` |INT |5000| |
+|`tcp.read-timeout-ms` |INT |0| |
+|`tcp.write-timeout-ms` |INT |0| |
+|`tcp.no-delay` |BOOLEAN |true| |
 |`tcp.keep-alive` |BOOLEAN |false| |
 |`tcp.send-buffer-size` |INT |81920| |
 |`tcp.receive-buffer-size` |INT |81920| |

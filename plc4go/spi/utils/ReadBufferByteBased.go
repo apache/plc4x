@@ -24,6 +24,12 @@ import (
 	"math"
 	"math/big"
 	"math/bits"
+	"os"
+	"strconv"
+	"strings"
+	"unicode/utf16"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
 )
@@ -33,6 +39,45 @@ type ReadBufferByteBased interface {
 	GetBytes() []byte
 	GetTotalBytes() uint64
 	PeekByte(offset byte) byte
+}
+
+// DefaultMaxReadBufferDepth is the default bound for nested PullContext calls.
+// Generated parsers are plain recursive-descent, so wire-controlled recursion
+// (e.g. self-nesting mspec types) would otherwise exhaust the goroutine stack,
+// which is fatal and cannot be recovered. The deepest message in the project's
+// own test suites nests 36 levels, so this is far beyond anything a real device
+// sends. It is the same number the other bindings use, so that one setting of
+// MaxNestingDepthEnv means the same thing whichever of them is reading.
+const DefaultMaxReadBufferDepth = 1024
+
+// MaxNestingDepthEnv names the environment variable that moves the bound for the
+// device whose messages genuinely nest deeper than anything we have seen. It
+// carries the same meaning here as it does in plc4j: a positive depth, and
+// anything else leaves the default in place. Switching the check off altogether
+// stays a deliberate choice in code, via WithMaxDepthForReadBufferByteBased.
+const MaxNestingDepthEnv = "PLC4X_MAX_NESTING_DEPTH"
+
+// The bound in force for a buffer that was not given one of its own. Resolved
+// once at load, since the environment cannot change under a running process.
+var maxReadBufferDepth = resolveMaxReadBufferDepth(os.Getenv(MaxNestingDepthEnv))
+
+func resolveMaxReadBufferDepth(configured string) int {
+	configured = strings.TrimSpace(configured)
+	if configured == "" {
+		return DefaultMaxReadBufferDepth
+	}
+	depth, err := strconv.Atoi(configured)
+	if err != nil {
+		log.Warn().Str("value", configured).Msgf(
+			"%s is not a number, keeping the maximum nesting depth of %d", MaxNestingDepthEnv, DefaultMaxReadBufferDepth)
+		return DefaultMaxReadBufferDepth
+	}
+	if depth < 1 {
+		log.Warn().Int("value", depth).Msgf(
+			"%s must be positive, keeping the maximum nesting depth of %d", MaxNestingDepthEnv, DefaultMaxReadBufferDepth)
+		return DefaultMaxReadBufferDepth
+	}
+	return depth
 }
 
 func NewReadBufferByteBased(data []byte, options ...ReadBufferByteBasedOptions) ReadBufferByteBased {
@@ -56,6 +101,16 @@ func WithByteOrderForReadBufferByteBased(byteOrder binary.ByteOrder) ReadBufferB
 	}
 }
 
+// WithMaxDepthForReadBufferByteBased overrides the maximum nesting depth of
+// PullContext calls (default DefaultMaxReadBufferDepth, or whatever
+// MaxNestingDepthEnv asks for, applied when left at the zero value). A negative
+// value disables the check entirely — only do that for trusted input.
+func WithMaxDepthForReadBufferByteBased(maxDepth int) ReadBufferByteBasedOptions {
+	return func(b *byteReadBuffer) {
+		b.maxDepth = maxDepth
+	}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -67,6 +122,8 @@ type byteReadBuffer struct {
 	bits      *ReadBitBuffer
 	pos       uint64
 	byteOrder binary.ByteOrder
+	depth     int
+	maxDepth  int
 }
 
 var _ ReadBuffer = (*byteReadBuffer)(nil)
@@ -85,11 +142,11 @@ func (rb *byteReadBuffer) GetByteOrder() binary.ByteOrder {
 	return rb.byteOrder
 }
 
-func (rb *byteReadBuffer) GetPos() uint16 {
-	return uint16(rb.pos / 8)
+func (rb *byteReadBuffer) GetPos() uint32 {
+	return uint32(rb.pos / 8)
 }
 
-func (rb *byteReadBuffer) Reset(pos uint16) {
+func (rb *byteReadBuffer) Reset(pos uint32) {
 	rb.pos = uint64(pos) * 8
 	rb.bits.ResetTo(rb.pos)
 }
@@ -107,10 +164,30 @@ func (rb *byteReadBuffer) HasMore(bitLength uint8) bool {
 }
 
 func (rb *byteReadBuffer) PeekByte(offset uint8) uint8 {
-	return rb.data[rb.GetPos()+uint16(offset)]
+	// Peeking past the end must not be fatal. The termination predicates of manual arrays peek
+	// ahead speculatively for a delimiter, so a message that ends before that delimiter arrives
+	// would otherwise index out of range - and the peer decides where a message ends. Declining
+	// with a zero lets the predicate not match and leaves the following read to report the
+	// truncation, which is the failure the caller can actually handle.
+	index := uint64(rb.GetPos()) + uint64(offset)
+	if index >= uint64(len(rb.data)) {
+		return 0
+	}
+	return rb.data[index]
 }
 
-func (rb *byteReadBuffer) PullContext(_ string, _ ...WithReaderArgs) error {
+func (rb *byteReadBuffer) PullContext(logicalName string, _ ...WithReaderArgs) error {
+	// Depth guard against wire-controlled recursion: every generated parser
+	// funnels through PullContext/CloseContext, so bounding the nesting here
+	// turns otherwise fatal goroutine-stack exhaustion into a normal parse error.
+	rb.depth++
+	maxDepth := rb.maxDepth
+	if maxDepth == 0 {
+		maxDepth = maxReadBufferDepth
+	}
+	if maxDepth > 0 && rb.depth > maxDepth {
+		return errors.Errorf("nesting depth %d at context %s exceeds the maximum of %d (use WithMaxDepthForReadBufferByteBased to raise it for trusted input)", rb.depth, logicalName, maxDepth)
+	}
 	return nil
 }
 
@@ -125,6 +202,15 @@ func (rb *byteReadBuffer) ReadByte(_ string, _ ...WithReaderArgs) (byte, error) 
 }
 
 func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithReaderArgs) ([]byte, error) {
+	// numberOfBytes is typically a raw wire value: validate it against the
+	// remaining buffer BEFORE allocating, so a forged negative or huge size
+	// cannot panic makeslice or demand gigabytes up front.
+	if numberOfBytes < 0 {
+		return nil, errors.Errorf("cannot read a negative number of bytes (%d)", numberOfBytes)
+	}
+	if remainingBits := rb.bits.BitsRemaining(); uint64(numberOfBytes) > remainingBits/8 {
+		return nil, errors.Errorf("requested %d bytes but only %d bits remain in the buffer", numberOfBytes, remainingBits)
+	}
 	byteArray := make([]byte, numberOfBytes)
 	for i := range numberOfBytes {
 		rb.pos += 8
@@ -137,90 +223,151 @@ func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithRe
 	return byteArray, nil
 }
 
-func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, _ ...WithReaderArgs) (uint8, error) {
+// decodeBCDIfSelected applies BCD decoding to a freshly read raw bit value when
+// (and only when) the reader args explicitly select the BCD encoding.
+//
+// The BCD path deliberately bypasses the binary.LittleEndian byte swapping
+// branches below: BCD operates on the raw MSB-first nibble stream as it appears
+// on the wire, and no BCD field in the tree is little endian.
+//
+// A bitLength of 0 is left alone so the existing "read nothing, return 0"
+// behaviour is preserved verbatim.
+//
+// Every caller invokes this BEFORE advancing rb.pos, so a decode error names the
+// first bit of the offending field, like every other read error in this file and
+// like the write side in WriteBufferByteBased.
+//
+// maxValue is the widest value the target type can carry as an UNSIGNED
+// quantity: plc4j's EncodingBCD.decodeByte/decodeShort bound at 255/65535 and
+// then narrow with a (byte)/(short) cast, so a 12 bit signed-byte field holding
+// 0x200 yields 200 -> int8(-56) here just as it yields (byte) 200 == -56 there.
+func (rb *byteReadBuffer) decodeBCDIfSelected(res uint64, bitLength uint8, maxValue uint64, readerArgs []WithReaderArgs) (uint64, bool, error) {
+	if bitLength == 0 || !readerArgsSelectBCD(readerArgs) {
+		return res, false, nil
+	}
+	decoded, err := decodeBCDBounded(res, bitLength, maxValue)
+	if err != nil {
+		return 0, true, errors.Wrapf(err, "error decoding BCD value of %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
+	}
+	return decoded, true, nil
+}
+
+func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint8, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return uint8(decoded), decodeErr
+	}
 	return uint8(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint16(_ string, bitLength uint8, _ ...WithReaderArgs) (uint16, error) {
+func (rb *byteReadBuffer) ReadUint16(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint16, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint16, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return uint16(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return uint16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return uint16(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint32(_ string, bitLength uint8, _ ...WithReaderArgs) (uint32, error) {
+func (rb *byteReadBuffer) ReadUint32(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint32, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint32, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return uint32(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return uint32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return uint32(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint64(_ string, bitLength uint8, _ ...WithReaderArgs) (uint64, error) {
+func (rb *byteReadBuffer) ReadUint64(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint64, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint64, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return decoded, decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return bits.ReverseBytes64(res) >> (64 - bitLength), nil
 	}
 	return res, nil
 }
 
-func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, _ ...WithReaderArgs) (int8, error) {
+func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int8, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint8, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int8(decoded), decodeErr
+	}
 	return int8(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, _ ...WithReaderArgs) (int16, error) {
+func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int16, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint16, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int16(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return int16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return int16(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, _ ...WithReaderArgs) (int32, error) {
+func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int32, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint32, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int32(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return int32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return int32(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, _ ...WithReaderArgs) (int64, error) {
+func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int64, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint64, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int64(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return int64(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
@@ -323,21 +470,43 @@ func (rb *byteReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, _ ..
 	return big.NewFloat(readFloat64), nil
 }
 
-func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, _ ...WithReaderArgs) (string, error) {
+func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
 	stringBytes, err := rb.ReadByteArray(logicalName, int(bitLength/8))
 	if err != nil {
-		return "", errors.Wrap(err, "Error reading big int")
+		return "", errors.Wrap(err, "Error reading string bytes")
 	}
-	// TODO: make the null-termination a reader arg
-	// End the string at the 0-character.
-	for i, value := range stringBytes {
-		if value == 0x00 {
-			return string(stringBytes[0:i]), nil
+	encoding := strings.ToUpper(strings.ReplaceAll(BufferCommons{}.ExtractEncoding(UpcastReaderArgs(readerArgs...)...), "-", ""))
+	switch encoding {
+	case "UTF16", "UTF16LE", "UTF16BE":
+		byteOrder := binary.ByteOrder(binary.LittleEndian)
+		if encoding == "UTF16BE" {
+			byteOrder = binary.BigEndian
 		}
+		codeUnits := make([]uint16, 0, len(stringBytes)/2)
+		for i := 0; i+1 < len(stringBytes); i += 2 {
+			codeUnit := byteOrder.Uint16(stringBytes[i : i+2])
+			// End the string at the 0-character.
+			if codeUnit == 0x0000 {
+				break
+			}
+			codeUnits = append(codeUnits, codeUnit)
+		}
+		return string(utf16.Decode(codeUnits)), nil
+	default:
+		// TODO: make the null-termination a reader arg
+		// End the string at the 0-character.
+		for i, value := range stringBytes {
+			if value == 0x00 {
+				return string(stringBytes[0:i]), nil
+			}
+		}
+		return string(stringBytes), nil
 	}
-	return string(stringBytes), nil
 }
 
 func (rb *byteReadBuffer) CloseContext(_ string, _ ...WithReaderArgs) error {
+	if rb.depth > 0 {
+		rb.depth--
+	}
 	return nil
 }

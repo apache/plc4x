@@ -188,13 +188,13 @@ func (m *_SysexCommandSamplingInterval) GetPlx4xTypeName() string {
 	return "SysexCommandSamplingInterval"
 }
 
-func (m *_SysexCommandSamplingInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandSamplingInterval) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SysexCommandSamplingInterval) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandSamplingInterval) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

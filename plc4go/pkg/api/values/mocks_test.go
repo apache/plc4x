@@ -170,7 +170,7 @@ type MockPlcValue_GetBoolAt_Call struct {
 
 // GetBoolAt is a helper method to define mock.On call
 //   - index uint32
-func (_e *MockPlcValue_Expecter) GetBoolAt(index interface{}) *MockPlcValue_GetBoolAt_Call {
+func (_e *MockPlcValue_Expecter) GetBoolAt(index any) *MockPlcValue_GetBoolAt_Call {
 	return &MockPlcValue_GetBoolAt_Call{Call: _e.mock.On("GetBoolAt", index)}
 }
 
@@ -531,7 +531,7 @@ type MockPlcValue_GetIndex_Call struct {
 
 // GetIndex is a helper method to define mock.On call
 //   - i uint32
-func (_e *MockPlcValue_Expecter) GetIndex(i interface{}) *MockPlcValue_GetIndex_Call {
+func (_e *MockPlcValue_Expecter) GetIndex(i any) *MockPlcValue_GetIndex_Call {
 	return &MockPlcValue_GetIndex_Call{Call: _e.mock.On("GetIndex", i)}
 }
 
@@ -1296,7 +1296,7 @@ type MockPlcValue_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - key string
-func (_e *MockPlcValue_Expecter) GetValue(key interface{}) *MockPlcValue_GetValue_Call {
+func (_e *MockPlcValue_Expecter) GetValue(key any) *MockPlcValue_GetValue_Call {
 	return &MockPlcValue_GetValue_Call{Call: _e.mock.On("GetValue", key)}
 }
 
@@ -1347,7 +1347,7 @@ type MockPlcValue_HasKey_Call struct {
 
 // HasKey is a helper method to define mock.On call
 //   - key string
-func (_e *MockPlcValue_Expecter) HasKey(key interface{}) *MockPlcValue_HasKey_Call {
+func (_e *MockPlcValue_Expecter) HasKey(key any) *MockPlcValue_HasKey_Call {
 	return &MockPlcValue_HasKey_Call{Call: _e.mock.On("HasKey", key)}
 }
 
@@ -2571,7 +2571,7 @@ type MockRawPlcValue_GetBoolAt_Call struct {
 
 // GetBoolAt is a helper method to define mock.On call
 //   - index uint32
-func (_e *MockRawPlcValue_Expecter) GetBoolAt(index interface{}) *MockRawPlcValue_GetBoolAt_Call {
+func (_e *MockRawPlcValue_Expecter) GetBoolAt(index any) *MockRawPlcValue_GetBoolAt_Call {
 	return &MockRawPlcValue_GetBoolAt_Call{Call: _e.mock.On("GetBoolAt", index)}
 }
 
@@ -2932,7 +2932,7 @@ type MockRawPlcValue_GetIndex_Call struct {
 
 // GetIndex is a helper method to define mock.On call
 //   - i uint32
-func (_e *MockRawPlcValue_Expecter) GetIndex(i interface{}) *MockRawPlcValue_GetIndex_Call {
+func (_e *MockRawPlcValue_Expecter) GetIndex(i any) *MockRawPlcValue_GetIndex_Call {
 	return &MockRawPlcValue_GetIndex_Call{Call: _e.mock.On("GetIndex", i)}
 }
 
@@ -3697,7 +3697,7 @@ type MockRawPlcValue_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - key string
-func (_e *MockRawPlcValue_Expecter) GetValue(key interface{}) *MockRawPlcValue_GetValue_Call {
+func (_e *MockRawPlcValue_Expecter) GetValue(key any) *MockRawPlcValue_GetValue_Call {
 	return &MockRawPlcValue_GetValue_Call{Call: _e.mock.On("GetValue", key)}
 }
 
@@ -3748,7 +3748,7 @@ type MockRawPlcValue_HasKey_Call struct {
 
 // HasKey is a helper method to define mock.On call
 //   - key string
-func (_e *MockRawPlcValue_Expecter) HasKey(key interface{}) *MockRawPlcValue_HasKey_Call {
+func (_e *MockRawPlcValue_Expecter) HasKey(key any) *MockRawPlcValue_HasKey_Call {
 	return &MockRawPlcValue_HasKey_Call{Call: _e.mock.On("HasKey", key)}
 }
 
@@ -4813,7 +4813,7 @@ type MockRawPlcValue_RawDecodeValue_Call struct {
 
 // RawDecodeValue is a helper method to define mock.On call
 //   - typeName string
-func (_e *MockRawPlcValue_Expecter) RawDecodeValue(typeName interface{}) *MockRawPlcValue_RawDecodeValue_Call {
+func (_e *MockRawPlcValue_Expecter) RawDecodeValue(typeName any) *MockRawPlcValue_RawDecodeValue_Call {
 	return &MockRawPlcValue_RawDecodeValue_Call{Call: _e.mock.On("RawDecodeValue", typeName)}
 }
 

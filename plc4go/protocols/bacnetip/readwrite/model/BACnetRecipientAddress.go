@@ -225,8 +225,8 @@ func (m *_BACnetRecipientAddress) GetPlx4xTypeName() string {
 	return "BACnetRecipientAddress"
 }
 
-func (m *_BACnetRecipientAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).getLengthInBits(ctx))
+func (m *_BACnetRecipientAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetRecipientContract.(*_BACnetRecipient).getLengthInBits(ctx))
 
 	// Simple field (addressValue)
 	lengthInBits += m.AddressValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetRecipientAddress) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetRecipientAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetRecipientAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

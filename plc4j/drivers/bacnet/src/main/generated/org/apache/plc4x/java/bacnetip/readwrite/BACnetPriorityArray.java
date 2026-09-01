@@ -207,10 +207,10 @@ public class BACnetPriorityArray implements Message {
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: data
-    List<BACnetPriorityValue> data = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetPriorityValue) BACnetPriorityValue.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument)), readBuffer), () -> (boolean) org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("data"));
+    List<BACnetPriorityValue> data = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPriorityValue.class, BACnetPriorityValue.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument))), readBuffer), () -> (boolean) org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("data"));
 
     // Virtual Field: priorityValue01 (doesn't parse anything, just makes the value available)
     BACnetPriorityValue priorityValue01 = FieldReaderFactory.readVirtualField(BACnetPriorityValue.class, (((StaticHelper.COUNT(data)) > (0)) ? data.get(0) : null), WithOption.WithName("priorityValue01"));

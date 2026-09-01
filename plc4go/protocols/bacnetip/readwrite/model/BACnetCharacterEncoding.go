@@ -118,11 +118,11 @@ func CastBACnetCharacterEncoding(structType any) BACnetCharacterEncoding {
 	return castFunc(structType)
 }
 
-func (m BACnetCharacterEncoding) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetCharacterEncoding) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetCharacterEncoding) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetCharacterEncoding) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

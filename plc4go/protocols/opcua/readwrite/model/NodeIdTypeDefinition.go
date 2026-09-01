@@ -62,8 +62,8 @@ type NodeIdTypeDefinitionContract interface {
 
 // NodeIdTypeDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
 type NodeIdTypeDefinitionRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetNodeType returns NodeType (discriminator field)
 	GetNodeType() NodeIdType
 	// GetIdentifier returns Identifier (abstract field)
@@ -295,19 +295,19 @@ func (m *_NodeIdTypeDefinition) GetPlx4xTypeName() string {
 	return "NodeIdTypeDefinition"
 }
 
-func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (nodeType)
 	lengthInBits += 6
 
 	return lengthInBits
 }
 
-func (m *_NodeIdTypeDefinition) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_NodeIdTypeDefinition) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_NodeIdTypeDefinition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeIdTypeDefinition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

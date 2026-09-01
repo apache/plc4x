@@ -364,8 +364,8 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetPlx4xTypeName() 
 	return "BACnetConfirmedServiceRequestGetEnrollmentSummary"
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (acknowledgmentFilter)
 	lengthInBits += m.AcknowledgmentFilter.GetLengthInBits(ctx)
@@ -398,7 +398,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

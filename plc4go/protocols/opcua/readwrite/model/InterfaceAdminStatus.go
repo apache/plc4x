@@ -100,11 +100,11 @@ func CastInterfaceAdminStatus(structType any) InterfaceAdminStatus {
 	return castFunc(structType)
 }
 
-func (m InterfaceAdminStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m InterfaceAdminStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m InterfaceAdminStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m InterfaceAdminStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

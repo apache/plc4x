@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,16 +208,16 @@ func (m *_MediaTransportControlDataSelectionName) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataSelectionName"
 }
 
-func (m *_MediaTransportControlDataSelectionName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataSelectionName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (selectionName)
-	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
+	lengthInBits += uint64(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
 
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataSelectionName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataSelectionName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -231,7 +232,7 @@ func (m *_MediaTransportControlDataSelectionName) parse(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	selectionName, err := ReadSimpleField(ctx, "selectionName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	selectionName, err := ReadSimpleField(ctx, "selectionName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionName' field"))
 	}
@@ -262,7 +263,7 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSelectionName")
 		}
 
-		if err := WriteSimpleField[string](ctx, "selectionName", m.GetSelectionName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+		if err := WriteSimpleField[string](ctx, "selectionName", m.GetSelectionName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'selectionName' field")
 		}
 

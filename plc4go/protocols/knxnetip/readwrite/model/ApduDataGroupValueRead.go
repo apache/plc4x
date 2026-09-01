@@ -188,8 +188,8 @@ func (m *_ApduDataGroupValueRead) GetPlx4xTypeName() string {
 	return "ApduDataGroupValueRead"
 }
 
-func (m *_ApduDataGroupValueRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataGroupValueRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 6
@@ -197,7 +197,7 @@ func (m *_ApduDataGroupValueRead) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduDataGroupValueRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataGroupValueRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

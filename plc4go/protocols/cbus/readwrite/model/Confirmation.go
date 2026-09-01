@@ -245,8 +245,8 @@ func (m *_Confirmation) GetPlx4xTypeName() string {
 	return "Confirmation"
 }
 
-func (m *_Confirmation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Confirmation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (alpha)
 	lengthInBits += m.Alpha.GetLengthInBits(ctx)
@@ -264,7 +264,7 @@ func (m *_Confirmation) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Confirmation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Confirmation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

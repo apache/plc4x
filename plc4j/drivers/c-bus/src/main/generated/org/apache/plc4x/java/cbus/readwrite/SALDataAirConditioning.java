@@ -60,7 +60,7 @@ public class SALDataAirConditioning extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: airConditioningData
-    AirConditioningData airConditioningData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AirConditioningData) AirConditioningData.staticParse(readBuffer), readBuffer), WithOption.WithName("airConditioningData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    AirConditioningData airConditioningData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AirConditioningData.class, AirConditioningData.staticParse(readBuffer)), readBuffer), WithOption.WithName("airConditioningData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(airConditioningData);

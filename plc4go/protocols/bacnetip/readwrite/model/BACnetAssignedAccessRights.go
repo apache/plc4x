@@ -215,8 +215,8 @@ func (m *_BACnetAssignedAccessRights) GetPlx4xTypeName() string {
 	return "BACnetAssignedAccessRights"
 }
 
-func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (assignedAccessRights)
 	lengthInBits += m.AssignedAccessRights.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetAssignedAccessRights) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAssignedAccessRights) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

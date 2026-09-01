@@ -27,29 +27,21 @@ image::users/protocols/bacnet_banner.png[banner,512,167]
 
 == BACnet (Building Automation and Control Networks)
 
+== Supported Operations
+
+IMPORTANT: This driver is a *passive listener*. It supports subscriptions only - reading, writing
+and browsing are not implemented and a request for any of them is rejected.
+
+The driver joins the network and reports the change-of-value (COV) notifications it observes. There
+is no handshake with a device and no request/response exchange.
+
+Tag addresses are not interpreted yet, so a subscription cannot be narrowed to a single object -
+every registered consumer receives all COV notifications seen on the network, and has to filter
+them itself.
+
 == Connection String Options
 
 include::partial$bacnet-ip.adoc[]
-
-[%header, cols=3*]
-|===
-| Data array
-| Size
-| Description
-
-|
-|
-|
-
-|
-|
-|
-
-|
-|
-|
-
-|===
 
 == More details on
 

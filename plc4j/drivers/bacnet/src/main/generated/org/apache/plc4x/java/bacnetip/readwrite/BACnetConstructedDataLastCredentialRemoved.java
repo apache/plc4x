@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastCredentialRemoved
-    BACnetDeviceObjectReference lastCredentialRemoved = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReference) BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer), WithOption.WithName("lastCredentialRemoved"));
+    BACnetDeviceObjectReference lastCredentialRemoved = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReference.class, BACnetDeviceObjectReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("lastCredentialRemoved"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectReference.class, lastCredentialRemoved, WithOption.WithName("actualValue"));

@@ -52,7 +52,7 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: characterstring
-    BACnetApplicationTagCharacterString characterstring = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("characterstring"));
+    BACnetApplicationTagCharacterString characterstring = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("characterstring"));
 
     readBuffer.popContext();
     return new BACnetOptionalCharacterStringBuilderImpl(characterstring);

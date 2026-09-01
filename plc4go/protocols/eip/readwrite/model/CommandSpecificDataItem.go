@@ -58,8 +58,8 @@ type CommandSpecificDataItemContract interface {
 
 // CommandSpecificDataItemRequirements provides a set of functions which need to be implemented by a sub struct
 type CommandSpecificDataItemRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint16
 }
@@ -221,19 +221,19 @@ func (m *_CommandSpecificDataItem) GetPlx4xTypeName() string {
 	return "CommandSpecificDataItem"
 }
 
-func (m *_CommandSpecificDataItem) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CommandSpecificDataItem) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 16
 
 	return lengthInBits
 }
 
-func (m *_CommandSpecificDataItem) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CommandSpecificDataItem) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CommandSpecificDataItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CommandSpecificDataItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

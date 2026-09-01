@@ -90,16 +90,16 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: groupNumber
-    BACnetContextTagUnsignedInteger groupNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("groupNumber"));
+    BACnetContextTagUnsignedInteger groupNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("groupNumber"));
 
     // Simple Field: writePriority
-    BACnetContextTagUnsignedInteger writePriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("writePriority"));
+    BACnetContextTagUnsignedInteger writePriority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("writePriority"));
 
     // Simple Field: changeList
-    BACnetGroupChannelValueList changeList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetGroupChannelValueList) BACnetGroupChannelValueList.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("changeList"));
+    BACnetGroupChannelValueList changeList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetGroupChannelValueList.class, BACnetGroupChannelValueList.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("changeList"));
 
     // Optional Field: inhibitDelay
-    BACnetContextTagUnsignedInteger inhibitDelay = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("inhibitDelay"));
+    BACnetContextTagUnsignedInteger inhibitDelay = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("inhibitDelay"));
 
     readBuffer.popContext();
     return new BACnetUnconfirmedServiceRequestBuilderImpl(groupNumber, writePriority, changeList, inhibitDelay);

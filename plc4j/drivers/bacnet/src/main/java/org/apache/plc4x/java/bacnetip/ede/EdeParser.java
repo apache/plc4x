@@ -88,9 +88,8 @@ public class EdeParser {
     }
 
     private Map<BacNetIpTag, Datapoint> parseFileDatapoints(File edeFile) {
-        try {
-            Reader in = new FileReader(edeFile);
-            final CSVParser parser = CSVFormat.newFormat(';').parse(in);
+        try (Reader in = new FileReader(edeFile);
+             CSVParser parser = CSVFormat.newFormat(';').parse(in)) {
             final Iterator<CSVRecord> iterator = parser.iterator();
 
             // Skip the header.

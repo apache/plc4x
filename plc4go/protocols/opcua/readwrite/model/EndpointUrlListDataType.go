@@ -212,8 +212,8 @@ func (m *_EndpointUrlListDataType) GetPlx4xTypeName() string {
 	return "EndpointUrlListDataType"
 }
 
-func (m *_EndpointUrlListDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_EndpointUrlListDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfEndpointUrlList)
 	lengthInBits += 32
@@ -229,7 +229,7 @@ func (m *_EndpointUrlListDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EndpointUrlListDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EndpointUrlListDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

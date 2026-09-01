@@ -90,7 +90,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     int noOfNotificationData = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfNotificationData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: notificationData
-    List<ExtensionObject> notificationData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ExtensionObject) ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer), noOfNotificationData, WithOption.WithName("notificationData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ExtensionObject> notificationData = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObject.class, ExtensionObject.staticParse(readBuffer, (boolean) (true))), readBuffer), noOfNotificationData, WithOption.WithName("notificationData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(sequenceNumber, publishTime, notificationData);

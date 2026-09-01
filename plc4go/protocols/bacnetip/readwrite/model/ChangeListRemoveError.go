@@ -262,8 +262,8 @@ func (m *_ChangeListRemoveError) GetPlx4xTypeName() string {
 	return "ChangeListRemoveError"
 }
 
-func (m *_ChangeListRemoveError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
+func (m *_ChangeListRemoveError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_ChangeListRemoveError) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ChangeListRemoveError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ChangeListRemoveError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

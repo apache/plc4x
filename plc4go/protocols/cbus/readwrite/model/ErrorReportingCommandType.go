@@ -140,11 +140,11 @@ func CastErrorReportingCommandType(structType any) ErrorReportingCommandType {
 	return castFunc(structType)
 }
 
-func (m ErrorReportingCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ErrorReportingCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ErrorReportingCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ErrorReportingCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

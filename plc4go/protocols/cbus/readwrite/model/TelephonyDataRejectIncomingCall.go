@@ -180,13 +180,13 @@ func (m *_TelephonyDataRejectIncomingCall) GetPlx4xTypeName() string {
 	return "TelephonyDataRejectIncomingCall"
 }
 
-func (m *_TelephonyDataRejectIncomingCall) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+func (m *_TelephonyDataRejectIncomingCall) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

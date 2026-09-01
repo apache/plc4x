@@ -369,8 +369,8 @@ func (m *_DeviceDescriptorType2) GetPlx4xTypeName() string {
 	return "DeviceDescriptorType2"
 }
 
-func (m *_DeviceDescriptorType2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DeviceDescriptorType2) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (manufacturerId)
 	lengthInBits += 16
@@ -405,7 +405,7 @@ func (m *_DeviceDescriptorType2) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DeviceDescriptorType2) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeviceDescriptorType2) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

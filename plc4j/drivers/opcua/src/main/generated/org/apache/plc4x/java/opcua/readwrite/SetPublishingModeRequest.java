@@ -81,7 +81,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestHeader
-    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RequestHeader) RequestHeader.staticParse(readBuffer, (int) (391)), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RequestHeader.class, RequestHeader.staticParse(readBuffer, (int) (391))), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 7), (byte) 0x00, WithOption.WithName("SetPublishingModeRequest.reserved1"));

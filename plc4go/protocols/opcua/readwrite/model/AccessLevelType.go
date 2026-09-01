@@ -130,11 +130,11 @@ func CastAccessLevelType(structType any) AccessLevelType {
 	return castFunc(structType)
 }
 
-func (m AccessLevelType) GetLengthInBits(ctx context.Context) uint16 {
+func (m AccessLevelType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m AccessLevelType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AccessLevelType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

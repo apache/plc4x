@@ -302,8 +302,8 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetPlx4xTypeName() string {
 	return "CEMIAdditionalInformationBusmonitorInfo"
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -329,7 +329,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

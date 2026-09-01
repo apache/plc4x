@@ -24,7 +24,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"runtime/debug"
-	"strings"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -67,28 +66,9 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	// Here we can be sure that we're only handling a single request.
 	tagName := writeRequest.GetTagNames()[0]
 	tag := writeRequest.GetTag(tagName)
-	if model.NeedsResolving(tag) {
-		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
-				writeRequest,
-				nil,
-				errors.Wrap(err, "invalid tag item type"),
-			))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-		// Replace the symbolic tag with a direct one
-		tag, err = m.resolveSymbolicTag(ctx, adsField)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-	}
-	directAdsTag, ok := tag.(*model.DirectPlcTag)
-	if !ok {
-		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type")))
+	directAdsTag, err := m.directTagFor(ctx, tag)
+	if err != nil {
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
 		m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 		return
 	}
@@ -96,7 +76,7 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	// Get the value from the request and serialize it to a byte array
 	value := writeRequest.GetValue(tagName)
 	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io)
+	err = m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io)
 	if err != nil {
 		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error serializing plc value")))
 		return
@@ -140,24 +120,9 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	for _, tagName := range writeRequest.GetTagNames() {
 		tag := writeRequest.GetTag(tagName)
-		if model.NeedsResolving(tag) {
-			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-			// Replace the symbolic tag with a direct one
-			tag, err = m.resolveSymbolicTag(ctx, adsField)
-			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-		}
-		directAdsTag, ok := tag.(*model.DirectPlcTag)
-		if !ok {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type")))
+		directAdsTag, err := m.directTagFor(ctx, tag)
+		if err != nil {
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type")))
 			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
@@ -165,28 +130,21 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 		directAdsTags[tagName] = directAdsTag
 
 		// Serialize the plc value
-		err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io)
+		err = m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io)
 		if err != nil {
 			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error serializing plc value")))
 			return
 		}
 
-		// Size of one element.
-		size := directAdsTag.DataType.GetSize()
-
-		// Calculate how many elements in total we'll be reading.
-		arraySize := uint32(1)
-		if len(tag.GetArrayInfo()) > 0 {
-			for _, arrayInfo := range tag.GetArrayInfo() {
-				arraySize = arraySize * arrayInfo.GetSize()
-			}
-		}
+		// How many bytes this tag transfers - the whole of what its type declares, or just the
+		// part the address selected out of it, which the resolved tag knows.
+		size := directAdsTag.TransferSizeInBytes()
 
 		// Status code + payload size
 		expectedResponseDataSize += 4
 
 		requestItems = append(requestItems, driverModel.NewAdsMultiRequestItemWrite(
-			directAdsTag.IndexGroup, directAdsTag.IndexOffset, size*arraySize))
+			directAdsTag.IndexGroup, directAdsTag.IndexOffset, size))
 	}
 
 	response, err := m.ExecuteAdsReadWriteRequest(ctx,
@@ -238,10 +196,9 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 			return fmt.Errorf("expecting exactly %d items in the list", len(plcValues))
 		}
 
-		arrayItemTypeName := dataType.GetSecondaryName()[strings.Index(dataType.GetSecondaryName(), " OF ")+4:]
-		arrayItemType, ok := m.driverContext.dataTypeTable[arrayItemTypeName]
-		if !ok {
-			return fmt.Errorf("couldn't resolve array item type %s", arrayItemTypeName)
+		arrayItemType, err := m.arrayItemTypeFor(dataType)
+		if err != nil {
+			return err
 		}
 
 		for _, plcValue := range plcValues {

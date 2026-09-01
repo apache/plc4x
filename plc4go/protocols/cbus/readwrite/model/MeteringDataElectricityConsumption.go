@@ -207,8 +207,8 @@ func (m *_MeteringDataElectricityConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataElectricityConsumption"
 }
 
-func (m *_MeteringDataElectricityConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+func (m *_MeteringDataElectricityConsumption) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	// Simple field (kWhr)
 	lengthInBits += 32
@@ -216,7 +216,7 @@ func (m *_MeteringDataElectricityConsumption) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_MeteringDataElectricityConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeteringDataElectricityConsumption) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

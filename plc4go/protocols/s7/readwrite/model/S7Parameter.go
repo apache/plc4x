@@ -58,8 +58,8 @@ type S7ParameterContract interface {
 
 // S7ParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type S7ParameterRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterType returns ParameterType (discriminator field)
@@ -283,19 +283,19 @@ func (m *_S7Parameter) GetPlx4xTypeName() string {
 	return "S7Parameter"
 }
 
-func (m *_S7Parameter) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7Parameter) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_S7Parameter) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Parameter) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7Parameter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7Parameter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -346,31 +346,31 @@ func (m *_S7Parameter) parse(ctx context.Context, readBuffer utils.ReadBuffer, m
 	var _child S7Parameter
 	switch {
 	case parameterType == 0xF0: // S7ParameterSetupCommunication
-		if _child, err = new(_S7ParameterSetupCommunication).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterSetupCommunication).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterSetupCommunication for type-switch of S7Parameter")
 		}
 	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
-		if _child, err = new(_S7ParameterReadVarRequest).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterReadVarRequest).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterReadVarRequest for type-switch of S7Parameter")
 		}
 	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
-		if _child, err = new(_S7ParameterReadVarResponse).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterReadVarResponse).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterReadVarResponse for type-switch of S7Parameter")
 		}
 	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
-		if _child, err = new(_S7ParameterWriteVarRequest).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterWriteVarRequest).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterWriteVarRequest for type-switch of S7Parameter")
 		}
 	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
-		if _child, err = new(_S7ParameterWriteVarResponse).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterWriteVarResponse).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterWriteVarResponse for type-switch of S7Parameter")
 		}
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
-		if _child, err = new(_S7ParameterUserData).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterUserData).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterUserData for type-switch of S7Parameter")
 		}
 	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
-		if _child, err = new(_S7ParameterModeTransition).parse(ctx, readBuffer, m, messageType); err != nil {
+		if _child, err = new(_S7ParameterModeTransition).parse(ctx, readBuffer, m, uint8(messageType)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterModeTransition for type-switch of S7Parameter")
 		}
 	default:

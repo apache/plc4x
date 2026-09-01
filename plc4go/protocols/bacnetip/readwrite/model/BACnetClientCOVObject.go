@@ -225,8 +225,8 @@ func (m *_BACnetClientCOVObject) GetPlx4xTypeName() string {
 	return "BACnetClientCOVObject"
 }
 
-func (m *_BACnetClientCOVObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetClientCOVContract.(*_BACnetClientCOV).getLengthInBits(ctx))
+func (m *_BACnetClientCOVObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetClientCOVContract.(*_BACnetClientCOV).getLengthInBits(ctx))
 
 	// Simple field (realIncrement)
 	lengthInBits += m.RealIncrement.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetClientCOVObject) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetClientCOVObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetClientCOVObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

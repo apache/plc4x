@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetPlx4xTypeName() string
 	return "BACnetConstructedDataLinkSpeedAutonegotiate"
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (linkSpeedAutonegotiate)
 	lengthInBits += m.LinkSpeedAutonegotiate.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

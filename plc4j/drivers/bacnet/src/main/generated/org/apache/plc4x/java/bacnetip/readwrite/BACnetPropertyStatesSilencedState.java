@@ -52,7 +52,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: silencedState
-    BACnetSilencedStateTagged silencedState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSilencedStateTagged) BACnetSilencedStateTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("silencedState"));
+    BACnetSilencedStateTagged silencedState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSilencedStateTagged.class, BACnetSilencedStateTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("silencedState"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(silencedState);

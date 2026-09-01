@@ -74,7 +74,7 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadUnsignedInteger payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadUnsignedInteger) BACnetTagPayloadUnsignedInteger.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadUnsignedInteger payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadUnsignedInteger.class, BACnetTagPayloadUnsignedInteger.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BigInteger actualValue = FieldReaderFactory.readVirtualField(BigInteger.class, payload.getActualValue(), WithOption.WithName("actualValue"));

@@ -246,8 +246,8 @@ func (m *_BACnetContextTagReal) GetPlx4xTypeName() string {
 	return "BACnetContextTagReal"
 }
 
-func (m *_BACnetContextTagReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagReal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_BACnetContextTagReal) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagReal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagReal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

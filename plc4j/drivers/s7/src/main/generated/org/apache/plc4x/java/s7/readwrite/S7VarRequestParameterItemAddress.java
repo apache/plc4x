@@ -61,7 +61,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     short itemLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("itemLength"));
 
     // Simple Field: address
-    S7Address address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (S7Address) S7Address.staticParse(readBuffer), readBuffer), WithOption.WithName("address"));
+    S7Address address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7Address.class, S7Address.staticParse(readBuffer)), readBuffer), WithOption.WithName("address"));
 
     readBuffer.popContext();
     return new S7VarRequestParameterItemBuilderImpl(address);

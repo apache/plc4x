@@ -24,16 +24,21 @@ import (
 )
 
 type DriverContext struct {
-	PassiveMode             bool
-	CallingTsapId           uint16
-	CalledTsapId            uint16
-	CotpTpduSize            model.COTPTpduSize
-	PduSize                 uint16
-	MaxAmqCaller            uint16
-	MaxAmqCallee            uint16
-	ControllerType          ControllerType
-	awaitSetupComplete      bool
-	awaitDisconnectComplete bool
+	PassiveMode    bool
+	CallingTsapId  uint16
+	CalledTsapId   uint16
+	CotpTpduSize   model.COTPTpduSize
+	PduSize        uint16
+	MaxAmqCaller   uint16
+	MaxAmqCallee   uint16
+	ControllerType model.ControllerType
+	ArticleNumber  string
+	// UserDataServicesSupported reports whether the device speaks the S7Comm UserData
+	// services (browse, alarms, cyclic subscriptions). Derived from the SZL probe at
+	// connect time or from a pinned controller type.
+	UserDataServicesSupported bool
+	awaitSetupComplete        bool
+	awaitDisconnectComplete   bool
 }
 
 func NewDriverContext(configuration Configuration) (DriverContext, error) {
@@ -41,14 +46,11 @@ func NewDriverContext(configuration Configuration) (DriverContext, error) {
 	calledTsapId := encodeS7TsapId(model.DeviceGroup_PG_OR_PC, configuration.remoteRack, configuration.remoteSlot)
 
 	controllerType := configuration.controllerType
-	if controllerType == ControllerType_UNKNOWN {
-		controllerType = ControllerType_ANY
-	}
 
 	pduSize := configuration.pduSize
 	// The Siemens LOGO device seems to only work with very limited settings,
 	// so we're overriding some of the defaults.
-	if controllerType == ControllerType_LOGO && pduSize == 1024 {
+	if controllerType == model.ControllerType_LOGO && pduSize == 1024 {
 		pduSize = 480
 	}
 

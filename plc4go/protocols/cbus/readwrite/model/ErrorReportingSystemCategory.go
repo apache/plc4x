@@ -211,8 +211,8 @@ func (m *_ErrorReportingSystemCategory) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategory"
 }
 
-func (m *_ErrorReportingSystemCategory) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ErrorReportingSystemCategory) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (systemCategoryClass)
 	lengthInBits += 4
@@ -226,7 +226,7 @@ func (m *_ErrorReportingSystemCategory) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_ErrorReportingSystemCategory) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ErrorReportingSystemCategory) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

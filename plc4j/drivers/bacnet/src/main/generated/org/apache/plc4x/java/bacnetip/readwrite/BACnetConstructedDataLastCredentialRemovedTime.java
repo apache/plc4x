@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastCredentialRemovedTime extends BACnetConstr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastCredentialRemovedTime
-    BACnetDateTime lastCredentialRemovedTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTime) BACnetDateTime.staticParse(readBuffer), readBuffer), WithOption.WithName("lastCredentialRemovedTime"));
+    BACnetDateTime lastCredentialRemovedTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTime.class, BACnetDateTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("lastCredentialRemovedTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDateTime actualValue = FieldReaderFactory.readVirtualField(BACnetDateTime.class, lastCredentialRemovedTime, WithOption.WithName("actualValue"));

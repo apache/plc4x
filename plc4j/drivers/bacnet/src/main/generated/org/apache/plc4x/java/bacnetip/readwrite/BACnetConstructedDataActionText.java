@@ -100,10 +100,10 @@ public class BACnetConstructedDataActionText extends BACnetConstructedData imple
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: actionText
-    List<BACnetApplicationTagCharacterString> actionText = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("actionText"));
+    List<BACnetApplicationTagCharacterString> actionText = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("actionText"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(numberOfDataElements, actionText);

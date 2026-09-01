@@ -100,10 +100,10 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
 
     // Optional Field (conditional): numberOfDataElements
-    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
+    BACnetApplicationTagUnsignedInteger numberOfDataElements = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (zero)), WithOption.WithName("numberOfDataElements"));
 
     // Array Field: networkAccessSecurityPolicies
-    List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetNetworkSecurityPolicy) BACnetNetworkSecurityPolicy.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("networkAccessSecurityPolicies"));
+    List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNetworkSecurityPolicy.class, BACnetNetworkSecurityPolicy.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("networkAccessSecurityPolicies"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(numberOfDataElements, networkAccessSecurityPolicies);

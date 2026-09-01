@@ -215,8 +215,8 @@ func (m *_BACnetCredentialAuthenticationFactor) GetPlx4xTypeName() string {
 	return "BACnetCredentialAuthenticationFactor"
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (disable)
 	lengthInBits += m.Disable.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -75,7 +75,7 @@ public class VariantQualifiedName extends Variant implements Message {
     Integer arrayLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedInt(readBuffer, 32), arrayLengthSpecified, WithOption.WithName("arrayLength"));
 
     // Array Field: value
-    List<QualifiedName> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (QualifiedName) QualifiedName.staticParse(readBuffer), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
+    List<QualifiedName> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifiedName.class, QualifiedName.staticParse(readBuffer)), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new VariantBuilderImpl(arrayLength, value);

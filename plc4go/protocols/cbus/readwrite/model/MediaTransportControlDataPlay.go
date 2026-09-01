@@ -180,13 +180,13 @@ func (m *_MediaTransportControlDataPlay) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataPlay"
 }
 
-func (m *_MediaTransportControlDataPlay) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataPlay) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataPlay) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataPlay) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

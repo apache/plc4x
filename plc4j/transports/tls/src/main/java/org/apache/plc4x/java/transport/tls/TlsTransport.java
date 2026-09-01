@@ -88,7 +88,7 @@ public class TlsTransport implements Transport<TlsTransportConfiguration> {
 
         InetSocketAddress remoteAddress = new InetSocketAddress((ip != null) ? ip : hostname, port);
 
-        LOGGER.debug("Creating TLS transport instance for {}:{} (verify-ssl={})",
+        LOGGER.debug("Creating TLS transport instance for {}:{} (verify={})",
             (ip != null) ? ip : hostname, port, tlsTransportConfiguration.isVerifySsl());
 
         TlsTransportInstance instance = new TlsTransportInstance(remoteAddress, tlsTransportConfiguration, auditLog);

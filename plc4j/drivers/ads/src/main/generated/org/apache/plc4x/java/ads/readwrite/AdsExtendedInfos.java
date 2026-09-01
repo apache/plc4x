@@ -55,7 +55,7 @@ public class AdsExtendedInfos implements Message {
     int count = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("count"));
 
     // Array Field: entries
-    List<AdsExtendedInfoEntry> entries = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsExtendedInfoEntry) AdsExtendedInfoEntry.staticParse(readBuffer, (org.apache.plc4x.java.ads.readwrite.AdsDatatypeId) (dataType)), readBuffer), count, WithOption.WithName("entries"));
+    List<AdsExtendedInfoEntry> entries = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsExtendedInfoEntry.class, AdsExtendedInfoEntry.staticParse(readBuffer, (org.apache.plc4x.java.ads.readwrite.AdsDatatypeId) (dataType))), readBuffer), count, WithOption.WithName("entries"));
 
     readBuffer.popContext();
     return new AdsExtendedInfos(entries);

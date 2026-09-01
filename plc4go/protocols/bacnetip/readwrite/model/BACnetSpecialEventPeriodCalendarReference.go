@@ -225,8 +225,8 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetPlx4xTypeName() string {
 	return "BACnetSpecialEventPeriodCalendarReference"
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).getLengthInBits(ctx))
+func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).getLengthInBits(ctx))
 
 	// Simple field (calendarReference)
 	lengthInBits += m.CalendarReference.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

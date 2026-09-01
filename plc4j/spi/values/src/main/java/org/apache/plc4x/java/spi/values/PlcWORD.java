@@ -288,7 +288,7 @@ public class PlcWORD extends PlcIECValue<Integer> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws BufferException {
-        writeBuffer.writeSignedInt(16, value, WithOption.WithName(getClass().getSimpleName()));
+        writeBuffer.writeUnsignedInt(16, value, WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

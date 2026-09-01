@@ -31,6 +31,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // RequestTransaction represents a transaction
@@ -141,7 +142,7 @@ func (t *requestTransaction) Submit(operationInfo string, operation RequestTrans
 
 func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 	t.log.Trace().Msg("Awaiting completion")
-	timeout, cancelFunc := context.WithTimeout(ctx, time.Minute*30) // This is intentionally set very high
+	timeout, cancelFunc := utils.WithNamedTimeout(ctx, "transaction completion timeout", time.Minute*30) // This is intentionally set very high
 	defer cancelFunc()
 	for t.getCompletionFuture() == nil {
 		time.Sleep(time.Millisecond * 10)

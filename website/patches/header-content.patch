@@ -22,7 +22,7 @@
      <div class="navbar-brand">
 -      <a class="navbar-item" href="{{{or site.url siteRootPath}}}">{{site.title}}</a>
 +      <a class="navbar-item" href="{{{or site.url siteRootPath}}}">
-+          <img src="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/_images/apache_plc4x_logo_small.png" alt="Apache PLC4X">
++          <img src="{{{or site.url siteRootPath}}}/images/apache_plc4x_logo_small.png" alt="Apache PLC4X">
 +      </a>
        {{#if env.SITE_SEARCH_PROVIDER}}
        <div class="navbar-item search hide-for-print">
@@ -35,8 +35,8 @@
 -        <a class="navbar-item" href="#">Home</a>
 +      <div class="navbar-end justify-content-center">
 +        <a class="navbar-item" href="{{{or site.url siteRootPath}}}/">Home</a>
-+        <a class="navbar-item" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/users">Users</a>
-+        <a class="navbar-item" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/developers">Developers</a>
++        <a class="navbar-item" href="{{{relativize (resolvePageURL 'users:index.adoc')}}}">Users</a>
++        <a class="navbar-item" href="{{{relativize (resolvePageURL 'developers:index.adoc')}}}">Developers</a>
          <div class="navbar-item has-dropdown is-hoverable">
 -          <a class="navbar-link" href="#">Products</a>
 +          <a class="navbar-link" href="https://www.apache.org">Apache</a>
@@ -69,7 +69,7 @@
          <div class="navbar-item">
            <span class="control">
 -            <a class="button is-primary" href="#">Download</a>
-+            <a class="button is-primary" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/users/download.html">Download</a>
++            <a class="button is-primary" href="{{{relativize (resolvePageURL 'users:download.adoc')}}}">Download</a>
            </span>
          </div>
 +        <a class="acevent" data-format="wide"></a>

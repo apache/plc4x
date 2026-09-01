@@ -23,7 +23,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 
-	"github.com/google/uuid"
+	"uuid"
 )
 
 var randomByteFiller = rand.Read
@@ -32,7 +32,7 @@ func GenerateId(numBytes int) string {
 	transactionIdBytes := make([]byte, numBytes)
 	_, err := randomByteFiller(transactionIdBytes)
 	if err != nil {
-		return err.Error() + uuid.NewString()
+		return err.Error() + uuid.New().String()
 	}
 	return hex.EncodeToString(transactionIdBytes)
 }

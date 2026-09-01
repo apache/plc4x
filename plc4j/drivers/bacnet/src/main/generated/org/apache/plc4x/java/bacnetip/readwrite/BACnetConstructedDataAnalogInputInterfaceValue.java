@@ -78,7 +78,7 @@ public class BACnetConstructedDataAnalogInputInterfaceValue extends BACnetConstr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: interfaceValue
-    BACnetOptionalREAL interfaceValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOptionalREAL) BACnetOptionalREAL.staticParse(readBuffer), readBuffer), WithOption.WithName("interfaceValue"));
+    BACnetOptionalREAL interfaceValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOptionalREAL.class, BACnetOptionalREAL.staticParse(readBuffer)), readBuffer), WithOption.WithName("interfaceValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetOptionalREAL actualValue = FieldReaderFactory.readVirtualField(BACnetOptionalREAL.class, interfaceValue, WithOption.WithName("actualValue"));

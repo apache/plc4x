@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_PARAMETER_ACTIVATION extends Informati
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: qpa
-    QualifierOfParameterActivation qpa = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfParameterActivation) QualifierOfParameterActivation.staticParse(readBuffer), readBuffer), WithOption.WithName("qpa"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfParameterActivation qpa = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfParameterActivation.class, QualifierOfParameterActivation.staticParse(readBuffer)), readBuffer), WithOption.WithName("qpa"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(qpa);

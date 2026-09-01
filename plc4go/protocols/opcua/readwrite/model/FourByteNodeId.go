@@ -179,8 +179,8 @@ func (m *_FourByteNodeId) GetPlx4xTypeName() string {
 	return "FourByteNodeId"
 }
 
-func (m *_FourByteNodeId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_FourByteNodeId) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 8
@@ -191,7 +191,7 @@ func (m *_FourByteNodeId) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_FourByteNodeId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FourByteNodeId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -50,18 +51,28 @@ type plcTag struct {
 	ByteOffset  uint16
 	BitOffset   uint8
 	NumElements uint16
-	Datatype    readWriteModel.TransportSize
+	// ExplicitRange records whether the address wrote the selection as a range. A one-element
+	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
+	ExplicitRange bool
+	Datatype      readWriteModel.TransportSize
 }
 
 func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcTag {
+	return NewTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, datatype, numElements > 1)
+}
+
+// NewTagWithShape is NewTag plus what the address said about its shape: a range is an array even
+// when it spans one element, which the element count alone cannot carry.
+func NewTagWithShape(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, explicitRange bool) PlcTag {
 	return plcTag{
-		TagType:     S7Tag,
-		MemoryArea:  memoryArea,
-		BlockNumber: blockNumber,
-		ByteOffset:  byteOffset,
-		BitOffset:   bitOffset,
-		NumElements: numElements,
-		Datatype:    datatype,
+		ExplicitRange: explicitRange,
+		TagType:       S7Tag,
+		MemoryArea:    memoryArea,
+		BlockNumber:   blockNumber,
+		ByteOffset:    byteOffset,
+		BitOffset:     bitOffset,
+		NumElements:   numElements,
+		Datatype:      datatype,
 	}
 }
 
@@ -71,23 +82,40 @@ type PlcStringTag struct {
 }
 
 func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringTag {
+	return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, datatype, numElements > 1)
+}
+
+// NewStringTagWithShape is NewStringTag plus what the address said about its shape: a range is an array even
+// when it spans one element, which the element count alone cannot carry.
+func NewStringTagWithShape(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, explicitRange bool) PlcStringTag {
 	return PlcStringTag{
-		plcTag: plcTag{
-			TagType:     S7StringTag,
-			MemoryArea:  memoryArea,
-			BlockNumber: blockNumber,
-			ByteOffset:  byteOffset,
-			BitOffset:   bitOffset,
-			NumElements: numElements,
-			Datatype:    datatype,
-		},
-		stringLength: stringLength,
+		TagType:       S7StringTag,
+		MemoryArea:    memoryArea,
+		BlockNumber:   blockNumber,
+		ByteOffset:    byteOffset,
+		BitOffset:     bitOffset,
+		NumElements:   numElements,
+		ExplicitRange: explicitRange,
+		Datatype:      datatype,
+		stringLength:  stringLength,
 	}
 }
 
+// GetAddressString spells the tag the way the tag handler parses it back. It used to render the
+// tag type as a number and nothing else of the address - "0:INT[8]" - which named neither the
+// memory area nor the offset it read, and did not parse back into anything.
 func (m plcTag) GetAddressString() string {
-	// TODO: add missing variables like memory area, block number, byte offset, bit offset
-	return fmt.Sprintf("%d:%s[%d]", m.TagType, m.Datatype, m.NumElements)
+	var address string
+	if m.MemoryArea == readWriteModel.MemoryArea_DATA_BLOCKS {
+		address = fmt.Sprintf("%%DB%d.DB%d", m.BlockNumber, m.ByteOffset)
+	} else {
+		address = fmt.Sprintf("%%%s%d", m.MemoryArea.ShortName(), m.ByteOffset)
+	}
+	// A bit offset is only part of an address for BOOL, and is required there.
+	if m.Datatype == readWriteModel.TransportSize_BOOL {
+		address += fmt.Sprintf(".%d", m.BitOffset)
+	}
+	return address + spiModel.RenderArrayExpression(m.GetArrayInfo()) + ":" + m.Datatype.String()
 }
 
 func (m plcTag) GetValueType() apiValues.PlcValueType {
@@ -97,12 +125,17 @@ func (m plcTag) GetValueType() apiValues.PlcValueType {
 	return apiValues.NULL
 }
 
+// GetArrayInfo reports the shape of the value the caller receives, not the indices the address
+// was written with: an S7 address names a byte offset, so the driver consumes the start of the
+// selection when it resolves the address and what remains is a count of elements from there.
 func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	if m.NumElements != 1 {
+	// The flag decides the shape; the count only sizes it.
+	if m.ExplicitRange {
 		return []apiModel.ArrayInfo{
 			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
-				UpperBound: uint32(m.NumElements),
+				UpperBound: uint32(m.NumElements) - 1,
+				Range:      true,
 			},
 		}
 	}
@@ -137,6 +170,16 @@ func (m plcTag) GetQuantity() uint16 {
 	return m.NumElements
 }
 
+// GetPlcSubscriptionType makes address tags usable in subscription requests (cyclic services).
+func (m plcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionCyclic
+}
+
+// GetDuration returns no default interval; the effective cycle time comes from the request.
+func (m plcTag) GetDuration() time.Duration {
+	return 0
+}
+
 func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
@@ -150,7 +193,8 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuff
 		return err
 	}
 
-	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
+	// encoding="UTF8" matches plc4j's S7Tag.serialize (WithOption.WithEncoding("UTF8")).
+	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 	if err := wb.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
@@ -165,7 +209,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuff
 	if err := wb.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
+	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 
@@ -183,6 +227,20 @@ func (m plcTag) String() string {
 	return wb.GetBox().String()
 }
 
+// GetAddressString spells a string tag the way the tag handler parses it back, which means
+// carrying the declared length: without it the address reads as a variable-length string. A
+// variable-length tag renders its assumed length, which is the length it was already given.
+func (m PlcStringTag) GetAddressString() string {
+	var address string
+	if m.MemoryArea == readWriteModel.MemoryArea_DATA_BLOCKS {
+		address = fmt.Sprintf("%%DB%d.DB%d", m.BlockNumber, m.ByteOffset)
+	} else {
+		address = fmt.Sprintf("%%%s%d", m.MemoryArea.ShortName(), m.ByteOffset)
+	}
+	return fmt.Sprintf("%s%s:%s(%d)", address,
+		spiModel.RenderArrayExpression(m.GetArrayInfo()), m.Datatype, m.stringLength)
+}
+
 func (m PlcStringTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
@@ -196,7 +254,8 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.Wri
 		return err
 	}
 
-	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
+	// encoding="UTF8" matches plc4j's S7Tag.serialize (WithOption.WithEncoding("UTF8")).
+	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 	if err := wb.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
@@ -214,7 +273,7 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.Wri
 	if err := wb.WriteUint16("stringLength", 16, m.stringLength); err != nil {
 		return err
 	}
-	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
+	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 

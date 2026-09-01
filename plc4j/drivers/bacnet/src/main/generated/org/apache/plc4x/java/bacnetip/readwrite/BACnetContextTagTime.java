@@ -59,7 +59,7 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadTime payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadTime) BACnetTagPayloadTime.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadTime payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadTime.class, BACnetTagPayloadTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new BACnetContextTagBuilderImpl(payload);

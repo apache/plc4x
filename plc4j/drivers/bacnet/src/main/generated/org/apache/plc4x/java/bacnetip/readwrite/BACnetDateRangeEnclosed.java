@@ -71,13 +71,13 @@ public class BACnetDateRangeEnclosed implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: dateRange
-    BACnetDateRange dateRange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateRange) BACnetDateRange.staticParse(readBuffer), readBuffer), WithOption.WithName("dateRange"));
+    BACnetDateRange dateRange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateRange.class, BACnetDateRange.staticParse(readBuffer)), readBuffer), WithOption.WithName("dateRange"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetDateRangeEnclosed(openingTag, dateRange, closingTag);

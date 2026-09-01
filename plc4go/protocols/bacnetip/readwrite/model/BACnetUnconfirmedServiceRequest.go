@@ -58,8 +58,8 @@ type BACnetUnconfirmedServiceRequestContract interface {
 
 // BACnetUnconfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetUnconfirmedServiceRequestRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
 }
@@ -353,19 +353,19 @@ func (m *_BACnetUnconfirmedServiceRequest) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequest"
 }
 
-func (m *_BACnetUnconfirmedServiceRequest) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetUnconfirmedServiceRequest) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -416,55 +416,55 @@ func (m *_BACnetUnconfirmedServiceRequest) parse(ctx context.Context, readBuffer
 	var _child BACnetUnconfirmedServiceRequest
 	switch {
 	case serviceChoice == BACnetUnconfirmedServiceChoice_I_AM: // BACnetUnconfirmedServiceRequestIAm
-		if _child, err = new(_BACnetUnconfirmedServiceRequestIAm).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestIAm).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestIAm for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_I_HAVE: // BACnetUnconfirmedServiceRequestIHave
-		if _child, err = new(_BACnetUnconfirmedServiceRequestIHave).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestIHave).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestIHave for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestTimeSynchronization
-		if _child, err = new(_BACnetUnconfirmedServiceRequestTimeSynchronization).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestTimeSynchronization).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestTimeSynchronization for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_HAS: // BACnetUnconfirmedServiceRequestWhoHas
-		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHas).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHas).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHas for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_IS: // BACnetUnconfirmedServiceRequestWhoIs
-		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoIs).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoIs).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoIs for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUTCTimeSynchronization).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUTCTimeSynchronization).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUTCTimeSynchronization for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WRITE_GROUP: // BACnetUnconfirmedServiceRequestWriteGroup
-		if _child, err = new(_BACnetUnconfirmedServiceRequestWriteGroup).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWriteGroup).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWriteGroup for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case 0 == 0: // BACnetUnconfirmedServiceRequestUnknown
-		if _child, err = new(_BACnetUnconfirmedServiceRequestUnknown).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnknown).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnknown for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	default:

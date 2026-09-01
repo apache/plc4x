@@ -89,7 +89,7 @@ public abstract class CBusPointToPointCommand implements Message {
     }
 
     // Simple Field: calData
-    CALData calData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CALData) CALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.RequestContext) (null)), readBuffer), WithOption.WithName("calData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CALData calData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CALData.class, CALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.RequestContext) (null))), readBuffer), WithOption.WithName("calData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return builder.build(bridgeAddressCountPeek, calData);

@@ -70,13 +70,13 @@ public class BACnetVTSession implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: localVtSessionId
-    BACnetApplicationTagUnsignedInteger localVtSessionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("localVtSessionId"));
+    BACnetApplicationTagUnsignedInteger localVtSessionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("localVtSessionId"));
 
     // Simple Field: removeVtSessionId
-    BACnetApplicationTagUnsignedInteger removeVtSessionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("removeVtSessionId"));
+    BACnetApplicationTagUnsignedInteger removeVtSessionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("removeVtSessionId"));
 
     // Simple Field: remoteVtAddress
-    BACnetAddress remoteVtAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAddress) BACnetAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("remoteVtAddress"));
+    BACnetAddress remoteVtAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddress.class, BACnetAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("remoteVtAddress"));
 
     readBuffer.popContext();
     return new BACnetVTSession(localVtSessionId, removeVtSessionId, remoteVtAddress);

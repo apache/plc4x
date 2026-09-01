@@ -275,8 +275,8 @@ func (m *_SetMonitoringModeRequest) GetPlx4xTypeName() string {
 	return "SetMonitoringModeRequest"
 }
 
-func (m *_SetMonitoringModeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SetMonitoringModeRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -292,13 +292,13 @@ func (m *_SetMonitoringModeRequest) GetLengthInBits(ctx context.Context) uint16 
 
 	// Array field
 	if len(m.MonitoredItemIds) > 0 {
-		lengthInBits += 32 * uint16(len(m.MonitoredItemIds))
+		lengthInBits += 32 * uint64(len(m.MonitoredItemIds))
 	}
 
 	return lengthInBits
 }
 
-func (m *_SetMonitoringModeRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SetMonitoringModeRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

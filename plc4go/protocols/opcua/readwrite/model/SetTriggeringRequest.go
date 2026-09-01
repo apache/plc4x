@@ -290,8 +290,8 @@ func (m *_SetTriggeringRequest) GetPlx4xTypeName() string {
 	return "SetTriggeringRequest"
 }
 
-func (m *_SetTriggeringRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SetTriggeringRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -307,7 +307,7 @@ func (m *_SetTriggeringRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.LinksToAdd) > 0 {
-		lengthInBits += 32 * uint16(len(m.LinksToAdd))
+		lengthInBits += 32 * uint64(len(m.LinksToAdd))
 	}
 
 	// Implicit Field (noOfLinksToRemove)
@@ -315,13 +315,13 @@ func (m *_SetTriggeringRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.LinksToRemove) > 0 {
-		lengthInBits += 32 * uint16(len(m.LinksToRemove))
+		lengthInBits += 32 * uint64(len(m.LinksToRemove))
 	}
 
 	return lengthInBits
 }
 
-func (m *_SetTriggeringRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SetTriggeringRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

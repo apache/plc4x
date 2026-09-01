@@ -61,7 +61,7 @@ public class UnConnectedDataItem extends TypeId implements Message {
     int packetSize = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("packetSize"));
 
     // Simple Field: service
-    CipService service = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CipService) CipService.staticParse(readBuffer, (boolean) (false), (int) (packetSize)), readBuffer), WithOption.WithName("service"));
+    CipService service = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CipService.class, CipService.staticParse(readBuffer, (boolean) (false), (int) (packetSize))), readBuffer), WithOption.WithName("service"));
 
     readBuffer.popContext();
     return new TypeIdBuilderImpl(service);

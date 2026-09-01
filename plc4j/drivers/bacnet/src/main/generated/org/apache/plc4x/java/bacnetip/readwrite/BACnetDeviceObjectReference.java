@@ -61,10 +61,10 @@ public class BACnetDeviceObjectReference implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: deviceIdentifier
-    BACnetContextTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("deviceIdentifier"));
+    BACnetContextTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("deviceIdentifier"));
 
     // Simple Field: objectIdentifier
-    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("objectIdentifier"));
+    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("objectIdentifier"));
 
     readBuffer.popContext();
     return new BACnetDeviceObjectReference(deviceIdentifier, objectIdentifier);

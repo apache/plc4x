@@ -23,11 +23,13 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Tag interface {
@@ -77,6 +79,18 @@ func (k GroupAddress3LevelPlcTag) GetValueType() values.PlcValueType {
 
 func (k GroupAddress3LevelPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
+}
+
+// GetPlcSubscriptionType makes the tag usable in subscription requests. KNX is event
+// driven on the bus, so a group address is always delivered as a push subscription.
+// (Java: KnxNetIpConnection only advertises PlcSubscriptionType.EVENT)
+func (k GroupAddress3LevelPlcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+// GetDuration is not applicable as knx doesn't support cyclic subscriptions.
+func (k GroupAddress3LevelPlcTag) GetDuration() time.Duration {
+	return 0
 }
 
 func (k GroupAddress3LevelPlcTag) GetTagType() *driverModel.KnxDatapointType {
@@ -151,6 +165,18 @@ func (k GroupAddress2LevelPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
 }
 
+// GetPlcSubscriptionType makes the tag usable in subscription requests. KNX is event
+// driven on the bus, so a group address is always delivered as a push subscription.
+// (Java: KnxNetIpConnection only advertises PlcSubscriptionType.EVENT)
+func (k GroupAddress2LevelPlcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+// GetDuration is not applicable as knx doesn't support cyclic subscriptions.
+func (k GroupAddress2LevelPlcTag) GetDuration() time.Duration {
+	return 0
+}
+
 func (k GroupAddress2LevelPlcTag) GetTagType() *driverModel.KnxDatapointType {
 	return k.TagType
 }
@@ -213,6 +239,18 @@ func (k GroupAddress1LevelPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
 }
 
+// GetPlcSubscriptionType makes the tag usable in subscription requests. KNX is event
+// driven on the bus, so a group address is always delivered as a push subscription.
+// (Java: KnxNetIpConnection only advertises PlcSubscriptionType.EVENT)
+func (k GroupAddress1LevelPlcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+// GetDuration is not applicable as knx doesn't support cyclic subscriptions.
+func (k GroupAddress1LevelPlcTag) GetDuration() time.Duration {
+	return 0
+}
+
 func (k GroupAddress1LevelPlcTag) GetTagType() *driverModel.KnxDatapointType {
 	return k.TagType
 }
@@ -265,16 +303,20 @@ func NewDevicePropertyAddressPlcTag(mainGroup uint8, middleGroup uint8, subGroup
 }
 
 func (k DevicePropertyAddressPlcTag) GetAddressString() string {
-	return fmt.Sprintf("%d/%d/%d#%d/%d/%d[%d]",
-		k.MainGroup, k.MiddleGroup, k.SubGroup, k.ObjectId, k.PropertyId, k.PropertyIndex, k.NumElements)
+	return fmt.Sprintf("%d.%d.%d#%d/%d/%d%s",
+		k.MainGroup, k.MiddleGroup, k.SubGroup, k.ObjectId, k.PropertyId, k.PropertyIndex,
+		spiModel.RenderArrayExpression(k.GetArrayInfo()))
 }
 
 func (k DevicePropertyAddressPlcTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
+// GetArrayInfo reports the shape of the value the caller receives: a run of property elements is
+// a list, a single one is a scalar. The indices are relative to the value, not to the address -
+// the start of the selection is folded into the property index when the address is resolved.
 func (k DevicePropertyAddressPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return []apiModel.ArrayInfo{}
+	return elementsAsArrayInfo(k.NumElements)
 }
 
 func (k DevicePropertyAddressPlcTag) toKnxAddress() driverModel.KnxAddress {
@@ -307,8 +349,9 @@ func NewDeviceMemoryAddressPlcTag(mainGroup uint8, middleGroup uint8, subGroup u
 }
 
 func (k DeviceMemoryAddressPlcTag) GetAddressString() string {
-	return fmt.Sprintf("%d/%d/%d#%d:%s[%d]",
-		k.MainGroup, k.MiddleGroup, k.SubGroup, k.Address, k.TagType.String(), k.NumElements)
+	return fmt.Sprintf("%d.%d.%d#%X%s:%s",
+		k.MainGroup, k.MiddleGroup, k.SubGroup, k.Address,
+		spiModel.RenderArrayExpression(k.GetArrayInfo()), k.TagType.String())
 }
 
 func (k DeviceMemoryAddressPlcTag) GetValueType() values.PlcValueType {
@@ -316,6 +359,21 @@ func (k DeviceMemoryAddressPlcTag) GetValueType() values.PlcValueType {
 }
 
 func (k DeviceMemoryAddressPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return elementsAsArrayInfo(k.NumElements)
+}
+
+// elementsAsArrayInfo is the shape a count describes: a list for more than one element, a scalar
+// for exactly one.
+func elementsAsArrayInfo(numElements uint8) []apiModel.ArrayInfo {
+	if numElements > 1 {
+		return []apiModel.ArrayInfo{
+			&spiModel.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(numElements) - 1,
+				Range:      true,
+			},
+		}
+	}
 	return []apiModel.ArrayInfo{}
 }
 

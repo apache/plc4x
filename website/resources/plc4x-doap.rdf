@@ -53,7 +53,7 @@
         <description>PLC4X is a set of libraries for communicating with industrial programmable logic controllers (PLCs) using a variety of protocols but with a shared API.</description>
         <bug-database rdf:resource="https://github.com/apache/plc4x/issues"/>
         <download-page rdf:resource="https://plc4x.apache.org/plc4x/latest/users/download.html"/>
-        <mailing-list rdf:resource="https://plc4x.apache.org/plc4x/latest/mailing-lists.html"/>
+        <mailing-list rdf:resource="https://plc4x.apache.org/plc4x/latest/users/contact.html"/>
 
         <programming-language>C</programming-language>
         <programming-language>C++</programming-language>

@@ -51,7 +51,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: action
-    BACnetActionTagged action = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetActionTagged) BACnetActionTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("action"));
+    BACnetActionTagged action = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetActionTagged.class, BACnetActionTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("action"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(action);

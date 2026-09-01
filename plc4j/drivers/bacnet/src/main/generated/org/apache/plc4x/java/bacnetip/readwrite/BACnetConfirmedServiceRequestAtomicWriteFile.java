@@ -102,19 +102,19 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: deviceIdentifier
-    BACnetApplicationTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("deviceIdentifier"));
+    BACnetApplicationTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("deviceIdentifier"));
 
     // Optional Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: fileStartPosition
-    BACnetApplicationTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("fileStartPosition"));
+    BACnetApplicationTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileStartPosition"));
 
     // Simple Field: fileData
-    BACnetApplicationTagOctetString fileData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("fileData"));
+    BACnetApplicationTagOctetString fileData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileData"));
 
     // Optional Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(deviceIdentifier, openingTag, fileStartPosition, fileData, closingTag);

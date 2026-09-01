@@ -241,8 +241,8 @@ func (m *_BACnetLogRecord) GetPlx4xTypeName() string {
 	return "BACnetLogRecord"
 }
 
-func (m *_BACnetLogRecord) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLogRecord) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timestamp)
 	lengthInBits += m.Timestamp.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetLogRecord) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecord) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecord) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataCarLoad extends BACnetConstructedData implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: carLoad
-    BACnetApplicationTagReal carLoad = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), WithOption.WithName("carLoad"));
+    BACnetApplicationTagReal carLoad = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("carLoad"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagReal actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagReal.class, carLoad, WithOption.WithName("actualValue"));

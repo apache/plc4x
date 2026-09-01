@@ -72,7 +72,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: activeCOVMultipleSubscriptions
-    List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetCOVMultipleSubscription) BACnetCOVMultipleSubscription.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("activeCOVMultipleSubscriptions"));
+    List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCOVMultipleSubscription.class, BACnetCOVMultipleSubscription.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("activeCOVMultipleSubscriptions"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(activeCOVMultipleSubscriptions);

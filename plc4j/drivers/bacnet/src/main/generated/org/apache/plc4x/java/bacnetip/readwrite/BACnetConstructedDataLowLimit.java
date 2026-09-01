@@ -77,7 +77,7 @@ public class BACnetConstructedDataLowLimit extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lowLimit
-    BACnetApplicationTagReal lowLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), WithOption.WithName("lowLimit"));
+    BACnetApplicationTagReal lowLimit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("lowLimit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagReal actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagReal.class, lowLimit, WithOption.WithName("actualValue"));

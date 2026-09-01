@@ -19,8 +19,10 @@
 package org.apache.plc4x.java.transport.tls.config;
 
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Secret;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 
 /**
@@ -34,21 +36,51 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
      * Set to false for self-signed certificates in development/testing environments.
      * WARNING: Disabling verification still provides encryption but does NOT protect against MITM attacks.
      */
-    @ConfigurationParameter("verify-ssl")
+    @ConfigurationParameter("verify")
     @BooleanDefaultValue(true)
     public boolean verifySsl;
 
+    /**
+     * Whether to accept a certificate that is valid but was issued for some other name than the
+     * host we connected to.
+     *
+     * <p>Chain validation says the certificate was issued by someone trusted. It says nothing about
+     * who it was issued <em>to</em> - so without this check, a certificate trusted for any host is
+     * accepted for every host, which is what a machine in the middle needs.</p>
+     */
     @ConfigurationParameter("ignore-common-name")
     @BooleanDefaultValue(false)
-    @Description("Tells the target to not validate the common name")
+    @Description("Accept a server certificate issued for a different host than the one connected to")
     public boolean ignoreCommonName;
+
+    /**
+     * A key store holding the certificates this connection should trust, instead of the public
+     * certificate authorities the JVM ships with.
+     *
+     * <p>This is what makes verification usable for a device carrying its own certificate: without
+     * it the only way past a private CA is to turn verification off entirely, which is why
+     * {@code verify=false} tends to end up in configurations and stay there.</p>
+     */
+    @ConfigurationParameter("trust-store")
+    @Description("Key store of certificates to trust, instead of the JVM's public authorities")
+    public String trustStoreFile;
+
+    @Secret
+    @ConfigurationParameter("trust-store-password")
+    @Description("Password of the trust store named by tls.trust-store")
+    public String trustStorePassword;
+
+    @ConfigurationParameter("trust-store-type")
+    @StringDefaultValue("PKCS12")
+    @Description("Type of the trust store named by tls.trust-store")
+    public String trustStoreType;
 
     /**
      * TLS protocol version to use. If not set, defaults to TLS 1.3 with fallback to TLS 1.2.
      * Valid values: "TLSv1.2", "TLSv1.3"
      * Some protocols (like Secure ADS) require a specific TLS version.
      */
-    @ConfigurationParameter("tls-version")
+    @ConfigurationParameter("version")
     @Description("TLS protocol version (e.g., 'TLSv1.2', 'TLSv1.3'). If not set, uses TLS 1.3 with fallback to TLS 1.2.")
     public String tlsVersion;
 
@@ -83,6 +115,7 @@ public class TlsTransportConfiguration extends TcpTransportConfiguration {
     /**
      * Password for the keystore specified by the keystore parameter.
      */
+    @Secret
     @ConfigurationParameter("keystore-password")
     @Description("Password for the client keystore.")
     public String keystorePassword;

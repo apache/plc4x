@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6PrefixLength"
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipv6PrefixLength)
 	lengthInBits += m.Ipv6PrefixLength.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

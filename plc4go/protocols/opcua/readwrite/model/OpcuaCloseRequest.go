@@ -266,8 +266,8 @@ func (m *_OpcuaCloseRequest) GetPlx4xTypeName() string {
 	return "OpcuaCloseRequest"
 }
 
-func (m *_OpcuaCloseRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaCloseRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (securityHeader)
 	lengthInBits += m.SecurityHeader.GetLengthInBits(ctx)
@@ -278,7 +278,7 @@ func (m *_OpcuaCloseRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaCloseRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaCloseRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

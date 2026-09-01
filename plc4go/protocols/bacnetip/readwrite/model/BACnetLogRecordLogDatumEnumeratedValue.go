@@ -225,8 +225,8 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumEnumeratedValue"
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

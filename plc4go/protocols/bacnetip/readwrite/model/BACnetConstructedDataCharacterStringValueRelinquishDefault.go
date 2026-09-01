@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetPlx4xTy
 	return "BACnetConstructedDataCharacterStringValueRelinquishDefault"
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthI
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

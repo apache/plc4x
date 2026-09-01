@@ -193,26 +193,26 @@ func (m *_BACnetTagPayloadBitString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadBitString"
 }
 
-func (m *_BACnetTagPayloadBitString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadBitString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (unusedBits)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 1 * uint16(len(m.Data))
+		lengthInBits += 1 * uint64(len(m.Data))
 	}
 
 	// Array field
 	if len(m.Unused) > 0 {
-		lengthInBits += 1 * uint16(len(m.Unused))
+		lengthInBits += 1 * uint64(len(m.Unused))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadBitString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadBitString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

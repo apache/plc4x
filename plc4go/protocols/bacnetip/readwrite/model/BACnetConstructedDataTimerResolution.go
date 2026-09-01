@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataTimerResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerResolution"
 }
 
-func (m *_BACnetConstructedDataTimerResolution) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimerResolution) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (resolution)
 	lengthInBits += m.Resolution.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimerResolution) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimerResolution) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimerResolution) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

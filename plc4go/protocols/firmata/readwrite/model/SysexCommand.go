@@ -58,8 +58,8 @@ type SysexCommandContract interface {
 
 // SysexCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type SysexCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint8
 	// GetResponse returns Response (discriminator field)
@@ -379,19 +379,19 @@ func (m *_SysexCommand) GetPlx4xTypeName() string {
 	return "SysexCommand"
 }
 
-func (m *_SysexCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SysexCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_SysexCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_SysexCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_SysexCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

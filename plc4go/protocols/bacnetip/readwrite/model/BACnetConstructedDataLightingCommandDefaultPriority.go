@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetPlx4xTypeName(
 	return "BACnetConstructedDataLightingCommandDefaultPriority"
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lightingCommandDefaultPriority)
 	lengthInBits += m.LightingCommandDefaultPriority.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

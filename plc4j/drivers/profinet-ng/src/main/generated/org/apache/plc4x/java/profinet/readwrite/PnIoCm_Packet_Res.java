@@ -144,7 +144,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     long arrayActualCount = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("arrayActualCount"));
 
     // Array Field: blocks
-    List<PnIoCm_Block> blocks = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_Block) PnIoCm_Block.staticParse(readBuffer), readBuffer), argsLength, WithOption.WithName("blocks"));
+    List<PnIoCm_Block> blocks = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_Block.class, PnIoCm_Block.staticParse(readBuffer)), readBuffer), argsLength, WithOption.WithName("blocks"));
 
     readBuffer.popContext();
     return new PnIoCm_PacketBuilderImpl(errorCode2, errorCode1, errorDecode, errorCode, arrayMaximumCount, arrayOffset, blocks);

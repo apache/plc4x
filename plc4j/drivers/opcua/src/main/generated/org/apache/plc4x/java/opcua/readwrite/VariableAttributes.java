@@ -186,10 +186,10 @@ public class VariableAttributes extends ExtensionObjectDefinition implements Mes
     long specifiedAttributes = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("specifiedAttributes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: displayName
-    LocalizedText displayName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LocalizedText) LocalizedText.staticParse(readBuffer), readBuffer), WithOption.WithName("displayName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    LocalizedText displayName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LocalizedText.class, LocalizedText.staticParse(readBuffer)), readBuffer), WithOption.WithName("displayName"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: description
-    LocalizedText description = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LocalizedText) LocalizedText.staticParse(readBuffer), readBuffer), WithOption.WithName("description"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    LocalizedText description = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LocalizedText.class, LocalizedText.staticParse(readBuffer)), readBuffer), WithOption.WithName("description"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: writeMask
     long writeMask = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("writeMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -198,10 +198,10 @@ public class VariableAttributes extends ExtensionObjectDefinition implements Mes
     long userWriteMask = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("userWriteMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: value
-    Variant value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Variant) Variant.staticParse(readBuffer), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    Variant value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Variant.class, Variant.staticParse(readBuffer)), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: dataType
-    NodeId dataType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("dataType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId dataType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("dataType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: valueRank
     int valueRank = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("valueRank"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

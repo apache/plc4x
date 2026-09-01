@@ -50,7 +50,7 @@ The default is 3 levels. If the `knxproj-file-path` this information is provided
 - 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address. +
 - 'RAW': The client gets unmanaged access to the bus (be careful with this) +
 - 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.
-|`request-timeout` |INT |10000| |Maximum time (in milliseconds) to wait for a reply during the KNXnet/IP search, connect and tunnelling exchanges.
+|`request-timeout-ms` |INT |10000| |Maximum time (in milliseconds) to wait for a reply during the KNXnet/IP search, connect and tunnelling exchanges.
 5+|Transport config options:
 5+|
 +++
@@ -58,7 +58,7 @@ The default is 3 levels. If the `knxproj-file-path` this information is provided
 +++
 |`udp.local-address` |STRING | | |Local address to bind to. If not set, binds to all interfaces.
 |`udp.local-port` |INT |0| |Local port to bind to. 0 uses ephemeral port.
-|`udp.read-timeout` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`udp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
 |`udp.max-packet-size` |INT |65507| |Maximum UDP packet size in bytes.
 |`udp.send-buffer-size` |INT |0| |Send buffer size in bytes. 0 uses system default.
 |`udp.receive-buffer-size` |INT |0| |Receive buffer size in bytes. 0 uses system default.

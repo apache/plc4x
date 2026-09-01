@@ -52,7 +52,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReal extends BACnet
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: realValue
-    BACnetApplicationTagReal realValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), WithOption.WithName("realValue"));
+    BACnetApplicationTagReal realValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("realValue"));
 
     readBuffer.popContext();
     return new BACnetFaultParameterFaultExtendedParametersEntryBuilderImpl(realValue);

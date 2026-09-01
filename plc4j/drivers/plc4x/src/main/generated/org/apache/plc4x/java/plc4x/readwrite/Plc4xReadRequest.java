@@ -78,7 +78,7 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     short numTags = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numTags"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: tags
-    List<Plc4xTagRequest> tags = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (Plc4xTagRequest) Plc4xTagRequest.staticParse(readBuffer), readBuffer), numTags, WithOption.WithName("tags"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<Plc4xTagRequest> tags = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Plc4xTagRequest.class, Plc4xTagRequest.staticParse(readBuffer)), readBuffer), numTags, WithOption.WithName("tags"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new Plc4xMessageBuilderImpl(connectionId, tags);

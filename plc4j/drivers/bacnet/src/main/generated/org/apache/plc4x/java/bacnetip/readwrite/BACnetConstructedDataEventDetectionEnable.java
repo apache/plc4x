@@ -78,7 +78,7 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: eventDetectionEnable
-    BACnetApplicationTagBoolean eventDetectionEnable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("eventDetectionEnable"));
+    BACnetApplicationTagBoolean eventDetectionEnable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("eventDetectionEnable"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, eventDetectionEnable, WithOption.WithName("actualValue"));

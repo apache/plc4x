@@ -78,7 +78,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: alignIntervals
-    BACnetApplicationTagBoolean alignIntervals = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("alignIntervals"));
+    BACnetApplicationTagBoolean alignIntervals = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("alignIntervals"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, alignIntervals, WithOption.WithName("actualValue"));

@@ -52,7 +52,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateTimeValue
-    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("dateTimeValue"));
+    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("dateTimeValue"));
 
     readBuffer.popContext();
     return new BACnetTimerStateChangeValueBuilderImpl(dateTimeValue);

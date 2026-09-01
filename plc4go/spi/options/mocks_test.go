@@ -560,8 +560,8 @@ func (_c *MockDiscoveryOptionProtocolSpecific_GetValue_Call) Run(run func()) *Mo
 	return _c
 }
 
-func (_c *MockDiscoveryOptionProtocolSpecific_GetValue_Call) Return(v any) *MockDiscoveryOptionProtocolSpecific_GetValue_Call {
-	_c.Call.Return(v)
+func (_c *MockDiscoveryOptionProtocolSpecific_GetValue_Call) Return(anyMoqParam any) *MockDiscoveryOptionProtocolSpecific_GetValue_Call {
+	_c.Call.Return(anyMoqParam)
 	return _c
 }
 

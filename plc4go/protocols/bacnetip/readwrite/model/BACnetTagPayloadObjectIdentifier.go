@@ -210,14 +210,14 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadObjectIdentifier"
 }
 
-func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Manual Field (objectType)
-	lengthInBits += uint16(int32(10))
+	lengthInBits += uint64(int32(10))
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(int32(0))
+	lengthInBits += uint64(int32(0))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -227,7 +227,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

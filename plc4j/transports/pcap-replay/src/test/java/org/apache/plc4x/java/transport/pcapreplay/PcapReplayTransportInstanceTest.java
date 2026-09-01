@@ -769,4 +769,48 @@ class PcapReplayTransportInstanceTest {
         instance.close();
     }
 
+
+    /**
+     * A replay is worth having only if it replays what was captured. The codec reading this decides
+     * where one message ends and the next begins, so a gap in the middle of a frame is not one lost
+     * frame - it is every value after it read from the wrong offset.
+     */
+    @Test
+    void aFrameLargerThanTheBufferIsStillDeliveredWhole() throws Exception {
+        PcapReplayTransportConfiguration smallBuffer = new PcapReplayTransportConfiguration();
+        smallBuffer.pcapFile = "/test.pcap";
+        smallBuffer.maxFrameSize = 64;
+        smallBuffer.readTimeout = 100;
+        smallBuffer.localAddress = localMac.toString();
+        smallBuffer.remoteAddress = remoteMac.toString();
+        smallBuffer.packetQueueSize = 100;
+        smallBuffer.autoStart = false;
+
+        // One packet four times the size of the buffer that has to hold it.
+        byte[] captured = new byte[256];
+        for (int i = 0; i < captured.length; i++) {
+            captured[i] = (byte) (i % 251);
+        }
+
+        PcapFilePlayer player = mock(PcapFilePlayer.class);
+        when(player.isPlaying()).thenReturn(true);
+        when(player.getNextPacket(anyLong(), any())).thenReturn(captured, (byte[]) null);
+        smallBuffer.mockPlayer = player;
+
+        PcapReplayTransportInstance instance =
+            new PcapReplayTransportInstance(smallBuffer, AuditLog.builder().build());
+        try {
+            // Read in buffer-sized bites: the ring holds 64, so the frame can only come out in
+            // four of them - which is the point. Nothing may go missing between them.
+            java.io.ByteArrayOutputStream delivered = new java.io.ByteArrayOutputStream();
+            for (int chunk = 0; chunk < 4; chunk++) {
+                delivered.write(instance.read(64));
+            }
+
+            assertArrayEquals(captured, delivered.toByteArray(),
+                "every byte of the captured frame must be replayed, in the order it was captured");
+        } finally {
+            instance.close();
+        }
+    }
 }

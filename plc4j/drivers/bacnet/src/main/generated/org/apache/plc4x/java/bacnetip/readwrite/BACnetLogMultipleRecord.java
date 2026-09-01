@@ -59,10 +59,10 @@ public class BACnetLogMultipleRecord implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timestamp
-    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("timestamp"));
+    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("timestamp"));
 
     // Simple Field: logData
-    BACnetLogData logData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLogData) BACnetLogData.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("logData"));
+    BACnetLogData logData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLogData.class, BACnetLogData.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("logData"));
 
     readBuffer.popContext();
     return new BACnetLogMultipleRecord(timestamp, logData);

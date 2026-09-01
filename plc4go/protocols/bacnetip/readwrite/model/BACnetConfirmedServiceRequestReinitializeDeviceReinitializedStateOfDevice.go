@@ -136,11 +136,11 @@ func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevi
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

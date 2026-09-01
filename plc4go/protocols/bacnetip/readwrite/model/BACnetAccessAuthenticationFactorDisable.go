@@ -124,11 +124,11 @@ func CastBACnetAccessAuthenticationFactorDisable(structType any) BACnetAccessAut
 	return castFunc(structType)
 }
 
-func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

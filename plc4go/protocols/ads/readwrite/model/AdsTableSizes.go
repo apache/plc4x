@@ -237,8 +237,8 @@ func (m *_AdsTableSizes) GetPlx4xTypeName() string {
 	return "AdsTableSizes"
 }
 
-func (m *_AdsTableSizes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsTableSizes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (symbolCount)
 	lengthInBits += 32
@@ -261,7 +261,7 @@ func (m *_AdsTableSizes) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsTableSizes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsTableSizes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

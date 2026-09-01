@@ -18,11 +18,10 @@
  */
 package org.apache.plc4x.java.opcua.tag;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
@@ -34,6 +33,7 @@ import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,21 +43,12 @@ public class OpcuaTag implements PlcSubscriptionTag {
 
     // Inline tag-config pattern that the old SPI's {@code TagConfigParser} used
     // to append; kept here so the address-string syntax stays compatible.
-    private static final String TAG_CONFIG_PATTERN = "(\\|(?<config>(?:(?:[a-zA-Z\\-_]+=[a-zA-Z0-9\\-_]+)(?:,(?:[a-zA-Z\\-_]+=[a-zA-Z0-9\\-_]+))*)))?";
+    private static final String TAG_CONFIG_PATTERN = "(\\|(?<config>[a-zA-Z\\-_]+=[a-zA-Z0-9\\-_]+(?:,[a-zA-Z\\-_]+=[a-zA-Z0-9\\-_]+)*))?";
     // The identifier is any run of non-';' characters, except that a bracketed segment '[...]' may
     // itself contain ';' — this lets an array-index suffix carry a ';base' (e.g. "Foo[3..8;1]")
     // without the inner ';' being mistaken for the ';a='/';TYPE' delimiters that follow.
-    private static final String OPC_UTA_TAG_ADDRESS = "^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>(?:[^;\\[]|\\[[^\\]]*\\])+)?(;a=(?<attributeId>[^;]+))?(;(?<datatype>[a-zA-Z_]+))?";
+    private static final String OPC_UTA_TAG_ADDRESS = "^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>(?:[^;\\[]|\\[[^]]*])+)?(;a=(?<attributeId>[^;]+))?(;(?<datatype>[a-zA-Z_]+))?";
     public static final Pattern ADDRESS_PATTERN = Pattern.compile(OPC_UTA_TAG_ADDRESS + TAG_CONFIG_PATTERN + "$");
-
-    // A trailing run of array-index brackets on the identifier, e.g. "[8]", "[3..8]" or the
-    // multi-dimensional "[1..2][0..5;1]". Each bracket is a single index or an inclusive "lo..hi"
-    // range, with an optional ";base" giving the array's lower bound (default 0). The grammar is
-    // strictly numeric so a normal string identifier that happens to contain '[' is left untouched.
-    private static final Pattern INDEX_RANGE_PATTERN =
-        Pattern.compile("(\\[\\d+(?:\\.\\.\\d+)?(?:;\\d+)?\\])+$");
-    private static final Pattern SINGLE_BRACKET_PATTERN =
-        Pattern.compile("\\[(\\d+)(?:\\.\\.(\\d+))?(?:;(\\d+))?\\]");
 
     private final OpcuaIdentifierType identifierType;
 
@@ -110,11 +101,12 @@ public class OpcuaTag implements PlcSubscriptionTag {
         String indexRangeExpression = null;
         String indexRange = null;
         if (identifier != null) {
-            Matcher indexMatcher = INDEX_RANGE_PATTERN.matcher(identifier);
-            if (indexMatcher.find()) {
-                indexRangeExpression = indexMatcher.group();
-                indexRange = toOpcuaIndexRange(address, indexRangeExpression);
-                identifier = identifier.substring(0, indexMatcher.start());
+            String expression = ArrayNotationParser.expressionPart(identifier);
+            if (!expression.isEmpty()) {
+                List<ArrayInfo> dimensions = ArrayNotationParser.parse(expression, address);
+                indexRangeExpression = ArrayNotationParser.render(dimensions);
+                indexRange = toOpcuaIndexRange(dimensions);
+                identifier = ArrayNotationParser.addressPart(identifier);
             }
         }
 
@@ -144,29 +136,19 @@ public class OpcuaTag implements PlcSubscriptionTag {
     }
 
     /**
-     * Translates the user's array-index expression into an OPC UA IndexRange string. Each bracket
-     * becomes one dimension: a single index {@code [n]} or an inclusive range {@code [lo..hi]},
-     * with an optional {@code ;base} lower bound (default 0) subtracted so the result is 0-based, as
-     * OPC UA requires. Dimensions are comma-separated. Example: {@code [3..8;1]} -&gt; {@code "2:7"}.
+     * Renders parsed dimensions as an OPC UA IndexRange string: 0-based, inclusive, one entry per
+     * dimension, comma-separated. The declared lower bound has already been applied by the shared
+     * parser, so this only formats. Example: {@code [3..8;1]} -&gt; {@code "2:7"}.
      */
-    private static String toOpcuaIndexRange(String address, String indexRangeExpression) {
+    private static String toOpcuaIndexRange(List<ArrayInfo> dimensions) {
         StringBuilder result = new StringBuilder();
-        Matcher bracket = SINGLE_BRACKET_PATTERN.matcher(indexRangeExpression);
-        while (bracket.find()) {
-            long low = Long.parseLong(bracket.group(1));
-            long high = bracket.group(2) != null ? Long.parseLong(bracket.group(2)) : low;
-            long base = bracket.group(3) != null ? Long.parseLong(bracket.group(3)) : 0;
-            low -= base;
-            high -= base;
-            if (low < 0 || high < low) {
-                throw new PlcInvalidTagException("Invalid array index range '" + bracket.group()
-                    + "' in tag '" + address + "': resolved to " + low + ".." + high
-                    + " (indices must be non-negative and low <= high after applying the base)");
-            }
-            if (result.length() > 0) {
+        for (ArrayInfo dimension : dimensions) {
+            int low = dimension.getLowerBound() - dimension.getBase();
+            int high = dimension.getUpperBound() - dimension.getBase();
+            if (!result.isEmpty()) {
                 result.append(',');
             }
-            result.append(low == high ? Long.toString(low) : low + ":" + high);
+            result.append(low == high ? Integer.toString(low) : low + ":" + high);
         }
         return result.toString();
     }
@@ -249,8 +231,18 @@ public class OpcuaTag implements PlcSubscriptionTag {
     }
 
     @Override
+    /**
+     * The shape of the value the caller receives: empty for a scalar, one entry per dimension for
+     * an array. A bare index selects one element and so reports empty; a range reports its
+     * dimensions even when it spans a single element. The IndexRange actually sent is separate -
+     * see {@link #getIndexRange()}.
+     */
     public List<ArrayInfo> getArrayInfo() {
-        return PlcSubscriptionTag.super.getArrayInfo();
+        if (indexRangeExpression == null
+            || ArrayNotationParser.selectsSingleElement(indexRangeExpression)) {
+            return Collections.emptyList();
+        }
+        return ArrayNotationParser.parse(indexRangeExpression, getAddressString());
     }
 
     @Override
@@ -258,16 +250,15 @@ public class OpcuaTag implements PlcSubscriptionTag {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof OpcuaTag)) {
-            return false;
+        if (o instanceof OpcuaTag that) {
+            return namespace == that.namespace &&
+                identifier.equals(that.identifier) &&
+                identifierType == that.identifierType &&
+                attributeId == that.attributeId &&
+                Objects.equals(indexRange, that.indexRange) &&
+                config.equals(that.config);
         }
-        OpcuaTag that = (OpcuaTag) o;
-        return namespace == that.namespace &&
-            identifier.equals(that.identifier) &&
-            identifierType == that.identifierType &&
-            attributeId == that.attributeId &&
-            Objects.equals(indexRange, that.indexRange) &&
-            config.equals(that.config);
+        return false;
     }
 
     @Override

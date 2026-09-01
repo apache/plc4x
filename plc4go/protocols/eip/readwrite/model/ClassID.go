@@ -226,8 +226,8 @@ func (m *_ClassID) GetPlx4xTypeName() string {
 	return "ClassID"
 }
 
-func (m *_ClassID) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LogicalSegmentTypeContract.(*_LogicalSegmentType).getLengthInBits(ctx))
+func (m *_ClassID) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LogicalSegmentTypeContract.(*_LogicalSegmentType).getLengthInBits(ctx))
 
 	// Simple field (format)
 	lengthInBits += 2
@@ -238,7 +238,7 @@ func (m *_ClassID) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ClassID) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ClassID) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

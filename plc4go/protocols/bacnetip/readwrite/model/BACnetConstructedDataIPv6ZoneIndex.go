@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6ZoneIndex"
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipv6ZoneIndex)
 	lengthInBits += m.Ipv6ZoneIndex.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

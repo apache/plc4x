@@ -286,14 +286,14 @@ func (m *_RequestDirectCommandAccess) GetPlx4xTypeName() string {
 	return "RequestDirectCommandAccess"
 }
 
-func (m *_RequestDirectCommandAccess) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+func (m *_RequestDirectCommandAccess) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Const Field (at)
 	lengthInBits += 8
 
 	// Manual Field (calData)
-	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint64(int32((int32(m.GetCalData().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -305,7 +305,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_RequestDirectCommandAccess) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestDirectCommandAccess) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

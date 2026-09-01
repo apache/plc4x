@@ -323,8 +323,8 @@ func (m *_OpenSecureChannelRequest) GetPlx4xTypeName() string {
 	return "OpenSecureChannelRequest"
 }
 
-func (m *_OpenSecureChannelRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_OpenSecureChannelRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -347,7 +347,7 @@ func (m *_OpenSecureChannelRequest) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_OpenSecureChannelRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpenSecureChannelRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

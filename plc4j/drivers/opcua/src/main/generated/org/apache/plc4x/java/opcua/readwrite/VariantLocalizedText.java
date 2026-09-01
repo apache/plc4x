@@ -75,7 +75,7 @@ public class VariantLocalizedText extends Variant implements Message {
     Integer arrayLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedInt(readBuffer, 32), arrayLengthSpecified, WithOption.WithName("arrayLength"));
 
     // Array Field: value
-    List<LocalizedText> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (LocalizedText) LocalizedText.staticParse(readBuffer), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
+    List<LocalizedText> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LocalizedText.class, LocalizedText.staticParse(readBuffer)), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new VariantBuilderImpl(arrayLength, value);

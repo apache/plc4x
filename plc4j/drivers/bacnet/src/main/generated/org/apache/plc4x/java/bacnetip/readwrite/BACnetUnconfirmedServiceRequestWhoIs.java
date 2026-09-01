@@ -70,10 +70,10 @@ public class BACnetUnconfirmedServiceRequestWhoIs extends BACnetUnconfirmedServi
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Optional Field: deviceInstanceRangeLowLimit
-    BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("deviceInstanceRangeLowLimit"));
+    BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("deviceInstanceRangeLowLimit"));
 
     // Optional Field (conditional): deviceInstanceRangeHighLimit
-    BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), (deviceInstanceRangeLowLimit) != (null), WithOption.WithName("deviceInstanceRangeHighLimit"));
+    BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), (deviceInstanceRangeLowLimit) != (null), WithOption.WithName("deviceInstanceRangeHighLimit"));
 
     readBuffer.popContext();
     return new BACnetUnconfirmedServiceRequestBuilderImpl(deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit);

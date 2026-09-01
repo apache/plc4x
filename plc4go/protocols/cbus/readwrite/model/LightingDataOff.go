@@ -207,8 +207,8 @@ func (m *_LightingDataOff) GetPlx4xTypeName() string {
 	return "LightingDataOff"
 }
 
-func (m *_LightingDataOff) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
+func (m *_LightingDataOff) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -216,7 +216,7 @@ func (m *_LightingDataOff) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LightingDataOff) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LightingDataOff) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

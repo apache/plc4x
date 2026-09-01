@@ -78,7 +78,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: operationDirection
-    BACnetEscalatorOperationDirectionTagged operationDirection = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEscalatorOperationDirectionTagged) BACnetEscalatorOperationDirectionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("operationDirection"));
+    BACnetEscalatorOperationDirectionTagged operationDirection = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEscalatorOperationDirectionTagged.class, BACnetEscalatorOperationDirectionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("operationDirection"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetEscalatorOperationDirectionTagged actualValue = FieldReaderFactory.readVirtualField(BACnetEscalatorOperationDirectionTagged.class, operationDirection, WithOption.WithName("actualValue"));

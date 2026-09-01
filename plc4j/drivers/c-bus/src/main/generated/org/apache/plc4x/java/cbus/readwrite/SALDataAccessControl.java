@@ -60,7 +60,7 @@ public class SALDataAccessControl extends SALData implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: accessControlData
-    AccessControlData accessControlData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AccessControlData) AccessControlData.staticParse(readBuffer), readBuffer), WithOption.WithName("accessControlData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    AccessControlData accessControlData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AccessControlData.class, AccessControlData.staticParse(readBuffer)), readBuffer), WithOption.WithName("accessControlData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(accessControlData);

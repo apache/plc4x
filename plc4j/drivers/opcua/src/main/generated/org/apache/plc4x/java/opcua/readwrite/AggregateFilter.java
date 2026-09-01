@@ -92,13 +92,13 @@ public class AggregateFilter extends ExtensionObjectDefinition implements Messag
     long startTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedLong(readBuffer, 64), WithOption.WithName("startTime"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: aggregateType
-    NodeId aggregateType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("aggregateType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    NodeId aggregateType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("aggregateType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: processingInterval
     double processingInterval = FieldReaderFactory.readSimpleField(DataReaderFactory.readDouble(readBuffer, 64), WithOption.WithName("processingInterval"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: aggregateConfiguration
-    AggregateConfiguration aggregateConfiguration = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AggregateConfiguration) AggregateConfiguration.staticParse(readBuffer, (int) (950)), readBuffer), WithOption.WithName("aggregateConfiguration"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    AggregateConfiguration aggregateConfiguration = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AggregateConfiguration.class, AggregateConfiguration.staticParse(readBuffer, (int) (950))), readBuffer), WithOption.WithName("aggregateConfiguration"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(startTime, aggregateType, processingInterval, aggregateConfiguration);

@@ -262,8 +262,8 @@ func (m *_WritePropertyMultipleError) GetPlx4xTypeName() string {
 	return "WritePropertyMultipleError"
 }
 
-func (m *_WritePropertyMultipleError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
+func (m *_WritePropertyMultipleError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_WritePropertyMultipleError) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_WritePropertyMultipleError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_WritePropertyMultipleError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -109,7 +109,7 @@ public class BACnetTagHeader implements Message {
    * Virtual field actualTagNumber
    */
   public short getActualTagNumber() {
-    return (short) ((((tagNumber) < (15)) ? tagNumber : extTagNumber));
+    return (short) (((((tagNumber) < (15)) || ((extTagNumber) == (null))) ? tagNumber : extTagNumber));
   }
 
   /**
@@ -137,7 +137,7 @@ public class BACnetTagHeader implements Message {
    * Virtual field actualLength
    */
   public long getActualLength() {
-    return (long) (((((lengthValueType) == (5)) && ((extLength) == (255))) ? extExtExtLength : (((((lengthValueType) == (5)) && ((extLength) == (254))) ? extExtLength : ((((lengthValueType) == (5)) ? extLength : lengthValueType))))));
+    return (long) (((((((getIsPrimitiveAndNotBoolean()) && ((lengthValueType) == (5))) && ((extLength) != (null))) && ((extLength) == (255))) && ((extExtExtLength) != (null))) ? extExtExtLength : (((((((getIsPrimitiveAndNotBoolean()) && ((lengthValueType) == (5))) && ((extLength) != (null))) && ((extLength) == (254))) && ((extExtLength) != (null))) ? extExtLength : (((((getIsPrimitiveAndNotBoolean()) && ((lengthValueType) == (5))) && ((extLength) != (null))) ? extLength : lengthValueType))))));
   }
 
   public static BACnetTagHeader staticParse(ReadBuffer readBuffer) throws BufferException {
@@ -157,7 +157,7 @@ public class BACnetTagHeader implements Message {
     Short extTagNumber = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (tagNumber) == (15), WithOption.WithName("extTagNumber"));
 
     // Virtual Field: actualTagNumber (doesn't parse anything, just makes the value available)
-    short actualTagNumber = FieldReaderFactory.readVirtualField(short.class, (((tagNumber) < (15)) ? tagNumber : extTagNumber), WithOption.WithName("actualTagNumber"));
+    short actualTagNumber = FieldReaderFactory.readVirtualField(short.class, ((((tagNumber) < (15)) || ((extTagNumber) == (null))) ? tagNumber : extTagNumber), WithOption.WithName("actualTagNumber"));
 
     // Virtual Field: isBoolean (doesn't parse anything, just makes the value available)
     boolean isBoolean = FieldReaderFactory.readVirtualField(boolean.class, ((tagNumber) == (1)) && ((tagClass) == (TagClass.APPLICATION_TAGS)), WithOption.WithName("isBoolean"));
@@ -172,13 +172,13 @@ public class BACnetTagHeader implements Message {
     Short extLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (isPrimitiveAndNotBoolean) && ((lengthValueType) == (5)), WithOption.WithName("extLength"));
 
     // Optional Field (conditional): extExtLength
-    Integer extExtLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedInt(readBuffer, 16), ((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) == (254)), WithOption.WithName("extExtLength"));
+    Integer extExtLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedInt(readBuffer, 16), (((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) != (null))) && ((extLength) == (254)), WithOption.WithName("extExtLength"));
 
     // Optional Field (conditional): extExtExtLength
-    Long extExtExtLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedLong(readBuffer, 32), ((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) == (255)), WithOption.WithName("extExtExtLength"));
+    Long extExtExtLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedLong(readBuffer, 32), (((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) != (null))) && ((extLength) == (255)), WithOption.WithName("extExtExtLength"));
 
     // Virtual Field: actualLength (doesn't parse anything, just makes the value available)
-    long actualLength = FieldReaderFactory.readVirtualField(long.class, ((((lengthValueType) == (5)) && ((extLength) == (255))) ? extExtExtLength : (((((lengthValueType) == (5)) && ((extLength) == (254))) ? extExtLength : ((((lengthValueType) == (5)) ? extLength : lengthValueType))))), WithOption.WithName("actualLength"));
+    long actualLength = FieldReaderFactory.readVirtualField(long.class, ((((((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) != (null))) && ((extLength) == (255))) && ((extExtExtLength) != (null))) ? extExtExtLength : (((((((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) != (null))) && ((extLength) == (254))) && ((extExtLength) != (null))) ? extExtLength : (((((isPrimitiveAndNotBoolean) && ((lengthValueType) == (5))) && ((extLength) != (null))) ? extLength : lengthValueType))))), WithOption.WithName("actualLength"));
 
     readBuffer.popContext();
     return new BACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength);

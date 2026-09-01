@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastAccessPoint
-    BACnetDeviceObjectReference lastAccessPoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReference) BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer), WithOption.WithName("lastAccessPoint"));
+    BACnetDeviceObjectReference lastAccessPoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReference.class, BACnetDeviceObjectReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("lastAccessPoint"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectReference.class, lastAccessPoint, WithOption.WithName("actualValue"));

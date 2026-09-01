@@ -62,7 +62,7 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: request
-    DF1RequestMessage request = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DF1RequestMessage) DF1RequestMessage.staticParse(readBuffer), readBuffer), WithOption.WithName("request"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DF1RequestMessage request = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DF1RequestMessage.class, DF1RequestMessage.staticParse(readBuffer)), readBuffer), WithOption.WithName("request"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CIPEncapsulationPacketBuilderImpl(request);

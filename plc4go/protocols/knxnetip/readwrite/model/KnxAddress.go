@@ -193,8 +193,8 @@ func (m *_KnxAddress) GetPlx4xTypeName() string {
 	return "KnxAddress"
 }
 
-func (m *_KnxAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_KnxAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (mainGroup)
 	lengthInBits += 4
@@ -208,7 +208,7 @@ func (m *_KnxAddress) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -73,8 +73,25 @@ func (m PlcDATE_AND_TIME) GetDay() uint8 {
 	return uint8(m.value.Day())
 }
 
+// GetDayOfWeek returns the ISO-8601 day of week: 1 == Monday .. 7 == Sunday.
+//
+// This mirrors plc4j's PlcDATE_AND_TIME#getDayOfWeek, which returns
+// LocalDateTime#getDayOfWeek#getValue, i.e. the same 1..7 ISO numbering. It is
+// deliberately NOT time.Weekday (0 == Sunday .. 6 == Saturday): every wire
+// format that carries this field numbers the days from 1, so a 0 either means
+// "no day given" (KNX DPT 19.001, knxnetip.mspec dayOfWeek) or is outright
+// invalid (S7 DATE_AND_TIME, s7.mspec: "one 4-bit value representing 1 - 7").
+//
+// Note that the S7 dow field uses a DIFFERENT 1..7 numbering (1 == Sunday ..
+// 7 == Saturday). Rotating into it is a protocol level concern that this generic
+// value cannot do for KNX and S7 at the same time, and the S7 data-io serializer
+// does not do it yet.
 func (m PlcDATE_AND_TIME) GetDayOfWeek() uint8 {
-	return uint8(m.value.Weekday())
+	// time.Weekday numbers Sunday 0, ISO-8601 numbers it last as 7.
+	if weekday := m.value.Weekday(); weekday != time.Sunday {
+		return uint8(weekday)
+	}
+	return 7
 }
 
 func (m PlcDATE_AND_TIME) GetHour() uint8 {
@@ -110,7 +127,9 @@ func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
 }
 
 func (m PlcDATE_AND_TIME) GetString() string {
-	return fmt.Sprintf("%v", m.GetDateTime())
+	// DATE_AND_TIME is a wall-clock value without a time zone: render the instant's UTC
+	// wall time in ISO-8601, with the fraction only when there is one.
+	return m.GetDateTime().UTC().Format("2006-01-02T15:04:05.999999999")
 }
 
 func (m PlcDATE_AND_TIME) GetPlcValueType() apiValues.PlcValueType {
@@ -126,7 +145,7 @@ func (m PlcDATE_AND_TIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcDATE_AND_TIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
+	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), m.GetString(), utils.WithEncoding("UTF-8"))
 }
 
 func (m PlcDATE_AND_TIME) String() string {

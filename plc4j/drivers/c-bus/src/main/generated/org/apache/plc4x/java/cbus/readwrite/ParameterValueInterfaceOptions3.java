@@ -75,7 +75,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
     }
 
     // Simple Field: value
-    InterfaceOptions3 value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (InterfaceOptions3) InterfaceOptions3.staticParse(readBuffer), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    InterfaceOptions3 value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(InterfaceOptions3.class, InterfaceOptions3.staticParse(readBuffer)), readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: data
     byte[] data = readBuffer.readBits(Math.toIntExact(((numBytes) - (1)) * 8), WithOption.WithName("data"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

@@ -198,8 +198,8 @@ func (m *_PanicStatus) GetPlx4xTypeName() string {
 	return "PanicStatus"
 }
 
-func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (status)
 	lengthInBits += 8
@@ -213,7 +213,7 @@ func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PanicStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PanicStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

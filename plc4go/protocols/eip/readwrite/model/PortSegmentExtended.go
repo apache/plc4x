@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -258,8 +259,8 @@ func (m *_PortSegmentExtended) GetPlx4xTypeName() string {
 	return "PortSegmentExtended"
 }
 
-func (m *_PortSegmentExtended) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
+func (m *_PortSegmentExtended) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
 
 	// Simple field (port)
 	lengthInBits += 4
@@ -270,12 +271,12 @@ func (m *_PortSegmentExtended) GetLengthInBits(ctx context.Context) uint16 {
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (address)
-	lengthInBits += uint16(int32((int32(m.GetLinkAddressSize()) * int32(int32(8)))) + int32((int32(m.GetPaddingByte()) * int32(int32(8)))))
+	lengthInBits += uint64(int32((int32(m.GetLinkAddressSize()) * int32(int32(8)))) + int32((int32(m.GetPaddingByte()) * int32(int32(8)))))
 
 	return lengthInBits
 }
 
-func (m *_PortSegmentExtended) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PortSegmentExtended) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -308,7 +309,7 @@ func (m *_PortSegmentExtended) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	_ = paddingByte
 
-	address, err := ReadSimpleField(ctx, "address", ReadString(readBuffer, uint32(int32((int32(linkAddressSize)*int32(int32(8))))+int32((int32(paddingByte)*int32(int32(8)))))))
+	address, err := ReadSimpleField(ctx, "address", ReadString(readBuffer, uint32(int32((int32(linkAddressSize)*int32(int32(8))))+int32((int32(paddingByte)*int32(int32(8)))))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
@@ -353,7 +354,7 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_paddingByteErr, "Error serializing 'paddingByte' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "address", m.GetAddress(), WriteString(writeBuffer, int32(int32((int32(m.GetLinkAddressSize())*int32(int32(8))))+int32((int32(m.GetPaddingByte())*int32(int32(8))))))); err != nil {
+		if err := WriteSimpleField[string](ctx, "address", m.GetAddress(), WriteString(writeBuffer, int32(int32((int32(m.GetLinkAddressSize())*int32(int32(8))))+int32((int32(m.GetPaddingByte())*int32(int32(8)))))), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 

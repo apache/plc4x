@@ -52,7 +52,7 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: octetStringValue
-    BACnetApplicationTagOctetString octetStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("octetStringValue"));
+    BACnetApplicationTagOctetString octetStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("octetStringValue"));
 
     readBuffer.popContext();
     return new BACnetPriorityValueBuilderImpl(octetStringValue);

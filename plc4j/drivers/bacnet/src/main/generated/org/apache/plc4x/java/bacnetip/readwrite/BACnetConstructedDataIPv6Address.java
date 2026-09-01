@@ -78,7 +78,7 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ipv6Address
-    BACnetApplicationTagOctetString ipv6Address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("ipv6Address"));
+    BACnetApplicationTagOctetString ipv6Address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipv6Address"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagOctetString.class, ipv6Address, WithOption.WithName("actualValue"));

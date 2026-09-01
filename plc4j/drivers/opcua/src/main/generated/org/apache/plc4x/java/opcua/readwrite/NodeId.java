@@ -52,7 +52,7 @@ public class NodeId implements Message {
     FieldReaderFactory.readReservedField(DataReaderFactory.readSignedByte(readBuffer, 2), (byte) 0x00, WithOption.WithName("NodeId.reserved0"));
 
     // Simple Field: nodeId
-    NodeIdTypeDefinition nodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NodeIdTypeDefinition) NodeIdTypeDefinition.staticParse(readBuffer), readBuffer), WithOption.WithName("nodeId"));
+    NodeIdTypeDefinition nodeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeIdTypeDefinition.class, NodeIdTypeDefinition.staticParse(readBuffer)), readBuffer), WithOption.WithName("nodeId"));
 
     readBuffer.popContext();
     return new NodeId(nodeId);

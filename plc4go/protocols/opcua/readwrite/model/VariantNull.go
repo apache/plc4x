@@ -184,13 +184,13 @@ func (m *_VariantNull) GetPlx4xTypeName() string {
 	return "VariantNull"
 }
 
-func (m *_VariantNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantNull) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_VariantNull) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantNull) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

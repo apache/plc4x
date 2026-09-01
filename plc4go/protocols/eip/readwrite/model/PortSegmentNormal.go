@@ -226,8 +226,8 @@ func (m *_PortSegmentNormal) GetPlx4xTypeName() string {
 	return "PortSegmentNormal"
 }
 
-func (m *_PortSegmentNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
+func (m *_PortSegmentNormal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
 
 	// Simple field (port)
 	lengthInBits += 4
@@ -238,7 +238,7 @@ func (m *_PortSegmentNormal) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PortSegmentNormal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PortSegmentNormal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

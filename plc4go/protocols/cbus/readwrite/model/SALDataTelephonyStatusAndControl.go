@@ -231,8 +231,8 @@ func (m *_SALDataTelephonyStatusAndControl) GetPlx4xTypeName() string {
 	return "SALDataTelephonyStatusAndControl"
 }
 
-func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (telephonyData)
 	lengthInBits += m.TelephonyData.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

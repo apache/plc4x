@@ -94,11 +94,11 @@ func CastPubSubDiagnosticsCounterClassification(structType any) PubSubDiagnostic
 	return castFunc(structType)
 }
 
-func (m PubSubDiagnosticsCounterClassification) GetLengthInBits(ctx context.Context) uint16 {
+func (m PubSubDiagnosticsCounterClassification) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PubSubDiagnosticsCounterClassification) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PubSubDiagnosticsCounterClassification) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

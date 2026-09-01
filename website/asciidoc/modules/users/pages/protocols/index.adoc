@@ -18,7 +18,9 @@
 
 = Current language support for protocols
 
-
+The tables below list the drivers that actually ship with each language implementation.
+A protocol only appears as supported where a driver exists and is registered with that
+implementation's driver manager - a protocol specification on its own is not enough.
 
 |===
 |Protocol | C | C# | Go | Java | Python
@@ -26,7 +28,7 @@
 |AB-Ethernet
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
+|icon:exclamation[role="yellow"]
 |icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
@@ -40,25 +42,32 @@
 |BACnet/IP
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
-|CBus
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|CAN (raw)
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 
 |CANopen
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+
+|CBus
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
-|DeltaV
+|ctrlX
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
@@ -69,40 +78,40 @@
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |EtherNet/IP
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:question[role="red"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
 |EtherNet/IP - Logix
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
 |Firmata
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:question[role="red"]
-|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
+|icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
 |IEC-60870
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
 |KNXnet/IP
 |icon:times[role="red"]
-|icon:times[role="red"]
+|icon:exclamation[role="yellow"]
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
@@ -117,7 +126,7 @@
 |OPC-UA
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:question[role="red"]
+|icon:exclamation[role="yellow"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
@@ -129,7 +138,7 @@
 |icon:times[role="red"]
 
 |PLC4X (Proxy-Protocol)
-|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:check[role="green"]
@@ -145,29 +154,29 @@
 |S7
 |icon:check[role="green"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
 |Simulated
+|icon:check[role="green"]
 |icon:times[role="red"]
-|icon:times[role="red"]
-|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
 
 |SLMP (MELSEC)
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |UMAS
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
-|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 
 |===
@@ -175,259 +184,270 @@
 |===
 |Legend:
 
-- icon:check[role="green"] Implemented and fully supported
-- icon:exclamation[role="yellow"] Work in progress
-- icon:check[role="red"] Not implemented yet
-- icon:question[role="red"] Unsure
+- icon:check[role="green"] Implemented and usable
+- icon:exclamation[role="yellow"] Partially implemented - see the notes below
+- icon:times[role="red"] Not implemented
 
 |===
+
+Notes on the partially implemented drivers:
+
+* *AB-Ethernet* reads and offers polled subscriptions in both Java and Go; neither writes.
+* *BACnet/IP* (Java) passively receives broadcast traffic and exposes it as subscriptions; it does
+not read or write properties. The Go driver is the complete one: it reads and writes properties,
+discovers devices and subscribes to COV notifications.
+* *CAN (raw)* (Java) writes and subscribes; there is no read support.
+* *CBus* (Java) is a skeleton that connects but implements no operations. The Go driver is the complete one.
+* *ctrlX* (Java) answers pings; that is the only operation it completes. Discovery is offered by
+the driver, but `CtrlXPlcDiscoverer.discoverWithHandler` is an unimplemented TODO that returns
+`null` instead of a future, so a discovery request fails rather than finding anything. Its read,
+write and subscribe builders are not implemented either, and although the connection carries
+browse code, browsing does not work yet.
+* *Firmata* writes and subscribes in both Java and Go; neither reads. A board is driven and
+monitored, never polled.
+* *IEC 60870-5-104* subscribes only, in both Java and Go, because the protocol is push driven: the
+RTU sends unsolicited ASDUs once the session is started, so there is nothing to read or write. The Go
+driver keeps the IEC quality descriptors alongside each value, so a reading the RTU marked invalid,
+blocked, substituted or not-topical does not arrive looking like a good one.
+* *KNXnet/IP* (C#) is the only driver in plc4net and has not kept pace with the other implementations.
+* *OPC-UA* (Go) reads, writes and subscribes over an unencrypted channel, but that is where it ends:
+only `securityPolicy=None` actually works, browsing is not implemented, and messages are not
+chunked, so a request or response larger than a single chunk fails. The Java driver implements the
+six security policies, browsing and chunking.
+* *Open-Protocol* (Java) is a skeleton that connects but implements no operations.
+* *Profinet* (Java) discovers devices and browses the submodules of a connected device; neither of
+the two Java drivers has read or write support. Only the newer `profinet-ng` driver is part of
+`plc4j-driver-all`; the older `profinet` driver is still in the code base but is not bundled. In
+`profinet-ng` a subscription request completes the PROFINET connect handshake, but the subscription
+response future is deliberately left incomplete and `onRegisterConsumer` throws
+`UnsupportedOperationException`, so no cyclic data ever reaches an application. The unbundled
+`profinet` driver does implement that path - it completes the subscription response, registers
+consumers per subscription handle and dispatches a `PlcSubscriptionEvent` for every incoming cyclic
+frame - so the subscribe entry below, which describes what ships, does not apply to it.
+* *SLMP* addresses the word devices `D`, `W` and `R` only, in both Java and Go. That is the scope
+the driver was written to rather than a port gap - the bit devices and the wider MELSEC command set
+are not implemented in either language.
+* *UMAS* (Go) refuses `DATE` and `TIME_OF_DAY` tags rather than answering them: the Go data item
+parser has no case for those field names yet, so the bytes would parse to no value. Every other data
+type reads and writes. Note also that UMAS ships no test data in any language, so both drivers are
+verified against each other rather than against a captured exchange.
+
+*DF1* has a protocol specification in the repository, and plc4go additionally ships the generated
+message model for it, but no language implementation has a driver: there is nothing that can open a
+DF1 connection. DF1 command messages also appear inside the AB-Ethernet model, which is where that
+protocol is actually used today.
 
 == Features
-:icons: font
-The following table contains a list of operations and the protocols that support them:
+
+The table below lists which operations each driver actually implements. It describes *plc4j*,
+because that is the most complete implementation; the other languages support a subset. An
+operation is listed as supported where the driver implements it - drivers report their own
+metadata inconsistently, so this table follows the code rather than the metadata.
 
 |===
-|Protocol |Auto-Discover |Browse |Read Single Address Value |Read Multiple Address Values |Write Single Address Value |Write Multiple Address Value|Subscribe to Value changes |Subscribe to PLC Events/Alarms |Publish Values
+|Protocol |Discovery |Browse |Read |Write |Subscribe |Ping
 
 |AB-Ethernet
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
 |icon:check[role="green"]
-|icon:check[role="red"]
-|icon:check[role="red"]
-|icon:check[role="red"]
-|icon:check[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 
 |ADS /AMS
-|icon:question[role="red"]
-|icon:question[role="red"]
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:check[role="green"]
 
 |BACnet/IP
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:times[role="red"]
 
-|CBus
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|CAN (raw)
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
 
 |CANopen
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
 
-|DeltaV
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|CBus
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
 
-|DF1
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|ctrlX
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
 
 |EtherNet/IP
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|EtherNet/IP - Logix
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|Firmata
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|IEC-60870
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|KNXnet/IP
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|Modbus (TCP/RTU/ASCII)
-|icon:question[role="red"]
-|icon:question[role="red"]
 |icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|OPC-UA
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|Open-Protocol (Torque-Tools)
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|PLC4X (Proxy-Protocol)
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|Profinet
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|S7
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:check[role="green"]
+|icon:times[role="red"]
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:exclamation[role="yellow"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+
+|EtherNet/IP - Logix
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
+
+|Firmata
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+
+|IEC-60870
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+
+|KNXnet/IP
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+
+|Modbus TCP
+|icon:check[role="green"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+
+|Modbus RTU / ASCII
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+
+|OPC-UA
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+
+|Open-Protocol (Torque-Tools)
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+
+|PLC4X (Proxy-Protocol)
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+
+|Profinet (`profinet-ng`)
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+
+|S7
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 
 |Simulated
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 
 |SLMP (MELSEC)
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:times[role="red"]
-|icon:times[role="red"]
-|icon:times[role="red"]
-|icon:times[role="red"]
+|icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
 |UMAS
-|icon:question[role="red"]
+|icon:times[role="red"]
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:check[role="green"]
+|icon:exclamation[role="yellow"]
 |icon:check[role="green"]
-|icon:check[role="green"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
 
 |===
 
 |===
-
 |Legend:
 
-- icon:check[role="green"] Implemented and fully supported
-- icon:exclamation[role="yellow"] Implemented and supported by simulation
-- icon:check[role="red"] Not implemented yet
-- icon:question[role="red"] Unsure
+- icon:check[role="green"] Implemented by the driver
+- icon:exclamation[role="yellow"] Emulated: the protocol has no native support, so PLC4X provides it
+- icon:times[role="red"] Not implemented
+
 |===
+
+Protocols such as Modbus have no notion of a subscription - a client has to poll. Drivers for those
+protocols extend `PollingSubscriptionConnectionBase`, which turns a subscription request into a
+polling loop and emits change events from it, so application code can use the same subscription API
+everywhere. This is what the yellow subscription entries above mean; the traffic on the wire is
+still a sequence of reads. AB-Ethernet, EtherNet/IP (including Logix), Modbus, SLMP and UMAS work
+this way.
+
+The Logix driver reuses the EtherNet/IP connection, so it supports the same operations, but it does
+not expose device discovery. Modbus discovery is likewise a TCP-only feature: only `ModbusTcpDriver`
+offers a discovery request builder, so the serial RTU and ASCII flavors cannot discover devices.
+S7 discovery uses PROFINET DCP and needs the optional pcap4j runtime (and libpcap on the host) to be
+installed.
+
+A read or write request always carries a set of tags, so there is no separate "single value" and
+"multiple values" support: a driver that can read can read any number of tags in one request. How
+efficiently it does so differs - some drivers split a request into several PLC requests and merge
+the responses.

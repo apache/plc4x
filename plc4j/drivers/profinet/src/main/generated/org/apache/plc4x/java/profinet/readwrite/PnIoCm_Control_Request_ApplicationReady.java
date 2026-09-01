@@ -118,7 +118,7 @@ public class PnIoCm_Control_Request_ApplicationReady extends PnIoCm_Block implem
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedInt(readBuffer, 16), (int) 0x0000, WithOption.WithName("PnIoCm_Control_Request_ApplicationReady.reserved3"));
 
     // Simple Field: arUuid
-    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: sessionKey
     int sessionKey = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sessionKey"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));

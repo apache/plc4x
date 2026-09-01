@@ -181,8 +181,8 @@ func (m *_DeviceConfigurationRequestDataBlock) GetPlx4xTypeName() string {
 	return "DeviceConfigurationRequestDataBlock"
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
@@ -199,7 +199,7 @@ func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

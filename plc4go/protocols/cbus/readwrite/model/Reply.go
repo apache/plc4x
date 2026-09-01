@@ -62,8 +62,8 @@ type ReplyContract interface {
 
 // ReplyRequirements provides a set of functions which need to be implemented by a sub struct
 type ReplyRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedByte returns PeekedByte (discriminator field)
 	GetPeekedByte() byte
 }
@@ -259,17 +259,17 @@ func (m *_Reply) GetPlx4xTypeName() string {
 	return "Reply"
 }
 
-func (m *_Reply) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Reply) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_Reply) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_Reply) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_Reply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Reply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

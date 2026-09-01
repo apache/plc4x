@@ -75,7 +75,7 @@ public class VariantExtensionObject extends Variant implements Message {
     Integer arrayLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedInt(readBuffer, 32), arrayLengthSpecified, WithOption.WithName("arrayLength"));
 
     // Array Field: value
-    List<ExtensionObject> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ExtensionObject) ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
+    List<ExtensionObject> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObject.class, ExtensionObject.staticParse(readBuffer, (boolean) (true))), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new VariantBuilderImpl(arrayLength, value);

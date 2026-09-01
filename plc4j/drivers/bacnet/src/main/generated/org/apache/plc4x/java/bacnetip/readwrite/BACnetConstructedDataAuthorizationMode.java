@@ -78,7 +78,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: authorizationMode
-    BACnetAuthorizationModeTagged authorizationMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthorizationModeTagged) BACnetAuthorizationModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("authorizationMode"));
+    BACnetAuthorizationModeTagged authorizationMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthorizationModeTagged.class, BACnetAuthorizationModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("authorizationMode"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAuthorizationModeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAuthorizationModeTagged.class, authorizationMode, WithOption.WithName("actualValue"));

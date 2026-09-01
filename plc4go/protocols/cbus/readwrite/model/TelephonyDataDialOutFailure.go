@@ -207,8 +207,8 @@ func (m *_TelephonyDataDialOutFailure) GetPlx4xTypeName() string {
 	return "TelephonyDataDialOutFailure"
 }
 
-func (m *_TelephonyDataDialOutFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+func (m *_TelephonyDataDialOutFailure) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	// Simple field (reason)
 	lengthInBits += 8
@@ -216,7 +216,7 @@ func (m *_TelephonyDataDialOutFailure) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_TelephonyDataDialOutFailure) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TelephonyDataDialOutFailure) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

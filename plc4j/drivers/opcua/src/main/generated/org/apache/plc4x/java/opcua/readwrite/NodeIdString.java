@@ -85,7 +85,7 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     int namespaceIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("namespaceIndex"));
 
     // Simple Field: id
-    PascalString id = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("id"));
+    PascalString id = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("id"));
 
     // Virtual Field: identifier (doesn't parse anything, just makes the value available)
     String identifier = FieldReaderFactory.readVirtualField(String.class, id.getStringValue(), WithOption.WithName("identifier"));

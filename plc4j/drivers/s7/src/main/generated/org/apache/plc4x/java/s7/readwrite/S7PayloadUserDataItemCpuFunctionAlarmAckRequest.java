@@ -95,7 +95,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckRequest extends S7PayloadUs
     short numberOfObjects = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfObjects"));
 
     // Array Field: messageObjects
-    List<AlarmMessageObjectAckType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AlarmMessageObjectAckType) AlarmMessageObjectAckType.staticParse(readBuffer), readBuffer), numberOfObjects, WithOption.WithName("messageObjects"));
+    List<AlarmMessageObjectAckType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AlarmMessageObjectAckType.class, AlarmMessageObjectAckType.staticParse(readBuffer)), readBuffer), numberOfObjects, WithOption.WithName("messageObjects"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(messageObjects);

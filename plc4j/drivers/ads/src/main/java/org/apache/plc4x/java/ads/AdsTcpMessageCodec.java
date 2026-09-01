@@ -34,6 +34,14 @@ public class AdsTcpMessageCodec extends MessageCodecBase<AmsTCPPacket> {
 
     private static final int AMS_TCP_HEADER_SIZE = 6;
 
+    /**
+     * The AMS/TCP length field is 32 bits wide, but an AMS packet carries at most a 16-bit data
+     * length plus its headers, so anything approaching the width of the field is not a length this
+     * protocol can produce. Kept generous rather than exact: the point is to tell a plausible
+     * length from a number that could only wedge us waiting for bytes that will never come.
+     */
+    private static final long AMS_TCP_MAX_LENGTH = 16 * 1024 * 1024;
+
     public AdsTcpMessageCodec(TransportInstance<?> transportInstance, Consumer<AmsTCPPacket> messageHandler) {
         super("ADS", transportInstance, messageHandler);
     }
@@ -50,7 +58,13 @@ public class AdsTcpMessageCodec extends MessageCodecBase<AmsTCPPacket> {
             | (((long) (header[3] & 0xFF)) << 8)
             | (((long) (header[4] & 0xFF)) << 16)
             | (((long) (header[5] & 0xFF)) << 24);
-        return AMS_TCP_HEADER_SIZE + (int) length;
+        // Decide in long arithmetic and only then narrow. Casting first turned a length near the
+        // top of the field into a small or negative int, and a length merely implausible - tens of
+        // megabytes - left us waiting for bytes the receive buffer could never hold.
+        if (length > AMS_TCP_MAX_LENGTH) {
+            return DESYNCHRONIZED;
+        }
+        return (int) (AMS_TCP_HEADER_SIZE + length);
     }
 
     @Override

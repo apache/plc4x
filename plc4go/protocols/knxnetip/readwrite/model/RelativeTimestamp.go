@@ -165,8 +165,8 @@ func (m *_RelativeTimestamp) GetPlx4xTypeName() string {
 	return "RelativeTimestamp"
 }
 
-func (m *_RelativeTimestamp) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_RelativeTimestamp) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timestamp)
 	lengthInBits += 16
@@ -174,7 +174,7 @@ func (m *_RelativeTimestamp) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RelativeTimestamp) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RelativeTimestamp) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

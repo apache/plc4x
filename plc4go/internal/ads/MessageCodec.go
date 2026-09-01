@@ -35,6 +35,15 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+const (
+	// amsTCPHeaderSize is the size of the AMS/TCP header (2 reserved bytes + 4 length bytes).
+	amsTCPHeaderSize = 6
+	// maxAmsTCPFrameSize is the maximum total frame size (header plus payload) this codec
+	// accepts. The length field is a raw 32-bit wire value under peer control, so it must
+	// be bounded before any allocation is sized by it.
+	maxAmsTCPFrameSize = 16 * 1024 * 1024
+)
+
 //go:generate go tool plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
@@ -107,9 +116,23 @@ func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
+	serializedBytes := wb.GetBytes()
+
+	// The generated length arithmetic uses 16-bit accumulation, so payloads over
+	// ~8KB wrap the length written into the AMS/TCP header. A frame whose declared
+	// length doesn't match the bytes actually serialized would be re-framed by the
+	// peer as multiple packets (frame smuggling), so refuse to send it.
+	if len(serializedBytes) < amsTCPHeaderSize {
+		return errors.Errorf("refusing to send AMS/TCP frame: serialized frame of %d bytes is shorter than the %d byte header", len(serializedBytes), amsTCPHeaderSize)
+	}
+	declaredLength := binary.LittleEndian.Uint32(serializedBytes[2:6])
+	actualLength := uint64(len(serializedBytes) - amsTCPHeaderSize)
+	if uint64(declaredLength) != actualLength {
+		return errors.Errorf("refusing to send AMS/TCP frame: declared length %d does not match actual payload length %d (payload too large for the 16-bit length arithmetic?)", declaredLength, actualLength)
+	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(ctx, wb.GetBytes())
+	err = m.GetTransportInstance().Write(ctx, serializedBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -144,8 +167,18 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			}
 			return nil, nil
 		}
-		// Get the size of the entire packet little endian plus size of header
-		packetSize := (uint32(data[5]) << 24) + (uint32(data[4]) << 16) + (uint32(data[3]) << 8) + (uint32(data[2])) + 6
+		// Get the size of the entire packet little endian plus size of header.
+		// Compute in uint64 so a wire length close to 0xFFFFFFFF cannot wrap the
+		// packet size to zero (which would make this codec spin forever without
+		// consuming a single byte).
+		amsTCPLength := (uint64(data[5]) << 24) + (uint64(data[4]) << 16) + (uint64(data[3]) << 8) + (uint64(data[2]))
+		if amsTCPLength == 0 || amsTCPLength+amsTCPHeaderSize > maxAmsTCPFrameSize {
+			// A zero length can never frame a valid AMS packet and an oversize length
+			// would force a huge allocation; both are unrecoverable framing errors.
+			return nil, transports.NewTransportError(transports.TransportErrorFatal,
+				errors.Errorf("invalid AMS/TCP frame length %d (must be > 0 and at most %d)", amsTCPLength, maxAmsTCPFrameSize-amsTCPHeaderSize))
+		}
+		packetSize := uint32(amsTCPLength) + amsTCPHeaderSize
 		if num < packetSize {
 			if err := transportInstance.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 				numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()

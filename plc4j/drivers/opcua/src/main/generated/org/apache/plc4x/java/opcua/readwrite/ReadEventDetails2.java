@@ -108,7 +108,7 @@ public class ReadEventDetails2 extends ExtensionObjectDefinition implements Mess
     long endTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedLong(readBuffer, 64), WithOption.WithName("endTime"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: filter
-    EventFilter filter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (EventFilter) EventFilter.staticParse(readBuffer, (int) (727)), readBuffer), WithOption.WithName("filter"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    EventFilter filter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(EventFilter.class, EventFilter.staticParse(readBuffer, (int) (727))), readBuffer), WithOption.WithName("filter"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 7), (byte) 0x00, WithOption.WithName("ReadEventDetails2.reserved4"));

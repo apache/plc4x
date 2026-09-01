@@ -77,7 +77,7 @@ public class S7PayloadAlarmSC extends S7PayloadUserDataItem implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: alarmMessage
-    AlarmMessagePushType alarmMessage = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AlarmMessagePushType) AlarmMessagePushType.staticParse(readBuffer), readBuffer), WithOption.WithName("alarmMessage"));
+    AlarmMessagePushType alarmMessage = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AlarmMessagePushType.class, AlarmMessagePushType.staticParse(readBuffer)), readBuffer), WithOption.WithName("alarmMessage"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(alarmMessage);

@@ -102,19 +102,19 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectIdentifier
-    BACnetApplicationTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("objectIdentifier"));
+    BACnetApplicationTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("objectIdentifier"));
 
     // Simple Field: eventType
-    BACnetEventTypeTagged eventType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventTypeTagged) BACnetEventTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("eventType"));
+    BACnetEventTypeTagged eventType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventTypeTagged.class, BACnetEventTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("eventType"));
 
     // Simple Field: eventState
-    BACnetEventStateTagged eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventStateTagged) BACnetEventStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("eventState"));
+    BACnetEventStateTagged eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventStateTagged.class, BACnetEventStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("eventState"));
 
     // Simple Field: priority
-    BACnetApplicationTagUnsignedInteger priority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("priority"));
+    BACnetApplicationTagUnsignedInteger priority = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("priority"));
 
     // Optional Field: notificationClass
-    BACnetApplicationTagUnsignedInteger notificationClass = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("notificationClass"));
+    BACnetApplicationTagUnsignedInteger notificationClass = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("notificationClass"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(objectIdentifier, eventType, eventState, priority, notificationClass);

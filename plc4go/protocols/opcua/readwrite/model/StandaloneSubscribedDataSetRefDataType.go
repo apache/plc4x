@@ -230,8 +230,8 @@ func (m *_StandaloneSubscribedDataSetRefDataType) GetPlx4xTypeName() string {
 	return "StandaloneSubscribedDataSetRefDataType"
 }
 
-func (m *_StandaloneSubscribedDataSetRefDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_StandaloneSubscribedDataSetRefDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (dataSetName)
 	lengthInBits += m.DataSetName.GetLengthInBits(ctx)
@@ -239,7 +239,7 @@ func (m *_StandaloneSubscribedDataSetRefDataType) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_StandaloneSubscribedDataSetRefDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StandaloneSubscribedDataSetRefDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

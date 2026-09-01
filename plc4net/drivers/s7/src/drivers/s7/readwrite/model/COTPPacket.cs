@@ -39,7 +39,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             Payload = payload;
         }
 
-        public static COTPPacket StaticParse(ReadBuffer readBuffer, ushort cotpLen)
+        public static COTPPacket StaticParse(ReadBuffer readBuffer, uint cotpLen)
         {
             var _startPos = readBuffer.GetPos();
             var headerLength = readBuffer.ReadByte("headerLength", 8);

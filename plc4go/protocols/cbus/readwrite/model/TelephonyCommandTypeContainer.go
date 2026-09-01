@@ -581,11 +581,11 @@ func CastTelephonyCommandTypeContainer(structType any) TelephonyCommandTypeConta
 	return castFunc(structType)
 }
 
-func (m TelephonyCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m TelephonyCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m TelephonyCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TelephonyCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

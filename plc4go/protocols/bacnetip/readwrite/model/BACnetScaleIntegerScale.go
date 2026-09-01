@@ -225,8 +225,8 @@ func (m *_BACnetScaleIntegerScale) GetPlx4xTypeName() string {
 	return "BACnetScaleIntegerScale"
 }
 
-func (m *_BACnetScaleIntegerScale) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetScaleContract.(*_BACnetScale).getLengthInBits(ctx))
+func (m *_BACnetScaleIntegerScale) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetScaleContract.(*_BACnetScale).getLengthInBits(ctx))
 
 	// Simple field (integerScale)
 	lengthInBits += m.IntegerScale.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetScaleIntegerScale) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetScaleIntegerScale) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetScaleIntegerScale) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

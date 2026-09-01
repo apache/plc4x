@@ -213,18 +213,18 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandNetworkTerminalLevels"
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.NetworkTerminalLevels) > 0 {
-		lengthInBits += 8 * uint16(len(m.NetworkTerminalLevels))
+		lengthInBits += 8 * uint64(len(m.NetworkTerminalLevels))
 	}
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

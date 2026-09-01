@@ -142,11 +142,11 @@ func CastBACnetRestartReason(structType any) BACnetRestartReason {
 	return castFunc(structType)
 }
 
-func (m BACnetRestartReason) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetRestartReason) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetRestartReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetRestartReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

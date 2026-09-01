@@ -100,11 +100,11 @@ func CastActionState(structType any) ActionState {
 	return castFunc(structType)
 }
 
-func (m ActionState) GetLengthInBits(ctx context.Context) uint16 {
+func (m ActionState) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m ActionState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ActionState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

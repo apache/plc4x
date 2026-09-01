@@ -72,6 +72,13 @@ public class ProfinetChannel {
                 message -> {
                     PacketListener listener = createListener(macAddress);
                     try {
+                        // Two things stand between a bad frame and this thread. pcap4j catches Throwable
+                        // around the listener call and logs it as "The executor has thrown an exception",
+                        // which contains it but says nothing useful about a spoofed frame - and it only
+                        // works because loop() defaults to an executor that runs the listener inline.
+                        // Hand loop() a real thread pool and the listener moves off this stack, where that
+                        // catch can no longer see it. The listener contains its own failures for that
+                        // reason; do not rely on the library to do it.
                         handle.loop(-1, listener);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -85,8 +92,20 @@ public class ProfinetChannel {
         }
     }
     public PacketListener createListener(MacAddress localMacAddress) {
-        PacketListener listener =
-            packet -> {
+        return packet -> {
+            try {
+                handlePacket(packet, localMacAddress);
+            } catch (Throwable t) {
+                // pcap4j hands each captured packet to this listener on the capture thread, and
+                // the source address in a frame is whoever wrote it there. One frame we cannot
+                // make sense of has to cost that frame: taking the loop with it would stop every
+                // other device on this interface being heard from.
+                logger.warn("Ignoring a packet that could not be handled", t);
+            }
+        };
+    }
+
+    private void handlePacket(Packet packet, MacAddress localMacAddress) {
                 // EthernetPacket is the highest level of abstraction we can be expecting.
                 // Everything inside this we will have to decode ourselves.
                 if (packet instanceof EthernetPacket) {
@@ -147,9 +166,11 @@ public class ProfinetChannel {
                                     }
                                     else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
                                         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-                                            /*if (device.getValue().getDeviceContext().getMacAddress() == null) {
-                                                logger.info("Hurz");
-                                            } else*/ if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                            if (device.getValue().getDeviceContext().getMacAddress() == null) {
+                                                // A device we have not learned an address for yet
+                                                // cannot be the one this frame came from.
+                                                logger.debug("Skipping a device with no MAC address yet");
+                                            } else if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
                                                 PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
                                                 device.getValue().handleRealTimeResponse(cyclicPdu);
                                             }
@@ -193,8 +214,6 @@ public class ProfinetChannel {
                         }
                     }
                 }
-            };
-        return listener;
     }
 
     public Map<MacAddress, PcapHandle> getInterfaceHandles(List<PcapNetworkInterface> devs) {

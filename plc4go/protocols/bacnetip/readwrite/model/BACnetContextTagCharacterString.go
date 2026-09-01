@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -246,8 +247,8 @@ func (m *_BACnetContextTagCharacterString) GetPlx4xTypeName() string {
 	return "BACnetContextTagCharacterString"
 }
 
-func (m *_BACnetContextTagCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -257,7 +258,7 @@ func (m *_BACnetContextTagCharacterString) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -278,7 +279,7 @@ func (m *_BACnetContextTagCharacterString) parse(ctx context.Context, readBuffer
 	}
 	m.Payload = payload
 
-	value, err := ReadVirtualField[string](ctx, "value", (*string)(nil), payload.GetValue())
+	value, err := ReadVirtualField[string](ctx, "value", (*string)(nil), payload.GetValue(), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

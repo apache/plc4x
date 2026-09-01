@@ -188,13 +188,13 @@ func (m *_AdsErrorResponse) GetPlx4xTypeName() string {
 	return "AdsErrorResponse"
 }
 
-func (m *_AdsErrorResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsErrorResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AdsErrorResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsErrorResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

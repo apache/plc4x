@@ -113,25 +113,25 @@ public class BACnetDestination implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: validDays
-    BACnetDaysOfWeekTagged validDays = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDaysOfWeekTagged) BACnetDaysOfWeekTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("validDays"));
+    BACnetDaysOfWeekTagged validDays = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDaysOfWeekTagged.class, BACnetDaysOfWeekTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("validDays"));
 
     // Simple Field: fromTime
-    BACnetApplicationTagTime fromTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("fromTime"));
+    BACnetApplicationTagTime fromTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("fromTime"));
 
     // Simple Field: toTime
-    BACnetApplicationTagTime toTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("toTime"));
+    BACnetApplicationTagTime toTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("toTime"));
 
     // Simple Field: recipient
-    BACnetRecipient recipient = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRecipient) BACnetRecipient.staticParse(readBuffer), readBuffer), WithOption.WithName("recipient"));
+    BACnetRecipient recipient = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRecipient.class, BACnetRecipient.staticParse(readBuffer)), readBuffer), WithOption.WithName("recipient"));
 
     // Simple Field: processIdentifier
-    BACnetApplicationTagUnsignedInteger processIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("processIdentifier"));
+    BACnetApplicationTagUnsignedInteger processIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("processIdentifier"));
 
     // Simple Field: issueConfirmedNotifications
-    BACnetApplicationTagBoolean issueConfirmedNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("issueConfirmedNotifications"));
+    BACnetApplicationTagBoolean issueConfirmedNotifications = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("issueConfirmedNotifications"));
 
     // Simple Field: transitions
-    BACnetEventTransitionBitsTagged transitions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventTransitionBitsTagged) BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("transitions"));
+    BACnetEventTransitionBitsTagged transitions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventTransitionBitsTagged.class, BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("transitions"));
 
     readBuffer.popContext();
     return new BACnetDestination(validDays, fromTime, toTime, recipient, processIdentifier, issueConfirmedNotifications, transitions);

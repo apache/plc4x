@@ -425,8 +425,8 @@ func (m *_NPDU) GetPlx4xTypeName() string {
 	return "NPDU"
 }
 
-func (m *_NPDU) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NPDU) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (protocolVersionNumber)
 	lengthInBits += 8
@@ -446,7 +446,7 @@ func (m *_NPDU) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.DestinationAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.DestinationAddress))
+		lengthInBits += 8 * uint64(len(m.DestinationAddress))
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -463,7 +463,7 @@ func (m *_NPDU) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.SourceAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.SourceAddress))
+		lengthInBits += 8 * uint64(len(m.SourceAddress))
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -488,7 +488,7 @@ func (m *_NPDU) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NPDU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NPDU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

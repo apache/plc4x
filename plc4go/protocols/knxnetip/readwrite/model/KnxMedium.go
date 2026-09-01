@@ -118,11 +118,11 @@ func CastKnxMedium(structType any) KnxMedium {
 	return castFunc(structType)
 }
 
-func (m KnxMedium) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxMedium) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m KnxMedium) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxMedium) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

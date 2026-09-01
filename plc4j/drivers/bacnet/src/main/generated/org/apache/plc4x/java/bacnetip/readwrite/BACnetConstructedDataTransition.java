@@ -78,7 +78,7 @@ public class BACnetConstructedDataTransition extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: transition
-    BACnetLightingTransitionTagged transition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingTransitionTagged) BACnetLightingTransitionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("transition"));
+    BACnetLightingTransitionTagged transition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingTransitionTagged.class, BACnetLightingTransitionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("transition"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLightingTransitionTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLightingTransitionTagged.class, transition, WithOption.WithName("actualValue"));

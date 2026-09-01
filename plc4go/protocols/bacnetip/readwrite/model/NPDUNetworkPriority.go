@@ -106,11 +106,11 @@ func CastNPDUNetworkPriority(structType any) NPDUNetworkPriority {
 	return castFunc(structType)
 }
 
-func (m NPDUNetworkPriority) GetLengthInBits(ctx context.Context) uint16 {
+func (m NPDUNetworkPriority) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m NPDUNetworkPriority) GetLengthInBytes(ctx context.Context) uint16 {
+func (m NPDUNetworkPriority) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

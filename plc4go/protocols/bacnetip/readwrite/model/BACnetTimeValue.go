@@ -215,8 +215,8 @@ func (m *_BACnetTimeValue) GetPlx4xTypeName() string {
 	return "BACnetTimeValue"
 }
 
-func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetTimeValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimeValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

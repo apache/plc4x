@@ -375,12 +375,8 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
                 *data_item = plc4c_data_create_date_and_time_data(millisecondsOfSecond);
 
 
-                // Simple Field (dayOfWeek)
-                uint8_t dayOfWeek = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &dayOfWeek);
-                if(_res != OK) {
-                    return _res;
-                }
+                // Manual Field (dayOfWeek)
+                uint8_t dayOfWeek = (uint8_t) (plc4c_s7_read_write_parse_siemens_day_of_week(readBuffer));
 
                 *data_item = plc4c_data_create_date_and_time_data(dayOfWeek);
 
@@ -684,11 +680,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                         return _res;
                     }
 
-                    // Simple field (dayOfWeek)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
+                    // Manual Field (dayOfWeek)
         } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_LTIME") == 0) { /* DATE_AND_LTIME */
 
                     // Simple field (nanosecondsSinceEpoch)
@@ -881,7 +873,7 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
         // Simple field (millisecondsOfSecond)
         lengthInBits += 12;
 
-        // Simple field (dayOfWeek)
+        // Manual Field (dayOfWeek)
         lengthInBits += 4;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_LTIME") == 0) { /* DATE_AND_LTIME */
 

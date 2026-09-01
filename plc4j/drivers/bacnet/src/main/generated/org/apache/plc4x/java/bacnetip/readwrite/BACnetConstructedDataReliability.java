@@ -78,7 +78,7 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reliability
-    BACnetReliabilityTagged reliability = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetReliabilityTagged) BACnetReliabilityTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("reliability"));
+    BACnetReliabilityTagged reliability = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetReliabilityTagged.class, BACnetReliabilityTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("reliability"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetReliabilityTagged actualValue = FieldReaderFactory.readVirtualField(BACnetReliabilityTagged.class, reliability, WithOption.WithName("actualValue"));

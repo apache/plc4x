@@ -203,8 +203,8 @@ func (m *_TPKTPacket) GetPlx4xTypeName() string {
 	return "TPKTPacket"
 }
 
-func (m *_TPKTPacket) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TPKTPacket) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (protocolId)
 	lengthInBits += 8
@@ -221,7 +221,7 @@ func (m *_TPKTPacket) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_TPKTPacket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TPKTPacket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -270,7 +270,7 @@ func (m *_TPKTPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	}
 	_ = len
 
-	payload, err := ReadSimpleField[COTPPacket](ctx, "payload", ReadComplex[COTPPacket](COTPPacketParseWithBufferProducer[COTPPacket]((uint16)(uint16(len)-uint16(uint16(4)))), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
+	payload, err := ReadSimpleField[COTPPacket](ctx, "payload", ReadComplex[COTPPacket](COTPPacketParseWithBufferProducer[COTPPacket]((uint32)(uint32(len)-uint32(uint32(4)))), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}

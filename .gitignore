@@ -180,6 +180,12 @@ build-iPhoneSimulator/
 
 # Temp stuff ...
 /plc4go/.idea/
+
+# Binaries left behind by building the in-repo Go tools directly ("go build ./tools/...").
+# Nothing needs them checked in: go.mod declares them with 'tool' directives, so
+# "go tool plc4xGenerator" compiles them from source on demand.
+/plc4go/plc4xGenerator
+/plc4go/plc4xLicencer
 plc4j/examples/hello-storage-elasticsearch/.factorypath
 
 

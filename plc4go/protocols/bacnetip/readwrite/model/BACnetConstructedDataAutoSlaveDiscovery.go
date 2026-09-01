@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAutoSlaveDiscovery"
 }
 
-func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (autoSlaveDiscovery)
 	lengthInBits += m.AutoSlaveDiscovery.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

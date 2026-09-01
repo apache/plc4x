@@ -59,10 +59,10 @@ public class Error implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: errorClass
-    ErrorClassTagged errorClass = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorClassTagged) ErrorClassTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("errorClass"));
+    ErrorClassTagged errorClass = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorClassTagged.class, ErrorClassTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("errorClass"));
 
     // Simple Field: errorCode
-    ErrorCodeTagged errorCode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorCodeTagged) ErrorCodeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("errorCode"));
+    ErrorCodeTagged errorCode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorCodeTagged.class, ErrorCodeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("errorCode"));
 
     readBuffer.popContext();
     return new Error(errorClass, errorCode);

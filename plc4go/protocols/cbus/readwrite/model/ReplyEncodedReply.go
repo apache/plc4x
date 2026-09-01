@@ -308,23 +308,23 @@ func (m *_ReplyEncodedReply) GetPlx4xTypeName() string {
 	return "ReplyEncodedReply"
 }
 
-func (m *_ReplyEncodedReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
+func (m *_ReplyEncodedReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
 
 	// Manual Field (encodedReply)
-	lengthInBits += uint16(int32((int32(m.GetEncodedReply().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint64(int32((int32(m.GetEncodedReply().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf((m.GetCBusOptions().GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf((m.GetCBusOptions().GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_ReplyEncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReplyEncodedReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

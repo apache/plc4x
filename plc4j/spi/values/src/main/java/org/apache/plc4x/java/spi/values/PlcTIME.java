@@ -168,7 +168,10 @@ public class PlcTIME extends PlcIECValue<Duration> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws BufferException {
-        writeBuffer.writeSignedLong(32, value.toMillis(), WithOption.WithName(getClass().getSimpleName()));
+        // Durations render as ISO-8601 (like PlcLTIME), not as a raw millisecond count.
+        String valueString = value.toString();
+        writeBuffer.writeString(valueString.getBytes(java.nio.charset.StandardCharsets.UTF_8).length * 8,
+            valueString, WithOption.WithName(getClass().getSimpleName()), WithOption.WithEncoding("UTF8"));
     }
 
 }

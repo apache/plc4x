@@ -61,10 +61,10 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: disable
-    BACnetAccessAuthenticationFactorDisableTagged disable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessAuthenticationFactorDisableTagged) BACnetAccessAuthenticationFactorDisableTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("disable"));
+    BACnetAccessAuthenticationFactorDisableTagged disable = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessAuthenticationFactorDisableTagged.class, BACnetAccessAuthenticationFactorDisableTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("disable"));
 
     // Simple Field: authenticationFactor
-    BACnetAuthenticationFactorEnclosed authenticationFactor = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationFactorEnclosed) BACnetAuthenticationFactorEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("authenticationFactor"));
+    BACnetAuthenticationFactorEnclosed authenticationFactor = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationFactorEnclosed.class, BACnetAuthenticationFactorEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("authenticationFactor"));
 
     readBuffer.popContext();
     return new BACnetCredentialAuthenticationFactor(disable, authenticationFactor);

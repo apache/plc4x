@@ -165,8 +165,8 @@ func (m *_ParameterChange) GetPlx4xTypeName() string {
 	return "ParameterChange"
 }
 
-func (m *_ParameterChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ParameterChange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (specialChar1)
 	lengthInBits += 8
@@ -177,7 +177,7 @@ func (m *_ParameterChange) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ParameterChange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterChange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

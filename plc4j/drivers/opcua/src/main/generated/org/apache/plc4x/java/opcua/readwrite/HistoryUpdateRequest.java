@@ -71,13 +71,13 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestHeader
-    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RequestHeader) RequestHeader.staticParse(readBuffer, (int) (391)), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RequestHeader.class, RequestHeader.staticParse(readBuffer, (int) (391))), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfHistoryUpdateDetails
     int noOfHistoryUpdateDetails = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfHistoryUpdateDetails"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: historyUpdateDetails
-    List<ExtensionObject> historyUpdateDetails = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ExtensionObject) ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer), noOfHistoryUpdateDetails, WithOption.WithName("historyUpdateDetails"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ExtensionObject> historyUpdateDetails = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExtensionObject.class, ExtensionObject.staticParse(readBuffer, (boolean) (true))), readBuffer), noOfHistoryUpdateDetails, WithOption.WithName("historyUpdateDetails"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(requestHeader, historyUpdateDetails);

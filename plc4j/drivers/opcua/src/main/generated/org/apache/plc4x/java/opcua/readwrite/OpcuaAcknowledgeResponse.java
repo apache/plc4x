@@ -80,7 +80,7 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     long version = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("version"));
 
     // Simple Field: limits
-    OpcuaProtocolLimits limits = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (OpcuaProtocolLimits) OpcuaProtocolLimits.staticParse(readBuffer), readBuffer), WithOption.WithName("limits"));
+    OpcuaProtocolLimits limits = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(OpcuaProtocolLimits.class, OpcuaProtocolLimits.staticParse(readBuffer)), readBuffer), WithOption.WithName("limits"));
 
     readBuffer.popContext();
     return new MessagePDUBuilderImpl(version, limits);

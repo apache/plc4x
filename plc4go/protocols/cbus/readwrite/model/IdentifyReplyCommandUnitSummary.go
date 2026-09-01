@@ -265,8 +265,8 @@ func (m *_IdentifyReplyCommandUnitSummary) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandUnitSummary"
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (assertingNetworkBurden)
 	lengthInBits += 1
@@ -295,7 +295,7 @@ func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

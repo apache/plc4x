@@ -52,7 +52,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: object
-    BACnetDeviceObjectReferenceEnclosed object = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReferenceEnclosed) BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("object"));
+    BACnetDeviceObjectReferenceEnclosed object = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReferenceEnclosed.class, BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("object"));
 
     readBuffer.popContext();
     return new BACnetValueSourceBuilderImpl(object);

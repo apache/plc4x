@@ -180,13 +180,13 @@ func (m *_TelephonyDataLineOnHook) GetPlx4xTypeName() string {
 	return "TelephonyDataLineOnHook"
 }
 
-func (m *_TelephonyDataLineOnHook) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+func (m *_TelephonyDataLineOnHook) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TelephonyDataLineOnHook) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TelephonyDataLineOnHook) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

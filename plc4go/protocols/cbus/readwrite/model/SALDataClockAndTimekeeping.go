@@ -231,8 +231,8 @@ func (m *_SALDataClockAndTimekeeping) GetPlx4xTypeName() string {
 	return "SALDataClockAndTimekeeping"
 }
 
-func (m *_SALDataClockAndTimekeeping) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataClockAndTimekeeping) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (clockAndTimekeepingData)
 	lengthInBits += m.ClockAndTimekeepingData.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_SALDataClockAndTimekeeping) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_SALDataClockAndTimekeeping) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataClockAndTimekeeping) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

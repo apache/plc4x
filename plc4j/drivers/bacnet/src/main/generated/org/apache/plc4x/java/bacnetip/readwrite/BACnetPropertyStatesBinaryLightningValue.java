@@ -52,7 +52,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: binaryLightningValue
-    BACnetBinaryLightingPVTagged binaryLightningValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetBinaryLightingPVTagged) BACnetBinaryLightingPVTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("binaryLightningValue"));
+    BACnetBinaryLightingPVTagged binaryLightningValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetBinaryLightingPVTagged.class, BACnetBinaryLightingPVTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("binaryLightningValue"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(binaryLightningValue);

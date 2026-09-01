@@ -20,6 +20,8 @@ package org.apache.plc4x.java.s7.optimizer;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcTagRequest;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
@@ -32,7 +34,6 @@ import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItem;
 import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.s7.context.S7DriverContext;
@@ -157,6 +158,9 @@ public class S7Optimizer {
         int curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
 
         for (String tagName : request.getTagNames()) {
+            if (isRejected(request, tagName)) {
+                continue;
+            }
             PlcTag plcTag = request.getTag(tagName);
             if (!(plcTag instanceof S7Tag s7Tag)) {
                 throw new PlcRuntimeException("Unsupported tag type for tag " + tagName);
@@ -254,8 +258,21 @@ public class S7Optimizer {
     protected static LinkedHashMap<String, PlcTag> toLinkedMap(PlcReadRequest request) {
         LinkedHashMap<String, PlcTag> out = new LinkedHashMap<>();
         for (String n : request.getTagNames()) {
+            if (isRejected(request, n)) {
+                // Address the builder couldn't parse: it has no tag to chunk, and the
+                // connection reports its code directly.
+                continue;
+            }
             out.put(n, request.getTag(n));
         }
         return out;
+    }
+
+    /**
+     * Whether the request builder already rejected this tag (unparseable address, bad value),
+     * in which case it carries an error code and a {@code null} tag.
+     */
+    protected static boolean isRejected(PlcTagRequest request, String tagName) {
+        return request.getTagResponseCode(tagName) != PlcResponseCode.OK;
     }
 }

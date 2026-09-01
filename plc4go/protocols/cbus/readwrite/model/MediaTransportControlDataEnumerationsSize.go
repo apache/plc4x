@@ -278,8 +278,8 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataEnumerationsSize"
 }
 
-func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (sizeType)
 	lengthInBits += 8
@@ -301,7 +301,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

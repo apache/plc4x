@@ -52,7 +52,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: realIncrement
-    BACnetApplicationTagReal realIncrement = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), WithOption.WithName("realIncrement"));
+    BACnetApplicationTagReal realIncrement = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("realIncrement"));
 
     readBuffer.popContext();
     return new BACnetClientCOVBuilderImpl(realIncrement);

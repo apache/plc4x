@@ -52,7 +52,7 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateTimeValue
-    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("dateTimeValue"));
+    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("dateTimeValue"));
 
     readBuffer.popContext();
     return new BACnetTimeStampBuilderImpl(dateTimeValue);

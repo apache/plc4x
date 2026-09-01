@@ -106,11 +106,11 @@ func CastEventNotifierType(structType any) EventNotifierType {
 	return castFunc(structType)
 }
 
-func (m EventNotifierType) GetLengthInBits(ctx context.Context) uint16 {
+func (m EventNotifierType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m EventNotifierType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m EventNotifierType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

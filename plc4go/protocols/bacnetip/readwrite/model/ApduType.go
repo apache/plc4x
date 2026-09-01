@@ -178,11 +178,11 @@ func CastApduType(structType any) ApduType {
 	return castFunc(structType)
 }
 
-func (m ApduType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ApduType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ApduType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ApduType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

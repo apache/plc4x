@@ -83,16 +83,16 @@ public class BACnetEventParameterChangeOfValue extends BACnetEventParameter impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: timeDelay
-    BACnetContextTagUnsignedInteger timeDelay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("timeDelay"));
+    BACnetContextTagUnsignedInteger timeDelay = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("timeDelay"));
 
     // Simple Field: covCriteria
-    BACnetEventParameterChangeOfValueCivCriteria covCriteria = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventParameterChangeOfValueCivCriteria) BACnetEventParameterChangeOfValueCivCriteria.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("covCriteria"));
+    BACnetEventParameterChangeOfValueCivCriteria covCriteria = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventParameterChangeOfValueCivCriteria.class, BACnetEventParameterChangeOfValueCivCriteria.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("covCriteria"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (2)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (2))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetEventParameterBuilderImpl(openingTag, timeDelay, covCriteria, closingTag);

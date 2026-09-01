@@ -226,8 +226,8 @@ func (m *_COTPPacketDisconnectResponse) GetPlx4xTypeName() string {
 	return "COTPPacketDisconnectResponse"
 }
 
-func (m *_COTPPacketDisconnectResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
+func (m *_COTPPacketDisconnectResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -238,11 +238,11 @@ func (m *_COTPPacketDisconnectResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_COTPPacketDisconnectResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPPacketDisconnectResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_COTPPacketDisconnectResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketDisconnectResponse COTPPacketDisconnectResponse, err error) {
+func (m *_COTPPacketDisconnectResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint32) (__cOTPPacketDisconnectResponse COTPPacketDisconnectResponse, err error) {
 	m.COTPPacketContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

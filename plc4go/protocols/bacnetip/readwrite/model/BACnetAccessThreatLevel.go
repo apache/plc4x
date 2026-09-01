@@ -183,8 +183,8 @@ func (m *_BACnetAccessThreatLevel) GetPlx4xTypeName() string {
 	return "BACnetAccessThreatLevel"
 }
 
-func (m *_BACnetAccessThreatLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAccessThreatLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (threatLevel)
 	lengthInBits += m.ThreatLevel.GetLengthInBits(ctx)
@@ -192,7 +192,7 @@ func (m *_BACnetAccessThreatLevel) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetAccessThreatLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAccessThreatLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

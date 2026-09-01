@@ -263,8 +263,8 @@ func (m *_NumberRange) GetPlx4xTypeName() string {
 	return "NumberRange"
 }
 
-func (m *_NumberRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_NumberRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (low)
 	lengthInBits += m.Low.GetLengthInBits(ctx)
@@ -275,7 +275,7 @@ func (m *_NumberRange) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NumberRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NumberRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -357,8 +357,8 @@ func (m *_BACnetNotificationParametersCommandFailure) GetPlx4xTypeName() string 
 	return "BACnetNotificationParametersCommandFailure"
 }
 
-func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

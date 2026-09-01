@@ -166,11 +166,11 @@ func CastPubSubConfigurationRefMask(structType any) PubSubConfigurationRefMask {
 	return castFunc(structType)
 }
 
-func (m PubSubConfigurationRefMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m PubSubConfigurationRefMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PubSubConfigurationRefMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PubSubConfigurationRefMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

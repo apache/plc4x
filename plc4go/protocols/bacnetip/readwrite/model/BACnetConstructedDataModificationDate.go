@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataModificationDate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataModificationDate"
 }
 
-func (m *_BACnetConstructedDataModificationDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataModificationDate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (modificationDate)
 	lengthInBits += m.ModificationDate.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataModificationDate) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataModificationDate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataModificationDate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

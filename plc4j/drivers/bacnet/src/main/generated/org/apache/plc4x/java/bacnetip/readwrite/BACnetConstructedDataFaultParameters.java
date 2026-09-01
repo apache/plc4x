@@ -78,7 +78,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: faultParameters
-    BACnetFaultParameter faultParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetFaultParameter) BACnetFaultParameter.staticParse(readBuffer), readBuffer), WithOption.WithName("faultParameters"));
+    BACnetFaultParameter faultParameters = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetFaultParameter.class, BACnetFaultParameter.staticParse(readBuffer)), readBuffer), WithOption.WithName("faultParameters"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetFaultParameter actualValue = FieldReaderFactory.readVirtualField(BACnetFaultParameter.class, faultParameters, WithOption.WithName("actualValue"));

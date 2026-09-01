@@ -49,12 +49,12 @@ For example in order to communicate with an `S7 device` using the `S7 Protocol`,
 ----
 
 So as soon as your project has the API and a driver implementation available, you first need to get a `PlcConnection` instance.
-This is done via the `PlcConnectionManager`, which is provided to you by the `PlcDriverManager` by asking this to create an instance for a given `PLC4X connection string`.
+This is done via the `PlcConnectionFactory`, which is provided to you by the `PlcDriverManager` by asking this to create an instance for a given `PLC4X connection string`.
 
 ----
 String connectionString = "s7://10.10.64.20";
 
-try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(connectionString)) {
+try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionFactory().getConnection(connectionString)) {
 
   ... do something with the connection here ...
 

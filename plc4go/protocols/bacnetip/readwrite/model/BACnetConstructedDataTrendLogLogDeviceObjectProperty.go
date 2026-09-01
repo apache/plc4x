@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetPlx4xTypeName
 	return "BACnetConstructedDataTrendLogLogDeviceObjectProperty"
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (logDeviceObjectProperty)
 	lengthInBits += m.LogDeviceObjectProperty.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBits(
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

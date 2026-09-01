@@ -52,7 +52,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkPortCommand
-    BACnetNetworkPortCommandTagged networkPortCommand = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNetworkPortCommandTagged) BACnetNetworkPortCommandTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("networkPortCommand"));
+    BACnetNetworkPortCommandTagged networkPortCommand = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNetworkPortCommandTagged.class, BACnetNetworkPortCommandTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("networkPortCommand"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(networkPortCommand);

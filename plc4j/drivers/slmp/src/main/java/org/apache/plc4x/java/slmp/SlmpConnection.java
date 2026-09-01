@@ -99,7 +99,7 @@ public class SlmpConnection extends PollingSubscriptionConnectionBase<SlmpConfig
         }
         int requestTimeout = configuration.getRequestTimeout();
         if (requestTimeout <= 0) {
-            throw new PlcConnectionException("request-timeout must be > 0 ms but was " + requestTimeout
+            throw new PlcConnectionException("request-timeout-ms must be > 0 ms but was " + requestTimeout
                 + " (a non-positive value would time out every request immediately)");
         }
     }
@@ -303,7 +303,7 @@ public class SlmpConnection extends PollingSubscriptionConnectionBase<SlmpConfig
     }
 
     private CompletableFuture<PlcResponseCode> writeSingleTag(SlmpTag tag, PlcValue value) {
-        byte[] payload = tag.getDataType().encode(value, tag.getQuantity());
+        byte[] payload = tag.getDataType().encode(value, tag.getQuantity(), tag.isExplicitRange());
         if (payload == null) {
             return CompletableFuture.completedFuture(PlcResponseCode.INVALID_DATA);
         }

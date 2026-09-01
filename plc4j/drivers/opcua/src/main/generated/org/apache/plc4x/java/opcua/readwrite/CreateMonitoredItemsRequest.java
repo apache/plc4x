@@ -91,7 +91,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestHeader
-    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RequestHeader) RequestHeader.staticParse(readBuffer, (int) (391)), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    RequestHeader requestHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RequestHeader.class, RequestHeader.staticParse(readBuffer, (int) (391))), readBuffer), WithOption.WithName("requestHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: subscriptionId
     long subscriptionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("subscriptionId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -103,7 +103,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     int noOfItemsToCreate = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfItemsToCreate"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: itemsToCreate
-    List<MonitoredItemCreateRequest> itemsToCreate = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (MonitoredItemCreateRequest) MonitoredItemCreateRequest.staticParse(readBuffer, (int) (745)), readBuffer), noOfItemsToCreate, WithOption.WithName("itemsToCreate"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<MonitoredItemCreateRequest> itemsToCreate = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MonitoredItemCreateRequest.class, MonitoredItemCreateRequest.staticParse(readBuffer, (int) (745))), readBuffer), noOfItemsToCreate, WithOption.WithName("itemsToCreate"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate);

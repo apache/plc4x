@@ -58,7 +58,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: macAddress
-    MacAddress macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MacAddress) MacAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("macAddress"));
+    MacAddress macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MacAddress.class, MacAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("macAddress"));
 
     readBuffer.popContext();
     return new TlvOrgSpecificProfibusUnitBuilderImpl(macAddress);

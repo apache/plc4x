@@ -262,8 +262,8 @@ func (m *_NodeTypeDescription) GetPlx4xTypeName() string {
 	return "NodeTypeDescription"
 }
 
-func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)
@@ -288,7 +288,7 @@ func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NodeTypeDescription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeTypeDescription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

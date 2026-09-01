@@ -226,8 +226,8 @@ func (m *_FirmataCommandProtocolVersion) GetPlx4xTypeName() string {
 	return "FirmataCommandProtocolVersion"
 }
 
-func (m *_FirmataCommandProtocolVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+func (m *_FirmataCommandProtocolVersion) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_FirmataCommandProtocolVersion) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommandProtocolVersion) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

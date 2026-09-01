@@ -250,8 +250,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoIs"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {
@@ -266,7 +266,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

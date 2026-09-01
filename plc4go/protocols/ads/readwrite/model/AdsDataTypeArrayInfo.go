@@ -198,8 +198,8 @@ func (m *_AdsDataTypeArrayInfo) GetPlx4xTypeName() string {
 	return "AdsDataTypeArrayInfo"
 }
 
-func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (lowerBound)
 	lengthInBits += 32
@@ -212,7 +212,7 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsDataTypeArrayInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDataTypeArrayInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

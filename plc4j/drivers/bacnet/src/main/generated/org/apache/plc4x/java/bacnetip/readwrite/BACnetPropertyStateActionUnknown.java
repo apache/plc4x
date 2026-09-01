@@ -52,7 +52,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: unknownValue
-    BACnetContextTagUnknown unknownValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnknown) BACnetContextTagUnknown.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNKNOWN)), readBuffer), WithOption.WithName("unknownValue"));
+    BACnetContextTagUnknown unknownValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnknown.class, BACnetContextTagUnknown.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNKNOWN))), readBuffer), WithOption.WithName("unknownValue"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(unknownValue);

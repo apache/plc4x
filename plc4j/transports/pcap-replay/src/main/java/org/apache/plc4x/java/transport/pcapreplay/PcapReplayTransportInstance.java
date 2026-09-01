@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -381,11 +382,36 @@ public class PcapReplayTransportInstance extends BaseTransportInstance<PcapRepla
     /**
      * Fills the ring buffer with at least minBytes from the player.
      */
+    /**
+     * What is left of a packet too big for the buffer, waiting for room. Held so the replayed byte
+     * stream stays the stream that was captured; a frame larger than the buffer is otherwise
+     * delivered with its tail missing and everything after it misread.
+     */
+    private byte[] pendingFrameRemainder;
+
     private void fillRingBuffer(int minBytes) throws TransportException {
         try {
             int totalRead = 0;
 
             while (totalRead < minBytes && isOpen()) {
+                // Anything left over from a packet that did not fit last time goes first. A replay
+                // is worth having only if it replays what was captured, and the codec reading this
+                // decides where one message ends and the next begins - so a gap in the middle of a
+                // packet is not a lost packet, it is every value after it read from the wrong
+                // offset.
+                if (pendingFrameRemainder != null) {
+                    int carried = ringBuffer.write(pendingFrameRemainder);
+                    totalRead += carried;
+                    pendingFrameRemainder = carried < pendingFrameRemainder.length
+                        ? Arrays.copyOfRange(pendingFrameRemainder, carried, pendingFrameRemainder.length)
+                        : null;
+                    if (pendingFrameRemainder != null) {
+                        // Still no room. The consumer has to drain before there will be.
+                        break;
+                    }
+                    continue;
+                }
+
                 // Get packet from player
                 byte[] packet = getConfiguration().readTimeout > 0
                     ? player.getNextPacket(getConfiguration().readTimeout, TimeUnit.MILLISECONDS)
@@ -400,9 +426,14 @@ public class PcapReplayTransportInstance extends BaseTransportInstance<PcapRepla
                 int written = ringBuffer.write(packet);
                 totalRead += written;
 
-                // If a packet didn't fit completely, this is a problem
                 if (written < packet.length) {
-                    LOGGER.warn("Packet truncated: {} bytes lost", packet.length - written);
+                    // Keep what did not fit and deliver it before anything newer, rather than
+                    // logging the loss and carrying on with a stream that no longer matches the
+                    // capture.
+                    pendingFrameRemainder = Arrays.copyOfRange(packet, written, packet.length);
+                    LOGGER.debug("Parking {} bytes of a {} byte packet until the buffer drains",
+                        pendingFrameRemainder.length, packet.length);
+                    break;
                 }
             }
 

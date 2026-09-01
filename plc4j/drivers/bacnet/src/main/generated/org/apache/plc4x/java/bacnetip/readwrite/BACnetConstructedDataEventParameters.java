@@ -78,7 +78,7 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: eventParameter
-    BACnetEventParameter eventParameter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventParameter) BACnetEventParameter.staticParse(readBuffer), readBuffer), WithOption.WithName("eventParameter"));
+    BACnetEventParameter eventParameter = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventParameter.class, BACnetEventParameter.staticParse(readBuffer)), readBuffer), WithOption.WithName("eventParameter"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetEventParameter actualValue = FieldReaderFactory.readVirtualField(BACnetEventParameter.class, eventParameter, WithOption.WithName("actualValue"));

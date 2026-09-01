@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataEgressTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEgressTime"
 }
 
-func (m *_BACnetConstructedDataEgressTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEgressTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (egressTime)
 	lengthInBits += m.EgressTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEgressTime) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEgressTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEgressTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

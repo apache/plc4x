@@ -184,13 +184,13 @@ func (m *_DataSetReaderMessageDataType) GetPlx4xTypeName() string {
 	return "DataSetReaderMessageDataType"
 }
 
-func (m *_DataSetReaderMessageDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DataSetReaderMessageDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_DataSetReaderMessageDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DataSetReaderMessageDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

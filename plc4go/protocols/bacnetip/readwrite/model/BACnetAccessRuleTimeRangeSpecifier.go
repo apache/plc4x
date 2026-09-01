@@ -94,11 +94,11 @@ func CastBACnetAccessRuleTimeRangeSpecifier(structType any) BACnetAccessRuleTime
 	return castFunc(structType)
 }
 
-func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

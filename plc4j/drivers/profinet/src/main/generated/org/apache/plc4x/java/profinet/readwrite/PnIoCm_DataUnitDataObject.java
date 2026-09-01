@@ -64,7 +64,7 @@ public class PnIoCm_DataUnitDataObject implements Message {
     byte[] dataState = readBuffer.readBits(Math.toIntExact((dataObjectLength) * 8), WithOption.WithName("dataState"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: iops
-    PnIoCm_DataUnitIoCs iops = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PnIoCm_DataUnitIoCs) PnIoCm_DataUnitIoCs.staticParse(readBuffer), readBuffer), WithOption.WithName("iops"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    PnIoCm_DataUnitIoCs iops = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_DataUnitIoCs.class, PnIoCm_DataUnitIoCs.staticParse(readBuffer)), readBuffer), WithOption.WithName("iops"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_DataUnitDataObject(dataState, iops);

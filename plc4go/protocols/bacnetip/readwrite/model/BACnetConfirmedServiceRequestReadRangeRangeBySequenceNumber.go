@@ -258,8 +258,8 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetPlx4xT
 	return "BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
 
 	// Simple field (referenceSequenceNumber)
 	lengthInBits += m.ReferenceSequenceNumber.GetLengthInBits(ctx)
@@ -270,7 +270,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLength
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

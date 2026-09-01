@@ -91,10 +91,10 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
     long version = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("version"));
 
     // Simple Field: limits
-    OpcuaProtocolLimits limits = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (OpcuaProtocolLimits) OpcuaProtocolLimits.staticParse(readBuffer), readBuffer), WithOption.WithName("limits"));
+    OpcuaProtocolLimits limits = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(OpcuaProtocolLimits.class, OpcuaProtocolLimits.staticParse(readBuffer)), readBuffer), WithOption.WithName("limits"));
 
     // Simple Field: endpoint
-    PascalString endpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("endpoint"));
+    PascalString endpoint = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("endpoint"));
 
     readBuffer.popContext();
     return new MessagePDUBuilderImpl(version, limits, endpoint);

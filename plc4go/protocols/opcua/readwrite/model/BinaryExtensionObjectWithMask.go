@@ -226,8 +226,8 @@ func (m *_BinaryExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "BinaryExtensionObjectWithMask"
 }
 
-func (m *_BinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
+func (m *_BinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
 
 	// Implicit Field (bodyLength)
 	lengthInBits += 32
@@ -238,7 +238,7 @@ func (m *_BinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BinaryExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BinaryExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

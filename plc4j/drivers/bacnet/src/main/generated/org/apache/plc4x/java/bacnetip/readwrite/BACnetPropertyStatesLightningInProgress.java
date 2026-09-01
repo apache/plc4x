@@ -52,7 +52,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lightningInProgress
-    BACnetLightingInProgressTagged lightningInProgress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingInProgressTagged) BACnetLightingInProgressTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("lightningInProgress"));
+    BACnetLightingInProgressTagged lightningInProgress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingInProgressTagged.class, BACnetLightingInProgressTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("lightningInProgress"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(lightningInProgress);

@@ -211,8 +211,8 @@ func (m *_ApduDataExtAuthorizeResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtAuthorizeResponse"
 }
 
-func (m *_ApduDataExtAuthorizeResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtAuthorizeResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -220,7 +220,7 @@ func (m *_ApduDataExtAuthorizeResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_ApduDataExtAuthorizeResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtAuthorizeResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

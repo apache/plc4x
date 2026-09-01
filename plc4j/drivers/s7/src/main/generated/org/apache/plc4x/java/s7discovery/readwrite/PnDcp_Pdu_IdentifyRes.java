@@ -116,7 +116,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     int dcpDataLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("dcpDataLength"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: blocks
-    List<PnDcp_Block> blocks = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (PnDcp_Block) PnDcp_Block.staticParse(readBuffer), readBuffer), dcpDataLength, WithOption.WithName("blocks"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnDcp_Block> blocks = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnDcp_Block.class, PnDcp_Block.staticParse(readBuffer)), readBuffer), dcpDataLength, WithOption.WithName("blocks"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnDcp_PduBuilderImpl(notSupported, xid, blocks);

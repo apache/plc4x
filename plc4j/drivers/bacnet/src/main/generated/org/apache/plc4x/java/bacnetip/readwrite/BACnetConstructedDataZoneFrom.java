@@ -77,7 +77,7 @@ public class BACnetConstructedDataZoneFrom extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: zoneFrom
-    BACnetDeviceObjectReference zoneFrom = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReference) BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer), WithOption.WithName("zoneFrom"));
+    BACnetDeviceObjectReference zoneFrom = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReference.class, BACnetDeviceObjectReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("zoneFrom"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectReference.class, zoneFrom, WithOption.WithName("actualValue"));

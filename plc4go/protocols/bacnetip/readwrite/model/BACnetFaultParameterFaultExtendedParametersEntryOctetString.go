@@ -225,8 +225,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetPlx4xT
 	return "BACnetFaultParameterFaultExtendedParametersEntryOctetString"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (octetStringValue)
 	lengthInBits += m.OctetStringValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetLength
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

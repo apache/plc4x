@@ -92,16 +92,16 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: subscriberProcessIdentifier
-    BACnetContextTagUnsignedInteger subscriberProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("subscriberProcessIdentifier"));
+    BACnetContextTagUnsignedInteger subscriberProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("subscriberProcessIdentifier"));
 
     // Simple Field: monitoredObjectIdentifier
-    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
+    BACnetContextTagObjectIdentifier monitoredObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("monitoredObjectIdentifier"));
 
     // Optional Field: issueConfirmed
-    BACnetContextTagBoolean issueConfirmed = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagBoolean) BACnetContextTagBoolean.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN)), readBuffer), WithOption.WithName("issueConfirmed"));
+    BACnetContextTagBoolean issueConfirmed = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBoolean.class, BACnetContextTagBoolean.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BOOLEAN))), readBuffer), WithOption.WithName("issueConfirmed"));
 
     // Optional Field: lifetimeInSeconds
-    BACnetContextTagUnsignedInteger lifetimeInSeconds = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("lifetimeInSeconds"));
+    BACnetContextTagUnsignedInteger lifetimeInSeconds = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("lifetimeInSeconds"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(subscriberProcessIdentifier, monitoredObjectIdentifier, issueConfirmed, lifetimeInSeconds);

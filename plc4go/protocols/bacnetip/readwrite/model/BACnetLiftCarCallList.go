@@ -183,8 +183,8 @@ func (m *_BACnetLiftCarCallList) GetPlx4xTypeName() string {
 	return "BACnetLiftCarCallList"
 }
 
-func (m *_BACnetLiftCarCallList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLiftCarCallList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (floorNumbers)
 	lengthInBits += m.FloorNumbers.GetLengthInBits(ctx)
@@ -192,7 +192,7 @@ func (m *_BACnetLiftCarCallList) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLiftCarCallList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLiftCarCallList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

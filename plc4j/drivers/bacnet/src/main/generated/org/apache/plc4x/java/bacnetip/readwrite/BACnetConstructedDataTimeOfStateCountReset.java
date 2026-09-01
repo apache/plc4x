@@ -78,7 +78,7 @@ public class BACnetConstructedDataTimeOfStateCountReset extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeOfStateCountReset
-    BACnetDateTime timeOfStateCountReset = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTime) BACnetDateTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeOfStateCountReset"));
+    BACnetDateTime timeOfStateCountReset = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTime.class, BACnetDateTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeOfStateCountReset"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDateTime actualValue = FieldReaderFactory.readVirtualField(BACnetDateTime.class, timeOfStateCountReset, WithOption.WithName("actualValue"));

@@ -78,7 +78,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkType
-    BACnetNetworkTypeTagged networkType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetNetworkTypeTagged) BACnetNetworkTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("networkType"));
+    BACnetNetworkTypeTagged networkType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetNetworkTypeTagged.class, BACnetNetworkTypeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("networkType"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetNetworkTypeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetNetworkTypeTagged.class, networkType, WithOption.WithName("actualValue"));

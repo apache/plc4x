@@ -112,11 +112,11 @@ func CastExceptionDeviationFormat(structType any) ExceptionDeviationFormat {
 	return castFunc(structType)
 }
 
-func (m ExceptionDeviationFormat) GetLengthInBits(ctx context.Context) uint16 {
+func (m ExceptionDeviationFormat) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m ExceptionDeviationFormat) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ExceptionDeviationFormat) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

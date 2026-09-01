@@ -139,7 +139,7 @@ type MockPlcConnectionCache_GetConnection_Call struct {
 // GetConnection is a helper method to define mock.On call
 //   - ctx context.Context
 //   - connectionString string
-func (_e *MockPlcConnectionCache_Expecter) GetConnection(ctx interface{}, connectionString interface{}) *MockPlcConnectionCache_GetConnection_Call {
+func (_e *MockPlcConnectionCache_Expecter) GetConnection(ctx any, connectionString any) *MockPlcConnectionCache_GetConnection_Call {
 	return &MockPlcConnectionCache_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, connectionString)}
 }
 
@@ -211,7 +211,7 @@ type mockconnectionListener_onConnectionEvent_Call struct {
 
 // onConnectionEvent is a helper method to define mock.On call
 //   - event connectionEvent
-func (_e *mockconnectionListener_Expecter) onConnectionEvent(event interface{}) *mockconnectionListener_onConnectionEvent_Call {
+func (_e *mockconnectionListener_Expecter) onConnectionEvent(event any) *mockconnectionListener_onConnectionEvent_Call {
 	return &mockconnectionListener_onConnectionEvent_Call{Call: _e.mock.On("onConnectionEvent", event)}
 }
 
@@ -523,7 +523,7 @@ type mocktracedPlcConnection_Connect_Call struct {
 
 // Connect is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *mocktracedPlcConnection_Expecter) Connect(ctx interface{}) *mocktracedPlcConnection_Connect_Call {
+func (_e *mocktracedPlcConnection_Expecter) Connect(ctx any) *mocktracedPlcConnection_Connect_Call {
 	return &mocktracedPlcConnection_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
@@ -831,7 +831,7 @@ type mocktracedPlcConnection_Ping_Call struct {
 
 // Ping is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *mocktracedPlcConnection_Expecter) Ping(ctx interface{}) *mocktracedPlcConnection_Ping_Call {
+func (_e *mocktracedPlcConnection_Expecter) Ping(ctx any) *mocktracedPlcConnection_Ping_Call {
 	return &mocktracedPlcConnection_Ping_Call{Call: _e.mock.On("Ping", ctx)}
 }
 

@@ -80,6 +80,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                                         adsDiscoverySocket.receive(packet);
 
+                                        try {
                                         InetAddress plcAddress = packet.getAddress();
                                         ReadBuffer readBuffer = new ReadBufferByteBased(packet.getData(), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
                                         AdsDiscovery adsDiscoveryResponse = AdsDiscovery.staticParse(readBuffer);
@@ -125,8 +126,16 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                 attributes.put("host-name", new PlcSTRING(hostNameBlock.getHostName().getText()));
                                                 if (versionBlock != null) {
                                                     byte[] versionData = versionBlock.getVersionData();
-                                                    int patchVersion = ((int) versionData[3] & 0xFF) << 8 | ((int) versionData[2] & 0xFF);
-                                                    attributes.put("twin-cat-version", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
+                                                    // The responder says how long this block is, so it
+                                                    // can say two bytes and be believed. Read a version
+                                                    // out of it only if there is one there.
+                                                    if (versionData != null && versionData.length >= 4) {
+                                                        int patchVersion = ((int) versionData[3] & 0xFF) << 8 | ((int) versionData[2] & 0xFF);
+                                                        attributes.put("twin-cat-version", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
+                                                    } else {
+                                                        logger.debug("Ignoring a version block of {} bytes from {}",
+                                                            versionData == null ? 0 : versionData.length, plcAddress);
+                                                    }
                                                 }
                                                 if (fingerprintBlock != null) {
                                                     attributes.put("fingerprint", new PlcSTRING(new String(fingerprintBlock.getData()).trim()));
@@ -148,6 +157,14 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                 values.add(plcDiscoveryItem);
                                             }
                                         }
+                                        } catch (BufferException | RuntimeException e) {
+                                            // Any host can send a datagram to a discovery port, so one
+                                            // we cannot read costs us that datagram. Ending the loop
+                                            // would end discovery on this interface for every device
+                                            // that had not answered yet.
+                                            logger.warn("Ignoring an unreadable ADS discovery response from {}",
+                                                packet.getAddress(), e);
+                                        }
                                     }
                                 } catch (SocketException e) {
                                     // If we're closing the socket at the end, a "Socket closed"
@@ -157,9 +174,9 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                     }
                                 } catch (IOException e) {
                                     logger.error("Error reading ADS discovery response", e);
-                                } catch (BufferException e) {
-                                    logger.error("Error parsing ADS discovery response", e);
                                 }
+                                // A parse failure no longer reaches here: it belongs to the datagram
+                                // it came from, and is handled beside the one that read it.
                             });
                             thread.start();
 

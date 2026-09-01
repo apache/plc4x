@@ -340,11 +340,11 @@ func CastOpcuaDataType(structType any) OpcuaDataType {
 	return castFunc(structType)
 }
 
-func (m OpcuaDataType) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaDataType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m OpcuaDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -378,7 +378,7 @@ func (e OpcuaDataType) Serialize() ([]byte, error) {
 func (e OpcuaDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaDataType", uint32(112), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaDataType", uint32(112), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8"))
 }
 
 func (e OpcuaDataType) GetValue() string {

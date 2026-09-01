@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.tools.eventpump;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.tools.eventpump.triggers.TimerTrigger;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  */
 class EventPumpTest {
 
-    private PlcConnectionManager connectionManager;
+    private PlcConnectionFactory connectionFactory;
     private String connectionString;
     private PlcReadResponse mockReadResponse;
 
@@ -64,8 +64,8 @@ class EventPumpTest {
         PlcConnection connection = new StubPlcConnection(mockReadBuilder);
 
         // Create a mock connection manager that returns our stub connection
-        connectionManager = mock(PlcConnectionManager.class);
-        when(connectionManager.getConnection(any())).thenReturn(connection);
+        connectionFactory = mock(PlcConnectionFactory.class);
+        when(connectionFactory.getConnection(any())).thenReturn(connection);
 
         connectionString = "test://localhost";
     }
@@ -80,7 +80,7 @@ class EventPumpTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger)
@@ -116,7 +116,7 @@ class EventPumpTest {
 
         TagBatch batch1 = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger1)
@@ -125,7 +125,7 @@ class EventPumpTest {
 
         TagBatch batch2 = TagBatch.builder()
             .withBatchId("batch1") // Same ID
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger2)
@@ -154,7 +154,7 @@ class EventPumpTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger)
@@ -191,7 +191,7 @@ class EventPumpTest {
 
         TagBatch batch1 = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger1)
@@ -200,7 +200,7 @@ class EventPumpTest {
 
         TagBatch batch2 = TagBatch.builder()
             .withBatchId("batch2")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger2)
@@ -234,7 +234,7 @@ class EventPumpTest {
 
         TagBatch batch1 = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger1)
@@ -243,7 +243,7 @@ class EventPumpTest {
 
         TagBatch batch2 = TagBatch.builder()
             .withBatchId("batch2")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger2)
@@ -278,7 +278,7 @@ class EventPumpTest {
 
         TagBatch batch1 = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger1)
@@ -287,7 +287,7 @@ class EventPumpTest {
 
         TagBatch batch2 = TagBatch.builder()
             .withBatchId("batch2")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger2)
@@ -322,7 +322,7 @@ class EventPumpTest {
 
         TagBatch batch1 = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger1)
@@ -331,7 +331,7 @@ class EventPumpTest {
 
         TagBatch batch2 = TagBatch.builder()
             .withBatchId("batch2")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger2)
@@ -340,7 +340,7 @@ class EventPumpTest {
 
         TagBatch batch3 = TagBatch.builder()
             .withBatchId("batch3")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger3)
@@ -374,7 +374,7 @@ class EventPumpTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger)
@@ -403,7 +403,7 @@ class EventPumpTest {
         Trigger trigger = new TimerTrigger(1, TimeUnit.SECONDS);
         TagBatch batch = TagBatch.builder()
             .withBatchId("batch1")
-            .withConnectionManager(connectionManager)
+            .withConnectionFactory(connectionFactory)
             .withConnectionString(connectionString)
             .addTagAddresses(tags)
             .withTrigger(trigger)

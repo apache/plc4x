@@ -140,11 +140,11 @@ func CastProtectionLevel(structType any) ProtectionLevel {
 	return castFunc(structType)
 }
 
-func (m ProtectionLevel) GetLengthInBits(ctx context.Context) uint16 {
+func (m ProtectionLevel) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ProtectionLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ProtectionLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

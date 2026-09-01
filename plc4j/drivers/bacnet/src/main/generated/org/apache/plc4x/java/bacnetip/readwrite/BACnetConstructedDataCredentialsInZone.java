@@ -72,7 +72,7 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: credentialsInZone
-    List<BACnetDeviceObjectReference> credentialsInZone = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReference) BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("credentialsInZone"));
+    List<BACnetDeviceObjectReference> credentialsInZone = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReference.class, BACnetDeviceObjectReference.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("credentialsInZone"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(credentialsInZone);

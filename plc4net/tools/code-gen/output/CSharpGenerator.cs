@@ -1303,7 +1303,7 @@ namespace org.apache.plc4net.tools.codegen.output
                 case "DATE_AND_LTIME": // DTL - plain-binary segments, widths from the mspec
                     foreach (var f in cs.Fields.OfType<SimpleField>())
                     {
-                        var read = DataIoSimpleRead(f);
+                        var read = DataIoSimpleRead(f, r);
                         // dayOfWeek is recomputed from the DateTime on serialize.
                         c.Line(f.Name == "dayOfWeek" ? $"{read};" : $"var {Camel(f.Name)} = {read};");
                     }
@@ -1528,7 +1528,7 @@ namespace org.apache.plc4net.tools.codegen.output
                     break;
 
                 case SimpleField sf:
-                    c.Line($"var {Camel(sf.Name)} = {ByteOrdered(sf.Type, DataIoSimpleRead(sf), le)};");
+                    c.Line($"var {Camel(sf.Name)} = {ByteOrdered(sf.Type, DataIoSimpleRead(sf, r), le)};");
                     break;
             }
         }
@@ -1553,6 +1553,10 @@ namespace org.apache.plc4net.tools.codegen.output
                     if (st.BaseType is SimpleTypeReference.Base.String)
                     {
                         c.Line($"writeBuffer.WriteString(\"{sf.Name}\", {st.SizeInBits}, \"{FieldEncoding(sf)}\", {getter});");
+                    }
+                    else if (st.BaseType is SimpleTypeReference.Base.VString && st.LengthExpression is { } vlen)
+                    {
+                        c.Line($"writeBuffer.WriteString(\"{sf.Name}\", (int) ({r.Render(RewriteTypeEncoding(vlen, FieldEncoding(sf)))}), \"{FieldEncoding(sf)}\", {getter});");
                     }
                     else
                     {
@@ -1589,6 +1593,9 @@ namespace org.apache.plc4net.tools.codegen.output
         {
             switch (f)
             {
+                case SimpleField when f.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.VString, LengthExpression: { } vlen }:
+                    // vstring: the length expression is already in bits (`stringLength * 8`).
+                    return $"({r.Render(RewriteTypeEncoding(vlen, FieldEncoding((SimpleField) f)))})";
                 case ReservedField or SimpleField:
                     var bits = CSharpTypeMapper.FixedBitLength(f.Type);
                     return bits >= 0 ? bits.ToString() : null;
@@ -1621,13 +1628,19 @@ namespace org.apache.plc4net.tools.codegen.output
             }
         }
 
-        private string DataIoSimpleRead(SimpleField sf)
+        private string DataIoSimpleRead(SimpleField sf, CSharpExpressionRenderer r)
         {
-            if (sf.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.String } s)
+            switch (sf.Type)
             {
-                return $"readBuffer.ReadString(\"{sf.Name}\", {s.SizeInBits}, {CSharpTypeMapper.EncodingExpr(FieldEncoding(sf))})";
+                case SimpleTypeReference { BaseType: SimpleTypeReference.Base.String } s:
+                    return $"readBuffer.ReadString(\"{sf.Name}\", {s.SizeInBits}, {CSharpTypeMapper.EncodingExpr(FieldEncoding(sf))})";
+                // vstring: the bit length is a run-time expression (modbus DataItem's
+                // `vstring 'stringLength * 8'`), already in bits.
+                case SimpleTypeReference { BaseType: SimpleTypeReference.Base.VString, LengthExpression: { } len }:
+                    return $"readBuffer.ReadString(\"{sf.Name}\", (int) ({r.Render(RewriteTypeEncoding(len, FieldEncoding(sf)))}), {CSharpTypeMapper.EncodingExpr(FieldEncoding(sf))})";
+                default:
+                    return CSharpTypeMapper.ReadCall(sf.Type, sf.Name);
             }
-            return CSharpTypeMapper.ReadCall(sf.Type, sf.Name);
         }
 
         /// <summary>The <c>IPlcValue</c> accessor that yields a value of this

@@ -39,7 +39,7 @@ type Configuration struct {
 func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := Configuration{}
 
-	sourceAmsNetId := getFromOptions(localLogger, options, "sourceAmsNetId")
+	sourceAmsNetId := getFromOptions(localLogger, options, "sourceAmsNetId", "source-ams-net-id")
 	if sourceAmsNetId == "" {
 		return Configuration{}, errors.New("Required parameter sourceAmsNetId missing")
 	}
@@ -76,7 +76,7 @@ func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (
 		uint8(octet5),
 		uint8(octet6),
 	)
-	sourceAmsPort := getFromOptions(localLogger, options, "sourceAmsPort")
+	sourceAmsPort := getFromOptions(localLogger, options, "sourceAmsPort", "source-ams-port")
 	if sourceAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter sourceAmsPort missing")
 	}
@@ -85,8 +85,8 @@ func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsPort")
 	}
 	configuration.SourceAmsPort = uint16(parsedUint)
-	targetAmsNetId := getFromOptions(localLogger, options, "targetAmsNetId")
-	if sourceAmsNetId == "" {
+	targetAmsNetId := getFromOptions(localLogger, options, "targetAmsNetId", "target-ams-net-id")
+	if targetAmsNetId == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsNetId missing")
 	}
 	split = strings.Split(targetAmsNetId, ".")
@@ -122,7 +122,7 @@ func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (
 		uint8(octet5),
 		uint8(octet6),
 	)
-	targetAmsPort := getFromOptions(localLogger, options, "targetAmsPort")
+	targetAmsPort := getFromOptions(localLogger, options, "targetAmsPort", "target-ams-port")
 	if targetAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsPort missing")
 	}
@@ -135,15 +135,20 @@ func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (
 	return configuration, nil
 }
 
-func getFromOptions(localLogger zerolog.Logger, options map[string][]string, key string) string {
-	if optionValues, ok := options[key]; ok {
-		if len(optionValues) <= 0 {
-			return ""
+// getFromOptions returns the value of the first key present in the options. The additional
+// keys are aliases: the kebab-case names match the plc4j driver's connection parameters, so
+// the same connection string works with both implementations.
+func getFromOptions(localLogger zerolog.Logger, options map[string][]string, keys ...string) string {
+	for _, key := range keys {
+		if optionValues, ok := options[key]; ok {
+			if len(optionValues) <= 0 {
+				continue
+			}
+			if len(optionValues) > 1 {
+				localLogger.Warn().Str("key", key).Msg("Options key must be unique")
+			}
+			return optionValues[0]
 		}
-		if len(optionValues) > 1 {
-			localLogger.Warn().Str("key", key).Msg("Options key must be unique")
-		}
-		return optionValues[0]
 	}
 	return ""
 }

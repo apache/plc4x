@@ -78,7 +78,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: verificationTime
-    BACnetApplicationTagSignedInteger verificationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("verificationTime"));
+    BACnetApplicationTagSignedInteger verificationTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("verificationTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagSignedInteger.class, verificationTime, WithOption.WithName("actualValue"));

@@ -231,8 +231,8 @@ func (m *_SALDataTriggerControl) GetPlx4xTypeName() string {
 	return "SALDataTriggerControl"
 }
 
-func (m *_SALDataTriggerControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataTriggerControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (triggerControlData)
 	lengthInBits += m.TriggerControlData.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_SALDataTriggerControl) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataTriggerControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataTriggerControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

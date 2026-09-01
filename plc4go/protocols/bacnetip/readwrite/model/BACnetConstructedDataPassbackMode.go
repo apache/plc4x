@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataPassbackMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPassbackMode"
 }
 
-func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (passbackMode)
 	lengthInBits += m.PassbackMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPassbackMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPassbackMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

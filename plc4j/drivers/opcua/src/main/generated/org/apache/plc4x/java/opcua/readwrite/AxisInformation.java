@@ -101,13 +101,13 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: engineeringUnits
-    EUInformation engineeringUnits = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (EUInformation) EUInformation.staticParse(readBuffer, (int) (889)), readBuffer), WithOption.WithName("engineeringUnits"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    EUInformation engineeringUnits = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(EUInformation.class, EUInformation.staticParse(readBuffer, (int) (889))), readBuffer), WithOption.WithName("engineeringUnits"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: eURange
-    Range eURange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Range) Range.staticParse(readBuffer, (int) (886)), readBuffer), WithOption.WithName("eURange"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    Range eURange = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Range.class, Range.staticParse(readBuffer, (int) (886))), readBuffer), WithOption.WithName("eURange"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: title
-    LocalizedText title = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LocalizedText) LocalizedText.staticParse(readBuffer), readBuffer), WithOption.WithName("title"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    LocalizedText title = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LocalizedText.class, LocalizedText.staticParse(readBuffer)), readBuffer), WithOption.WithName("title"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field (enum): axisScaleType
     AxisScaleEnumeration axisScaleType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(AxisScaleEnumeration::enumForValue, DataReaderFactory.readUnsignedLong(readBuffer, 32)), WithOption.WithName("axisScaleType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

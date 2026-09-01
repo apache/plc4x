@@ -74,13 +74,13 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     int noOfMonitoredItems = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfMonitoredItems"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: monitoredItems
-    List<MonitoredItemNotification> monitoredItems = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (MonitoredItemNotification) MonitoredItemNotification.staticParse(readBuffer, (int) (808)), readBuffer), noOfMonitoredItems, WithOption.WithName("monitoredItems"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<MonitoredItemNotification> monitoredItems = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MonitoredItemNotification.class, MonitoredItemNotification.staticParse(readBuffer, (int) (808))), readBuffer), noOfMonitoredItems, WithOption.WithName("monitoredItems"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfDiagnosticInfos
     int noOfDiagnosticInfos = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfDiagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: diagnosticInfos
-    List<DiagnosticInfo> diagnosticInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (DiagnosticInfo) DiagnosticInfo.staticParse(readBuffer), readBuffer), noOfDiagnosticInfos, WithOption.WithName("diagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<DiagnosticInfo> diagnosticInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DiagnosticInfo.class, DiagnosticInfo.staticParse(readBuffer)), readBuffer), noOfDiagnosticInfos, WithOption.WithName("diagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(monitoredItems, diagnosticInfos);

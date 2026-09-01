@@ -78,7 +78,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileAccessMethod
-    BACnetFileAccessMethodTagged fileAccessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetFileAccessMethodTagged) BACnetFileAccessMethodTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("fileAccessMethod"));
+    BACnetFileAccessMethodTagged fileAccessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetFileAccessMethodTagged.class, BACnetFileAccessMethodTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("fileAccessMethod"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetFileAccessMethodTagged actualValue = FieldReaderFactory.readVirtualField(BACnetFileAccessMethodTagged.class, fileAccessMethod, WithOption.WithName("actualValue"));

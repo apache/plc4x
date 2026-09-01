@@ -225,8 +225,8 @@ func (m *_BACnetPriorityValueConstructedValue) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueConstructedValue"
 }
 
-func (m *_BACnetPriorityValueConstructedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueConstructedValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (constructedValue)
 	lengthInBits += m.ConstructedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueConstructedValue) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

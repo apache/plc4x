@@ -229,8 +229,8 @@ func (m *_ApduDataContainer) GetPlx4xTypeName() string {
 	return "ApduDataContainer"
 }
 
-func (m *_ApduDataContainer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduContract.(*_Apdu).getLengthInBits(ctx))
+func (m *_ApduDataContainer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduContract.(*_Apdu).getLengthInBits(ctx))
 
 	// Simple field (dataApdu)
 	lengthInBits += m.DataApdu.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_ApduDataContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduDataContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

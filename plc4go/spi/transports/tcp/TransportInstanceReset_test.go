@@ -107,9 +107,7 @@ func TestTransportInstance_ResetDoesNotRaceReceiveWorker(t *testing.T) {
 	var wg sync.WaitGroup
 
 	// Peer keeps trickling bytes so the worker's reads have real traffic.
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		payload := []byte{0xAA, 0xBB, 0xCC, 0xDD}
 		for {
 			select {
@@ -120,12 +118,10 @@ func TestTransportInstance_ResetDoesNotRaceReceiveWorker(t *testing.T) {
 				time.Sleep(time.Millisecond)
 			}
 		}
-	}()
+	})
 
 	// Receive worker analogue.
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for {
 			select {
 			case <-stop:
@@ -138,10 +134,10 @@ func TestTransportInstance_ResetDoesNotRaceReceiveWorker(t *testing.T) {
 				}
 			}
 		}
-	}()
+	})
 
 	// Cache-lease analogue: Reset storm from a foreign goroutine.
-	for i := 0; i < 200; i++ {
+	for range 200 {
 		ti.Reset()
 		time.Sleep(500 * time.Microsecond)
 	}

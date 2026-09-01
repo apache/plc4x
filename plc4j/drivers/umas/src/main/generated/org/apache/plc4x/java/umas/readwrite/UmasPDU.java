@@ -66,7 +66,7 @@ public class UmasPDU extends ModbusPDU implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: item
-    UmasPDUItem item = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (UmasPDUItem) UmasPDUItem.staticParse(readBuffer, (short) (umasRequestFunctionKey), (int) ((byteLength) - (1))), readBuffer), WithOption.WithName("item"));
+    UmasPDUItem item = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UmasPDUItem.class, UmasPDUItem.staticParse(readBuffer, (short) (umasRequestFunctionKey), (int) ((byteLength) - (1)))), readBuffer), WithOption.WithName("item"));
 
     readBuffer.popContext();
     return new ModbusPDUBuilderImpl(item);

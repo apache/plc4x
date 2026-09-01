@@ -71,13 +71,13 @@ public class BACnetCalendarEntryEnclosed implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: openingTag
-    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("openingTag"));
+    BACnetOpeningTag openingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("openingTag"));
 
     // Simple Field: calendarEntry
-    BACnetCalendarEntry calendarEntry = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetCalendarEntry) BACnetCalendarEntry.staticParse(readBuffer), readBuffer), WithOption.WithName("calendarEntry"));
+    BACnetCalendarEntry calendarEntry = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCalendarEntry.class, BACnetCalendarEntry.staticParse(readBuffer)), readBuffer), WithOption.WithName("calendarEntry"));
 
     // Simple Field: closingTag
-    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("closingTag"));
+    BACnetClosingTag closingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("closingTag"));
 
     readBuffer.popContext();
     return new BACnetCalendarEntryEnclosed(openingTag, calendarEntry, closingTag);

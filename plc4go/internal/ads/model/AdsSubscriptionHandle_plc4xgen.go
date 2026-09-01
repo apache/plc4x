@@ -62,19 +62,19 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.subscriber)
-			if err := writeBuffer.WriteString("subscriber", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("subscriber", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
 	}
 
-	if err := writeBuffer.WriteString("tagName", uint32(len(d.tagName)*8), d.tagName); err != nil {
+	if err := writeBuffer.WriteString("tagName", uint32(len(d.tagName)*8), d.tagName, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.directTag)
 
-		if err := writeBuffer.WriteString("directTag", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("directTag", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
@@ -97,7 +97,7 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}
@@ -125,7 +125,7 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}

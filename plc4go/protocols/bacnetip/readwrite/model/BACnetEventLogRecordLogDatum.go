@@ -66,8 +66,8 @@ type BACnetEventLogRecordLogDatumContract interface {
 
 // BACnetEventLogRecordLogDatumRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetEventLogRecordLogDatumRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -357,8 +357,8 @@ func (m *_BACnetEventLogRecordLogDatum) GetPlx4xTypeName() string {
 	return "BACnetEventLogRecordLogDatum"
 }
 
-func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -371,11 +371,11 @@ func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetEventLogRecordLogDatum) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatum) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetEventLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -439,15 +439,15 @@ func (m *_BACnetEventLogRecordLogDatum) parse(ctx context.Context, readBuffer ut
 	var _child BACnetEventLogRecordLogDatum
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventLogRecordLogDatumLogStatus
-		if _child, err = new(_BACnetEventLogRecordLogDatumLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumLogStatus).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumLogStatus for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(1): // BACnetEventLogRecordLogDatumNotification
-		if _child, err = new(_BACnetEventLogRecordLogDatumNotification).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumNotification).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumNotification for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(2): // BACnetEventLogRecordLogDatumTimeChange
-		if _child, err = new(_BACnetEventLogRecordLogDatumTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumTimeChange).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumTimeChange for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	default:

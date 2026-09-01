@@ -230,8 +230,8 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetPlx4xTypeName() string {
 	return "FirmataMessageSubscribeDigitalPinValue"
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
+func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -245,7 +245,7 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

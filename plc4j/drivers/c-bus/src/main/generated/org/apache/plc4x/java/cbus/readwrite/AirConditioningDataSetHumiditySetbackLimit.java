@@ -86,13 +86,13 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
     byte zoneGroup = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("zoneGroup"));
 
     // Simple Field: zoneList
-    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACZoneList) HVACZoneList.staticParse(readBuffer), readBuffer), WithOption.WithName("zoneList"));
+    HVACZoneList zoneList = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACZoneList.class, HVACZoneList.staticParse(readBuffer)), readBuffer), WithOption.WithName("zoneList"));
 
     // Simple Field: limit
-    HVACHumidity limit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACHumidity) HVACHumidity.staticParse(readBuffer), readBuffer), WithOption.WithName("limit"));
+    HVACHumidity limit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACHumidity.class, HVACHumidity.staticParse(readBuffer)), readBuffer), WithOption.WithName("limit"));
 
     // Simple Field: hvacModeAndFlags
-    HVACHumidityModeAndFlags hvacModeAndFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (HVACHumidityModeAndFlags) HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer), WithOption.WithName("hvacModeAndFlags"));
+    HVACHumidityModeAndFlags hvacModeAndFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HVACHumidityModeAndFlags.class, HVACHumidityModeAndFlags.staticParse(readBuffer)), readBuffer), WithOption.WithName("hvacModeAndFlags"));
 
     readBuffer.popContext();
     return new AirConditioningDataBuilderImpl(zoneGroup, zoneList, limit, hvacModeAndFlags);

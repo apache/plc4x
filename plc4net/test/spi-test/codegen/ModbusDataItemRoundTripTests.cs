@@ -27,64 +27,52 @@ using Xunit;
 namespace org.apache.plc4net.spi.test.codegen
 {
     /// <summary>
-    /// Round-trips the generated Modbus <c>DataItem</c>. Modbus keys the same
-    /// <c>[dataIo]</c> emitter on three discriminators - an <c>enum</c>
-    /// (<c>dataType</c>), a count (<c>numberOfValues</c>) and a byte-order bit
-    /// (<c>bigEndian</c>) - so the cases compile to an <c>else if</c> chain
-    /// rather than S7's flat string switch.
+    /// Round-trips the generated Modbus <c>DataItem</c>. The mspec redesign
+    /// (2026) reduced it to exactly one value at its natural width - register
+    /// alignment, arrays and byte order are the driver's job now - so there is
+    /// one case per <c>ModbusDataType</c> and the only argument that carries
+    /// data is <c>stringLength</c> (for the two <c>vstring</c> cases).
     /// </summary>
-    /// <remarks>
-    /// The single-value scalar cases round-trip; the <c>numberOfValues &gt; 1</c>
-    /// list cases (a <c>PlcList</c> of primitives) are a throwing stub, the same
-    /// GAP-8 boundary the S7 date / time cases sit behind.
-    /// </remarks>
     public class ModbusDataItemRoundTripTests
     {
-        public static TheoryData<string, string, string, ushort, bool> Vectors() => new()
+        public static TheoryData<string, string, string, ushort> Vectors() => new()
         {
-            // name              dataType  hex               numberOfValues  bigEndian
-            { "BOOL big",         "BOOL",   "0001",           1,              true },
-            { "BOOL little",      "BOOL",   "0100",           1,              false },
-            { "BYTE",             "BYTE",   "00a5",           1,              true },
-            { "WORD",             "WORD",   "1234",           1,              true },
-            { "DWORD",            "DWORD",  "cafebabe",        1,              true },
-            { "INT negative",     "INT",    "fffe",           1,              true },
-            { "DINT negative",    "DINT",   "fffffffe",       1,              true },
-            { "UDINT",            "UDINT",  "01020304",       1,              true },
-            { "REAL",             "REAL",   "3fc00000",       1,              true },
-            { "LREAL",            "LREAL",  "3ff8000000000000", 1,            true },
-            { "CHAR",             "CHAR",   "41",             1,              true },
-            { "WCHAR",            "WCHAR",  "0041",           1,              true },
-            // numberOfValues != 1 -> a PlcList, one element per count (the
-            // `…,'1',…` scalar cases take precedence, so these need count != 1).
-            { "BOOL x3",          "BOOL",   "a0",             3,              true },
-            { "BYTE x2 (16 bits)","BYTE",   "a5c3",           2,              true },
-            { "INT x3",           "INT",    "0001fffe0102",   3,              true },
-            { "UINT x2",          "UINT",   "12345678",       2,              true },
-            { "DINT x2",          "DINT",   "00000001fffffffe", 2,            true },
-            { "REAL x2",          "REAL",   "3fc00000bfc00000", 2,            true },
-            { "CHAR x2",          "CHAR",   "4142",           2,              true },
-            { "WCHAR x2",         "WCHAR",  "00410042",       2,              true },
-            // bigEndian == false -> the multi-byte value is little-endian on the wire.
-            { "WORD LE",          "WORD",   "3412",           1,              false },
-            { "DINT LE",          "DINT",   "04030201",       1,              false },
-            { "REAL LE",          "REAL",   "0000c03f",       1,              false },
-            { "UINT x2 LE",       "UINT",   "01000200",       2,              false },
+            // name             dataType   hex                    stringLength
+            { "BOOL true",       "BOOL",    "80",                  0 },
+            { "BOOL false",      "BOOL",    "00",                  0 },
+            { "BYTE",            "BYTE",    "a5",                  0 },
+            { "WORD",            "WORD",    "1234",                0 },
+            { "DWORD",           "DWORD",   "cafebabe",            0 },
+            { "LWORD",           "LWORD",   "0011223344556677",    0 },
+            { "SINT negative",   "SINT",    "fe",                  0 },
+            { "INT negative",    "INT",     "fffe",                0 },
+            { "DINT negative",   "DINT",    "fffffffe",            0 },
+            { "LINT negative",   "LINT",    "fffffffffffffffe",    0 },
+            { "USINT",           "USINT",   "a5",                  0 },
+            { "UINT",            "UINT",    "1234",                0 },
+            { "UDINT",           "UDINT",   "01020304",            0 },
+            { "ULINT",           "ULINT",   "0102030405060708",    0 },
+            { "REAL",            "REAL",    "3fc00000",            0 },
+            { "LREAL",           "LREAL",   "3ff8000000000000",    0 },
+            { "CHAR",            "CHAR",    "41",                  0 },
+            { "WCHAR",           "WCHAR",   "0041",                0 },
+            { "STRING",          "STRING",  "48656c6c6f",          5 },
+            { "WSTRING",         "WSTRING", "00480049",            2 },
         };
 
         [Theory]
         [MemberData(nameof(Vectors))]
-        public void Round_trips(string name, string dataType, string hex, ushort numberOfValues, bool bigEndian)
+        public void Round_trips(string name, string dataType, string hex, ushort stringLength)
         {
             _ = name;
             var type = Enum.Parse<ModbusDataType>(dataType);
             var expected = FromHex(hex);
 
-            var value = DataItem.StaticParse(new ReadBuffer(expected), type, numberOfValues, bigEndian);
+            var value = DataItem.StaticParse(new ReadBuffer(expected), type, stringLength);
             Assert.NotNull(value);
 
             var writeBuffer = new WriteBuffer();
-            DataItem.StaticSerialize(writeBuffer, value, type, numberOfValues, bigEndian);
+            DataItem.StaticSerialize(writeBuffer, value, type, stringLength);
 
             Assert.Equal(hex, ToHex(writeBuffer.GetBytes()));
         }
@@ -92,41 +80,15 @@ namespace org.apache.plc4net.spi.test.codegen
         [Fact]
         public void Scalars_expose_the_expected_value()
         {
-            Assert.True(DataItem.StaticParse(new ReadBuffer(FromHex("0001")), ModbusDataType.BOOL, 1, true).GetBool());
+            Assert.True(DataItem.StaticParse(new ReadBuffer(FromHex("80")), ModbusDataType.BOOL, 0).GetBool());
             Assert.Equal((ushort) 0x1234,
-                DataItem.StaticParse(new ReadBuffer(FromHex("1234")), ModbusDataType.WORD, 1, true).GetUshort());
+                DataItem.StaticParse(new ReadBuffer(FromHex("1234")), ModbusDataType.WORD, 0).GetUshort());
             Assert.Equal((short) (-2),
-                DataItem.StaticParse(new ReadBuffer(FromHex("fffe")), ModbusDataType.INT, 1, true).GetShort());
+                DataItem.StaticParse(new ReadBuffer(FromHex("fffe")), ModbusDataType.INT, 0).GetShort());
             Assert.Equal(1.5f,
-                DataItem.StaticParse(new ReadBuffer(FromHex("3fc00000")), ModbusDataType.REAL, 1, true).GetFloat());
-        }
-
-        [Fact]
-        public void Multi_value_lists_parse_to_a_PlcList_of_wrapped_primitives()
-        {
-            var ints = DataItem.StaticParse(new ReadBuffer(FromHex("0001fffe0102")), ModbusDataType.INT, 3, true);
-            Assert.True(ints.IsList());
-            Assert.Equal(3, ints.GetLength());
-            Assert.Equal(new[] { (short) 1, (short) -2, (short) 258 },
-                ints.GetList().Select(v => v.GetShort()));
-
-            var bools = DataItem.StaticParse(new ReadBuffer(FromHex("a0")), ModbusDataType.BOOL, 3, true);
-            Assert.Equal(new[] { true, false, true }, bools.GetList().Select(v => v.GetBool()));
-
-            var chars = DataItem.StaticParse(new ReadBuffer(FromHex("4142")), ModbusDataType.CHAR, 2, true);
-            Assert.Equal("AB", string.Concat(chars.GetList().Select(v => v.GetString())));
-        }
-
-        [Fact]
-        public void Little_endian_and_big_endian_decode_the_same_value()
-        {
-            // 0x1234 as a WORD: "1234" big-endian, "3412" little-endian.
-            Assert.Equal((ushort) 0x1234,
-                DataItem.StaticParse(new ReadBuffer(FromHex("1234")), ModbusDataType.WORD, 1, true).GetUshort());
-            Assert.Equal((ushort) 0x1234,
-                DataItem.StaticParse(new ReadBuffer(FromHex("3412")), ModbusDataType.WORD, 1, false).GetUshort());
-            Assert.Equal(1.5f,
-                DataItem.StaticParse(new ReadBuffer(FromHex("0000c03f")), ModbusDataType.REAL, 1, false).GetFloat());
+                DataItem.StaticParse(new ReadBuffer(FromHex("3fc00000")), ModbusDataType.REAL, 0).GetFloat());
+            Assert.Equal("Hello",
+                DataItem.StaticParse(new ReadBuffer(FromHex("48656c6c6f")), ModbusDataType.STRING, 5).GetString());
         }
 
         // ── helpers ─────────────────────────────────────────────

@@ -78,7 +78,7 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: occupancyCountAdjust
-    BACnetApplicationTagBoolean occupancyCountAdjust = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("occupancyCountAdjust"));
+    BACnetApplicationTagBoolean occupancyCountAdjust = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("occupancyCountAdjust"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, occupancyCountAdjust, WithOption.WithName("actualValue"));

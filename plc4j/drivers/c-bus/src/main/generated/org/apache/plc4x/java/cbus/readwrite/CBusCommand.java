@@ -68,7 +68,7 @@ public abstract class CBusCommand implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: header
-    CBusHeader header = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CBusHeader) CBusHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("header"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CBusHeader header = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CBusHeader.class, CBusHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("header"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Virtual Field: isDeviceManagement (doesn't parse anything, just makes the value available)
     boolean isDeviceManagement = FieldReaderFactory.readVirtualField(boolean.class, header.getDp(), WithOption.WithName("isDeviceManagement"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

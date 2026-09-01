@@ -211,8 +211,8 @@ func (m *_COTPParameterChecksum) GetPlx4xTypeName() string {
 	return "COTPParameterChecksum"
 }
 
-func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -220,7 +220,7 @@ func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

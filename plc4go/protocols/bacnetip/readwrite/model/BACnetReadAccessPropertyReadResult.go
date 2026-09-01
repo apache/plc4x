@@ -256,8 +256,8 @@ func (m *_BACnetReadAccessPropertyReadResult) GetPlx4xTypeName() string {
 	return "BACnetReadAccessPropertyReadResult"
 }
 
-func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -274,7 +274,7 @@ func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

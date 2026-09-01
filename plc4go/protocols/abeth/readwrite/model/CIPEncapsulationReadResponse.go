@@ -231,8 +231,8 @@ func (m *_CIPEncapsulationReadResponse) GetPlx4xTypeName() string {
 	return "CIPEncapsulationReadResponse"
 }
 
-func (m *_CIPEncapsulationReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).getLengthInBits(ctx))
+func (m *_CIPEncapsulationReadResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).getLengthInBits(ctx))
 
 	// Simple field (response)
 	lengthInBits += m.Response.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_CIPEncapsulationReadResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_CIPEncapsulationReadResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CIPEncapsulationReadResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

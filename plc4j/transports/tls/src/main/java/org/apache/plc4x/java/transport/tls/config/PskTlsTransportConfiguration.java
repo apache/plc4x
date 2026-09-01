@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.transport.tls.config;
 
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Secret;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
@@ -33,6 +34,9 @@ public class PskTlsTransportConfiguration extends TcpTransportConfiguration {
      * PSK identity string for TLS-PSK authentication.
      * Must be used together with psk-key.
      */
+    // Deliberately not @Secret: the identity says which key the device refused, which is the one
+    // thing an operator needs when a PSK handshake fails. Hiding it costs the diagnosis and
+    // protects nothing - the key it names is marked instead.
     @ConfigurationParameter("psk-identity")
     @Description("PSK identity string for TLS-PSK authentication. Must be used together with psk-key.")
     public String pskIdentity;
@@ -41,6 +45,7 @@ public class PskTlsTransportConfiguration extends TcpTransportConfiguration {
      * PSK key as hexadecimal string for TLS-PSK authentication.
      * Must be used together with psk-identity.
      */
+    @Secret
     @ConfigurationParameter("psk-key")
     @Description("PSK key as hexadecimal string for TLS-PSK authentication. Must be used together with psk-identity.")
     public String pskKey;

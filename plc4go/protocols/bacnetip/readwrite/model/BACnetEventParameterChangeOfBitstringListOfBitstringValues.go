@@ -229,8 +229,8 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetPlx4xTy
 	return "BACnetEventParameterChangeOfBitstringListOfBitstringValues"
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -248,7 +248,7 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetLengthI
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

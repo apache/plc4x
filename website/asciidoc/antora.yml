@@ -17,7 +17,10 @@
 # under the License.
 #
 name: plc4x
-version: 'pre-release'
+# The concrete version this branch documents. The "urls.latest_prerelease_version_segment"
+# key in the playbook publishes it under ".../plc4x/pre-release/" for as long as it is
+# flagged as a prerelease. "release-1-create-branch.sh" maintains both values.
+version: '1.0.0'
 prerelease: True
 title: PLC4X
 start_page: users:index.adoc
@@ -27,6 +30,12 @@ nav:
 - modules/developers/nav.adoc
 asciidoc:
   attributes:
-    current-last-released-version: '0.14.0-SNAPSHOT'
-    current-full-version: '0.14.0'
+    # These two are kept in sync with the version of the Maven project by the
+    # "sync-antora-version" execution in website/pom.xml, which runs in the "validate"
+    # phase of every build - don't edit them by hand, a build will overwrite it again.
+    # They have to stay in this file (rather than being passed to Antora globally),
+    # because the playbook builds the released branches from git alongside this one and
+    # every branch has to keep documenting its own version.
+    current-last-released-version: '1.0.0-SNAPSHOT'
+    current-full-version: '1.0.0'
 

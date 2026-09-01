@@ -61,10 +61,10 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: floorNumber
-    BACnetContextTagUnsignedInteger floorNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("floorNumber"));
+    BACnetContextTagUnsignedInteger floorNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("floorNumber"));
 
     // Simple Field: doorStatus
-    BACnetDoorStatusTagged doorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDoorStatusTagged) BACnetDoorStatusTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("doorStatus"));
+    BACnetDoorStatusTagged doorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDoorStatusTagged.class, BACnetDoorStatusTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("doorStatus"));
 
     readBuffer.popContext();
     return new BACnetLandingDoorStatusLandingDoorsListEntry(floorNumber, doorStatus);

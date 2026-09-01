@@ -349,8 +349,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetPlx4xTypeName() strin
 	return "BACnetConfirmedServiceRequestAtomicWriteFile"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -374,7 +374,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

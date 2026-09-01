@@ -30,6 +30,17 @@ content:
   - url: https://github.com/apache/plc4x.git
     branches: ['rel/0.12']
     start_path: website/asciidoc
+# Every branch names its own concrete version in "website/asciidoc/antora.yml"
+# (see the "sync-antora-version" comment there). These two keys map the newest of
+# them onto a stable URL segment, so that the branches never have to know whether
+# they happen to be the current release:
+#   - the newest non-prerelease version is served as ".../plc4x/latest/..."
+#   - the newest prerelease version (always "develop") as ".../plc4x/pre-release/..."
+# Antora skips prereleases when picking the latest version, and picks it by version
+# sorting, so creating a newer release branch demotes the previous one automatically.
+urls:
+  latest_version_segment: latest
+  latest_prerelease_version_segment: pre-release
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable

@@ -193,13 +193,13 @@ func (m *_S7PayloadUserDataItemClkRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemClkRequest"
 }
 
-func (m *_S7PayloadUserDataItemClkRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemClkRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemClkRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemClkRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

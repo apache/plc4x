@@ -72,7 +72,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: covuRecipients
-    List<BACnetRecipient> covuRecipients = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetRecipient) BACnetRecipient.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("covuRecipients"));
+    List<BACnetRecipient> covuRecipients = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRecipient.class, BACnetRecipient.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("covuRecipients"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(covuRecipients);

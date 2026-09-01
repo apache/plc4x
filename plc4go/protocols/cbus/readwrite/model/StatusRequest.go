@@ -62,8 +62,8 @@ type StatusRequestContract interface {
 
 // StatusRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type StatusRequestRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetStatusType returns StatusType (discriminator field)
 	GetStatusType() byte
 }
@@ -259,17 +259,17 @@ func (m *_StatusRequest) GetPlx4xTypeName() string {
 	return "StatusRequest"
 }
 
-func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_StatusRequest) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_StatusRequest) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

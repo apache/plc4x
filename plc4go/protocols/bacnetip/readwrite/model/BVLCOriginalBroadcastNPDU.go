@@ -231,8 +231,8 @@ func (m *_BVLCOriginalBroadcastNPDU) GetPlx4xTypeName() string {
 	return "BVLCOriginalBroadcastNPDU"
 }
 
-func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

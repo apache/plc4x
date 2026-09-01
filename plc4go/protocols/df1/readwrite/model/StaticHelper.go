@@ -72,10 +72,13 @@ func ReadData(ctx context.Context, io utils.ReadBuffer) func(context.Context) (u
 		// If we read a 0x10, this has to be followed by another 0x10, which is how
 		// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
 		if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
-			_, _ = io.ReadUint8("", 8)
+			if _, err := io.ReadUint8("", 8); err != nil {
+				return 0, err
+			}
 		}
-		data, _ := io.ReadUint8("", 8)
-		return data, nil
+		// The error has to be reported: the manual array reading this runs until its termination
+		// sequence turns up, so reporting the end of the data as a value would never end.
+		return io.ReadUint8("", 8)
 	}
 }
 

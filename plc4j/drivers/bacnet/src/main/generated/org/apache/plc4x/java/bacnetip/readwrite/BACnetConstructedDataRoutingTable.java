@@ -72,7 +72,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: routingTable
-    List<BACnetRouterEntry> routingTable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetRouterEntry) BACnetRouterEntry.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("routingTable"));
+    List<BACnetRouterEntry> routingTable = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRouterEntry.class, BACnetRouterEntry.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("routingTable"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(routingTable);

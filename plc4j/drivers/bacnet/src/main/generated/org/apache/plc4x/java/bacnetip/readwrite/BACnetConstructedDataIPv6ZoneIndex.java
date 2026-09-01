@@ -78,7 +78,7 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: ipv6ZoneIndex
-    BACnetApplicationTagCharacterString ipv6ZoneIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("ipv6ZoneIndex"));
+    BACnetApplicationTagCharacterString ipv6ZoneIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipv6ZoneIndex"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagCharacterString.class, ipv6ZoneIndex, WithOption.WithName("actualValue"));

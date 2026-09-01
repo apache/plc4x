@@ -136,11 +136,11 @@ func CastIdentityCriteriaType(structType any) IdentityCriteriaType {
 	return castFunc(structType)
 }
 
-func (m IdentityCriteriaType) GetLengthInBits(ctx context.Context) uint16 {
+func (m IdentityCriteriaType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m IdentityCriteriaType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m IdentityCriteriaType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -59,10 +59,10 @@ public class BACnetNameValue implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: name
-    BACnetContextTagCharacterString name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("name"));
+    BACnetContextTagCharacterString name = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("name"));
 
     // Optional Field: value
-    BACnetConstructedData value = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetConstructedData) BACnetConstructedData.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null)), readBuffer), WithOption.WithName("value"));
+    BACnetConstructedData value = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedData.class, BACnetConstructedData.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null))), readBuffer), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new BACnetNameValue(name, value);

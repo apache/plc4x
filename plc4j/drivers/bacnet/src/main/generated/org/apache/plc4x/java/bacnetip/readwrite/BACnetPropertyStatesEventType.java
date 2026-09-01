@@ -52,7 +52,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: eventType
-    BACnetEventTypeTagged eventType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventTypeTagged) BACnetEventTypeTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("eventType"));
+    BACnetEventTypeTagged eventType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventTypeTagged.class, BACnetEventTypeTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("eventType"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(eventType);

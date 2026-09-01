@@ -72,7 +72,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: activeVTSession
-    List<BACnetVTSession> activeVTSession = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetVTSession) BACnetVTSession.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("activeVTSession"));
+    List<BACnetVTSession> activeVTSession = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVTSession.class, BACnetVTSession.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("activeVTSession"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(activeVTSession);

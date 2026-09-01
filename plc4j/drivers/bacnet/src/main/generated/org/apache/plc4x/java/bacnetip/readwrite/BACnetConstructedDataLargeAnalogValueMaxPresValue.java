@@ -78,7 +78,7 @@ public class BACnetConstructedDataLargeAnalogValueMaxPresValue extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: maxPresValue
-    BACnetApplicationTagDouble maxPresValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDouble) BACnetApplicationTagDouble.staticParse(readBuffer), readBuffer), WithOption.WithName("maxPresValue"));
+    BACnetApplicationTagDouble maxPresValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDouble.class, BACnetApplicationTagDouble.staticParse(readBuffer)), readBuffer), WithOption.WithName("maxPresValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDouble.class, maxPresValue, WithOption.WithName("actualValue"));

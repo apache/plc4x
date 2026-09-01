@@ -36,7 +36,7 @@ var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
 
 type WriteBufferByteBased interface {
 	WriteBuffer
-	GetPos() uint16
+	GetPos() uint32
 	GetBytes() []byte
 	GetTotalBytes() uint64
 }
@@ -101,8 +101,8 @@ func (wb *byteWriteBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }
 
-func (wb *byteWriteBuffer) GetPos() uint16 {
-	return uint16(wb.pos / 8)
+func (wb *byteWriteBuffer) GetPos() uint32 {
+	return uint32(wb.pos / 8)
 }
 
 func (wb *byteWriteBuffer) GetBytes() []byte {
@@ -133,12 +133,53 @@ func (wb *byteWriteBuffer) WriteByteArray(_ string, data []byte, _ ...WithWriter
 	return nil
 }
 
-func (wb *byteWriteBuffer) WriteUint8(_ string, bitLength uint8, value uint8, _ ...WithWriterArgs) error {
+// bcdSelected reports whether the writer args explicitly select the BCD
+// encoding for a field of bitLength bits.
+//
+// A bitLength of 0 is left alone so the existing "write nothing" behaviour is
+// preserved verbatim.
+func bcdSelected(bitLength uint8, writerArgs []WithWriterArgs) bool {
+	return bitLength != 0 && writerArgsSelectBCD(writerArgs)
+}
+
+// writeBCD packs value as BCD and writes it. The value is encoded BEFORE the
+// position is advanced so a rejected value leaves the buffer untouched.
+//
+// The BCD path deliberately bypasses the binary.LittleEndian byte swapping
+// branches: BCD operates on the raw MSB-first nibble stream as it appears on the
+// wire, and no BCD field in the tree is little endian.
+func (wb *byteWriteBuffer) writeBCD(value uint64, bitLength uint8) error {
+	raw, err := encodeBCD(value, bitLength)
+	if err != nil {
+		return errors.Wrapf(err, "error encoding BCD value of %d bits at pos [%d]bit ([%d]byte)", bitLength, wb.pos, wb.pos/8)
+	}
+	wb.move(uint(bitLength))
+	return wb.bits.WriteBits(raw, bitLength)
+}
+
+// writeBCDSigned is the signed twin of writeBCD; plc4j's EncodingBCD rejects
+// negative values outright.
+func (wb *byteWriteBuffer) writeBCDSigned(value int64, bitLength uint8) error {
+	raw, err := encodeBCDSigned(value, bitLength)
+	if err != nil {
+		return errors.Wrapf(err, "error encoding BCD value of %d bits at pos [%d]bit ([%d]byte)", bitLength, wb.pos, wb.pos/8)
+	}
+	wb.move(uint(bitLength))
+	return wb.bits.WriteBits(raw, bitLength)
+}
+
+func (wb *byteWriteBuffer) WriteUint8(_ string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCD(uint64(value), bitLength)
+	}
 	wb.move(uint(bitLength))
 	return wb.bits.WriteBits(uint64(value), bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCD(uint64(value), bitLength)
+	}
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
@@ -147,7 +188,10 @@ func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, 
 	return wb.bits.WriteBits(uint64(value), bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCD(uint64(value), bitLength)
+	}
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
@@ -156,7 +200,10 @@ func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, 
 	return wb.bits.WriteBits(uint64(value), bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteUint64(_ string, bitLength uint8, value uint64, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteUint64(_ string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCD(value, bitLength)
+	}
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		reverseValue := bits.ReverseBytes64(value) >> (64 - bitLength)
@@ -165,12 +212,18 @@ func (wb *byteWriteBuffer) WriteUint64(_ string, bitLength uint8, value uint64, 
 	return wb.bits.WriteBits(value, bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteInt8(_ string, bitLength uint8, value int8, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteInt8(_ string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCDSigned(int64(value), bitLength)
+	}
 	wb.move(uint(bitLength))
 	return wb.bits.WriteBits(uint64(value), bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCDSigned(int64(value), bitLength)
+	}
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
@@ -179,7 +232,10 @@ func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, _ 
 	return wb.bits.WriteBits(uint64(value), bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCDSigned(int64(value), bitLength)
+	}
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
@@ -188,7 +244,10 @@ func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, _ 
 	return wb.bits.WriteBits(uint64(value), bitLength)
 }
 
-func (wb *byteWriteBuffer) WriteInt64(_ string, bitLength uint8, value int64, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteInt64(_ string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error {
+	if bcdSelected(bitLength, writerArgs) {
+		return wb.writeBCDSigned(value, bitLength)
+	}
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
@@ -230,7 +289,10 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, value string,
 	encoding := nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(wb.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)), "")
 	remainingBits := int64(bitLength) // int64 so subtraction doesn't wrap on underflow
 	switch encoding {
-	case "UTF8":
+	case "UTF8", "ASCII", "ISO88591", "WINDOWS1252":
+		// The single-byte encodings write the string's bytes as-is: for the character
+		// ranges the protocols use these are identical, and it avoids silently writing
+		// nothing (the switch's fall-through is plain zero-fill).
 		for _, b := range []byte(value) {
 			wb.bits.TryWriteByte(b)
 			remainingBits -= 8

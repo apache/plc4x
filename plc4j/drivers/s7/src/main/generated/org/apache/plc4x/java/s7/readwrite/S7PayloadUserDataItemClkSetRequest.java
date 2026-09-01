@@ -83,7 +83,7 @@ public class S7PayloadUserDataItemClkSetRequest extends S7PayloadUserDataItem im
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("S7PayloadUserDataItemClkSetRequest.reserved1"));
 
     // Simple Field: timeStamp
-    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DateAndTime) DateAndTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeStamp"));
+    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DateAndTime.class, DateAndTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeStamp"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(timeStamp);

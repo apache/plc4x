@@ -22,40 +22,64 @@ package org.apache.plc4x.java.ctrlx.readwrite.utils;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.KeyManagementException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
 public class ApiClientFactory {
 
-    public static ApiClient getApiClient(String baseUrl, String username, String password) throws PlcConnectionException {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiClientFactory.class);
+
+    public static ApiClient getApiClient(String baseUrl, String username, String password,
+                                         CtrlXConfiguration configuration) throws PlcConnectionException {
         try {
-            // Prepare a SSL context that accepts the Bosch self-signed certificate
-            Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(
-                ApiClientFactory.class.getClassLoader().getResourceAsStream("certs/webserver_cert.pem"));
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("server", certificate);
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
-            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            HostnameVerifier hostnameVerifier;
+
+            if (configuration.isAllowFactoryDefaultCertificate()) {
+                // The certificate this trusts ships in the jar, so it identifies nobody: anything
+                // holding it and its key is trusted, for any host. Kept for a device still on its
+                // factory settings, and loud about it.
+                LOGGER.warn("allow-factory-default-certificate is set: trusting the certificate "
+                    + "shipped with this driver, for any host. Anything presenting it is trusted, "
+                    + "and the credentials for this connection travel over that channel");
+                Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(
+                    ApiClientFactory.class.getClassLoader().getResourceAsStream("certs/webserver_cert.pem"));
+                sslContext.init(null, trustManagersFor(singleCertificateStore(certificate)), null);
+                hostnameVerifier = NoopHostnameVerifier.INSTANCE;
+            } else {
+                sslContext.init(null, trustManagersFrom(configuration), null);
+                hostnameVerifier = configuration.isIgnoreCommonName()
+                    ? NoopHostnameVerifier.INSTANCE
+                    : new DefaultHostnameVerifier();
+                if (configuration.isIgnoreCommonName()) {
+                    LOGGER.warn("ignore-common-name is set: a certificate issued for any other "
+                        + "host will be accepted for this one");
+                }
+            }
+
+            SSLConnectionSocketFactory sslConnectionSocketFactory =
+                new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
             Registry<ConnectionSocketFactory> socketFactoryRegistry =
                 RegistryBuilder.<ConnectionSocketFactory>create()
                     .register("https", sslConnectionSocketFactory)
@@ -74,10 +98,53 @@ public class ApiClientFactory {
             apiClient.setAccessToken(bearerToken);
 
             return apiClient;
-        } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException e) {
-            throw new PlcConnectionException("Error initializing keystore", e);
+        } catch (GeneralSecurityException e) {
+            throw new PlcConnectionException("Error setting up the TLS trust for this connection", e);
         } catch (IOException e) {
             throw new PlcConnectionException("Error getting access token", e);
         }
+    }
+
+    /**
+     * The certificates to trust: what the operator named, or - naming nothing - the authorities the
+     * JVM ships with, which is what any other HTTPS client would do.
+     */
+    private static TrustManager[] trustManagersFrom(CtrlXConfiguration configuration)
+            throws GeneralSecurityException, IOException {
+        if (configuration.getServerCertificateFile() != null
+            && !configuration.getServerCertificateFile().isEmpty()) {
+            try (InputStream is = new FileInputStream(configuration.getServerCertificateFile())) {
+                Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(is);
+                return trustManagersFor(singleCertificateStore(certificate));
+            }
+        }
+        if (configuration.getTrustStoreFile() != null && !configuration.getTrustStoreFile().isEmpty()) {
+            String type = configuration.getTrustStoreType() != null
+                ? configuration.getTrustStoreType() : "PKCS12";
+            char[] storePassword = configuration.getTrustStorePassword() != null
+                ? configuration.getTrustStorePassword().toCharArray() : null;
+            KeyStore trustStore = KeyStore.getInstance(type);
+            try (InputStream is = new FileInputStream(configuration.getTrustStoreFile())) {
+                trustStore.load(is, storePassword);
+            }
+            return trustManagersFor(trustStore);
+        }
+        // null lets the context use the platform trust managers.
+        return null;
+    }
+
+    private static KeyStore singleCertificateStore(Certificate certificate)
+            throws GeneralSecurityException, IOException {
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(null, null);
+        keyStore.setCertificateEntry("server", certificate);
+        return keyStore;
+    }
+
+    private static TrustManager[] trustManagersFor(KeyStore keyStore) throws GeneralSecurityException {
+        TrustManagerFactory trustManagerFactory =
+            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(keyStore);
+        return trustManagerFactory.getTrustManagers();
     }
 }

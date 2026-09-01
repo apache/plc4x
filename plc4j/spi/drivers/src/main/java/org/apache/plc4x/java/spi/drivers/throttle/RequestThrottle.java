@@ -21,8 +21,11 @@ package org.apache.plc4x.java.spi.drivers.throttle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 /**
@@ -35,6 +38,9 @@ public class RequestThrottle {
 
     private final Semaphore semaphore;
     private volatile int maxConcurrentRequests;
+    /** Requests waiting for a permit, started in the order they were submitted. */
+    private final Queue<Runnable> pending = new ConcurrentLinkedQueue<>();
+    private final AtomicBoolean draining = new AtomicBoolean();
 
     public RequestThrottle(int maxConcurrentRequests) {
         if (maxConcurrentRequests < 1) {
@@ -61,32 +67,65 @@ public class RequestThrottle {
     }
 
     public <T> CompletableFuture<T> execute(Supplier<CompletableFuture<T>> requestSupplier) {
-        try {
-            semaphore.acquire();
+        CompletableFuture<T> result = new CompletableFuture<>();
+        pending.add(() -> start(requestSupplier, result));
+        drain();
+        return result;
+    }
 
-            CompletableFuture<T> requestFuture;
-            try {
-                requestFuture = requestSupplier.get();
-            } catch (Exception e) {
-                semaphore.release();
-                return CompletableFuture.failedFuture(e);
+    /**
+     * Starts as many queued requests as there are permits. Only one thread drains at a time; any
+     * other thread hands its work to whoever holds the drain and returns immediately, so a request
+     * that completes inline cannot recurse back into the queue.
+     */
+    private void drain() {
+        while (true) {
+            if (!draining.compareAndSet(false, true)) {
+                return;
             }
-
-            // Use handle() to release the semaphore and propagate the result in a
-            // single stage, avoiding the extra CompletableFuture + whenComplete overhead.
-            return requestFuture.handle((result, error) -> {
-                semaphore.release();
-                if (error != null) {
-                    throw (error instanceof RuntimeException re) ? re : new RuntimeException(error);
+            try {
+                while (!pending.isEmpty() && semaphore.tryAcquire()) {
+                    Runnable request = pending.poll();
+                    if (request == null) {
+                        // Another thread took the entry between the check and the poll.
+                        semaphore.release();
+                        break;
+                    }
+                    request.run();
                 }
-                return result;
-            });
-
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return CompletableFuture.failedFuture(
-                new RuntimeException("Request throttling interrupted", e));
+            } finally {
+                draining.set(false);
+            }
+            // Something may have been queued by another thread while we were finishing the loop
+            // above; without this re-check it would sit there until the next permit is released.
+            if (pending.isEmpty() || semaphore.availablePermits() == 0) {
+                return;
+            }
         }
+    }
+
+    private <T> void start(Supplier<CompletableFuture<T>> requestSupplier, CompletableFuture<T> result) {
+        CompletableFuture<T> requestFuture;
+        try {
+            requestFuture = requestSupplier.get();
+        } catch (Exception e) {
+            releaseAndDrain();
+            result.completeExceptionally(e);
+            return;
+        }
+        requestFuture.whenComplete((value, error) -> {
+            releaseAndDrain();
+            if (error != null) {
+                result.completeExceptionally(error);
+            } else {
+                result.complete(value);
+            }
+        });
+    }
+
+    private void releaseAndDrain() {
+        semaphore.release();
+        drain();
     }
 
     public synchronized void adjustMaxConcurrentRequests(int newMax) {
@@ -100,6 +139,7 @@ public class RequestThrottle {
         int difference = newMax - this.maxConcurrentRequests;
         if (difference > 0) {
             semaphore.release(difference);
+            drain();
         } else {
             int toDrain = Math.min(-difference, semaphore.availablePermits());
             if (toDrain > 0) {

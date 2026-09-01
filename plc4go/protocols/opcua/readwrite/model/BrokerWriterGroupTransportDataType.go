@@ -311,8 +311,8 @@ func (m *_BrokerWriterGroupTransportDataType) GetPlx4xTypeName() string {
 	return "BrokerWriterGroupTransportDataType"
 }
 
-func (m *_BrokerWriterGroupTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_BrokerWriterGroupTransportDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (queueName)
 	lengthInBits += m.QueueName.GetLengthInBits(ctx)
@@ -329,7 +329,7 @@ func (m *_BrokerWriterGroupTransportDataType) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BrokerWriterGroupTransportDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BrokerWriterGroupTransportDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

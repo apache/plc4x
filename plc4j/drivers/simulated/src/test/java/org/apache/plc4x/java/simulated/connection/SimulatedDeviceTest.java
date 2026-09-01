@@ -68,7 +68,7 @@ public class SimulatedDeviceTest {
     @Test
     public void randomStringArray() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedTag tag = SimulatedTag.of("RANDOM/foo:STRING[3]");
+        SimulatedTag tag = SimulatedTag.of("RANDOM/foo[0..2]:STRING");
 
         Optional<PlcValue> value = device.get(tag);
 

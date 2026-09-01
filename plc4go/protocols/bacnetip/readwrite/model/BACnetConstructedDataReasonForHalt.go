@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataReasonForHalt) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReasonForHalt"
 }
 
-func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (programError)
 	lengthInBits += m.ProgramError.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

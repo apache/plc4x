@@ -52,7 +52,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dateTimeValue
-    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("dateTimeValue"));
+    BACnetDateTimeEnclosed dateTimeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("dateTimeValue"));
 
     readBuffer.popContext();
     return new BACnetPriorityValueBuilderImpl(dateTimeValue);

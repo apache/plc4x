@@ -83,10 +83,10 @@ public class LDataInd extends CEMI implements Message {
     short additionalInformationLength = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("additionalInformationLength"));
 
     // Array Field: additionalInformation
-    List<CEMIAdditionalInformation> additionalInformation = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (CEMIAdditionalInformation) CEMIAdditionalInformation.staticParse(readBuffer), readBuffer), additionalInformationLength, WithOption.WithName("additionalInformation"));
+    List<CEMIAdditionalInformation> additionalInformation = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CEMIAdditionalInformation.class, CEMIAdditionalInformation.staticParse(readBuffer)), readBuffer), additionalInformationLength, WithOption.WithName("additionalInformation"));
 
     // Simple Field: dataFrame
-    LDataFrame dataFrame = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LDataFrame) LDataFrame.staticParse(readBuffer), readBuffer), WithOption.WithName("dataFrame"));
+    LDataFrame dataFrame = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LDataFrame.class, LDataFrame.staticParse(readBuffer)), readBuffer), WithOption.WithName("dataFrame"));
 
     readBuffer.popContext();
     return new CEMIBuilderImpl(additionalInformationLength, additionalInformation, dataFrame);

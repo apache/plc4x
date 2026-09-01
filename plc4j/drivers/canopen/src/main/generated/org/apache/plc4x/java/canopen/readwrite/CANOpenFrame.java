@@ -88,7 +88,7 @@ public class CANOpenFrame implements Message {
     byte alignment = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedByte(readBuffer, 4), ALIGNMENT, WithOption.WithName("alignment"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: payload
-    CANOpenPayload payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (CANOpenPayload) CANOpenPayload.staticParse(readBuffer, (org.apache.plc4x.java.canopen.readwrite.CANOpenService) (service)), readBuffer), WithOption.WithName("payload"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CANOpenPayload payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CANOpenPayload.class, CANOpenPayload.staticParse(readBuffer, (org.apache.plc4x.java.canopen.readwrite.CANOpenService) (service))), readBuffer), WithOption.WithName("payload"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Padding Field: padding4
     FieldReaderFactory.readPaddingField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (int) (8) - ((payload.getLengthInBytes())));

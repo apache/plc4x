@@ -52,7 +52,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: authenticationStatus
-    BACnetAuthenticationStatusTagged authenticationStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAuthenticationStatusTagged) BACnetAuthenticationStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("authenticationStatus"));
+    BACnetAuthenticationStatusTagged authenticationStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAuthenticationStatusTagged.class, BACnetAuthenticationStatusTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("authenticationStatus"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(authenticationStatus);

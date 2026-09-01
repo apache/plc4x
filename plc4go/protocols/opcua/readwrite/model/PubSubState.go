@@ -112,11 +112,11 @@ func CastPubSubState(structType any) PubSubState {
 	return castFunc(structType)
 }
 
-func (m PubSubState) GetLengthInBits(ctx context.Context) uint16 {
+func (m PubSubState) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PubSubState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PubSubState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

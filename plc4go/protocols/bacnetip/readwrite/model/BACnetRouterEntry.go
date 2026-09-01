@@ -273,8 +273,8 @@ func (m *_BACnetRouterEntry) GetPlx4xTypeName() string {
 	return "BACnetRouterEntry"
 }
 
-func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (networkNumber)
 	lengthInBits += m.NetworkNumber.GetLengthInBits(ctx)
@@ -293,7 +293,7 @@ func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetRouterEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetRouterEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

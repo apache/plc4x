@@ -195,7 +195,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				transportUrl: url.URL{Host: "127.0.0.1"},
 				options: map[string][]string{
 					"defaultUdpPort": {"123"},
-					"so-reuse":       {"true"},
+					"udp.so-reuse":   {"true"},
 				},
 			},
 			want: func() transports.TransportInstance {
@@ -216,7 +216,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				transportUrl: url.URL{Host: "127.0.0.1"},
 				options: map[string][]string{
 					"defaultUdpPort": {"123"},
-					"so-reuse":       {"banana"},
+					"udp.so-reuse":   {"banana"},
 				},
 			},
 			wantErr: true,

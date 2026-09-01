@@ -81,16 +81,16 @@ public class BACnetRouterEntry implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkNumber
-    BACnetContextTagUnsignedInteger networkNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("networkNumber"));
+    BACnetContextTagUnsignedInteger networkNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("networkNumber"));
 
     // Simple Field: macAddress
-    BACnetContextTagOctetString macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagOctetString) BACnetContextTagOctetString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING)), readBuffer), WithOption.WithName("macAddress"));
+    BACnetContextTagOctetString macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagOctetString.class, BACnetContextTagOctetString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING))), readBuffer), WithOption.WithName("macAddress"));
 
     // Simple Field: status
-    BACnetRouterEntryStatusTagged status = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetRouterEntryStatusTagged) BACnetRouterEntryStatusTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("status"));
+    BACnetRouterEntryStatusTagged status = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetRouterEntryStatusTagged.class, BACnetRouterEntryStatusTagged.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("status"));
 
     // Optional Field: performanceIndex
-    BACnetContextTagOctetString performanceIndex = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagOctetString) BACnetContextTagOctetString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING)), readBuffer), WithOption.WithName("performanceIndex"));
+    BACnetContextTagOctetString performanceIndex = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagOctetString.class, BACnetContextTagOctetString.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.OCTET_STRING))), readBuffer), WithOption.WithName("performanceIndex"));
 
     readBuffer.popContext();
     return new BACnetRouterEntry(networkNumber, macAddress, status, performanceIndex);

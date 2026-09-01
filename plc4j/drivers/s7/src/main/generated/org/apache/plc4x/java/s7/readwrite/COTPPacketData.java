@@ -65,7 +65,7 @@ public class COTPPacketData extends COTPPacket implements Message {
     return tpduRef;
   }
 
-  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, int cotpLen)
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, long cotpLen)
       throws BufferException {
     readBuffer.pushContext(WithOption.WithName("COTPPacketData"));
     int startPos = readBuffer.getPositionInBits();

@@ -60,8 +60,8 @@ type FirmataMessageContract interface {
 
 // FirmataMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type FirmataMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 }
@@ -259,19 +259,19 @@ func (m *_FirmataMessage) GetPlx4xTypeName() string {
 	return "FirmataMessage"
 }
 
-func (m *_FirmataMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_FirmataMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 4
 
 	return lengthInBits
 }
 
-func (m *_FirmataMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_FirmataMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_FirmataMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

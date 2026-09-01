@@ -111,7 +111,7 @@ public class AdsDiscovery implements Message {
     Operation operation = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(Operation::enumForValue, DataReaderFactory.readUnsignedLong(readBuffer, 32)), WithOption.WithName("operation"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: amsNetId
-    AmsNetId amsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsNetId) AmsNetId.staticParse(readBuffer), readBuffer), WithOption.WithName("amsNetId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    AmsNetId amsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsNetId.class, AmsNetId.staticParse(readBuffer)), readBuffer), WithOption.WithName("amsNetId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field (enum): portNumber
     AdsPortNumbers portNumber = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(AdsPortNumbers::enumForValue, DataReaderFactory.readUnsignedInt(readBuffer, 16)), WithOption.WithName("portNumber"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -120,7 +120,7 @@ public class AdsDiscovery implements Message {
     long numBlocks = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("numBlocks"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: blocks
-    List<AdsDiscoveryBlock> blocks = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsDiscoveryBlock) AdsDiscoveryBlock.staticParse(readBuffer), readBuffer), numBlocks, WithOption.WithName("blocks"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<AdsDiscoveryBlock> blocks = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsDiscoveryBlock.class, AdsDiscoveryBlock.staticParse(readBuffer)), readBuffer), numBlocks, WithOption.WithName("blocks"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new AdsDiscovery(requestId, operation, amsNetId, portNumber, blocks);

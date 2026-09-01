@@ -61,13 +61,13 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("segmentationSupported", uint32(len(d.SegmentationSupported)*8), d.SegmentationSupported); err != nil {
+	if err := writeBuffer.WriteString("segmentationSupported", uint32(len(d.SegmentationSupported)*8), d.SegmentationSupported, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.MaxSegmentsAccepted)
 
-		if err := writeBuffer.WriteString("maxSegmentsAccepted", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("maxSegmentsAccepted", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
@@ -76,7 +76,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("foreignDeviceBBMD", uint32(len(d.ForeignDeviceBBMD)*8), d.ForeignDeviceBBMD); err != nil {
+	if err := writeBuffer.WriteString("foreignDeviceBBMD", uint32(len(d.ForeignDeviceBBMD)*8), d.ForeignDeviceBBMD, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -90,7 +90,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	{
 		_value := fmt.Sprintf("%v", d.ApduRetries)
 
-		if err := writeBuffer.WriteString("apduRetries", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("apduRetries", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}
@@ -103,7 +103,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("staticDevices", uint32(len(d.StaticDevices)*8), d.StaticDevices); err != nil {
+	if err := writeBuffer.WriteString("staticDevices", uint32(len(d.StaticDevices)*8), d.StaticDevices, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -111,7 +111,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("remoteAddress", uint32(len(d.RemoteAddress)*8), d.RemoteAddress); err != nil {
+	if err := writeBuffer.WriteString("remoteAddress", uint32(len(d.RemoteAddress)*8), d.RemoteAddress, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -119,7 +119,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("peerSegmentationSupported", uint32(len(d.PeerSegmentationSupported)*8), d.PeerSegmentationSupported); err != nil {
+	if err := writeBuffer.WriteString("peerSegmentationSupported", uint32(len(d.PeerSegmentationSupported)*8), d.PeerSegmentationSupported, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("Configuration"); err != nil {

@@ -37,6 +37,39 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <!--
+            Even if Maven transitively pulls in dependencies, relying on these can
+            quite often cause hard to find problems. So it's a good practice to make
+            sure everything directly required is also directly added as a dependency.
+            On the other side adding unused dependency only over-complicates the
+            the dependency graph, so the maven-dependency-plugin checks we depend on
+            what we need and only that and that runtime dependencies are correctly
+            imported with runtime scope.
+          -->
+          <execution>
+            <id>check-dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoreNonCompile>true</ignoreNonCompile>
+              <ignoredDependencies>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+                <ignoredDependency>org.opentest4j:opentest4j</ignoredDependency>
+                <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!--
         This plugin doesn't really do much, it makes sure the jacoco agent
         is downloaded and that the path to this is saved in an environment
@@ -187,6 +220,19 @@
   </build>
 
   <dependencies>
+    <!--
+      Every protocol module implements the Protocol SPI and uses the type-model, so
+      instead of repeating these in all of them, we declare them here for all modules.
+    -->
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-types-base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-protocol-base</artifactId>
+    </dependency>
+
     <!-- JUnit 5 Support -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

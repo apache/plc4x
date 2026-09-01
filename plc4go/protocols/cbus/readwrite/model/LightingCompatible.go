@@ -106,11 +106,11 @@ func CastLightingCompatible(structType any) LightingCompatible {
 	return castFunc(structType)
 }
 
-func (m LightingCompatible) GetLengthInBits(ctx context.Context) uint16 {
+func (m LightingCompatible) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m LightingCompatible) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LightingCompatible) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

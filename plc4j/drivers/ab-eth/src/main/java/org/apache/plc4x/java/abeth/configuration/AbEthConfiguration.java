@@ -30,7 +30,7 @@ public class AbEthConfiguration implements Configuration {
     @IntDefaultValue(0)
     private int station;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @Description("Maximum time (in milliseconds) to wait for the gateway to acknowledge the connection request or for a read response.")
     @IntDefaultValue(10_000)
     private int requestTimeout;

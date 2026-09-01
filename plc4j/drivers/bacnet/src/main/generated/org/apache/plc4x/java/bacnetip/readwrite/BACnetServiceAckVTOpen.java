@@ -60,7 +60,7 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: remoteVtSessionIdentifier
-    BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("remoteVtSessionIdentifier"));
+    BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("remoteVtSessionIdentifier"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(remoteVtSessionIdentifier);

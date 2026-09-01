@@ -78,7 +78,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: covIncrement
-    BACnetApplicationTagReal covIncrement = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagReal) BACnetApplicationTagReal.staticParse(readBuffer), readBuffer), WithOption.WithName("covIncrement"));
+    BACnetApplicationTagReal covIncrement = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagReal.class, BACnetApplicationTagReal.staticParse(readBuffer)), readBuffer), WithOption.WithName("covIncrement"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagReal actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagReal.class, covIncrement, WithOption.WithName("actualValue"));

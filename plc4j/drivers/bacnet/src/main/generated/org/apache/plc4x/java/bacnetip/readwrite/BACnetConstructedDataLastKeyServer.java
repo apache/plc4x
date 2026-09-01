@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastKeyServer
-    BACnetAddressBinding lastKeyServer = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAddressBinding) BACnetAddressBinding.staticParse(readBuffer), readBuffer), WithOption.WithName("lastKeyServer"));
+    BACnetAddressBinding lastKeyServer = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddressBinding.class, BACnetAddressBinding.staticParse(readBuffer)), readBuffer), WithOption.WithName("lastKeyServer"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAddressBinding actualValue = FieldReaderFactory.readVirtualField(BACnetAddressBinding.class, lastKeyServer, WithOption.WithName("actualValue"));

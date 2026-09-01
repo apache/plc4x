@@ -88,7 +88,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     PnDcp_ServiceId serviceId = FieldReaderFactory.readDiscriminatorEnumField(DataReaderFactory.readEnum(PnDcp_ServiceId::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("serviceId"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: serviceType
-    PnDcp_ServiceType serviceType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PnDcp_ServiceType) PnDcp_ServiceType.staticParse(readBuffer), readBuffer), WithOption.WithName("serviceType"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    PnDcp_ServiceType serviceType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnDcp_ServiceType.class, PnDcp_ServiceType.staticParse(readBuffer)), readBuffer), WithOption.WithName("serviceType"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: xid
     long xid = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("xid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));

@@ -78,7 +78,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: deployedProfileLocation
-    BACnetApplicationTagCharacterString deployedProfileLocation = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("deployedProfileLocation"));
+    BACnetApplicationTagCharacterString deployedProfileLocation = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("deployedProfileLocation"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagCharacterString.class, deployedProfileLocation, WithOption.WithName("actualValue"));

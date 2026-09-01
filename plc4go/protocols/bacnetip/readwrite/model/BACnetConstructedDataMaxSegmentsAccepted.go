@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxSegmentsAccepted"
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxSegmentsAccepted)
 	lengthInBits += m.MaxSegmentsAccepted.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

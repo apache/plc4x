@@ -54,7 +54,7 @@ func (d *DefaultConnectionMetadata) SerializeWithWriteBuffer(ctx context.Context
 	for _name, elem := range d.ConnectionAttributes {
 		name := _name
 
-		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), elem); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), elem, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}

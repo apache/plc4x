@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -197,6 +198,25 @@ class MessageCodecBaseTest {
 
         codec.close();
         assertTrue(transport.isClosed());
+    }
+
+    /**
+     * A generated parser can fail on adversarial input with an unchecked exception. That has to
+     * surface as the parse failure it is, because the caller only handles the checked kind - and
+     * whatever thread drives the codec would otherwise be taken down by it.
+     */
+    @Test
+    void processIncomingDataWrapsUncheckedParseFailureAsCodecException() {
+        FakeTransport transport = new FakeTransport();
+        TestCodec codec = new TestCodec(transport, m -> { }) {
+            @Override protected TestMessage parseMessage(ReadBufferByteBased readBuffer) {
+                throw new NullPointerException("simulated generated-parser failure");
+            }
+        };
+        transport.feed((byte) 0x02, (byte) 0x07);
+
+        MessageCodecException e = assertThrows(MessageCodecException.class, codec::processIncomingData);
+        assertInstanceOf(NullPointerException.class, e.getCause());
     }
 
     @Test

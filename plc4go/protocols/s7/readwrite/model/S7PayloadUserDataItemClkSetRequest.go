@@ -240,8 +240,8 @@ func (m *_S7PayloadUserDataItemClkSetRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemClkSetRequest"
 }
 
-func (m *_S7PayloadUserDataItemClkSetRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemClkSetRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -255,7 +255,7 @@ func (m *_S7PayloadUserDataItemClkSetRequest) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemClkSetRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemClkSetRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -180,13 +180,13 @@ func (m *_SecurityDataPanicCleared) GetPlx4xTypeName() string {
 	return "SecurityDataPanicCleared"
 }
 
-func (m *_SecurityDataPanicCleared) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataPanicCleared) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataPanicCleared) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataPanicCleared) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

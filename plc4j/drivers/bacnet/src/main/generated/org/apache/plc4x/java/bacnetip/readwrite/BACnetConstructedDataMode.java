@@ -77,7 +77,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: mode
-    BACnetLifeSafetyModeTagged mode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLifeSafetyModeTagged) BACnetLifeSafetyModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("mode"));
+    BACnetLifeSafetyModeTagged mode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLifeSafetyModeTagged.class, BACnetLifeSafetyModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("mode"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLifeSafetyModeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLifeSafetyModeTagged.class, mode, WithOption.WithName("actualValue"));

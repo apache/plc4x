@@ -100,11 +100,11 @@ func CastModbusDeviceInformationConformityLevel(structType any) ModbusDeviceInfo
 	return castFunc(structType)
 }
 
-func (m ModbusDeviceInformationConformityLevel) GetLengthInBits(ctx context.Context) uint16 {
+func (m ModbusDeviceInformationConformityLevel) GetLengthInBits(ctx context.Context) uint64 {
 	return 7
 }
 
-func (m ModbusDeviceInformationConformityLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ModbusDeviceInformationConformityLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

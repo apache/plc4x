@@ -66,6 +66,28 @@ public class RawSocketTransportInstance extends BaseTransportInstance<RawSocketT
     private final MacAddress remoteMac;
     private final SharedRawSocketManager.SharedHandle sharedHandle; // null if not shared
     private final BlockingQueue<byte[]> receiveQueue;
+
+    /**
+     * How many bytes may sit in the receive queue waiting for a consumer.
+     *
+     * <p>Counted in bytes rather than frames because frames are not one size, and the thing that
+     * runs out is memory. The queue was unbounded: a capture that keeps matching the filter while
+     * nothing drains it grows until the heap does, and the frames doing it need only match a filter
+     * - they are not addressed to us and nobody has to accept them.</p>
+     */
+    private final int receiveQueueByteBudget;
+
+    /** Bytes currently queued, so the budget can be applied without walking the queue. */
+    private final java.util.concurrent.atomic.AtomicInteger receiveQueueBytes =
+        new java.util.concurrent.atomic.AtomicInteger();
+
+    /** Frames dropped for want of room, so the loss is a number somebody can see. */
+    private final java.util.concurrent.atomic.AtomicLong droppedFrames =
+        new java.util.concurrent.atomic.AtomicLong();
+
+    /** Bytes dropped for want of room. */
+    private final java.util.concurrent.atomic.AtomicLong droppedBytes =
+        new java.util.concurrent.atomic.AtomicLong();
     private final RingBuffer ringBuffer;
     private final Lock readLock = new ReentrantLock();
     private final Lock writeLock = new ReentrantLock();
@@ -81,6 +103,9 @@ public class RawSocketTransportInstance extends BaseTransportInstance<RawSocketT
         LOGGER.debug("RawSocketTransportInstance: Pre Java 21 version");
         this.sharedRawSocketManager = sharedRawSocketManager;
         this.receiveQueue = new LinkedBlockingQueue<>();
+        this.receiveQueueByteBudget = getConfiguration().receiveQueueSize > 0
+            ? getConfiguration().receiveQueueSize
+            : DEFAULT_BUFFER_SIZE;
         this.ringBuffer = new RingBuffer(DEFAULT_BUFFER_SIZE);
 
         try {
@@ -294,7 +319,20 @@ public class RawSocketTransportInstance extends BaseTransportInstance<RawSocketT
             if (matchesFilter(ethPacket)) {
                 byte[] payload = extractPayload(ethPacket);
                 if (payload != null && payload.length > 0) {
+                    if (receiveQueueBytes.get() + payload.length > receiveQueueByteBudget) {
+                        // Whole frames only: half of one is indistinguishable from a whole one to
+                        // whatever reads this, and it would be read at the wrong offset.
+                        long frames = droppedFrames.incrementAndGet();
+                        droppedBytes.addAndGet(payload.length);
+                        if (frames == 1 || frames % 1000 == 0) {
+                            LOGGER.warn("Receive queue is full at {} bytes; dropped {} frames "
+                                + "({} bytes) with nothing draining it",
+                                receiveQueueBytes.get(), frames, droppedBytes.get());
+                        }
+                        return;
+                    }
                     receiveQueue.offer(payload);
+                    receiveQueueBytes.addAndGet(payload.length);
                     LOGGER.trace("Captured packet: {} bytes from {}", payload.length,
                         ethPacket.getHeader().getSrcAddr());
 
@@ -620,6 +658,7 @@ public class RawSocketTransportInstance extends BaseTransportInstance<RawSocketT
                     // Timeout or interrupted
                     break;
                 }
+                receiveQueueBytes.addAndGet(-packet.length);
 
                 // Write packet data to the ring-buffer
                 int written = ringBuffer.write(packet);

@@ -70,7 +70,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: statusCode
-    StatusCode statusCode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (StatusCode) StatusCode.staticParse(readBuffer), readBuffer), WithOption.WithName("statusCode"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    StatusCode statusCode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusCode.class, StatusCode.staticParse(readBuffer)), readBuffer), WithOption.WithName("statusCode"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfAvailableSequenceNumbers
     int noOfAvailableSequenceNumbers = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfAvailableSequenceNumbers"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

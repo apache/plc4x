@@ -27,14 +27,15 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 //go:generate go tool plc4xGenerator -type=Connection
@@ -151,7 +152,7 @@ func (c *Connection) Connect(ctx context.Context) error {
 
 func (c *Connection) Close() error {
 	ctx := context.TODO()
-	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
 	defer cancelFunc()
 
 	c.channel.onDisconnect(ctx, c)

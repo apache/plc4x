@@ -94,11 +94,11 @@ func CastTagClass(structType any) TagClass {
 	return castFunc(structType)
 }
 
-func (m TagClass) GetLengthInBits(ctx context.Context) uint16 {
+func (m TagClass) GetLengthInBits(ctx context.Context) uint64 {
 	return 1
 }
 
-func (m TagClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TagClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

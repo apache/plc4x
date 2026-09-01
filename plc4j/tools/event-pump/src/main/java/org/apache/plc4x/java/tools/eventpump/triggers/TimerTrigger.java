@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,6 +49,14 @@ public class TimerTrigger implements Trigger {
     private final long initialDelayMs;
     private final Timer timer;
     private final boolean ownTimer;
+
+    // Listener invocations are handed to this executor rather than run on the timer
+    // thread. A listener may block (leasing a connection from the connection manager
+    // does), and blocking the timer thread delays this trigger's own next tick — and,
+    // when a Timer is shared across triggers, every other batch on it as well.
+    // The queue holds a single pending firing and the rest are discarded: a listener
+    // that outruns the interval must not build an unbounded backlog.
+    private final ThreadPoolExecutor dispatcher;
 
     private volatile TriggerListener listener;
     private volatile TimerTask currentTask;
@@ -102,6 +112,15 @@ public class TimerTrigger implements Trigger {
             this.ownTimer = true;
         }
 
+        this.dispatcher = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<>(1),
+            runnable -> {
+                Thread thread = new Thread(runnable, "TimerTrigger-dispatch-" + System.identityHashCode(this));
+                thread.setDaemon(true);
+                return thread;
+            },
+            new ThreadPoolExecutor.DiscardPolicy());
+
         LOGGER.debug("Created TimerTrigger with interval={}ms, initialDelay={}ms", intervalMs, initialDelayMs);
     }
 
@@ -119,25 +138,36 @@ public class TimerTrigger implements Trigger {
 
         this.listener = listener;
 
-        // Create the timer task
+        // Create the timer task. It only hands the firing off to the dispatcher, so the
+        // timer thread itself never runs listener code and never blocks.
         currentTask = new TimerTask() {
             @Override
             public void run() {
-                try {
-                    LOGGER.trace("Timer trigger firing");
-                    TimerTrigger.this.listener.onTrigger(TimerTrigger.this);
-                } catch (Exception e) {
-                    if (LOGGER.isTraceEnabled()) {
-                        LOGGER.error("Error in trigger listener", e);
-                    } else {
-                        LOGGER.error("Error in trigger listener: {}", e.getMessage());
-                    }
+                if (!running) {
+                    return;
                 }
+                dispatcher.execute(() -> {
+                    if (!running) {
+                        return;
+                    }
+                    try {
+                        LOGGER.trace("Timer trigger firing");
+                        TimerTrigger.this.listener.onTrigger(TimerTrigger.this);
+                    } catch (Exception e) {
+                        if (LOGGER.isTraceEnabled()) {
+                            LOGGER.error("Error in trigger listener", e);
+                        } else {
+                            LOGGER.error("Error in trigger listener: {}", e.getMessage());
+                        }
+                    }
+                });
             }
         };
 
-        // Schedule the task
-        timer.scheduleAtFixedRate(currentTask, initialDelayMs, intervalMs);
+        // Fixed delay rather than fixed rate: if a fetch cycle overruns the interval,
+        // fixed-rate scheduling fires the missed ticks back-to-back in a burst the moment
+        // it catches up, which just piles more pressure on a PLC that is already slow.
+        timer.schedule(currentTask, initialDelayMs, intervalMs);
         running = true;
 
         LOGGER.debug("Started TimerTrigger");
@@ -179,6 +209,7 @@ public class TimerTrigger implements Trigger {
         if (ownTimer) {
             timer.cancel();
         }
+        dispatcher.shutdown();
 
         closed = true;
         LOGGER.debug("Closed TimerTrigger");

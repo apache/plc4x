@@ -70,7 +70,7 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
     int amsNetIdLength = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedInt(readBuffer, 16), AMSNETIDLENGTH, WithOption.WithName("amsNetIdLength"));
 
     // Simple Field: amsNetId
-    AmsNetId amsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsNetId) AmsNetId.staticParse(readBuffer), readBuffer), WithOption.WithName("amsNetId"));
+    AmsNetId amsNetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsNetId.class, AmsNetId.staticParse(readBuffer)), readBuffer), WithOption.WithName("amsNetId"));
 
     readBuffer.popContext();
     return new AdsDiscoveryBlockBuilderImpl(amsNetId);

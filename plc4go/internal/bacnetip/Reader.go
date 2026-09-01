@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+	"runtime/debug"
 	"sync"
 	"time"
 
@@ -81,7 +82,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		var serviceRequest readWriteModel.BACnetConfirmedServiceRequest
 		quantity := uint32(1)
 		if len(readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()) > 0 {
-			quantity = readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetUpperBound() - readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetLowerBound()
+			// GetSize, not upper minus lower: both bounds are inclusive, so subtracting them
+			// counts one element short of what the caller asked for.
+			quantity = readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetSize()
 		}
 		if isMultiRequest := len(readRequest.GetTagNames()) > 1 || quantity > 1; !isMultiRequest {
 			// Single request
@@ -204,6 +207,14 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				if complexAck, ok := apdu.(readWriteModel.APDUComplexAck); ok && complexAck.GetSegmentedMessage() {
 					m.log.Trace().Uint8("invokeId", complexAck.GetOriginalInvokeId()).Msg("segmented read response — starting reassembly")
 					m.wg.Go(func() {
+						// Reassembly works on wire-controlled sizes; a panic in this
+						// goroutine would otherwise kill the whole process, so recover
+						// and fail the read instead.
+						defer func() {
+							if r := recover(); r != nil {
+								utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", r, debug.Stack())))
+							}
+						}()
 						m.reassembleSegmentedRead(readCtx, readRequest, complexAck, result)
 					})
 					return transaction.EndRequest()

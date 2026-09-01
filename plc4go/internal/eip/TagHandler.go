@@ -25,6 +25,8 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type TagHandler struct {
@@ -33,19 +35,65 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		addressPattern: regexp.MustCompile(`^%(?P<tag>[%a-zA-Z_.0-9]+\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)`),
+		// The selection sits before the type, as it does everywhere else. The trailing
+		// ":elementNb" count is gone: "%rate:DINT:4" is now written "%rate[0..3]:DINT".
+		addressPattern: regexp.MustCompile(`^%(?P<tag>[%a-zA-Z_.0-9]+)` + spiModel.ArrayGroupPattern + `(?::(?P<dataType>[A-Z]+))?$`),
 	}
 }
 
 const (
-	TAG        = "tag"
-	DATA_TYPE  = "dataType"
-	ELEMENT_NB = "elementNb"
+	TAG       = "tag"
+	DATA_TYPE = "dataType"
+	ARRAY     = "array"
 )
 
+// eipConstraints is what a CIP request can encode of a selection: one dimension, starting no
+// later than 255 - the member segment that carries the offset is a uint 8.
+var eipConstraints = spiModel.SingleDimension.
+	WithMaxIndex(255).
+	WithOnlyTrailingDimensionMayBeRange(true)
+
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
-	// TODO: This isn't pretty ...
-	return NewTag(tagAddress, model.CIPDataTypeCode_DINT, uint16(1)), nil
+	matches := m.addressPattern.FindStringSubmatch(tagAddress)
+	if matches == nil {
+		// "%rate:DINT:4" and "%rate:DINT[4]" both used to parse. Neither does now, so say what
+		// to write instead rather than reporting only that the address did not match.
+		return nil, spiModel.InvalidAddressError(tagAddress, "%tag[selection]:TYPE - for example %rate[0..3]:DINT")
+	}
+
+	tagName := matches[m.addressPattern.SubexpIndex(TAG)]
+	dataTypeStr := matches[m.addressPattern.SubexpIndex(DATA_TYPE)]
+	arrayExpression := matches[m.addressPattern.SubexpIndex(ARRAY)]
+
+	var dataType model.CIPDataTypeCode
+	if dataTypeStr == "" {
+		dataType = model.CIPDataTypeCode_DINT
+	} else {
+		var found bool
+		dataType, found = model.CIPDataTypeCodeByName(dataTypeStr)
+		if !found {
+			return nil, fmt.Errorf("unknown data type: %s", dataTypeStr)
+		}
+	}
+
+	selection, err := spiModel.ParseArrayExpression(arrayExpression, tagAddress, eipConstraints)
+	if err != nil {
+		return nil, err
+	}
+
+	// A CIP request carries its element count in 16 bits, so a larger selection would be narrowed
+	// on the way out - "%arr[0..65535]" would ask the device for zero elements. Refuse it rather
+	// than send a request that means something else.
+	elements := uint64(1)
+	for _, dimension := range selection {
+		elements *= uint64(dimension.GetSize())
+	}
+	if elements > maxElements {
+		return nil, errors.Errorf("tag '%s' selects %d elements, more than the %d a CIP request can ask for",
+			tagAddress, elements, maxElements)
+	}
+
+	return NewTagWithSelection(tagName, dataType, selection), nil
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

@@ -28,12 +28,13 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcConnectionCache interface {
@@ -146,7 +147,7 @@ func (c *plcConnectionCache) onConnectionEvent(event connectionEvent) {
 			c.tracer.AddTrace("destroy-connection", errorEvent.getError().Error())
 		}
 		c.log.Debug().
-			Str("connectionString", connectionContainerInstance.connectionString).
+			Str("connectionString", options.RedactConnectionString(connectionContainerInstance.connectionString)).
 			Err(errorEvent.getError()).
 			Msg("Connection reported an error event")
 	}
@@ -178,7 +179,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 		if c.tracer != nil {
 			c.tracer.AddTrace("get-connection", "create new cached connection")
 		}
-		c.log.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
+		c.log.Debug().Str("connectionString", options.RedactConnectionString(connectionString)).Msg("Create new cached connection")
 		// Create a new connection container.
 		cc := newConnectionContainer(c.log, c.driverManager, connectionString)
 		cc.maxIdleTime = c.maxIdleTime
@@ -209,7 +210,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 	select {
 	case conn := <-connChan: // Wait till we get a lease.
 		c.log.Debug().
-			Str("connectionString", connectionString).
+			Str("connectionString", options.RedactConnectionString(connectionString)).
 			Stringer("conn", conn).
 			Msg("Successfully got lease to connection")
 		if c.tracer != nil {
@@ -237,7 +238,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 		if c.tracer != nil {
 			c.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 		}
-		c.log.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
+		c.log.Debug().Str("connectionString", options.RedactConnectionString(connectionString)).Msg("Timeout while waiting for connection.")
 		return nil, errors.New("timeout while waiting for connection")
 	}
 }
@@ -288,7 +289,7 @@ func (c *plcConnectionCache) Close() error {
 			// Try to get a lease as this way we kow we're not closing the connection
 			// while some go func is still using it.
 			ccLog.Trace().Msg("getting a lease")
-			ctx, cancel := context.WithTimeout(ctx, c.maxWaitTime)
+			ctx, cancel := utils.WithNamedTimeout(ctx, "lease wait timeout", c.maxWaitTime)
 			connChan, errChan := connectionContainer.lease(ctx)
 			select {
 			// We're just getting the lease as this way we can be sure nobody else is using it.

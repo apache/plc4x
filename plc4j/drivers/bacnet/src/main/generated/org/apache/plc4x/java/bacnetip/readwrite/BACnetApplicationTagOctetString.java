@@ -52,7 +52,7 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadOctetString payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadOctetString) BACnetTagPayloadOctetString.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadOctetString payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadOctetString.class, BACnetTagPayloadOctetString.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new BACnetApplicationTagBuilderImpl(payload);

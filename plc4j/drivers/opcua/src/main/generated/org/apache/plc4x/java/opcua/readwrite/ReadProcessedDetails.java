@@ -113,10 +113,10 @@ public class ReadProcessedDetails extends ExtensionObjectDefinition implements M
     int noOfAggregateType = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfAggregateType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: aggregateType
-    List<NodeId> aggregateType = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), noOfAggregateType, WithOption.WithName("aggregateType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<NodeId> aggregateType = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), noOfAggregateType, WithOption.WithName("aggregateType"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: aggregateConfiguration
-    AggregateConfiguration aggregateConfiguration = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AggregateConfiguration) AggregateConfiguration.staticParse(readBuffer, (int) (950)), readBuffer), WithOption.WithName("aggregateConfiguration"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    AggregateConfiguration aggregateConfiguration = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AggregateConfiguration.class, AggregateConfiguration.staticParse(readBuffer, (int) (950))), readBuffer), WithOption.WithName("aggregateConfiguration"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(startTime, endTime, processingInterval, aggregateType, aggregateConfiguration);

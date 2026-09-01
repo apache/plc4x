@@ -91,22 +91,22 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: responseHeader
-    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ResponseHeader) ResponseHeader.staticParse(readBuffer, (int) (394)), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ResponseHeader responseHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ResponseHeader.class, ResponseHeader.staticParse(readBuffer, (int) (394))), readBuffer), WithOption.WithName("responseHeader"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: serverNonce
-    PascalByteString serverNonce = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalByteString) PascalByteString.staticParse(readBuffer), readBuffer), WithOption.WithName("serverNonce"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PascalByteString serverNonce = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalByteString.class, PascalByteString.staticParse(readBuffer)), readBuffer), WithOption.WithName("serverNonce"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfResults
     int noOfResults = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfResults"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: results
-    List<StatusCode> results = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (StatusCode) StatusCode.staticParse(readBuffer), readBuffer), noOfResults, WithOption.WithName("results"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<StatusCode> results = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusCode.class, StatusCode.staticParse(readBuffer)), readBuffer), noOfResults, WithOption.WithName("results"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Implicit Field: noOfDiagnosticInfos
     int noOfDiagnosticInfos = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfDiagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: diagnosticInfos
-    List<DiagnosticInfo> diagnosticInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (DiagnosticInfo) DiagnosticInfo.staticParse(readBuffer), readBuffer), noOfDiagnosticInfos, WithOption.WithName("diagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<DiagnosticInfo> diagnosticInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DiagnosticInfo.class, DiagnosticInfo.staticParse(readBuffer)), readBuffer), noOfDiagnosticInfos, WithOption.WithName("diagnosticInfos"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(responseHeader, serverNonce, results, diagnosticInfos);

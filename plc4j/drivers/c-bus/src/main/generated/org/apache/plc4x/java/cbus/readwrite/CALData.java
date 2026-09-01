@@ -132,7 +132,7 @@ public abstract class CALData implements Message {
     }
 
     // Optional Field: additionalData
-    CALData additionalData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (CALData) CALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.RequestContext) (null)), readBuffer), WithOption.WithName("additionalData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    CALData additionalData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(CALData.class, CALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.RequestContext) (null))), readBuffer), WithOption.WithName("additionalData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return builder.build(requestContext, commandTypeContainer, additionalData);

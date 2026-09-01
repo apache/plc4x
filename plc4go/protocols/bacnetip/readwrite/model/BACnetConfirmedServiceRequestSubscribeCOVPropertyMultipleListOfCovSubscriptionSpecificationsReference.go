@@ -241,8 +241,8 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubs
 	return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference"
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (monitoredProperty)
 	lengthInBits += m.MonitoredProperty.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubs
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

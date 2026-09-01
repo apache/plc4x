@@ -225,8 +225,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetPlx4xTypeName() st
 	return "BACnetUnconfirmedServiceRequestWhoHasObjectName"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).getLengthInBits(ctx))
 
 	// Simple field (objectName)
 	lengthInBits += m.ObjectName.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

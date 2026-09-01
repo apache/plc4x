@@ -291,7 +291,8 @@ public class PlcBYTE extends PlcIECValue<Short> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws BufferException {
-        writeBuffer.writeSignedShort(8, value, WithOption.WithName(getClass().getSimpleName()));
+        // A BYTE is a bit string, not a number: render it the way byte fields render (0x..).
+        writeBuffer.writeBits(8, new byte[]{(byte) (value & 0xFF)}, WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

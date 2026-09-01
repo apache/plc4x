@@ -17,8 +17,6 @@
 package org.apache.plc4x.java.modbus.readwrite;
 
 import java.math.BigInteger;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
@@ -38,7 +36,6 @@ import org.apache.plc4x.java.spi.values.PlcINT;
 import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.spi.values.PlcLREAL;
 import org.apache.plc4x.java.spi.values.PlcLWORD;
-import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcREAL;
 import org.apache.plc4x.java.spi.values.PlcSINT;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
@@ -48,6 +45,7 @@ import org.apache.plc4x.java.spi.values.PlcULINT;
 import org.apache.plc4x.java.spi.values.PlcUSINT;
 import org.apache.plc4x.java.spi.values.PlcWCHAR;
 import org.apache.plc4x.java.spi.values.PlcWORD;
+import org.apache.plc4x.java.spi.values.PlcWSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,86 +56,27 @@ public class DataItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
   public static PlcValue staticParse(ReadBuffer readBuffer, ModbusDataType dataType,
-      int numberOfValues, boolean bigEndian) throws BufferException {
+      int stringLength) throws BufferException {
     readBuffer.pushContext(WithOption.WithName("DataItem"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
     try {
-      if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, true)) {
+      if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // BOOL
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 15), (short) 0x0000, WithOption.WithName("DataItem.reserved0"));
 
         // Simple Field: value
         boolean value = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcBOOL(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, false)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // BOOL
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 7), (byte) 0x00, WithOption.WithName("DataItem.reserved0"));
-
-        // Simple Field: value
-        boolean value = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved2"));
-
-        return new PlcBOOL(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Boolean> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readBoolean(readBuffer), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcBOOL::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, true)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // BYTE
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved0"));
-
-        // Simple Field: value
-        short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcBYTE(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, false)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // BYTE
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Simple Field: value
-        short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved1"));
-
-        return new PlcBYTE(value);
       } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
+        // BYTE
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Array Field: value
-        List<Boolean> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readBoolean(readBuffer), (numberOfValues) * (8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+        // Simple Field: value
+        short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
-        return new PlcList(value.stream().map(PlcBOOL::new).toList());
+        return new PlcBYTE(value);
       } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // WORD
@@ -165,45 +104,16 @@ public class DataItem {
         BigInteger value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedBigInteger(readBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcLWORD(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, true)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // SINT
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved0"));
-
-        // Simple Field: value
-        byte value = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedByte(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcSINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, false)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // SINT
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Simple Field: value
-        byte value = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedByte(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved1"));
-
-        return new PlcSINT(value);
       } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
+        // SINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Array Field: value
-        List<Byte> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readSignedByte(readBuffer, 8), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+        // Simple Field: value
+        byte value = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedByte(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
-        return new PlcList(value.stream().map(PlcSINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+        return new PlcSINT(value);
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // INT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,17 +122,7 @@ public class DataItem {
         short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedShort(readBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Short> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readSignedShort(readBuffer, 16), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // DINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,17 +131,7 @@ public class DataItem {
         int value = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcDINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Integer> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readSignedInt(readBuffer, 32), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcDINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,54 +140,16 @@ public class DataItem {
         long value = FieldReaderFactory.readSimpleField(DataReaderFactory.readSignedLong(readBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcLINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Long> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readSignedLong(readBuffer, 64), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcLINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, true)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // USINT
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved0"));
-
-        // Simple Field: value
-        short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcUSINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT) &&
-              EvaluationHelper.equals(numberOfValues, 1) &&
-              EvaluationHelper.equals(bigEndian, false)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // USINT
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Simple Field: value
-        short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        // Reserved Field
-        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("DataItem.reserved1"));
-
-        return new PlcUSINT(value);
       } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
+        // USINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Array Field: value
-        List<Short> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedShort(readBuffer, 8), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+        // Simple Field: value
+        short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
-        return new PlcList(value.stream().map(PlcUSINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+        return new PlcUSINT(value);
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // UINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,17 +158,7 @@ public class DataItem {
         int value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcUINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Integer> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedInt(readBuffer, 16), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcUINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // UDINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,17 +167,7 @@ public class DataItem {
         long value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcUDINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Long> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedLong(readBuffer, 32), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcUDINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // ULINT
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,17 +176,7 @@ public class DataItem {
         BigInteger value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedBigInteger(readBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcULINT(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<BigInteger> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedBigInteger(readBuffer, 64), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcULINT::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // REAL
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,17 +185,7 @@ public class DataItem {
         float value = FieldReaderFactory.readSimpleField(DataReaderFactory.readFloat(readBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcREAL(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Float> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readFloat(readBuffer, 32), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcREAL::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // LREAL
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,17 +194,7 @@ public class DataItem {
         double value = FieldReaderFactory.readSimpleField(DataReaderFactory.readDouble(readBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcLREAL(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<Double> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readDouble(readBuffer, 64), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcLREAL::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // CHAR
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -401,17 +203,7 @@ public class DataItem {
         String value = FieldReaderFactory.readSimpleField(DataReaderFactory.readString(readBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
         return new PlcCHAR(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) {
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Array Field: value
-        List<String> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readString(readBuffer, 8), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-        return new PlcList(value.stream().map(PlcSTRING::new).toList());
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR) &&
-              EvaluationHelper.equals(numberOfValues, 1)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // WCHAR
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,15 +212,24 @@ public class DataItem {
         String value = FieldReaderFactory.readSimpleField(DataReaderFactory.readString(readBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF16BE"));
 
         return new PlcWCHAR(value);
-      } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) {
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.STRING)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // List
+        // STRING
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Array Field: value
-        List<String> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readString(readBuffer, 16), numberOfValues, WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF16BE"));
+        // Simple Field: value
+        String value = FieldReaderFactory.readSimpleField(DataReaderFactory.readString(readBuffer, (stringLength) * (8)), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
-        return new PlcList(value.stream().map(PlcSTRING::new).toList());
+        return new PlcSTRING(value);
+      } else if (EvaluationHelper.equals(dataType, ModbusDataType.WSTRING)) {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // WSTRING
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Simple Field: value
+        String value = FieldReaderFactory.readSimpleField(DataReaderFactory.readString(readBuffer, (stringLength) * (16)), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF16BE"));
+
+        return new PlcWSTRING(value);
       }
       return null;
     } finally {
@@ -437,67 +238,20 @@ public class DataItem {
   }
 
   public static void staticSerialize(WriteBuffer writeBuffer, PlcValue _value,
-      ModbusDataType dataType, int numberOfValues, boolean bigEndian) throws BufferException {
+      ModbusDataType dataType, int stringLength) throws BufferException {
     writeBuffer.pushContext(WithOption.WithName("DataItem"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
+    if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // BOOL
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x0000, DataWriterFactory.writeUnsignedShort(writeBuffer, 15));
-
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((boolean) _value.getBoolean(), DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // BOOL
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((byte) 0x00, DataWriterFactory.writeUnsignedByte(writeBuffer, 7));
-
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((boolean) _value.getBoolean(), DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()), DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // BYTE
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
-
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // BYTE
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // BYTE
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()), DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+      // Simple Field: value
+      FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // WORD
@@ -516,262 +270,113 @@ public class DataItem {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((BigInteger) _value.getBigInteger(), DataWriterFactory.writeUnsignedBigInteger(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // SINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
-
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((byte) _value.getByte(), DataWriterFactory.writeSignedByte(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // SINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((byte) _value.getByte(), DataWriterFactory.writeSignedByte(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // SINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getByte).collect(Collectors.toList()), DataWriterFactory.writeSignedByte(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+      // Simple Field: value
+      FieldWriterFactory.writeSimpleField((byte) _value.getByte(), DataWriterFactory.writeSignedByte(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // INT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeSignedShort(writeBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()), DataWriterFactory.writeSignedShort(writeBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // DINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((int) _value.getInteger(), DataWriterFactory.writeSignedInt(writeBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getInt).collect(Collectors.toList()), DataWriterFactory.writeSignedInt(writeBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // LINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((long) _value.getLong(), DataWriterFactory.writeSignedLong(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()), DataWriterFactory.writeSignedLong(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // USINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
-
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // USINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Simple Field: value
-      FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-
-      // Reserved Field
-      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // USINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+      // Simple Field: value
+      FieldWriterFactory.writeSimpleField((short) _value.getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // UINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((int) _value.getInteger(), DataWriterFactory.writeUnsignedInt(writeBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getInt).collect(Collectors.toList()), DataWriterFactory.writeUnsignedInt(writeBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // UDINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((long) _value.getLong(), DataWriterFactory.writeUnsignedLong(writeBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()), DataWriterFactory.writeUnsignedLong(writeBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // ULINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((BigInteger) _value.getBigInteger(), DataWriterFactory.writeUnsignedBigInteger(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getBigInteger).collect(Collectors.toList()), DataWriterFactory.writeUnsignedBigInteger(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // REAL
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((float) _value.getFloat(), DataWriterFactory.writeFloat(writeBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getFloat).collect(Collectors.toList()), DataWriterFactory.writeFloat(writeBuffer, 32), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // LREAL
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((double) _value.getDouble(), DataWriterFactory.writeDouble(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getDouble).collect(Collectors.toList()), DataWriterFactory.writeDouble(writeBuffer, 64), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // CHAR
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((String) _value.getString(), DataWriterFactory.writeString(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()), DataWriterFactory.writeString(writeBuffer, 8), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // WCHAR
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       FieldWriterFactory.writeSimpleField((String) _value.getString(), DataWriterFactory.writeString(writeBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF16BE"));
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.STRING)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // STRING
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      FieldWriterFactory.writeSimpleTypeArrayField(_value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()), DataWriterFactory.writeString(writeBuffer, 16), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF16BE"));
+      // Simple Field: value
+      FieldWriterFactory.writeSimpleField((String) _value.getString(), DataWriterFactory.writeString(writeBuffer, (stringLength) * (8)), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WSTRING)) {
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // WSTRING
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Simple Field: value
+      FieldWriterFactory.writeSimpleField((String) _value.getString(), DataWriterFactory.writeString(writeBuffer, (stringLength) * (16)), WithOption.WithName("value"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF16BE"));
     }
   }
 
-  public static Integer getLengthInBytes(PlcValue _value, ModbusDataType dataType,
-      int numberOfValues, boolean bigEndian) throws BufferException {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataType, numberOfValues, bigEndian) / 8.0);
+  public static Integer getLengthInBytes(PlcValue _value, ModbusDataType dataType, int stringLength)
+      throws BufferException {
+    return (int) Math.ceil((float) getLengthInBits(_value, dataType, stringLength) / 8.0);
   }
 
-  public static Integer getLengthInBits(PlcValue _value, ModbusDataType dataType,
-      int numberOfValues, boolean bigEndian) throws BufferException {
+  public static Integer getLengthInBits(PlcValue _value, ModbusDataType dataType, int stringLength)
+      throws BufferException {
     int lengthInBits = 0;
-    if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
+    if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // BOOL
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      lengthInBits += 15;
-
       // Simple Field: value
       lengthInBits += 1;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // BOOL
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      lengthInBits += 7;
-
-      // Simple Field: value
-      lengthInBits += 1;
-
-      // Reserved Field
-      lengthInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 1 * _value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // BYTE
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      lengthInBits += 8;
-
-      // Simple Field: value
-      lengthInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // BYTE
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Simple Field: value
-      lengthInBits += 8;
-
-      // Reserved Field
-      lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // BYTE
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 1 * _value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()).size();
+      // Simple Field: value
+      lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // WORD
@@ -790,192 +395,90 @@ public class DataItem {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // SINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      lengthInBits += 8;
-
-      // Simple Field: value
-      lengthInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // SINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Simple Field: value
-      lengthInBits += 8;
-
-      // Reserved Field
-      lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // SINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 8 * _value.getList().stream().map(PlcValue::getByte).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+      // Simple Field: value
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // INT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 16 * _value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // DINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 32 * _value.getList().stream().map(PlcValue::getInt).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // LINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 64 * _value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, true)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // USINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Reserved Field
-      lengthInBits += 8;
-
-      // Simple Field: value
-      lengthInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT) &&
-            EvaluationHelper.equals(numberOfValues, 1) &&
-            EvaluationHelper.equals(bigEndian, false)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // USINT
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Simple Field: value
-      lengthInBits += 8;
-
-      // Reserved Field
-      lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // USINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 8 * _value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+      // Simple Field: value
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // UINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 16 * _value.getList().stream().map(PlcValue::getInt).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // UDINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 32 * _value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // ULINT
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 64 * _value.getList().stream().map(PlcValue::getBigInteger).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // REAL
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 32 * _value.getList().stream().map(PlcValue::getFloat).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // LREAL
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 64 * _value.getList().stream().map(PlcValue::getDouble).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // CHAR
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 8 * _value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()).size();
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR) &&
-            EvaluationHelper.equals(numberOfValues, 1)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // WCHAR
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Simple Field: value
       lengthInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) {
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.STRING)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // List
+      // STRING
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // Array Field: value
-      lengthInBits += 16 * _value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()).size();
+      // Simple Field: value
+      lengthInBits += (stringLength) * (8);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WSTRING)) {
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // WSTRING
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Simple Field: value
+      lengthInBits += (stringLength) * (16);
     }
     return lengthInBits;
   }

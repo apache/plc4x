@@ -87,7 +87,7 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
     short value = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("value"));
 
     // Simple Field: payload
-    BACnetTagPayloadBoolean payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadBoolean) BACnetTagPayloadBoolean.staticParse(readBuffer, (long) (value)), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadBoolean payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadBoolean.class, BACnetTagPayloadBoolean.staticParse(readBuffer, (long) (value))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     boolean actualValue = FieldReaderFactory.readVirtualField(boolean.class, payload.getValue(), WithOption.WithName("actualValue"));

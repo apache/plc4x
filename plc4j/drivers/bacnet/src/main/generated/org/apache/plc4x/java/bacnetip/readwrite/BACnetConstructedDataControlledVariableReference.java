@@ -78,7 +78,7 @@ public class BACnetConstructedDataControlledVariableReference extends BACnetCons
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: controlledVariableReference
-    BACnetObjectPropertyReference controlledVariableReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetObjectPropertyReference) BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer), WithOption.WithName("controlledVariableReference"));
+    BACnetObjectPropertyReference controlledVariableReference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetObjectPropertyReference.class, BACnetObjectPropertyReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("controlledVariableReference"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetObjectPropertyReference actualValue = FieldReaderFactory.readVirtualField(BACnetObjectPropertyReference.class, controlledVariableReference, WithOption.WithName("actualValue"));

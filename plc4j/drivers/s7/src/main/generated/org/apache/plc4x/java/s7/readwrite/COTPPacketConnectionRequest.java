@@ -75,7 +75,7 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
     return protocolClass;
   }
 
-  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, int cotpLen)
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, long cotpLen)
       throws BufferException {
     readBuffer.pushContext(WithOption.WithName("COTPPacketConnectionRequest"));
     int startPos = readBuffer.getPositionInBits();

@@ -527,7 +527,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
                 lengthInBits += 8;
                 lengthInBits += 8;
                 lengthInBits += 12;
-                lengthInBits += 4;
+                lengthInBits += (4);
             }
             else if (Equals(dataProtocolId, "IEC61131_DATE_AND_LTIME"))
             {

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetPlx4xTypeName() str
 	return "BACnetConstructedDataAnalogValueFaultHighLimit"
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (faultHighLimit)
 	lengthInBits += m.FaultHighLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

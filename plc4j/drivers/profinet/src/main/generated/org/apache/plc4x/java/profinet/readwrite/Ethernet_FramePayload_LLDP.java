@@ -58,7 +58,7 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: pdu
-    Lldp_Pdu pdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Lldp_Pdu) Lldp_Pdu.staticParse(readBuffer), readBuffer), WithOption.WithName("pdu"));
+    Lldp_Pdu pdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Lldp_Pdu.class, Lldp_Pdu.staticParse(readBuffer)), readBuffer), WithOption.WithName("pdu"));
 
     readBuffer.popContext();
     return new Ethernet_FramePayloadBuilderImpl(pdu);

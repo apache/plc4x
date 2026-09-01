@@ -44,11 +44,41 @@ type DefaultBufferedTransportInstance interface {
 	Read(ctx context.Context, numBytes uint32) ([]byte, error)
 }
 
+// DefaultMaxFrameSize is the ceiling applied to wire-announced frame lengths
+// passed to Read when no WithMaxFrameSize option is given. Frame lengths come
+// straight off the wire (raw 32-bit values in ADS/OPC UA headers), so they
+// must never be allocated or read unbounded.
+const DefaultMaxFrameSize uint32 = 1 << 24 // 16 MiB
+
+// WithMaxFrameSize overrides the maximum number of bytes a single Read call
+// accepts (default DefaultMaxFrameSize).
+func WithMaxFrameSize(maxFrameSize uint32) options.WithOption {
+	return withMaxFrameSize{maxFrameSize: maxFrameSize}
+}
+
+type withMaxFrameSize struct {
+	options.Option
+	maxFrameSize uint32
+}
+
+// ExtractMaxFrameSize returns the explicitly configured max frame size, or 0
+// when no WithMaxFrameSize option is present. A stored 0 is interpreted as
+// DefaultMaxFrameSize at Read time, so the zero value is a safe "use default".
+func ExtractMaxFrameSize(_options ...options.WithOption) uint32 {
+	for _, option := range _options {
+		if option, ok := option.(withMaxFrameSize); ok {
+			return option.maxFrameSize
+		}
+	}
+	return 0
+}
+
 func NewDefaultBufferedTransportInstance(defaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements, _options ...options.WithOption) DefaultBufferedTransportInstance {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultBufferedTransportInstance{
 		DefaultBufferedTransportInstanceRequirements: defaultBufferedTransportInstanceRequirements,
-		log: customLogger,
+		maxFrameSize: ExtractMaxFrameSize(_options...),
+		log:          customLogger,
 	}
 }
 
@@ -56,6 +86,8 @@ type defaultBufferedTransportInstance struct {
 	DefaultBufferedTransportInstanceRequirements
 
 	wg sync.WaitGroup // use to track spawned go routines
+
+	maxFrameSize uint32
 
 	log zerolog.Logger
 }
@@ -115,19 +147,28 @@ func (m *defaultBufferedTransportInstance) Read(ctx context.Context, numBytes ui
 	if m.GetReader() == nil {
 		return nil, errors.New("error reading from transport. No reader available")
 	}
+	// numBytes is usually a wire-announced frame length: enforce a ceiling and
+	// never pre-allocate the announced size — grow only with bytes actually read.
+	maxFrameSize := m.maxFrameSize
+	if maxFrameSize == 0 {
+		maxFrameSize = DefaultMaxFrameSize
+	}
+	if numBytes > maxFrameSize {
+		return nil, errors.Errorf("requested %d bytes exceeds the maximum frame size of %d bytes", numBytes, maxFrameSize)
+	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
 		if err := m.SetReadDeadline(deadline); err != nil {
 			return nil, errors.Wrap(err, "error setting read deadline")
 		}
 	}
-	data := make([]byte, numBytes)
-	for i := range numBytes {
+	data := make([]byte, 0, min(numBytes, 4096))
+	for range numBytes {
 		val, err := m.GetReader().ReadByte()
 		if err != nil {
 			return nil, errors.Wrap(err, "error reading")
 		}
-		data[i] = val
+		data = append(data, val)
 	}
 	return data, nil
 }

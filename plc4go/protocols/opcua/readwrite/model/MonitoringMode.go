@@ -100,11 +100,11 @@ func CastMonitoringMode(structType any) MonitoringMode {
 	return castFunc(structType)
 }
 
-func (m MonitoringMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m MonitoringMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m MonitoringMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MonitoringMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

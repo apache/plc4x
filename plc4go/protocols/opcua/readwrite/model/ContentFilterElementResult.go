@@ -260,8 +260,8 @@ func (m *_ContentFilterElementResult) GetPlx4xTypeName() string {
 	return "ContentFilterElementResult"
 }
 
-func (m *_ContentFilterElementResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ContentFilterElementResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -291,7 +291,7 @@ func (m *_ContentFilterElementResult) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_ContentFilterElementResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ContentFilterElementResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

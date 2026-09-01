@@ -197,19 +197,19 @@ func (m *_BACnetDoorValueTagged) GetPlx4xTypeName() string {
 	return "BACnetDoorValueTagged"
 }
 
-func (m *_BACnetDoorValueTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetDoorValueTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
+	lengthInBits += uint64(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
 
 	return lengthInBits
 }
 
-func (m *_BACnetDoorValueTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetDoorValueTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

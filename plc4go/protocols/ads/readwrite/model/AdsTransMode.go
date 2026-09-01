@@ -124,11 +124,11 @@ func CastAdsTransMode(structType any) AdsTransMode {
 	return castFunc(structType)
 }
 
-func (m AdsTransMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m AdsTransMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m AdsTransMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AdsTransMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

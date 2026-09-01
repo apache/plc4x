@@ -72,10 +72,10 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_NORMALIZE
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: nva
-    NormalizedValue nva = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NormalizedValue) NormalizedValue.staticParse(readBuffer), readBuffer), WithOption.WithName("nva"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NormalizedValue nva = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NormalizedValue.class, NormalizedValue.staticParse(readBuffer)), readBuffer), WithOption.WithName("nva"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: qpm
-    QualifierOfParameterOfMeasuredValues qpm = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfParameterOfMeasuredValues) QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer), WithOption.WithName("qpm"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfParameterOfMeasuredValues qpm = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfParameterOfMeasuredValues.class, QualifierOfParameterOfMeasuredValues.staticParse(readBuffer)), readBuffer), WithOption.WithName("qpm"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(nva, qpm);

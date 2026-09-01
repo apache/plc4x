@@ -35,6 +35,7 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.s7.userdata.S7SzlService;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.configuration.S7Configuration;
@@ -100,8 +101,8 @@ public class S7HCotpConnection extends ConnectionBase<S7Configuration> {
      * Heartbeat tick interval and wrapper-level failover timeout, both in milliseconds.
      * Read from {@link S7Configuration#getHaHeartbeatInterval()} /
      * {@link S7Configuration#getHaFailoverTimeout()} at connection construction so each
-     * connection can be tuned independently via URL params {@code ?ha-heartbeat-interval=}
-     * and {@code ?ha-failover-timeout=}.
+     * connection can be tuned independently via URL params {@code ?ha-heartbeat-interval-ms=}
+     * and {@code ?ha-failover-timeout-ms=}.
      */
     private final long heartbeatIntervalMs;
     private final long failoverTimeoutMs;
@@ -184,6 +185,15 @@ public class S7HCotpConnection extends ConnectionBase<S7Configuration> {
             @Override public boolean isSubscribeSupported() { return false; }
             @Override public boolean isBrowseSupported()    { return inner.isBrowseSupported(); }
         };
+    }
+
+    /**
+     * Read the device identification from whichever inner connection is currently healthy.
+     * Unlike subscriptions, identification is stateless — both endpoints of an S7-H pair
+     * answer for the same CPU — so this can simply ride the normal failover path.
+     */
+    public CompletableFuture<S7SzlService.S7DeviceIdentification> readDeviceIdentification() {
+        return withFailover(S7CotpConnection::readDeviceIdentification);
     }
 
     @Override

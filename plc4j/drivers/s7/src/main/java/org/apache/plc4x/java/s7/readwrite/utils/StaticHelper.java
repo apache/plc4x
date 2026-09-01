@@ -277,6 +277,49 @@ public class StaticHelper {
         }
     }
 
+    /**
+     * Siemens numbers the DATE_AND_TIME day-of-week nibble 1 == Sunday .. 7 == Saturday; the mspec
+     * spells that out for the DTL variant of the same field. {@code java.time.DayOfWeek} numbers the
+     * same days 1 == Monday .. 7 == Sunday, which is what {@code PlcDATE_AND_TIME#getDayOfWeek}
+     * returns and what plc4j shares with KNX DPT 19.001. Only the S7 wire format counts from Sunday,
+     * so the rotation belongs here rather than in the shared value.
+     */
+    public static short parseSiemensDayOfWeek(ReadBuffer readBuffer) {
+        try {
+            short dayOfWeek = readBuffer.readUnsignedShort(4, WithOption.WithName("dayOfWeek"),
+                WithOption.WithUnsignedIntegerEncoding("BCD"));
+            if (dayOfWeek < 1 || dayOfWeek > 7) {
+                throw new RuntimeException("day of week " + dayOfWeek
+                    + " is outside the range [1, 7] the Siemens DATE_AND_TIME nibble can represent");
+            }
+            // Siemens Sunday is the ISO week's last day.
+            return dayOfWeek == 1 ? (short) 7 : (short) (dayOfWeek - 1);
+        } catch (BufferException e) {
+            throw new RuntimeException("Error parsing dayOfWeek", e);
+        }
+    }
+
+    /** Writes the day of week implied by the timestamp, numbered the way an S7 expects it. */
+    public static void serializeSiemensDayOfWeek(WriteBuffer writeBuffer, PlcValue dateTime) {
+        try {
+            // DayOfWeek.getValue() is 1 == Monday .. 7 == Sunday; Siemens wants Sunday first.
+            int iso = dateTime.getDateTime().getDayOfWeek().getValue();
+            short siemens = (short) (iso == 7 ? 1 : iso + 1);
+            writeBuffer.writeUnsignedShort(4, siemens, WithOption.WithName("dayOfWeek"),
+                WithOption.WithUnsignedIntegerEncoding("BCD"));
+        } catch (BufferException e) {
+            throw new RuntimeException("Error serializing dayOfWeek", e);
+        }
+    }
+
+    /**
+     * The single BCD byte of a DATE_AND_TIME encodes 00-89 as 2000-2089 and 90-99 as 1990-1999, so
+     * only years in [1990, 2089] are representable at all.
+     */
+    private static final int MIN_SIEMENS_YEAR = 1990;
+
+    private static final int MAX_SIEMENS_YEAR = 2089;
+
     public static short parseSiemensYear(ReadBuffer readBuffer) {
         try {
             short year = readBuffer.readUnsignedShort(8, WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));
@@ -290,10 +333,22 @@ public class StaticHelper {
         }
     }
 
+    /**
+     * The exact inverse of {@link #parseSiemensYear(ReadBuffer)}: 1990-1999 go out as 90-99 and
+     * 2000-2089 as 00-89. Anything outside that window is rejected instead of silently wrapping -
+     * 2090 used to be written as BCD 90 and read back as 1990, and 2000 took the 1900 branch and
+     * asked {@code EncodingBCD} for a two digit encoding of 100, which threw an
+     * {@link IllegalArgumentException} straight past the {@code BufferException} handler below.
+     */
     public static void serializeSiemensYear(WriteBuffer writeBuffer, PlcValue dateTime) {
         try {
             int year = dateTime.getDateTime().getYear();
-            if (year > 2000) {
+            if ((year < MIN_SIEMENS_YEAR) || (year > MAX_SIEMENS_YEAR)) {
+                throw new RuntimeException("year " + year + " is outside the range ["
+                    + MIN_SIEMENS_YEAR + ", " + MAX_SIEMENS_YEAR
+                    + "] the Siemens DATE_AND_TIME year byte can represent");
+            }
+            if (year >= 2000) {
                 writeBuffer.writeUnsignedShort(8, (short) (year - 2000), WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));
             } else {
                 writeBuffer.writeUnsignedShort(8, (short) (year - 1900), WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));

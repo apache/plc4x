@@ -106,11 +106,11 @@ func CastBACnetSecurityPolicy(structType any) BACnetSecurityPolicy {
 	return castFunc(structType)
 }
 
-func (m BACnetSecurityPolicy) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetSecurityPolicy) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetSecurityPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetSecurityPolicy) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -83,7 +83,7 @@ public class PnIoCm_RealIdentificationApi_Slot implements Message {
     int numSubslots = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numSubslots"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: subslots
-    List<PnIoCm_RealIdentificationApi_Subslot> subslots = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_RealIdentificationApi_Subslot) PnIoCm_RealIdentificationApi_Subslot.staticParse(readBuffer), readBuffer), numSubslots, WithOption.WithName("subslots"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_RealIdentificationApi_Subslot> subslots = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_RealIdentificationApi_Subslot.class, PnIoCm_RealIdentificationApi_Subslot.staticParse(readBuffer)), readBuffer), numSubslots, WithOption.WithName("subslots"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_RealIdentificationApi_Slot(slotNumber, moduleIdentNumber, subslots);

@@ -357,8 +357,8 @@ func (m *_BACnetNotificationParametersUnsignedRange) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersUnsignedRange"
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

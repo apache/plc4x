@@ -35,6 +35,11 @@ public interface PlcDriverManager {
 
     PlcDriver getDriverForUrl(String url) throws PlcConnectionException;
 
-    PlcConnectionManager getConnectionManager();
+    /**
+     * Returns the factory used to create connections to PLCs.
+     *
+     * @return connection factory
+     */
+    PlcConnectionFactory getConnectionFactory();
 
 }

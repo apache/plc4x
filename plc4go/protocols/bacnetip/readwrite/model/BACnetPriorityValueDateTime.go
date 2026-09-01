@@ -225,8 +225,8 @@ func (m *_BACnetPriorityValueDateTime) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueDateTime"
 }
 
-func (m *_BACnetPriorityValueDateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueDateTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (dateTimeValue)
 	lengthInBits += m.DateTimeValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueDateTime) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueDateTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueDateTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

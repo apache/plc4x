@@ -72,7 +72,7 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: floorText
-    List<BACnetLogMultipleRecord> floorText = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetLogMultipleRecord) BACnetLogMultipleRecord.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("floorText"));
+    List<BACnetLogMultipleRecord> floorText = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLogMultipleRecord.class, BACnetLogMultipleRecord.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("floorText"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(floorText);

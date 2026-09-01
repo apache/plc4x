@@ -213,8 +213,8 @@ func (m *_BACnetTagPayloadCharacterString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadCharacterString"
 }
 
-func (m *_BACnetTagPayloadCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (encoding)
 	lengthInBits += 8
@@ -222,12 +222,12 @@ func (m *_BACnetTagPayloadCharacterString) GetLengthInBits(ctx context.Context) 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (value)
-	lengthInBits += uint16(m.GetActualLengthInBit())
+	lengthInBits += uint64(m.GetActualLengthInBit())
 
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

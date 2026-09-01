@@ -62,8 +62,8 @@ type COTPPacketContract interface {
 
 // COTPPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type COTPPacketRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetTpduCode returns TpduCode (discriminator field)
 	GetTpduCode() uint8
 }
@@ -319,8 +319,8 @@ func (m *_COTPPacket) GetPlx4xTypeName() string {
 	return "COTPPacket"
 }
 
-func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
@@ -342,19 +342,19 @@ func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPPacket) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPPacket) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func COTPPacketParse[T COTPPacket](ctx context.Context, theBytes []byte, cotpLen uint16) (T, error) {
+func COTPPacketParse[T COTPPacket](ctx context.Context, theBytes []byte, cotpLen uint32) (T, error) {
 	return COTPPacketParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
-func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 		v, err := COTPPacketParseWithBuffer[T](ctx, readBuffer, cotpLen)
 		if err != nil {
@@ -365,7 +365,7 @@ func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx co
 	}
 }
 
-func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (T, error) {
+func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint32) (T, error) {
 	v, err := (new(_COTPPacket)).parse(ctx, readBuffer, cotpLen)
 	if err != nil {
 		var zero T
@@ -379,7 +379,7 @@ func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer uti
 	return vc, nil
 }
 
-func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (__cOTPPacket COTPPacket, err error) {
+func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint32) (__cOTPPacket COTPPacket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
@@ -405,27 +405,27 @@ func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, co
 	var _child COTPPacket
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		if _child, err = new(_COTPPacketData).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketData).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketData for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		if _child, err = new(_COTPPacketConnectionRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionRequest).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		if _child, err = new(_COTPPacketConnectionResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionResponse).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		if _child, err = new(_COTPPacketDisconnectRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectRequest).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		if _child, err = new(_COTPPacketDisconnectResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectResponse).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x70: // COTPPacketTpduError
-		if _child, err = new(_COTPPacketTpduError).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketTpduError).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketTpduError for type-switch of COTPPacket")
 		}
 	default:

@@ -213,8 +213,8 @@ func (m *_BVLCReadForeignDeviceTableAck) GetPlx4xTypeName() string {
 	return "BVLCReadForeignDeviceTableAck"
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {
@@ -226,7 +226,7 @@ func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: valueSource
-    BACnetValueSource valueSource = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetValueSource) BACnetValueSource.staticParse(readBuffer), readBuffer), WithOption.WithName("valueSource"));
+    BACnetValueSource valueSource = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetValueSource.class, BACnetValueSource.staticParse(readBuffer)), readBuffer), WithOption.WithName("valueSource"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetValueSource actualValue = FieldReaderFactory.readVirtualField(BACnetValueSource.class, valueSource, WithOption.WithName("actualValue"));

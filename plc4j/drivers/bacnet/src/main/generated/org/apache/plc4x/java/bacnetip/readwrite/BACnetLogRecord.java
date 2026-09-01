@@ -70,13 +70,13 @@ public class BACnetLogRecord implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timestamp
-    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("timestamp"));
+    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("timestamp"));
 
     // Simple Field: logDatum
-    BACnetLogRecordLogDatum logDatum = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLogRecordLogDatum) BACnetLogRecordLogDatum.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("logDatum"));
+    BACnetLogRecordLogDatum logDatum = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLogRecordLogDatum.class, BACnetLogRecordLogDatum.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("logDatum"));
 
     // Optional Field: statusFlags
-    BACnetStatusFlagsTagged statusFlags = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetStatusFlagsTagged) BACnetStatusFlagsTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("statusFlags"));
+    BACnetStatusFlagsTagged statusFlags = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetStatusFlagsTagged.class, BACnetStatusFlagsTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("statusFlags"));
 
     readBuffer.popContext();
     return new BACnetLogRecord(timestamp, logDatum, statusFlags);

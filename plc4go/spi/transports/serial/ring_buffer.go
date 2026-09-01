@@ -150,7 +150,7 @@ func (r *byteRing) read(p []byte, deadline time.Time) (int, error) {
 		}
 		if r.length > 0 {
 			n := min(len(p), r.length)
-			for i := 0; i < n; i++ {
+			for i := range n {
 				p[i] = r.buf[(r.start+i)%len(r.buf)]
 			}
 			r.start = (r.start + n) % len(r.buf)

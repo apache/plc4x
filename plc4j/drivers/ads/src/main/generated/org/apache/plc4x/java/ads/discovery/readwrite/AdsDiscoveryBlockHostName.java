@@ -58,7 +58,7 @@ public class AdsDiscoveryBlockHostName extends AdsDiscoveryBlock implements Mess
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: hostName
-    AmsString hostName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AmsString) AmsString.staticParse(readBuffer), readBuffer), WithOption.WithName("hostName"));
+    AmsString hostName = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AmsString.class, AmsString.staticParse(readBuffer)), readBuffer), WithOption.WithName("hostName"));
 
     readBuffer.popContext();
     return new AdsDiscoveryBlockBuilderImpl(hostName);

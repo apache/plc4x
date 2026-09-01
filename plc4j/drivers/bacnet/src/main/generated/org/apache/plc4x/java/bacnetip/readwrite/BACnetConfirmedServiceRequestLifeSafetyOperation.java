@@ -92,16 +92,16 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: requestingProcessIdentifier
-    BACnetContextTagUnsignedInteger requestingProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("requestingProcessIdentifier"));
+    BACnetContextTagUnsignedInteger requestingProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("requestingProcessIdentifier"));
 
     // Simple Field: requestingSource
-    BACnetContextTagCharacterString requestingSource = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("requestingSource"));
+    BACnetContextTagCharacterString requestingSource = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("requestingSource"));
 
     // Simple Field: request
-    BACnetLifeSafetyOperationTagged request = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLifeSafetyOperationTagged) BACnetLifeSafetyOperationTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("request"));
+    BACnetLifeSafetyOperationTagged request = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLifeSafetyOperationTagged.class, BACnetLifeSafetyOperationTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("request"));
 
     // Optional Field: objectIdentifier
-    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("objectIdentifier"));
+    BACnetContextTagObjectIdentifier objectIdentifier = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("objectIdentifier"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(requestingProcessIdentifier, requestingSource, request, objectIdentifier);

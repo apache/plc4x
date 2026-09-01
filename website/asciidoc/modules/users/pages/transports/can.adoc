@@ -72,8 +72,8 @@ In this regard, these operations can be made by library available for specific C
 == Developer notes
 
 Usage of CAN transport APIs is recommended for portability reasons.
-Please have a look on link:../protocols/can.html[CAN] describe usage of CAN driver adapter with CAN transport facade.
+Please have a look on xref:protocols/can.adoc[CAN] describe usage of CAN driver adapter with CAN transport facade.
 
 == Compatible CAN transports
 
-- link:socketcan.html[SocketCAN]
+- xref:transports/socketcan.adoc[SocketCAN]

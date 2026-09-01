@@ -51,7 +51,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: floatScale
-    BACnetContextTagReal floatScale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("floatScale"));
+    BACnetContextTagReal floatScale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("floatScale"));
 
     readBuffer.popContext();
     return new BACnetScaleBuilderImpl(floatScale);

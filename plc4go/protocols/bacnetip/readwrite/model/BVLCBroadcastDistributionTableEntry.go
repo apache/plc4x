@@ -193,12 +193,12 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetPlx4xTypeName() string {
 	return "BVLCBroadcastDistributionTableEntry"
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Array field
 	if len(m.Ip) > 0 {
-		lengthInBits += 8 * uint16(len(m.Ip))
+		lengthInBits += 8 * uint64(len(m.Ip))
 	}
 
 	// Simple field (port)
@@ -206,13 +206,13 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBits(ctx context.Conte
 
 	// Array field
 	if len(m.BroadcastDistributionMap) > 0 {
-		lengthInBits += 8 * uint16(len(m.BroadcastDistributionMap))
+		lengthInBits += 8 * uint64(len(m.BroadcastDistributionMap))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

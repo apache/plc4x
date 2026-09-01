@@ -78,7 +78,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: energyMeterRef
-    BACnetDeviceObjectReference energyMeterRef = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReference) BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer), WithOption.WithName("energyMeterRef"));
+    BACnetDeviceObjectReference energyMeterRef = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReference.class, BACnetDeviceObjectReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("energyMeterRef"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectReference.class, energyMeterRef, WithOption.WithName("actualValue"));

@@ -146,7 +146,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: systemCategory
-    ErrorReportingSystemCategory systemCategory = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorReportingSystemCategory) ErrorReportingSystemCategory.staticParse(readBuffer), readBuffer), WithOption.WithName("systemCategory"));
+    ErrorReportingSystemCategory systemCategory = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorReportingSystemCategory.class, ErrorReportingSystemCategory.staticParse(readBuffer)), readBuffer), WithOption.WithName("systemCategory"));
 
     // Simple Field: mostRecent
     boolean mostRecent = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("mostRecent"));

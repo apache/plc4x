@@ -70,13 +70,13 @@ public class BACnetEventTimestamps implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: toOffnormal
-    BACnetTimeStamp toOffnormal = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("toOffnormal"));
+    BACnetTimeStamp toOffnormal = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("toOffnormal"));
 
     // Simple Field: toFault
-    BACnetTimeStamp toFault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("toFault"));
+    BACnetTimeStamp toFault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("toFault"));
 
     // Simple Field: toNormal
-    BACnetTimeStamp toNormal = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("toNormal"));
+    BACnetTimeStamp toNormal = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("toNormal"));
 
     readBuffer.popContext();
     return new BACnetEventTimestamps(toOffnormal, toFault, toNormal);

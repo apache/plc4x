@@ -81,16 +81,16 @@ public class BACnetAccumulatorRecord implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timestamp
-    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("timestamp"));
+    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("timestamp"));
 
     // Simple Field: presentValue
-    BACnetContextTagSignedInteger presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagSignedInteger) BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER)), readBuffer), WithOption.WithName("presentValue"));
+    BACnetContextTagSignedInteger presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagSignedInteger.class, BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER))), readBuffer), WithOption.WithName("presentValue"));
 
     // Simple Field: accumulatedValue
-    BACnetContextTagSignedInteger accumulatedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagSignedInteger) BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER)), readBuffer), WithOption.WithName("accumulatedValue"));
+    BACnetContextTagSignedInteger accumulatedValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagSignedInteger.class, BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER))), readBuffer), WithOption.WithName("accumulatedValue"));
 
     // Simple Field: accumulatorStatus
-    BACnetAccumulatorRecordAccumulatorStatusTagged accumulatorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordAccumulatorStatusTagged.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("accumulatorStatus"));
+    BACnetAccumulatorRecordAccumulatorStatusTagged accumulatorStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccumulatorRecordAccumulatorStatusTagged.class, BACnetAccumulatorRecordAccumulatorStatusTagged.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("accumulatorStatus"));
 
     readBuffer.popContext();
     return new BACnetAccumulatorRecord(timestamp, presentValue, accumulatedValue, accumulatorStatus);

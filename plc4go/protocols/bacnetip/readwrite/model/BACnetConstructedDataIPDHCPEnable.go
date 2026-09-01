@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPDHCPEnable"
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipDhcpEnable)
 	lengthInBits += m.IpDhcpEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

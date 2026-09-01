@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId;
 import org.apache.plc4x.java.ads.discovery.readwrite.Constants;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
+import org.apache.plc4x.java.ads.readwrite.AdsDataTypeArrayInfo;
 import org.apache.plc4x.java.ads.resolution.ResolvedAdsTag;
 import org.apache.plc4x.java.ads.resolution.TagResolver;
 import org.apache.plc4x.java.ads.resolution.ValueDecoder;
@@ -40,6 +41,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.*;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
@@ -60,9 +62,7 @@ import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 import org.apache.plc4x.java.spi.transports.api.TransportInstance;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
-import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
-import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.values.PlcUDINT;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
@@ -76,12 +76,12 @@ import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
+import java.util.ArrayList;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * ADS over TCP connection.
@@ -278,7 +278,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                 ReadBuffer rb = new ReadBufferByteBased(dataTypeResponse.getData());
                 for (int i = 0; i < sizes.getDataTypeCount(); i++) {
                     try {
-                        AdsDataTypeTableEntry entry = AdsDataTypeTableEntry.staticParse(rb);
+                        AdsDataTypeTableEntry entry = AdsDataTypeTableEntry.staticParse(
+                            rb, getConfiguration().getMaxDataTypeTableDepth());
                         dataTypeTable.put(entry.getMainName(), entry);
                     } catch (BufferException e) {
                         return CompletableFuture.failedFuture(new RuntimeException(e));
@@ -486,7 +487,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
         // through the legacy ADSIGRP_SYM_HNDBYNAME round-trip — direct (group, offset, size)
         // resolution from the locally-cached tables is enough and lets us support the full
         // path syntax (".field", "[i]", multi-dim, mixed).
-        TagResolver resolver = new TagResolver(symbolTable, dataTypeTable);
+        TagResolver resolver = new TagResolver(symbolTable, dataTypeTable,
+            getConfiguration().isLoadSymbolAndDataTypeTables());
         Map<String, ResolvedAdsTag> resolved = new LinkedHashMap<>();
         Map<String, PlcResponseCode> initialFailures = new HashMap<>();
         for (String tagName : readRequest.getTagNames()) {
@@ -508,25 +510,19 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
     }
 
     private ResolvedAdsTag resolveForReadOrWrite(TagResolver resolver, PlcTag tag) {
-        if (tag == null) {
-            throw new PlcInvalidTagException("Tag could not be parsed");
-        }
-        if (tag instanceof SymbolicAdsTag s) {
-            return resolver.resolve(s);
-        }
-        if (tag instanceof DirectAdsStringTag s) {
-            return new ResolvedAdsTag(s.getIndexGroup(), s.getIndexOffset(),
+        return switch (tag) {
+            case null -> throw new PlcInvalidTagException("Tag could not be parsed");
+            case SymbolicAdsTag s -> resolver.resolve(s);
+            case DirectAdsStringTag s -> TagResolver.withDirectSelection(new ResolvedAdsTag(s.getIndexGroup(), s.getIndexOffset(),
                 computeDirectSize(s.getPlcDataType(), s.getStringLength(), s.getNumberOfElements()),
                 s.getPlcDataType(), TagResolver.plcValueTypeForName(s.getPlcDataType(), null),
-                s.getStringLength(), Collections.emptyList());
-        }
-        if (tag instanceof DirectAdsTag d) {
-            return new ResolvedAdsTag(d.getIndexGroup(), d.getIndexOffset(),
+                s.getStringLength(), Collections.emptyList()), s.getArrayInfo());
+            case DirectAdsTag d -> TagResolver.withDirectSelection(new ResolvedAdsTag(d.getIndexGroup(), d.getIndexOffset(),
                 computeDirectSize(d.getPlcDataType(), 0, d.getNumberOfElements()),
                 d.getPlcDataType(), TagResolver.plcValueTypeForName(d.getPlcDataType(), null),
-                0, Collections.emptyList());
-        }
-        throw new PlcInvalidTagException("Unsupported tag type: " + tag.getClass().getName());
+                0, Collections.emptyList()), d.getArrayInfo());
+            default -> throw new PlcInvalidTagException("Unsupported tag type: " + tag.getClass().getName());
+        };
     }
 
     private long computeDirectSize(String typeName, int stringLength, int numberOfElements) {
@@ -598,7 +594,7 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                                                          Map<String, PlcResponseCode> initialFailures) {
         // Tags participating in the sum-up read, in request order.
         List<String> orderedNames = readRequest.getTagNames().stream()
-            .filter(resolved::containsKey).collect(Collectors.toList());
+            .filter(resolved::containsKey).toList();
 
         long expectedDataSize = orderedNames.stream()
             .mapToLong(n -> 4L + resolved.get(n).sizeInBytes())  // 4-byte per-item return code + data
@@ -710,7 +706,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
 
     @Override
     protected CompletableFuture<PlcWriteResponse> onWrite(PlcWriteRequest writeRequest) {
-        TagResolver resolver = new TagResolver(symbolTable, dataTypeTable);
+        TagResolver resolver = new TagResolver(symbolTable, dataTypeTable,
+            getConfiguration().isLoadSymbolAndDataTypeTables());
         Map<String, ResolvedAdsTag> resolved = new LinkedHashMap<>();
         Map<String, PlcResponseCode> initialFailures = new HashMap<>();
         for (String tagName : writeRequest.getTagNames()) {
@@ -895,8 +892,11 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             }
             AdsDataTypeTableEntry dataType = dataTypeOpt.get();
             DirectAdsTag directAdsTag = getDirectAdsTagForSymbolicName(t.getTag());
+            if (directAdsTag == null) {
+                continue;
+            }
             // TODO: We should implement multi-dimensional arrays here ...
-            int numberOfElements = (t.getArrayInfo().isEmpty()) ? 1 : t.getArrayInfo().get(0).getSize();
+            int numberOfElements = (t.getArrayInfo().isEmpty()) ? 1 : t.getArrayInfo().getFirst().getSize();
             amsTCPPackets.add(new AmsTCPPacket(new AdsAddDeviceNotificationRequest(
                 getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
                 getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(), ReturnCode.OK, getInvokeId(),
@@ -1084,6 +1084,19 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
     protected CompletableFuture<PlcBrowseResponse> onBrowseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
         Map<String, PlcResponseCode> responseCodes = new HashMap<>();
         Map<String, List<PlcBrowseItem>> values = new HashMap<>();
+        if (!getConfiguration().isLoadSymbolAndDataTypeTables()) {
+            // Browsing lists the symbol table, so without it there is nothing to browse. Report
+            // that instead of answering with an empty result, which would look like a PLC without
+            // any symbols - see GH-1626.
+            LOGGER.warn("Cannot browse: the symbol and data-type tables were not loaded because"
+                + " 'load-symbol-and-data-type-tables' is disabled.");
+            for (String queryName : browseRequest.getQueryNames()) {
+                responseCodes.put(queryName, PlcResponseCode.UNSUPPORTED);
+                values.put(queryName, Collections.emptyList());
+            }
+            return CompletableFuture.completedFuture(
+                new DefaultPlcBrowseResponse(browseRequest, responseCodes, values));
+        }
         for (String queryName : browseRequest.getQueryNames()) {
             PlcQuery query = browseRequest.getQuery(queryName);
             List<PlcBrowseItem> resultsForQuery = new ArrayList<>();
@@ -1111,8 +1124,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                 List<ArrayInfo> arrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
                 List<ArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
                 for (AdsDataTypeArrayInfo a : dataType.getArrayInfo()) {
-                    arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
-                    itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
+                    arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
+                    itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
                 }
                 DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(
                     new SymbolicAdsTag(symbol.getName(), plcValueType, arrayInfo), symbol.getName(),
@@ -1168,8 +1181,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             List<ArrayInfo> arrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
             List<ArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
             for (AdsDataTypeArrayInfo a : childDataType.getArrayInfo()) {
-                arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
-                itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound()));
+                arrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
+                itemArrayInfo.add(new DefaultArrayInfo((int) a.getLowerBound(), (int) a.getUpperBound(), (int) a.getLowerBound(), true));
             }
             values.add(new DefaultPlcBrowseItem(
                 new SymbolicAdsTag(basePath + "." + child.getMainName(), plc4xPlcValueType, arrayInfo),
@@ -1191,11 +1204,11 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
         List<SymbolicAdsTag> referencedSymbolicTags = tags.stream()
             .filter(SymbolicAdsTag.class::isInstance)
             .map(SymbolicAdsTag.class::cast)
-            .collect(Collectors.toList());
+            .toList();
 
         List<SymbolicAdsTag> symbolicTagsNeedingResolution = referencedSymbolicTags.stream()
             .filter(t -> getDirectAdsTagForSymbolicName(t) == null)
-            .collect(Collectors.toList());
+            .toList();
 
         if (!symbolicTagsNeedingResolution.isEmpty()) {
             List<SymbolicAdsTag> requiredResolutionTags = symbolicTagsNeedingResolution.stream()
@@ -1204,7 +1217,7 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             if (!requiredResolutionTags.isEmpty()) {
                 CompletableFuture<Void> resolutionFuture;
                 if (requiredResolutionTags.size() == 1) {
-                    SymbolicAdsTag t = requiredResolutionTags.get(0);
+                    SymbolicAdsTag t = requiredResolutionTags.getFirst();
                     resolutionFuture = resolveSingleSymbolicAddress(t);
                     pendingResolutionRequests.put(t, resolutionFuture);
                 } else {
@@ -1364,7 +1377,7 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             }
         }
         for (AdsDataTypeTableEntry child : adsDataTypeTableEntry.getChildren()) {
-            if (child.getMainName().equals(remainingAddressParts.get(0))) {
+            if (child.getMainName().equals(remainingAddressParts.getFirst())) {
                 Optional<AdsDataTypeTableEntry> opt = getDataTypeTableEntry(child.getSecondaryName());
                 if (opt.isEmpty()) {
                     throw new PlcRuntimeException("Could not resolve data type " + child.getSecondaryName());
@@ -1375,7 +1388,7 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             }
         }
         throw new PlcRuntimeException(String.format("Couldn't find child with name '%s' for type '%s'",
-            remainingAddressParts.get(0), adsDataTypeTableEntry.getMainName()));
+            remainingAddressParts.getFirst(), adsDataTypeTableEntry.getMainName()));
     }
 
     private PlcValueType getPlcValueTypeForAdsDataTypeForBrowse(AdsDataTypeTableEntry dataTypeTableEntry) {

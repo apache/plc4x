@@ -39,7 +39,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             RejectCause = rejectCause;
         }
 
-        public static COTPPacketTpduError StaticParse(ReadBuffer readBuffer, ushort cotpLen, byte headerLength, int _startPos)
+        public static COTPPacketTpduError StaticParse(ReadBuffer readBuffer, uint cotpLen, byte headerLength, int _startPos)
         {
             var destinationReference = readBuffer.ReadUshort("destinationReference", 16);
             var rejectCause = readBuffer.ReadByte("rejectCause", 8);

@@ -79,7 +79,11 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	case "AdsDataTypeArrayInfo":
 		return AdsDataTypeArrayInfoParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeTableEntry":
-		return AdsDataTypeTableEntryParseWithBuffer(context.Background(), io)
+		maxDepth, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return AdsDataTypeTableEntryParseWithBuffer(context.Background(), io, maxDepth)
 	case "AmsNetId":
 		return AmsNetIdParseWithBuffer(context.Background(), io)
 	case "AdsStampHeader":

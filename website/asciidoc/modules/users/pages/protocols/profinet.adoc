@@ -19,12 +19,23 @@
 
 = Profinet (In Development)
 
-
+WARNING: The PROFINET driver is not usable yet. Two parallel implementations exist in the code base
+(`plc4j-driver-profinet` and `plc4j-driver-profinet-ng`, of which only the latter is shipped) and
+neither completes a working exchange - the subscription response future is never completed and
+cyclic IO frames are logged rather than dispatched. This page describes the intended design and is
+kept for reference; it is not linked from the navigation.
 
 The PROFINET driver implements a class 3 real time controller. Which is able to communicate with multiple devices
 on the same network segment.
 
 == Connection String Options
+
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
 
 On linux as the Java executable won't have permission to capture raw packets, this needs to be enabled via:-
 ----
@@ -40,7 +51,15 @@ include::partial$profinet.adoc[]
 
 3+|Supported Operations
 
-|| `subscribe` |Only the subscription service is currently supported.
+|| `discover` |Locates PROFINET devices on the network segment via DCP.
+
+|| `browse` |Lists the submodules of a connected device as tags.
+
+|| `subscribe` |*Does not deliver data.* The connect handshake is performed, but the subscription
+response future is never completed and `ProfinetConnection.onRegisterConsumer` throws
+`UnsupportedOperationException`, so no cyclic IO ever reaches an application.
+
+|| `read` / `write` |*Not implemented.*
 
 |===
 
@@ -116,4 +135,3 @@ Although the GSD file contains all the information needed to configure which dat
 The easiest approach is to use the browsing function of the Profinet driver to return a list of all available tags.
 Then only the addresses of interest can be selected.
 
-|===

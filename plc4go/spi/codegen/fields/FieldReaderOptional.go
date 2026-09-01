@@ -54,11 +54,11 @@ func (f *FieldReaderOptional[T]) ReadOptionalField(ctx context.Context, logicalN
 	optionalValue, err := dataReader.Read(ctx, logicalName, readerArgs...)
 	switch {
 	case errors.Is(err, utils.ParseAssertError{}):
-		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint16("oldPos", currentPos).Msg("Assertion doesn't match for field. Resetting read position to oldPos")
+		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint32("oldPos", currentPos).Msg("Assertion doesn't match for field. Resetting read position to oldPos")
 		dataReader.SetPos(currentPos)
 		return nil, nil
 	case errors.Is(err, io2.EOF):
-		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint16("oldPos", currentPos).Msg("Not enough bytes. Resetting read position to oldPos")
+		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint32("oldPos", currentPos).Msg("Not enough bytes. Resetting read position to oldPos")
 		dataReader.SetPos(currentPos)
 		return nil, nil
 	case err != nil:

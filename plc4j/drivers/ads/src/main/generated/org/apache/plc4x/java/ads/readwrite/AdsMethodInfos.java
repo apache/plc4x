@@ -54,7 +54,7 @@ public class AdsMethodInfos implements Message {
     int numMethodInfos = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numMethodInfos"));
 
     // Array Field: methodInfos
-    List<AdsMethodInfo> methodInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsMethodInfo) AdsMethodInfo.staticParse(readBuffer), readBuffer), numMethodInfos, WithOption.WithName("methodInfos"));
+    List<AdsMethodInfo> methodInfos = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsMethodInfo.class, AdsMethodInfo.staticParse(readBuffer)), readBuffer), numMethodInfos, WithOption.WithName("methodInfos"));
 
     readBuffer.popContext();
     return new AdsMethodInfos(methodInfos);

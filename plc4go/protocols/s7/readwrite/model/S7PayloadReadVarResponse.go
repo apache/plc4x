@@ -215,8 +215,8 @@ func (m *_S7PayloadReadVarResponse) GetPlx4xTypeName() string {
 	return "S7PayloadReadVarResponse"
 }
 
-func (m *_S7PayloadReadVarResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadContract.(*_S7Payload).getLengthInBits(ctx))
+func (m *_S7PayloadReadVarResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadContract.(*_S7Payload).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Items) > 0 {
@@ -229,7 +229,7 @@ func (m *_S7PayloadReadVarResponse) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_S7PayloadReadVarResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadReadVarResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -225,8 +225,8 @@ func (m *_BACnetLogRecordLogDatumFailure) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumFailure"
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (failure)
 	lengthInBits += m.Failure.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

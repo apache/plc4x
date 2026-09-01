@@ -228,24 +228,24 @@ func (m *_BACnetLiftCarDirectionTagged) GetPlx4xTypeName() string {
 	return "BACnetLiftCarDirectionTagged"
 }
 
-func (m *_BACnetLiftCarDirectionTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLiftCarDirectionTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
 
-func (m *_BACnetLiftCarDirectionTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLiftCarDirectionTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

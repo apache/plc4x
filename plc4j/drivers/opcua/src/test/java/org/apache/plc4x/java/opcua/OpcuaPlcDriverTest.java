@@ -27,14 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.authentication.PlcCertificateAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.spi.values.*;
@@ -82,9 +85,21 @@ public class OpcuaPlcDriverTest {
     private static final String APPLICATION_URI = "urn:org.apache:plc4x";
     private static final KeystoreGenerator SERVER_KEY_STORE_GENERATOR = new KeystoreGenerator("password", 2048, APPLICATION_URI);
     private static final KeystoreGenerator CLIENT_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "plc4x_plus_milo", "client");
+    // A second client identity with a 4096-bit key. Several reports blamed connection failures on
+    // large certificates (GH-2013, GH-2196, GH-2286), so the size is covered explicitly.
+    private static final KeystoreGenerator CLIENT_KEY_STORE_4096_GENERATOR = new KeystoreGenerator("changeit", 4096, APPLICATION_URI, "plc4x_plus_milo", "client4096");
+    // The user identity of an X509IdentityToken (GH-1845). Deliberately a different certificate
+    // than the client key store above: that one is the application instance certificate securing
+    // the channel, this one says who is logged in. The test server accepts exactly this common
+    // name, so it also proves the server really looked at the certificate we sent.
+    private static final String USER_COMMON_NAME = "plc4x-user";
+    private static final char[] USER_KEY_STORE_PASSWORD = "changeit".toCharArray();
+    private static final KeystoreGenerator USER_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "user", USER_COMMON_NAME);
+    private static final KeystoreGenerator UNKNOWN_USER_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "user", "somebody-else");
 
     private static final File SECURITY_DIR;
     private static final File CLIENT_KEY_STORE;
+    private static final File CLIENT_KEY_STORE_4096;
     // The server's certificate, exported so the client can pin trust to it. Since the
     // driver now rejects server certificates by default (no permissive fallback), every
     // secured connection needs an explicit trust anchor.
@@ -123,6 +138,15 @@ public class OpcuaPlcDriverTest {
             }
             try (FileOutputStream outputStream = new FileOutputStream(new File(trustedCerts, "plc4x.crt"))) {
                 CLIENT_KEY_STORE_GENERATOR.writeCertificateTo(outputStream);
+            }
+
+            // the same, for the 4096-bit client identity
+            CLIENT_KEY_STORE_4096 = Files.createTempFile("plc4x_opcua_client_4096_", ".p12").toAbsolutePath().toFile();
+            try (FileOutputStream outputStream = new FileOutputStream(CLIENT_KEY_STORE_4096)) {
+                CLIENT_KEY_STORE_4096_GENERATOR.writeKeyStoreTo(outputStream);
+            }
+            try (FileOutputStream outputStream = new FileOutputStream(new File(trustedCerts, "plc4x_4096.crt"))) {
+                CLIENT_KEY_STORE_4096_GENERATOR.writeCertificateTo(outputStream);
             }
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
@@ -204,6 +228,7 @@ public class OpcuaPlcDriverTest {
     private final String discoveryCorruptedParamWrongName = "diskovery=false";
 
     private String tcpConnectionAddress;
+    private String untrustedTcpConnectionAddress;
     private List<String> connectionStringValidSet;
 
     final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
@@ -211,8 +236,88 @@ public class OpcuaPlcDriverTest {
 
     @BeforeEach
     public void startUp() throws Exception {
-        tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686)) + "?endpoint-port=12686";
+        // The test server is a container with a self-signed certificate and no anchor we could
+        // trust, so these connections say so. The driver's default policy signs and encrypts, and
+        // that needs the server's certificate to be trusted one way or another.
+        // The driver's default policy signs and encrypts, which needs both a client key pair to
+        // sign with and a way to trust the server's certificate. The test server is a container
+        // with a self-signed certificate, hence pinning it rather than a trust store.
+        //
+        // Kept separate from the address itself, because a test that asserts what happens without
+        // a trust anchor has to be able to leave the anchor out.
+        untrustedTcpConnectionAddress =
+            String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686))
+                + "?endpoint-port=12686"
+                + "&tls.keystore=" + CLIENT_KEY_STORE.getAbsoluteFile().toString().replace("\\", "/")
+                + "&tls.keystore-password=changeit"
+                + "&tls.keystore-type=pkcs12";
+        tcpConnectionAddress = untrustedTcpConnectionAddress
+            + "&server-certificate-file=" + SERVER_CERTIFICATE.toString().replace("\\", "/");
         connectionStringValidSet = List.of(tcpConnectionAddress);
+    }
+
+    /**
+     * A tag whose address the tag handler can't parse stays in the request carrying an error code
+     * and a {@code null} tag. It has to come back as INVALID_ADDRESS - reading it used to throw a
+     * NullPointerException while the driver built the node id (there was a TODO in the read path
+     * admitting the check was missing).
+     */
+    @Test
+    void readWithInvalidTagAddressIsReported() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id")
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+        }
+    }
+
+    /**
+     * The point of per-tag codes: one bad address must not cost the caller the other tags of the
+     * same request, and the good values must not be shifted onto the wrong names - OPC UA maps
+     * its results back to tags by position.
+     */
+    @Test
+    void readMixesValidAndInvalidTagAddresses() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id")
+                .addTagAddress("bool", BOOL_IDENTIFIER_READ_WRITE)
+                .addTagAddress("int32", INT32_IDENTIFIER_READ_WRITE)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+            assertThat(response.getResponseCode("bool")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("int32")).isEqualTo(PlcResponseCode.OK);
+            // Values must still belong to the tag that asked for them.
+            assertThat(response.getPlcValue("bool").isBoolean()).isTrue();
+            assertThat(response.getPlcValue("int32").isLong() || response.getPlcValue("int32").isInteger()).isTrue();
+        }
+    }
+
+    @Test
+    void writeWithInvalidTagAddressIsReported() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcWriteResponse response = connection.writeRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id", 42)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+        }
+    }
+
+    @Test
+    void writeMixesValidAndInvalidTagAddresses() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcWriteResponse response = connection.writeRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id", 42)
+                .addTagAddress("bool", BOOL_IDENTIFIER_READ_WRITE, true)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+            assertThat(response.getResponseCode("bool")).isEqualTo(PlcResponseCode.OK);
+        }
     }
 
     @Test
@@ -237,6 +342,29 @@ public class OpcuaPlcDriverTest {
             // variables carry a resolved data type, and array variables expose their dimensions.
             assertThat(all).anyMatch(i -> i.getOptions().containsKey("data-type"));
             assertThat(all).anyMatch(i -> !i.getArrayInformation().isEmpty());
+        }
+    }
+
+    /**
+     * A browse walks whatever tree the server describes, and the driver cannot know how large that
+     * is before walking it. With the depth held at one level, the folder is still discovered but
+     * nothing below it is expanded - the same folder that carries children when the depth is left
+     * at its default.
+     */
+    @Test
+    void browseDepthLimitStopsTheRecursion() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager()
+            .getConnection(tcpConnectionAddress + "&browse-max-depth=1")) {
+            org.apache.plc4x.java.api.messages.PlcBrowseResponse response = connection.browseRequestBuilder()
+                .addQuery("hw", "ns=2;s=HelloWorld")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("hw")).isEqualTo(PlcResponseCode.OK);
+
+            org.apache.plc4x.java.api.messages.PlcBrowseItem scalarTypes = response.getValues("hw").stream()
+                .filter(i -> "ScalarTypes".equals(i.getName())).findFirst().orElse(null);
+            assertThat(scalarTypes).as("ScalarTypes folder").isNotNull();
+            assertThat(scalarTypes.getChildren())
+                .as("nothing below the first level is expanded").isEmpty();
         }
     }
 
@@ -321,7 +449,7 @@ public class OpcuaPlcDriverTest {
             org.apache.plc4x.java.api.value.PlcValue matrix = response.getPlcValue("intMatrix");
             assertThat(matrix.isList()).isTrue();
             assertThat(matrix.getList()).hasSize(2);
-            assertThat(matrix.getList().get(0).getList().get(0).getShort()).isEqualTo((short) 10);
+            assertThat(matrix.getList().get(0).getList().getFirst().getShort()).isEqualTo((short) 10);
             assertThat(matrix.getList().get(1).getList().get(2).getShort()).isEqualTo((short) -12);
         }
     }
@@ -593,10 +721,10 @@ public class OpcuaPlcDriverTest {
         @Test
         public void manyReconnectionsWithSingleSubscription() throws Exception {
             PlcDriverManager driverManager = new DefaultPlcDriverManager();
-            PlcConnectionManager connectionManager = driverManager.getConnectionManager();
+            PlcConnectionFactory connectionFactory = driverManager.getConnectionFactory();
 
             for (int i = 0; i < 3; i++) {
-                try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
 
                     PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
                             .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
@@ -612,17 +740,86 @@ public class OpcuaPlcDriverTest {
                 }
             }
         }
+        /**
+         * A CYCLIC subscription has to report the value on every interval, even when it never
+         * changes - see GH-1102. OPC UA itself only notifies on change, so a static value used to
+         * produce exactly one event (the monitored item's initial value) and nothing after that.
+         */
+        @Test
+        public void cyclicSubscriptionReportsRepeatedly() throws Exception {
+            PlcConnectionFactory connectionFactory = new DefaultPlcDriverManager().getConnectionFactory();
+
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
+                ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
+
+                PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                    // A value nobody is writing to - without the fix this reports once and stops.
+                    .addCyclicTagAddress("static", STRING_IDENTIFIER_READ_WRITE, Duration.ofMillis(500))
+                    .build();
+
+                PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("static")).isEqualTo(PlcResponseCode.OK);
+                response.getSubscriptionHandles().forEach(handle -> handle.register(events::add));
+
+                // Five cycles of head room for three expected reports.
+                for (int i = 0; i < 50 && events.size() < 3; i++) {
+                    Thread.sleep(100);
+                }
+
+                assertThat(events.size())
+                    .withFailMessage("expected repeated cyclic reports, got %d event(s)", events.size())
+                    .isGreaterThanOrEqualTo(3);
+                assertThat(events.getLast().getPlcValue("static")).isNotNull();
+
+                connection.unsubscriptionRequestBuilder()
+                    .addHandles(response.getSubscriptionHandles())
+                    .build()
+                    .execute();
+            }
+        }
+
+        /**
+         * A subscription covering several tags is served by a single handle, so
+         * getSubscriptionHandles() has to report exactly one - see GH-1896. Reporting it once per
+         * tag makes the documented "register a consumer on every handle" loop attach N consumers
+         * and deliver every event N times.
+         */
+        @Test
+        public void multiTagSubscriptionReportsOneHandle() throws Exception {
+            PlcConnectionFactory connectionFactory = new DefaultPlcDriverManager().getConnectionFactory();
+
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
+                PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                    .addChangeOfStateTag("first", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
+                    .addChangeOfStateTag("second", OpcuaTag.of(BOOL_IDENTIFIER_READ_WRITE))
+                    .addChangeOfStateTag("third", OpcuaTag.of(INT32_IDENTIFIER_READ_WRITE))
+                    .build();
+
+                PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("first")).isEqualTo(PlcResponseCode.OK);
+                assertThat(response.getResponseCode("second")).isEqualTo(PlcResponseCode.OK);
+                assertThat(response.getResponseCode("third")).isEqualTo(PlcResponseCode.OK);
+
+                assertThat(response.getSubscriptionHandles()).hasSize(1);
+
+                connection.unsubscriptionRequestBuilder()
+                    .addHandles(response.getSubscriptionHandles())
+                    .build()
+                    .execute();
+            }
+        }
+
         @Test
         public void manySubscriptionsOnSingleConnection() throws Exception {
             final int numberOfSubscriptions = 3;
 
             PlcDriverManager driverManager = new DefaultPlcDriverManager();
-            PlcConnectionManager connectionManager = driverManager.getConnectionManager();
+            PlcConnectionFactory connectionFactory = driverManager.getConnectionFactory();
 
             ArrayList<PlcSubscriptionResponse> plcSubscriptionResponses = new ArrayList<>();
             ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
 
-            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
                 for (int i = 0; i < numberOfSubscriptions; i++) {
                     PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
                             .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
@@ -750,9 +947,9 @@ public class OpcuaPlcDriverTest {
             String options = params(
                 entry("discovery", "false"),
                 entry("server-certificate-file", SERVER_CERTIFICATE.toString().replace("\\", "/")),
-                entry("key-store-file", CLIENT_KEY_STORE.toString().replace("\\", "/")), // handle windows paths
-                entry("key-store-password", "changeit"),
-                entry("key-store-type", "pkcs12"),
+                entry("tls.keystore", CLIENT_KEY_STORE.toString().replace("\\", "/")), // handle windows paths
+                entry("tls.keystore-password", "changeit"),
+                entry("tls.keystore-type", "pkcs12"),
                 entry("security-policy", SecurityPolicy.Basic256Sha256.name()),
                 entry("message-security", MessageSecurity.SIGN.name())
             );
@@ -771,36 +968,62 @@ public class OpcuaPlcDriverTest {
             }
         }
 
+        /**
+         * Discovery runs unprotected, because the certificate a protected channel needs is what
+         * discovery fetches. Carrying on from there gives a session with neither signing nor
+         * encryption while the configuration asked for both - so it has to stop, and say how to
+         * proceed. A certificate learned from the peer it authenticates cannot establish trust in
+         * that peer, so discovery cannot be the answer either.
+         */
+        @Test
+        void securedConnectionRelyingOnDiscoveryIsRejected() {
+            String options = params(
+                entry("discovery", "true"),
+                entry("tls.keystore", CLIENT_KEY_STORE.toString().replace("\\", "/")),
+                entry("tls.keystore-password", "changeit"),
+                entry("tls.keystore-type", "pkcs12"),
+                entry("security-policy", SecurityPolicy.Basic256Sha256.name()),
+                entry("message-security", MessageSecurity.SIGN_ENCRYPT.name())
+            );
+            assertThatThrownBy(() ->
+                new DefaultPlcDriverManager().getConnection(
+                    untrustedTcpConnectionAddress + PARAM_DIVIDER + options))
+                // Distinctive to the refusal itself: rejecting the discovered certificate for want
+                // of an anchor names 'server-certificate-file' too, so that would prove nothing.
+                .hasStackTraceContaining("would fall back to an unprotected channel");
+        }
+
         @Test
         void securedConnectionWithoutTrustAnchorIsRejected() {
-            // No trust-store-file and no server-certificate-file: the driver must fail
+            // No tls.trust-store and no server-certificate-file: the driver must fail
             // closed rather than blindly trusting whatever certificate the server presents.
             String options = params(
                 entry("discovery", "false"),
-                entry("key-store-file", CLIENT_KEY_STORE.toString().replace("\\", "/")),
-                entry("key-store-password", "changeit"),
-                entry("key-store-type", "pkcs12"),
+                entry("tls.keystore", CLIENT_KEY_STORE.toString().replace("\\", "/")),
+                entry("tls.keystore-password", "changeit"),
+                entry("tls.keystore-type", "pkcs12"),
                 entry("security-policy", SecurityPolicy.Basic256Sha256.name()),
                 entry("message-security", MessageSecurity.SIGN.name())
             );
             assertThatThrownBy(() ->
-                new DefaultPlcDriverManager().getConnection(tcpConnectionAddress + PARAM_DIVIDER + options))
+                new DefaultPlcDriverManager().getConnection(
+                    untrustedTcpConnectionAddress + PARAM_DIVIDER + options))
                 .isInstanceOf(Exception.class);
         }
 
         @Test
         void securedConnectionWithInsecureVerificationConnects() throws Exception {
-            // With insecure-certificate-verification the driver must use the permissive verifier
+            // With verification turned off the driver must use the permissive verifier
             // (it wins over pinning), so trust is not checked. The server certificate is still
             // supplied because an encrypted policy needs the server's public key to encrypt the
             // OpenSecureChannel; only its trust verification is bypassed here.
             String options = params(
                 entry("discovery", "false"),
-                entry("key-store-file", CLIENT_KEY_STORE.toString().replace("\\", "/")),
-                entry("key-store-password", "changeit"),
-                entry("key-store-type", "pkcs12"),
+                entry("tls.keystore", CLIENT_KEY_STORE.toString().replace("\\", "/")),
+                entry("tls.keystore-password", "changeit"),
+                entry("tls.keystore-type", "pkcs12"),
                 entry("server-certificate-file", SERVER_CERTIFICATE.toString().replace("\\", "/")),
-                entry("insecure-certificate-verification", "true"),
+                entry("tls.verify", "false"),
                 entry("security-policy", SecurityPolicy.Basic256Sha256.name()),
                 entry("message-security", MessageSecurity.SIGN.name())
             );
@@ -814,6 +1037,174 @@ public class OpcuaPlcDriverTest {
 
                 assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
             }
+        }
+    }
+
+    /**
+     * Connecting with a 4096-bit client certificate. Several reports suspected large certificates
+     * of breaking the secure-channel handshake (GH-2013, GH-2196, GH-2286), so the key size is
+     * covered explicitly rather than only at the 2048 bits the rest of the suite uses.
+     */
+    @Nested
+    class LargeCertificates {
+
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getSecuredConnectionSecurityPolicies")
+        public void connectsWith4096BitClientCertificate(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = tcpConnectionAddress + PARAM_DIVIDER + params(
+                entry("tls.keystore", CLIENT_KEY_STORE_4096.getAbsoluteFile().toString().replace("\\", "/")),
+                entry("tls.keystore-password", "changeit"),
+                entry("tls.keystore-type", "pkcs12"),
+                entry("server-certificate-file", SERVER_CERTIFICATE.toString().replace("\\", "/")),
+                entry("security-policy", policy.name()),
+                entry("message-security", messageSecurity.name()));
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+                assertThat(connection.isConnected())
+                    .describedAs("4096-bit client certificate with %s/%s", policy, messageSecurity)
+                    .isTrue();
+
+                PlcReadResponse response = connection.readRequestBuilder()
+                    .addTagAddress("value", BOOL_IDENTIFIER_READ_WRITE)
+                    .build().execute().get(30, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+    }
+
+    /**
+     * Username/password authentication against the Milo test server, which accepts
+     * {@code user}/{@code password1} and {@code admin}/{@code password2}.
+     * <p>
+     * The password is encrypted with the algorithm named by the <em>user token policy</em> the
+     * server advertises, which is not necessarily the one securing the channel. The test server
+     * exercises both variants on purpose: its unsecured endpoint advertises the username policy
+     * with Basic128Rsa15 (RSA-PKCS#1 v1.5) while the secured endpoints use Milo's default
+     * Basic256 (RSA-OAEP). PLC4X used to hardcode RSA-OAEP, so the PKCS#1 case was rejected with
+     * BadIdentityTokenInvalid - see GH-2154.
+     */
+    @Nested
+    class Authentication {
+
+        @Test
+        public void usernamePasswordOverUnsecuredEndpoint() throws Exception {
+            // The unsecured endpoint's username token policy demands RSA-PKCS#1 v1.5.
+            try (PlcConnection connection = new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "user", "password1"))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @Test
+        public void secondUserAccountAlsoAuthenticates() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "admin", "password2"))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getConnectionSecurityPolicies")
+        public void usernamePasswordWithSecurityPolicy(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = credentials(getConnectionString(policy, messageSecurity), "user", "password1");
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+                assertThat(connection.isConnected())
+                    .describedAs("authenticated connection with %s/%s", policy, messageSecurity)
+                    .isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @Test
+        public void wrongPasswordIsRejected() {
+            assertThatThrownBy(() -> new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "user", "not-the-password")))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        @Test
+        public void unknownUserIsRejected() {
+            assertThatThrownBy(() -> new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "nobody", "password1")))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        /**
+         * Without credentials the driver has to fall back to the anonymous token policy.
+         */
+        @Test
+        public void noCredentialsConnectsAnonymously() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        /**
+         * Certificate authentication (GH-1845): the driver sends an X509IdentityToken carrying the
+         * user certificate, plus a signature over the server certificate and nonce that proves it
+         * holds the matching private key. The channel is secured by the application instance
+         * certificate from the key store in the connection string, while the user identity comes
+         * from the PlcCertificateAuthentication - two different certificates, as OPC UA intends.
+         */
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getSecuredConnectionSecurityPolicies")
+        public void certificateAuthenticationWithSecurityPolicy(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = getConnectionString(policy, messageSecurity);
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString,
+                new PlcCertificateAuthentication(USER_KEY_STORE_GENERATOR.getKeyStore(), USER_KEY_STORE_PASSWORD))) {
+                assertThat(connection.isConnected())
+                    .describedAs("connection authenticated with a user certificate over %s/%s", policy, messageSecurity)
+                    .isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        /**
+         * The server only accepts the user certificate it knows. A different one has to be turned
+         * away - otherwise the test above would pass even if the driver sent a token the server
+         * never really validated.
+         */
+        @Test
+        public void unknownUserCertificateIsRejected() throws Exception {
+            String connectionString = getConnectionString(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT);
+
+            assertThatThrownBy(() -> new DefaultPlcDriverManager().getConnection(connectionString,
+                new PlcCertificateAuthentication(UNKNOWN_USER_KEY_STORE_GENERATOR.getKeyStore(), USER_KEY_STORE_PASSWORD)))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        /**
+         * The security of the user token is independent of the security of the channel: Milo
+         * advertises its certificate token policy with Basic256Sha256 of its own, so the token is
+         * signed with that even on the unsecured endpoint, where the channel itself has no
+         * security at all. The driver has to take the algorithm from the token policy rather than
+         * from the channel - taking it from the channel would leave nothing to sign with here.
+         */
+        @Test
+        public void certificateAuthenticationWorksOverAnUnsecuredChannel() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress,
+                new PlcCertificateAuthentication(USER_KEY_STORE_GENERATOR.getKeyStore(), USER_KEY_STORE_PASSWORD))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        private String credentials(String connectionString, String username, String password) {
+            return connectionString + PARAM_DIVIDER + params(
+                entry("username", username),
+                entry("password", password));
+        }
+
+        private void assertReadWorks(PlcConnection connection) throws Exception {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("value", BOOL_IDENTIFIER_READ_WRITE)
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
         }
     }
 
@@ -1029,9 +1420,9 @@ public class OpcuaPlcDriverTest {
             case Aes128_Sha256_RsaOaep:
             case Aes256_Sha256_RsaPss:
                 String connectionParams = params(
-                    entry("key-store-file", CLIENT_KEY_STORE.getAbsoluteFile().toString().replace("\\", "/")), // handle windows paths
-                    entry("key-store-password", "changeit"),
-                    entry("key-store-type", "pkcs12"),
+                    entry("tls.keystore", CLIENT_KEY_STORE.getAbsoluteFile().toString().replace("\\", "/")), // handle windows paths
+                    entry("tls.keystore-password", "changeit"),
+                    entry("tls.keystore-type", "pkcs12"),
                     // Pin trust to the server certificate; the driver rejects unknown certs by default.
                     entry("server-certificate-file", SERVER_CERTIFICATE.toString().replace("\\", "/")),
                     entry("security-policy", policy.name()),
@@ -1042,6 +1433,12 @@ public class OpcuaPlcDriverTest {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    /** The secured policies only - an unsecured channel never exchanges certificates. */
+    private static Stream<Arguments> getSecuredConnectionSecurityPolicies() {
+        return getConnectionSecurityPolicies()
+            .filter(arguments -> arguments.get()[0] != SecurityPolicy.NONE);
     }
 
     private static Stream<Arguments> getConnectionSecurityPolicies() {

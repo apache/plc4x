@@ -88,11 +88,11 @@ func CastOpcuaNodeIdServicesVariableOrientation(structType any) OpcuaNodeIdServi
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableOrientation) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableOrientation) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableOrientation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableOrientation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -139,13 +139,13 @@ func (m *_DateString) GetPlx4xTypeName() string {
 	return "DateString"
 }
 
-func (m *_DateString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DateString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_DateString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DateString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

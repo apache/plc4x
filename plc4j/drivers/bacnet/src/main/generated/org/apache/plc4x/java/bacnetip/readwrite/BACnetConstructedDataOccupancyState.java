@@ -78,7 +78,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: occupancyState
-    BACnetAccessZoneOccupancyStateTagged occupancyState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAccessZoneOccupancyStateTagged) BACnetAccessZoneOccupancyStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("occupancyState"));
+    BACnetAccessZoneOccupancyStateTagged occupancyState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessZoneOccupancyStateTagged.class, BACnetAccessZoneOccupancyStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("occupancyState"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetAccessZoneOccupancyStateTagged actualValue = FieldReaderFactory.readVirtualField(BACnetAccessZoneOccupancyStateTagged.class, occupancyState, WithOption.WithName("actualValue"));

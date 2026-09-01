@@ -52,7 +52,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: integerScale
-    BACnetContextTagSignedInteger integerScale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagSignedInteger) BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER)), readBuffer), WithOption.WithName("integerScale"));
+    BACnetContextTagSignedInteger integerScale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagSignedInteger.class, BACnetContextTagSignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.SIGNED_INTEGER))), readBuffer), WithOption.WithName("integerScale"));
 
     readBuffer.popContext();
     return new BACnetScaleBuilderImpl(integerScale);

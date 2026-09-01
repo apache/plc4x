@@ -27,70 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DriverBaseTest {
 
-    @Nested
-    @DisplayName("redactSecrets")
-    class RedactSecrets {
-
-        @Test
-        @DisplayName("masks the password parameter value")
-        void masksPassword() {
-            assertEquals(
-                "plc4x:tls://host:59837?remote-connection-string=s7&username=op&password=***&tls.verify-ssl=false",
-                DriverBase.redactSecrets(
-                    "plc4x:tls://host:59837?remote-connection-string=s7&username=op&password=hunter2&tls.verify-ssl=false"));
-        }
-
-        @Test
-        @DisplayName("masks a password that is the first query parameter")
-        void masksLeadingPassword() {
-            assertEquals(
-                "plc4x://host?password=***&username=op",
-                DriverBase.redactSecrets("plc4x://host?password=hunter2&username=op"));
-        }
-
-        @Test
-        @DisplayName("masks transport-prefixed and multiple secret parameters")
-        void masksMultipleSecrets() {
-            assertEquals(
-                "plc4x:tls://host?password=***&tls.keystore-password=***&api-token=***",
-                DriverBase.redactSecrets(
-                    "plc4x:tls://host?password=abc&tls.keystore-password=def&api-token=ghi"));
-        }
-
-        @Test
-        @DisplayName("is case-insensitive on the parameter name")
-        void caseInsensitive() {
-            assertEquals(
-                "plc4x://host?PassWord=***&Secret=***",
-                DriverBase.redactSecrets("plc4x://host?PassWord=abc&Secret=xyz"));
-        }
-
-        @Test
-        @DisplayName("leaves non-secret parameters untouched")
-        void leavesNonSecretsUntouched() {
-            String url = "plc4x:tls://host:59837?remote-connection-string=s7&username=op&tls.verify-ssl=false";
-            assertEquals(url, DriverBase.redactSecrets(url));
-        }
-
-        @Test
-        @DisplayName("leaves a connection string without parameters untouched")
-        void leavesNoParamStringUntouched() {
-            String url = "plc4x:tls://host:59837";
-            assertEquals(url, DriverBase.redactSecrets(url));
-        }
-
-        @Test
-        @DisplayName("does not match parameter names that merely look similar (e.g. username)")
-        void doesNotMaskUsername() {
-            assertEquals(
-                "plc4x://host?username=secretive-bob",
-                DriverBase.redactSecrets("plc4x://host?username=secretive-bob"));
-        }
-
-        @Test
-        @DisplayName("handles null")
-        void handlesNull() {
-            assertNull(DriverBase.redactSecrets(null));
-        }
-    }
+    // The redaction cases moved to ConnectionStringRedactorTest: what is redacted is now decided
+    // by the @Secret markings on the configuration classes rather than by a pattern living here,
+    // so the tests need configuration fixtures that this class has no reason to carry.
 }

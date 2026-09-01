@@ -69,10 +69,10 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dibDeviceInfo
-    DIBDeviceInfo dibDeviceInfo = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DIBDeviceInfo) DIBDeviceInfo.staticParse(readBuffer), readBuffer), WithOption.WithName("dibDeviceInfo"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DIBDeviceInfo dibDeviceInfo = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DIBDeviceInfo.class, DIBDeviceInfo.staticParse(readBuffer)), readBuffer), WithOption.WithName("dibDeviceInfo"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: dibSuppSvcFamilies
-    DIBSuppSvcFamilies dibSuppSvcFamilies = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DIBSuppSvcFamilies) DIBSuppSvcFamilies.staticParse(readBuffer), readBuffer), WithOption.WithName("dibSuppSvcFamilies"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DIBSuppSvcFamilies dibSuppSvcFamilies = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DIBSuppSvcFamilies.class, DIBSuppSvcFamilies.staticParse(readBuffer)), readBuffer), WithOption.WithName("dibSuppSvcFamilies"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new KnxNetIpMessageBuilderImpl(dibDeviceInfo, dibSuppSvcFamilies);

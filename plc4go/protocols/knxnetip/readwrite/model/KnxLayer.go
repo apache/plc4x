@@ -100,11 +100,11 @@ func CastKnxLayer(structType any) KnxLayer {
 	return castFunc(structType)
 }
 
-func (m KnxLayer) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxLayer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m KnxLayer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxLayer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

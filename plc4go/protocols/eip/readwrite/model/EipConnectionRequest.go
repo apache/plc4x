@@ -217,8 +217,8 @@ func (m *_EipConnectionRequest) GetPlx4xTypeName() string {
 	return "EipConnectionRequest"
 }
 
-func (m *_EipConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+func (m *_EipConnectionRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Const Field (protocolVersion)
 	lengthInBits += 16
@@ -229,7 +229,7 @@ func (m *_EipConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -308,7 +308,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws BufferException {
-        writeBuffer.writeSignedBigInteger(64, value, WithOption.WithName(getClass().getSimpleName()));
+        writeBuffer.writeUnsignedBigInteger(64, value, WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

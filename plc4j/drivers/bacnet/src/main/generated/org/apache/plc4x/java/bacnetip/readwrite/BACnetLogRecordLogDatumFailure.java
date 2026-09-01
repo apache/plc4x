@@ -52,7 +52,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: failure
-    ErrorEnclosed failure = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (8)), readBuffer), WithOption.WithName("failure"));
+    ErrorEnclosed failure = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (8))), readBuffer), WithOption.WithName("failure"));
 
     readBuffer.popContext();
     return new BACnetLogRecordLogDatumBuilderImpl(failure);

@@ -36,16 +36,16 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`request-timeout` |INT |4000| |Maximum time (in milliseconds) to wait for the test-frame and start-data-transfer handshake replies during connection setup.
+|`request-timeout-ms` |INT |4000| |Maximum time (in milliseconds) to wait for the test-frame and start-data-transfer handshake replies during connection setup.
 5+|Transport config options:
 5+|
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout` |INT |5000| |
-|`tcp.read-timeout` |INT |0| |
-|`tcp.write-timeout` |INT |0| |
-|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.connect-timeout-ms` |INT |5000| |
+|`tcp.read-timeout-ms` |INT |0| |
+|`tcp.write-timeout-ms` |INT |0| |
+|`tcp.no-delay` |BOOLEAN |true| |
 |`tcp.keep-alive` |BOOLEAN |false| |
 |`tcp.send-buffer-size` |INT |81920| |
 |`tcp.receive-buffer-size` |INT |81920| |

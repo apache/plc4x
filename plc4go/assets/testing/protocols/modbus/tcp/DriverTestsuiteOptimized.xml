@@ -134,7 +134,7 @@
           <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
-              <address>holding-register:1:REAL[2]</address>
+              <address>holding-register:1[0..1]:REAL</address>
             </tag>
           </tags>
         </TestReadRequest>
@@ -452,7 +452,7 @@
           <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
-              <address>holding-register:1:REAL[2]</address>
+              <address>holding-register:1[0..1]:REAL</address>
               <value>3.1415927</value>
               <value>3.1415927</value>
             </tag>

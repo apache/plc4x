@@ -50,6 +50,9 @@ public class S7BlockReadOptimizer extends S7Optimizer {
         Map<String, List<TagEntry>> tagsPerArea = new LinkedHashMap<>();
         LinkedHashMap<String, PlcTag> passthrough = new LinkedHashMap<>();
         for (String tagName : request.getTagNames()) {
+            if (isRejected(request, tagName)) {
+                continue;
+            }
             PlcTag plcTag = request.getTag(tagName);
             if (!(plcTag instanceof S7Tag s7Tag) || plcTag instanceof S7StringVarLengthTag) {
                 // Block-merging is unsafe for var-length strings (response size is dynamic);

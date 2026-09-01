@@ -419,8 +419,8 @@ func (m *_FieldMetaData) GetPlx4xTypeName() string {
 	return "FieldMetaData"
 }
 
-func (m *_FieldMetaData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_FieldMetaData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)
@@ -445,7 +445,7 @@ func (m *_FieldMetaData) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.ArrayDimensions) > 0 {
-		lengthInBits += 32 * uint16(len(m.ArrayDimensions))
+		lengthInBits += 32 * uint64(len(m.ArrayDimensions))
 	}
 
 	// Simple field (maxStringLength)
@@ -468,7 +468,7 @@ func (m *_FieldMetaData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_FieldMetaData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FieldMetaData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

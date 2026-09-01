@@ -100,11 +100,11 @@ func CastDuplex(structType any) Duplex {
 	return castFunc(structType)
 }
 
-func (m Duplex) GetLengthInBits(ctx context.Context) uint16 {
+func (m Duplex) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m Duplex) GetLengthInBytes(ctx context.Context) uint16 {
+func (m Duplex) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

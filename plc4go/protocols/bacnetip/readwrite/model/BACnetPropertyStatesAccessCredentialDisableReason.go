@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetPlx4xTypeName() 
 	return "BACnetPropertyStatesAccessCredentialDisableReason"
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (accessCredentialDisableReason)
 	lengthInBits += m.AccessCredentialDisableReason.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

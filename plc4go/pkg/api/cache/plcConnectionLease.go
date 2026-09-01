@@ -28,6 +28,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type plcConnectionLease struct {
@@ -78,7 +79,7 @@ func (t *plcConnectionLease) Connect(_ context.Context) error {
 
 func (t *plcConnectionLease) Close() error {
 	ctx := context.TODO()
-	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
 	defer cancelFunc()
 
 	if t.connection == nil {

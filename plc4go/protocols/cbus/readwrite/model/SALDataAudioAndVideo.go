@@ -232,8 +232,8 @@ func (m *_SALDataAudioAndVideo) GetPlx4xTypeName() string {
 	return "SALDataAudioAndVideo"
 }
 
-func (m *_SALDataAudioAndVideo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataAudioAndVideo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (audioVideoData)
 	lengthInBits += m.AudioVideoData.GetLengthInBits(ctx)
@@ -241,7 +241,7 @@ func (m *_SALDataAudioAndVideo) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataAudioAndVideo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataAudioAndVideo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

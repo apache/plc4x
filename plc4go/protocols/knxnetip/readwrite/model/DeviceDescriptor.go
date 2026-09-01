@@ -525,11 +525,11 @@ func CastDeviceDescriptor(structType any) DeviceDescriptor {
 	return castFunc(structType)
 }
 
-func (m DeviceDescriptor) GetLengthInBits(ctx context.Context) uint16 {
+func (m DeviceDescriptor) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m DeviceDescriptor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DeviceDescriptor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

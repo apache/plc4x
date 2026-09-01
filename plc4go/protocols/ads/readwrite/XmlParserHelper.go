@@ -92,7 +92,12 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AdsDataTypeArrayInfo":
 		return AdsDataTypeArrayInfoParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeTableEntry":
-		return AdsDataTypeTableEntryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		maxDepth := uint16(parsedUint0)
+		return AdsDataTypeTableEntryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), maxDepth)
 	case "AmsNetId":
 		return AmsNetIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":

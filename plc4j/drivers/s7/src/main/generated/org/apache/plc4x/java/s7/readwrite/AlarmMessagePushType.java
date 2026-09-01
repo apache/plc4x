@@ -81,7 +81,7 @@ public class AlarmMessagePushType implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeStamp
-    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DateAndTime) DateAndTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeStamp"));
+    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DateAndTime.class, DateAndTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeStamp"));
 
     // Simple Field: functionId
     short functionId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("functionId"));
@@ -90,7 +90,7 @@ public class AlarmMessagePushType implements Message {
     short numberOfObjects = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfObjects"));
 
     // Array Field: messageObjects
-    List<AlarmMessageObjectPushType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AlarmMessageObjectPushType) AlarmMessageObjectPushType.staticParse(readBuffer), readBuffer), numberOfObjects, WithOption.WithName("messageObjects"));
+    List<AlarmMessageObjectPushType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AlarmMessageObjectPushType.class, AlarmMessageObjectPushType.staticParse(readBuffer)), readBuffer), numberOfObjects, WithOption.WithName("messageObjects"));
 
     readBuffer.popContext();
     return new AlarmMessagePushType(timeStamp, functionId, numberOfObjects, messageObjects);

@@ -227,8 +227,8 @@ func (m *_SubscriptionAcknowledgement) GetPlx4xTypeName() string {
 	return "SubscriptionAcknowledgement"
 }
 
-func (m *_SubscriptionAcknowledgement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SubscriptionAcknowledgement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (subscriptionId)
 	lengthInBits += 32
@@ -239,7 +239,7 @@ func (m *_SubscriptionAcknowledgement) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_SubscriptionAcknowledgement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SubscriptionAcknowledgement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

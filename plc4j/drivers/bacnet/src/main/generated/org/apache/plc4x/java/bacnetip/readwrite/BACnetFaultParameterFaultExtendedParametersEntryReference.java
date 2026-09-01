@@ -52,7 +52,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReference extends B
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reference
-    BACnetDeviceObjectPropertyReferenceEnclosed reference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReferenceEnclosed) BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("reference"));
+    BACnetDeviceObjectPropertyReferenceEnclosed reference = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReferenceEnclosed.class, BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("reference"));
 
     readBuffer.popContext();
     return new BACnetFaultParameterFaultExtendedParametersEntryBuilderImpl(reference);

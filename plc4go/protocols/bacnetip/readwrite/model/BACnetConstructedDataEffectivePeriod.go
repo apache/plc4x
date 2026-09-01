@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEffectivePeriod"
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (dateRange)
 	lengthInBits += m.DateRange.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

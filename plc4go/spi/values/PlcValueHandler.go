@@ -349,20 +349,33 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType apiValues.PlcValueTyp
 
 	// Temporal Values
 	// - Duration
-	case apiValues.TIME:
+	case apiValues.TIME, apiValues.LTIME:
+		var duration time.Duration
 		if isString {
-			return nil, errors.New("string to IEC61131_TIME conversion not implemented")
+			parsed, err := parseDurationIso8601(stringValue)
+			if err != nil {
+				return nil, errors.Wrap(err, "couldn't parse string value '"+stringValue+"' to a duration")
+			}
+			duration = parsed
 		} else {
 			casted, ok := value.(time.Duration)
 			if !ok {
 				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to time.Duration")
 			}
-			return NewPlcTIME(casted), nil
+			duration = casted
 		}
+		if valueType == apiValues.LTIME {
+			return NewPlcLTIME(duration), nil
+		}
+		return NewPlcTIME(duration), nil
 	// - Date
 	case apiValues.DATE:
 		if isString {
-			return nil, errors.New("string to IEC61131_DATE conversion not implemented")
+			casted, err := time.Parse("2006-01-02", stringValue)
+			if err != nil {
+				return nil, errors.Wrap(err, "couldn't parse string value '"+stringValue+"' to a date")
+			}
+			return NewPlcDATE(casted), nil
 		} else {
 			casted, ok := value.(time.Time)
 			if !ok {
@@ -373,7 +386,11 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType apiValues.PlcValueTyp
 	// - Time
 	case apiValues.TIME_OF_DAY:
 		if isString {
-			return nil, errors.New("string to IEC61131_TIME_OF_DAY conversion not implemented")
+			casted, err := time.Parse("15:04:05.999999999", stringValue)
+			if err != nil {
+				return nil, errors.Wrap(err, "couldn't parse string value '"+stringValue+"' to a time of day")
+			}
+			return NewPlcTIME_OF_DAY(casted), nil
 		} else {
 			casted, ok := value.(time.Time)
 			if !ok {
@@ -384,7 +401,11 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType apiValues.PlcValueTyp
 	// - Date and Time
 	case apiValues.DATE_AND_TIME:
 		if isString {
-			return nil, errors.New("string to IEC61131_DATE_AND_TIME conversion not implemented")
+			casted, err := time.Parse("2006-01-02T15:04:05.999999999", stringValue)
+			if err != nil {
+				return nil, errors.Wrap(err, "couldn't parse string value '"+stringValue+"' to a date and time")
+			}
+			return NewPlcDATE_AND_TIME(casted), nil
 		} else {
 			casted, ok := value.(time.Time)
 			if !ok {

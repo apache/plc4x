@@ -148,11 +148,11 @@ func CastBACnetLifeSafetyOperation(structType any) BACnetLifeSafetyOperation {
 	return castFunc(structType)
 }
 
-func (m BACnetLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetLifeSafetyOperation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLifeSafetyOperation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

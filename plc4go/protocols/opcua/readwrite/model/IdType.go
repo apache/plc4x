@@ -106,11 +106,11 @@ func CastIdType(structType any) IdType {
 	return castFunc(structType)
 }
 
-func (m IdType) GetLengthInBits(ctx context.Context) uint16 {
+func (m IdType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m IdType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m IdType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

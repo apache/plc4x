@@ -35,7 +35,7 @@ public class CANOpenConfiguration implements Configuration {
     @Description("Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.")
     private boolean heartbeat;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(1000)
     @Description("Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.")
     private int requestTimeout;

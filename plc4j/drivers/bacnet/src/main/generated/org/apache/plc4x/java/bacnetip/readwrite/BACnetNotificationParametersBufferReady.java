@@ -96,19 +96,19 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: innerOpeningTag
-    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)), readBuffer), WithOption.WithName("innerOpeningTag"));
+    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber))), readBuffer), WithOption.WithName("innerOpeningTag"));
 
     // Simple Field: bufferProperty
-    BACnetDeviceObjectPropertyReferenceEnclosed bufferProperty = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectPropertyReferenceEnclosed) BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("bufferProperty"));
+    BACnetDeviceObjectPropertyReferenceEnclosed bufferProperty = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectPropertyReferenceEnclosed.class, BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("bufferProperty"));
 
     // Simple Field: previousNotification
-    BACnetContextTagUnsignedInteger previousNotification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("previousNotification"));
+    BACnetContextTagUnsignedInteger previousNotification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("previousNotification"));
 
     // Simple Field: currentNotification
-    BACnetContextTagUnsignedInteger currentNotification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("currentNotification"));
+    BACnetContextTagUnsignedInteger currentNotification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("currentNotification"));
 
     // Simple Field: innerClosingTag
-    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)), readBuffer), WithOption.WithName("innerClosingTag"));
+    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber))), readBuffer), WithOption.WithName("innerClosingTag"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersBuilderImpl(innerOpeningTag, bufferProperty, previousNotification, currentNotification, innerClosingTag);

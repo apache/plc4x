@@ -96,7 +96,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     long stamps = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("stamps"));
 
     // Array Field: adsStampHeaders
-    List<AdsStampHeader> adsStampHeaders = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsStampHeader) AdsStampHeader.staticParse(readBuffer), readBuffer), stamps, WithOption.WithName("adsStampHeaders"));
+    List<AdsStampHeader> adsStampHeaders = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsStampHeader.class, AdsStampHeader.staticParse(readBuffer)), readBuffer), stamps, WithOption.WithName("adsStampHeaders"));
 
     readBuffer.popContext();
     return new AmsPacketBuilderImpl(length, stamps, adsStampHeaders);

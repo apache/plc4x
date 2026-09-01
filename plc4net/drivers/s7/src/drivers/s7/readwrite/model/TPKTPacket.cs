@@ -47,7 +47,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
                 if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
             }
             var len = readBuffer.ReadUshort("len", 16);
-            var payload = COTPPacket.StaticParse(readBuffer, (ushort) ((len - 4)));
+            var payload = COTPPacket.StaticParse(readBuffer, (uint) ((len - 4)));
             return new TPKTPacket(payload);
         }
 

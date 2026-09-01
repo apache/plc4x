@@ -63,7 +63,7 @@ public class SDOAbort implements Message {
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 5), (byte) 0x00, WithOption.WithName("SDOAbort.reserved0"));
 
     // Simple Field: address
-    IndexAddress address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IndexAddress) IndexAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("address"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    IndexAddress address = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IndexAddress.class, IndexAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("address"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: code
     long code = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("code"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));

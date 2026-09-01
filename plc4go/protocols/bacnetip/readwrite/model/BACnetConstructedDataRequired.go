@@ -188,13 +188,13 @@ func (m *_BACnetConstructedDataRequired) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRequired"
 }
 
-func (m *_BACnetConstructedDataRequired) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRequired) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRequired) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRequired) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

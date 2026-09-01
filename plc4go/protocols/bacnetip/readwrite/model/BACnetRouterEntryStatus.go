@@ -100,11 +100,11 @@ func CastBACnetRouterEntryStatus(structType any) BACnetRouterEntryStatus {
 	return castFunc(structType)
 }
 
-func (m BACnetRouterEntryStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetRouterEntryStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetRouterEntryStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetRouterEntryStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

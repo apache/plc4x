@@ -25,6 +25,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"math/big"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -124,8 +125,8 @@ func (x *xmlWriteBuffer) PushContext(logicalName string, writerArgs ...WithWrite
 	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)}, Attr: attrs})
 }
 
-func (x *xmlWriteBuffer) GetPos() uint16 {
-	return uint16(x.pos * 8)
+func (x *xmlWriteBuffer) GetPos() uint32 {
+	return uint32(x.pos * 8)
 }
 
 func (x *xmlWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {
@@ -195,12 +196,17 @@ func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value 
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, fmt.Sprintf("%16.16f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	// Render the shortest decimal that round-trips back to the same float32. Printing a
+	// fixed number of fraction digits instead spells out the full binary expansion
+	// (9.87 -> 9.8699998855590820), which no testsuite reference can match. Fraction-digit
+	// differences to other implementations (13 vs 13.0) are absorbed by the comparison.
+	return x.encodeElement(logicalName, strconv.FormatFloat(float64(value), 'f', -1, 32), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, fmt.Sprintf("%32.32f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	// Shortest round-trip form, for the same reason as WriteFloat32.
+	return x.encodeElement(logicalName, strconv.FormatFloat(value, 'f', -1, 64), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {

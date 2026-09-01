@@ -102,7 +102,7 @@ class S7OptimizerTest {
     void splitWriteByteArrayCheckedSize() {
         LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags = new LinkedHashMap<>();
         tags.put("buf", new DefaultPlcTagValueItem<>(
-            S7Tag.of("%DB1.DBB0:BYTE[8]"), new PlcRawByteArray(new byte[]{1, 2, 3, 4, 5, 6, 7, 8})));
+            S7Tag.of("%DB1.DBB0[0..7]:BYTE"), new PlcRawByteArray(new byte[]{1, 2, 3, 4, 5, 6, 7, 8})));
         PlcWriteRequest req = new DefaultPlcWriteRequest(null, tags);
         List<S7WriteChunk> chunks = optimizer.splitWriteRequest(req, context);
         assertEquals(1, chunks.size());

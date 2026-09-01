@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinimumOnTime"
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumOnTime)
 	lengthInBits += m.MinimumOnTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -72,7 +72,7 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: accessTransactionEvents
-    List<BACnetAccessEventTagged> accessTransactionEvents = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetAccessEventTagged) BACnetAccessEventTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("accessTransactionEvents"));
+    List<BACnetAccessEventTagged> accessTransactionEvents = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAccessEventTagged.class, BACnetAccessEventTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("accessTransactionEvents"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(accessTransactionEvents);

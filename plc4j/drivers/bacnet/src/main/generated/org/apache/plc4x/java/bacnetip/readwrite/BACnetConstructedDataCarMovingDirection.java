@@ -78,7 +78,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: carMovingDirection
-    BACnetLiftCarDirectionTagged carMovingDirection = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftCarDirectionTagged) BACnetLiftCarDirectionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("carMovingDirection"));
+    BACnetLiftCarDirectionTagged carMovingDirection = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarDirectionTagged.class, BACnetLiftCarDirectionTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("carMovingDirection"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLiftCarDirectionTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLiftCarDirectionTagged.class, carMovingDirection, WithOption.WithName("actualValue"));

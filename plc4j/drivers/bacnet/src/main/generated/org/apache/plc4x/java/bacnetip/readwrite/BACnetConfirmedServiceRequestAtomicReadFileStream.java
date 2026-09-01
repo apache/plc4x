@@ -64,10 +64,10 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: fileStartPosition
-    BACnetApplicationTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("fileStartPosition"));
+    BACnetApplicationTagSignedInteger fileStartPosition = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("fileStartPosition"));
 
     // Simple Field: requestOctetCount
-    BACnetApplicationTagUnsignedInteger requestOctetCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("requestOctetCount"));
+    BACnetApplicationTagUnsignedInteger requestOctetCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("requestOctetCount"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilderImpl(fileStartPosition, requestOctetCount);

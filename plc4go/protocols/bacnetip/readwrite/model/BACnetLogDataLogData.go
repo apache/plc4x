@@ -273,8 +273,8 @@ func (m *_BACnetLogDataLogData) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogData"
 }
 
-func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
+func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -292,7 +292,7 @@ func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogDataLogData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

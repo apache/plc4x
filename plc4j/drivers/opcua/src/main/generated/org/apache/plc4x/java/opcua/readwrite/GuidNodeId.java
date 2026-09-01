@@ -62,7 +62,7 @@ public class GuidNodeId implements Message {
     int namespaceIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("namespaceIndex"));
 
     // Simple Field: identifier
-    GuidValue identifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (GuidValue) GuidValue.staticParse(readBuffer), readBuffer), WithOption.WithName("identifier"));
+    GuidValue identifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(GuidValue.class, GuidValue.staticParse(readBuffer)), readBuffer), WithOption.WithName("identifier"));
 
     readBuffer.popContext();
     return new GuidNodeId(namespaceIndex, identifier);

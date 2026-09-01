@@ -86,16 +86,22 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 				continue
 			}
 		}
-		if delta.Operation == xdiff.Update &&
-			string(delta.Subject.Parent.FirstChild.Name) == "dataType" &&
-			string(delta.Subject.Parent.FirstChild.Value) == "string" &&
-			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
-			string(delta.Object.Parent.FirstChild.Value) == "string" {
-			if diff, err := xdiff.Compare(delta.Subject, delta.Object); diff == nil && err == nil {
-				localLog.Info().Interface("delta", delta).Msg("We ignore newline diffs")
-				continue
-			}
-		}
+		// NOTE: There used to be a "We ignore newline diffs" carve-out here for
+		// dataType="string" leaf Updates, added in 8828c6815e alongside a change to
+		// WriteBufferXmlBased.WriteString that stopped CDATA-wrapping multiline
+		// strings. Its guard called xdiff.Compare(delta.Subject, delta.Object)
+		// directly on the two differing leaf value nodes to decide whether the
+		// diff was "just" an escaping artifact. That guard is a no-op: for two
+		// leaf nodes (FirstChild == nil on both sides), xdiff's editScript never
+		// emits an Update delta for the *root* pair passed to Compare - Updates
+		// are only produced while iterating a parent's children - so the inner
+		// Compare always returned (nil, nil) regardless of whether the string
+		// values actually differed. That made the carve-out a blanket ignore of
+		// every dataType="string" leaf diff (see GH-2611 EIP parity follow-up).
+		// The original motivating case (CDATA vs entity-escaped newlines) no
+		// longer applies since WriteString stopped emitting CDATA, so the
+		// carve-out is removed rather than replaced: string-leaf diffs now fail
+		// the comparison like any other leaf diff.
 		cleanDiff = append(cleanDiff, delta)
 	}
 

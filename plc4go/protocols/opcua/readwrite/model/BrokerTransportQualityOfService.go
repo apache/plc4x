@@ -112,11 +112,11 @@ func CastBrokerTransportQualityOfService(structType any) BrokerTransportQualityO
 	return castFunc(structType)
 }
 
-func (m BrokerTransportQualityOfService) GetLengthInBits(ctx context.Context) uint16 {
+func (m BrokerTransportQualityOfService) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m BrokerTransportQualityOfService) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BrokerTransportQualityOfService) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

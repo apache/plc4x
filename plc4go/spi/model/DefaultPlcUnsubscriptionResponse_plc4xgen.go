@@ -49,7 +49,7 @@ func (d *DefaultPlcUnsubscriptionResponse) SerializeWithWriteBuffer(ctx context.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("none", uint32(len(d.none)*8), d.none); err != nil {
+	if err := writeBuffer.WriteString("none", uint32(len(d.none)*8), d.none, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("PlcUnsubscriptionResponse"); err != nil {

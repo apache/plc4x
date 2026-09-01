@@ -53,7 +53,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask extends BACnetE
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bitmask
-    BACnetContextTagBitString bitmask = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagBitString) BACnetContextTagBitString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BIT_STRING)), readBuffer), WithOption.WithName("bitmask"));
+    BACnetContextTagBitString bitmask = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagBitString.class, BACnetContextTagBitString.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BIT_STRING))), readBuffer), WithOption.WithName("bitmask"));
 
     readBuffer.popContext();
     return new BACnetEventParameterChangeOfValueCivCriteriaBuilderImpl(bitmask);

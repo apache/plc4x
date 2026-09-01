@@ -81,13 +81,13 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: vtSessionIdentifier
-    BACnetApplicationTagUnsignedInteger vtSessionIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("vtSessionIdentifier"));
+    BACnetApplicationTagUnsignedInteger vtSessionIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("vtSessionIdentifier"));
 
     // Simple Field: vtNewData
-    BACnetApplicationTagOctetString vtNewData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("vtNewData"));
+    BACnetApplicationTagOctetString vtNewData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("vtNewData"));
 
     // Simple Field: vtDataFlag
-    BACnetApplicationTagUnsignedInteger vtDataFlag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("vtDataFlag"));
+    BACnetApplicationTagUnsignedInteger vtDataFlag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("vtDataFlag"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(vtSessionIdentifier, vtNewData, vtDataFlag);

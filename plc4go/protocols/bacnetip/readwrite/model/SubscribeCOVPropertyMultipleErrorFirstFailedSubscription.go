@@ -311,8 +311,8 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetPlx4xType
 	return "SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -332,7 +332,7 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInB
 	return lengthInBits
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

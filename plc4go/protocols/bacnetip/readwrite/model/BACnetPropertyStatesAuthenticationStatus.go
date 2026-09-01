@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesAuthenticationStatus"
 }
 
-func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (authenticationStatus)
 	lengthInBits += m.AuthenticationStatus.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

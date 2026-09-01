@@ -225,8 +225,8 @@ func (m *_BACnetCalendarEntryWeekNDay) GetPlx4xTypeName() string {
 	return "BACnetCalendarEntryWeekNDay"
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).getLengthInBits(ctx))
+func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).getLengthInBits(ctx))
 
 	// Simple field (weekNDay)
 	lengthInBits += m.WeekNDay.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

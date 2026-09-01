@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_SINGLE_POINT_INFORMATION extends Infor
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: siq
-    SinglePointInformation siq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SinglePointInformation) SinglePointInformation.staticParse(readBuffer), readBuffer), WithOption.WithName("siq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    SinglePointInformation siq = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SinglePointInformation.class, SinglePointInformation.staticParse(readBuffer)), readBuffer), WithOption.WithName("siq"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(siq);

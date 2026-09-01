@@ -154,11 +154,11 @@ func CastBACnetNetworkType(structType any) BACnetNetworkType {
 	return castFunc(structType)
 }
 
-func (m BACnetNetworkType) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetNetworkType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetNetworkType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetNetworkType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

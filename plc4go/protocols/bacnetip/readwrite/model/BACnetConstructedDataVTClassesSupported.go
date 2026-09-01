@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVTClassesSupported"
 }
 
-func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.VtClassesSupported) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

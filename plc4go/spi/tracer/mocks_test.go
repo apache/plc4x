@@ -174,7 +174,7 @@ type MockTracer_AddTrace_Call struct {
 // AddTrace is a helper method to define mock.On call
 //   - operation string
 //   - message string
-func (_e *MockTracer_Expecter) AddTrace(operation interface{}, message interface{}) *MockTracer_AddTrace_Call {
+func (_e *MockTracer_Expecter) AddTrace(operation any, message any) *MockTracer_AddTrace_Call {
 	return &MockTracer_AddTrace_Call{Call: _e.mock.On("AddTrace", operation, message)}
 }
 
@@ -231,7 +231,7 @@ type MockTracer_AddTransactionalStartTrace_Call struct {
 // AddTransactionalStartTrace is a helper method to define mock.On call
 //   - operation string
 //   - message string
-func (_e *MockTracer_Expecter) AddTransactionalStartTrace(operation interface{}, message interface{}) *MockTracer_AddTransactionalStartTrace_Call {
+func (_e *MockTracer_Expecter) AddTransactionalStartTrace(operation any, message any) *MockTracer_AddTransactionalStartTrace_Call {
 	return &MockTracer_AddTransactionalStartTrace_Call{Call: _e.mock.On("AddTransactionalStartTrace", operation, message)}
 }
 
@@ -278,7 +278,7 @@ type MockTracer_AddTransactionalTrace_Call struct {
 //   - transactionId string
 //   - operation string
 //   - message string
-func (_e *MockTracer_Expecter) AddTransactionalTrace(transactionId interface{}, operation interface{}, message interface{}) *MockTracer_AddTransactionalTrace_Call {
+func (_e *MockTracer_Expecter) AddTransactionalTrace(transactionId any, operation any, message any) *MockTracer_AddTransactionalTrace_Call {
 	return &MockTracer_AddTransactionalTrace_Call{Call: _e.mock.On("AddTransactionalTrace", transactionId, operation, message)}
 }
 
@@ -345,7 +345,7 @@ type MockTracer_FilterTraces_Call struct {
 //   - transactionIdFilter string
 //   - operationFilter string
 //   - messageFilter string
-func (_e *MockTracer_Expecter) FilterTraces(traces interface{}, connectionIdFilter interface{}, transactionIdFilter interface{}, operationFilter interface{}, messageFilter interface{}) *MockTracer_FilterTraces_Call {
+func (_e *MockTracer_Expecter) FilterTraces(traces any, connectionIdFilter any, transactionIdFilter any, operationFilter any, messageFilter any) *MockTracer_FilterTraces_Call {
 	return &MockTracer_FilterTraces_Call{Call: _e.mock.On("FilterTraces", traces, connectionIdFilter, transactionIdFilter, operationFilter, messageFilter)}
 }
 
@@ -528,7 +528,7 @@ type MockTracer_SetConnectionId_Call struct {
 
 // SetConnectionId is a helper method to define mock.On call
 //   - connectionId string
-func (_e *MockTracer_Expecter) SetConnectionId(connectionId interface{}) *MockTracer_SetConnectionId_Call {
+func (_e *MockTracer_Expecter) SetConnectionId(connectionId any) *MockTracer_SetConnectionId_Call {
 	return &MockTracer_SetConnectionId_Call{Call: _e.mock.On("SetConnectionId", connectionId)}
 }
 

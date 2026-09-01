@@ -262,8 +262,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetPlx4xTypeName() string
 	return "BACnetConfirmedServiceRequestAtomicReadFile"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (fileIdentifier)
 	lengthInBits += m.FileIdentifier.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

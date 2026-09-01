@@ -40,7 +40,7 @@ class DirectAdsTagTest {
 
     @Test
     void ofParsesHexAddress() {
-        DirectAdsTag tag = DirectAdsTag.of("0x4040/0xFF:LREAL[5]");
+        DirectAdsTag tag = DirectAdsTag.of("0x4040/0xFF[0..4]:LREAL");
         assertEquals(0x4040L, tag.getIndexGroup());
         assertEquals(0xFFL, tag.getIndexOffset());
         assertEquals(5, tag.getNumberOfElements());
@@ -85,7 +85,8 @@ class DirectAdsTagTest {
         DirectAdsTag single = DirectAdsTag.of(1, 2, "DINT", 1);
         assertFalse(single.getAddressString().contains("["));
         DirectAdsTag array = DirectAdsTag.of(1, 2, "DINT", 4);
-        assertTrue(array.getAddressString().contains("[4]"));
+        // Rendered in the shared notation: four elements from offset 0.
+        assertTrue(array.getAddressString().contains("[0..3]"));
     }
 
     @Test

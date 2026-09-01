@@ -179,7 +179,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         manager.disconnect(connected);
 
         // Assert disconnected
-        Object o = FieldUtils.readDeclaredField(connected, PlcEntityManager.CONNECTION_MANAGER_FIELD_NAME, true);
+        Object o = FieldUtils.readDeclaredField(connected, PlcEntityManager.CONNECTION_FACTORY_FIELD_NAME, true);
         assertNull(o);
 
         // Call a method and receive the result

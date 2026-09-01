@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetPlx4xTypeName() strin
 	return "BACnetConstructedDataDistributionKeyRevision"
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (distributionKeyRevision)
 	lengthInBits += m.DistributionKeyRevision.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

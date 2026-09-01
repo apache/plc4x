@@ -78,7 +78,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: allowGroupDelayInhibit
-    BACnetApplicationTagBoolean allowGroupDelayInhibit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("allowGroupDelayInhibit"));
+    BACnetApplicationTagBoolean allowGroupDelayInhibit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("allowGroupDelayInhibit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, allowGroupDelayInhibit, WithOption.WithName("actualValue"));

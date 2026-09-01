@@ -200,15 +200,15 @@ func (m *_NullExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "NullExtensionObjectWithMask"
 }
 
-func (m *_NullExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
+func (m *_NullExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_NullExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NullExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

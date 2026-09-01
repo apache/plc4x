@@ -104,9 +104,12 @@ func (e *executor) getCtx() context.Context {
 
 func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
 	if runnable == nil {
-		value := atomic.Value{}
-		value.Store(errors.New("runnable must not be nil"))
-		return &future{err: value}
+		// Settle the future through Cancel, exactly like the shutdown path below: a future which only
+		// carries an error without reaching a terminal state never releases AwaitCompletion, so the
+		// caller would wait out its own context and see a timeout instead of this error.
+		rejected := &future{}
+		rejected.Cancel(false, errors.New("runnable must not be nil"))
+		return rejected
 	}
 	e.log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}

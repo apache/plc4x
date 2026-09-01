@@ -297,8 +297,8 @@ func (m *_SearchResponse) GetPlx4xTypeName() string {
 	return "SearchResponse"
 }
 
-func (m *_SearchResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_SearchResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits(ctx)
@@ -312,7 +312,7 @@ func (m *_SearchResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SearchResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SearchResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

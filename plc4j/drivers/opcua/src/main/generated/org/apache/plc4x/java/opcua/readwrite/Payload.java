@@ -58,7 +58,7 @@ public abstract class Payload implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: sequenceHeader
-    SequenceHeader sequenceHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SequenceHeader) SequenceHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("sequenceHeader"));
+    SequenceHeader sequenceHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SequenceHeader.class, SequenceHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("sequenceHeader"));
 
     // Switch Field
     PayloadBuilder builder = null;

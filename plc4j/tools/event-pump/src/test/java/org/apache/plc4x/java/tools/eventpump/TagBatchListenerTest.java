@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.tools.eventpump;
 
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.tools.eventpump.triggers.TimerTrigger;
 import org.junit.jupiter.api.Test;
@@ -33,12 +33,12 @@ class TagBatchListenerTest {
 
     @Test
     void testDefaultOnErrorMethod() {
-        PlcConnectionManager mockManager = mock(PlcConnectionManager.class);
+        PlcConnectionFactory mockManager = mock(PlcConnectionFactory.class);
 
         // Create a real batch for testing
         TagBatch batch = TagBatch.builder()
                 .withBatchId("test-batch")
-                .withConnectionManager(mockManager)
+                .withConnectionFactory(mockManager)
                 .withConnectionString("test://localhost")
                 .addTagAddress("test", "MAIN.test")
                 .withTrigger(new TimerTrigger(1, TimeUnit.SECONDS))
@@ -64,12 +64,12 @@ class TagBatchListenerTest {
 
     @Test
     void testListenerCanOverrideOnError() {
-        PlcConnectionManager mockManager = mock(PlcConnectionManager.class);
+        PlcConnectionFactory mockManager = mock(PlcConnectionFactory.class);
 
         // Create a real batch for testing
         TagBatch batch = TagBatch.builder()
                 .withBatchId("test-batch")
-                .withConnectionManager(mockManager)
+                .withConnectionFactory(mockManager)
                 .withConnectionString("test://localhost")
                 .addTagAddress("test", "MAIN.test")
                 .withTrigger(new TimerTrigger(1, TimeUnit.SECONDS))

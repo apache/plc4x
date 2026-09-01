@@ -215,7 +215,7 @@ func newSegmentedTestConnection(t *testing.T, log zerolog.Logger, port int, peer
 func executeLargeWrite(t *testing.T, conn plc4go.PlcConnection, tags int) (apiModel.PlcWriteResponse, error) {
 	t.Helper()
 	builder := conn.WriteRequestBuilder()
-	for i := 0; i < tags; i++ {
+	for i := range tags {
 		builder.AddTagAddress(fmt.Sprintf("pv%d", i), fmt.Sprintf("ANALOG_VALUE,%d/PRESENT_VALUE", i+1), float32(i)+0.5)
 	}
 	wr, err := builder.Build()
@@ -254,7 +254,7 @@ func TestSegmentedWrite_RoundtripWindow1(t *testing.T) {
 	require.True(t, ok, "reassembled request must be a WritePropertyMultiple, got %T", reassembled)
 	assert.Len(t, wpm.GetData(), 24, "all write-access specs must survive reassembly")
 
-	for i := 0; i < 12; i++ {
+	for i := range 12 {
 		assert.Equal(t, apiModel.PlcResponseCode_OK, response.GetResponseCode(fmt.Sprintf("pv%d", i)))
 	}
 }

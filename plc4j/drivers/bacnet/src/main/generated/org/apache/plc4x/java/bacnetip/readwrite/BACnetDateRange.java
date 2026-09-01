@@ -59,10 +59,10 @@ public class BACnetDateRange implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: startDate
-    BACnetApplicationTagDate startDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), WithOption.WithName("startDate"));
+    BACnetApplicationTagDate startDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("startDate"));
 
     // Simple Field: endDate
-    BACnetApplicationTagDate endDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), WithOption.WithName("endDate"));
+    BACnetApplicationTagDate endDate = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("endDate"));
 
     readBuffer.popContext();
     return new BACnetDateRange(startDate, endDate);

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataExpirationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExpirationTime"
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (expirationTime)
 	lengthInBits += m.ExpirationTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

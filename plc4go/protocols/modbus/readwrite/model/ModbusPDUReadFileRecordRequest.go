@@ -220,8 +220,8 @@ func (m *_ModbusPDUReadFileRecordRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFileRecordRequest"
 }
 
-func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -236,7 +236,7 @@ func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

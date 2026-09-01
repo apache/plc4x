@@ -245,11 +245,11 @@ func CastClockAndTimekeepingCommandTypeContainer(structType any) ClockAndTimekee
 	return castFunc(structType)
 }
 
-func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataInitialTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInitialTimeout"
 }
 
-func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (initialTimeout)
 	lengthInBits += m.InitialTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

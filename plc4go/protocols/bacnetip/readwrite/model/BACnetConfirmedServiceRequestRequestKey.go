@@ -211,18 +211,18 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestRequestKey"
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
-		lengthInBits += 8 * uint16(len(m.BytesOfRemovedService))
+		lengthInBits += 8 * uint64(len(m.BytesOfRemovedService))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

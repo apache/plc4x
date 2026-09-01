@@ -19,8 +19,11 @@
 
 package org.apache.plc4x.java.eip.base.tag;
 
-import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.spi.drivers.model.AddressConstraints;
+import org.apache.plc4x.java.spi.drivers.model.ArrayNotationParser;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
@@ -30,47 +33,166 @@ import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EipTag implements PlcTag, Serializable {
 
-    private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^(?<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile(
+        "^(?<tag>[%a-zA-Z_.0-9]+)"
+            + ArrayNotationParser.ARRAY_GROUP
+            + "(?::(?<dataType>[A-Z]+))?$");
+
+    /** What a CIP request can encode of a selection: one dimension, starting no later than 255. */
+    private static final AddressConstraints CONSTRAINTS = AddressConstraints.SINGLE_DIMENSION
+        .withMaxIndex(255)
+        .withOnlyTrailingDimensionMayBeRange(true);
+
+    /**
+     * Splits an address into the members it names. A qualifier of '[' introduces an array
+     * member, anything else another symbol; characters outside a member name (a leading '%')
+     * are skipped. Compiled once - a tag address is decomposed when the tag is built, not
+     * again for every request that uses it.
+     */
+    private static final Pattern PATH_PATTERN = Pattern.compile("([.\\[\\]])*([A-Za-z_0-9]+)");
 
     private static final String GROUP_NAME_TAG = "tag";
-    private static final String GROUP_NAME_GROUP_NAME_ELEMENTS = "elementNb";
+    private static final String GROUP_NAME_ARRAY = "array";
     private static final String GROUP_NAME_TYPE = "dataType";
 
+    /** One step of the CIP path an address describes. */
+    public sealed interface PathElement permits SymbolElement, MemberElement {
+    }
+
+    /** A named symbol - a tag, or one member of a structured tag. */
+    public record SymbolElement(String name) implements PathElement {
+    }
+
+    /** An array member, addressed by index. */
+    public record MemberElement(short index) implements PathElement {
+    }
+
+    /** A CIP request carries its element count in 16 bits. */
+    private static final long MAX_ELEMENTS = 65535L;
+
     private final String tag;
-    private CIPDataTypeCode type;
-    private int elementNb;
+    private final CIPDataTypeCode type;
+    /**
+     * What the address selects. Drives the CIP path and the element count. Not what
+     * {@link #getArrayInfo()} reports - see there.
+     */
+    private final List<ArrayInfo> selection;
+    private final boolean scalarSelection;
+    private final List<PathElement> pathElements;
 
     public EipTag(String tag) {
-        this.tag = tag;
-        this.elementNb = 1;
+        this(tag, null, 1);
     }
 
     public EipTag(String tag, int elementNb) {
-        this.tag = tag;
-        this.elementNb = elementNb;
-    }
-
-    public EipTag(String tag, CIPDataTypeCode type, int elementNb) {
-        this.tag = tag;
-        this.type = type;
-        this.elementNb = elementNb;
+        this(tag, null, elementNb);
     }
 
     public EipTag(String tag, CIPDataTypeCode type) {
+        this(tag, type, 1);
+    }
+
+    /**
+     * Builds a tag selecting {@code elementNb} elements from the start of {@code tag}, which is
+     * the shape the older constructors describe. An address selecting a range is built through
+     * {@link #of(String)}.
+     */
+    public EipTag(String tag, CIPDataTypeCode type, int elementNb) {
+        this(tag, type, rangeOf(tag, Math.max(elementNb, 1)));
+    }
+
+    public EipTag(String tag, CIPDataTypeCode type, List<ArrayInfo> selection) {
         this.tag = tag;
         this.type = type;
+        this.selection = selection == null ? Collections.emptyList() : List.copyOf(selection);
+        this.scalarSelection =
+            ArrayNotationParser.selectsSingleElement(ArrayNotationParser.expressionPart(tag));
+        this.pathElements = decomposePath(tag, this.selection);
+        // A CIP read request carries the element count in 16 bits, so a larger selection is
+        // narrowed on the way out - [0..65535] would ask the device for zero elements. Refuse it
+        // here rather than send a request that means something else.
+        long elements = 1;
+        for (ArrayInfo dimension : this.selection) {
+            elements *= dimension.getSize();
+        }
+        if (elements > MAX_ELEMENTS) {
+            throw new PlcInvalidTagException("Tag '" + tag + "' selects " + elements
+                + " elements, more than the " + MAX_ELEMENTS + " a CIP request can ask for.");
+        }
+    }
+
+    /**
+     * The selection an element count describes on its own: the first {@code count} elements,
+     * unless the address itself already names a starting index.
+     */
+    private static List<ArrayInfo> rangeOf(String tag, int count) {
+        String expression = tag == null ? "" : ArrayNotationParser.expressionPart(tag);
+        int start = 0;
+        if (!expression.isEmpty()) {
+            ArrayInfo first = ArrayNotationParser.parse(expression, tag, CONSTRAINTS).get(0);
+            start = first.getLowerBound() - first.getBase();
+        } else if (count <= 1) {
+            return Collections.emptyList();
+        }
+        return List.of(new DefaultArrayInfo(start, start + count - 1));
+    }
+
+    /**
+     * The CIP path of an address: one segment per member named in it, followed by a member
+     * segment for the element the selection starts at. A structured address yields one segment
+     * per member - {@code a.b} is two symbols, not one symbol named "a.b" - because that is how
+     * a controller walks a path.
+     *
+     * <p>A selection given as a bare element count carries no member segment: the request starts
+     * at the tag itself and asks for that many elements.
+     */
+    private static List<PathElement> decomposePath(String tag, List<ArrayInfo> arrayInfo) {
+        if (tag == null) {
+            return Collections.emptyList();
+        }
+        Matcher matcher = PATH_PATTERN.matcher(ArrayNotationParser.addressPart(tag));
+        List<PathElement> elements = new ArrayList<>(2);
+        while (matcher.find()) {
+            if ("[".equals(matcher.group(1))) {
+                // An index written inside the path rather than as a trailing selection, as in
+                // "a[2].b". It addresses one element, so it is a member segment like any other.
+                elements.add(new MemberElement(Short.parseShort(matcher.group(2))));
+            } else {
+                elements.add(new SymbolElement(matcher.group(2)));
+            }
+        }
+        if (!ArrayNotationParser.expressionPart(tag).isEmpty() && !arrayInfo.isEmpty()) {
+            ArrayInfo first = arrayInfo.get(0);
+            short offset = (short) (first.getLowerBound() - first.getBase());
+            // A member segment says where the selection starts. Starting at the first element is
+            // what a request with no member segment already means, so emitting MemberID(0) would
+            // add two bytes that say nothing - and every address of the form "tag:TYPE:n" used to
+            // be sent without one.
+            if (offset > 0) {
+                elements.add(new MemberElement(offset));
+            }
+        }
+        return Collections.unmodifiableList(elements);
     }
 
     @Override
     public String getAddressString() {
-        throw new NotImplementedException("Need to implement this");
+        // Mirrors the format ADDRESS_PATTERN accepts, so of(getAddressString()) round-trips:
+        //   tag[range][:dataType]
+        StringBuilder sb = new StringBuilder(ArrayNotationParser.addressPart(tag));
+        sb.append(ArrayNotationParser.render(selection));
+        if (type != null) {
+            sb.append(':').append(type.name());
+        }
+        return sb.toString();
     }
 
     @Override
@@ -78,29 +200,50 @@ public class EipTag implements PlcTag, Serializable {
         return PlcValueType.valueOf(type.name());
     }
 
+    /**
+     * The shape of the value the caller receives, so a consumer can tell a scalar from a list
+     * without knowing the protocol: empty for a scalar, one entry per dimension for an array.
+     * A bare index selects one element and so reports empty; a range reports its dimensions even
+     * when it spans a single element.
+     *
+     * <p>Not the same as what the driver fetches - reading one element of an array still walks a
+     * member path, which {@link #getPathElements()} describes.
+     */
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        return PlcTag.super.getArrayInfo();
+        return scalarSelection ? Collections.emptyList() : selection;
     }
 
     public CIPDataTypeCode getType() {
         return type;
     }
 
-    public void setType(CIPDataTypeCode type) {
-        this.type = type;
-    }
-
+    /**
+     * How many elements the request asks the device for. Derived from the selection; a tag that
+     * selects nothing explicitly reads a single element.
+     */
     public int getElementNb() {
-        return elementNb;
-    }
-
-    public void setElementNb(int elementNb) {
-        this.elementNb = elementNb;
+        // Computed as a long: the product of several dimensions overflows an int long before it
+        // reaches the wire, and the count is carried in 16 bits there - see the constructor, which
+        // refuses a selection that cannot be encoded.
+        long elements = 1;
+        for (ArrayInfo dimension : selection) {
+            elements *= dimension.getSize();
+        }
+        return (int) Math.max(elements, 1);
     }
 
     public String getTag() {
         return tag;
+    }
+
+    /**
+     * The CIP path this address describes, one element per member, decomposed when the tag was
+     * built. A structured address yields one element per member - {@code a.b} is two symbols,
+     * not one symbol named "a.b" - because that is how a controller walks the path.
+     */
+    public List<PathElement> getPathElements() {
+        return pathElements;
     }
 
     public static boolean matches(String tagQuery) {
@@ -109,25 +252,21 @@ public class EipTag implements PlcTag, Serializable {
 
     public static EipTag of(String tagString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(tagString);
-        if (matcher.matches()) {
-            String tag = matcher.group(GROUP_NAME_TAG);
-            int nb = 1;
-            CIPDataTypeCode type;
-            if (!matcher.group(GROUP_NAME_GROUP_NAME_ELEMENTS).isEmpty()) {
-                nb = Integer.parseInt(matcher.group(GROUP_NAME_GROUP_NAME_ELEMENTS));
-            }
-            if (!matcher.group(GROUP_NAME_TYPE).isEmpty()) {
-                type = CIPDataTypeCode.valueOf(matcher.group(GROUP_NAME_TYPE));
-            } else {
-                type = CIPDataTypeCode.DINT;
-            }
-            if (nb != 0) {
-                return new EipTag(tag, type, nb);
-            } else {
-                return new EipTag(tag, type);
-            }
+        if (!matcher.matches()) {
+            return null;
         }
-        return null;
+        String tag = matcher.group(GROUP_NAME_TAG);
+        String arrayExpression = matcher.group(GROUP_NAME_ARRAY);
+        String typeString = matcher.group(GROUP_NAME_TYPE);
+
+        CIPDataTypeCode type = typeString == null || typeString.isEmpty()
+            ? CIPDataTypeCode.DINT
+            : CIPDataTypeCode.valueOf(typeString);
+        List<ArrayInfo> arrayInfo = arrayExpression == null
+            ? Collections.emptyList()
+            : ArrayNotationParser.parse(arrayExpression, tagString, CONSTRAINTS);
+
+        return new EipTag(tag + (arrayExpression == null ? "" : arrayExpression), type, arrayInfo);
     }
 
     @Override
@@ -140,7 +279,7 @@ public class EipTag implements PlcTag, Serializable {
             writeBuffer.writeString(type.name().getBytes(StandardCharsets.UTF_8).length * 8, type.name(),
                 WithOption.WithName("type"), WithOption.WithEncoding("UTF8"));
         }
-        writeBuffer.writeUnsignedInt(16, elementNb, WithOption.WithName("elementNb"));
+        writeBuffer.writeUnsignedInt(16, getElementNb(), WithOption.WithName("elementNb"));
 
         writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }

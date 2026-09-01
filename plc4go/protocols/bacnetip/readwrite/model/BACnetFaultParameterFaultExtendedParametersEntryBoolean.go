@@ -225,8 +225,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetPlx4xTypeN
 	return "BACnetFaultParameterFaultExtendedParametersEntryBoolean"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (booleanValue)
 	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBi
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

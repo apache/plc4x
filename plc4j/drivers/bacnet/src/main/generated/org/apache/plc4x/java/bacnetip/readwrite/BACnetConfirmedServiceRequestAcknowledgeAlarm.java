@@ -114,22 +114,22 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: acknowledgingProcessIdentifier
-    BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("acknowledgingProcessIdentifier"));
+    BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("acknowledgingProcessIdentifier"));
 
     // Simple Field: eventObjectIdentifier
-    BACnetContextTagObjectIdentifier eventObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagObjectIdentifier) BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER)), readBuffer), WithOption.WithName("eventObjectIdentifier"));
+    BACnetContextTagObjectIdentifier eventObjectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagObjectIdentifier.class, BACnetContextTagObjectIdentifier.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.BACNET_OBJECT_IDENTIFIER))), readBuffer), WithOption.WithName("eventObjectIdentifier"));
 
     // Simple Field: eventStateAcknowledged
-    BACnetEventStateTagged eventStateAcknowledged = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventStateTagged) BACnetEventStateTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("eventStateAcknowledged"));
+    BACnetEventStateTagged eventStateAcknowledged = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventStateTagged.class, BACnetEventStateTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("eventStateAcknowledged"));
 
     // Simple Field: timestamp
-    BACnetTimeStampEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStampEnclosed) BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer), WithOption.WithName("timestamp"));
+    BACnetTimeStampEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStampEnclosed.class, BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3))), readBuffer), WithOption.WithName("timestamp"));
 
     // Simple Field: acknowledgmentSource
-    BACnetContextTagCharacterString acknowledgmentSource = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetContextTagCharacterString) BACnetContextTagCharacterString.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING)), readBuffer), WithOption.WithName("acknowledgmentSource"));
+    BACnetContextTagCharacterString acknowledgmentSource = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagCharacterString.class, BACnetContextTagCharacterString.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.CHARACTER_STRING))), readBuffer), WithOption.WithName("acknowledgmentSource"));
 
     // Simple Field: timeOfAcknowledgment
-    BACnetTimeStampEnclosed timeOfAcknowledgment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStampEnclosed) BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (5)), readBuffer), WithOption.WithName("timeOfAcknowledgment"));
+    BACnetTimeStampEnclosed timeOfAcknowledgment = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStampEnclosed.class, BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (5))), readBuffer), WithOption.WithName("timeOfAcknowledgment"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(acknowledgingProcessIdentifier, eventObjectIdentifier, eventStateAcknowledged, timestamp, acknowledgmentSource, timeOfAcknowledgment);

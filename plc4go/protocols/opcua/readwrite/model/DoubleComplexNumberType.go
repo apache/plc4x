@@ -227,8 +227,8 @@ func (m *_DoubleComplexNumberType) GetPlx4xTypeName() string {
 	return "DoubleComplexNumberType"
 }
 
-func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (real)
 	lengthInBits += 64
@@ -239,7 +239,7 @@ func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

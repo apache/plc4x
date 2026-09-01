@@ -211,8 +211,8 @@ func (m *_HPAIControlEndpoint) GetPlx4xTypeName() string {
 	return "HPAIControlEndpoint"
 }
 
-func (m *_HPAIControlEndpoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HPAIControlEndpoint) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
@@ -229,7 +229,7 @@ func (m *_HPAIControlEndpoint) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HPAIControlEndpoint) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HPAIControlEndpoint) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

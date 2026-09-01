@@ -40,7 +40,7 @@ class SlmpRequestBuildTest {
     @Test
     void buildsBatchReadFrameMatchingSh080008Example() throws Exception {
         // SH-080008 section 8.2 (Batch Read and Write): read D350, 2 words.
-        SlmpTag tag = SlmpTag.of("D350:WORD[2]");
+        SlmpTag tag = SlmpTag.of("D350[0..1]:WORD");
         SlmpReadRequest data = new SlmpReadRequest(
             tag.getDeviceNumber(), tag.getDeviceCode(), tag.getNumberOfPoints());
         SlmpRequestFrame3E frame = new SlmpRequestFrame3E(0x0000, 0x0401, 0x0000, data);

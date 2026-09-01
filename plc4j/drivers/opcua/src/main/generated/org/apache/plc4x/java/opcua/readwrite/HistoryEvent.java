@@ -63,7 +63,7 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     int noOfEvents = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfEvents"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: events
-    List<HistoryEventFieldList> events = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (HistoryEventFieldList) HistoryEventFieldList.staticParse(readBuffer, (int) (922)), readBuffer), noOfEvents, WithOption.WithName("events"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<HistoryEventFieldList> events = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(HistoryEventFieldList.class, HistoryEventFieldList.staticParse(readBuffer, (int) (922))), readBuffer), noOfEvents, WithOption.WithName("events"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(events);

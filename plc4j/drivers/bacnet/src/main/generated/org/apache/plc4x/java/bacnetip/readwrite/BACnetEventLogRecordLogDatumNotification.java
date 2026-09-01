@@ -74,13 +74,13 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: innerOpeningTag
-    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetOpeningTag) BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("innerOpeningTag"));
+    BACnetOpeningTag innerOpeningTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetOpeningTag.class, BACnetOpeningTag.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("innerOpeningTag"));
 
     // Simple Field: notification
-    ConfirmedEventNotificationRequest notification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ConfirmedEventNotificationRequest) ConfirmedEventNotificationRequest.staticParse(readBuffer), readBuffer), WithOption.WithName("notification"));
+    ConfirmedEventNotificationRequest notification = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ConfirmedEventNotificationRequest.class, ConfirmedEventNotificationRequest.staticParse(readBuffer)), readBuffer), WithOption.WithName("notification"));
 
     // Simple Field: innerClosingTag
-    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetClosingTag) BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer), WithOption.WithName("innerClosingTag"));
+    BACnetClosingTag innerClosingTag = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetClosingTag.class, BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber))), readBuffer), WithOption.WithName("innerClosingTag"));
 
     readBuffer.popContext();
     return new BACnetEventLogRecordLogDatumBuilderImpl(innerOpeningTag, notification, innerClosingTag);

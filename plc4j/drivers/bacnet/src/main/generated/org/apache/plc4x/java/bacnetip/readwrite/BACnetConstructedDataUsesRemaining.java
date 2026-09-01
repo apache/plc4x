@@ -78,7 +78,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: usesRemaining
-    BACnetApplicationTagSignedInteger usesRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("usesRemaining"));
+    BACnetApplicationTagSignedInteger usesRemaining = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("usesRemaining"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagSignedInteger.class, usesRemaining, WithOption.WithName("actualValue"));

@@ -65,11 +65,11 @@ class FirmataTagTest {
 
     @Test
     void digitalWithRangeAndPullup() {
-        FirmataTagDigital tag = FirmataTagDigital.of("digital:8[4]:PULLUP");
+        FirmataTagDigital tag = FirmataTagDigital.of("digital:8[0..3]:PULLUP");
         assertEquals(8, tag.getAddress());
         assertEquals(4, tag.getNumberOfElements());
         assertEquals(PinMode.PinModePullup, tag.getPinMode());
-        assertEquals("digital:8[4]", tag.getAddressString());
+        assertEquals("digital:8[0..3]", tag.getAddressString());
         assertFalse(tag.getArrayInfo().isEmpty());
         // BitSet should mark pins 8..11.
         for (int pin = 8; pin < 12; pin++) {
@@ -96,10 +96,10 @@ class FirmataTagTest {
 
     @Test
     void analogWithRange() {
-        FirmataTagAnalog tag = FirmataTagAnalog.of("analog:0[3]");
+        FirmataTagAnalog tag = FirmataTagAnalog.of("analog:0[0..2]");
         assertEquals(0, tag.getAddress());
         assertEquals(3, tag.getNumberOfElements());
-        assertEquals("analog:0[3]", tag.getAddressString());
+        assertEquals("analog:0[0..2]", tag.getAddressString());
         assertFalse(tag.getArrayInfo().isEmpty());
     }
 
@@ -111,7 +111,7 @@ class FirmataTagTest {
     @Test
     void equalityAndHashAreAddressBased() {
         FirmataTagDigital a = FirmataTagDigital.of("digital:5");
-        FirmataTagDigital b = FirmataTagDigital.of("digital:5[3]");
+        FirmataTagDigital b = FirmataTagDigital.of("digital:5[0..2]");
         FirmataTagDigital c = FirmataTagDigital.of("digital:6");
         // FirmataTag.equals compares by address only, so a and b match.
         assertEquals(a, b);

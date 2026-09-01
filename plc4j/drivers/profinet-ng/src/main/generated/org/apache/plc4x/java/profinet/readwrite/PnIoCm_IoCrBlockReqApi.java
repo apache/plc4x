@@ -77,13 +77,13 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     int numIoDataObjects = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numIoDataObjects"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: ioDataObjects
-    List<PnIoCm_IoDataObject> ioDataObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_IoDataObject) PnIoCm_IoDataObject.staticParse(readBuffer), readBuffer), numIoDataObjects, WithOption.WithName("ioDataObjects"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_IoDataObject> ioDataObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_IoDataObject.class, PnIoCm_IoDataObject.staticParse(readBuffer)), readBuffer), numIoDataObjects, WithOption.WithName("ioDataObjects"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Implicit Field: numIoCss
     int numIoCss = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numIoCss"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: ioCss
-    List<PnIoCm_IoCs> ioCss = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_IoCs) PnIoCm_IoCs.staticParse(readBuffer), readBuffer), numIoCss, WithOption.WithName("ioCss"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_IoCs> ioCss = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_IoCs.class, PnIoCm_IoCs.staticParse(readBuffer)), readBuffer), numIoCss, WithOption.WithName("ioCss"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_IoCrBlockReqApi(ioDataObjects, ioCss);

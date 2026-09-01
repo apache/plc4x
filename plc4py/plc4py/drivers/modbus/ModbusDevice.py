@@ -37,6 +37,7 @@ from plc4py.drivers.modbus.ModbusTag import (
     ModbusTagHoldingRegister,
     ModbusTagInputRegister,
 )
+from plc4py.drivers.modbus import ModbusRegisterCodec
 from plc4py.protocols.modbus.readwrite.DataItem import DataItem
 from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsRequest import (
@@ -176,11 +177,14 @@ class ModbusDevice:
             read_buffer = ReadBufferByteBased(
                 bytearray(result.value), self._configuration.byte_order
             )
-            returned_value = DataItem.static_parse(
+            returned_value = ModbusRegisterCodec.parse(
                 read_buffer,
                 request.tags[request.tag_names[0]].data_type,
                 request.tags[request.tag_names[0]].quantity,
                 True,
+                # The Python tag has no notion of a string length yet, so 1 is passed - the value it
+                # has for every data type that is not a string, leaving all other types unchanged.
+                1,
             )
 
         response_item = ResponseItem(PlcResponseCode.OK, returned_value)
@@ -293,16 +297,17 @@ class ModbusDevice:
                     value: bool = item.get_bool()
                     write_buffer.write_bit(value, "value")
         else:
-            length = tag.quantity * tag.data_type.data_type_size
-            if (length % 2) == 1:
-                length += 1
+            # Padding and packing of sub-register values is the codec's job, so it also decides
+            # how many bytes the request occupies.
+            length = ModbusRegisterCodec.length_in_bytes(tag.data_type, tag.quantity, 1)
             write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
-            DataItem.static_serialize(
+            ModbusRegisterCodec.serialize(
                 write_buffer,
                 values,
                 tag.data_type,
                 tag.quantity,
                 True,
+                1,
                 self._configuration.byte_order,
             )
         return list(write_buffer.get_bytes().tobytes())

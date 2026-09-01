@@ -328,11 +328,11 @@ func CastBACnetServicesSupported(structType any) BACnetServicesSupported {
 	return castFunc(structType)
 }
 
-func (m BACnetServicesSupported) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetServicesSupported) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetServicesSupported) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetServicesSupported) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

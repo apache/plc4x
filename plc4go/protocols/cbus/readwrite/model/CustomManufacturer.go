@@ -182,16 +182,16 @@ func (m *_CustomManufacturer) GetPlx4xTypeName() string {
 	return "CustomManufacturer"
 }
 
-func (m *_CustomManufacturer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CustomManufacturer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (customString)
-	lengthInBits += uint16(int32(int32(8)) * int32(m.GetNumBytes()))
+	lengthInBits += uint64(int32(int32(8)) * int32(m.GetNumBytes()))
 
 	return lengthInBits
 }
 
-func (m *_CustomManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CustomManufacturer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

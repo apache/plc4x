@@ -78,7 +78,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timerState
-    BACnetTimerStateTagged timerState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimerStateTagged) BACnetTimerStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("timerState"));
+    BACnetTimerStateTagged timerState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimerStateTagged.class, BACnetTimerStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("timerState"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimerStateTagged actualValue = FieldReaderFactory.readVirtualField(BACnetTimerStateTagged.class, timerState, WithOption.WithName("actualValue"));

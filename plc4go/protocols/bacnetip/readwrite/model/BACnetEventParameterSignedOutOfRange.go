@@ -390,8 +390,8 @@ func (m *_BACnetEventParameterSignedOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetEventParameterSignedOutOfRange"
 }
 
-func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
+func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -414,7 +414,7 @@ func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

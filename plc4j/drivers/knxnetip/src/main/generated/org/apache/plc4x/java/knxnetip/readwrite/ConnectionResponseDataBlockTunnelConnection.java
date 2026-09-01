@@ -58,7 +58,7 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: knxAddress
-    KnxAddress knxAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (KnxAddress) KnxAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("knxAddress"));
+    KnxAddress knxAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(KnxAddress.class, KnxAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("knxAddress"));
 
     readBuffer.popContext();
     return new ConnectionResponseDataBlockBuilderImpl(knxAddress);

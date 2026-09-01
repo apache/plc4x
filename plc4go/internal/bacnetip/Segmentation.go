@@ -176,10 +176,7 @@ func (s *outboundSegmenter) AcknowledgeSegment(ack model.APDUSegmentAck) (negati
 // Rewind resets the cursor to the start of the segment numbered seq so the
 // next NextSegment call resends from that point. Used in response to a NAK.
 func (s *outboundSegmenter) Rewind(seq uint8) {
-	s.cursor = int(seq) * int(s.maxSegment)
-	if s.cursor > len(s.payload) {
-		s.cursor = len(s.payload)
-	}
+	s.cursor = min(int(seq)*int(s.maxSegment), len(s.payload))
 	s.nextSeq = seq
 	s.done = false
 }

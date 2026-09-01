@@ -245,8 +245,8 @@ func (m *_SysexCommandPinStateResponse) GetPlx4xTypeName() string {
 	return "SysexCommandPinStateResponse"
 }
 
-func (m *_SysexCommandPinStateResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandPinStateResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -260,7 +260,7 @@ func (m *_SysexCommandPinStateResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_SysexCommandPinStateResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandPinStateResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

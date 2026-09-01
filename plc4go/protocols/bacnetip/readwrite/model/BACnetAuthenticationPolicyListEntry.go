@@ -215,8 +215,8 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationPolicyListEntry"
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (credentialDataInput)
 	lengthInBits += m.CredentialDataInput.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

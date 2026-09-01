@@ -51,7 +51,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: failure
-    ErrorEnclosed failure = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (7)), readBuffer), WithOption.WithName("failure"));
+    ErrorEnclosed failure = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (7))), readBuffer), WithOption.WithName("failure"));
 
     readBuffer.popContext();
     return new BACnetLogDataLogDataEntryBuilderImpl(failure);

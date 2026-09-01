@@ -44,19 +44,8 @@
 
     <!-- Test Dependencies -->
     <dependency>
-      <groupId>org.opentest4j</groupId>
-      <artifactId>opentest4j</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

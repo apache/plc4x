@@ -78,8 +78,8 @@ type LevelInformationContract interface {
 
 // LevelInformationRequirements provides a set of functions which need to be implemented by a sub struct
 type LevelInformationRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIsAbsent returns IsAbsent (discriminator field)
 	GetIsAbsent() bool
 	// GetIsCorrupted returns IsCorrupted (discriminator field)
@@ -342,8 +342,8 @@ func (m *_LevelInformation) GetPlx4xTypeName() string {
 	return "LevelInformation"
 }
 
-func (m *_LevelInformation) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LevelInformation) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -364,11 +364,11 @@ func (m *_LevelInformation) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LevelInformation) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_LevelInformation) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_LevelInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LevelInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

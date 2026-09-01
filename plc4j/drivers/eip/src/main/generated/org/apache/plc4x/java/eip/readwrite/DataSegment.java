@@ -58,7 +58,7 @@ public class DataSegment extends PathSegment implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: segmentType
-    DataSegmentType segmentType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DataSegmentType) DataSegmentType.staticParse(readBuffer), readBuffer), WithOption.WithName("segmentType"));
+    DataSegmentType segmentType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DataSegmentType.class, DataSegmentType.staticParse(readBuffer)), readBuffer), WithOption.WithName("segmentType"));
 
     readBuffer.popContext();
     return new PathSegmentBuilderImpl(segmentType);

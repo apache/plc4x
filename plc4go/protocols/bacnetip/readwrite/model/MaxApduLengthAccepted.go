@@ -260,11 +260,11 @@ func CastMaxApduLengthAccepted(structType any) MaxApduLengthAccepted {
 	return castFunc(structType)
 }
 
-func (m MaxApduLengthAccepted) GetLengthInBits(ctx context.Context) uint16 {
+func (m MaxApduLengthAccepted) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m MaxApduLengthAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MaxApduLengthAccepted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

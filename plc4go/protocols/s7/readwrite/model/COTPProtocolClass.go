@@ -112,11 +112,11 @@ func CastCOTPProtocolClass(structType any) COTPProtocolClass {
 	return castFunc(structType)
 }
 
-func (m COTPProtocolClass) GetLengthInBits(ctx context.Context) uint16 {
+func (m COTPProtocolClass) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m COTPProtocolClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m COTPProtocolClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

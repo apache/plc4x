@@ -185,13 +185,13 @@ func (m *_DF1SymbolMessageFrameACK) GetPlx4xTypeName() string {
 	return "DF1SymbolMessageFrameACK"
 }
 
-func (m *_DF1SymbolMessageFrameACK) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
+func (m *_DF1SymbolMessageFrameACK) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_DF1SymbolMessageFrameACK) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1SymbolMessageFrameACK) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

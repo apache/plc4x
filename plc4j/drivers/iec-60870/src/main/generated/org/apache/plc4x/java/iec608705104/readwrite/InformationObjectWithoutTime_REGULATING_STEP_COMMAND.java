@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_REGULATING_STEP_COMMAND extends Inform
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: rco
-    RegulatingStepCommand rco = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (RegulatingStepCommand) RegulatingStepCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("rco"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    RegulatingStepCommand rco = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(RegulatingStepCommand.class, RegulatingStepCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("rco"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(rco);

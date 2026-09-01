@@ -237,8 +237,8 @@ func (m *_AlarmMessageQueryType) GetPlx4xTypeName() string {
 	return "AlarmMessageQueryType"
 }
 
-func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -266,7 +266,7 @@ func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AlarmMessageQueryType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AlarmMessageQueryType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

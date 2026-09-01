@@ -245,8 +245,8 @@ func (m *_SysexCommandReportFirmwareResponse) GetPlx4xTypeName() string {
 	return "SysexCommandReportFirmwareResponse"
 }
 
-func (m *_SysexCommandReportFirmwareResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandReportFirmwareResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -255,12 +255,12 @@ func (m *_SysexCommandReportFirmwareResponse) GetLengthInBits(ctx context.Contex
 	lengthInBits += 8
 
 	// Manual Array Field (fileName)
-	lengthInBits += uint16(LengthSysexString(ctx, m.GetFileName()))
+	lengthInBits += uint64(LengthSysexString(ctx, m.GetFileName()))
 
 	return lengthInBits
 }
 
-func (m *_SysexCommandReportFirmwareResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandReportFirmwareResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

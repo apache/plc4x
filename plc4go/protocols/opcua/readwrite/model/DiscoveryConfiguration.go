@@ -184,13 +184,13 @@ func (m *_DiscoveryConfiguration) GetPlx4xTypeName() string {
 	return "DiscoveryConfiguration"
 }
 
-func (m *_DiscoveryConfiguration) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DiscoveryConfiguration) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_DiscoveryConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DiscoveryConfiguration) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

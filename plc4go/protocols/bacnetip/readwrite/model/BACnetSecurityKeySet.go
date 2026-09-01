@@ -279,8 +279,8 @@ func (m *_BACnetSecurityKeySet) GetPlx4xTypeName() string {
 	return "BACnetSecurityKeySet"
 }
 
-func (m *_BACnetSecurityKeySet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetSecurityKeySet) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (keyRevision)
 	lengthInBits += m.KeyRevision.GetLengthInBits(ctx)
@@ -297,7 +297,7 @@ func (m *_BACnetSecurityKeySet) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetSecurityKeySet) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetSecurityKeySet) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

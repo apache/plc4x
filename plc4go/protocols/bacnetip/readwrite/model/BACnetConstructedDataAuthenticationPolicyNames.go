@@ -262,8 +262,8 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) GetPlx4xTypeName() str
 	return "BACnetConstructedDataAuthenticationPolicyNames"
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNames) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthenticationPolicyNames) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -282,7 +282,7 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNames) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthenticationPolicyNames) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

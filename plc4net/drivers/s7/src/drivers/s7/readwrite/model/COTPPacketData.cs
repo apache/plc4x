@@ -39,7 +39,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             TpduRef = tpduRef;
         }
 
-        public static COTPPacketData StaticParse(ReadBuffer readBuffer, ushort cotpLen, byte headerLength, int _startPos)
+        public static COTPPacketData StaticParse(ReadBuffer readBuffer, uint cotpLen, byte headerLength, int _startPos)
         {
             var eot = readBuffer.ReadBit("eot");
             var tpduRef = readBuffer.ReadByte("tpduRef", 7);

@@ -180,13 +180,13 @@ func (m *_AccessControlDataRequestToExit) GetPlx4xTypeName() string {
 	return "AccessControlDataRequestToExit"
 }
 
-func (m *_AccessControlDataRequestToExit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
+func (m *_AccessControlDataRequestToExit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AccessControlDataRequestToExit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AccessControlDataRequestToExit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

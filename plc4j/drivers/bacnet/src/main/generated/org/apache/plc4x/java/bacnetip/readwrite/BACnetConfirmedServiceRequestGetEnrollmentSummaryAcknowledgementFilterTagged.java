@@ -64,7 +64,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFil
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: header
-    BACnetTagHeader header = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("header"));
+    BACnetTagHeader header = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("header"));
 
     // Validation Field
     if(!((header.getTagClass()) == (tagClass))) {

@@ -86,7 +86,7 @@ type MockReadRequestInterceptor_InterceptReadRequest_Call struct {
 // InterceptReadRequest is a helper method to define mock.On call
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
-func (_e *MockReadRequestInterceptor_Expecter) InterceptReadRequest(ctx interface{}, readRequest interface{}) *MockReadRequestInterceptor_InterceptReadRequest_Call {
+func (_e *MockReadRequestInterceptor_Expecter) InterceptReadRequest(ctx any, readRequest any) *MockReadRequestInterceptor_InterceptReadRequest_Call {
 	return &MockReadRequestInterceptor_InterceptReadRequest_Call{Call: _e.mock.On("InterceptReadRequest", ctx, readRequest)}
 }
 
@@ -146,7 +146,7 @@ type MockReadRequestInterceptor_ProcessReadResponses_Call struct {
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
 //   - readResults []model.PlcReadRequestResult
-func (_e *MockReadRequestInterceptor_Expecter) ProcessReadResponses(ctx interface{}, readRequest interface{}, readResults interface{}) *MockReadRequestInterceptor_ProcessReadResponses_Call {
+func (_e *MockReadRequestInterceptor_Expecter) ProcessReadResponses(ctx any, readRequest any, readResults any) *MockReadRequestInterceptor_ProcessReadResponses_Call {
 	return &MockReadRequestInterceptor_ProcessReadResponses_Call{Call: _e.mock.On("ProcessReadResponses", ctx, readRequest, readResults)}
 }
 
@@ -237,7 +237,7 @@ type MockWriteRequestInterceptor_InterceptWriteRequest_Call struct {
 // InterceptWriteRequest is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
-func (_e *MockWriteRequestInterceptor_Expecter) InterceptWriteRequest(ctx interface{}, writeRequest interface{}) *MockWriteRequestInterceptor_InterceptWriteRequest_Call {
+func (_e *MockWriteRequestInterceptor_Expecter) InterceptWriteRequest(ctx any, writeRequest any) *MockWriteRequestInterceptor_InterceptWriteRequest_Call {
 	return &MockWriteRequestInterceptor_InterceptWriteRequest_Call{Call: _e.mock.On("InterceptWriteRequest", ctx, writeRequest)}
 }
 
@@ -297,7 +297,7 @@ type MockWriteRequestInterceptor_ProcessWriteResponses_Call struct {
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
 //   - writeResults []model.PlcWriteRequestResult
-func (_e *MockWriteRequestInterceptor_Expecter) ProcessWriteResponses(ctx interface{}, writeRequest interface{}, writeResults interface{}) *MockWriteRequestInterceptor_ProcessWriteResponses_Call {
+func (_e *MockWriteRequestInterceptor_Expecter) ProcessWriteResponses(ctx any, writeRequest any, writeResults any) *MockWriteRequestInterceptor_ProcessWriteResponses_Call {
 	return &MockWriteRequestInterceptor_ProcessWriteResponses_Call{Call: _e.mock.On("ProcessWriteResponses", ctx, writeRequest, writeResults)}
 }
 
@@ -388,7 +388,7 @@ type MockRequestInterceptor_InterceptReadRequest_Call struct {
 // InterceptReadRequest is a helper method to define mock.On call
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
-func (_e *MockRequestInterceptor_Expecter) InterceptReadRequest(ctx interface{}, readRequest interface{}) *MockRequestInterceptor_InterceptReadRequest_Call {
+func (_e *MockRequestInterceptor_Expecter) InterceptReadRequest(ctx any, readRequest any) *MockRequestInterceptor_InterceptReadRequest_Call {
 	return &MockRequestInterceptor_InterceptReadRequest_Call{Call: _e.mock.On("InterceptReadRequest", ctx, readRequest)}
 }
 
@@ -447,7 +447,7 @@ type MockRequestInterceptor_InterceptWriteRequest_Call struct {
 // InterceptWriteRequest is a helper method to define mock.On call
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
-func (_e *MockRequestInterceptor_Expecter) InterceptWriteRequest(ctx interface{}, writeRequest interface{}) *MockRequestInterceptor_InterceptWriteRequest_Call {
+func (_e *MockRequestInterceptor_Expecter) InterceptWriteRequest(ctx any, writeRequest any) *MockRequestInterceptor_InterceptWriteRequest_Call {
 	return &MockRequestInterceptor_InterceptWriteRequest_Call{Call: _e.mock.On("InterceptWriteRequest", ctx, writeRequest)}
 }
 
@@ -507,7 +507,7 @@ type MockRequestInterceptor_ProcessReadResponses_Call struct {
 //   - ctx context.Context
 //   - readRequest model.PlcReadRequest
 //   - readResults []model.PlcReadRequestResult
-func (_e *MockRequestInterceptor_Expecter) ProcessReadResponses(ctx interface{}, readRequest interface{}, readResults interface{}) *MockRequestInterceptor_ProcessReadResponses_Call {
+func (_e *MockRequestInterceptor_Expecter) ProcessReadResponses(ctx any, readRequest any, readResults any) *MockRequestInterceptor_ProcessReadResponses_Call {
 	return &MockRequestInterceptor_ProcessReadResponses_Call{Call: _e.mock.On("ProcessReadResponses", ctx, readRequest, readResults)}
 }
 
@@ -572,7 +572,7 @@ type MockRequestInterceptor_ProcessWriteResponses_Call struct {
 //   - ctx context.Context
 //   - writeRequest model.PlcWriteRequest
 //   - writeResults []model.PlcWriteRequestResult
-func (_e *MockRequestInterceptor_Expecter) ProcessWriteResponses(ctx interface{}, writeRequest interface{}, writeResults interface{}) *MockRequestInterceptor_ProcessWriteResponses_Call {
+func (_e *MockRequestInterceptor_Expecter) ProcessWriteResponses(ctx any, writeRequest any, writeResults any) *MockRequestInterceptor_ProcessWriteResponses_Call {
 	return &MockRequestInterceptor_ProcessWriteResponses_Call{Call: _e.mock.On("ProcessWriteResponses", ctx, writeRequest, writeResults)}
 }
 
@@ -954,7 +954,7 @@ type MockPlcReadRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcReadRequest_Expecter) Execute(ctx interface{}) *MockPlcReadRequest_Execute_Call {
+func (_e *MockPlcReadRequest_Expecter) Execute(ctx any) *MockPlcReadRequest_Execute_Call {
 	return &MockPlcReadRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -1099,7 +1099,7 @@ type MockPlcReadRequest_GetTag_Call struct {
 
 // GetTag is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcReadRequest_Expecter) GetTag(tagName interface{}) *MockPlcReadRequest_GetTag_Call {
+func (_e *MockPlcReadRequest_Expecter) GetTag(tagName any) *MockPlcReadRequest_GetTag_Call {
 	return &MockPlcReadRequest_GetTag_Call{Call: _e.mock.On("GetTag", tagName)}
 }
 
@@ -1564,7 +1564,7 @@ type MockPlcReadResponse_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcReadResponse_Expecter) GetResponseCode(tagName interface{}) *MockPlcReadResponse_GetResponseCode_Call {
+func (_e *MockPlcReadResponse_Expecter) GetResponseCode(tagName any) *MockPlcReadResponse_GetResponseCode_Call {
 	return &MockPlcReadResponse_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", tagName)}
 }
 
@@ -1663,7 +1663,7 @@ type MockPlcReadResponse_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcReadResponse_Expecter) GetValue(tagName interface{}) *MockPlcReadResponse_GetValue_Call {
+func (_e *MockPlcReadResponse_Expecter) GetValue(tagName any) *MockPlcReadResponse_GetValue_Call {
 	return &MockPlcReadResponse_GetValue_Call{Call: _e.mock.On("GetValue", tagName)}
 }
 
@@ -1831,7 +1831,7 @@ type MockPlcWriteRequest_Execute_Call struct {
 
 // Execute is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcWriteRequest_Expecter) Execute(ctx interface{}) *MockPlcWriteRequest_Execute_Call {
+func (_e *MockPlcWriteRequest_Expecter) Execute(ctx any) *MockPlcWriteRequest_Execute_Call {
 	return &MockPlcWriteRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
@@ -1884,7 +1884,7 @@ type MockPlcWriteRequest_GetTag_Call struct {
 
 // GetTag is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcWriteRequest_Expecter) GetTag(tagName interface{}) *MockPlcWriteRequest_GetTag_Call {
+func (_e *MockPlcWriteRequest_Expecter) GetTag(tagName any) *MockPlcWriteRequest_GetTag_Call {
 	return &MockPlcWriteRequest_GetTag_Call{Call: _e.mock.On("GetTag", tagName)}
 }
 
@@ -1983,7 +1983,7 @@ type MockPlcWriteRequest_GetValue_Call struct {
 
 // GetValue is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcWriteRequest_Expecter) GetValue(tagName interface{}) *MockPlcWriteRequest_GetValue_Call {
+func (_e *MockPlcWriteRequest_Expecter) GetValue(tagName any) *MockPlcWriteRequest_GetValue_Call {
 	return &MockPlcWriteRequest_GetValue_Call{Call: _e.mock.On("GetValue", tagName)}
 }
 
@@ -2494,7 +2494,7 @@ type MockPlcWriteResponse_GetResponseCode_Call struct {
 
 // GetResponseCode is a helper method to define mock.On call
 //   - tagName string
-func (_e *MockPlcWriteResponse_Expecter) GetResponseCode(tagName interface{}) *MockPlcWriteResponse_GetResponseCode_Call {
+func (_e *MockPlcWriteResponse_Expecter) GetResponseCode(tagName any) *MockPlcWriteResponse_GetResponseCode_Call {
 	return &MockPlcWriteResponse_GetResponseCode_Call{Call: _e.mock.On("GetResponseCode", tagName)}
 }
 

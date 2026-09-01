@@ -167,8 +167,8 @@ func (m *_Alpha) GetPlx4xTypeName() string {
 	return "Alpha"
 }
 
-func (m *_Alpha) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Alpha) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (character)
 	lengthInBits += 8
@@ -176,7 +176,7 @@ func (m *_Alpha) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Alpha) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Alpha) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

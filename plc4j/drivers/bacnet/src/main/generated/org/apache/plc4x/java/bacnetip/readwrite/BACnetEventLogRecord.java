@@ -60,10 +60,10 @@ public class BACnetEventLogRecord implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timestamp
-    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTimeEnclosed) BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("timestamp"));
+    BACnetDateTimeEnclosed timestamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTimeEnclosed.class, BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("timestamp"));
 
     // Simple Field: logDatum
-    BACnetEventLogRecordLogDatum logDatum = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventLogRecordLogDatum) BACnetEventLogRecordLogDatum.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("logDatum"));
+    BACnetEventLogRecordLogDatum logDatum = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventLogRecordLogDatum.class, BACnetEventLogRecordLogDatum.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("logDatum"));
 
     readBuffer.popContext();
     return new BACnetEventLogRecord(timestamp, logDatum);

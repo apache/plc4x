@@ -193,8 +193,8 @@ func (m *_AlarmMessageAckResponseType) GetPlx4xTypeName() string {
 	return "AlarmMessageAckResponseType"
 }
 
-func (m *_AlarmMessageAckResponseType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AlarmMessageAckResponseType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -204,13 +204,13 @@ func (m *_AlarmMessageAckResponseType) GetLengthInBits(ctx context.Context) uint
 
 	// Array field
 	if len(m.MessageObjects) > 0 {
-		lengthInBits += 8 * uint16(len(m.MessageObjects))
+		lengthInBits += 8 * uint64(len(m.MessageObjects))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AlarmMessageAckResponseType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AlarmMessageAckResponseType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

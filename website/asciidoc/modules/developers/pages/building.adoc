@@ -70,7 +70,7 @@ The following profiles are available:
 - `with-python`: Builds all Python related modules
 - `update-code-generation`: Generates the generated code from the mspec definitions
 
-WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing/index.html[Preparing your Computer] guide for a detailed description on this.
+WARNING: As these profiles typically require some preparation and setup on your development machine, please read the xref:preparing/index.adoc[Preparing your Computer] guide for a detailed description on this.
 
 The minimum Apache PLC4X build will build only basic code-generation modules without support for any language:
 
@@ -104,7 +104,7 @@ In order to build the website the following command should be sufficient:
 
     mvn site
 
-This is just a quick-start version of the site generation, for a fully detailed documentation please read the https://plc4x.apache.org/developers/infrastructure/website.html[Website] documentation page.
+This is just a quick-start version of the site generation, for a fully detailed documentation please read the xref:infrastructure/website.adoc[Website] documentation page.
 
 == Some special Maven profiles
 

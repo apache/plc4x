@@ -142,11 +142,11 @@ func CastBrowseResultMask(structType any) BrowseResultMask {
 	return castFunc(structType)
 }
 
-func (m BrowseResultMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m BrowseResultMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m BrowseResultMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BrowseResultMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

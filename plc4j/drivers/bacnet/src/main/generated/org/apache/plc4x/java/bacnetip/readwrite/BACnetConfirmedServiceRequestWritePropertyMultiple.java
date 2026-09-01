@@ -61,7 +61,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple extends BACnetCo
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: data
-    List<BACnetWriteAccessSpecification> data = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (BACnetWriteAccessSpecification) BACnetWriteAccessSpecification.staticParse(readBuffer), readBuffer), serviceRequestPayloadLength, WithOption.WithName("data"));
+    List<BACnetWriteAccessSpecification> data = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetWriteAccessSpecification.class, BACnetWriteAccessSpecification.staticParse(readBuffer)), readBuffer), serviceRequestPayloadLength, WithOption.WithName("data"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestBuilderImpl(data);

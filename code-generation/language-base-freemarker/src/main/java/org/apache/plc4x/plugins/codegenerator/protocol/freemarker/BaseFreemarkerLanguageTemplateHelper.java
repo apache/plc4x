@@ -131,6 +131,33 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * Methods related to fields.
      **********************************************************************************/
 
+    /**
+     * Checks whether the given type declares a discriminator field of this name itself.
+     *
+     * <p>{@link ComplexTypeDefinition#isDiscriminatorField(String)} cannot answer this for a type
+     * that carries a nested typeSwitch of its own: it resolves the discriminator names from
+     * {@code getParentType().orElse(this)}, so a discriminator this type declares in order to
+     * dispatch its own children is invisible to it and only the parent's discriminators are seen.
+     * {@link #getDiscriminatorTypes(TypeDefinition)} above already prefers the type's own switch
+     * field, so without this the two disagree and a language template that pairs them emits an
+     * interface without the accessor its own serializer calls.
+     *
+     * @param type              type to inspect.
+     * @param discriminatorName name of the discriminator.
+     * @return true if this very type declares a discriminator field with that name.
+     */
+    public boolean declaresDiscriminatorField(TypeDefinition type, String discriminatorName) {
+        Objects.requireNonNull(discriminatorName);
+        if (!(type instanceof ComplexTypeDefinition)) {
+            return false;
+        }
+        return ((ComplexTypeDefinition) type).getFields().stream()
+            .filter(Field::isDiscriminatorField)
+            .map(field -> field.asNamedField().orElse(null))
+            .filter(Objects::nonNull)
+            .anyMatch(namedField -> discriminatorName.equals(namedField.getName()));
+    }
+
     public boolean hasFieldOfType(String fieldTypeName) {
         Objects.requireNonNull(fieldTypeName);
         if (thisType instanceof ComplexTypeDefinition) {

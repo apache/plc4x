@@ -78,7 +78,7 @@ public class BACnetConstructedDataOutputUnits extends BACnetConstructedData impl
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: units
-    BACnetEngineeringUnitsTagged units = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEngineeringUnitsTagged) BACnetEngineeringUnitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("units"));
+    BACnetEngineeringUnitsTagged units = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEngineeringUnitsTagged.class, BACnetEngineeringUnitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("units"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetEngineeringUnitsTagged actualValue = FieldReaderFactory.readVirtualField(BACnetEngineeringUnitsTagged.class, units, WithOption.WithName("actualValue"));

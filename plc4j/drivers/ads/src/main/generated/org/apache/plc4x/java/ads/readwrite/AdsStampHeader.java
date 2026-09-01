@@ -78,7 +78,7 @@ public class AdsStampHeader implements Message {
     long samples = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("samples"));
 
     // Array Field: adsNotificationSamples
-    List<AdsNotificationSample> adsNotificationSamples = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AdsNotificationSample) AdsNotificationSample.staticParse(readBuffer), readBuffer), samples, WithOption.WithName("adsNotificationSamples"));
+    List<AdsNotificationSample> adsNotificationSamples = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AdsNotificationSample.class, AdsNotificationSample.staticParse(readBuffer)), readBuffer), samples, WithOption.WithName("adsNotificationSamples"));
 
     readBuffer.popContext();
     return new AdsStampHeader(timestamp, samples, adsNotificationSamples);

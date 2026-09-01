@@ -263,8 +263,8 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdateControlFlags"
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (set1KeyRevisionActivationTimeExpirationTimePresent)
 	lengthInBits += 1
@@ -293,7 +293,7 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

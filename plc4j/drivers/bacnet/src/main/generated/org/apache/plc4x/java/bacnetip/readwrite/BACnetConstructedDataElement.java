@@ -112,7 +112,7 @@ public class BACnetConstructedDataElement implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Peek Field: peekedTagHeader
-    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("peekedTagHeader"));
+    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("peekedTagHeader"));
 
     // Virtual Field: peekedTagNumber (doesn't parse anything, just makes the value available)
     short peekedTagNumber = FieldReaderFactory.readVirtualField(short.class, peekedTagHeader.getActualTagNumber(), WithOption.WithName("peekedTagNumber"));
@@ -132,13 +132,13 @@ public class BACnetConstructedDataElement implements Message {
     }
 
     // Optional Field (conditional): applicationTag
-    BACnetApplicationTag applicationTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetApplicationTag) BACnetApplicationTag.staticParse(readBuffer), readBuffer), isApplicationTag, WithOption.WithName("applicationTag"));
+    BACnetApplicationTag applicationTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTag.class, BACnetApplicationTag.staticParse(readBuffer)), readBuffer), isApplicationTag, WithOption.WithName("applicationTag"));
 
     // Optional Field (conditional): contextTag
-    BACnetContextTag contextTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTag) BACnetContextTag.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNKNOWN)), readBuffer), isContextTag, WithOption.WithName("contextTag"));
+    BACnetContextTag contextTag = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTag.class, BACnetContextTag.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNKNOWN))), readBuffer), isContextTag, WithOption.WithName("contextTag"));
 
     // Optional Field (conditional): constructedData
-    BACnetConstructedData constructedData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetConstructedData) BACnetConstructedData.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (arrayIndexArgument)), readBuffer), isConstructedData, WithOption.WithName("constructedData"));
+    BACnetConstructedData constructedData = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedData.class, BACnetConstructedData.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (arrayIndexArgument))), readBuffer), isConstructedData, WithOption.WithName("constructedData"));
 
     // Validation Field
     if(!(((((isApplicationTag) && ((applicationTag) != (null)))) || (((isContextTag) && ((contextTag) != (null))))) || (((isConstructedData) && ((constructedData) != (null)))))) {

@@ -245,8 +245,8 @@ func (m *_SubscribedDataSetMirrorDataType) GetPlx4xTypeName() string {
 	return "SubscribedDataSetMirrorDataType"
 }
 
-func (m *_SubscribedDataSetMirrorDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SubscribedDataSetMirrorDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (parentNodeName)
 	lengthInBits += m.ParentNodeName.GetLengthInBits(ctx)
@@ -265,7 +265,7 @@ func (m *_SubscribedDataSetMirrorDataType) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_SubscribedDataSetMirrorDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SubscribedDataSetMirrorDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

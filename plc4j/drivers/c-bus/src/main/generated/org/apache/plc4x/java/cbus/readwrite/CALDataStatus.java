@@ -82,7 +82,7 @@ public class CALDataStatus extends CALData implements Message {
     short blockStart = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("blockStart"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: statusBytes
-    List<StatusByte> statusBytes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (StatusByte) StatusByte.staticParse(readBuffer), readBuffer), (commandTypeContainer.getNumBytes()) - (2), WithOption.WithName("statusBytes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<StatusByte> statusBytes = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusByte.class, StatusByte.staticParse(readBuffer)), readBuffer), (commandTypeContainer.getNumBytes()) - (2), WithOption.WithName("statusBytes"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CALDataBuilderImpl(application, blockStart, statusBytes);

@@ -76,7 +76,7 @@ public class HPAIControlEndpoint implements Message {
     HostProtocolCode hostProtocolCode = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(HostProtocolCode::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("hostProtocolCode"));
 
     // Simple Field: ipAddress
-    IPAddress ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IPAddress) IPAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("ipAddress"));
+    IPAddress ipAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IPAddress.class, IPAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("ipAddress"));
 
     // Simple Field: ipPort
     int ipPort = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("ipPort"));

@@ -379,8 +379,8 @@ func (m *_NLMUpdateKeyUpdate) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdate"
 }
 
-func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (controlFlags)
 	lengthInBits += m.ControlFlags.GetLengthInBits(ctx)
@@ -444,7 +444,7 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -59,7 +59,7 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: npdu
-    NPDU npdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NPDU) NPDU.staticParse(readBuffer, (int) (bvlcPayloadLength)), readBuffer), WithOption.WithName("npdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    NPDU npdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NPDU.class, NPDU.staticParse(readBuffer, (int) (bvlcPayloadLength))), readBuffer), WithOption.WithName("npdu"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new BVLCBuilderImpl(npdu);

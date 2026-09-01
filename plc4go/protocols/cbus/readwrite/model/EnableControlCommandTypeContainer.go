@@ -343,11 +343,11 @@ func CastEnableControlCommandTypeContainer(structType any) EnableControlCommandT
 	return castFunc(structType)
 }
 
-func (m EnableControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m EnableControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m EnableControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m EnableControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

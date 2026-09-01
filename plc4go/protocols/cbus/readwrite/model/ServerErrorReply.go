@@ -201,8 +201,8 @@ func (m *_ServerErrorReply) GetPlx4xTypeName() string {
 	return "ServerErrorReply"
 }
 
-func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
+func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
 
 	// Const Field (errorMarker)
 	lengthInBits += 8
@@ -210,7 +210,7 @@ func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ServerErrorReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ServerErrorReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

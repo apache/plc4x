@@ -350,13 +350,13 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     int ioCrTagHeader = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("ioCrTagHeader"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: ioCrMulticastMacAdr
-    MacAddress ioCrMulticastMacAdr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MacAddress) MacAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("ioCrMulticastMacAdr"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    MacAddress ioCrMulticastMacAdr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MacAddress.class, MacAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("ioCrMulticastMacAdr"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Implicit Field: numberOfApis
     int numberOfApis = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numberOfApis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: apis
-    List<PnIoCm_IoCrBlockReqApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_IoCrBlockReqApi) PnIoCm_IoCrBlockReqApi.staticParse(readBuffer), readBuffer), numberOfApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_IoCrBlockReqApi> apis = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_IoCrBlockReqApi.class, PnIoCm_IoCrBlockReqApi.staticParse(readBuffer)), readBuffer), numberOfApis, WithOption.WithName("apis"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, ioCrType, ioCrReference, lt, fullSubFrameStructure, distributedSubFrameWatchDog, fastForwardingMacAdr, mediaRedundancy, rtClass, dataLength, frameId, sendClockFactor, reductionRatio, phase, sequence, frameSendOffset, watchDogFactor, dataHoldFactor, ioCrTagHeader, ioCrMulticastMacAdr, apis);

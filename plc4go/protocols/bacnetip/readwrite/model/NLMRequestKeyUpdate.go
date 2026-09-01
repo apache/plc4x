@@ -301,8 +301,8 @@ func (m *_NLMRequestKeyUpdate) GetPlx4xTypeName() string {
 	return "NLMRequestKeyUpdate"
 }
 
-func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (set1KeyRevision)
 	lengthInBits += 8
@@ -328,7 +328,7 @@ func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMRequestKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRequestKeyUpdate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -355,8 +355,8 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Get
 	return "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Get
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

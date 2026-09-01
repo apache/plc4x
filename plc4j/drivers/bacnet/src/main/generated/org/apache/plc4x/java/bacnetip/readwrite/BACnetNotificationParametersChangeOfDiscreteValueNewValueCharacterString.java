@@ -53,7 +53,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: characterStringValue
-    BACnetApplicationTagCharacterString characterStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagCharacterString) BACnetApplicationTagCharacterString.staticParse(readBuffer), readBuffer), WithOption.WithName("characterStringValue"));
+    BACnetApplicationTagCharacterString characterStringValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagCharacterString.class, BACnetApplicationTagCharacterString.staticParse(readBuffer)), readBuffer), WithOption.WithName("characterStringValue"));
 
     readBuffer.popContext();
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilderImpl(characterStringValue);

@@ -80,13 +80,13 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Peek Field: peekedTagHeader
-    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> (BACnetTagHeader) BACnetTagHeader.staticParse(readBuffer), readBuffer), WithOption.WithName("peekedTagHeader"));
+    BACnetTagHeader peekedTagHeader = FieldReaderFactory.readPeekField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagHeader.class, BACnetTagHeader.staticParse(readBuffer)), readBuffer), WithOption.WithName("peekedTagHeader"));
 
     // Virtual Field: peekedTagNumber (doesn't parse anything, just makes the value available)
     short peekedTagNumber = FieldReaderFactory.readVirtualField(short.class, peekedTagHeader.getActualTagNumber(), WithOption.WithName("peekedTagNumber"));
 
     // Optional Field (conditional): propertyValue
-    BACnetConstructedData propertyValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetConstructedData) BACnetConstructedData.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (arrayIndexArgument)), readBuffer), (peekedTagNumber) == (4), WithOption.WithName("propertyValue"));
+    BACnetConstructedData propertyValue = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedData.class, BACnetConstructedData.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (arrayIndexArgument))), readBuffer), (peekedTagNumber) == (4), WithOption.WithName("propertyValue"));
 
     // Validation Field
     if(!(((((peekedTagNumber) == (4)) && ((propertyValue) != (null)))) || ((peekedTagNumber) != (4)))) {
@@ -94,7 +94,7 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     }
 
     // Optional Field (conditional): propertyAccessError
-    ErrorEnclosed propertyAccessError = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer), (peekedTagNumber) == (5), WithOption.WithName("propertyAccessError"));
+    ErrorEnclosed propertyAccessError = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (5))), readBuffer), (peekedTagNumber) == (5), WithOption.WithName("propertyAccessError"));
 
     // Validation Field
     if(!(((((peekedTagNumber) == (5)) && ((propertyAccessError) != (null)))) || ((peekedTagNumber) != (5)))) {

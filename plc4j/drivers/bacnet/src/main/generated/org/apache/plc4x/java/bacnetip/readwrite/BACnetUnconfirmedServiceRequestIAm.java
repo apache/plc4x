@@ -90,16 +90,16 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: deviceIdentifier
-    BACnetApplicationTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("deviceIdentifier"));
+    BACnetApplicationTagObjectIdentifier deviceIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("deviceIdentifier"));
 
     // Simple Field: maximumApduLengthAcceptedLength
-    BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("maximumApduLengthAcceptedLength"));
+    BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("maximumApduLengthAcceptedLength"));
 
     // Simple Field: segmentationSupported
-    BACnetSegmentationTagged segmentationSupported = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSegmentationTagged) BACnetSegmentationTagged.staticParse(readBuffer, (short) (9), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("segmentationSupported"));
+    BACnetSegmentationTagged segmentationSupported = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSegmentationTagged.class, BACnetSegmentationTagged.staticParse(readBuffer, (short) (9), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("segmentationSupported"));
 
     // Simple Field: vendorId
-    BACnetVendorIdTagged vendorId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetVendorIdTagged) BACnetVendorIdTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("vendorId"));
+    BACnetVendorIdTagged vendorId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetVendorIdTagged.class, BACnetVendorIdTagged.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("vendorId"));
 
     readBuffer.popContext();
     return new BACnetUnconfirmedServiceRequestBuilderImpl(deviceIdentifier, maximumApduLengthAcceptedLength, segmentationSupported, vendorId);

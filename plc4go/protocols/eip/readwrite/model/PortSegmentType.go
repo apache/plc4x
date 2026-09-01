@@ -58,8 +58,8 @@ type PortSegmentTypeContract interface {
 
 // PortSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type PortSegmentTypeRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetExtendedLinkAddress returns ExtendedLinkAddress (discriminator field)
 	GetExtendedLinkAddress() bool
 }
@@ -221,19 +221,19 @@ func (m *_PortSegmentType) GetPlx4xTypeName() string {
 	return "PortSegmentType"
 }
 
-func (m *_PortSegmentType) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PortSegmentType) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (extendedLinkAddress)
 	lengthInBits += 1
 
 	return lengthInBits
 }
 
-func (m *_PortSegmentType) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_PortSegmentType) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_PortSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PortSegmentType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

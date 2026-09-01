@@ -106,11 +106,11 @@ func CastBACnetNetworkNumberQuality(structType any) BACnetNetworkNumberQuality {
 	return castFunc(structType)
 }
 
-func (m BACnetNetworkNumberQuality) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetNetworkNumberQuality) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetNetworkNumberQuality) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetNetworkNumberQuality) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -173,7 +173,7 @@ public class IODReadRequestHeader extends PnIoCm_Block implements Message {
     int sequenceNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sequenceNumber"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: arUuid
-    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: api
     long api = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("api"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
@@ -194,7 +194,7 @@ public class IODReadRequestHeader extends PnIoCm_Block implements Message {
     long recordDataLength = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("recordDataLength"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Optional Field (conditional): targetArUuid
-    Uuid targetArUuid = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), StaticHelper.isNullUuid(arUuid), WithOption.WithName("targetArUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    Uuid targetArUuid = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), StaticHelper.isNullUuid(arUuid), WithOption.WithName("targetArUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Padding Field: padding12
     FieldReaderFactory.readPaddingField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (int) ((((targetArUuid) != (null))) ? 8 : 24));

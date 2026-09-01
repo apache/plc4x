@@ -67,7 +67,7 @@ func (d *DefaultPlcUnsubscriptionRequest) SerializeWithWriteBuffer(ctx context.C
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}

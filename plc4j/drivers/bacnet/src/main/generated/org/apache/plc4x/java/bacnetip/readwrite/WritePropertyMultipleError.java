@@ -69,10 +69,10 @@ public class WritePropertyMultipleError extends BACnetError implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: errorType
-    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ErrorEnclosed) ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("errorType"));
+    ErrorEnclosed errorType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ErrorEnclosed.class, ErrorEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("errorType"));
 
     // Simple Field: firstFailedWriteAttempt
-    BACnetObjectPropertyReferenceEnclosed firstFailedWriteAttempt = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetObjectPropertyReferenceEnclosed) BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("firstFailedWriteAttempt"));
+    BACnetObjectPropertyReferenceEnclosed firstFailedWriteAttempt = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetObjectPropertyReferenceEnclosed.class, BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("firstFailedWriteAttempt"));
 
     readBuffer.popContext();
     return new BACnetErrorBuilderImpl(errorType, firstFailedWriteAttempt);

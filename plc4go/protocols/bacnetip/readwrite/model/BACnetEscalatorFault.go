@@ -142,11 +142,11 @@ func CastBACnetEscalatorFault(structType any) BACnetEscalatorFault {
 	return castFunc(structType)
 }
 
-func (m BACnetEscalatorFault) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetEscalatorFault) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetEscalatorFault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetEscalatorFault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

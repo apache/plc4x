@@ -111,10 +111,10 @@ public class CheckPeers extends PnIoCm_Block implements Message {
     short noOfPeers = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 8), NOOFPEERS, WithOption.WithName("noOfPeers"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: peerPortId
-    PascalString peerPortId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("peerPortId"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    PascalString peerPortId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("peerPortId"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: peerChassisId
-    PascalString peerChassisId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("peerChassisId"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    PascalString peerChassisId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("peerChassisId"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, peerPortId, peerChassisId);

@@ -264,8 +264,8 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetPlx4xTypeName(
 	return "S7PayloadUserDataItemCyclicServicesSubscribeRequest"
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (itemsCount)
 	lengthInBits += 16
@@ -287,7 +287,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

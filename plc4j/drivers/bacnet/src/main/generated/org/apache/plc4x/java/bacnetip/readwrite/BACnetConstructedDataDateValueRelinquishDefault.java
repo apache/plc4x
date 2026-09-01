@@ -78,7 +78,7 @@ public class BACnetConstructedDataDateValueRelinquishDefault extends BACnetConst
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: relinquishDefault
-    BACnetApplicationTagDate relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), WithOption.WithName("relinquishDefault"));
+    BACnetApplicationTagDate relinquishDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("relinquishDefault"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDate actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDate.class, relinquishDefault, WithOption.WithName("actualValue"));

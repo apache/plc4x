@@ -78,7 +78,7 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: deadband
-    BACnetApplicationTagDouble deadband = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDouble) BACnetApplicationTagDouble.staticParse(readBuffer), readBuffer), WithOption.WithName("deadband"));
+    BACnetApplicationTagDouble deadband = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDouble.class, BACnetApplicationTagDouble.staticParse(readBuffer)), readBuffer), WithOption.WithName("deadband"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDouble.class, deadband, WithOption.WithName("actualValue"));

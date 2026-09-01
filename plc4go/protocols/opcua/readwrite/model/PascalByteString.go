@@ -179,21 +179,21 @@ func (m *_PascalByteString) GetPlx4xTypeName() string {
 	return "PascalByteString"
 }
 
-func (m *_PascalByteString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PascalByteString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (stringLength)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.StringValue) > 0 {
-		lengthInBits += 8 * uint16(len(m.StringValue))
+		lengthInBits += 8 * uint64(len(m.StringValue))
 	}
 
 	return lengthInBits
 }
 
-func (m *_PascalByteString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PascalByteString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

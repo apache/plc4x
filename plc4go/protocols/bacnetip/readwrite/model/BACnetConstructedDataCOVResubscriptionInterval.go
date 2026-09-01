@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetPlx4xTypeName() str
 	return "BACnetConstructedDataCOVResubscriptionInterval"
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (covResubscriptionInterval)
 	lengthInBits += m.CovResubscriptionInterval.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

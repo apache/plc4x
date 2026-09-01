@@ -106,7 +106,7 @@ public class SendUnitData extends EipPacket implements Message {
     int typeIdCount = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("typeIdCount"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: typeIds
-    List<TypeId> typeIds = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (TypeId) TypeId.staticParse(readBuffer), readBuffer), typeIdCount, WithOption.WithName("typeIds"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<TypeId> typeIds = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TypeId.class, TypeId.staticParse(readBuffer)), readBuffer), typeIdCount, WithOption.WithName("typeIds"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new EipPacketBuilderImpl(timeout, typeIds);

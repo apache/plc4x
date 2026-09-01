@@ -159,7 +159,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
     short numberOfObjects = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfObjects"));
 
     // Array Field: objects
-    List<ModbusDeviceInformationObject> objects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ModbusDeviceInformationObject) ModbusDeviceInformationObject.staticParse(readBuffer), readBuffer), numberOfObjects, WithOption.WithName("objects"));
+    List<ModbusDeviceInformationObject> objects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ModbusDeviceInformationObject.class, ModbusDeviceInformationObject.staticParse(readBuffer)), readBuffer), numberOfObjects, WithOption.WithName("objects"));
 
     readBuffer.popContext();
     return new ModbusPDUBuilderImpl(level, individualAccess, conformityLevel, moreFollows, nextObjectId, objects);

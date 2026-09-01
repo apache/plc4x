@@ -130,11 +130,11 @@ func CastOperation(structType any) Operation {
 	return castFunc(structType)
 }
 
-func (m Operation) GetLengthInBits(ctx context.Context) uint16 {
+func (m Operation) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m Operation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m Operation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

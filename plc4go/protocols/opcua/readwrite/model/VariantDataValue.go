@@ -226,8 +226,8 @@ func (m *_VariantDataValue) GetPlx4xTypeName() string {
 	return "VariantDataValue"
 }
 
-func (m *_VariantDataValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantDataValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -245,7 +245,7 @@ func (m *_VariantDataValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_VariantDataValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantDataValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

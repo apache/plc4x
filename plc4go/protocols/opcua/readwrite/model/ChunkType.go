@@ -100,11 +100,11 @@ func CastChunkType(structType any) ChunkType {
 	return castFunc(structType)
 }
 
-func (m ChunkType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ChunkType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m ChunkType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ChunkType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -138,7 +138,7 @@ func (e ChunkType) Serialize() ([]byte, error) {
 func (e ChunkType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("ChunkType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("ChunkType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8"))
 }
 
 func (e ChunkType) GetValue() string {

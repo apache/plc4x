@@ -186,8 +186,8 @@ func (m *_LevelInformationAbsent) GetPlx4xTypeName() string {
 	return "LevelInformationAbsent"
 }
 
-func (m *_LevelInformationAbsent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+func (m *_LevelInformationAbsent) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -195,7 +195,7 @@ func (m *_LevelInformationAbsent) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LevelInformationAbsent) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LevelInformationAbsent) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

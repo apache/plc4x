@@ -78,7 +78,7 @@ public class BACnetConstructedDataBinaryLightingOutputPresentValue extends BACne
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetBinaryLightingPVTagged presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetBinaryLightingPVTagged) BACnetBinaryLightingPVTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("presentValue"));
+    BACnetBinaryLightingPVTagged presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetBinaryLightingPVTagged.class, BACnetBinaryLightingPVTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetBinaryLightingPVTagged actualValue = FieldReaderFactory.readVirtualField(BACnetBinaryLightingPVTagged.class, presentValue, WithOption.WithName("actualValue"));

@@ -77,7 +77,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: alarmMessage
-    AlarmMessageAckPushType alarmMessage = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AlarmMessageAckPushType) AlarmMessageAckPushType.staticParse(readBuffer), readBuffer), WithOption.WithName("alarmMessage"));
+    AlarmMessageAckPushType alarmMessage = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AlarmMessageAckPushType.class, AlarmMessageAckPushType.staticParse(readBuffer)), readBuffer), WithOption.WithName("alarmMessage"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(alarmMessage);

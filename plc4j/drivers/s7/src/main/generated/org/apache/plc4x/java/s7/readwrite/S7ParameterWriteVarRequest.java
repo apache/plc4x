@@ -71,7 +71,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
     short numItems = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numItems"));
 
     // Array Field: items
-    List<S7VarRequestParameterItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (S7VarRequestParameterItem) S7VarRequestParameterItem.staticParse(readBuffer), readBuffer), numItems, WithOption.WithName("items"));
+    List<S7VarRequestParameterItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7VarRequestParameterItem.class, S7VarRequestParameterItem.staticParse(readBuffer)), readBuffer), numItems, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new S7ParameterBuilderImpl(items);

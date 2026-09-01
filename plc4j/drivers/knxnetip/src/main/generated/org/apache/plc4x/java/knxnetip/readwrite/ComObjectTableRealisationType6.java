@@ -59,7 +59,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: comObjectDescriptors
-    GroupObjectDescriptorRealisationType6 comObjectDescriptors = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (GroupObjectDescriptorRealisationType6) GroupObjectDescriptorRealisationType6.staticParse(readBuffer), readBuffer), WithOption.WithName("comObjectDescriptors"));
+    GroupObjectDescriptorRealisationType6 comObjectDescriptors = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(GroupObjectDescriptorRealisationType6.class, GroupObjectDescriptorRealisationType6.staticParse(readBuffer)), readBuffer), WithOption.WithName("comObjectDescriptors"));
 
     readBuffer.popContext();
     return new ComObjectTableBuilderImpl(comObjectDescriptors);

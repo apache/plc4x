@@ -278,8 +278,8 @@ func (m *_Annotation) GetPlx4xTypeName() string {
 	return "Annotation"
 }
 
-func (m *_Annotation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_Annotation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (message)
 	lengthInBits += m.Message.GetLengthInBits(ctx)
@@ -293,7 +293,7 @@ func (m *_Annotation) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Annotation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Annotation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

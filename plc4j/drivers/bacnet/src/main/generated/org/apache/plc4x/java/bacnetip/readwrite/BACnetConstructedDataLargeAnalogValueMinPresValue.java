@@ -78,7 +78,7 @@ public class BACnetConstructedDataLargeAnalogValueMinPresValue extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: minPresValue
-    BACnetApplicationTagDouble minPresValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDouble) BACnetApplicationTagDouble.staticParse(readBuffer), readBuffer), WithOption.WithName("minPresValue"));
+    BACnetApplicationTagDouble minPresValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDouble.class, BACnetApplicationTagDouble.staticParse(readBuffer)), readBuffer), WithOption.WithName("minPresValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDouble.class, minPresValue, WithOption.WithName("actualValue"));

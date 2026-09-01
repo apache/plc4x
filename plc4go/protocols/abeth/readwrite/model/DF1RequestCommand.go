@@ -60,8 +60,8 @@ type DF1RequestCommandContract interface {
 
 // DF1RequestCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1RequestCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetFunctionCode returns FunctionCode (discriminator field)
 	GetFunctionCode() uint8
 }
@@ -211,19 +211,19 @@ func (m *_DF1RequestCommand) GetPlx4xTypeName() string {
 	return "DF1RequestCommand"
 }
 
-func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (functionCode)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_DF1RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1RequestCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_DF1RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1RequestCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

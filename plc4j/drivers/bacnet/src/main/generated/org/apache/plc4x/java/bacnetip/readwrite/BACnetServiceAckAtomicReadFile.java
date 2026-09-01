@@ -71,10 +71,10 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: endOfFile
-    BACnetApplicationTagBoolean endOfFile = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("endOfFile"));
+    BACnetApplicationTagBoolean endOfFile = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("endOfFile"));
 
     // Simple Field: accessMethod
-    BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetServiceAckAtomicReadFileStreamOrRecord) BACnetServiceAckAtomicReadFileStreamOrRecord.staticParse(readBuffer), readBuffer), WithOption.WithName("accessMethod"));
+    BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetServiceAckAtomicReadFileStreamOrRecord.class, BACnetServiceAckAtomicReadFileStreamOrRecord.staticParse(readBuffer)), readBuffer), WithOption.WithName("accessMethod"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(endOfFile, accessMethod);

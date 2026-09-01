@@ -998,7 +998,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_CHAR_BLOCK: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((10)); i++ {
+		for i := range uint32((10)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1006,7 +1006,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS: // Struct
 		// Array Field (groupAddress)
-		for i := uint32(0); i < uint32((2)); i++ {
+		for i := range uint32((2)) {
 			groupAddress := value.GetValue("groupAddress")
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", groupAddress.GetIndex(i).GetByte())
 			if _itemErr != nil {
@@ -1030,7 +1030,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((5)); i++ {
+		for i := range uint32((5)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1143,7 +1143,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_01: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((1)); i++ {
+		for i := range uint32((1)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1151,7 +1151,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_02: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((2)); i++ {
+		for i := range uint32((2)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1159,7 +1159,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_03: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((3)); i++ {
+		for i := range uint32((3)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1167,7 +1167,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_04: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((4)); i++ {
+		for i := range uint32((4)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1175,7 +1175,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_05: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((5)); i++ {
+		for i := range uint32((5)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1183,7 +1183,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_06: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((6)); i++ {
+		for i := range uint32((6)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1191,7 +1191,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_07: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((7)); i++ {
+		for i := range uint32((7)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1199,7 +1199,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_08: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((8)); i++ {
+		for i := range uint32((8)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1207,7 +1207,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_09: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((9)); i++ {
+		for i := range uint32((9)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1215,7 +1215,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_10: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((10)); i++ {
+		for i := range uint32((10)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1223,7 +1223,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_11: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((11)); i++ {
+		for i := range uint32((11)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1231,7 +1231,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_12: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((12)); i++ {
+		for i := range uint32((12)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1239,7 +1239,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_13: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((13)); i++ {
+		for i := range uint32((13)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1247,7 +1247,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_14: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((14)); i++ {
+		for i := range uint32((14)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1255,7 +1255,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_15: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((15)); i++ {
+		for i := range uint32((15)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1263,7 +1263,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_16: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((16)); i++ {
+		for i := range uint32((16)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1271,7 +1271,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_17: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((17)); i++ {
+		for i := range uint32((17)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1279,7 +1279,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_18: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((18)); i++ {
+		for i := range uint32((18)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1287,7 +1287,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_19: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((19)); i++ {
+		for i := range uint32((19)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -1295,7 +1295,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_20: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32((20)); i++ {
+		for i := range uint32((20)) {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")

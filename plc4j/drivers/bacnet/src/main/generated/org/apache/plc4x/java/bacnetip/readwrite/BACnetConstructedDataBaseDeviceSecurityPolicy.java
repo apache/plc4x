@@ -78,7 +78,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: baseDeviceSecurityPolicy
-    BACnetSecurityLevelTagged baseDeviceSecurityPolicy = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetSecurityLevelTagged) BACnetSecurityLevelTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("baseDeviceSecurityPolicy"));
+    BACnetSecurityLevelTagged baseDeviceSecurityPolicy = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetSecurityLevelTagged.class, BACnetSecurityLevelTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("baseDeviceSecurityPolicy"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetSecurityLevelTagged actualValue = FieldReaderFactory.readVirtualField(BACnetSecurityLevelTagged.class, baseDeviceSecurityPolicy, WithOption.WithName("actualValue"));

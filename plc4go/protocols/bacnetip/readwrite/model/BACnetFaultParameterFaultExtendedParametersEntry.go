@@ -64,8 +64,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryContract interface {
 
 // BACnetFaultParameterFaultExtendedParametersEntryRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetFaultParameterFaultExtendedParametersEntryRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
 	GetPeekedIsContextTag() bool
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
@@ -436,8 +436,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPlx4xTypeName() s
 	return "BACnetFaultParameterFaultExtendedParametersEntry"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -446,11 +446,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) getLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

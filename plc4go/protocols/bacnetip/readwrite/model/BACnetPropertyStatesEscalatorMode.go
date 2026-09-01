@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesEscalatorMode"
 }
 
-func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (escalatorMode)
 	lengthInBits += m.EscalatorMode.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -78,7 +78,7 @@ public class BACnetConstructedDataLightingCommand extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lightingCommand
-    BACnetLightingCommand lightingCommand = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingCommand) BACnetLightingCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("lightingCommand"));
+    BACnetLightingCommand lightingCommand = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingCommand.class, BACnetLightingCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("lightingCommand"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLightingCommand actualValue = FieldReaderFactory.readVirtualField(BACnetLightingCommand.class, lightingCommand, WithOption.WithName("actualValue"));

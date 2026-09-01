@@ -268,8 +268,8 @@ func (m *_CycServiceItemAnyType) GetPlx4xTypeName() string {
 	return "CycServiceItemAnyType"
 }
 
-func (m *_CycServiceItemAnyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
+func (m *_CycServiceItemAnyType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -289,7 +289,7 @@ func (m *_CycServiceItemAnyType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CycServiceItemAnyType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CycServiceItemAnyType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

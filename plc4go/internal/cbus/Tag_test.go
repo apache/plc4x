@@ -29,7 +29,6 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -291,9 +290,8 @@ func Test_calGetStatusTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -570,9 +568,8 @@ func Test_calIdentifyTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -810,9 +807,8 @@ func Test_calRecallTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -1281,9 +1277,8 @@ func Test_mmiMonitorTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "mmi monitor tag",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -1597,9 +1592,8 @@ func Test_salMonitorTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -1907,9 +1901,8 @@ func Test_salTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -2273,9 +2266,8 @@ func Test_statusTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",

@@ -73,10 +73,10 @@ public class EventFilter extends ExtensionObjectDefinition implements Message {
     int noOfSelectClauses = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfSelectClauses"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: selectClauses
-    List<SimpleAttributeOperand> selectClauses = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SimpleAttributeOperand) SimpleAttributeOperand.staticParse(readBuffer, (int) (603)), readBuffer), noOfSelectClauses, WithOption.WithName("selectClauses"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<SimpleAttributeOperand> selectClauses = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SimpleAttributeOperand.class, SimpleAttributeOperand.staticParse(readBuffer, (int) (603))), readBuffer), noOfSelectClauses, WithOption.WithName("selectClauses"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: whereClause
-    ContentFilter whereClause = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ContentFilter) ContentFilter.staticParse(readBuffer, (int) (588)), readBuffer), WithOption.WithName("whereClause"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ContentFilter whereClause = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ContentFilter.class, ContentFilter.staticParse(readBuffer, (int) (588))), readBuffer), WithOption.WithName("whereClause"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(selectClauses, whereClause);

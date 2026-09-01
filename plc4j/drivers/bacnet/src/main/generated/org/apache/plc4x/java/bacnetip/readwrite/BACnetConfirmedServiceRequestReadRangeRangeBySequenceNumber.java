@@ -64,10 +64,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber extends
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: referenceSequenceNumber
-    BACnetApplicationTagUnsignedInteger referenceSequenceNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("referenceSequenceNumber"));
+    BACnetApplicationTagUnsignedInteger referenceSequenceNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("referenceSequenceNumber"));
 
     // Simple Field: count
-    BACnetApplicationTagSignedInteger count = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagSignedInteger) BACnetApplicationTagSignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("count"));
+    BACnetApplicationTagSignedInteger count = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagSignedInteger.class, BACnetApplicationTagSignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("count"));
 
     readBuffer.popContext();
     return new BACnetConfirmedServiceRequestReadRangeRangeBuilderImpl(referenceSequenceNumber, count);

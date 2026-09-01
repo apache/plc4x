@@ -112,11 +112,11 @@ func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(struc
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

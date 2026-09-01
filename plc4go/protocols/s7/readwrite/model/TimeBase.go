@@ -100,11 +100,11 @@ func CastTimeBase(structType any) TimeBase {
 	return castFunc(structType)
 }
 
-func (m TimeBase) GetLengthInBits(ctx context.Context) uint16 {
+func (m TimeBase) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m TimeBase) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TimeBase) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -223,4 +223,4 @@ Log output includes:
 
 - RFC 1006: ISO Transport Service on top of the TCP
 - ISO 8073: Connection Oriented Transport Protocol
-- [COTP Protocol Specification](/protocols/cotp/src/main/resources/protocols/cotp/cotp.mspec)
+- [COTP Protocol Specification](../../../protocols/cotp/src/main/resources/protocols/cotp/cotp.mspec)

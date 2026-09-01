@@ -1038,11 +1038,11 @@ func CastKnxPropertyDataType(structType any) KnxPropertyDataType {
 	return castFunc(structType)
 }
 
-func (m KnxPropertyDataType) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxPropertyDataType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m KnxPropertyDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxPropertyDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

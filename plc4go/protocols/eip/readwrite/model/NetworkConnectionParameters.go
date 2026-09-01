@@ -225,8 +225,8 @@ func (m *_NetworkConnectionParameters) GetPlx4xTypeName() string {
 	return "NetworkConnectionParameters"
 }
 
-func (m *_NetworkConnectionParameters) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NetworkConnectionParameters) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (connectionSize)
 	lengthInBits += 16
@@ -255,7 +255,7 @@ func (m *_NetworkConnectionParameters) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_NetworkConnectionParameters) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkConnectionParameters) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

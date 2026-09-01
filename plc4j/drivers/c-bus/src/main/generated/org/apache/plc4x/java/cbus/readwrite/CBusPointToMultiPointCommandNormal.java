@@ -71,7 +71,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
     FieldReaderFactory.readReservedField(DataReaderFactory.readByte(readBuffer, 8), (byte) 0x00, WithOption.WithName("CBusPointToMultiPointCommandNormal.reserved1"));
 
     // Simple Field: salData
-    SALData salData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SALData) SALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.ApplicationId) (application.getApplicationId())), readBuffer), WithOption.WithName("salData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    SALData salData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SALData.class, SALData.staticParse(readBuffer, (org.apache.plc4x.java.cbus.readwrite.ApplicationId) (application.getApplicationId()))), readBuffer), WithOption.WithName("salData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new CBusPointToMultiPointCommandBuilderImpl(application, salData);

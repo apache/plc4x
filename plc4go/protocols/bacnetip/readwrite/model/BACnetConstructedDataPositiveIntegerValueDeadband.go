@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetPlx4xTypeName() 
 	return "BACnetConstructedDataPositiveIntegerValueDeadband"
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (deadband)
 	lengthInBits += m.Deadband.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -68,7 +68,7 @@ public class AliasCategoryUpdateDataType extends ExtensionObjectDefinition imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: category
-    PortableNodeId category = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PortableNodeId) PortableNodeId.staticParse(readBuffer, (int) (24108)), readBuffer), WithOption.WithName("category"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    PortableNodeId category = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PortableNodeId.class, PortableNodeId.staticParse(readBuffer, (int) (24108))), readBuffer), WithOption.WithName("category"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: lastChange
     long lastChange = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("lastChange"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

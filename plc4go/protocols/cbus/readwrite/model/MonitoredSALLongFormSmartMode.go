@@ -377,8 +377,8 @@ func (m *_MonitoredSALLongFormSmartMode) GetPlx4xTypeName() string {
 	return "MonitoredSALLongFormSmartMode"
 }
 
-func (m *_MonitoredSALLongFormSmartMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
+func (m *_MonitoredSALLongFormSmartMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -416,7 +416,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

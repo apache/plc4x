@@ -78,7 +78,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: programError
-    BACnetProgramErrorTagged programError = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetProgramErrorTagged) BACnetProgramErrorTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("programError"));
+    BACnetProgramErrorTagged programError = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetProgramErrorTagged.class, BACnetProgramErrorTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("programError"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetProgramErrorTagged actualValue = FieldReaderFactory.readVirtualField(BACnetProgramErrorTagged.class, programError, WithOption.WithName("actualValue"));

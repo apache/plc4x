@@ -81,13 +81,13 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: objectIdentifier
-    BACnetApplicationTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagObjectIdentifier) BACnetApplicationTagObjectIdentifier.staticParse(readBuffer), readBuffer), WithOption.WithName("objectIdentifier"));
+    BACnetApplicationTagObjectIdentifier objectIdentifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagObjectIdentifier.class, BACnetApplicationTagObjectIdentifier.staticParse(readBuffer)), readBuffer), WithOption.WithName("objectIdentifier"));
 
     // Simple Field: eventState
-    BACnetEventStateTagged eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventStateTagged) BACnetEventStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("eventState"));
+    BACnetEventStateTagged eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventStateTagged.class, BACnetEventStateTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("eventState"));
 
     // Simple Field: acknowledgedTransitions
-    BACnetEventTransitionBitsTagged acknowledgedTransitions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEventTransitionBitsTagged) BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("acknowledgedTransitions"));
+    BACnetEventTransitionBitsTagged acknowledgedTransitions = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventTransitionBitsTagged.class, BACnetEventTransitionBitsTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("acknowledgedTransitions"));
 
     readBuffer.popContext();
     return new BACnetServiceAckBuilderImpl(objectIdentifier, eventState, acknowledgedTransitions);

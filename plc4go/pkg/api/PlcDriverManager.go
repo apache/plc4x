@@ -190,14 +190,14 @@ func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[str
 }
 
 func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString string) (PlcConnection, error) {
-	m.log.Debug().Str("connectionString", connectionString).Msg("Getting connection for connectionString")
+	m.log.Debug().Str("connectionString", options.RedactConnectionString(connectionString)).Msg("Getting connection for connectionString")
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {
 		m.log.Error().Err(err).Msg("Error parsing connection")
 		return nil, errors.Wrap(err, "error parsing connection string")
 	}
-	m.log.Debug().Stringer("connectionUrl", connectionUrl).Msg("parsed connection URL")
+	m.log.Debug().Str("connectionUrl", options.RedactConnectionString(connectionUrl.String())).Msg("parsed connection URL")
 
 	// The options will be used to configure both the transports as well as the connections/drivers
 	configOptions := connectionUrl.Query()
@@ -209,7 +209,7 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 		m.log.Err(err).Str("driverName", driverName).Msg("Couldn't get driver for driverName")
 		return nil, errors.Wrap(err, "error getting driver for connection string")
 	}
-	m.log.Debug().Stringer("connectionUrl", connectionUrl).Str("protocolName", driver.GetProtocolName()).Msg("got driver protocolName")
+	m.log.Debug().Str("connectionUrl", options.RedactConnectionString(connectionUrl.String())).Str("protocolName", driver.GetProtocolName()).Msg("got driver protocolName")
 
 	// If a transport is provided alongside the driver, the URL content is decoded as "opaque" data
 	// Then we have to re-parse that to get the transport code as well as the host & port information.
@@ -250,6 +250,11 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 		Path:   transportPath,
 	}
 	m.log.Debug().Stringer("transportUrl", &transportUrl).Msg("Assembled transport url")
+
+	// Tell option reporting which transport is on duty, so it can excuse that transport's
+	// options and no other's. Stamped unconditionally: a user-supplied value here would be a
+	// lie about the connection.
+	configOptions[options.ActiveTransportOption] = []string{transportName}
 
 	// Create a new connection
 	return driver.GetConnection(ctx, transportUrl, m.transports, configOptions)

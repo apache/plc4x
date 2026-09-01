@@ -237,7 +237,7 @@ public class ApiResponseHandler {
         // Handle RAW_BYTE_ARRAY first since it reports isList()=true but should be serialized as a hex string
         if (plcValueType == PlcValueType.RAW_BYTE_ARRAY) {
             Element valueElement = parentElement.addElement("PlcRAW_BYTE_ARRAY");
-            addTypeAttributes(valueElement, plcValueType);
+            addTypeAttributes(valueElement, plcValueType, value.toString());
             valueElement.setText(value.toString());
         } else if (value.isStruct()) {
             Element structElement = parentElement.addElement("PlcStruct");
@@ -255,25 +255,35 @@ public class ApiResponseHandler {
             String typeName = (plcValueType != null) ? "Plc" + plcValueType.name() : "PlcValue";
             Element valueElement = parentElement.addElement(typeName);
 
+            // A BYTE is a bit string, not a number: render it the way byte fields render (0x..).
+            String text = (plcValueType == PlcValueType.BYTE)
+                ? String.format("0x%02x", value.getShort() & 0xFF)
+                : value.toString();
+
             // Add dataType and bitLength attributes based on the PlcValueType
             if (plcValueType != null) {
-                addTypeAttributes(valueElement, plcValueType);
+                addTypeAttributes(valueElement, plcValueType, text);
             }
 
-            valueElement.setText(value.toString());
+            valueElement.setText(text);
         }
     }
 
     /**
      * Adds dataType and bitLength attributes to an element based on the PlcValueType.
+     * The rendered text is passed in for the types whose bit length derives from it.
      */
-    private void addTypeAttributes(Element element, PlcValueType plcValueType) {
+    private void addTypeAttributes(Element element, PlcValueType plcValueType, String text) {
         switch (plcValueType) {
             case BOOL -> {
                 element.addAttribute("dataType", "bit");
                 element.addAttribute("bitLength", "1");
             }
-            case BYTE, USINT -> {
+            case BYTE -> {
+                element.addAttribute("dataType", "byte");
+                element.addAttribute("bitLength", "8");
+            }
+            case USINT -> {
                 element.addAttribute("dataType", "uint");
                 element.addAttribute("bitLength", "8");
             }
@@ -313,12 +323,18 @@ public class ApiResponseHandler {
                 element.addAttribute("dataType", "float");
                 element.addAttribute("bitLength", "64");
             }
-            case STRING, WSTRING, CHAR, WCHAR -> {
+            case WSTRING -> {
                 element.addAttribute("dataType", "string");
+                // UTF-16 size of the value including the byte order mark.
+                element.addAttribute("bitLength", String.valueOf((text.codePointCount(0, text.length()) + 1) * 16));
                 element.addAttribute("encoding", "UTF-8");
             }
-            case TIME, LTIME, DATE, LDATE, TIME_OF_DAY, LTIME_OF_DAY, DATE_AND_TIME, LDATE_AND_TIME, DATE_AND_LTIME -> {
-                element.addAttribute("dataType", "time");
+            case STRING, CHAR, WCHAR,
+                 // Temporal values render as their ISO-8601 string form.
+                 TIME, LTIME, DATE, LDATE, TIME_OF_DAY, LTIME_OF_DAY, DATE_AND_TIME, LDATE_AND_TIME, DATE_AND_LTIME -> {
+                element.addAttribute("dataType", "string");
+                element.addAttribute("bitLength", String.valueOf(text.getBytes(java.nio.charset.StandardCharsets.UTF_8).length * 8));
+                element.addAttribute("encoding", "UTF-8");
             }
             case RAW_BYTE_ARRAY -> {
                 element.addAttribute("dataType", "byte");

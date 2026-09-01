@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatabaseRevision"
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (databaseRevision)
 	lengthInBits += m.DatabaseRevision.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

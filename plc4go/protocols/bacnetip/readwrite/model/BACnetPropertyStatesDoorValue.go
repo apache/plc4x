@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesDoorValue) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesDoorValue"
 }
 
-func (m *_BACnetPropertyStatesDoorValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesDoorValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (doorValue)
 	lengthInBits += m.DoorValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesDoorValue) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesDoorValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesDoorValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

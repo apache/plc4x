@@ -225,8 +225,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetPl
 	return "BACnetFaultParameterFaultExtendedParametersEntryCharacterString"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
 	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLe
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -88,8 +88,8 @@ type AmsPacketContract interface {
 
 // AmsPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type AmsPacketRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandId returns CommandId (discriminator field)
 	GetCommandId() CommandId
 	// GetErrorCode returns ErrorCode (discriminator field)
@@ -644,8 +644,8 @@ func (m *_AmsPacket) GetPlx4xTypeName() string {
 	return "AmsPacket"
 }
 
-func (m *_AmsPacket) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AmsPacket) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (targetAmsNetId)
 	lengthInBits += m.TargetAmsNetId.GetLengthInBits(ctx)
@@ -702,11 +702,11 @@ func (m *_AmsPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsPacket) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AmsPacket) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AmsPacket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AmsPacket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

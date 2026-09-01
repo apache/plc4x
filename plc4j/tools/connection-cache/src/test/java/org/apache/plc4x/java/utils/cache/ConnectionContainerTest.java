@@ -776,4 +776,112 @@ class ConnectionContainerTest {
         // The container recovered: it is not stuck leased and a subsequent caller can proceed.
         assertFalse(container.isLeased());
     }
+
+    /**
+     * Regression test for the lock-order inversion between the container lock and a
+     * {@link LeasedPlcConnection}'s own lock.
+     * <p>
+     * An application thread closing its lease takes the locks in the order lease -&gt; container
+     * ({@code LeasedPlcConnection.close()} -&gt; {@code returnLease()}). {@code ConnectionContainer.close()}
+     * used to take them in the opposite order, container -&gt; lease, by calling {@code leasedConnection.close()}
+     * while holding the container lock. Running both concurrently — an application returning its connection
+     * while the manager shuts down or evicts the cached connection — could therefore deadlock, with neither
+     * lock being time-bounded and so no recovery.
+     * <p>
+     * The interleaving is forced deterministically rather than raced for. A third thread parks inside
+     * {@code scheduler.schedule(...)} while holding the container lock (the container schedules the wait
+     * timeout for a queued lease under that lock), which lets both contenders queue up behind it in a
+     * known order: first the container teardown, then the application's lease return. Releasing the
+     * container lock then hands it to the teardown, which — with the inversion — reaches for the lease
+     * lock the application thread is already holding while it waits for the container lock. Neither
+     * thread can make progress. With {@code close()} closing the lease <em>before</em> taking the
+     * container lock, both threads always finish.
+     */
+    @Test
+    void testClose_ConcurrentWithLeaseClose_DoesNotDeadlock() throws Exception {
+        // Gate the scheduling of the queued lease's wait-timeout task: the container does that under
+        // its own lock, which gives the test a way to pin the container lock for as long as it needs.
+        CountDownLatch scheduleReached = new CountDownLatch(1);
+        CountDownLatch releaseContainerLock = new CountDownLatch(1);
+        java.util.concurrent.atomic.AtomicBoolean gateNextSchedule = new java.util.concurrent.atomic.AtomicBoolean(false);
+        ScheduledExecutorService gatedScheduler = mock(ScheduledExecutorService.class);
+        // The queued lease's wait-timeout lambda returns a value, so it binds to the Callable overload;
+        // the container's other scheduled tasks (idle / max-lease timeouts) are void and bind to the
+        // Runnable one. Stub both, but only park in the Callable one — that is the queued-lease path.
+        when(gatedScheduler.schedule(any(Runnable.class), anyLong(), any(TimeUnit.class)))
+            .thenAnswer(invocation -> mock(java.util.concurrent.ScheduledFuture.class));
+        when(gatedScheduler.schedule(any(java.util.concurrent.Callable.class), anyLong(), any(TimeUnit.class))).thenAnswer(invocation -> {
+            if (gateNextSchedule.compareAndSet(true, false)) {
+                scheduleReached.countDown();
+                assertTrue(releaseContainerLock.await(10, TimeUnit.SECONDS), "gate was never released");
+            }
+            return mock(java.util.concurrent.ScheduledFuture.class);
+        });
+
+        ConnectionContainer container = new ConnectionContainer(
+            "test:tcp://localhost",
+            () -> mockConnection,
+            gatedScheduler,
+            5000,  // maxIdleTimeMs
+            0,     // maxLeaseTimeMs — no force-return, keep the test threads the only actors
+            30000, // maxWaitTimeMs
+            5000,  // pingTimeoutMs
+            30000  // idlePingThresholdMs
+        );
+
+        // Daemon threads: should this ever deadlock again, the stuck threads must not keep the JVM
+        // (and the surefire fork) alive after the assertion below has failed the test.
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(3, runnable -> {
+            Thread thread = new Thread(runnable, "close-vs-lease-close");
+            thread.setDaemon(true);
+            return thread;
+        });
+        try {
+            PlcConnection leased = container.lease().get(2, TimeUnit.SECONDS);
+
+            // Thread C: parks inside the container lock by queueing a second lease against the gated
+            // scheduler. Everything below then queues behind it on the container lock.
+            gateNextSchedule.set(true);
+            executor.submit(container::lease);
+            assertTrue(scheduleReached.await(5, TimeUnit.SECONDS), "container lock was never pinned");
+
+            CountDownLatch teardownDone = new CountDownLatch(1);
+            CountDownLatch leaseReturnDone = new CountDownLatch(1);
+
+            // Thread B: the cache evicts / shuts down the container (container -> lease, pre-fix order).
+            executor.submit(() -> {
+                try {
+                    container.close();
+                } finally {
+                    teardownDone.countDown();
+                }
+            });
+            // Let B reach the container lock before A queues behind it — with the fair lock this fixes
+            // the acquisition order, so the pre-fix inversion is hit every time rather than by chance.
+            Thread.sleep(250);
+
+            // Thread A: the application returns its lease (lease -> container, the order every caller uses).
+            executor.submit(() -> {
+                try {
+                    leased.close();
+                } catch (Exception e) {
+                    // Losing the race with the teardown is fine; only a hang is a failure.
+                } finally {
+                    leaseReturnDone.countDown();
+                }
+            });
+            Thread.sleep(250);
+
+            // Hand the container lock over to the two contenders.
+            releaseContainerLock.countDown();
+
+            assertTrue(teardownDone.await(10, TimeUnit.SECONDS),
+                "container.close() deadlocked against a concurrent lease return — the container lock "
+                    + "must not be held while closing the lease");
+            assertTrue(leaseReturnDone.await(10, TimeUnit.SECONDS),
+                "lease close() deadlocked against a concurrent container teardown");
+        } finally {
+            executor.shutdownNow();
+        }
+    }
 }

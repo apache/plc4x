@@ -72,7 +72,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: subscribedRecipients
-    List<BACnetEventNotificationSubscription> subscribedRecipients = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetEventNotificationSubscription) BACnetEventNotificationSubscription.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("subscribedRecipients"));
+    List<BACnetEventNotificationSubscription> subscribedRecipients = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEventNotificationSubscription.class, BACnetEventNotificationSubscription.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("subscribedRecipients"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(subscribedRecipients);

@@ -78,7 +78,7 @@ public class BACnetConstructedDataTimePatternValuePresentValue extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetApplicationTagTime presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("presentValue"));
+    BACnetApplicationTagTime presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagTime actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagTime.class, presentValue, WithOption.WithName("actualValue"));

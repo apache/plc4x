@@ -216,8 +216,8 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetPlx4xTypeName() string {
 	return "AdsDeleteDeviceNotificationResponse"
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -225,7 +225,7 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

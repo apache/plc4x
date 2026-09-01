@@ -117,7 +117,7 @@ public class Alarm8MessageQueryType implements Message {
     int byteCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("byteCount"));
 
     // Array Field: messageObjects
-    List<AlarmMessageObjectQueryType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AlarmMessageObjectQueryType) AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer), (byteCount) / (12), WithOption.WithName("messageObjects"));
+    List<AlarmMessageObjectQueryType> messageObjects = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AlarmMessageObjectQueryType.class, AlarmMessageObjectQueryType.staticParse(readBuffer)), readBuffer), (byteCount) / (12), WithOption.WithName("messageObjects"));
 
     readBuffer.popContext();
     return new Alarm8MessageQueryType(functionId, numberOfObjects, returnCode, transportSize, byteCount, messageObjects);

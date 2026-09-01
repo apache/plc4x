@@ -179,15 +179,15 @@ func (m *_Services) GetPlx4xTypeName() string {
 	return "Services"
 }
 
-func (m *_Services) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Services) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (serviceNb)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.Offsets) > 0 {
-		lengthInBits += 16 * uint16(len(m.Offsets))
+		lengthInBits += 16 * uint64(len(m.Offsets))
 	}
 
 	// Array field
@@ -201,7 +201,7 @@ func (m *_Services) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Services) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Services) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

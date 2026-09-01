@@ -71,7 +71,7 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
     byte keyRevision = FieldReaderFactory.readSimpleField(DataReaderFactory.readByte(readBuffer, 8), WithOption.WithName("keyRevision"));
 
     // Simple Field: key
-    NLMUpdateKeyUpdateKeyEntry key = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer), WithOption.WithName("key"));
+    NLMUpdateKeyUpdateKeyEntry key = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLMUpdateKeyUpdateKeyEntry.class, NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer)), readBuffer), WithOption.WithName("key"));
 
     readBuffer.popContext();
     return new NLMBuilderImpl(keyRevision, key);

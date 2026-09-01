@@ -118,11 +118,11 @@ func CastDataTransportErrorCode(structType any) DataTransportErrorCode {
 	return castFunc(structType)
 }
 
-func (m DataTransportErrorCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m DataTransportErrorCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m DataTransportErrorCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DataTransportErrorCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

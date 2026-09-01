@@ -29,10 +29,7 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.types.OptionType;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.ConfigurationFactory;
-import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.config.annotations.Description;
-import org.apache.plc4x.java.spi.config.annotations.Required;
-import org.apache.plc4x.java.spi.config.annotations.Since;
+import org.apache.plc4x.java.spi.config.annotations.*;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.DoubleDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.FloatDefaultValue;
@@ -79,13 +76,6 @@ public abstract class DriverBase implements PlcDriver {
     public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9\\-]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
-    /**
-     * Matches the value of connection-string query parameters that carry secrets so they can be
-     * masked before logging. Covers any parameter whose name contains "password", "passwd", "secret"
-     * or "token" (optionally with a transport prefix like "tls.").
-     */
-    private static final Pattern SECRET_PARAM_PATTERN = Pattern.compile(
-        "(?i)([?&][^=&]*(?:password|passwd|secret|token)[^=&]*=)[^&]*");
 
     private static final Logger log = LoggerFactory.getLogger(DriverBase.class);
 
@@ -161,8 +151,6 @@ public abstract class DriverBase implements PlcDriver {
             throw new PlcConnectionException(
                 "Connection string doesn't match the format '{protocol-code}(:{transport-code})?://{transport-config}(?{parameter-string)?'");
         }
-        log.info("Using connection string: {}", redactSecrets(connectionString));
-
         final String protocolCode = matcher.group("protocolCode");
         String transportCodeMatch = matcher.group("transportCode");
         if (transportCodeMatch == null && getMetadata().getDefaultTransportCode().isEmpty()) {
@@ -214,6 +202,18 @@ public abstract class DriverBase implements PlcDriver {
         // Create and initialize the audit log.
         AuditLogConfiguration auditLogConfiguration = configurationFactory.createPrefixedConfiguration(
             AuditLogConfiguration.class, "log", paramString);
+
+        // Point out parameters nothing will ever read. The configuration factory ignores what it has
+        // no field for, so a misspelt or misplaced parameter looks accepted and silently leaves the
+        // default in place - 'remote-slot=2' instead of 'cotp.remote-slot=2' being the classic case.
+        warnAboutUnknownParameters(paramString, transportCode, transportConfigType);
+
+        // Logged here rather than on entry: the transport's secrets - a PSK key, a keystore
+        // password - are declared on its configuration class, which is only known once the
+        // transport has been resolved. Logging earlier would mean redacting without knowing what
+        // half the secrets are called.
+        log.info("Using connection string: {}", ConnectionStringRedactor.redact(
+            connectionString, getConfigurationClass(), transportCode, transportConfigType));
         this.auditLog = AuditLog.builder()
             .withSource(getProtocolCode())
             .withConfiguration(auditLogConfiguration)
@@ -251,12 +251,6 @@ public abstract class DriverBase implements PlcDriver {
      * Masks the values of secret-bearing query parameters (passwords, tokens, …) in a connection
      * string so credentials never reach the logs.
      */
-    static String redactSecrets(String connectionString) {
-        if (connectionString == null) {
-            return null;
-        }
-        return SECRET_PARAM_PATTERN.matcher(connectionString).replaceAll("$1***");
-    }
 
     public AuditLog getAuditLog() {
         return auditLog;
@@ -310,6 +304,31 @@ public abstract class DriverBase implements PlcDriver {
     }
 
     /**
+     * Logs a warning for every parameter in the connection string that none of the configurations
+     * involved declares.
+     *
+     * <p>The logic lives in {@link UnknownParameterReporter}, which is public so the one driver
+     * that implements {@code PlcDriver} directly rather than extending this class can report too.
+     * The two package-private methods below stay as delegates because this class's tests drive
+     * them directly, and keeping them is what shows the extraction changed no behaviour.</p>
+     */
+    private void warnAboutUnknownParameters(String paramString, String transportCode,
+                                            Class<? extends TransportConfiguration> transportConfigType) {
+        UnknownParameterReporter.report(
+            getProtocolCode(), paramString, transportCode, getConfigurationClass(), transportConfigType);
+    }
+
+    static List<String> findUnknownParameters(String paramString, Class<?> driverConfigClass,
+                                              Class<?> transportConfigClass, String transportCode) {
+        return UnknownParameterReporter.findUnknownParameters(
+            paramString, driverConfigClass, transportConfigClass, transportCode);
+    }
+
+    static String suggestionFor(String unknown, Set<String> known) {
+        return UnknownParameterReporter.suggestionFor(unknown, known);
+    }
+
+    /**
      * Walks the full class hierarchy of the given configuration class and returns one
      * {@link Option} for every field annotated with {@link ConfigurationParameter}.
      * Subclass declarations win over superclass declarations for the same parameter key.
@@ -351,7 +370,9 @@ public abstract class DriverBase implements PlcDriver {
         Since sinceAnnotation = field.getAnnotation(Since.class);
         String since = (sinceAnnotation != null) ? sinceAnnotation.value() : null;
 
-        return new DefaultOption(key, type, description, required, defaultValue, since);
+        boolean secret = field.getAnnotation(Secret.class) != null;
+
+        return new DefaultOption(key, type, description, required, defaultValue, since, secret);
     }
 
     private static OptionType mapOptionType(Class<?> fieldType) {

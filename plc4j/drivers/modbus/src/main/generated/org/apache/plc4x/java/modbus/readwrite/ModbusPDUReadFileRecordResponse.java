@@ -79,7 +79,7 @@ public class ModbusPDUReadFileRecordResponse extends ModbusPDU implements Messag
     short byteCount = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("byteCount"));
 
     // Array Field: items
-    List<ModbusPDUReadFileRecordResponseItem> items = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> (ModbusPDUReadFileRecordResponseItem) ModbusPDUReadFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount, WithOption.WithName("items"));
+    List<ModbusPDUReadFileRecordResponseItem> items = FieldReaderFactory.readLengthArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ModbusPDUReadFileRecordResponseItem.class, ModbusPDUReadFileRecordResponseItem.staticParse(readBuffer)), readBuffer), byteCount, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new ModbusPDUBuilderImpl(items);

@@ -77,7 +77,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: scale
-    BACnetScale scale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetScale) BACnetScale.staticParse(readBuffer), readBuffer), WithOption.WithName("scale"));
+    BACnetScale scale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetScale.class, BACnetScale.staticParse(readBuffer)), readBuffer), WithOption.WithName("scale"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetScale actualValue = FieldReaderFactory.readVirtualField(BACnetScale.class, scale, WithOption.WithName("actualValue"));

@@ -226,8 +226,8 @@ func (m *_ApduDataMemoryRead) GetPlx4xTypeName() string {
 	return "ApduDataMemoryRead"
 }
 
-func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (numBytes)
 	lengthInBits += 6
@@ -238,7 +238,7 @@ func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduDataMemoryRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataMemoryRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

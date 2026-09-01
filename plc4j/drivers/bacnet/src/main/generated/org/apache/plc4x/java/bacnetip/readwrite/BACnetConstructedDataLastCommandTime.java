@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastCommandTime extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastCommandTime
-    BACnetTimeStamp lastCommandTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("lastCommandTime"));
+    BACnetTimeStamp lastCommandTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("lastCommandTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimeStamp actualValue = FieldReaderFactory.readVirtualField(BACnetTimeStamp.class, lastCommandTime, WithOption.WithName("actualValue"));

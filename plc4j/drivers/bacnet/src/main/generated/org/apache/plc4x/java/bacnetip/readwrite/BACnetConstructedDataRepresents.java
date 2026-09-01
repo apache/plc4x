@@ -78,7 +78,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: represents
-    BACnetDeviceObjectReference represents = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceObjectReference) BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer), WithOption.WithName("represents"));
+    BACnetDeviceObjectReference represents = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceObjectReference.class, BACnetDeviceObjectReference.staticParse(readBuffer)), readBuffer), WithOption.WithName("represents"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceObjectReference.class, represents, WithOption.WithName("actualValue"));

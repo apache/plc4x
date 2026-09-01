@@ -102,22 +102,22 @@ public class BACnetLightingCommand implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lightningOperation
-    BACnetLightingOperationTagged lightningOperation = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLightingOperationTagged) BACnetLightingOperationTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("lightningOperation"));
+    BACnetLightingOperationTagged lightningOperation = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLightingOperationTagged.class, BACnetLightingOperationTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("lightningOperation"));
 
     // Optional Field: targetLevel
-    BACnetContextTagReal targetLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("targetLevel"));
+    BACnetContextTagReal targetLevel = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (1), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("targetLevel"));
 
     // Optional Field: rampRate
-    BACnetContextTagReal rampRate = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("rampRate"));
+    BACnetContextTagReal rampRate = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (2), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("rampRate"));
 
     // Optional Field: stepIncrement
-    BACnetContextTagReal stepIncrement = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagReal) BACnetContextTagReal.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL)), readBuffer), WithOption.WithName("stepIncrement"));
+    BACnetContextTagReal stepIncrement = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagReal.class, BACnetContextTagReal.staticParse(readBuffer, (short) (3), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.REAL))), readBuffer), WithOption.WithName("stepIncrement"));
 
     // Optional Field: fadeTime
-    BACnetContextTagUnsignedInteger fadeTime = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("fadeTime"));
+    BACnetContextTagUnsignedInteger fadeTime = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (4), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("fadeTime"));
 
     // Optional Field: priority
-    BACnetContextTagUnsignedInteger priority = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (BACnetContextTagUnsignedInteger) BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (5), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER)), readBuffer), WithOption.WithName("priority"));
+    BACnetContextTagUnsignedInteger priority = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetContextTagUnsignedInteger.class, BACnetContextTagUnsignedInteger.staticParse(readBuffer, (short) (5), (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType.UNSIGNED_INTEGER))), readBuffer), WithOption.WithName("priority"));
 
     readBuffer.popContext();
     return new BACnetLightingCommand(lightningOperation, targetLevel, rampRate, stepIncrement, fadeTime, priority);

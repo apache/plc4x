@@ -219,13 +219,13 @@ public class DiagnosticInfo implements Message {
     Integer localizedText = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedInt(readBuffer, 32), localizedTextSpecified, WithOption.WithName("localizedText"));
 
     // Optional Field (conditional): additionalInfo
-    PascalString additionalInfo = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), additionalInfoSpecified, WithOption.WithName("additionalInfo"));
+    PascalString additionalInfo = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), additionalInfoSpecified, WithOption.WithName("additionalInfo"));
 
     // Optional Field (conditional): innerStatusCode
-    StatusCode innerStatusCode = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (StatusCode) StatusCode.staticParse(readBuffer), readBuffer), innerStatusCodeSpecified, WithOption.WithName("innerStatusCode"));
+    StatusCode innerStatusCode = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(StatusCode.class, StatusCode.staticParse(readBuffer)), readBuffer), innerStatusCodeSpecified, WithOption.WithName("innerStatusCode"));
 
     // Optional Field (conditional): innerDiagnosticInfo
-    DiagnosticInfo innerDiagnosticInfo = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (DiagnosticInfo) DiagnosticInfo.staticParse(readBuffer), readBuffer), innerDiagnosticInfoSpecified, WithOption.WithName("innerDiagnosticInfo"));
+    DiagnosticInfo innerDiagnosticInfo = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DiagnosticInfo.class, DiagnosticInfo.staticParse(readBuffer)), readBuffer), innerDiagnosticInfoSpecified, WithOption.WithName("innerDiagnosticInfo"));
 
     readBuffer.popContext();
     return new DiagnosticInfo(innerDiagnosticInfoSpecified, innerStatusCodeSpecified, additionalInfoSpecified, localeSpecified, localizedTextSpecified, namespaceURISpecified, symbolicIdSpecified, symbolicId, namespaceURI, locale, localizedText, additionalInfo, innerStatusCode, innerDiagnosticInfo);

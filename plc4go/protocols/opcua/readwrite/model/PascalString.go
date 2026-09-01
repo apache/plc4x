@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -184,8 +185,8 @@ func (m *_PascalString) GetPlx4xTypeName() string {
 	return "PascalString"
 }
 
-func (m *_PascalString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PascalString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (sLength)
 	lengthInBits += 32
@@ -200,7 +201,7 @@ func (m *_PascalString) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PascalString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PascalString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -244,7 +245,7 @@ func (m *_PascalString) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = stringLength
 
 	var stringValue *string
-	stringValue, err = ReadOptionalField[string](ctx, "stringValue", ReadString(readBuffer, uint32(int32(stringLength)*int32(int32(8)))), bool((sLength) != (-(1))))
+	stringValue, err = ReadOptionalField[string](ctx, "stringValue", ReadString(readBuffer, uint32(int32(stringLength)*int32(int32(8)))), bool((sLength) != (-(1))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringValue' field"))
 	}
@@ -284,7 +285,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}
 
-	if err := WriteOptionalField[string](ctx, "stringValue", m.GetStringValue(), WriteString(writeBuffer, int32(int32(m.GetStringLength())*int32(int32(8)))), true); err != nil {
+	if err := WriteOptionalField[string](ctx, "stringValue", m.GetStringValue(), WriteString(writeBuffer, int32(int32(m.GetStringLength())*int32(int32(8)))), true, codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'stringValue' field")
 	}
 

@@ -212,8 +212,8 @@ func (m *_JsonDataSetWriterMessageDataType) GetPlx4xTypeName() string {
 	return "JsonDataSetWriterMessageDataType"
 }
 
-func (m *_JsonDataSetWriterMessageDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_JsonDataSetWriterMessageDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (dataSetMessageContentMask)
 	lengthInBits += 32
@@ -221,7 +221,7 @@ func (m *_JsonDataSetWriterMessageDataType) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_JsonDataSetWriterMessageDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_JsonDataSetWriterMessageDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

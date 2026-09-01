@@ -100,11 +100,11 @@ func CastDeviceGroup(structType any) DeviceGroup {
 	return castFunc(structType)
 }
 
-func (m DeviceGroup) GetLengthInBits(ctx context.Context) uint16 {
+func (m DeviceGroup) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m DeviceGroup) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DeviceGroup) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

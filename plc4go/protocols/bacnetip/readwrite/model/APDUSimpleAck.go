@@ -228,8 +228,8 @@ func (m *_APDUSimpleAck) GetPlx4xTypeName() string {
 	return "APDUSimpleAck"
 }
 
-func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -243,7 +243,7 @@ func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

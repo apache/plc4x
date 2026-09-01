@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetPlx4xTypeName() string 
 	return "BACnetConstructedDataEventAlgorithmInhibit"
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (eventAlgorithmInhibit)
 	lengthInBits += m.EventAlgorithmInhibit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

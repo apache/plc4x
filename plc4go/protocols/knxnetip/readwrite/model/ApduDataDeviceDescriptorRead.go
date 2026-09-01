@@ -211,8 +211,8 @@ func (m *_ApduDataDeviceDescriptorRead) GetPlx4xTypeName() string {
 	return "ApduDataDeviceDescriptorRead"
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -220,7 +220,7 @@ func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

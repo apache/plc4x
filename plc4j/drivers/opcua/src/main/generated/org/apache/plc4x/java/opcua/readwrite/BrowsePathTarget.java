@@ -68,7 +68,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: targetId
-    ExpandedNodeId targetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExpandedNodeId) ExpandedNodeId.staticParse(readBuffer), readBuffer), WithOption.WithName("targetId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    ExpandedNodeId targetId = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ExpandedNodeId.class, ExpandedNodeId.staticParse(readBuffer)), readBuffer), WithOption.WithName("targetId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Simple Field: remainingPathIndex
     long remainingPathIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("remainingPathIndex"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));

@@ -232,8 +232,8 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataShuffleOnOff"
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -245,7 +245,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

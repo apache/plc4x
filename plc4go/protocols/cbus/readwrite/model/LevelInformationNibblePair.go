@@ -260,11 +260,11 @@ func CastLevelInformationNibblePair(structType any) LevelInformationNibblePair {
 	return castFunc(structType)
 }
 
-func (m LevelInformationNibblePair) GetLengthInBits(ctx context.Context) uint16 {
+func (m LevelInformationNibblePair) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m LevelInformationNibblePair) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LevelInformationNibblePair) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

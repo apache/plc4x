@@ -199,8 +199,8 @@ func (m *_NetworkRoute) GetPlx4xTypeName() string {
 	return "NetworkRoute"
 }
 
-func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (networkPCI)
 	lengthInBits += m.NetworkPCI.GetLengthInBits(ctx)
@@ -216,7 +216,7 @@ func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NetworkRoute) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkRoute) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

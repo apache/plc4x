@@ -237,10 +237,10 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     int headerChecksum = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("headerChecksum"));
 
     // Simple Field: sourceAddress
-    IpAddress sourceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IpAddress) IpAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("sourceAddress"));
+    IpAddress sourceAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IpAddress.class, IpAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("sourceAddress"));
 
     // Simple Field: destinationAddress
-    IpAddress destinationAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (IpAddress) IpAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("destinationAddress"));
+    IpAddress destinationAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(IpAddress.class, IpAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("destinationAddress"));
 
     // Simple Field: sourcePort
     int sourcePort = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sourcePort"));
@@ -255,7 +255,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     int bodyChecksum = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("bodyChecksum"));
 
     // Simple Field: payload
-    DceRpc_Packet payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DceRpc_Packet) DceRpc_Packet.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    DceRpc_Packet payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DceRpc_Packet.class, DceRpc_Packet.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new Ethernet_FramePayloadBuilderImpl(identification, dontFragment, moreFragments, timeToLive, sourceAddress, destinationAddress, sourcePort, destinationPort, payload);

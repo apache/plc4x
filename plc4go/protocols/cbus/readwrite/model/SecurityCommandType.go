@@ -130,11 +130,11 @@ func CastSecurityCommandType(structType any) SecurityCommandType {
 	return castFunc(structType)
 }
 
-func (m SecurityCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m SecurityCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m SecurityCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SecurityCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

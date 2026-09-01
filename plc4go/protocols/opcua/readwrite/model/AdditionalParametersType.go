@@ -212,8 +212,8 @@ func (m *_AdditionalParametersType) GetPlx4xTypeName() string {
 	return "AdditionalParametersType"
 }
 
-func (m *_AdditionalParametersType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AdditionalParametersType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfParameters)
 	lengthInBits += 32
@@ -229,7 +229,7 @@ func (m *_AdditionalParametersType) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_AdditionalParametersType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdditionalParametersType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

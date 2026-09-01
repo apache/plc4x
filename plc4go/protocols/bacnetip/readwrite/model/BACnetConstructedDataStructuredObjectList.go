@@ -262,8 +262,8 @@ func (m *_BACnetConstructedDataStructuredObjectList) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStructuredObjectList"
 }
 
-func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -282,7 +282,7 @@ func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

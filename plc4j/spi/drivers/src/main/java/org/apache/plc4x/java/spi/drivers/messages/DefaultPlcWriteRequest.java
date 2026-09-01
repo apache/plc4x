@@ -36,8 +36,12 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultPlcWriteRequest implements PlcWriteRequest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlcWriteRequest.class);
 
     private final PlcWriter writer;
     private final LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags;
@@ -121,9 +125,11 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
                         PlcValue plcValue = parsePlcValue(tag, values);
                         return new DefaultPlcTagValueItem<>(tag, plcValue);
                     } catch (Exception e) {
+                        LOGGER.warn("Invalid value for tag '{}' (address '{}'): {}", name, tagAddress, e.getMessage(), e);
                         return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_DATA);
                     }
                 } catch (Exception e) {
+                    LOGGER.warn("Invalid address '{}' for tag '{}': {}", tagAddress, name, e.getMessage(), e);
                     return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_ADDRESS);
                 }
             });
@@ -140,6 +146,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
                     PlcValue plcValue = parsePlcValue(tag, values);
                     return new DefaultPlcTagValueItem<>(tag, plcValue);
                 } catch (Exception e) {
+                    LOGGER.warn("Invalid value for tag '{}': {}", name, e.getMessage(), e);
                     return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_DATA);
                 }
             });

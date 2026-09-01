@@ -20,6 +20,8 @@
 package org.apache.plc4x.java.spi.fields.data.reader;
 
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.fields.exceptions.ParseAssertException;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -99,6 +101,27 @@ public class DataReaderFactory {
 
     public static <T> DataReaderComplexDefault<T> readComplex(ComplexTypeSupplier<T> complexSupplier, ReadBuffer readBuffer) {
         return new DataReaderComplexDefault<>(complexSupplier, readBuffer);
+    }
+
+    /**
+     * Checks that a parsed value really is of the type the field it belongs to was declared with.
+     * <p>
+     * A field declared with a subtype of a discriminated type is parsed by the base type's parser,
+     * which discriminates on the data and so returns whichever subtype the data selects - not
+     * necessarily the one the field expects. Checking here reports that mismatch as the parse
+     * failure it is, rather than as a {@link ClassCastException} at the assignment.
+     *
+     * @param expectedType the type the field was declared with
+     * @param value        the value the parser returned
+     * @return {@code value}, if it is of {@code expectedType} (or null)
+     * @throws ParseAssertException if it is of any other type
+     */
+    public static <T> T castToDeclaredType(Class<T> expectedType, Object value) throws BufferException {
+        if (value == null || expectedType.isInstance(value)) {
+            return expectedType.cast(value);
+        }
+        throw new ParseAssertException("Expected a " + expectedType.getSimpleName()
+            + " but the data selected a " + value.getClass().getSimpleName());
     }
 
     public static DataReader<LocalDate> readDate(ReadBuffer readBuffer) {

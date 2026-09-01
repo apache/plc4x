@@ -106,11 +106,11 @@ func CastBACnetDoorValue(structType any) BACnetDoorValue {
 	return castFunc(structType)
 }
 
-func (m BACnetDoorValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetDoorValue) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetDoorValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetDoorValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

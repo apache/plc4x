@@ -238,11 +238,11 @@ func CastSecurityResponseCode(structType any) SecurityResponseCode {
 	return castFunc(structType)
 }
 
-func (m SecurityResponseCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m SecurityResponseCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m SecurityResponseCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SecurityResponseCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

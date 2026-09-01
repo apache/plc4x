@@ -106,11 +106,11 @@ func CastRedundantServerMode(structType any) RedundantServerMode {
 	return castFunc(structType)
 }
 
-func (m RedundantServerMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m RedundantServerMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m RedundantServerMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m RedundantServerMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

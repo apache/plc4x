@@ -118,11 +118,11 @@ func CastConfirmationType(structType any) ConfirmationType {
 	return castFunc(structType)
 }
 
-func (m ConfirmationType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ConfirmationType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ConfirmationType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ConfirmationType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -112,11 +112,11 @@ func CastBACnetLightingInProgress(structType any) BACnetLightingInProgress {
 	return castFunc(structType)
 }
 
-func (m BACnetLightingInProgress) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLightingInProgress) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetLightingInProgress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLightingInProgress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

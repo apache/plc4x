@@ -182,12 +182,12 @@ func (m *_BACnetTagPayloadEnumerated) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadEnumerated"
 }
 
-func (m *_BACnetTagPayloadEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadEnumerated) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -195,7 +195,7 @@ func (m *_BACnetTagPayloadEnumerated) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadEnumerated) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadEnumerated) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

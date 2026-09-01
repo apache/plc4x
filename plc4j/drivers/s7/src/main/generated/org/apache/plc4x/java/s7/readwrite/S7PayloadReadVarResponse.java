@@ -67,7 +67,7 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: items
-    List<S7VarPayloadDataItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (S7VarPayloadDataItem) S7VarPayloadDataItem.staticParse(readBuffer), readBuffer), StaticHelper.CAST(parameter, S7ParameterReadVarResponse.class).getNumItems(), WithOption.WithName("items"));
+    List<S7VarPayloadDataItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(S7VarPayloadDataItem.class, S7VarPayloadDataItem.staticParse(readBuffer)), readBuffer), StaticHelper.CAST(parameter, S7ParameterReadVarResponse.class).getNumItems(), WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new S7PayloadBuilderImpl(items);

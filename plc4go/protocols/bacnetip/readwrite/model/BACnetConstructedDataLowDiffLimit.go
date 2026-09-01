@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLowDiffLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLowDiffLimit"
 }
 
-func (m *_BACnetConstructedDataLowDiffLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLowDiffLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lowDiffLimit)
 	lengthInBits += m.LowDiffLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLowDiffLimit) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLowDiffLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLowDiffLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

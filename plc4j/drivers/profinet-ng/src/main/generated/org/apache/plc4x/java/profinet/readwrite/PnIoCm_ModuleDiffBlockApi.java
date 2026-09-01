@@ -68,7 +68,7 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     int numModules = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("numModules"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Array Field: modules
-    List<PnIoCm_ModuleDiffBlockApi_Module> modules = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (PnIoCm_ModuleDiffBlockApi_Module) PnIoCm_ModuleDiffBlockApi_Module.staticParse(readBuffer), readBuffer), numModules, WithOption.WithName("modules"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    List<PnIoCm_ModuleDiffBlockApi_Module> modules = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_ModuleDiffBlockApi_Module.class, PnIoCm_ModuleDiffBlockApi_Module.staticParse(readBuffer)), readBuffer), numModules, WithOption.WithName("modules"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_ModuleDiffBlockApi(modules);

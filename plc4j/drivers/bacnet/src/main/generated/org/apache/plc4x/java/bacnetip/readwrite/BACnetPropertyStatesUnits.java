@@ -52,7 +52,7 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: units
-    BACnetEngineeringUnitsTagged units = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetEngineeringUnitsTagged) BACnetEngineeringUnitsTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS)), readBuffer), WithOption.WithName("units"));
+    BACnetEngineeringUnitsTagged units = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetEngineeringUnitsTagged.class, BACnetEngineeringUnitsTagged.staticParse(readBuffer, (short) (peekedTagNumber), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.CONTEXT_SPECIFIC_TAGS))), readBuffer), WithOption.WithName("units"));
 
     readBuffer.popContext();
     return new BACnetPropertyStatesBuilderImpl(units);

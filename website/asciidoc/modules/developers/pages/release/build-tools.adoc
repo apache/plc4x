@@ -28,7 +28,7 @@ The main `pom.xml` in the root directory is mainly for allowing to import all mo
 If you want to release a part of the build-tools, please execute the following release steps in the parts sub-directory.
 
 In general the preparation steps for releasing a build-tool is equal to those of the main project.
-So please check link:release.html[here] (Chapters: `Preparing your system for being able to release` and `Preparing the codebase for a release`)
+So please check xref:release/release.adoc[here] (Chapters: `Preparing your system for being able to release` and `Preparing the codebase for a release`)
 
 The rest of the steps are a lot simpler than those of the main project as there aren't any profiles involved.
 
@@ -357,9 +357,9 @@ As a lot of mirrors are serving our releases, it is the Apache policy to clean o
 
 This can be done like this:
 
-    svn delete https://dist.apache.org/repos/dist/release/plc4x/0.3.0/ -m"deleted version 0.3.0"
+    svn delete https://dist.apache.org/repos/dist/release/plc4x/build-tools/code-generation/{1.8.0}/ -m"deleted old version of the build-tools"
 
-After this, https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
+After this, https://dist.apache.org/repos/dist/release/plc4x/build-tools/code-generation should only contain the latest release directory.
 
 == Releasing the Maven artifacts
 

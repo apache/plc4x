@@ -118,11 +118,11 @@ func CastBaudRateSelector(structType any) BaudRateSelector {
 	return castFunc(structType)
 }
 
-func (m BaudRateSelector) GetLengthInBits(ctx context.Context) uint16 {
+func (m BaudRateSelector) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BaudRateSelector) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BaudRateSelector) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

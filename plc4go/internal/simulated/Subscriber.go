@@ -44,7 +44,9 @@ func NewSubscriber(device *Device, options map[string][]string, tracer tracer.Tr
 
 func (r Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	// TODO: handle context
-	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	// Buffered: the send happens before the channel is returned, so an unbuffered one would
+	// block forever with nobody reading yet. Unsubscribe below already got this right.
+	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.New("Not Implemented"))
 	// TODO: implement me
 	return result

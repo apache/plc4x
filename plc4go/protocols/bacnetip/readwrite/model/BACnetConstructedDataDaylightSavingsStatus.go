@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetPlx4xTypeName() string 
 	return "BACnetConstructedDataDaylightSavingsStatus"
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (daylightSavingsStatus)
 	lengthInBits += m.DaylightSavingsStatus.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetPlx4xTypeNam
 	return "BACnetConstructedDataUTCTimeSynchronizationRecipients"
 }
 
-func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.UtcTimeSynchronizationRecipients) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

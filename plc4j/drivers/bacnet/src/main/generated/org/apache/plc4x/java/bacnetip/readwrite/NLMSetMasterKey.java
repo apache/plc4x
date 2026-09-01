@@ -58,7 +58,7 @@ public class NLMSetMasterKey extends NLM implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: key
-    NLMUpdateKeyUpdateKeyEntry key = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer), WithOption.WithName("key"));
+    NLMUpdateKeyUpdateKeyEntry key = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLMUpdateKeyUpdateKeyEntry.class, NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer)), readBuffer), WithOption.WithName("key"));
 
     readBuffer.popContext();
     return new NLMBuilderImpl(key);

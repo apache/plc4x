@@ -73,7 +73,7 @@ public class NLMInitializeRoutingTable extends NLM implements Message {
     short numberOfPorts = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfPorts"));
 
     // Array Field: portMappings
-    List<NLMInitializeRoutingTablePortMapping> portMappings = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTablePortMapping.staticParse(readBuffer), readBuffer), numberOfPorts, WithOption.WithName("portMappings"));
+    List<NLMInitializeRoutingTablePortMapping> portMappings = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NLMInitializeRoutingTablePortMapping.class, NLMInitializeRoutingTablePortMapping.staticParse(readBuffer)), readBuffer), numberOfPorts, WithOption.WithName("portMappings"));
 
     readBuffer.popContext();
     return new NLMBuilderImpl(numberOfPorts, portMappings);

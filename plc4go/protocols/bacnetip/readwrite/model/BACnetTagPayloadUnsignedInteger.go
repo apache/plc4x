@@ -514,8 +514,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadUnsignedInteger"
 }
 
-func (m *_BACnetTagPayloadUnsignedInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadUnsignedInteger) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -578,7 +578,7 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadUnsignedInteger) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadUnsignedInteger) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -715,8 +715,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) parse(ctx context.Context, readBuffer
 	m.ValueUint64 = valueUint64
 
 	// Validation
-	if !(bool(bool(bool(bool(bool(bool(bool(isUint8) || bool(isUint16)) || bool(isUint24)) || bool(isUint32)) || bool(isUint40)) || bool(isUint48)) || bool(isUint56)) || bool(isUint64)) {
-		return nil, errors.WithStack(utils.ParseValidationError{Message: "unmapped integer length"})
+	if !(bool(bool(bool(bool(bool(bool(bool((bool(isUint8) && bool(bool((valueUint8) != (nil))))) || bool((bool(isUint16) && bool(bool((valueUint16) != (nil)))))) || bool((bool(isUint24) && bool(bool((valueUint24) != (nil)))))) || bool((bool(isUint32) && bool(bool((valueUint32) != (nil)))))) || bool((bool(isUint40) && bool(bool((valueUint40) != (nil)))))) || bool((bool(isUint48) && bool(bool((valueUint48) != (nil)))))) || bool((bool(isUint56) && bool(bool((valueUint56) != (nil)))))) || bool((bool(isUint64) && bool(bool((valueUint64) != (nil)))))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "unmapped or truncated integer length"})
 	}
 
 	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), utils.InlineIf(isUint8, func() any { return uint64((*valueUint8)) }, func() any {

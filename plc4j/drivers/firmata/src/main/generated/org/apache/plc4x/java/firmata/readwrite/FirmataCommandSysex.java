@@ -58,7 +58,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: command
-    SysexCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SysexCommand) SysexCommand.staticParse(readBuffer, (boolean) (response)), readBuffer), WithOption.WithName("command"));
+    SysexCommand command = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SysexCommand.class, SysexCommand.staticParse(readBuffer, (boolean) (response))), readBuffer), WithOption.WithName("command"));
 
     // Reserved Field
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0xF7, WithOption.WithName("FirmataCommandSysex.reserved1"));

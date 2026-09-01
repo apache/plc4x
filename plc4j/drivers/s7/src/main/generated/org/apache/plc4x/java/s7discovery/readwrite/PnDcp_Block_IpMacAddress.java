@@ -70,7 +70,7 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedInt(readBuffer, 16), (int) 0x0000, WithOption.WithName("PnDcp_Block_IpMacAddress.reserved0"));
 
     // Simple Field: macAddress
-    MacAddress macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MacAddress) MacAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("macAddress"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    MacAddress macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MacAddress.class, MacAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("macAddress"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnDcp_BlockBuilderImpl(macAddress);

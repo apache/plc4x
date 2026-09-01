@@ -106,11 +106,11 @@ func CastSzlModuleTypeClass(structType any) SzlModuleTypeClass {
 	return castFunc(structType)
 }
 
-func (m SzlModuleTypeClass) GetLengthInBits(ctx context.Context) uint16 {
+func (m SzlModuleTypeClass) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m SzlModuleTypeClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SzlModuleTypeClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

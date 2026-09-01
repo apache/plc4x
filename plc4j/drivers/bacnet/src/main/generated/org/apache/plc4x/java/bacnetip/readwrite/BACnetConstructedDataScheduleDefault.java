@@ -78,7 +78,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: scheduleDefault
-    BACnetConstructedDataElement scheduleDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConstructedDataElement) BACnetConstructedDataElement.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null)), readBuffer), WithOption.WithName("scheduleDefault"));
+    BACnetConstructedDataElement scheduleDefault = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedDataElement.class, BACnetConstructedDataElement.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (objectTypeArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (propertyIdentifierArgument), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null))), readBuffer), WithOption.WithName("scheduleDefault"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetConstructedDataElement actualValue = FieldReaderFactory.readVirtualField(BACnetConstructedDataElement.class, scheduleDefault, WithOption.WithName("actualValue"));

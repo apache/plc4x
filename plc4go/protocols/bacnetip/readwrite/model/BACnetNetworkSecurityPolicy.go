@@ -215,8 +215,8 @@ func (m *_BACnetNetworkSecurityPolicy) GetPlx4xTypeName() string {
 	return "BACnetNetworkSecurityPolicy"
 }
 
-func (m *_BACnetNetworkSecurityPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetNetworkSecurityPolicy) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (portId)
 	lengthInBits += m.PortId.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetNetworkSecurityPolicy) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_BACnetNetworkSecurityPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNetworkSecurityPolicy) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

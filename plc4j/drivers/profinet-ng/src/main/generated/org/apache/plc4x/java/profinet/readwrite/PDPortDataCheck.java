@@ -127,7 +127,7 @@ public class PDPortDataCheck extends PnIoCm_Block implements Message {
     int subSlotNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("subSlotNumber"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: checkPeers
-    PnIoCm_Block checkPeers = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PnIoCm_Block) PnIoCm_Block.staticParse(readBuffer), readBuffer), WithOption.WithName("checkPeers"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    PnIoCm_Block checkPeers = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PnIoCm_Block.class, PnIoCm_Block.staticParse(readBuffer)), readBuffer), WithOption.WithName("checkPeers"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     readBuffer.popContext();
     return new PnIoCm_BlockBuilderImpl(blockVersionHigh, blockVersionLow, slotNumber, subSlotNumber, checkPeers);

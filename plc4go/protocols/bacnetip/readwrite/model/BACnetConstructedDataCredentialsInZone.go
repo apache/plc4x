@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialsInZone"
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.CredentialsInZone) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

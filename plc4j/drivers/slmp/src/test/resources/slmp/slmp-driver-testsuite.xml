@@ -41,7 +41,7 @@
           <tags isList="true">
             <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
               <name>value</name>
-              <address>D350:WORD[2]</address>
+              <address>D350[0..1]:WORD</address>
             </tag>
           </tags>
         </PlcReadRequest>

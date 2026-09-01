@@ -130,7 +130,7 @@ func (c *Connection) Connect(_ context.Context) error {
 
 func (c *Connection) Close() error {
 	ctx := context.TODO()
-	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
 	defer cancelFunc()
 
 	// Check if the connection is connected.
@@ -225,8 +225,12 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 			"readDelay":       "Delay applied when executing a read operation",
 			"writeDelay":      "Delay applied when executing a write operation",
 		},
-		ProvidesReading:     true,
-		ProvidesWriting:     true,
+		ProvidesReading: true,
+		ProvidesWriting: true,
+		// SubscriptionRequestBuilder below does hand out a builder, but the Subscriber behind it
+		// is a stub whose Subscribe/Unsubscribe always answer "Not Implemented", so advertising
+		// the capability would be a lie. Flip this to true only together with a Subscriber that
+		// actually delivers events. Browsing has no implementation at all.
 		ProvidesSubscribing: false,
 		ProvidesBrowsing:    false,
 	}

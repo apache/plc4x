@@ -87,7 +87,7 @@ public class BACnetAddress implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: networkNumber
-    BACnetApplicationTagUnsignedInteger networkNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagUnsignedInteger) BACnetApplicationTagUnsignedInteger.staticParse(readBuffer), readBuffer), WithOption.WithName("networkNumber"));
+    BACnetApplicationTagUnsignedInteger networkNumber = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagUnsignedInteger.class, BACnetApplicationTagUnsignedInteger.staticParse(readBuffer)), readBuffer), WithOption.WithName("networkNumber"));
 
     // Virtual Field: zero (doesn't parse anything, just makes the value available)
     BigInteger zero = FieldReaderFactory.readVirtualField(BigInteger.class, 0L, WithOption.WithName("zero"));
@@ -96,7 +96,7 @@ public class BACnetAddress implements Message {
     boolean isLocalNetwork = FieldReaderFactory.readVirtualField(boolean.class, (networkNumber.getActualValue()) == (zero), WithOption.WithName("isLocalNetwork"));
 
     // Simple Field: macAddress
-    BACnetApplicationTagOctetString macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagOctetString) BACnetApplicationTagOctetString.staticParse(readBuffer), readBuffer), WithOption.WithName("macAddress"));
+    BACnetApplicationTagOctetString macAddress = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagOctetString.class, BACnetApplicationTagOctetString.staticParse(readBuffer)), readBuffer), WithOption.WithName("macAddress"));
 
     // Virtual Field: isBroadcast (doesn't parse anything, just makes the value available)
     boolean isBroadcast = FieldReaderFactory.readVirtualField(boolean.class, (macAddress.getActualLength()) == (0), WithOption.WithName("isBroadcast"));

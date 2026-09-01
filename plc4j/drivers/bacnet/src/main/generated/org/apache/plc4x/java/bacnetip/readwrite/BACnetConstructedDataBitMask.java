@@ -77,7 +77,7 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bitString
-    BACnetApplicationTagBitString bitString = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBitString) BACnetApplicationTagBitString.staticParse(readBuffer), readBuffer), WithOption.WithName("bitString"));
+    BACnetApplicationTagBitString bitString = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBitString.class, BACnetApplicationTagBitString.staticParse(readBuffer)), readBuffer), WithOption.WithName("bitString"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBitString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBitString.class, bitString, WithOption.WithName("actualValue"));

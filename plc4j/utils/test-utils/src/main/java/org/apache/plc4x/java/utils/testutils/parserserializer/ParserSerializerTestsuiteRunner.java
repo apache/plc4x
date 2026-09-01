@@ -54,7 +54,7 @@ import static org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption.Wi
 import static org.apache.plc4x.java.spi.utils.StaticHelper.DECODE_HEX;
 import static org.apache.plc4x.java.spi.utils.StaticHelper.ENCODE_HEX;
 
-public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
+public class ParserSerializerTestsuiteRunner extends ParserTruncationTestsuiteRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
 
@@ -63,16 +63,13 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
      */
     private final boolean autoMigrate;
 
-    private final Set<String> ignoredTestCases = new HashSet<>();
-
     public ParserSerializerTestsuiteRunner(String testsuiteDocument, String... ignoredTestCases) {
         this(testsuiteDocument, false, ignoredTestCases);
     }
 
     public ParserSerializerTestsuiteRunner(String testsuiteDocument, boolean autoMigrate, String... ignoredTestCases) {
-        super(testsuiteDocument);
+        super(testsuiteDocument, ignoredTestCases);
         this.autoMigrate = autoMigrate;
-        Collections.addAll(this.ignoredTestCases, ignoredTestCases);
     }
 
     @TestFactory
@@ -90,58 +87,6 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             dynamicTests.add(test);
         }
         return dynamicTests;
-    }
-
-    private ParserSerializerTestsuite parseTestsuite() throws ParserSerializerTestsuiteException {
-        try {
-            SAXReader reader = new LocationAwareSAXReader();
-            reader.setDocumentFactory(new LocationAwareDocumentFactory());
-            Document document = reader.read(testsuiteDocumentXml);
-            Element testsuiteXml = document.getRootElement();
-            String byteOrderName = testsuiteXml.attributeValue("byteOrder", "BIG_ENDIAN");
-            String testsuiteName = testsuiteXml.element(new QName("name")).getStringValue();
-            String protocolName = testsuiteXml.element(new QName("protocol-name")).getStringValue();
-            String outputFlavor = testsuiteXml.element(new QName("output-flavor")).getStringValue();
-
-            Element optionsElement = testsuiteXml.element(new QName("options"));
-            Map<String, String> options = new HashMap<>(XmlHelper.parseParameters(optionsElement));
-            options.put("protocol-name", protocolName);
-            options.put("output-flavor", outputFlavor);
-
-            List<Element> testcasesXml = testsuiteXml.elements(new QName("testcase"));
-            List<Testcase> testcases = new ArrayList<>(testcasesXml.size());
-            for (Element testcaseXml : testcasesXml) {
-                Element nameElement = testcaseXml.element(new QName("name"));
-                Element descriptionElement = testcaseXml.element(new QName("description"));
-                Element rawElement = testcaseXml.element(new QName("raw"));
-                Element rootTypeElement = testcaseXml.element(new QName("root-type"));
-                Element parserArgumentsElement = testcaseXml.element(new QName("parser-arguments"));
-                Element xmlElement = testcaseXml.element(new QName("xml"));
-
-                String name = nameElement.getTextTrim();
-                String description = (descriptionElement != null) ? descriptionElement.getTextTrim() : null;
-                byte[] raw = DECODE_HEX(rawElement.getTextTrim());
-                String rootType = rootTypeElement.getTextTrim();
-
-                // Parse additional parser arguments.
-                List<String> parserArguments = new LinkedList<>();
-                if (parserArgumentsElement != null) {
-                    for (Element element : parserArgumentsElement.elements()) {
-                        parserArguments.add(element.getTextTrim());
-                    }
-                }
-                Testcase testcase = new Testcase(testsuiteName, protocolName, outputFlavor, name, description, raw, rootType, parserArguments, xmlElement);
-                if (testcaseXml instanceof LocationAwareElement) {
-                    // pass source location to test
-                    testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
-                }
-                testcases.add(testcase);
-            }
-            LOGGER.info(String.format("Found %d testcases.", testcases.size()));
-            return new ParserSerializerTestsuite(testsuiteName, testcases, byteOrderName, options);
-        } catch (DocumentException e) {
-            throw new ParserSerializerTestsuiteException("Error parsing testsuite xml", e);
-        }
     }
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {

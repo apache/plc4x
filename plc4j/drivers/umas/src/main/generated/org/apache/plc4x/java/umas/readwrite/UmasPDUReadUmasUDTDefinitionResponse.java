@@ -91,7 +91,7 @@ public class UmasPDUReadUmasUDTDefinitionResponse implements Message {
     int noOfRecords = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("noOfRecords"));
 
     // Array Field: records
-    List<UmasUDTDefinition> records = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (UmasUDTDefinition) UmasUDTDefinition.staticParse(readBuffer), readBuffer), noOfRecords, WithOption.WithName("records"));
+    List<UmasUDTDefinition> records = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(UmasUDTDefinition.class, UmasUDTDefinition.staticParse(readBuffer)), readBuffer), noOfRecords, WithOption.WithName("records"));
 
     readBuffer.popContext();
     return new UmasPDUReadUmasUDTDefinitionResponse(range, unknown1, noOfRecords, records);

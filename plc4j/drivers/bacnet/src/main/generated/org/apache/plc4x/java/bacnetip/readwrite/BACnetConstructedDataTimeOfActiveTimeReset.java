@@ -78,7 +78,7 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeOfActiveTimeReset
-    BACnetDateTime timeOfActiveTimeReset = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDateTime) BACnetDateTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeOfActiveTimeReset"));
+    BACnetDateTime timeOfActiveTimeReset = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDateTime.class, BACnetDateTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeOfActiveTimeReset"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDateTime actualValue = FieldReaderFactory.readVirtualField(BACnetDateTime.class, timeOfActiveTimeReset, WithOption.WithName("actualValue"));

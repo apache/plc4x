@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.utils.subscriptionemulation;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
@@ -90,7 +90,7 @@ public abstract class PollingSubscriptionConnectionBase<C extends Configuration>
     private final AtomicLong subscriptionIdGenerator = new AtomicLong(1);
     private final Map<Long, SubscriptionInfo> subscriptions = new ConcurrentHashMap<>();
     private final Map<PlcConsumerRegistration, ConsumerRegistrationInfo> consumerRegistrations = new ConcurrentHashMap<>();
-    private final PlcConnectionManager singleConnectionManager;
+    private final PlcConnectionFactory singleConnectionManager;
 
     public PollingSubscriptionConnectionBase(C configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         super(configuration, transportInstance, auditLog);
@@ -141,7 +141,7 @@ public abstract class PollingSubscriptionConnectionBase<C extends Configuration>
 
                 TagBatch batch = TagBatch.builder()
                     .withBatchId(batchId)
-                    .withConnectionManager(singleConnectionManager)
+                    .withConnectionFactory(singleConnectionManager)
                     .withConnectionString("internal://subscription")
                     .addTagAddresses(tagAddresses)
                     .withTrigger(trigger)
@@ -500,7 +500,7 @@ public abstract class PollingSubscriptionConnectionBase<C extends Configuration>
      * This is used internally to adapt TagBatch's new API to work with a single connection.
      * The wrapper prevents TagBatch from closing the connection when using try-with-resources.
      */
-    private static class SingleConnectionManager implements PlcConnectionManager {
+    private static class SingleConnectionManager implements PlcConnectionFactory {
         private final PlcConnection wrappedConnection;
 
         SingleConnectionManager(PlcConnection connection) {

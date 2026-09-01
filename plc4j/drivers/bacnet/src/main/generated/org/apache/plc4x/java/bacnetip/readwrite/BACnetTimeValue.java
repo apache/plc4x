@@ -59,10 +59,10 @@ public class BACnetTimeValue implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: timeValue
-    BACnetApplicationTagTime timeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagTime) BACnetApplicationTagTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeValue"));
+    BACnetApplicationTagTime timeValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagTime.class, BACnetApplicationTagTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeValue"));
 
     // Simple Field: value
-    BACnetConstructedDataElement value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetConstructedDataElement) BACnetConstructedDataElement.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null)), readBuffer), WithOption.WithName("value"));
+    BACnetConstructedDataElement value = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetConstructedDataElement.class, BACnetConstructedDataElement.staticParse(readBuffer, (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType) (org.apache.plc4x.java.bacnetip.readwrite.BACnetObjectType.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier) (org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE), (org.apache.plc4x.java.bacnetip.readwrite.BACnetTagPayloadUnsignedInteger) (null))), readBuffer), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new BACnetTimeValue(timeValue, value);

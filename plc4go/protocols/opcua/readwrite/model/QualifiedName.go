@@ -198,8 +198,8 @@ func (m *_QualifiedName) GetPlx4xTypeName() string {
 	return "QualifiedName"
 }
 
-func (m *_QualifiedName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_QualifiedName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 16
@@ -210,7 +210,7 @@ func (m *_QualifiedName) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_QualifiedName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_QualifiedName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

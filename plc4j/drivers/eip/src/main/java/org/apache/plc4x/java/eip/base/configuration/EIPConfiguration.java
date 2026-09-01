@@ -42,13 +42,21 @@ public class EIPConfiguration implements Configuration {
     @Description("Configure if the connection should be set to transport data in Big-Endian format, or not.")
     private boolean bigEndian = true;
 
+    @ConfigurationParameter("connection-serial-number")
+    @IntDefaultValue(0)
+    @Description("Connection serial number to use in Forward_Open. CIP wants this unique per " +
+        "connection, so the default of 0 means 'pick a random one per connection'. Set it " +
+        "explicitly only when the exchange has to be reproducible, e.g. in recorded tests.")
+    @Since("1.0.0")
+    private int connectionSerialNumber = 0;
+
     @ConfigurationParameter("force-unconnected-operation")
     @BooleanDefaultValue(false)
     @Description("Forces the driver to use unconnected requests.")
     @Since("0.13.0")
     private boolean forceUnconnectedOperation = false;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(10_000)
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;
@@ -76,6 +84,10 @@ public class EIPConfiguration implements Configuration {
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public int getConnectionSerialNumber() {
+        return connectionSerialNumber;
     }
 
     public boolean isBigEndian() {

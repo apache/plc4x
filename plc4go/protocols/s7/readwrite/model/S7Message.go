@@ -58,6 +58,8 @@ type S7MessageContract interface {
 	// GetParameter returns Parameter (property field)
 	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
+	// The payload's type switch discriminates on the parameter, so it can only be read when the
+	// parameter was: a message announcing a parameter it then does not carry leaves it unset.
 	GetPayload() S7Payload
 	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
@@ -67,8 +69,8 @@ type S7MessageContract interface {
 
 // S7MessageRequirements provides a set of functions which need to be implemented by a sub struct
 type S7MessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 }
@@ -339,8 +341,8 @@ func (m *_S7Message) GetPlx4xTypeName() string {
 	return "S7Message"
 }
 
-func (m *_S7Message) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7Message) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (protocolId)
 	lengthInBits += 8
@@ -372,11 +374,11 @@ func (m *_S7Message) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7Message) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Message) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7Message) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7Message) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -487,7 +489,7 @@ func (m *_S7Message) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	}
 
 	var payload S7Payload
-	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](S7PayloadParseWithBufferProducer[S7Payload]((uint8)(messageType), (S7Parameter)((parameter))), readBuffer), bool((payloadLength) > (0)))
+	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](S7PayloadParseWithBufferProducer[S7Payload]((uint8)(messageType), (S7Parameter)((parameter))), readBuffer), bool(bool((payloadLength) > (0))) && bool(bool((parameter) != (nil))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}

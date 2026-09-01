@@ -236,8 +236,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetPlx4xTypeName() st
 	return "S7PayloadUserDataItemCpuFunctionAlarmAckRequest"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -256,7 +256,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

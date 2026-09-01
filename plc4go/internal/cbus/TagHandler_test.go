@@ -24,6 +24,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -89,14 +90,12 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			name: "cal get status",
 			args: args{tagAddress: "cal/2/getStatus=1,2"},
 			want: &calGetStatusTag{
-				calTag: calTag{
-					bridgeAddresses: nil,
-					unitAddress:     readWriteModel.NewUnitAddress(2),
-				},
-				tagType:     CAL_GETSTATUS,
-				parameter:   1,
-				count:       2,
-				numElements: 1,
+				bridgeAddresses: nil,
+				unitAddress:     readWriteModel.NewUnitAddress(2),
+				tagType:         CAL_GETSTATUS,
+				parameter:       1,
+				count:           2,
+				numElements:     1,
 			},
 		},
 		{
@@ -179,28 +178,24 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			name: "bridged cal 1 bridge",
 			args: args{tagAddress: "cal/b1-u2/getStatus=1,2"},
 			want: &calGetStatusTag{
-				calTag: calTag{
-					bridgeAddresses: []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(1)},
-					unitAddress:     readWriteModel.NewUnitAddress(2),
-				},
-				tagType:     CAL_GETSTATUS,
-				parameter:   1,
-				count:       2,
-				numElements: 1,
+				bridgeAddresses: []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(1)},
+				unitAddress:     readWriteModel.NewUnitAddress(2),
+				tagType:         CAL_GETSTATUS,
+				parameter:       1,
+				count:           2,
+				numElements:     1,
 			},
 		},
 		{
 			name: "bridged cal 6 bridges",
 			args: args{tagAddress: "cal/b1-b2-b3-b4-b5-b6-u2/getStatus=1,2"},
 			want: &calGetStatusTag{
-				calTag: calTag{
-					bridgeAddresses: []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewBridgeAddress(3), readWriteModel.NewBridgeAddress(4), readWriteModel.NewBridgeAddress(5), readWriteModel.NewBridgeAddress(6)},
-					unitAddress:     readWriteModel.NewUnitAddress(2),
-				},
-				tagType:     CAL_GETSTATUS,
-				parameter:   1,
-				count:       2,
-				numElements: 1,
+				bridgeAddresses: []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewBridgeAddress(3), readWriteModel.NewBridgeAddress(4), readWriteModel.NewBridgeAddress(5), readWriteModel.NewBridgeAddress(6)},
+				unitAddress:     readWriteModel.NewUnitAddress(2),
+				tagType:         CAL_GETSTATUS,
+				parameter:       1,
+				count:           2,
+				numElements:     1,
 			},
 		},
 		{
@@ -653,9 +648,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"recallCount":   "2",
 			}},
 			want: &calRecallTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_RECALL,
 				parameter:   1,
 				count:       2,
@@ -672,9 +665,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"recallCount":   "2",
 			}},
 			want: &calRecallTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_RECALL,
 				parameter:   readWriteModel.Parameter_INTERFACE_OPTIONS_1,
 				count:       2,
@@ -691,9 +682,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"recallCount":   "2",
 			}},
 			want: &calRecallTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_RECALL,
 				parameter:   readWriteModel.Parameter_INTERFACE_OPTIONS_1,
 				count:       2,
@@ -717,9 +706,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"identifyAttribute": "1",
 			}},
 			want: &calIdentifyTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_IDENTIFY,
 				attribute:   readWriteModel.Attribute_Type,
 				numElements: 1,
@@ -734,9 +721,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"identifyAttribute": "0x01",
 			}},
 			want: &calIdentifyTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_IDENTIFY,
 				attribute:   readWriteModel.Attribute_Type,
 				numElements: 1,
@@ -751,9 +736,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"identifyAttribute": "Type",
 			}},
 			want: &calIdentifyTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_IDENTIFY,
 				attribute:   readWriteModel.Attribute_Type,
 				numElements: 1,
@@ -786,9 +769,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"getStatusCount":   "2",
 			}},
 			want: &calGetStatusTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_GETSTATUS,
 				parameter:   readWriteModel.Parameter_UNKNOWN_02,
 				count:       2,
@@ -805,9 +786,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"getStatusCount":   "2",
 			}},
 			want: &calGetStatusTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_GETSTATUS,
 				parameter:   readWriteModel.Parameter_UNKNOWN_02,
 				count:       2,
@@ -824,9 +803,7 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"getStatusCount":   "2",
 			}},
 			want: &calGetStatusTag{
-				calTag: calTag{
-					unitAddress: readWriteModel.NewUnitAddress(0),
-				},
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				tagType:     CAL_GETSTATUS,
 				parameter:   readWriteModel.Parameter_INTERFACE_OPTIONS_1,
 				count:       2,
@@ -1574,4 +1551,27 @@ func TestTagHandler_unitAddressFromArgument(t *testing.T) {
 			assert.Equalf(t, tt.want, got, "unitAddressFromArgument(%v, %v)", tt.args.unitAddressArgument, tt.args.allowWildcard)
 		})
 	}
+}
+
+// C-Bus addresses are commands, not memory locations, and their brackets hold the arguments of
+// one CAL command - "recall=[param, count]" - rather than a selection appended to an address.
+// There is nothing here for the array notation to replace, so these addresses are unchanged;
+// what a command reads several of is still reported through GetArrayInfo like any other list.
+func TestTagHandler_CommandArgumentsAreNotAnArraySelection(t *testing.T) {
+	handler := NewTagHandler()
+
+	several, err := handler.ParseTag("cal/0/recall=[0x20, 4]")
+	require.NoError(t, err)
+	require.Len(t, several.GetArrayInfo(), 1)
+	assert.Equal(t, uint32(4), several.GetArrayInfo()[0].GetSize())
+	assert.True(t, several.GetArrayInfo()[0].IsRange())
+
+	one, err := handler.ParseTag("cal/0/recall=[0x20, 1]")
+	require.NoError(t, err)
+	assert.Empty(t, one.GetArrayInfo(), "one value is a scalar")
+
+	// The notation's own spelling is not accepted here, because there is no address to append a
+	// selection to.
+	_, err = handler.ParseTag("cal/0/recall=[0x20][0..3]")
+	assert.Error(t, err)
 }

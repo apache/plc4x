@@ -89,10 +89,10 @@ public class LocalizedText implements Message {
     boolean localeSpecified = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("localeSpecified"));
 
     // Optional Field (conditional): locale
-    PascalString locale = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), localeSpecified, WithOption.WithName("locale"));
+    PascalString locale = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), localeSpecified, WithOption.WithName("locale"));
 
     // Optional Field (conditional): text
-    PascalString text = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), textSpecified, WithOption.WithName("text"));
+    PascalString text = FieldReaderFactory.readOptionalField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), textSpecified, WithOption.WithName("text"));
 
     readBuffer.popContext();
     return new LocalizedText(textSpecified, localeSpecified, locale, text);

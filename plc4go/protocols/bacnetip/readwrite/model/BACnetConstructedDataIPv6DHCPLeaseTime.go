@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6DHCPLeaseTime"
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipv6DhcpLeaseTime)
 	lengthInBits += m.Ipv6DhcpLeaseTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

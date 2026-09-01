@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyLowerLimit"
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (occupancyLowerLimit)
 	lengthInBits += m.OccupancyLowerLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

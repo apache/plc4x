@@ -6034,11 +6034,11 @@ func CastOpcuaNodeIdServicesVariableProvisionable(structType any) OpcuaNodeIdSer
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableProvisionable) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableProvisionable) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableProvisionable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableProvisionable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

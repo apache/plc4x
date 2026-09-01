@@ -78,7 +78,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: reliabilityEvaluationInhibit
-    BACnetApplicationTagBoolean reliabilityEvaluationInhibit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBoolean) BACnetApplicationTagBoolean.staticParse(readBuffer), readBuffer), WithOption.WithName("reliabilityEvaluationInhibit"));
+    BACnetApplicationTagBoolean reliabilityEvaluationInhibit = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBoolean.class, BACnetApplicationTagBoolean.staticParse(readBuffer)), readBuffer), WithOption.WithName("reliabilityEvaluationInhibit"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBoolean.class, reliabilityEvaluationInhibit, WithOption.WithName("actualValue"));

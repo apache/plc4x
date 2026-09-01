@@ -60,7 +60,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: telephonyData
-    TelephonyData telephonyData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (TelephonyData) TelephonyData.staticParse(readBuffer), readBuffer), WithOption.WithName("telephonyData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    TelephonyData telephonyData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(TelephonyData.class, TelephonyData.staticParse(readBuffer)), readBuffer), WithOption.WithName("telephonyData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(telephonyData);

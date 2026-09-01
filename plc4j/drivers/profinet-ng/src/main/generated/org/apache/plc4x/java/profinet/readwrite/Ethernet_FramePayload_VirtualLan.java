@@ -98,7 +98,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     short id = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 12), WithOption.WithName("id"));
 
     // Simple Field: payload
-    Ethernet_FramePayload payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Ethernet_FramePayload) Ethernet_FramePayload.staticParse(readBuffer), readBuffer), WithOption.WithName("payload"));
+    Ethernet_FramePayload payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Ethernet_FramePayload.class, Ethernet_FramePayload.staticParse(readBuffer)), readBuffer), WithOption.WithName("payload"));
 
     readBuffer.popContext();
     return new Ethernet_FramePayloadBuilderImpl(priority, ineligible, id, payload);

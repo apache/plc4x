@@ -154,7 +154,7 @@ public class FirmataVirtualAvrIT {
     private PlcConnection openDriverAndAttachWebSocket() throws Exception {
         String url = "firmata:tcp://" + virtualAvr.getHost() + ":"
             + virtualAvr.getMappedPort(CONTAINER_TCP_SERIAL_PORT)
-            + "?request-timeout=30000";
+            + "?request-timeout-ms=30000";
         PlcConnection connection = openWithRetry(url);
 
         // Build the WebSocket URI manually — the library's static factory

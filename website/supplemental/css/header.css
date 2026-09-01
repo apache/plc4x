@@ -70,6 +70,18 @@ body {
   word-wrap: normal;
 }
 
+/*
+ * The logo is sized here instead of being rendered at whatever size the image file
+ * happens to have: the copy in "website/resources/images" is 241x83, the ones the
+ * branches keep in their "modules/ROOT/images" are 145x50 and 153x50. They all share
+ * the same aspect ratio, so fixing the height is enough to make the header look the
+ * same no matter which of them is served.
+ */
+.navbar-brand .navbar-item:first-child img {
+  height: calc(50 / var(--rem-base) * 1rem);
+  width: auto;
+}
+
 .navbar-brand .navbar-item:first-child :not(:last-child) {
   padding-right: 0.375rem;
 }

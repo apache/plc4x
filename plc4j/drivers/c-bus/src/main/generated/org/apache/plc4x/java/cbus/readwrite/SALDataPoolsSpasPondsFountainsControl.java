@@ -61,7 +61,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: poolsSpaPondsFountainsData
-    LightingData poolsSpaPondsFountainsData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (LightingData) LightingData.staticParse(readBuffer), readBuffer), WithOption.WithName("poolsSpaPondsFountainsData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    LightingData poolsSpaPondsFountainsData = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LightingData.class, LightingData.staticParse(readBuffer)), readBuffer), WithOption.WithName("poolsSpaPondsFountainsData"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new SALDataBuilderImpl(poolsSpaPondsFountainsData);

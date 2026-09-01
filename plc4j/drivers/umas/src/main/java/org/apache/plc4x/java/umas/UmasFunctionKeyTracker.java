@@ -28,17 +28,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * request's function key to determine the correct response subtype. The connection
  * records the function key before sending each request, and the parser
  * retrieves it by peeking at the transaction ID from the MBAP header bytes.
+ * <p>
+ * One of these belongs to one connection. It used to be static, so every connection
+ * in the process shared one map keyed by transaction id alone - and transaction ids
+ * are a counter per connection, not per process. Two connections talking to two
+ * devices reach the same id in the ordinary course of things, and the second to
+ * arrive overwrote the first: a response then got parsed under another
+ * conversation's function key, which decides the response subtype. Nothing about
+ * that is visible in a log; it comes out as a parse failure or as the wrong shape of
+ * data. Keeping it per connection is what makes the id meaningful.
  */
 public class UmasFunctionKeyTracker {
 
-    private static final Map<Integer, Short> PENDING_FUNCTION_KEYS = new ConcurrentHashMap<>();
+    private final Map<Integer, Short> pendingFunctionKeys = new ConcurrentHashMap<>();
 
     /**
      * Records that a request with the given transaction ID used the specified
      * UMAS function key. Called by the connection before sending a request.
      */
-    public static void trackRequest(int transactionId, short functionKey) {
-        PENDING_FUNCTION_KEYS.put(transactionId, functionKey);
+    public void trackRequest(int transactionId, short functionKey) {
+        pendingFunctionKeys.put(transactionId, functionKey);
     }
 
     /**
@@ -48,9 +57,27 @@ public class UmasFunctionKeyTracker {
      *
      * @return the function key, or 0 if not tracked (e.g. unsolicited message)
      */
-    public static short consumeFunctionKey(int transactionId) {
-        Short fk = PENDING_FUNCTION_KEYS.remove(transactionId);
+    public short consumeFunctionKey(int transactionId) {
+        Short fk = pendingFunctionKeys.remove(transactionId);
         return fk != null ? fk : (short) 0;
+    }
+
+    /**
+     * Forgets a request that will not be answered - it was never sent, or it gave up waiting.
+     * Without this an unanswered request leaves its key behind for as long as the connection
+     * lives, and a later request reaching the same id finds somebody else's.
+     */
+    public void forget(int transactionId) {
+        pendingFunctionKeys.remove(transactionId);
+    }
+
+    /** Forgets everything, for a connection that is closing. */
+    public void clear() {
+        pendingFunctionKeys.clear();
+    }
+
+    int trackedCount() {
+        return pendingFunctionKeys.size();
     }
 
 }

@@ -71,7 +71,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: dateList
-    List<BACnetCalendarEntry> dateList = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetCalendarEntry) BACnetCalendarEntry.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("dateList"));
+    List<BACnetCalendarEntry> dateList = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCalendarEntry.class, BACnetCalendarEntry.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("dateList"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(dateList);

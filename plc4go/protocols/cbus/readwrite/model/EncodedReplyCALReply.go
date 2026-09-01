@@ -227,8 +227,8 @@ func (m *_EncodedReplyCALReply) GetPlx4xTypeName() string {
 	return "EncodedReplyCALReply"
 }
 
-func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
+func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
 
 	// Simple field (calReply)
 	lengthInBits += m.CalReply.GetLengthInBits(ctx)
@@ -236,7 +236,7 @@ func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

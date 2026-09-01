@@ -67,7 +67,7 @@ public class Scanner {
             // read symbols
             System.out.println("Reading symbol info");
             PlcReadRequest.Builder readRequestBuilder = plcConnection.readRequestBuilder();
-            PlcReadRequest request = readRequestBuilder.addTagAddress("SYM_UPLOADINFO2", "0xf00f/0x0:SINT[24]").build();
+            PlcReadRequest request = readRequestBuilder.addTagAddress("SYM_UPLOADINFO2", "0xf00f/0x0[0..23]:SINT").build();
             PlcReadResponse rsp = request.execute().get();
             ByteBuffer buffer = toBuffer(rsp, "SYM_UPLOADINFO2");
 

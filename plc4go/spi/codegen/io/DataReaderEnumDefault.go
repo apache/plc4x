@@ -41,11 +41,11 @@ func NewDataReaderEnumDefault[T any, I any](enumResolver func(I) (T, bool), data
 	}
 }
 
-func (d *DataReaderEnumDefault[T, I]) GetPos() uint16 {
+func (d *DataReaderEnumDefault[T, I]) GetPos() uint32 {
 	return d.dataReader.GetPos()
 }
 
-func (d *DataReaderEnumDefault[T, I]) SetPos(pos uint16) {
+func (d *DataReaderEnumDefault[T, I]) SetPos(pos uint32) {
 	d.dataReader.SetPos(pos)
 }
 

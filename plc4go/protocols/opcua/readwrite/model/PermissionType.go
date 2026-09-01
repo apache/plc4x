@@ -190,11 +190,11 @@ func CastPermissionType(structType any) PermissionType {
 	return castFunc(structType)
 }
 
-func (m PermissionType) GetLengthInBits(ctx context.Context) uint16 {
+func (m PermissionType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PermissionType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PermissionType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

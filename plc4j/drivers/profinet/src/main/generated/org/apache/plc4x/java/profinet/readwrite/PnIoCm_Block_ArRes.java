@@ -132,13 +132,13 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     PnIoCm_ArType arType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(PnIoCm_ArType::enumForValue, DataReaderFactory.readUnsignedInt(readBuffer, 16)), WithOption.WithName("arType"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: arUuid
-    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: sessionKey
     int sessionKey = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sessionKey"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: cmResponderMacAddr
-    MacAddress cmResponderMacAddr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MacAddress) MacAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("cmResponderMacAddr"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    MacAddress cmResponderMacAddr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MacAddress.class, MacAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("cmResponderMacAddr"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: responderUDPRTPort
     int responderUDPRTPort = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("responderUDPRTPort"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));

@@ -133,11 +133,11 @@ func CastMeasurementCommandTypeContainer(structType any) MeasurementCommandTypeC
 	return castFunc(structType)
 }
 
-func (m MeasurementCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m MeasurementCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m MeasurementCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MeasurementCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

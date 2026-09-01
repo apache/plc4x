@@ -59,7 +59,7 @@ public class BACnetApplicationTagCharacterString extends BACnetApplicationTag im
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: payload
-    BACnetTagPayloadCharacterString payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTagPayloadCharacterString) BACnetTagPayloadCharacterString.staticParse(readBuffer, (long) (header.getActualLength())), readBuffer), WithOption.WithName("payload"));
+    BACnetTagPayloadCharacterString payload = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTagPayloadCharacterString.class, BACnetTagPayloadCharacterString.staticParse(readBuffer, (long) (header.getActualLength()))), readBuffer), WithOption.WithName("payload"));
 
     // Virtual Field: value (doesn't parse anything, just makes the value available)
     String value = FieldReaderFactory.readVirtualField(String.class, payload.getValue(), WithOption.WithName("value"));

@@ -139,13 +139,13 @@ func (m *_EccEncryptedSecret) GetPlx4xTypeName() string {
 	return "EccEncryptedSecret"
 }
 
-func (m *_EccEncryptedSecret) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_EccEncryptedSecret) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_EccEncryptedSecret) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EccEncryptedSecret) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: prescale
-    BACnetPrescale prescale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPrescale) BACnetPrescale.staticParse(readBuffer), readBuffer), WithOption.WithName("prescale"));
+    BACnetPrescale prescale = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPrescale.class, BACnetPrescale.staticParse(readBuffer)), readBuffer), WithOption.WithName("prescale"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetPrescale actualValue = FieldReaderFactory.readVirtualField(BACnetPrescale.class, prescale, WithOption.WithName("actualValue"));

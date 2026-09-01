@@ -225,8 +225,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetPlx4xType
 	return "BACnetFaultParameterFaultExtendedParametersEntryUnsigned"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetLengthInB
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

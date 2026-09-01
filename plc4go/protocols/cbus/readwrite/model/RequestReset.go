@@ -254,8 +254,8 @@ func (m *_RequestReset) GetPlx4xTypeName() string {
 	return "RequestReset"
 }
 
-func (m *_RequestReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+func (m *_RequestReset) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Optional Field (secondTilde)
 	if m.SecondTilde != nil {
@@ -270,7 +270,7 @@ func (m *_RequestReset) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestReset) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestReset) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

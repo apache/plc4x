@@ -59,7 +59,7 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: logicAssigment
-    List<LogicAssignment> logicAssigment = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (LogicAssignment) LogicAssignment.staticParse(readBuffer), readBuffer), numBytes, WithOption.WithName("logicAssigment"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    List<LogicAssignment> logicAssigment = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(LogicAssignment.class, LogicAssignment.staticParse(readBuffer)), readBuffer), numBytes, WithOption.WithName("logicAssigment"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new IdentifyReplyCommandBuilderImpl(logicAssigment);

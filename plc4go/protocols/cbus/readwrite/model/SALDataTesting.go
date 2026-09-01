@@ -185,13 +185,13 @@ func (m *_SALDataTesting) GetPlx4xTypeName() string {
 	return "SALDataTesting"
 }
 
-func (m *_SALDataTesting) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataTesting) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SALDataTesting) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataTesting) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

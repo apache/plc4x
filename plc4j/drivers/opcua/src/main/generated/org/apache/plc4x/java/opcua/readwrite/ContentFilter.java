@@ -63,7 +63,7 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     int noOfElements = FieldReaderFactory.readImplicitField(DataReaderFactory.readSignedInt(readBuffer, 32), WithOption.WithName("noOfElements"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     // Array Field: elements
-    List<ContentFilterElement> elements = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (ContentFilterElement) ContentFilterElement.staticParse(readBuffer, (int) (585)), readBuffer), noOfElements, WithOption.WithName("elements"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+    List<ContentFilterElement> elements = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ContentFilterElement.class, ContentFilterElement.staticParse(readBuffer, (int) (585))), readBuffer), noOfElements, WithOption.WithName("elements"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new ExtensionObjectDefinitionBuilderImpl(elements);

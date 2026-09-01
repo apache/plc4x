@@ -247,8 +247,8 @@ func (m *_BACnetEventTimestamps) GetPlx4xTypeName() string {
 	return "BACnetEventTimestamps"
 }
 
-func (m *_BACnetEventTimestamps) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventTimestamps) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (toOffnormal)
 	lengthInBits += m.ToOffnormal.GetLengthInBits(ctx)
@@ -262,7 +262,7 @@ func (m *_BACnetEventTimestamps) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetEventTimestamps) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventTimestamps) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

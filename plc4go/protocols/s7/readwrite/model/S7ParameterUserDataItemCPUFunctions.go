@@ -316,8 +316,8 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetPlx4xTypeName() string {
 	return "S7ParameterUserDataItemCPUFunctions"
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem).getLengthInBits(ctx))
+func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem).getLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -355,7 +355,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

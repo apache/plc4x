@@ -112,11 +112,11 @@ func CastOpcuaNodeIdServicesVariableArray(structType any) OpcuaNodeIdServicesVar
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableArray) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableArray) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableArray) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableArray) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -229,8 +229,8 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicWriteFile"
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (fileStartPosition)
 	lengthInBits += m.FileStartPosition.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

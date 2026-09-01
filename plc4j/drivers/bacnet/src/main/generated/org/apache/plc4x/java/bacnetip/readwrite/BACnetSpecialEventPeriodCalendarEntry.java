@@ -52,7 +52,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: calendarEntry
-    BACnetCalendarEntryEnclosed calendarEntry = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetCalendarEntryEnclosed) BACnetCalendarEntryEnclosed.staticParse(readBuffer, (short) (0)), readBuffer), WithOption.WithName("calendarEntry"));
+    BACnetCalendarEntryEnclosed calendarEntry = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetCalendarEntryEnclosed.class, BACnetCalendarEntryEnclosed.staticParse(readBuffer, (short) (0))), readBuffer), WithOption.WithName("calendarEntry"));
 
     readBuffer.popContext();
     return new BACnetSpecialEventPeriodBuilderImpl(calendarEntry);

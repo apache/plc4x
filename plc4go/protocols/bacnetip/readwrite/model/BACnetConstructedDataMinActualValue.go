@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataMinActualValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinActualValue"
 }
 
-func (m *_BACnetConstructedDataMinActualValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMinActualValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minActualValue)
 	lengthInBits += m.MinActualValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMinActualValue) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinActualValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMinActualValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

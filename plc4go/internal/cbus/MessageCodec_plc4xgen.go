@@ -65,7 +65,7 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.requestContext)
-			if err := writeBuffer.WriteString("requestContext", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("requestContext", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -84,7 +84,7 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.cbusOptions)
-			if err := writeBuffer.WriteString("cbusOptions", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("cbusOptions", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

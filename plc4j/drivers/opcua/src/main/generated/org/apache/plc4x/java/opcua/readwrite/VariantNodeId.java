@@ -75,7 +75,7 @@ public class VariantNodeId extends Variant implements Message {
     Integer arrayLength = FieldReaderFactory.readOptionalField(DataReaderFactory.readSignedInt(readBuffer, 32), arrayLengthSpecified, WithOption.WithName("arrayLength"));
 
     // Array Field: value
-    List<NodeId> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (NodeId) NodeId.staticParse(readBuffer), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
+    List<NodeId> value = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(NodeId.class, NodeId.staticParse(readBuffer)), readBuffer), (((arrayLength) == (null)) ? 1 : arrayLength), WithOption.WithName("value"));
 
     readBuffer.popContext();
     return new VariantBuilderImpl(arrayLength, value);

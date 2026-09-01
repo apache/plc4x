@@ -311,8 +311,8 @@ func (m *_EnumField) GetPlx4xTypeName() string {
 	return "EnumField"
 }
 
-func (m *_EnumField) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_EnumField) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += 64
@@ -329,7 +329,7 @@ func (m *_EnumField) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EnumField) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EnumField) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

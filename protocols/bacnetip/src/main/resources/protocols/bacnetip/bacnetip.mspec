@@ -302,7 +302,8 @@
                                     '3 + (segmentedMessage ? 2 : 0)'        ]
             [optional BACnetConfirmedServiceRequest('apduLength - apduHeaderReduction')
                                 serviceRequest       '!segmentedMessage'    ]
-            [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage'
+            [validation '(!segmentedMessage && serviceRequest != null)
+                      || (segmentedMessage && sequenceNumber != null && proposedWindowSize != null)'
                         "service request should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
             [optional BACnetConfirmedServiceChoice
@@ -336,7 +337,8 @@
                                     '2 + (segmentedMessage ? 2 : 0)'    ]
             [optional BACnetServiceAck('apduLength - apduHeaderReduction')
                                 serviceAck         '!segmentedMessage'  ]
-            [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage'
+            [validation '(!segmentedMessage && serviceAck != null)
+                      || (segmentedMessage && sequenceNumber != null && proposedWindowSize != null)'
                         "service ack should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
             [optional BACnetConfirmedServiceChoice

@@ -78,7 +78,7 @@ public class BACnetConstructedDataDateValuePresentValue extends BACnetConstructe
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetApplicationTagDate presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDate) BACnetApplicationTagDate.staticParse(readBuffer), readBuffer), WithOption.WithName("presentValue"));
+    BACnetApplicationTagDate presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDate.class, BACnetApplicationTagDate.staticParse(readBuffer)), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagDate actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagDate.class, presentValue, WithOption.WithName("actualValue"));

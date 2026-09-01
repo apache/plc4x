@@ -80,7 +80,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
     OpcuaStatusCode error = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(OpcuaStatusCode::enumForValue, DataReaderFactory.readUnsignedLong(readBuffer, 32)), WithOption.WithName("error"));
 
     // Simple Field: reason
-    PascalString reason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("reason"));
+    PascalString reason = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("reason"));
 
     readBuffer.popContext();
     return new MessagePDUBuilderImpl(error, reason);

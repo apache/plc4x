@@ -77,7 +77,6 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-iec-60870</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -103,12 +102,6 @@
       <artifactId>plc4j-spi-buffers-xml</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>

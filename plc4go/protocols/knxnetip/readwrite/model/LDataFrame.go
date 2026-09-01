@@ -70,8 +70,8 @@ type LDataFrameContract interface {
 
 // LDataFrameRequirements provides a set of functions which need to be implemented by a sub struct
 type LDataFrameRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetNotAckFrame returns NotAckFrame (discriminator field)
 	GetNotAckFrame() bool
 	// GetPolling returns Polling (discriminator field)
@@ -317,8 +317,8 @@ func (m *_LDataFrame) GetPlx4xTypeName() string {
 	return "LDataFrame"
 }
 
-func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (frameType)
 	lengthInBits += 1
@@ -342,11 +342,11 @@ func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LDataFrame) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_LDataFrame) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

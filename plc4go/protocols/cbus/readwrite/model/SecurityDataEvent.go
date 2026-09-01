@@ -207,18 +207,18 @@ func (m *_SecurityDataEvent) GetPlx4xTypeName() string {
 	return "SecurityDataEvent"
 }
 
-func (m *_SecurityDataEvent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataEvent) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataEvent) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataEvent) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

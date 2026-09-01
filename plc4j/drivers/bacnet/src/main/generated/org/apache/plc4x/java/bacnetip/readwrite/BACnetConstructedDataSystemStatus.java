@@ -78,7 +78,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: systemStatus
-    BACnetDeviceStatusTagged systemStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetDeviceStatusTagged) BACnetDeviceStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("systemStatus"));
+    BACnetDeviceStatusTagged systemStatus = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetDeviceStatusTagged.class, BACnetDeviceStatusTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("systemStatus"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetDeviceStatusTagged actualValue = FieldReaderFactory.readVirtualField(BACnetDeviceStatusTagged.class, systemStatus, WithOption.WithName("actualValue"));

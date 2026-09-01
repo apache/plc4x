@@ -184,13 +184,13 @@ func (m *_ApduDataIndividualAddressRead) GetPlx4xTypeName() string {
 	return "ApduDataIndividualAddressRead"
 }
 
-func (m *_ApduDataIndividualAddressRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataIndividualAddressRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataIndividualAddressRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataIndividualAddressRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

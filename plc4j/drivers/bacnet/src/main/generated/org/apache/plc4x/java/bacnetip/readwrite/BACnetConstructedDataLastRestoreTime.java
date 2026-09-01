@@ -78,7 +78,7 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: lastRestoreTime
-    BACnetTimeStamp lastRestoreTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetTimeStamp) BACnetTimeStamp.staticParse(readBuffer), readBuffer), WithOption.WithName("lastRestoreTime"));
+    BACnetTimeStamp lastRestoreTime = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetTimeStamp.class, BACnetTimeStamp.staticParse(readBuffer)), readBuffer), WithOption.WithName("lastRestoreTime"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetTimeStamp actualValue = FieldReaderFactory.readVirtualField(BACnetTimeStamp.class, lastRestoreTime, WithOption.WithName("actualValue"));

@@ -66,7 +66,7 @@ public class CycServiceItemDbReadType extends CycServiceItemType implements Mess
     short numberOfAreas = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("numberOfAreas"));
 
     // Array Field: items
-    List<SubItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (SubItem) SubItem.staticParse(readBuffer), readBuffer), numberOfAreas, WithOption.WithName("items"));
+    List<SubItem> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SubItem.class, SubItem.staticParse(readBuffer)), readBuffer), numberOfAreas, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new CycServiceItemTypeBuilderImpl(numberOfAreas, items);

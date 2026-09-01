@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -269,8 +270,8 @@ func (m *_NodeIdByteString) GetPlx4xTypeName() string {
 	return "NodeIdByteString"
 }
 
-func (m *_NodeIdByteString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
+func (m *_NodeIdByteString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 16
@@ -285,7 +286,7 @@ func (m *_NodeIdByteString) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NodeIdByteString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeIdByteString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -312,7 +313,7 @@ func (m *_NodeIdByteString) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.Id = id
 
-	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id.GetStringValue())
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id.GetStringValue(), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}

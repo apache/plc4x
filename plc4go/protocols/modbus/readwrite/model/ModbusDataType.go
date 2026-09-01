@@ -370,11 +370,11 @@ func CastModbusDataType(structType any) ModbusDataType {
 	return castFunc(structType)
 }
 
-func (m ModbusDataType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ModbusDataType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ModbusDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ModbusDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -225,8 +225,8 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesNetworkPortCommand"
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (networkPortCommand)
 	lengthInBits += m.NetworkPortCommand.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

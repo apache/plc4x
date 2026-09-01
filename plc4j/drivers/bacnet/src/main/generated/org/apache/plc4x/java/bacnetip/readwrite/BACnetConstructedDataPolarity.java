@@ -77,7 +77,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: polarity
-    BACnetPolarityTagged polarity = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetPolarityTagged) BACnetPolarityTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("polarity"));
+    BACnetPolarityTagged polarity = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetPolarityTagged.class, BACnetPolarityTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("polarity"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetPolarityTagged actualValue = FieldReaderFactory.readVirtualField(BACnetPolarityTagged.class, polarity, WithOption.WithName("actualValue"));

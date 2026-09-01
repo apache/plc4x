@@ -61,7 +61,7 @@ public class InformationObjectWithoutTime_INTEGRATED_TOTALS extends InformationO
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: bcr
-    BinaryCounterReading bcr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BinaryCounterReading) BinaryCounterReading.staticParse(readBuffer), readBuffer), WithOption.WithName("bcr"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    BinaryCounterReading bcr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BinaryCounterReading.class, BinaryCounterReading.staticParse(readBuffer)), readBuffer), WithOption.WithName("bcr"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(bcr);

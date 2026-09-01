@@ -61,7 +61,7 @@ public class InformationObjectWithoutTime_DOUBLE_COMMAND extends InformationObje
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: dco
-    DoubleCommand dco = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DoubleCommand) DoubleCommand.staticParse(readBuffer), readBuffer), WithOption.WithName("dco"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    DoubleCommand dco = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DoubleCommand.class, DoubleCommand.staticParse(readBuffer)), readBuffer), WithOption.WithName("dco"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(dco);

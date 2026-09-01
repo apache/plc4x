@@ -32,7 +32,7 @@
 // COTP
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType COTPPacket (uint 16 cotpLen)
+[discriminatedType COTPPacket (uint 32 cotpLen)
     [implicit      uint 8 headerLength 'lengthInBytes - (((payload != null) ? payload.lengthInBytes : 0) + 1)']
     [discriminator uint 8 tpduCode]
     [typeSwitch tpduCode
@@ -116,7 +116,9 @@
         ]
     ]
     [optional S7Parameter ('messageType')              parameter 'parameterLength > 0']
-    [optional S7Payload   ('messageType', 'parameter') payload   'payloadLength > 0'  ]
+    // The payload's type switch discriminates on the parameter, so it can only be read when the
+    // parameter was: a message announcing a parameter it then does not carry leaves it unset.
+    [optional S7Payload   ('messageType', 'parameter') payload   'payloadLength > 0 && parameter != null'  ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -849,8 +851,10 @@
             [simple uint 8  seconds              encoding='"BCD"']
             // One and a half byte with 3 4-bit values representing 0 - 999
             [simple uint 12 millisecondsOfSecond encoding='"BCD"']
-            // Half a byte with one 4-bit value representing 1 - 7
-            [simple uint 4  dayOfWeek            encoding='"BCD"']
+            // Half a byte with one 4-bit value representing 01 (Sunday) - 07 (Saturday).
+            // Rotated into/out of the ISO-8601 numbering PlcDATE_AND_TIME uses, so the
+            // shared value stays compatible with plc4j and KNX DPT 19.001.
+            [manual uint 4  dayOfWeek            'STATIC_CALL("parseSiemensDayOfWeek", readBuffer)' 'STATIC_CALL("serializeSiemensDayOfWeek", writeBuffer, _value)' '4' encoding='"BCD"']
         ]
         // - Date & Time: Interpreted as "number of nanoseconds since 1970-01-01"
         ['"IEC61131_DATE_AND_LTIME"' DATE_AND_LTIME

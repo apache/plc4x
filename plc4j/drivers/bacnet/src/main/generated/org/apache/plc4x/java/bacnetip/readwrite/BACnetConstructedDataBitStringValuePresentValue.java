@@ -78,7 +78,7 @@ public class BACnetConstructedDataBitStringValuePresentValue extends BACnetConst
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: presentValue
-    BACnetApplicationTagBitString presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagBitString) BACnetApplicationTagBitString.staticParse(readBuffer), readBuffer), WithOption.WithName("presentValue"));
+    BACnetApplicationTagBitString presentValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagBitString.class, BACnetApplicationTagBitString.staticParse(readBuffer)), readBuffer), WithOption.WithName("presentValue"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetApplicationTagBitString actualValue = FieldReaderFactory.readVirtualField(BACnetApplicationTagBitString.class, presentValue, WithOption.WithName("actualValue"));

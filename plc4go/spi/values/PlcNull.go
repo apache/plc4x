@@ -57,10 +57,15 @@ func (m PlcNull) Serialize() ([]byte, error) {
 }
 
 func (m PlcNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcNULL"); err != nil {
+	// NOTE: element name is "PlcNull" (not "PlcNULL") to match plc4j's
+	// PlcNull.serialize (plc4j/spi/values/src/main/java/.../PlcNull.java),
+	// which is what the shared driver testsuites (e.g. s7 DriverTestsuite.xml)
+	// expect. This mismatch used to be masked by CompareResults' blanket
+	// dataType="string" leaf ignore.
+	if err := writeBuffer.PushContext("PlcNull"); err != nil {
 		return err
 	}
-	return writeBuffer.PopContext("PlcNULL")
+	return writeBuffer.PopContext("PlcNull")
 }
 
 func (m PlcNull) String() string {

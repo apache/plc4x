@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthorizationMode"
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (authorizationMode)
 	lengthInBits += m.AuthorizationMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

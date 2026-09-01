@@ -52,7 +52,7 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: doubleValue
-    BACnetApplicationTagDouble doubleValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetApplicationTagDouble) BACnetApplicationTagDouble.staticParse(readBuffer), readBuffer), WithOption.WithName("doubleValue"));
+    BACnetApplicationTagDouble doubleValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetApplicationTagDouble.class, BACnetApplicationTagDouble.staticParse(readBuffer)), readBuffer), WithOption.WithName("doubleValue"));
 
     readBuffer.popContext();
     return new BACnetPriorityValueBuilderImpl(doubleValue);

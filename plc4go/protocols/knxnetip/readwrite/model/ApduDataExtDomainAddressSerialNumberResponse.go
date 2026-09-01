@@ -184,13 +184,13 @@ func (m *_ApduDataExtDomainAddressSerialNumberResponse) GetPlx4xTypeName() strin
 	return "ApduDataExtDomainAddressSerialNumberResponse"
 }
 
-func (m *_ApduDataExtDomainAddressSerialNumberResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtDomainAddressSerialNumberResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtDomainAddressSerialNumberResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtDomainAddressSerialNumberResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

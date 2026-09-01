@@ -156,7 +156,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     long info2 = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("info2"));
 
     // Simple Field: timeStamp
-    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DateAndTime) DateAndTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeStamp"));
+    DateAndTime timeStamp = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DateAndTime.class, DateAndTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeStamp"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(eventId, priorityClass, obNumber, datId, info1, info2, timeStamp);

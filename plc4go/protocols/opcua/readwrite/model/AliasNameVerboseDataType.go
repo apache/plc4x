@@ -293,8 +293,8 @@ func (m *_AliasNameVerboseDataType) GetPlx4xTypeName() string {
 	return "AliasNameVerboseDataType"
 }
 
-func (m *_AliasNameVerboseDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AliasNameVerboseDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (aliasName)
 	lengthInBits += m.AliasName.GetLengthInBits(ctx)
@@ -327,7 +327,7 @@ func (m *_AliasNameVerboseDataType) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_AliasNameVerboseDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AliasNameVerboseDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -227,8 +227,8 @@ func (m *_MonitoredSALReply) GetPlx4xTypeName() string {
 	return "MonitoredSALReply"
 }
 
-func (m *_MonitoredSALReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
+func (m *_MonitoredSALReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
 
 	// Simple field (monitoredSAL)
 	lengthInBits += m.MonitoredSAL.GetLengthInBits(ctx)
@@ -236,7 +236,7 @@ func (m *_MonitoredSALReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MonitoredSALReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoredSALReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

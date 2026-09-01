@@ -78,7 +78,7 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: protocolObjectTypesSupported
-    BACnetObjectTypesSupportedTagged protocolObjectTypesSupported = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetObjectTypesSupportedTagged) BACnetObjectTypesSupportedTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("protocolObjectTypesSupported"));
+    BACnetObjectTypesSupportedTagged protocolObjectTypesSupported = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetObjectTypesSupportedTagged.class, BACnetObjectTypesSupportedTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("protocolObjectTypesSupported"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetObjectTypesSupportedTagged actualValue = FieldReaderFactory.readVirtualField(BACnetObjectTypesSupportedTagged.class, protocolObjectTypesSupported, WithOption.WithName("actualValue"));

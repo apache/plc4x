@@ -48,7 +48,7 @@ const routedDestinationHopCount uint8 = 255
 // "<ip>:<port>" becomes the 6-byte B/IP address (Annex J), and a "0x…" hex
 // string supplies raw MAC octets for non-IP datalinks.
 func parseRemoteAddress(remoteAddress string) ([]uint8, error) {
-	if s := strings.TrimPrefix(remoteAddress, "0x"); s != remoteAddress {
+	if s, ok := strings.CutPrefix(remoteAddress, "0x"); ok {
 		dadr, err := hex.DecodeString(s)
 		if err != nil {
 			return nil, errors.Wrapf(err, "RemoteAddress %q is not valid hex", remoteAddress)

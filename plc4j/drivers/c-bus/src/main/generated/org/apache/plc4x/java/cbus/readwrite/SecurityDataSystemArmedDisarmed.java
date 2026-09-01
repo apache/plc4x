@@ -52,7 +52,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: armCodeType
-    SecurityArmCode armCodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (SecurityArmCode) SecurityArmCode.staticParse(readBuffer), readBuffer), WithOption.WithName("armCodeType"));
+    SecurityArmCode armCodeType = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(SecurityArmCode.class, SecurityArmCode.staticParse(readBuffer)), readBuffer), WithOption.WithName("armCodeType"));
 
     readBuffer.popContext();
     return new SecurityDataBuilderImpl(armCodeType);

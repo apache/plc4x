@@ -417,8 +417,8 @@ func (m *_APDUConfirmedRequest) GetPlx4xTypeName() string {
 	return "APDUConfirmedRequest"
 }
 
-func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -467,13 +467,13 @@ func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Segment) > 0 {
-		lengthInBits += 8 * uint16(len(m.Segment))
+		lengthInBits += 8 * uint64(len(m.Segment))
 	}
 
 	return lengthInBits
 }
 
-func (m *_APDUConfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUConfirmedRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -561,7 +561,7 @@ func (m *_APDUConfirmedRequest) parse(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Validation
-	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool(segmentedMessage)) {
+	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool((bool(bool(segmentedMessage) && bool(bool((sequenceNumber) != (nil)))) && bool(bool((proposedWindowSize) != (nil)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service request should be set"})
 	}
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: carMode
-    BACnetLiftCarModeTagged carMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetLiftCarModeTagged) BACnetLiftCarModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS)), readBuffer), WithOption.WithName("carMode"));
+    BACnetLiftCarModeTagged carMode = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetLiftCarModeTagged.class, BACnetLiftCarModeTagged.staticParse(readBuffer, (short) (0), (org.apache.plc4x.java.bacnetip.readwrite.TagClass) (org.apache.plc4x.java.bacnetip.readwrite.TagClass.APPLICATION_TAGS))), readBuffer), WithOption.WithName("carMode"));
 
     // Virtual Field: actualValue (doesn't parse anything, just makes the value available)
     BACnetLiftCarModeTagged actualValue = FieldReaderFactory.readVirtualField(BACnetLiftCarModeTagged.class, carMode, WithOption.WithName("actualValue"));

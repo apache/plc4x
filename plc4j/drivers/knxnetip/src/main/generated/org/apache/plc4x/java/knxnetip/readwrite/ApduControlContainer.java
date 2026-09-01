@@ -59,7 +59,7 @@ public class ApduControlContainer extends Apdu implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: controlApdu
-    ApduControl controlApdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ApduControl) ApduControl.staticParse(readBuffer), readBuffer), WithOption.WithName("controlApdu"));
+    ApduControl controlApdu = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(ApduControl.class, ApduControl.staticParse(readBuffer)), readBuffer), WithOption.WithName("controlApdu"));
 
     readBuffer.popContext();
     return new ApduBuilderImpl(controlApdu);

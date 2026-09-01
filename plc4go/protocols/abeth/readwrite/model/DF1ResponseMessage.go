@@ -68,8 +68,8 @@ type DF1ResponseMessageContract interface {
 
 // DF1ResponseMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1ResponseMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -280,8 +280,8 @@ func (m *_DF1ResponseMessage) GetPlx4xTypeName() string {
 	return "DF1ResponseMessage"
 }
 
-func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -306,11 +306,11 @@ func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DF1ResponseMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1ResponseMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_DF1ResponseMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1ResponseMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -397,7 +397,7 @@ func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child DF1ResponseMessage
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, payloadLength); err != nil {
+		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, uint16(payloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandResponseMessageProtectedTypedLogicalRead for type-switch of DF1ResponseMessage")
 		}
 	default:

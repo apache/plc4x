@@ -78,6 +78,29 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return sanitizedName;
     }
 
+    /**
+     * The Go keywords, which cannot be used as an identifier. A field whose mspec name is one of
+     * these has to be renamed wherever Go expects an identifier rather than a title-cased property
+     * name - a parameter, a struct field declaration, a local. Two mspec fields hit this today:
+     * "range" in the umas protocol and "select" in IEC 60870-5-104.
+     */
+    private static final Set<String> GO_KEYWORDS = new HashSet<>(Arrays.asList(
+        "break", "case", "chan", "const", "continue", "default", "defer", "else", "fallthrough",
+        "for", "func", "go", "goto", "if", "import", "interface", "map", "package", "range",
+        "return", "select", "struct", "switch", "type", "var"));
+
+    /**
+     * Returns a name that is safe to emit where Go expects an identifier, by suffixing an
+     * underscore when the name collides with a keyword. Title-cased property names never collide,
+     * because Go keywords are all lower case, so only the lower case form needs this.
+     * <p>
+     * Deliberately not applied to names that end up inside a string literal, where the mspec name
+     * is what a reader should see.
+     */
+    public String getGoSafeName(String name) {
+        return GO_KEYWORDS.contains(name) ? name + "_" : name;
+    }
+
     public String packageName(String languageFlavorName) {
         return String.join("", languageFlavorName.split("\\-"));
     }
@@ -355,6 +378,23 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return isAnTypeOfOptional && isNonComplexOrArrayElementNonComplex(field.getType());
     }
 
+    public boolean isStringTypeField(TypeReference typeReference) {
+        if (typeReference.isArrayTypeReference()) {
+            return isStringTypeField(typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference());
+        }
+        if (!typeReference.isSimpleTypeReference()) {
+            return false;
+        }
+        SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
+        switch (simpleTypeReference.getBaseType()) {
+            case STRING:
+            case VSTRING:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isNonComplexOrArrayElementNonComplex(TypeReference typeReference) {
         boolean isNotAnComplexTypeReference = !typeReference.isComplexTypeReference();
         boolean arrayTypeIsNotAnComplexTypeReference = !(
@@ -362,6 +402,35 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isComplexTypeReference()
         );
         return isNotAnComplexTypeReference && arrayTypeIsNotAnComplexTypeReference;
+    }
+
+    /**
+     * Renders the trailing {@code , utils.WithEncoding("...")} argument for a numeric field that
+     * declares an {@code encoding} in the mspec, or the empty string when it declares none.
+     * <p>
+     * The migrated (non deprecated) read/write templates pass the encoding through as
+     * {@code codegen.WithEncoding(...)}, but the deprecated data-io path below used to drop it
+     * silently. That made the S7 {@code DATE_AND_TIME} data item emit a half BCD, half raw binary
+     * frame once the Go byte buffers started honouring {@code encoding='"BCD"'}: the manual
+     * {@code year} field went through {@code serializeSiemensYear} (which passes the option
+     * explicitly) while {@code month}/{@code day}/... did not.
+     *
+     * @param field the field being rendered, may be {@code null}
+     * @return the writer/reader argument to append, or {@code ""}
+     */
+    private String getEncodingOption(TypedField field) {
+        if (field == null) {
+            return "";
+        }
+        final Optional<Term> encodingTerm = field.getEncoding();
+        if (encodingTerm.isEmpty()) {
+            return "";
+        }
+        String encoding = encodingTerm.get().asLiteral()
+            .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+            .asStringLiteral()
+            .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+        return ", utils.WithEncoding(\"" + encoding + "\")";
     }
 
     @Deprecated
@@ -390,33 +459,33 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
@@ -427,27 +496,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 return "/*TODO: migrate me*/" + "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING: {
-                String encoding = "UTF8";
-                if (field != null) {
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
-                    encoding = encodingTerm.asLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
-                        .asStringLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
-                }
+                String encoding = getStringEncoding(field);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "/*TODO: migrate me*/" + "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), utils.WithEncoding(\"" + encoding + "\"))";
             }
             case VSTRING: {
-                String encoding = "UTF8";
+                String encoding = getStringEncoding(field);
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                if (field != null) {
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
-                    encoding = encodingTerm.asLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
-                        .asStringLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
-                }
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
                 if (vstringTypeReference.getLengthExpression().isTernaryTerm()) {
                     lengthExpression = "(" + lengthExpression + ").(uint32)";
@@ -672,33 +727,33 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint8(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint8(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint16(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint16(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint32(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint32(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint64(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint64(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + getEncodingOption(field) + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int8(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int8(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int16(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int16(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int32(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int32(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int64(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int64(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + getEncodingOption(field) + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -711,27 +766,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "/*TODO: migrate me*/" + "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                String encoding = "UTF8";
-                if (field != null) {
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
-                    encoding = encodingTerm.asLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
-                        .asStringLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
-                }
+                String encoding = getStringEncoding(field);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "/*TODO: migrate me*/" + "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + ")\"))";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + "\"))";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                String encoding = "UTF8";
-                if (field != null) {
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
-                    encoding = encodingTerm.asLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
-                        .asStringLiteral()
-                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
-                }
+                String encoding = getStringEncoding(field);
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 if (vstringTypeReference.getLengthExpression().isTernaryTerm()) {
                     lengthExpression = "(" + lengthExpression + ").(uint32)";
@@ -739,7 +780,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     lengthExpression = "uint32(" + lengthExpression + ")";
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "/*TODO: migrate me*/" + "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + ")\"))";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + "\"))";
             }
             case DATE:
             case TIME:
@@ -1107,13 +1148,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
                         .findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
-                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Get" + capitalize(childProperty) + "()";
+                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + getGoSafeName(variableLiteralName) + ").Get" + capitalize(childProperty) + "()";
                     }
                     // TODO: is this really meant to fall through?
                     tracer = tracer.dive("we fell through the complex complex");
                 } else if (typeDefinition instanceof EnumTypeDefinition) {
                     tracer = tracer.dive("enum");
-                    String variableAccess = variableLiteralName;
+                    String variableAccess = getGoSafeName(variableLiteralName);
                     if (isChild) {
                         variableAccess = "Get" + capitalize(variableLiteralName) + "()";
                     }
@@ -1130,7 +1171,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 final ImplicitField referencedImplicitField = getReferencedImplicitField(variableLiteral);
                 return tracer + toSerializationExpression(referencedImplicitField, referencedImplicitField.getType(), getReferencedImplicitField(variableLiteral).getSerializeExpression(), serializerArguments);
             } else {
-                return tracer + variableLiteralName;
+                return tracer + getGoSafeName(variableLiteralName);
                 //return toParseExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
             }
         }
@@ -1167,9 +1208,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         tracer = tracer.dive("else");
         Tracer tracer2 = tracer;
-        String variableAccess = variableLiteralName;
+        String variableAccess = getGoSafeName(variableLiteralName);
         if (isChild) {
-            variableAccess = "Get" + capitalize(variableAccess) + "()";
+            variableAccess = "Get" + capitalize(variableLiteralName) + "()";
         }
         return tracer + (serialize ? "m.Get" + capitalize(variableLiteralName) + "()" : variableAccess) + indexCall +
             variableLiteral.getChild()
@@ -1285,8 +1326,27 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             if (i > 1) {
                 sb.append(", ");
             }
+            // Unwrapping a unary term reaches its operand, which is what the branches below know how
+            // to render with the STATIC_CALL specific handling. The operator has to be emitted here
+            // instead, or it is simply lost: an argument written as -1 in the mspec came out as 1,
+            // which flipped the umas terminated-string helpers from variable length into a one byte
+            // fixed width. Operators mirror toUnaryTermExpression.
+            String unaryOperator = null;
             if (arg instanceof UnaryTerm) {
-                arg = ((UnaryTerm) arg).getA();
+                UnaryTerm unaryTerm = (UnaryTerm) arg;
+                unaryOperator = unaryTerm.getOperation();
+                switch (unaryOperator) {
+                    case "!":
+                    case "-":
+                        sb.append(unaryOperator).append("(");
+                        break;
+                    case "()":
+                        sb.append("(");
+                        break;
+                    default:
+                        throw new FreemarkerException("Unsupported unary operation type " + unaryOperator);
+                }
+                arg = unaryTerm.getA();
             }
             if (arg instanceof VariableLiteral) {
                 tracer = tracer.dive("VariableLiteral nr." + i);
@@ -1349,6 +1409,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             } else {
                 throw new FreemarkerException(arg.getClass().getName());
             }
+            if (unaryOperator != null) {
+                sb.append(")");
+            }
         }
         sb.append(")");
         return tracer + sb.toString();
@@ -1380,7 +1443,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toOptionalVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("optional fields");
-        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + variableLiteral.getName() + ")" +
+        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + getGoSafeName(variableLiteral.getName()) + ")" +
             variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
     }
 
@@ -1405,7 +1468,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("length");
-        return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("(" + variableLiteral.getName() + ")"));
+        return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("(" + getGoSafeName(variableLiteral.getName()) + ")"));
     }
 
     private String toValueVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
@@ -1882,6 +1945,23 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "";
     }
 
+    /**
+     * Resolves the string encoding of a field: the stringEncoding attribute wins, then a
+     * global encoding attribute, then UTF8 (matching getFieldOptions' precedence).
+     */
+    private String getStringEncoding(TypedField field) {
+        if (field == null) {
+            return "UTF8";
+        }
+        final Term encodingTerm = field.getAttribute("stringEncoding")
+            .or(field::getEncoding)
+            .orElse(new DefaultStringLiteral("UTF8"));
+        return encodingTerm.asLiteral()
+            .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+            .asStringLiteral()
+            .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+    }
+
     public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
         StringBuilder sb = new StringBuilder();
         field.getAttribute("stringEncoding").ifPresentOrElse(term -> {
@@ -1889,10 +1969,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
             sb.append(", codegen.WithEncoding(").append(encoding).append(")");
         }, () -> {
-            field.getEncoding().ifPresent(term -> {
+            field.getEncoding().ifPresentOrElse(term -> {
                 emitCodegenRequiredImports();
                 final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
                 sb.append(", codegen.WithEncoding(").append(encoding).append(")");
+            }, () -> {
+                // No explicit encoding was defined on the field. If it's a string field, default
+                // to UTF8 so the generated (de-)serializers don't fall back to zero-filling the
+                // allocated space (see WriteBufferByteBased.WriteString for the unmatched-encoding case).
+                if (isStringTypeField(field.getType())) {
+                    emitCodegenRequiredImports();
+                    sb.append(", codegen.WithEncoding(\"UTF8\")");
+                }
             });
         });
 

@@ -31,7 +31,7 @@ public class UmasConfiguration implements Configuration {
     @Description("Modbus unit identifier (slave address). UMAS typically uses 0.")
     private int unitIdentifier;
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(4000)
     @Description("Timeout in milliseconds for UMAS requests.")
     private int requestTimeout;

@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
 
 	"github.com/apache/plc4x/plc4go/spi"
 )

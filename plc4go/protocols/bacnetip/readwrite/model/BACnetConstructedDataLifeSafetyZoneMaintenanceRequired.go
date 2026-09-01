@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetPlx4xTypeNa
 	return "BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maintenanceRequired)
 	lengthInBits += m.MaintenanceRequired.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBit
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

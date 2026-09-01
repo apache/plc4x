@@ -260,8 +260,8 @@ func (m *_PublishedActionMethodDataType) GetPlx4xTypeName() string {
 	return "PublishedActionMethodDataType"
 }
 
-func (m *_PublishedActionMethodDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PublishedActionMethodDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestDataSetMetaData)
 	lengthInBits += m.RequestDataSetMetaData.GetLengthInBits(ctx)
@@ -291,7 +291,7 @@ func (m *_PublishedActionMethodDataType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_PublishedActionMethodDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PublishedActionMethodDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

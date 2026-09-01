@@ -125,10 +125,10 @@ public class AlarmMessageAckObjectPushType implements Message {
     long eventId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("eventId"));
 
     // Simple Field: ackStateGoing
-    State ackStateGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("ackStateGoing"));
+    State ackStateGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("ackStateGoing"));
 
     // Simple Field: ackStateComing
-    State ackStateComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("ackStateComing"));
+    State ackStateComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("ackStateComing"));
 
     readBuffer.popContext();
     return new AlarmMessageAckObjectPushType(lengthSpec, syntaxId, numberOfValues, eventId, ackStateGoing, ackStateComing);

@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.modbus.base.ModbusRegisterCodec;
 import org.apache.plc4x.java.modbus.base.optimizer.ModbusReadOptimizer;
 import org.apache.plc4x.java.modbus.base.tag.*;
 import org.apache.plc4x.java.modbus.readwrite.*;
@@ -217,9 +218,17 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
     protected CompletableFuture<PlcReadResponse> onRead(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 
-        // Collect all tags
+        // Collect all tags. A tag whose address the builder couldn't parse is kept in the
+        // request with an error code and a null tag - it never goes on the wire, its code is
+        // reported as-is.
         LinkedHashMap<String, ModbusTag> tagsByName = new LinkedHashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> rejectedTags = new LinkedHashMap<>();
         for (String tagName : request.getTagNames()) {
+            PlcResponseCode requestCode = request.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                rejectedTags.put(tagName, new DefaultPlcResponseItem<>(requestCode, null));
+                continue;
+            }
             tagsByName.put(tagName, (ModbusTag) request.getTag(tagName));
         }
 
@@ -247,7 +256,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
             blockFutures.toArray(new CompletableFuture[0]));
 
         return allDone.thenApply(v -> {
-            Map<String, PlcResponseItem<PlcValue>> responseItems = new LinkedHashMap<>();
+            Map<String, PlcResponseItem<PlcValue>> responseItems = new LinkedHashMap<>(rejectedTags);
             for (CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> blockFuture : blockFutures) {
                 try {
                     responseItems.putAll(blockFuture.join());
@@ -313,6 +322,13 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         LinkedHashMap<String, CompletableFuture<PlcResponseCode>> tagFutures = new LinkedHashMap<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (String tagName : request.getTagNames()) {
+            // An unparseable address (or value) is kept in the request with an error code and a
+            // null tag - report that code instead of trying to build a PDU from nothing.
+            PlcResponseCode requestCode = request.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                tagFutures.put(tagName, CompletableFuture.completedFuture(requestCode));
+                continue;
+            }
             PlcTag tag = request.getTag(tagName);
             PlcValue value = request.getPlcValue(tagName);
             CompletableFuture<PlcResponseCode> tagFuture =
@@ -473,7 +489,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         throw new PlcRuntimeException("Unsupported write tag type " + tag.getClass().getName());
     }
 
-    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType, int numberOfElements, ModbusByteOrder byteOrder) throws BufferException {
+    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType, int numberOfElements, ModbusByteOrder byteOrder, int stringLength) throws BufferException {
         byte[] responseData = extractResponseData(request, response);
         if (responseData == null) {
             return null;
@@ -486,7 +502,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
         boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(responseData);
-        return DataItem.staticParse(readBuffer, dataType, numberOfElements, bigEndian);
+        return ModbusRegisterCodec.parse(readBuffer, dataType, numberOfElements, bigEndian, stringLength);
     }
 
     private byte[] extractResponseData(ModbusPDU request, ModbusPDU response) {
@@ -507,14 +523,15 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
     private byte[] fromPlcValue(PlcTag tag, PlcValue plcValue, ModbusByteOrder byteOrder) {
         ModbusDataType tagDataType = ((ModbusTag) tag).getDataType();
+        int tagStringLength = ((ModbusTag) tag).getStringLength();
         try {
             if (tag instanceof ModbusTagCoil) {
                 return fromPlcValueCoil(plcValue, byteOrder);
             }
             boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
-            int size = DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), bigEndian);
+            int size = ModbusRegisterCodec.lengthInBytes(plcValue, tagDataType, plcValue.getLength(), tagStringLength);
             WriteBufferByteBased writeBuffer = createWriteBuffer(size, byteOrder);
-            DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian);
+            ModbusRegisterCodec.serialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
             byte[] data = writeBuffer.getBytes();
             if (byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
                 data = byteSwap(data);

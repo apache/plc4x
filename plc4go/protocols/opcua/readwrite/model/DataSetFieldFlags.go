@@ -94,11 +94,11 @@ func CastDataSetFieldFlags(structType any) DataSetFieldFlags {
 	return castFunc(structType)
 }
 
-func (m DataSetFieldFlags) GetLengthInBits(ctx context.Context) uint16 {
+func (m DataSetFieldFlags) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m DataSetFieldFlags) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DataSetFieldFlags) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

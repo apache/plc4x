@@ -106,11 +106,11 @@ func CastBACnetLightingTransition(structType any) BACnetLightingTransition {
 	return castFunc(structType)
 }
 
-func (m BACnetLightingTransition) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLightingTransition) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetLightingTransition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLightingTransition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

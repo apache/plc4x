@@ -140,25 +140,25 @@ public class AlarmMessageObjectQueryType implements Message {
     short variableSpec = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 8), VARIABLESPEC, WithOption.WithName("variableSpec"));
 
     // Simple Field: eventState
-    State eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("eventState"));
+    State eventState = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("eventState"));
 
     // Simple Field: ackStateGoing
-    State ackStateGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("ackStateGoing"));
+    State ackStateGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("ackStateGoing"));
 
     // Simple Field: ackStateComing
-    State ackStateComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (State) State.staticParse(readBuffer), readBuffer), WithOption.WithName("ackStateComing"));
+    State ackStateComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(State.class, State.staticParse(readBuffer)), readBuffer), WithOption.WithName("ackStateComing"));
 
     // Simple Field: timeComing
-    DateAndTime timeComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DateAndTime) DateAndTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeComing"));
+    DateAndTime timeComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DateAndTime.class, DateAndTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeComing"));
 
     // Simple Field: valueComing
-    AssociatedValueType valueComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AssociatedValueType) AssociatedValueType.staticParse(readBuffer), readBuffer), WithOption.WithName("valueComing"));
+    AssociatedValueType valueComing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AssociatedValueType.class, AssociatedValueType.staticParse(readBuffer)), readBuffer), WithOption.WithName("valueComing"));
 
     // Simple Field: timeGoing
-    DateAndTime timeGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DateAndTime) DateAndTime.staticParse(readBuffer), readBuffer), WithOption.WithName("timeGoing"));
+    DateAndTime timeGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DateAndTime.class, DateAndTime.staticParse(readBuffer)), readBuffer), WithOption.WithName("timeGoing"));
 
     // Simple Field: valueGoing
-    AssociatedValueType valueGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (AssociatedValueType) AssociatedValueType.staticParse(readBuffer), readBuffer), WithOption.WithName("valueGoing"));
+    AssociatedValueType valueGoing = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AssociatedValueType.class, AssociatedValueType.staticParse(readBuffer)), readBuffer), WithOption.WithName("valueGoing"));
 
     readBuffer.popContext();
     return new AlarmMessageObjectQueryType(lengthDataset, eventState, ackStateGoing, ackStateComing, timeComing, valueComing, timeGoing, valueGoing);

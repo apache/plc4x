@@ -225,8 +225,8 @@ func (m *_BACnetHostAddressIpAddress) GetPlx4xTypeName() string {
 	return "BACnetHostAddressIpAddress"
 }
 
-func (m *_BACnetHostAddressIpAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetHostAddressContract.(*_BACnetHostAddress).getLengthInBits(ctx))
+func (m *_BACnetHostAddressIpAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetHostAddressContract.(*_BACnetHostAddress).getLengthInBits(ctx))
 
 	// Simple field (ipAddress)
 	lengthInBits += m.IpAddress.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetHostAddressIpAddress) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetHostAddressIpAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetHostAddressIpAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

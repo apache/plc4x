@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetPlx4xTypeName() 
 	return "BACnetConstructedDataLargeAnalogValueMinPresValue"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minPresValue)
 	lengthInBits += m.MinPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

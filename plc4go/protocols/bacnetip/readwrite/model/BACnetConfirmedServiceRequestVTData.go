@@ -295,8 +295,8 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestVTData"
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (vtSessionIdentifier)
 	lengthInBits += m.VtSessionIdentifier.GetLengthInBits(ctx)
@@ -310,7 +310,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

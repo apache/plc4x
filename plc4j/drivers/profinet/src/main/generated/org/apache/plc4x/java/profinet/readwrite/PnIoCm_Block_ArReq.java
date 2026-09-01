@@ -263,16 +263,16 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     PnIoCm_ArType arType = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(PnIoCm_ArType::enumForValue, DataReaderFactory.readUnsignedInt(readBuffer, 16)), WithOption.WithName("arType"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: arUuid
-    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (Uuid) Uuid.staticParse(readBuffer), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    Uuid arUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(Uuid.class, Uuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("arUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: sessionKey
     int sessionKey = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("sessionKey"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: cmInitiatorMacAddr
-    MacAddress cmInitiatorMacAddr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (MacAddress) MacAddress.staticParse(readBuffer), readBuffer), WithOption.WithName("cmInitiatorMacAddr"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    MacAddress cmInitiatorMacAddr = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(MacAddress.class, MacAddress.staticParse(readBuffer)), readBuffer), WithOption.WithName("cmInitiatorMacAddr"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: cmInitiatorObjectUuid
-    DceRpc_ObjectUuid cmInitiatorObjectUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (DceRpc_ObjectUuid) DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer), WithOption.WithName("cmInitiatorObjectUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
+    DceRpc_ObjectUuid cmInitiatorObjectUuid = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(DceRpc_ObjectUuid.class, DceRpc_ObjectUuid.staticParse(readBuffer)), readBuffer), WithOption.WithName("cmInitiatorObjectUuid"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
     // Simple Field: pullModuleAlarmAllowed
     boolean pullModuleAlarmAllowed = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("pullModuleAlarmAllowed"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));

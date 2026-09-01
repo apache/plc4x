@@ -52,7 +52,7 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: addressValue
-    BACnetAddressEnclosed addressValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (BACnetAddressEnclosed) BACnetAddressEnclosed.staticParse(readBuffer, (short) (1)), readBuffer), WithOption.WithName("addressValue"));
+    BACnetAddressEnclosed addressValue = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetAddressEnclosed.class, BACnetAddressEnclosed.staticParse(readBuffer, (short) (1))), readBuffer), WithOption.WithName("addressValue"));
 
     readBuffer.popContext();
     return new BACnetRecipientBuilderImpl(addressValue);

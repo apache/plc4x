@@ -92,7 +92,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeResponse extends S7Payl
     int itemsCount = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("itemsCount"));
 
     // Array Field: items
-    List<AssociatedValueType> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> (AssociatedValueType) AssociatedValueType.staticParse(readBuffer), readBuffer), itemsCount, WithOption.WithName("items"));
+    List<AssociatedValueType> items = FieldReaderFactory.readCountArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(AssociatedValueType.class, AssociatedValueType.staticParse(readBuffer)), readBuffer), itemsCount, WithOption.WithName("items"));
 
     readBuffer.popContext();
     return new S7PayloadUserDataItemBuilderImpl(itemsCount, items);

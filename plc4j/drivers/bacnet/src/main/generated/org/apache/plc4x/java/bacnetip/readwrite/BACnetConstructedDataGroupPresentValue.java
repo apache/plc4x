@@ -72,7 +72,7 @@ public class BACnetConstructedDataGroupPresentValue extends BACnetConstructedDat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Array Field: presentValue
-    List<BACnetReadAccessResult> presentValue = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> (BACnetReadAccessResult) BACnetReadAccessResult.staticParse(readBuffer), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("presentValue"));
+    List<BACnetReadAccessResult> presentValue = FieldReaderFactory.readTerminatedArrayField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(BACnetReadAccessResult.class, BACnetReadAccessResult.staticParse(readBuffer)), readBuffer), () -> (boolean) StaticHelper.isBACnetConstructedDataClosingTag(readBuffer, false, tagNumber), WithOption.WithName("presentValue"));
 
     readBuffer.popContext();
     return new BACnetConstructedDataBuilderImpl(presentValue);

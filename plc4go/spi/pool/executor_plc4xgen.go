@@ -49,7 +49,7 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 
-	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
+	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -79,7 +79,7 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}
@@ -115,7 +115,7 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.ctx)
-			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

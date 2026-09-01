@@ -20,7 +20,11 @@ package org.apache.plc4x.java.transport.serial;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class WritePacerTest {
 
@@ -28,47 +32,81 @@ class WritePacerTest {
     void zeroDelayIsNoop() throws Exception {
         WritePacer pacer = new WritePacer(0);
         pacer.noteActivity();
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         pacer.awaitTurn();
-        assertTrue(System.currentTimeMillis() - start < 20, "zero delay must not wait");
+        // Generously bounded: the claim is "did not wait", and no configured gap exists to wait
+        // out, so the bound only has to be tighter than a wait - not tighter than a GC pause.
+        assertTrue(System.nanoTime() - start < TimeUnit.MILLISECONDS.toNanos(500),
+            "zero delay must not wait");
     }
 
     @Test
     void enforcesGapAfterActivity() throws Exception {
         WritePacer pacer = new WritePacer(60);
+        // Sampled before noteActivity(), so it is never later than the pacer's own stamp: the
+        // gap it then has to wait out is at least this long, whatever the machine does in
+        // between. Measuring from after the call would let a stall eat into the margin.
+        long activity = System.nanoTime();
         pacer.noteActivity();
-        long start = System.currentTimeMillis();
         pacer.awaitTurn();
-        assertTrue(System.currentTimeMillis() - start >= 50, "must wait out the gap");
+        assertTrue(System.nanoTime() - activity >= TimeUnit.MILLISECONDS.toNanos(60),
+            "must wait out the gap");
     }
 
     @Test
     void noWaitWhenGapElapsed() throws Exception {
-        WritePacer pacer = new WritePacer(30);
+        WritePacer pacer = new WritePacer(200);
         pacer.noteActivity();
-        Thread.sleep(40);
-        long start = System.currentTimeMillis();
+        Thread.sleep(250);
+        long start = System.nanoTime();
         pacer.awaitTurn();
-        assertTrue(System.currentTimeMillis() - start < 20, "gap already elapsed");
+        // The gap is 200ms, so returning within 100ms proves it was not waited out. The wide
+        // margin between the two is what keeps a scheduling stall from failing the test.
+        assertTrue(System.nanoTime() - start < TimeUnit.MILLISECONDS.toNanos(100),
+            "gap already elapsed");
     }
 
     @Test
     void activityDuringWaitExtendsGap() throws Exception {
-        WritePacer pacer = new WritePacer(80);
-        pacer.noteActivity();
-        Thread traffic = new Thread(() -> {
-            try {
-                Thread.sleep(40);
-                pacer.noteActivity(); // traffic arrives while a writer waits its turn
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        final long gapMs = 200;
+        final long midWaitMs = 50;
+        // The premise is that the traffic thread gets scheduled while the writer is still waiting
+        // its turn. A stalled machine can deliver it only after the original gap has already
+        // expired - such a run proves nothing about the pacer, so it is retried rather than failed.
+        for (int attempt = 1; ; attempt++) {
+            WritePacer pacer = new WritePacer(gapMs);
+            AtomicLong midWaitActivity = new AtomicLong();
+
+            long firstActivity = System.nanoTime();
+            pacer.noteActivity();
+            Thread traffic = new Thread(() -> {
+                try {
+                    Thread.sleep(midWaitMs);
+                    // Stamped before the call, so it is never later than the pacer's own stamp.
+                    midWaitActivity.set(System.nanoTime());
+                    pacer.noteActivity(); // traffic arrives while a writer waits its turn
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+            traffic.start();
+            pacer.awaitTurn();
+            long returned = System.nanoTime();
+            traffic.join(1000);
+
+            long activity = midWaitActivity.get();
+            assertNotEquals(0, activity, "the traffic thread never recorded its activity");
+            if (activity - firstActivity >= TimeUnit.MILLISECONDS.toNanos(gapMs)) {
+                assumeTrue(attempt < 3,
+                    "machine too stalled to deliver the mid-wait activity inside the gap");
+                continue;
             }
-        });
-        traffic.start();
-        long start = System.currentTimeMillis();
-        pacer.awaitTurn();
-        traffic.join(1000);
-        assertTrue(System.currentTimeMillis() - start >= 110,
-            "the gap must restart from the mid-wait activity (40ms + 80ms)");
+            // The contract: the gap restarts from that activity. Both stamps come from the same
+            // clock and bracket the pacer's own, so this holds no matter how the threads were
+            // scheduled.
+            assertTrue(returned - activity >= TimeUnit.MILLISECONDS.toNanos(gapMs),
+                "the gap must restart from the mid-wait activity");
+            return;
+        }
     }
 }

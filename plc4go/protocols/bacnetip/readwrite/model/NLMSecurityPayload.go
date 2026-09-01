@@ -226,21 +226,21 @@ func (m *_NLMSecurityPayload) GetPlx4xTypeName() string {
 	return "NLMSecurityPayload"
 }
 
-func (m *_NLMSecurityPayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMSecurityPayload) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (payloadLength)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.Payload) > 0 {
-		lengthInBits += 8 * uint16(len(m.Payload))
+		lengthInBits += 8 * uint64(len(m.Payload))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMSecurityPayload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMSecurityPayload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

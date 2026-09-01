@@ -62,7 +62,7 @@ public class InformationObjectWithoutTime_INTERROGATION_COMMAND extends Informat
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: qoi
-    QualifierOfInterrogation qoi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (QualifierOfInterrogation) QualifierOfInterrogation.staticParse(readBuffer), readBuffer), WithOption.WithName("qoi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    QualifierOfInterrogation qoi = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(QualifierOfInterrogation.class, QualifierOfInterrogation.staticParse(readBuffer)), readBuffer), WithOption.WithName("qoi"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
     return new InformationObjectWithoutTimeBuilderImpl(qoi);

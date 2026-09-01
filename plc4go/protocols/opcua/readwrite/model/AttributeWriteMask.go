@@ -244,11 +244,11 @@ func CastAttributeWriteMask(structType any) AttributeWriteMask {
 	return castFunc(structType)
 }
 
-func (m AttributeWriteMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m AttributeWriteMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m AttributeWriteMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AttributeWriteMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

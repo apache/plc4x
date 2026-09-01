@@ -257,8 +257,8 @@ func (m *_AdsDiscovery) GetPlx4xTypeName() string {
 	return "AdsDiscovery"
 }
 
-func (m *_AdsDiscovery) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDiscovery) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (header)
 	lengthInBits += 32
@@ -289,7 +289,7 @@ func (m *_AdsDiscovery) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsDiscovery) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscovery) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

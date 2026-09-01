@@ -213,18 +213,18 @@ func (m *_UnknownMessage) GetPlx4xTypeName() string {
 	return "UnknownMessage"
 }
 
-func (m *_UnknownMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_UnknownMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownData) > 0 {
-		lengthInBits += 8 * uint16(len(m.UnknownData))
+		lengthInBits += 8 * uint64(len(m.UnknownData))
 	}
 
 	return lengthInBits
 }
 
-func (m *_UnknownMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UnknownMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

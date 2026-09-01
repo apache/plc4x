@@ -62,7 +62,7 @@ public class StringNodeId implements Message {
     int namespaceIndex = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("namespaceIndex"));
 
     // Simple Field: identifier
-    PascalString identifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (PascalString) PascalString.staticParse(readBuffer), readBuffer), WithOption.WithName("identifier"));
+    PascalString identifier = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> DataReaderFactory.castToDeclaredType(PascalString.class, PascalString.staticParse(readBuffer)), readBuffer), WithOption.WithName("identifier"));
 
     readBuffer.popContext();
     return new StringNodeId(namespaceIndex, identifier);
