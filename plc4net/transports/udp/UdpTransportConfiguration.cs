@@ -42,8 +42,10 @@ namespace org.apache.plc4net.transports.udp
         public int LocalPort { get; set; }
 
         /// <summary>
-        /// Size of the ring buffer between the receive loop and the codec. One
-        /// KNXnet/IP frame is a few hundred bytes; the default holds a burst of them.
+        /// Capacity of the user-space ring buffer between the receive loop and the
+        /// codec (not the kernel socket buffer). One KNXnet/IP frame is a few hundred
+        /// bytes; the default holds a burst of them. Clamped to at least 65535 (one
+        /// maximum-size datagram) by <see cref="UdpTransport.CreateConfiguration"/>.
         /// </summary>
         public int ReceiveBufferSize { get; set; } = 81920;
 

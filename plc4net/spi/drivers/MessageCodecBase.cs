@@ -148,7 +148,21 @@ namespace org.apache.plc4net.spi.drivers
                     }
 
                     var header = _transportInstance.PeekReadableBytes(minimumHeaderSize);
-                    var totalMessageSize = CalculateTotalMessageSize(header, availableBytes);
+
+                    int totalMessageSize;
+                    try
+                    {
+                        totalMessageSize = CalculateTotalMessageSize(header, availableBytes);
+                    }
+                    catch (MessageCodecException)
+                    {
+                        // The header does not describe a valid frame - the byte stream
+                        // is misaligned (a datagram dropped mid-frame, a truncated or
+                        // malformed frame). Discard one byte and resync on the next
+                        // pass rather than wedging on the same bad header forever.
+                        _transportInstance.Read(1);
+                        continue;
+                    }
                     if (totalMessageSize < 0)
                     {
                         return;

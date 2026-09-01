@@ -101,6 +101,54 @@ namespace org.apache.plc4net.spi.test.transports
         }
 
         [Fact]
+        public void A_datagram_larger_than_the_ring_buffer_is_dropped_without_killing_the_transport()
+        {
+            using var instance = new UdpTransportInstance(
+                _peerEndPoint, new UdpTransportConfiguration { ReceiveBufferSize = 2048 });
+
+            instance.Write(new byte[] { 1 });
+            var rx = new byte[8];
+            var from = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
+            _peer.ReceiveFrom(rx, ref from);
+
+            _peer.SendTo(new byte[4000], from);                    // bigger than the buffer
+            _peer.SendTo(new byte[] { 0xAA, 0xBB, 0xCC }, from);   // must still get through
+
+            Assert.True(WaitFor(() => instance.GetNumBytesAvailable() >= 3),
+                "the transport stopped receiving after an oversized datagram");
+            Assert.True(instance.IsOpen);
+            Assert.Equal(new byte[] { 0xAA, 0xBB, 0xCC }, instance.Read(3));
+        }
+
+        [Fact]
+        public void An_overflow_discards_the_buffer_whole_rather_than_slicing_a_frame()
+        {
+            using var instance = new UdpTransportInstance(
+                _peerEndPoint, new UdpTransportConfiguration { ReceiveBufferSize = 4096 });
+            // No data listener: nothing drains the ring, so the second datagram overflows.
+
+            instance.Write(new byte[] { 1 });
+            var rx = new byte[8];
+            var from = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
+            _peer.ReceiveFrom(rx, ref from);
+
+            var first = new byte[3000];
+            var second = new byte[3000];
+            second[0] = 0x06;
+            second[1] = 0x10;
+            _peer.SendTo(first, from);
+            Assert.True(WaitFor(() => instance.GetNumBytesAvailable() == 3000));
+            _peer.SendTo(second, from);
+
+            // After the overflow the buffer holds exactly the second datagram,
+            // starting on a clean frame boundary - not a sliced tail of the first.
+            Assert.True(WaitFor(() => instance.GetNumBytesAvailable() == 3000));
+            Assert.True(instance.IsOpen);
+            var head = instance.PeekReadableBytes(2);
+            Assert.Equal(new byte[] { 0x06, 0x10 }, head);
+        }
+
+        [Fact]
         public void The_data_listener_fires_when_a_datagram_arrives()
         {
             using var instance = new UdpTransportInstance(_peerEndPoint, new UdpTransportConfiguration());

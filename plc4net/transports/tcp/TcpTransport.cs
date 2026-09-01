@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using org.apache.plc4net.spi.transports;
 
 namespace org.apache.plc4net.transports.tcp
@@ -31,13 +32,28 @@ namespace org.apache.plc4net.transports.tcp
     /// </summary>
     public class TcpTransport : ITransport
     {
+        private readonly int _defaultPort;
+
+        public TcpTransport() : this(-1)
+        {
+        }
+
+        /// <param name="defaultPort">
+        /// Port to use when the connection string omits one (e.g. 502 for Modbus,
+        /// 102 for S7). A <c>default-port</c> connection-string parameter overrides it.
+        /// </param>
+        public TcpTransport(int defaultPort)
+        {
+            _defaultPort = defaultPort;
+        }
+
         public string TransportCode => "tcp";
 
         public string TransportName => "TCP/IP Socket Transport";
 
         public ITransportConfiguration CreateConfiguration(IReadOnlyDictionary<string, string> parameters)
         {
-            var configuration = new TcpTransportConfiguration();
+            var configuration = new TcpTransportConfiguration { DefaultPort = _defaultPort };
             if (parameters == null)
             {
                 return configuration;
@@ -57,6 +73,13 @@ namespace org.apache.plc4net.transports.tcp
             configuration.LocalAddress = GetString(parameters, "local-address", configuration.LocalAddress);
             configuration.LocalPort = GetInt(parameters, "local-port", configuration.LocalPort);
             configuration.DefaultPort = GetInt(parameters, "default-port", configuration.DefaultPort);
+
+            if (configuration.DefaultPort != -1
+                && (configuration.DefaultPort < 1 || configuration.DefaultPort > 65535))
+            {
+                throw new TransportException(
+                    $"default-port must be between 1 and 65535, but was {configuration.DefaultPort}.");
+            }
 
             // A zero or negative receive buffer size would crash the RingBuffer
             // constructor, which requires a positive capacity. Fall back to the
@@ -118,6 +141,11 @@ namespace org.apache.plc4net.transports.tcp
                 }
                 host = address.Substring(1, closing - 1);
                 var rest = address.Substring(closing + 1);
+                if (rest.Length > 0 && !rest.StartsWith(":", StringComparison.Ordinal))
+                {
+                    throw new TransportException(
+                        $"Malformed address '{address}': unexpected '{rest}' after ']'.");
+                }
                 port = rest.StartsWith(":", StringComparison.Ordinal)
                     ? ParsePort(rest.Substring(1))
                     : RequireDefaultPort(defaultPort, address);
@@ -178,12 +206,15 @@ namespace org.apache.plc4net.transports.tcp
             }
             try
             {
-                var resolved = Dns.GetHostAddresses(host).FirstOrDefault();
-                if (resolved == null)
+                var resolved = Dns.GetHostAddresses(host);
+                if (resolved.Length == 0)
                 {
                     throw new TransportException($"Host '{host}' did not resolve to any address.");
                 }
-                return resolved;
+                // Prefer IPv4: a v6-first resolver result would build a v6 socket that
+                // cannot reach a v4-only PLC.
+                return resolved.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
+                       ?? resolved[0];
             }
             catch (Exception e) when (!(e is TransportException))
             {
@@ -211,7 +242,16 @@ namespace org.apache.plc4net.transports.tcp
         private static bool GetBool(IReadOnlyDictionary<string, string> p, string key, bool fallback)
         {
             var raw = GetString(p, key, null);
-            return bool.TryParse(raw, out var value) ? value : fallback;
+            if (raw == null)
+            {
+                return fallback;
+            }
+            switch (raw.Trim().ToLowerInvariant())
+            {
+                case "true": case "1": case "yes": case "on": return true;
+                case "false": case "0": case "no": case "off": return false;
+                default: return fallback;
+            }
         }
     }
 }

@@ -33,7 +33,17 @@ namespace org.apache.plc4net.transports.cotp
     /// </remarks>
     public class CotpTransport : ITransport
     {
-        private readonly TcpTransport _tcp = new TcpTransport();
+        private readonly TcpTransport _tcp;
+
+        public CotpTransport() : this(-1)
+        {
+        }
+
+        /// <param name="defaultPort">Port to use when the connection string omits one (102 for S7).</param>
+        public CotpTransport(int defaultPort)
+        {
+            _tcp = new TcpTransport(defaultPort);
+        }
 
         public string TransportCode => "cotp";
 

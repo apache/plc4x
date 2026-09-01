@@ -50,7 +50,16 @@ namespace org.apache.plc4net.drivers.knxnetip
                 throw new MessageCodecException(
                     $"Not a KNXnet/IP frame: header 0x{header[0]:X2}{header[1]:X2} (expected 0x0610).");
             }
-            return (header[4] << 8) | header[5];
+            var total = (header[4] << 8) | header[5];
+            if (total < 6)
+            {
+                // A length shorter than the header itself means the stream is
+                // misaligned; reject it so the codec resyncs rather than consuming
+                // a partial frame and staying off by a few bytes forever.
+                throw new MessageCodecException(
+                    $"KNXnet/IP frame length {total} is shorter than the 6-byte header.");
+            }
+            return total;
         }
 
         protected override KnxNetIpMessage ParseMessage(ReadBuffer readBuffer) =>

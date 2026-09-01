@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using org.apache.plc4net.spi.transports;
 
 namespace org.apache.plc4net.transports.udp
@@ -34,13 +35,33 @@ namespace org.apache.plc4net.transports.udp
     /// </summary>
     public class UdpTransport : ITransport
     {
+        // The ring buffer must hold at least one maximum-size UDP datagram, or a
+        // single oversized frame stalls the receive loop.
+        private const int MinReceiveBufferSize = 65535;
+        private const int MaxReceiveBufferSize = 64 * 1024 * 1024;
+
+        private readonly int _defaultPort;
+
+        public UdpTransport() : this(-1)
+        {
+        }
+
+        /// <param name="defaultPort">
+        /// Port to use when the connection string omits one (e.g. 3671 for KNXnet/IP).
+        /// A <c>default-port</c> connection-string parameter still overrides it.
+        /// </param>
+        public UdpTransport(int defaultPort)
+        {
+            _defaultPort = defaultPort;
+        }
+
         public string TransportCode => "udp";
 
         public string TransportName => "UDP Datagram Transport";
 
         public ITransportConfiguration CreateConfiguration(IReadOnlyDictionary<string, string> parameters)
         {
-            var configuration = new UdpTransportConfiguration();
+            var configuration = new UdpTransportConfiguration { DefaultPort = _defaultPort };
             if (parameters == null)
             {
                 return configuration;
@@ -54,10 +75,18 @@ namespace org.apache.plc4net.transports.udp
             configuration.ReceiveBufferSize = GetInt(parameters, "receive-buffer-size", configuration.ReceiveBufferSize);
             configuration.Broadcast = GetBool(parameters, "broadcast", configuration.Broadcast);
 
-            if (configuration.ReceiveBufferSize <= 0)
+            if (configuration.DefaultPort != -1
+                && (configuration.DefaultPort < 1 || configuration.DefaultPort > 65535))
             {
-                configuration.ReceiveBufferSize = new UdpTransportConfiguration().ReceiveBufferSize;
+                throw new TransportException(
+                    $"default-port must be between 1 and 65535, but was {configuration.DefaultPort}.");
             }
+
+            // Clamp the ring-buffer size: 0/negative would crash the RingBuffer
+            // constructor, and anything below one full datagram lets a single
+            // oversized frame stall the receive loop.
+            configuration.ReceiveBufferSize = Math.Clamp(
+                configuration.ReceiveBufferSize, MinReceiveBufferSize, MaxReceiveBufferSize);
 
             return configuration;
         }
@@ -111,6 +140,11 @@ namespace org.apache.plc4net.transports.udp
                 }
                 host = address.Substring(1, closing - 1);
                 var rest = address.Substring(closing + 1);
+                if (rest.Length > 0 && !rest.StartsWith(":", StringComparison.Ordinal))
+                {
+                    throw new TransportException(
+                        $"Malformed address '{address}': unexpected '{rest}' after ']'.");
+                }
                 port = rest.StartsWith(":", StringComparison.Ordinal)
                     ? ParsePort(rest.Substring(1))
                     : RequireDefaultPort(defaultPort, address);
@@ -171,12 +205,15 @@ namespace org.apache.plc4net.transports.udp
             }
             try
             {
-                var resolved = Dns.GetHostAddresses(host).FirstOrDefault();
-                if (resolved == null)
+                var resolved = Dns.GetHostAddresses(host);
+                if (resolved.Length == 0)
                 {
                     throw new TransportException($"Host '{host}' did not resolve to any address.");
                 }
-                return resolved;
+                // Prefer IPv4: industrial gateways are typically v4-only, and a v6-first
+                // resolver result would build a v6 socket that cannot reach them.
+                return resolved.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
+                       ?? resolved[0];
             }
             catch (Exception e) when (!(e is TransportException))
             {
@@ -204,7 +241,16 @@ namespace org.apache.plc4net.transports.udp
         private static bool GetBool(IReadOnlyDictionary<string, string> p, string key, bool fallback)
         {
             var raw = GetString(p, key, null);
-            return bool.TryParse(raw, out var value) ? value : fallback;
+            if (raw == null)
+            {
+                return fallback;
+            }
+            switch (raw.Trim().ToLowerInvariant())
+            {
+                case "true": case "1": case "yes": case "on": return true;
+                case "false": case "0": case "no": case "off": return false;
+                default: return fallback;
+            }
         }
     }
 }

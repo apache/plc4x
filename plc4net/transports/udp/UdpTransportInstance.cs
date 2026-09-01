@@ -47,6 +47,9 @@ namespace org.apache.plc4net.transports.udp
         private readonly CancellationTokenSource _shutdown = new CancellationTokenSource();
         private readonly Task _receiveLoop;
 
+        private const int MaxConsecutiveTransientErrors = 20;
+        private const int TransientBackoffMs = 50;
+
         private int _open = 1;
         private int _released;
 
@@ -222,7 +225,22 @@ namespace org.apache.plc4net.transports.udp
             }
         }
 
-        public void RegisterDataListener(Action listener) => _dataListener = listener;
+        public void RegisterDataListener(Action listener)
+        {
+            _dataListener = listener;
+
+            // A datagram may have arrived and been buffered before the listener was
+            // registered; deliver one wake-up so the codec drains what is waiting.
+            bool hasBufferedData;
+            lock (_readLock)
+            {
+                hasBufferedData = _ringBuffer.AvailableForReading > 0;
+            }
+            if (listener != null && hasBufferedData)
+            {
+                NotifyData();
+            }
+        }
 
         public void RemoveDataListener() => _dataListener = null;
 
@@ -277,6 +295,7 @@ namespace org.apache.plc4net.transports.udp
         private async Task RunReceiveLoopAsync()
         {
             var datagram = new byte[65535];
+            var transientErrors = 0;
             try
             {
                 while (Volatile.Read(ref _open) == 1)
@@ -287,11 +306,20 @@ namespace org.apache.plc4net.transports.udp
                         received = await _socket
                             .ReceiveAsync(new ArraySegment<byte>(datagram), SocketFlags.None)
                             .ConfigureAwait(false);
+                        transientErrors = 0;
                     }
-                    catch (SocketException e) when (e.SocketErrorCode == SocketError.ConnectionReset)
+                    catch (SocketException e) when (IsTransientReceiveError(e.SocketErrorCode))
                     {
-                        // ICMP port-unreachable from the peer. The gateway may just not
-                        // be up yet; keep listening rather than tearing down.
+                        // ICMP port/host-unreachable from the peer (ConnectionReset on
+                        // Windows, ConnectionRefused on Linux), or an oversized datagram
+                        // (MessageSize). The gateway may just not be up yet; back off and
+                        // keep listening rather than tearing the transport down. Escalate
+                        // only if the errors do not stop.
+                        if (++transientErrors > MaxConsecutiveTransientErrors)
+                        {
+                            throw;
+                        }
+                        await Task.Delay(TransientBackoffMs, _shutdown.Token).ConfigureAwait(false);
                         continue;
                     }
 
@@ -300,20 +328,30 @@ namespace org.apache.plc4net.transports.udp
                         continue;
                     }
 
+                    var accepted = false;
                     lock (_readLock)
                     {
-                        if (_ringBuffer.RemainingForWriting < received)
+                        if (received <= _ringBuffer.Capacity)
                         {
-                            // The codec has not drained. Drop the oldest bytes rather
-                            // than block the socket - a datagram protocol has no
-                            // back-pressure and a stuck codec must not wedge the loop.
-                            var overflow = received - _ringBuffer.RemainingForWriting;
-                            _ringBuffer.Read(Math.Min(overflow, _ringBuffer.AvailableForReading));
+                            if (_ringBuffer.RemainingForWriting < received)
+                            {
+                                // The codec has not kept up. Discard everything buffered
+                                // rather than drop bytes from the middle of a frame - a
+                                // partial frame left behind desyncs the length-prefixed
+                                // codec permanently. The next datagram starts clean.
+                                _ringBuffer.Clear();
+                            }
+                            _ringBuffer.Write(datagram, 0, received);
+                            accepted = true;
                         }
-                        _ringBuffer.Write(datagram, 0, received);
                     }
 
-                    NotifyData();
+                    if (accepted)
+                    {
+                        NotifyData();
+                    }
+                    // else: a datagram larger than the whole buffer can never be
+                    // delivered intact; drop it and stay alive.
                 }
             }
             catch (OperationCanceledException)
@@ -338,6 +376,13 @@ namespace org.apache.plc4net.transports.udp
                 ReleaseResources(fromReceiveLoop: true);
             }
         }
+
+        private static bool IsTransientReceiveError(SocketError code) =>
+            code == SocketError.ConnectionReset       // Windows: ICMP port-unreachable
+            || code == SocketError.ConnectionRefused  // Linux: ICMP port-unreachable
+            || code == SocketError.MessageSize        // datagram larger than the buffer
+            || code == SocketError.HostUnreachable
+            || code == SocketError.NetworkUnreachable;
 
         private void WriteHex(string label, byte[] bytes)
         {
