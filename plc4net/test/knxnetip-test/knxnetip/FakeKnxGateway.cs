@@ -60,6 +60,9 @@ namespace org.apache.plc4net.test.knxnetip
         /// <summary>Group telegrams the driver sent us (write path), newest last.</summary>
         public List<(string GroupAddress, byte[] Payload)> ReceivedWrites { get; } = new();
 
+        /// <summary>Every tunnelling sequence counter the driver sent, in order.</summary>
+        public List<byte> TunnellingSequenceNumbers { get; } = new();
+
         /// <summary>The scripted answer to the next GroupValueRead, or null to stay silent.</summary>
         public byte[] NextReadResponsePayload { get; set; }
 
@@ -123,6 +126,10 @@ namespace org.apache.plc4net.test.knxnetip
         private void HandleTunnelling(byte[] frame, EndPoint from)
         {
             var seq = frame[8];
+            lock (TunnellingSequenceNumbers)
+            {
+                TunnellingSequenceNumbers.Add(seq);
+            }
 
             // ack
             var ack = new TunnelingResponse(new TunnelingResponseDataBlock(ChannelId, seq, Status.NO_ERROR));

@@ -46,7 +46,7 @@ namespace org.apache.plc4net.test.knxnetip
         private KnxNetIpConnection Connect()
         {
             var cs = ConnectionString.Parse(
-                $"knxnetip:udp://127.0.0.1:{_gateway.Port}?request-timeout=2000");
+                $"knxnet-ip:udp://127.0.0.1:{_gateway.Port}?request-timeout=2000");
             var transport = new UdpTransportInstance(
                 new IPEndPoint(IPAddress.Loopback, _gateway.Port), new UdpTransportConfiguration());
             var connection = new KnxNetIpConnection(cs, transport);
@@ -108,6 +108,48 @@ namespace org.apache.plc4net.test.knxnetip
         }
 
         [Fact]
+        public async Task The_first_tunnelling_request_uses_sequence_counter_zero()
+        {
+            using var connection = Connect();
+
+            var builder = (DefaultPlcWriteRequestBuilder) connection.WriteRequestBuilder;
+            builder.AddTag("a", "2/2/12", (byte) 1);
+            builder.AddTag("b", "2/2/13", (byte) 1);
+            await connection.Write((DefaultPlcWriteRequest) builder.Build());
+
+            Assert.True(WaitFor(() => _gateway.TunnellingSequenceNumbers.Count >= 2));
+            // KNX 03/08/04 §2.6: the first request after CONNECT carries counter 0.
+            Assert.Equal(new byte[] { 0, 1 }, _gateway.TunnellingSequenceNumbers.GetRange(0, 2).ToArray());
+        }
+
+        [Fact]
+        public async Task A_tag_whose_level_count_does_not_match_the_connection_is_rejected()
+        {
+            using var connection = Connect();  // default: 3 levels
+
+            var builder = (DefaultPlcWriteRequestBuilder) connection.WriteRequestBuilder;
+            builder.AddTag("two-level", "1/2", (byte) 1);
+            var response = (DefaultPlcWriteResponse) await connection.Write(
+                (DefaultPlcWriteRequest) builder.Build());
+
+            Assert.Equal(PlcResponseCode.InvalidAddress, response.GetResponseCode("two-level"));
+        }
+
+        [Fact]
+        public async Task A_raw_write_larger_than_six_bits_is_rejected()
+        {
+            using var connection = Connect();
+
+            var builder = (DefaultPlcWriteRequestBuilder) connection.WriteRequestBuilder;
+            builder.AddTag("big", "2/2/12", (byte) 200);
+            var response = (DefaultPlcWriteResponse) await connection.Write(
+                (DefaultPlcWriteRequest) builder.Build());
+
+            Assert.Equal(PlcResponseCode.InternalError, response.GetResponseCode("big"));
+            Assert.Empty(_gateway.ReceivedWrites);
+        }
+
+        [Fact]
         public async Task A_read_correlates_the_group_value_response_from_the_bus()
         {
             using var connection = Connect();
@@ -162,6 +204,8 @@ namespace org.apache.plc4net.test.knxnetip
                 }
             }));
             Assert.Equal("2/2/12", events[0].GroupAddress);
+            Assert.Equal(KnxGroupValueEventType.Write, events[0].EventType);
+            Assert.Equal("1.1.5", events[0].SourceAddress);
             Assert.True(events[0].Value.GetBool());
         }
     }

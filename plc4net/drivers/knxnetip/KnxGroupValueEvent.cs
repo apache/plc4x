@@ -17,10 +17,21 @@
 // under the License.
 //
 
+using System;
 using org.apache.plc4net.api.value;
 
 namespace org.apache.plc4net.drivers.knxnetip
 {
+    /// <summary>Whether a group telegram commanded a value or reported one.</summary>
+    public enum KnxGroupValueEventType
+    {
+        /// <summary>A <c>GroupValueWrite</c> - a device commanding the group.</summary>
+        Write,
+
+        /// <summary>A <c>GroupValueResponse</c> - a device answering a read of the group.</summary>
+        Response,
+    }
+
     /// <summary>
     /// One group telegram observed on the KNX bus.
     /// </summary>
@@ -34,13 +45,18 @@ namespace org.apache.plc4net.drivers.knxnetip
     public sealed class KnxGroupValueEvent
     {
         public KnxGroupValueEvent(
-            string sourceAddress, string groupAddress, byte[] rawPayload, IPlcValue value)
+            KnxGroupValueEventType eventType, string sourceAddress, string groupAddress,
+            byte[] rawPayload, IPlcValue value)
         {
+            EventType = eventType;
             SourceAddress = sourceAddress;
             GroupAddress = groupAddress;
-            RawPayload = rawPayload;
+            RawPayload = (byte[]) (rawPayload?.Clone() ?? Array.Empty<byte>());
             Value = value;
         }
+
+        /// <summary>Whether this telegram was a write or a read response.</summary>
+        public KnxGroupValueEventType EventType { get; }
 
         /// <summary>The individual address of the device that sent it, e.g. <c>1.1.5</c>.</summary>
         public string SourceAddress { get; }
@@ -56,5 +72,8 @@ namespace org.apache.plc4net.drivers.knxnetip
         /// registered for the address), otherwise a <c>PlcRawByteArray</c> of the payload.
         /// </summary>
         public IPlcValue Value { get; }
+
+        public override string ToString() =>
+            $"{EventType} {SourceAddress} -> {GroupAddress} [{BitConverter.ToString(RawPayload)}]";
     }
 }

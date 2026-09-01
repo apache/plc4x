@@ -72,7 +72,13 @@ namespace org.apache.plc4net.drivers.knxnetip
 
         private byte _communicationChannelId;
         private KnxAddress _clientKnxAddress = new KnxAddress(0, 0, 0);
-        private int _sequenceCounter;
+
+        // KNXnet/IP tunnelling: the first request after CONNECT must carry sequence
+        // counter 0 (03/08/04 §2.6). Interlocked.Increment returns the post-increment
+        // value, so the field starts at -1 and the first send yields 0.
+        private int _sequenceCounter = -1;
+
+        private (IPAddress Address, ushort Port) _localEndpoint;
 
         // Handshake / heartbeat slots - one outstanding at a time.
         private volatile TaskCompletionSource<SearchResponse> _pendingSearch;
@@ -137,7 +143,10 @@ namespace org.apache.plc4net.drivers.knxnetip
             }
             _asyncTransport = asyncTransport;
 
-            var local = ResolveLocalEndpoint();
+            // Resolve the local endpoint once - it feeds every HPAI on this
+            // connection and re-probing per heartbeat can transiently fail.
+            _localEndpoint = ResolveLocalEndpoint();
+            var local = _localEndpoint;
             _codec = new KnxNetIpMessageCodec(TransportInstance, HandleIncomingMessage);
             asyncTransport.RegisterDataListener(() =>
             {
@@ -150,6 +159,7 @@ namespace org.apache.plc4net.drivers.knxnetip
                     Logger.LogWarning(e, "Error processing inbound KNXnet/IP data");
                 }
             });
+            asyncTransport.RegisterDisconnectListener(OnTransportDisconnected);
 
             var hpai = new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, local.Address, local.Port);
 
@@ -220,7 +230,7 @@ namespace org.apache.plc4net.drivers.knxnetip
         {
             try
             {
-                var local = ResolveLocalEndpoint();
+                var local = _localEndpoint;
                 _pendingConnState = new TaskCompletionSource<ConnectionStateResponse>(
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 Send(new ConnectionStateRequest(_communicationChannelId,
@@ -235,6 +245,34 @@ namespace org.apache.plc4net.drivers.knxnetip
             {
                 Logger.LogWarning(e, "KNXnet/IP heartbeat failed");
             }
+        }
+
+        private void OnTransportDisconnected(Exception cause)
+        {
+            Logger.LogWarning(cause, "KNXnet/IP transport disconnected");
+            FailAllPending(new PlcConnectionException("KNXnet/IP transport disconnected.", cause));
+        }
+
+        /// <summary>
+        /// Completes every outstanding request slot with <paramref name="cause"/> so
+        /// callers blocked in <see cref="Await{T}"/> fail fast instead of waiting out
+        /// their timeout when the connection goes away.
+        /// </summary>
+        private void FailAllPending(Exception cause)
+        {
+            _pendingSearch?.TrySetException(cause);
+            _pendingConnect?.TrySetException(cause);
+            _pendingConnState?.TrySetException(cause);
+            foreach (var slot in _pendingAcks.Values)
+            {
+                slot.TrySetException(cause);
+            }
+            _pendingAcks.Clear();
+            foreach (var slot in _pendingReads.Values)
+            {
+                slot.TrySetException(cause);
+            }
+            _pendingReads.Clear();
         }
 
         // ── inbound dispatch ───────────────────────────────────
@@ -270,12 +308,19 @@ namespace org.apache.plc4net.drivers.knxnetip
 
         private void HandleTunnelingRequest(TunnelingRequest tunnelingRequest)
         {
+            var dataBlock = tunnelingRequest.TunnelingRequestDataBlock;
+
+            // Ignore (without acking) a frame for a channel that is not ours.
+            if (dataBlock.CommunicationChannelId != _communicationChannelId)
+            {
+                return;
+            }
+
             // Ack first: a missed ack makes the gateway resend the same indication.
-            var seq = ExtractSequenceCounter(tunnelingRequest);
             try
             {
-                Send(new TunnelingResponse(
-                    new TunnelingResponseDataBlock(_communicationChannelId, seq, Status.NO_ERROR)));
+                Send(new TunnelingResponse(new TunnelingResponseDataBlock(
+                    _communicationChannelId, dataBlock.SequenceCounter, Status.NO_ERROR)));
             }
             catch (Exception e)
             {
@@ -291,30 +336,19 @@ namespace org.apache.plc4net.drivers.knxnetip
             switch (container.DataApdu)
             {
                 case ApduDataGroupValueWrite write:
-                    DispatchGroupValue(ext.SourceAddress, ext.DestinationAddress,
-                        write.DataFirstByte, write.Data);
+                    DispatchGroupValue(KnxGroupValueEventType.Write, ext.SourceAddress,
+                        ext.DestinationAddress, write.DataFirstByte, write.Data);
                     break;
                 case ApduDataGroupValueResponse response:
                     CompletePendingRead(ext.DestinationAddress, response.DataFirstByte, response.Data);
-                    DispatchGroupValue(ext.SourceAddress, ext.DestinationAddress,
-                        response.DataFirstByte, response.Data);
+                    DispatchGroupValue(KnxGroupValueEventType.Response, ext.SourceAddress,
+                        ext.DestinationAddress, response.DataFirstByte, response.Data);
                     break;
             }
         }
 
-        private static byte ExtractSequenceCounter(TunnelingRequest request)
-        {
-            // The generated TunnelingRequest does not expose its data block as a
-            // property. Re-serialise: after the 6-byte KNXnet/IP header comes the
-            // TunnelingRequestDataBlock - structLen(1), channel(1), sequence(1),
-            // reserved(1) - so the sequence counter is byte 8.
-            var buffer = new WriteBuffer();
-            request.Serialize(buffer);
-            var bytes = buffer.GetBytes();
-            return bytes.Length > 8 ? bytes[8] : (byte) 0;
-        }
-
-        private void DispatchGroupValue(KnxAddress source, byte[] destination, sbyte firstByte, byte[] rest)
+        private void DispatchGroupValue(KnxGroupValueEventType eventType, KnxAddress source,
+            byte[] destination, sbyte firstByte, byte[] rest)
         {
             var groupAddress = DecodeGroupAddress(destination);
             var payload = new byte[1 + (rest?.Length ?? 0)];
@@ -340,7 +374,7 @@ namespace org.apache.plc4net.drivers.knxnetip
 
             var sourceAddress =
                 $"{source.MainGroup}.{source.MiddleGroup}.{source.SubGroup}";
-            var evt = new KnxGroupValueEvent(sourceAddress, groupAddress, payload, value);
+            var evt = new KnxGroupValueEvent(eventType, sourceAddress, groupAddress, payload, value);
 
             Action<KnxGroupValueEvent>[] snapshot;
             lock (_listenerLock)
@@ -422,7 +456,7 @@ namespace org.apache.plc4net.drivers.knxnetip
         /// </summary>
         public void RegisterDatapointHint(string groupAddress, string dptId)
         {
-            var dpt = new KnxNetIpTag(2, "0", null, "0", dptId).ResolveDatapointType();
+            var dpt = KnxNetIpTag.ResolveDatapointType(dptId);
             if (dpt.HasValue)
             {
                 _dptHints[groupAddress] = dpt.Value;
@@ -449,6 +483,11 @@ namespace org.apache.plc4net.drivers.knxnetip
                 catch (TimeoutException)
                 {
                     results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.NotFound);
+                }
+                catch (PlcInvalidFieldException e)
+                {
+                    Logger.LogWarning(e, "KNX read of {Tag} rejected", tag.AddressString);
+                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidAddress);
                 }
                 catch (Exception e)
                 {
@@ -484,7 +523,10 @@ namespace org.apache.plc4net.drivers.knxnetip
             }
             finally
             {
-                _pendingReads.TryRemove(groupAddress, out _);
+                // Value-matched remove: a concurrent read of the same GA may have
+                // replaced our slot, and that one must not be evicted here.
+                _pendingReads.TryRemove(
+                    new KeyValuePair<string, TaskCompletionSource<byte[]>>(groupAddress, responseSlot));
             }
         }
 
@@ -509,6 +551,11 @@ namespace org.apache.plc4net.drivers.knxnetip
                             new ApduDataGroupValueWrite((sbyte) payload[0], payload.Skip(1).ToArray())));
                     codes[name] = PlcResponseCode.Ok;
                 }
+                catch (PlcInvalidFieldException e)
+                {
+                    Logger.LogWarning(e, "KNX write of {Tag} rejected", tag.AddressString);
+                    codes[name] = PlcResponseCode.InvalidAddress;
+                }
                 catch (Exception e)
                 {
                     Logger.LogWarning(e, "KNX write of {Tag} failed", tag.AddressString);
@@ -532,7 +579,7 @@ namespace org.apache.plc4net.drivers.knxnetip
 
             // No datapoint type: a raw single byte (0..63 in the APDU's 6 bits) or a
             // byte array, matching the Java no-ETS path.
-            return value switch
+            var raw = value switch
             {
                 byte b => new[] { b },
                 byte[] bytes when bytes.Length > 0 => bytes,
@@ -540,6 +587,13 @@ namespace org.apache.plc4net.drivers.knxnetip
                 _ => throw new PlcException(
                     $"Without a :DPT… suffix on '{tag.AddressString}', only a byte, bool or byte[] can be written."),
             };
+            if ((raw[0] & 0xC0) != 0)
+            {
+                throw new PlcException(
+                    $"Without a :DPT… suffix on '{tag.AddressString}', the first payload byte must fit in " +
+                    $"6 bits (0..63), but was {raw[0]}.");
+            }
+            return raw;
         }
 
         private static IPlcValue AsPlcValue(object value) => value switch
@@ -578,18 +632,18 @@ namespace org.apache.plc4net.drivers.knxnetip
             try
             {
                 Send(request);
+                var ack = Await(ackSlot.Task, "TunnelingResponse");
+                if (ack.TunnelingResponseDataBlock.Status != Status.NO_ERROR)
+                {
+                    throw new PlcException(
+                        $"KNXnet/IP tunnelling request rejected: {ack.TunnelingResponseDataBlock.Status}.");
+                }
             }
-            catch
+            finally
             {
+                // Whether the ack arrived, timed out or the send threw, drop the slot
+                // so a strict gateway that never acks cannot leak them.
                 _pendingAcks.TryRemove(seq, out _);
-                throw;
-            }
-
-            var ack = Await(ackSlot.Task, "TunnelingResponse");
-            if (ack.TunnelingResponseDataBlock.Status != Status.NO_ERROR)
-            {
-                throw new PlcException(
-                    $"KNXnet/IP tunnelling request rejected: {ack.TunnelingResponseDataBlock.Status}.");
             }
         }
 
@@ -611,7 +665,10 @@ namespace org.apache.plc4net.drivers.knxnetip
             {
                 throw new TimeoutException($"No {what} within {_requestTimeoutMs} ms.");
             }
-            return task.Result;
+            // GetAwaiter().GetResult() unwraps a faulted task to its real exception
+            // (Task.Result would wrap it in an AggregateException), so a slot completed
+            // by FailAllPending surfaces as the PlcConnectionException it carries.
+            return task.GetAwaiter().GetResult();
         }
 
         // ── lifecycle ──────────────────────────────────────────
@@ -625,7 +682,7 @@ namespace org.apache.plc4net.drivers.knxnetip
 
                 if (_communicationChannelId != 0 && _asyncTransport is { IsOpen: true })
                 {
-                    var local = ResolveLocalEndpoint();
+                    var local = _localEndpoint;
                     Send(new DisconnectRequest(_communicationChannelId,
                         new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP, local.Address, local.Port)));
                 }
@@ -636,7 +693,9 @@ namespace org.apache.plc4net.drivers.knxnetip
             }
             finally
             {
+                _asyncTransport?.RemoveDisconnectListener();
                 _asyncTransport?.RemoveDataListener();
+                FailAllPending(new PlcConnectionException("KNXnet/IP connection closed."));
                 base.Close();
             }
         }
