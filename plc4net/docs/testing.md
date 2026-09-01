@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **367** |
-| Passing | 367 |
+| Total test cases | **419** |
+| Passing | 419 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,8 +37,8 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 344 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
-| `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 23 | KNX group-address parsing and DPT resolution; the KNXnet/IP connection - handshake, group Read / Write, bus monitor - against a scripted gateway on a loopback UDP socket; DPT 9.x 16-bit float codec |
+| `test/spi-test` | `plc4net-spi-test` | 374 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 45 | KNX group-address parsing and DPT resolution; the KNXnet/IP connection - handshake, group Read / Write, bus monitor - against a scripted gateway on a loopback UDP socket; DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following
 the standard .NET `src`/`test` convention at the solution level.
@@ -171,7 +171,7 @@ negotiation (default 1024, negotiated 512), and Close propagation.
 | Area | Tests | File |
 |---|---|---|
 | Modbus driver | 10 | `spi-test/drivers/ModbusDriverTests.cs` |
-| S7 driver | 18 | `spi-test/drivers/S7DriverTests.cs` |
+| S7 driver | 28 | `spi-test/drivers/S7DriverTests.cs` |
 
 The Modbus tests cover: tag parsing, Read Coils / Read Holding Registers PDU
 construction, Write Single/Multiple PDU construction, and response parsing.
@@ -179,11 +179,16 @@ PDU test vectors derive from the Modbus Application Protocol Specification
 v1.1b.
 
 The S7 tests cover: tag parsing for all seven address forms (DB, M, I, Q, C,
-T, plus bit offsets), Read Var / Write Var PDU construction, TPKT frame
-wrap/unwrap, transport size mapping, Java-parity TSAP encoding (remote 0x0101,
-local 0x0311), explicit TSAP override, non-COTP transport rejection,
-out-of-range rack/slot rejection, and non-numeric parameter rejection.  PDU
-test vectors derive from Wireshark captures of real S7-1500 communication.
+T, plus bit offsets), Read / Write / Setup-Communication PDUs round-tripped
+through the generated `S7Message` model (memory-area and transport-size codes,
+item structure), the Read path decoded item by item, an S7 item error mapped
+to a `PlcResponseCode`, TPKT frame wrap/unwrap, Java-parity TSAP encoding
+(remote 0x0101, local 0x0311), `remote-device-group` / explicit TSAP override,
+S7 Setup Communication on every `Connect` (and a clean failure when the CPU
+does not answer), non-COTP transport rejection, out-of-range rack/slot
+rejection, and non-numeric parameter rejection.  The generated model
+round-trips the shared S7 `ParserSerializerTestsuite.xml` vectors (see *Code
+generation* above).
 
 ### Code generation
 
@@ -229,21 +234,30 @@ not part of PR validation.
 
 ## Hardware verification
 
-**S7-1500 (Siemens)** — pending.  The hardware (S7-1200/1500) is physically
-available.  The ICLA was filed and acknowledged on 2026-08-02.  The COTP
-handshake and S7 Read Var PDU have been verified against reference packet
-captures.  The end-to-end path through a real PLC remains to be run:
+**S7-1200 / S7-1500 (Siemens)** — pending a run.  The hardware is physically
+available; the ICLA was filed and acknowledged on 2026-08-02.  The COTP
+handshake, S7 Setup Communication and Read / Write Var PDUs are verified
+against the shared `ParserSerializerTestsuite.xml` vectors and round-trip
+through the generated model.  The end-to-end path through a real PLC is run
+with `tools/s7-verify` — see **`docs/s7-hardware-verification.md`** for the
+TIA Portal setup (a non-optimized DB, PUT/GET enabled) and the command:
 
 ```
-s7://<ip>?remote-rack=0&remote-slot=1&default-port=102
+dotnet run --project tools/s7-verify -- <ip> --db 100 > docs/s7-hardware-report.md
 ```
+
+It connects through the public driver API (`new S7Driver(…).Connect("s7://…")`),
+reads every scalar type from the DB, round-trips a write, and checks an error
+path.  It also packs as a local `dotnet tool` so the same check can be run the
+way a NuGet consumer would.
 
 ## What is deliberately not tested
 
 | Area | Reason |
 |---|---|
 | Modbus against real hardware | Simulated via TestTransport; byte-identical response for unit-test purposes. Hardware verification planned. |
-| S7 Write | `WriteRequestBuilder` throws `NotSupportedException`. |
+| S7 reads larger than one PDU | A read whose response would exceed the negotiated PDU length is not split into multiple requests. |
+| S7 typed reads | A read returns the raw bytes typed by width (`PlcBYTE` / `PlcUINT` / `PlcUDINT`, or `PlcBOOL` for a bit) - a REAL / DINT is reinterpreted by the caller. |
 | Subscribe / Browse / Ping / Discovery | Interfaces declared; no implementation exists. |
 | COTP PDU fragmentation | Payloads exceeding the negotiated TPDU size throw `TransportException`. |
 | TLS, Serial, UDP transports | Not yet implemented. |

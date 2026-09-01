@@ -22,8 +22,18 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <Title>PLC4Net: S7 Verification</Title>
-    <IsPackable>false</IsPackable>
     <AssemblyName>s7-verify</AssemblyName>
+    <!--
+      Packable as a local dotnet tool so the hardware check can be run the way a
+      NuGet consumer would: `dotnet pack` bundles every dependency into one
+      self-contained .nupkg. Not published anywhere - see
+      docs/s7-hardware-verification.md.
+    -->
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>s7-verify</ToolCommandName>
+    <PackageId>plc4net-s7-verify</PackageId>
+    <Description>Local S7 hardware verification harness for the plc4net S7 driver.</Description>
   </PropertyGroup>
 
   <ItemGroup>

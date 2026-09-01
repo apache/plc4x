@@ -20,205 +20,299 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
+using org.apache.plc4net.api;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.drivers.s7;
 using org.apache.plc4net.messages;
 using org.apache.plc4net.model;
 using org.apache.plc4net.spi.drivers;
+using org.apache.plc4net.spi.drivers.functions;
 using org.apache.plc4net.spi.drivers.messages;
 using org.apache.plc4net.spi.transports;
-using org.apache.plc4net.transports.cotp;
-using org.apache.plc4net.transports.tcp;
+using org.apache.plc4net.types;
 
 namespace org.apache.plc4net.tools.s7verify
 {
     /// <summary>
-    /// S7 hardware verification harness for <c>docs/test_report.md</c>.
+    /// End-to-end S7 hardware check. Drives the public driver API exactly as a
+    /// NuGet consumer would - <c>new S7Driver(...).Connect("s7://host?...")</c> -
+    /// then reads every scalar type from a data block, round-trips a write, and
+    /// exercises an error path. Prints a Markdown report to stdout.
     ///
-    /// Usage: s7-verify &lt;host&gt; [rack] [slot] [read-address]
-    /// Defaults: rack=0, slot=1 (S7-1500), read-address=%M0
+    ///   s7-verify &lt;host&gt; [--rack N] [--slot N] [--db N]
+    ///             [--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN]
+    ///
+    /// Defaults: rack 0, slot 1, db 100. Build the data block per
+    /// docs/s7-hardware-verification.md before running.
     /// </summary>
     public static class Program
     {
         public static async Task<int> Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length == 0 || args[0] is "-h" or "--help")
             {
-                Console.Error.WriteLine("Usage: s7-verify <host> [rack] [slot] [read-address]");
-                Console.Error.WriteLine("Example: s7-verify 192.168.0.10 0 1 %DB1.DBW0");
-                return 1;
+                Console.Error.WriteLine(
+                    "usage: s7-verify <host> [--rack N] [--slot N] [--db N] " +
+                    "[--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN]");
+                return 2;
             }
 
             var host = args[0];
-            var rack = args.Length > 1 ? int.Parse(args[1], CultureInfo.InvariantCulture) : 0;
-            var slot = args.Length > 2 ? int.Parse(args[2], CultureInfo.InvariantCulture) : 1;
-            var readAddress = args.Length > 3 ? args[3] : "%M0";
-            var port = 102;
+            var opts = ParseOptions(args);
+            var db = opts.TryGetValue("db", out var dbRaw)
+                ? int.Parse(dbRaw, CultureInfo.InvariantCulture) : 100;
 
-            var w = Console.Out;
-            w.WriteLine("# S7 Hardware Verification Report");
-            w.WriteLine();
-            w.WriteLine($"**Date**: {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC");
-            w.WriteLine($"**Target**: s7://{host}:{port}?remote-rack={rack}&remote-slot={slot}");
-            w.WriteLine($"**Read address**: {readAddress}");
-            w.WriteLine();
+            var query = new List<string>
+            {
+                $"remote-rack={Get(opts, "rack", "0")}",
+                $"remote-slot={Get(opts, "slot", "1")}",
+                "request-timeout=5000",
+            };
+            if (opts.TryGetValue("device-group", out var dg)) query.Add($"remote-device-group={dg}");
+            if (opts.TryGetValue("remote-tsap", out var tsap)) query.Add($"remote-tsap={tsap}");
+            var connectionString = $"s7://{host}?{string.Join("&", query)}";
 
-            ITransportInstance? tcp = null;
-            CotpTransportInstance? cotp = null;
+            var report = new Report();
+            report.Line("# S7 Hardware Verification Report");
+            report.Line();
+            report.Line($"- **Date**: {DateTime.Now:yyyy-MM-dd HH:mm}");
+            report.Line($"- **Connection string**: `{connectionString}`");
+            report.Line($"- **Data block**: DB{db}");
+            report.Line();
 
+            IPlcConnection? connection = null;
             try
             {
-                // ── 1. TCP connection ──
-                w.WriteLine("## 1. TCP Connection");
-                w.WriteLine();
-                var tcpTransport = new TcpTransport();
-                tcp = tcpTransport.CreateTransportInstance(host,
-                    new TcpTransportConfiguration { DefaultPort = port, ConnectTimeout = 5000 });
-                w.WriteLine($"Connected to {host}:{port}");
-                w.WriteLine();
+                // ── connect + Setup Communication ──
+                var driver = new S7Driver(new DefaultTransportManager());
+                connection = driver.Connect(connectionString);
+                var s7 = (S7Connection)connection;
+                report.Pass("Connect", $"COTP + Setup Communication ok, negotiated PDU length {s7.NegotiatedPduLength} bytes");
 
-                // ── 2. COTP handshake ──
-                w.WriteLine("## 2. COTP Connection Request / Confirm");
-                w.WriteLine();
-                cotp = new CotpTransportInstance(tcp)
-                {
-                    DiagnosticOutput = w,
-                    HandshakeTimeout = TimeSpan.FromSeconds(5)
-                };
-                var localTsap = 0x0311;
-                var remoteTsap = ((0x01) << 8) | ((rack & 0x0F) << 4) | (slot & 0x0F);
-                w.WriteLine($"**Calling TSAP**: 0x{localTsap:X4}");
-                w.WriteLine($"**Called TSAP**:  0x{remoteTsap:X4}");
-                w.WriteLine();
+                var reader = (PlcReader)connection;
+                var writer = (PlcWriter)connection;
 
-                cotp.Open(
-                    localTsapHi: (byte)((localTsap >> 8) & 0xFF),
-                    localTsapLo: (byte)(localTsap & 0xFF),
-                    remoteTsapHi: (byte)((remoteTsap >> 8) & 0xFF),
-                    remoteTsapLo: (byte)(remoteTsap & 0xFF));
-                w.WriteLine();
+                // ── reads ──
+                await ReadScalar(reader, connection, report, "BOOL", $"%DB{db}.DBX0.0",
+                    v => v.GetBool() ? "true" : "false", "true");
+                await ReadScalar(reader, connection, report, "BYTE", $"%DB{db}.DBB1",
+                    v => $"0x{v.GetByte():X2}", "0xA5");
+                await ReadScalar(reader, connection, report, "INT", $"%DB{db}.DBW2",
+                    v => unchecked((short)v.GetUshort()).ToString(CultureInfo.InvariantCulture), "-12345");
+                await ReadScalar(reader, connection, report, "DINT", $"%DB{db}.DBD4",
+                    v => unchecked((int)v.GetUint()).ToString(CultureInfo.InvariantCulture), "-1000000");
+                await ReadScalar(reader, connection, report, "REAL", $"%DB{db}.DBD8",
+                    v => BitConverter.Int32BitsToSingle(unchecked((int)v.GetUint()))
+                        .ToString("0.####", CultureInfo.InvariantCulture), "3.1416");
+                await ReadScalar(reader, connection, report, "WORD", $"%DB{db}.DBW12",
+                    v => $"0x{v.GetUshort():X4}", "0xBEEF");
+                await ReadScalar(reader, connection, report, "DWORD", $"%DB{db}.DBD14",
+                    v => $"0x{v.GetUint():X8}", "0xDEADBEEF");
 
-                // ── 3. S7 Read ──
-                w.WriteLine("## 3. S7 Read Var PDU Exchange");
-                w.WriteLine();
+                // ── multi-tag single request ──
+                await MultiRead(reader, connection, report, db);
 
-                var connString = ConnectionString.Parse(
-                    $"s7:cotp://{host}:{port}?remote-rack={rack}&remote-slot={slot}");
-                var s7Conn = new S7Connection(connString, cotp);
-                s7Conn.Connect();
+                // ── write round-trip ──
+                await WriteRoundTrip(reader, writer, connection, report, $"%DB{db}.DBW18",
+                    b => b.AddTag("w", $"%DB{db}.DBW18", (short)6789),
+                    v => unchecked((short)v.GetUshort()).ToString(CultureInfo.InvariantCulture), "6789");
+                await WriteRoundTrip(reader, writer, connection, report, $"%DB{db}.DBD20",
+                    b => b.AddTag("w", $"%DB{db}.DBD20", 12345.678f),
+                    v => BitConverter.Int32BitsToSingle(unchecked((int)v.GetUint()))
+                        .ToString("0.###", CultureInfo.InvariantCulture), "12345.678");
 
-                // Use the standard builder API to construct a read request.
-                var builder = s7Conn.ReadRequestBuilder;
-                builder.AddTagAddress("data", readAddress);
-                var request = builder.Build();
+                // ── error path ──
+                await ErrorPath(reader, connection, report);
 
-                var response = await s7Conn.Read(
-                    (DefaultPlcReadRequest)request,
-                    CancellationToken.None).ConfigureAwait(false);
-                w.WriteLine();
-
-                // ── 4. Result ──
-                w.WriteLine("## 4. Result");
-                w.WriteLine();
-
-                // Access the response values via reflection over the
-                // internal dictionary (the tool needs byte-level visibility;
-                // the public API surfaces are sufficient for production code).
-                var valuesField = typeof(DefaultPlcReadResponse)
-                    .GetField("_values",
-                        System.Reflection.BindingFlags.NonPublic |
-                        System.Reflection.BindingFlags.Instance);
-                var values = valuesField?.GetValue(response) as
-                    System.Collections.IDictionary;
-
-                if (values != null)
-                {
-                    foreach (string tagName in values.Keys)
-                    {
-                        var item = values[tagName]!;
-                        var itemType = item.GetType().Name;
-
-                        var valProp = item.GetType().GetProperty("Value");
-                        if (valProp != null)
-                        {
-                            var val = valProp.GetValue(item) as IPlcValue;
-                            if (val != null)
-                            {
-                                w.Write($"- **{tagName}**: ");
-                                PrintValue(w, val);
-                                continue;
-                            }
-                        }
-
-                        var rcProp = item.GetType().GetProperty("ResponseCode");
-                        var rc = rcProp?.GetValue(item)?.ToString() ?? "?";
-                        w.WriteLine($"- **{tagName}**: {itemType} — {rc}");
-                    }
-                }
-                else
-                {
-                    w.WriteLine("(no values)");
-                }
-
-                w.WriteLine();
-                w.WriteLine("## 5. Summary");
-                w.WriteLine();
-                w.WriteLine("| Step | Result |");
-                w.WriteLine("|---|---|");
-                w.WriteLine("| TCP connect | ✅ |");
-                w.WriteLine("| COTP CR/CC handshake | ✅ |");
-                w.WriteLine($"| S7 Read Var ({readAddress}) | ✅ |");
-                w.WriteLine();
-
-                return 0;
+                return report.Failures == 0 ? 0 : 1;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                w.WriteLine();
-                w.WriteLine("## Error");
-                w.WriteLine();
-                w.WriteLine($"**{ex.GetType().Name}**: {ex.Message}");
-                w.WriteLine();
-                w.WriteLine("```");
-                w.WriteLine(ex.ToString());
-                w.WriteLine("```");
-                w.WriteLine();
+                report.Line();
+                report.Line("## Result: FAIL - connection error");
+                report.Line();
+                report.Line($"**{e.GetType().Name}**: {e.Message}");
+                report.Line();
+                report.Line("```");
+                report.Line(e.ToString());
+                report.Line("```");
+                report.Line();
+                report.Line("Common causes: PUT/GET not enabled on the CPU; wrong rack/slot; " +
+                            "S7-1200/1500 needs `--device-group OTHERS` or `--remote-tsap 0x0301`; " +
+                            "TCP 102 blocked by a firewall.");
                 return 1;
             }
             finally
             {
-                cotp?.Close();
-                tcp?.Close();
+                report.Flush();
+                connection?.Close();
             }
         }
 
-        private static void PrintValue(TextWriter w, IPlcValue v)
+        private static async Task ReadScalar(PlcReader reader, IPlcConnection connection, Report report,
+            string type, string address, Func<org.apache.plc4net.api.value.IPlcValue, string> render, string expected)
         {
-            if (!v.IsSimple())
+            try
             {
-                w.WriteLine($"(complex, {CountKeys(v)} keys)");
-                return;
+                var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+                rb.AddTagAddress("v", address);
+                var resp = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
+                var code = resp.GetResponseCode("v");
+                if (code != PlcResponseCode.Ok)
+                {
+                    report.Fail($"Read {type} {address}", $"response code {code}");
+                    return;
+                }
+                var actual = render(resp.GetValue("v"));
+                if (actual == expected)
+                {
+                    report.Pass($"Read {type} {address}", $"= {actual}");
+                }
+                else
+                {
+                    report.Fail($"Read {type} {address}", $"got {actual}, expected {expected}");
+                }
             }
-
-            if (v.IsBool())       { w.WriteLine($"`{v.GetBool()}` (BOOL)"); }
-            else if (v.IsByte())   { w.WriteLine($"0x{v.GetByte():X2} (BYTE)"); }
-            else if (v.IsUshort()) { w.WriteLine($"{v.GetUshort()} (UINT)"); }
-            else if (v.IsUint())   { w.WriteLine($"{v.GetUint()} (UDINT)"); }
-            else if (v.IsShort())  { w.WriteLine($"{v.GetShort()} (INT)"); }
-            else if (v.IsInt())    { w.WriteLine($"{v.GetInt()} (DINT)"); }
-            else if (v.IsFloat())  { w.WriteLine($"{v.GetFloat()} (REAL)"); }
-            else if (v.IsString()) { w.WriteLine($"\"{v.GetString()}\" (STRING)"); }
-            else                   { w.WriteLine($"(type not resolved)"); }
+            catch (Exception e)
+            {
+                report.Fail($"Read {type} {address}", e.Message);
+            }
         }
 
-        private static int CountKeys(IPlcValue v)
+        private static async Task MultiRead(PlcReader reader, IPlcConnection connection, Report report, int db)
         {
-            try { return v.GetStruct()?.Count ?? 0; }
-            catch { return 0; }
+            try
+            {
+                var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+                rb.AddTagAddress("bit", $"%DB{db}.DBX0.0");
+                rb.AddTagAddress("byte", $"%DB{db}.DBB1");
+                rb.AddTagAddress("word", $"%DB{db}.DBW12");
+                var resp = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
+                var ok = resp.GetResponseCode("bit") == PlcResponseCode.Ok
+                         && resp.GetResponseCode("byte") == PlcResponseCode.Ok
+                         && resp.GetResponseCode("word") == PlcResponseCode.Ok
+                         && resp.GetValue("bit").GetBool()
+                         && resp.GetValue("byte").GetByte() == 0xA5
+                         && resp.GetValue("word").GetUshort() == 0xBEEF;
+                if (ok) report.Pass("Read 3 tags in one request", "all three correct");
+                else report.Fail("Read 3 tags in one request", "a tag was wrong or errored");
+            }
+            catch (Exception e)
+            {
+                report.Fail("Read 3 tags in one request", e.Message);
+            }
+        }
+
+        private static async Task WriteRoundTrip(PlcReader reader, PlcWriter writer, IPlcConnection connection,
+            Report report, string address, Action<DefaultPlcWriteRequestBuilder> addWrite,
+            Func<org.apache.plc4net.api.value.IPlcValue, string> render, string expected)
+        {
+            try
+            {
+                var wb = (DefaultPlcWriteRequestBuilder)connection.WriteRequestBuilder;
+                addWrite(wb);
+                var wResp = (DefaultPlcWriteResponse)await writer.Write((DefaultPlcWriteRequest)wb.Build());
+                if (wResp.GetResponseCode("w") != PlcResponseCode.Ok)
+                {
+                    report.Fail($"Write {address}", $"write code {wResp.GetResponseCode("w")}");
+                    return;
+                }
+
+                var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+                rb.AddTagAddress("v", address);
+                var rResp = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
+                var actual = render(rResp.GetValue("v"));
+                if (actual == expected) report.Pass($"Write + read-back {address}", $"= {actual}");
+                else report.Fail($"Write + read-back {address}", $"read back {actual}, expected {expected}");
+            }
+            catch (Exception e)
+            {
+                report.Fail($"Write + read-back {address}", e.Message);
+            }
+        }
+
+        private static async Task ErrorPath(PlcReader reader, IPlcConnection connection, Report report)
+        {
+            try
+            {
+                var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+                rb.AddTagAddress("v", "%DB31999.DBW0");
+                var resp = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
+                var code = resp.GetResponseCode("v");
+                if (code != PlcResponseCode.Ok)
+                {
+                    report.Pass("Read a non-existent DB", $"rejected with {code} (connection survived)");
+                }
+                else
+                {
+                    report.Fail("Read a non-existent DB", "unexpectedly returned Ok");
+                }
+            }
+            catch (Exception e)
+            {
+                report.Fail("Read a non-existent DB", e.Message);
+            }
+        }
+
+        private static Dictionary<string, string> ParseOptions(string[] args)
+        {
+            var opts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            for (var i = 1; i < args.Length - 1; i++)
+            {
+                if (args[i].StartsWith("--", StringComparison.Ordinal))
+                {
+                    opts[args[i].Substring(2)] = args[i + 1];
+                    i++;
+                }
+            }
+            return opts;
+        }
+
+        private static string Get(Dictionary<string, string> opts, string key, string fallback) =>
+            opts.TryGetValue(key, out var v) ? v : fallback;
+
+        private sealed class Report
+        {
+            private readonly List<string> _lines = new();
+            private readonly List<string> _rows = new();
+            public int Passes { get; private set; }
+            public int Failures { get; private set; }
+
+            public void Line(string text = "") => _lines.Add(text);
+
+            public void Pass(string step, string detail)
+            {
+                Passes++;
+                _rows.Add($"| ✅ | {step} | {detail} |");
+            }
+
+            public void Fail(string step, string detail)
+            {
+                Failures++;
+                _rows.Add($"| ❌ | {step} | {detail} |");
+            }
+
+            public void Flush()
+            {
+                var w = Console.Out;
+                foreach (var l in _lines) w.WriteLine(l);
+                if (_rows.Count > 0)
+                {
+                    w.WriteLine();
+                    w.WriteLine("| | Step | Detail |");
+                    w.WriteLine("|---|---|---|");
+                    foreach (var r in _rows) w.WriteLine(r);
+                    w.WriteLine();
+                    w.WriteLine(Failures == 0
+                        ? $"## Result: PASS ({Passes}/{Passes})"
+                        : $"## Result: FAIL ({Passes} passed, {Failures} failed)");
+                }
+                w.Flush();
+                _lines.Clear();
+                _rows.Clear();
+            }
         }
     }
 }
