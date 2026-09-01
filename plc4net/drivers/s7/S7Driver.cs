@@ -35,8 +35,9 @@ namespace org.apache.plc4net.drivers.s7
         public S7Driver(ITransportManager transportManager)
             : base(transportManager)
         {
-            RegisterTransport(new TcpTransport());
-            RegisterTransport(new CotpTransport());
+            // ISO-on-TCP well-known port (RFC 1006).
+            RegisterTransport(new TcpTransport(102));
+            RegisterTransport(new CotpTransport(102));
         }
 
         public override string ProtocolCode => "s7";

@@ -33,7 +33,8 @@ namespace org.apache.plc4net.drivers.modbus
         public ModbusTcpDriver(ITransportManager transportManager)
             : base(transportManager)
         {
-            RegisterTransport(new TcpTransport());
+            // Modbus TCP well-known port.
+            RegisterTransport(new TcpTransport(502));
         }
 
         public override string ProtocolCode => "modbus-tcp";

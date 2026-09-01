@@ -26,24 +26,27 @@ using org.apache.plc4net.transports.udp;
 namespace org.apache.plc4net.drivers.knxnetip
 {
     /// <summary>
-    /// The KNXnet/IP driver. Registers under the "knxnetip" protocol code with UDP
-    /// tunnelling as the transport.
+    /// The KNXnet/IP driver. Registers under the "knxnet-ip" protocol code (matching
+    /// plc4j / plc4py / plc4go) with UDP tunnelling as the transport.
     /// </summary>
     /// <remarks>
-    /// Connection string: <c>knxnetip:udp://192.168.1.10:3671?knx-group-address-num-levels=3</c>.
+    /// Connection string: <c>knxnet-ip:udp://192.168.1.10:3671?knx-group-address-num-levels=3</c>.
     /// The gateway port defaults to 3671. <c>knx-group-address-num-levels</c>
     /// (1, 2 or 3; default 3) fixes the bit layout for every group address on the
     /// connection.
     /// </remarks>
     public class KnxNetIpDriver : DriverBase
     {
+        /// <summary>The default KNXnet/IP UDP port (KNX 03/03/02).</summary>
+        private const int KnxNetIpPort = 3671;
+
         public KnxNetIpDriver(ITransportManager transportManager)
             : base(transportManager)
         {
-            RegisterTransport(new UdpTransport());
+            RegisterTransport(new UdpTransport(KnxNetIpPort));
         }
 
-        public override string ProtocolCode => "knxnetip";
+        public override string ProtocolCode => "knxnet-ip";
 
         public override string ProtocolName => "KNXnet/IP";
 
