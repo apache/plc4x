@@ -27,7 +27,9 @@ using Microsoft.Extensions.Logging;
 using org.apache.plc4net.api.metadata;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.drivers.s7.messages;
+using org.apache.plc4net.drivers.s7.readwrite.model;
 using org.apache.plc4net.exceptions;
+using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.messages;
 using org.apache.plc4net.model;
 using org.apache.plc4net.spi.drivers;
@@ -51,18 +53,25 @@ namespace org.apache.plc4net.drivers.s7
         // Each of rack and slot occupies 4 bits of the low byte, so values outside 0..15
         // cannot be represented and are rejected rather than silently truncated.
         // Device groups (Java DeviceGroup): PG_OR_PC = 0x01, OS = 0x02, OTHERS = 0x03.
-        private const int LocalDeviceGroup = 0x03;   // OTHERS, matching Java's local default
-        private const int RemoteDeviceGroup = 0x01;  // PG_OR_PC, matching Java's remote default
+        private const int DefaultLocalDeviceGroup = 0x03;   // OTHERS, matching Java's local default
+        private const int DefaultRemoteDeviceGroup = 0x01;  // PG_OR_PC, matching Java's remote default
         private const int MaxRack = 0x0F;
         private const int MaxSlot = 0x0F;
+        private const int DefaultRequestTimeoutMs = 5000;
 
+        private readonly int _requestTimeoutMs;
         private int _pduRef = 1;
         private readonly int _remoteRack;
         private readonly int _remoteSlot;
         private readonly int _localRack;
         private readonly int _localSlot;
+        private readonly int _localDeviceGroup;
+        private readonly int _remoteDeviceGroup;
         private readonly int _explicitRemoteTsap;
         private readonly int _explicitLocalTsap;
+
+        /// <summary>PDU length negotiated in Setup Communication (bytes). Set in OnConnect.</summary>
+        public int NegotiatedPduLength { get; private set; }
 
         public S7Connection(ConnectionString connectionString, ITransportInstance transport)
             : base(connectionString, transport)
@@ -76,11 +85,22 @@ namespace org.apache.plc4net.drivers.s7
             _localRack = ParseRackSlotParameter(connectionString, "local-rack", 1);
             _localSlot = ParseRackSlotParameter(connectionString, "local-slot", 1);
 
+            // Device group for the derived TSAP, matching Java's remote-device-group /
+            // local-device-group. S7-1200 / S7-1500 often need remote-device-group=OTHERS
+            // (0x03) rather than the S7-300/400 default PG_OR_PC (0x01); if that still
+            // fails, configure an explicit S7 connection in TIA and pass remote-tsap.
+            _localDeviceGroup = ParseDeviceGroupParameter(
+                connectionString, "local-device-group", DefaultLocalDeviceGroup);
+            _remoteDeviceGroup = ParseDeviceGroupParameter(
+                connectionString, "remote-device-group", DefaultRemoteDeviceGroup);
+
             // Explicit TSAP overrides, honoured the way Java's getLocalTsap()/
             // getRemoteTsap() do: a non-zero value replaces the rack/slot derivation,
             // for CPUs/CPs whose TSAP is not rack/slot-expressible.
             _explicitRemoteTsap = ParseHexParameter(connectionString, "remote-tsap", 0);
             _explicitLocalTsap = ParseHexParameter(connectionString, "local-tsap", 0);
+
+            _requestTimeoutMs = connectionString.GetIntParameter("request-timeout", DefaultRequestTimeoutMs);
 
             ValidateRackSlot("remote-rack", _remoteRack, MaxRack);
             ValidateRackSlot("remote-slot", _remoteSlot, MaxSlot);
@@ -119,6 +139,33 @@ namespace org.apache.plc4net.drivers.s7
                     $"{name} must be a decimal integer, but was '{raw}'.");
             }
             return value;
+        }
+
+        /// <summary>
+        /// Reads a device-group parameter: the Java names (<c>PG_OR_PC</c>, <c>OS</c>,
+        /// <c>OTHERS</c>) or a raw value (<c>1</c>, <c>0x03</c>).
+        /// </summary>
+        private static int ParseDeviceGroupParameter(
+            ConnectionString connectionString, string name, int defaultValue)
+        {
+            var raw = connectionString.GetParameter(name);
+            if (raw == null) return defaultValue;
+            switch (raw.Trim().ToUpperInvariant())
+            {
+                case "PG_OR_PC": case "PG": return 0x01;
+                case "OS": return 0x02;
+                case "OTHERS": case "OTHER": return 0x03;
+            }
+            var hex = raw.StartsWith("0x", StringComparison.OrdinalIgnoreCase);
+            if (int.TryParse(hex ? raw.Substring(2) : raw,
+                    hex ? NumberStyles.HexNumber : NumberStyles.Integer,
+                    CultureInfo.InvariantCulture, out var value)
+                && value >= 0 && value <= 0xFF)
+            {
+                return value;
+            }
+            throw new PlcConnectionException(
+                $"{name} must be PG_OR_PC / OS / OTHERS or a byte value, but was '{raw}'.");
         }
 
         /// <summary>
@@ -161,16 +208,144 @@ namespace org.apache.plc4net.drivers.s7
             // derivation, mirroring Java's getRemoteTsap()/getLocalTsap().
             var localTsap = _explicitLocalTsap != 0
                 ? _explicitLocalTsap
-                : EncodeTsap(LocalDeviceGroup, _localRack, _localSlot);
+                : EncodeTsap(_localDeviceGroup, _localRack, _localSlot);
             var remoteTsap = _explicitRemoteTsap != 0
                 ? _explicitRemoteTsap
-                : EncodeTsap(RemoteDeviceGroup, _remoteRack, _remoteSlot);
+                : EncodeTsap(_remoteDeviceGroup, _remoteRack, _remoteSlot);
 
             cotp.Open(
                 localTsapHi: (byte)((localTsap >> 8) & 0xFF),
                 localTsapLo: (byte)(localTsap & 0xFF),
                 remoteTsapHi: (byte)((remoteTsap >> 8) & 0xFF),
                 remoteTsapLo: (byte)(remoteTsap & 0xFF));
+
+            // S7 Setup Communication - negotiate PDU length and parallel-job limits.
+            // A real CPU ignores Read / Write Var until this has completed.
+            PerformSetupCommunication();
+        }
+
+        private void PerformSetupCommunication()
+        {
+            var pduRef = (ushort)(Interlocked.Increment(ref _pduRef) & 0xFFFF);
+            TransportInstance.Write(S7Constants.BuildSetupCommunication(pduRef));
+
+            S7MessageResponseData response;
+            try
+            {
+                response = ParseResponse(
+                    ReadOneS7MessageAsync(CancellationToken.None).GetAwaiter().GetResult());
+            }
+            catch (TimeoutException e)
+            {
+                throw new PlcConnectionException(
+                    "No S7 Setup Communication response - the CPU may not permit PUT/GET " +
+                    "access, or the rack/slot / TSAP is wrong.", e);
+            }
+            catch (S7DriverException e)
+            {
+                throw new PlcConnectionException(e.Message, e);
+            }
+
+            if (response.Parameter is not S7ParameterSetupCommunication setup)
+            {
+                throw new PlcConnectionException(
+                    "S7 Setup Communication: the response carried no setup parameter.");
+            }
+
+            NegotiatedPduLength = setup.PduLength;
+            Logger.LogInformation(
+                "S7 Setup Communication complete: negotiated PDU length {PduLength} bytes",
+                NegotiatedPduLength);
+        }
+
+        /// <summary>
+        /// Parses one S7 message and asserts it is an error-free AckData response.
+        /// </summary>
+        private static S7MessageResponseData ParseResponse(byte[] bytes)
+        {
+            S7Message message;
+            try
+            {
+                message = S7Message.StaticParse(new ReadBuffer(bytes));
+            }
+            catch (Exception e)
+            {
+                throw new S7DriverException("S7 response could not be parsed.", e);
+            }
+
+            if (message is not S7MessageResponseData response)
+            {
+                throw new S7DriverException(
+                    $"S7 response is a {message.GetType().Name}, not an AckData message.");
+            }
+            if (response.ErrorClass != 0x00 || response.ErrorCode != 0x00)
+            {
+                throw new S7DriverException(
+                    $"S7 request rejected: error 0x{response.ErrorClass:X2}{response.ErrorCode:X2}.");
+            }
+            return response;
+        }
+
+        private static IPlcValue ParseValue(DataTransportSize transportSize, byte[] data)
+        {
+            if (transportSize == DataTransportSize.BIT)
+            {
+                return new PlcBOOL(data.Length > 0 && data[0] != 0x00);
+            }
+            return data.Length switch
+            {
+                1 => new PlcBYTE(data[0]),
+                2 => new PlcUINT((ushort)((data[0] << 8) | data[1])),
+                4 => new PlcUDINT((uint)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3])),
+                _ => new PlcRawByteArray(data),
+            };
+        }
+
+        /// <summary>
+        /// Reads exactly one S7 message off the transport, framed by the length in its
+        /// own header (10-byte Job header, 12-byte AckData header), so a second buffered
+        /// response is not swallowed.
+        /// </summary>
+        private async Task<byte[]> ReadOneS7MessageAsync(CancellationToken cancellationToken)
+        {
+            var deadline = Environment.TickCount64 + _requestTimeoutMs;
+            await WaitForBytesAsync(12, deadline, cancellationToken).ConfigureAwait(false);
+
+            var header = TransportInstance.PeekReadableBytes(12);
+            if (header[0] != S7Constants.ProtocolId)
+            {
+                // Drain the junk so the next read is not stuck behind it.
+                TransportInstance.Read(TransportInstance.GetNumBytesAvailable());
+                throw new S7DriverException(
+                    $"Not an S7 message: first byte 0x{header[0]:X2} (expected 0x32).");
+            }
+
+            var headerLength = header[1] == S7Constants.AckData ? 12 : 10;
+            var paramLength = (header[6] << 8) | header[7];
+            var dataLength = (header[8] << 8) | header[9];
+            var total = headerLength + paramLength + dataLength;
+
+            await WaitForBytesAsync(total, deadline, cancellationToken).ConfigureAwait(false);
+            return TransportInstance.Read(total);
+        }
+
+        private async Task WaitForBytesAsync(int count, long deadline, CancellationToken cancellationToken)
+        {
+            while (TransportInstance.GetNumBytesAvailable() < count)
+            {
+                if (!TransportInstance.IsOpen)
+                {
+                    throw new S7DriverException(
+                        "Transport closed while waiting for an S7 response.");
+                }
+                if (Environment.TickCount64 >= deadline)
+                {
+                    throw new TimeoutException(
+                        $"S7 response incomplete: {TransportInstance.GetNumBytesAvailable()}/{count} bytes " +
+                        $"within {_requestTimeoutMs} ms.");
+                }
+                await Task.Delay(5, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         private static int EncodeTsap(int deviceGroup, int rack, int slot)
@@ -223,93 +398,34 @@ namespace org.apache.plc4net.drivers.s7
             try
             {
                 var pduRef = (ushort)(Interlocked.Increment(ref _pduRef) & 0xFFFF);
-                var s7Payload = S7Constants.BuildReadRequest(pduRef, tags);
+                TransportInstance.Write(S7Constants.BuildReadRequest(pduRef, tags));
 
-                // Write and read through the transport.
-                TransportInstance.Write(s7Payload);
+                var response = ParseResponse(
+                    await ReadOneS7MessageAsync(cancellationToken).ConfigureAwait(false));
 
-                // Wait for response.
-                var deadline = Environment.TickCount64 + 5000;
-                while (Environment.TickCount64 < deadline)
+                if (response.Payload is not S7PayloadReadVarResponse payload)
                 {
-                    var available = TransportInstance.GetNumBytesAvailable();
-                    if (available >= 12) break; // S7 header minimum
-                    await Task.Delay(5, cancellationToken).ConfigureAwait(false);
+                    foreach (var name in tagNames)
+                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InternalError);
+                    return new DefaultPlcReadResponse(request, results);
                 }
 
-                cancellationToken.ThrowIfCancellationRequested();
+                for (var i = 0; i < tagNames.Count; i++)
+                {
+                    var name = tagNames[i];
+                    if (i >= payload.Items.Count)
+                    {
+                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InternalError);
+                        continue;
+                    }
+                    var item = payload.Items[i];
+                    results[name] = item.ReturnCode == DataTransportErrorCode.OK
+                        ? new DefaultPlcResponseItem<IPlcValue>(
+                            PlcResponseCode.Ok, ParseValue(item.TransportSize, item.Data))
+                        : new DefaultPlcTagErrorItem<IPlcValue>(MapReturnCode(item.ReturnCode));
+                }
 
-                var avail = TransportInstance.GetNumBytesAvailable();
-                if (avail < 12)
-                throw new TimeoutException("No S7 response received.");
-
-            // Read and parse the S7 response.
-            var responseBytes = TransportInstance.Read(avail);
-
-            var paramOffset = 10; // after S7 header
-
-            // Function code
-            var funcCode = responseBytes[paramOffset];
-            if (funcCode != S7Constants.ReadVar)
-            {
-                foreach (var name in tagNames)
-                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InternalError);
                 return new DefaultPlcReadResponse(request, results);
-            }
-
-            var itemCount = responseBytes[paramOffset + 1];
-            var dataOffset = 10 + ((responseBytes[6] << 8) | responseBytes[7]); // after param part
-
-            var paramIdx = paramOffset + 2; // after funcCode + itemCount
-            var dataIdx = dataOffset + 2; // after funcCode + itemCount in data part
-
-            for (int i = 0; i < itemCount && i < tagNames.Count; i++)
-            {
-                // Bounds check: each parameter item is 12 bytes.
-                if (paramIdx + 12 > responseBytes.Length) break;
-
-                var name = tagNames[i];
-                var returnCode = responseBytes[paramIdx]; // 0xFF = success
-
-                if (returnCode == 0xFF)
-                {
-                    // Read data: returnCode(1) + transportSize(1) + length(2) + data
-                    if (dataIdx + 4 <= responseBytes.Length)
-                    {
-                        var dataRetCode = responseBytes[dataIdx];
-                        var dataLen = (responseBytes[dataIdx + 2] << 8) | responseBytes[dataIdx + 3];
-
-                        if (dataRetCode == 0xFF && dataIdx + 4 + dataLen <= responseBytes.Length)
-                        {
-                            var value = ParseS7Value(responseBytes, dataIdx + 4, dataLen);
-                            results[name] = new DefaultPlcResponseItem<IPlcValue>(
-                                PlcResponseCode.Ok, value);
-                        }
-                        else
-                        {
-                            results[name] = new DefaultPlcTagErrorItem<IPlcValue>(
-                                PlcResponseCode.InternalError);
-                        }
-                    }
-                    else
-                    {
-                        // Truncated response — data item header missing.
-                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(
-                            PlcResponseCode.InternalError);
-                    }
-                }
-                else
-                {
-                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(
-                        PlcResponseCode.InternalError);
-                }
-
-                paramIdx += 12; // each parameter item is 12 bytes
-                if (dataIdx + 4 <= responseBytes.Length)
-                    dataIdx += 4 + ((responseBytes[dataIdx + 2] << 8) | responseBytes[dataIdx + 3]);
-            }
-
-            return new DefaultPlcReadResponse(request, results);
             }
             catch (OperationCanceledException)
             {
@@ -353,65 +469,25 @@ namespace org.apache.plc4net.drivers.s7
             try
             {
                 var pduRef = (ushort)(Interlocked.Increment(ref _pduRef) & 0xFFFF);
-                var s7Payload = S7Constants.BuildWriteRequest(pduRef, items);
+                TransportInstance.Write(S7Constants.BuildWriteRequest(pduRef, items));
 
-                TransportInstance.Write(s7Payload);
+                var response = ParseResponse(
+                    await ReadOneS7MessageAsync(cancellationToken).ConfigureAwait(false));
 
-                // Wait for response.
-                var deadline = Environment.TickCount64 + 5000;
-                while (Environment.TickCount64 < deadline)
-                {
-                    var available = TransportInstance.GetNumBytesAvailable();
-                    if (available >= 12) break;
-                    await Task.Delay(5, cancellationToken).ConfigureAwait(false);
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var avail = TransportInstance.GetNumBytesAvailable();
-                if (avail < 12)
-                {
-                    // No response — mark all tags as error.
-                    foreach (var name in tagNames)
-                        codes[name] = PlcResponseCode.InternalError;
-                    return new DefaultPlcWriteResponse(request, codes);
-                }
-
-                var responseBytes = TransportInstance.Read(avail);
-
-                var funcCode = responseBytes[10];
-                if (funcCode != S7Constants.WriteVar)
+                if (response.Payload is not S7PayloadWriteVarResponse payload)
                 {
                     foreach (var name in tagNames)
                         codes[name] = PlcResponseCode.InternalError;
                     return new DefaultPlcWriteResponse(request, codes);
                 }
 
-                var itemCount = responseBytes[11];
-                var dataOffset = 10 + ((responseBytes[6] << 8) | responseBytes[7]);
-                var dataIdx = dataOffset + 2; // funcCode + itemCount in data part
-
-                for (int i = 0; i < itemCount && i < tagNames.Count; i++)
+                for (var i = 0; i < tagNames.Count; i++)
                 {
                     var name = tagNames[i];
-                    if (dataIdx < responseBytes.Length)
-                    {
-                        var retCode = responseBytes[dataIdx];
-                        codes[name] = retCode == 0xFF
-                            ? PlcResponseCode.Ok
-                            : PlcResponseCode.InternalError;
-                        // Advance past: return code (1) + transport size (1) + length (2) + data
-                        if (dataIdx + 4 <= responseBytes.Length)
-                        {
-                            var dataLen = (responseBytes[dataIdx + 2] << 8) | responseBytes[dataIdx + 3];
-                            dataIdx += 4 + dataLen;
-                        }
-                        else dataIdx++;
-                    }
-                    else
-                    {
-                        codes[name] = PlcResponseCode.InternalError;
-                    }
+                    codes[name] = i < payload.Items.Count
+                                  && payload.Items[i].ReturnCode == DataTransportErrorCode.OK
+                        ? PlcResponseCode.Ok
+                        : PlcResponseCode.InternalError;
                 }
             }
             catch (OperationCanceledException)
@@ -477,16 +553,13 @@ namespace org.apache.plc4net.drivers.s7
                 $"S7 Write: cannot encode value of type {raw.GetType().Name}.");
         }
 
-        private static IPlcValue ParseS7Value(byte[] data, int offset, int length)
+        private static PlcResponseCode MapReturnCode(DataTransportErrorCode code) => code switch
         {
-            if (length == 1)
-                return new PlcBYTE(data[offset]);
-            if (length == 2)
-                return new PlcUINT((ushort)((data[offset] << 8) | data[offset + 1]));
-            if (length >= 4)
-                return new PlcUDINT((uint)((data[offset] << 24) | (data[offset + 1] << 16)
-                    | (data[offset + 2] << 8) | data[offset + 3]));
-            return new PlcBYTE(0);
-        }
+            DataTransportErrorCode.ACCESS_DENIED => PlcResponseCode.AccessDenied,
+            DataTransportErrorCode.INVALID_ADDRESS => PlcResponseCode.InvalidAddress,
+            DataTransportErrorCode.DATA_TYPE_NOT_SUPPORTED => PlcResponseCode.InvalidDatatype,
+            DataTransportErrorCode.NOT_FOUND => PlcResponseCode.NotFound,
+            _ => PlcResponseCode.InternalError,
+        };
     }
 }
