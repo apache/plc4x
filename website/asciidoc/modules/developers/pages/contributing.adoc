@@ -172,7 +172,7 @@ The same model is used for a wide variety of other projects, so it should be pre
 - Bugfix releases don't have a dedicated release branch, they are just performed on the corresponding minor versions release branch
 
 // Use http://www.webgraphviz.com/ for online editiing this ...
-[graphviz, plc4x-branching-model, png]
+[graphviz,plc4x-branching-model,svg,opts="inline",svg-type="inline"]
 ----
 digraph g{
     rankdir="LR";

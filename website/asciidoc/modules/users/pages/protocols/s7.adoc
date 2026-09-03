@@ -16,7 +16,7 @@
 //
 :imagesdir: ../../images/
 :icons: image
-:iconsdir: ../../images/users/protocols
+:iconsdir: ../_images/users/protocols
 :source-highlighter: rouge
 //:coderay-linenums-mode: inline
 //:coderay-css: class
@@ -370,7 +370,7 @@ Here we will assume that you use standard technological functions/libraries with
 The different actors involved in communication are shown in image 1.
 
 
-[plantuml,s7h_image01, format=png, align="center"]
+[plantuml,s7h_image01,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title Participants in the communication model of the S7 driver.
@@ -402,7 +402,7 @@ endbox
 
 ==== S7 Read/Write
 
-[plantuml,s7h_image02, format=png, align="center"]
+[plantuml,s7h_image02,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 <b>MODE</b> Suscription.
@@ -523,7 +523,7 @@ In the use of a unified Siemens architecture, the operator panels (HMI) and WinC
 In the case of an application developed with PLC4X, the use of MODE events will allow your application to indicate to users the quality of the points used, and that by design the quality is not updated in the controller.
 
 
-[plantuml, s7h_image03, format=png, align="center"]
+[plantuml,s7h_image03,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 <b>MODE</b> Suscription.
@@ -629,7 +629,7 @@ public class PLCEventModeSubscription {
 
 System events allow to receive asynchronously any event that affects the operation of the controller, or any of its peripheral equipment that is capable of sending events through a PROFIBUS or Profinet fieldbus.
 
-[plantuml, s7h_image04, format=png, align="center"]
+[plantuml,s7h_image04,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 System Event <b>SYS</b> subscription.
@@ -661,7 +661,7 @@ PLC4X --> App : to consumer
 
 A first example of its use is the change of state of a CP, IM or FM within the architecture of the controller. This will allow the application to indicate that there is an effect on the system that may affect the quality of the signals used, allowing preventive or corrective actions to be taken as required.
 
-[plantuml, s7h_image05, format=png, align="center"]
+[plantuml,s7h_image05,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X User Event <b>USR</b> subscription.
@@ -844,7 +844,7 @@ public static void main(String[] args) throws Exception {
 
 The Java code shows how to detect the type of event in an event type *SYS*. In the S7 driver, there is an enum object _S7DiagnosticEventId_(10) that allows us to identify which internal event of the *PLC(AS)* generated it and thus, through the interpretation of the INFO1 and INFO2 fields, determine the root cause of the event.
 
-[NOTE, icon  s7_note.png]
+[NOTE,icon=s7_note.png]
 To date, the enum object _S7DiagnosticEventId_ contains a considerable amount of diagnostic values, it must be updated according to the new CPUs or firmware versions available.
 
 Unlike *SYS* events, *USR* events must be interpreted directly by the *App* application, so they are generally scheduled during the development phase of the *S7App* application.
@@ -869,7 +869,7 @@ below illustrates the message flow at the protocol level. Note that the older
 `S7AlarmEvent` class is not part of the current API - a subscription delivers a standard
 `PlcSubscriptionEvent`.
 
-[plantuml, s7h_image06, format=png, align="center"]
+[plantuml,s7h_image06,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 Alarm Event <b>ALM</b> suscription.
@@ -987,7 +987,7 @@ classes above, this one *is* implemented by the current driver: subscribe an ord
 `S7Tag` with subscription type `CYCLIC` and a requested `Duration`, and the driver picks a
 matching hardware time base and factor for you.
 
-[plantuml, s7h_image07, format=png, align="center"]
+[plantuml,s7h_image07,svg,opts="inline",svg-type="inline",align="center"]
 ....
 autonumber "<b>(00)"
 title Participants in the communication model of the S7 driver.
@@ -1028,17 +1028,17 @@ This is fundamental data to determine the quality of the data supplied by the PL
 
 By initiating the connection with the PLC you can determine its operating status, which will allow you to define the quality of the data taken and what the implemented application can do or not, eventually this is the procedure carried out by the Siemens CPs.
 
-[NOTE,icon=users/protocols/s7_note.png]
+[NOTE,icon=s7_note.png]
 Why SZL and not SSL? Well, creative freedom. The translation of the manuals from German to Spanish use SZL and German to English use SSL. Both the source code and the documentation use this reduction to keep the text uniform.
 
 Due to the fact that the data structures are so varied, basically one per type of diagnosis, the decision was made to return these as an array of bytes, leaving the developer to implement the parser according to their requirements.
 
 For a first approach to using system state lists a byte array to JSON notation parser is available at "org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.SZL" .
 
-[NOTE,icon=users/protocols/s7_tip.png]
+[NOTE,icon=s7_tip.png]
 Make use of the XXX document for a detailed explanation of each SZL, since as indicated, everything will depend on the hardware you have installed.
 
-[NOTE,icon=users/protocols/s7_note.png]
+[NOTE,icon=s7_note.png]
 The driver itself reads SZLs internally - to auto-detect the controller type at connect
 time, and to back `browse` - through `S7SzlService`/`S7CotpConnection`, not through a
 user-addressable `PlcTag`. The `SZL_ID=...;INDEX=...` tag address used in the walkthrough
@@ -1160,7 +1160,7 @@ In case of not being able to process the request, it is detected in (13) to take
 The following diagram represents the information in JSON format.
 
 
-[plantuml, s7h_szlxy11demo, format=png, align="center"]
+[plantuml,s7h_szlxy11demo,svg,opts="inline",svg-type="inline",align="center"]
 ....
 @startjson
 {"RECORDS":[{"AUSBG2":0,"AUSBG1":61,"BGTYP":130,"INDEX":1,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":0,"AUSBG1":2,"BGTYP":130,"INDEX":6,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":768,"AUSBG1":22021,"BGTYP":0,"INDEX":7,"MIFB":"                    "},{"AUSBG2":3,"AUSBG1":22021,"BGTYP":0,"INDEX":129,"MIFB":"Boot Loader         "}],"LENGTHDR":28,"SZL-ID":17,"INDEX":0,"N_DR":4}

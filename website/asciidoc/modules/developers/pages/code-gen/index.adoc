@@ -30,7 +30,7 @@ So in the end we need 3 parts:
 
 This maven plugin uses a given protocol definition as well as a language template and generates code for reading/writing data in that protocol with the given language.
 
-[ditaa,code-generation-intro]
+[ditaa,code-generation-intro,svg,opts="inline",svg-type="inline"]
 ....
                   +------------+
                   |c05A        |
@@ -68,7 +68,7 @@ These add more layers to the hierarchy.
 
 So for example in case of generating a `Siemens S7` Driver for `Java` this would look like this:
 
-[ditaa,code-generation-intro-s7-java]
+[ditaa,code-generation-intro-s7-java,svg,opts="inline",svg-type="inline"]
 ....
                +------------+
                |c05A        |
