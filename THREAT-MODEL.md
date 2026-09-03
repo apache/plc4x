@@ -11,15 +11,29 @@
   driver layer, SPI, transports, code-generation runtime, and the four
   language bindings shipped here (`plc4j`, `plc4go`, `plc4c`, `plc4py`).
   The separately-released `plc4x-extras` repository (OPC-UA Server, PLC4X
-  Server, Calcite / Camel / Kafka-Connect / Karaf / NiFi integrations,
-  Connection-Cache, OPM, Scraper) is **out of scope** of this document
-  *(maintainer: Chris Dutz, 2026-05-29 16:06Z)* and will be modelled
-  separately if and when it is brought into the program.
+  Server, Calcite / Camel / Kafka-Connect / Karaf / NiFi integrations)
+  is **out of scope** of this document *(maintainer: Chris Dutz,
+  2026-05-29 16:06Z)* and will be modelled separately if and when it is
+  brought into the program. **Correction (2026-09-03):** earlier
+  revisions also placed the connection cache, OPM and the scraper in
+  `plc4x-extras`. They are in **this** repository, under `plc4j/tools/`
+  — the connection cache as `plc4j-tools-connection-cache`
+  (re-implemented and renamed from `CachedPlcConnectionManager` to
+  `PlcConnectionCache`), OPM as `plc4j-tools-opm` (ported to SPI3), and
+  the scraper replaced by the event-pump, `plc4j-tools-event-pump`.
+  All are built and deployed from here, so they are **in** scope; see
+  the tools row of the §2 component table.
 - **Version / commit**: drafted against the default branch (`develop`),
   HEAD `32b4f0c` ("build(deps): bump jackson.version from 2.21.3 to 2.21.4"
-  as of draft time). A vulnerability report against PLC4X release *N* is
-  triaged against the model as it stood at *N*, not at HEAD.
-- **Date**: 2026-05-30.
+  as of draft time); re-checked against `develop` at `173fe05`
+  (2026-09-03), which is after the SPI3 migration, the OPC UA
+  secure-by-default work and the parser-hardening series. A
+  vulnerability report against PLC4X release *N* is triaged against the
+  model as it stood at *N*, not at HEAD.
+- **Date**: 2026-05-30; §5a and everything downstream of it (§4
+  B2-OPCUA, §7, §8 P1/P2, §9, §10, §11, §11a, §13, §14 Q14–Q16)
+  re-checked against the shipped code on **2026-09-03**, after the OPC
+  UA secure-by-default work landed.
 - **Authors**: ASF Security team draft, awaiting PLC4X PMC review.
 - **Status**: draft — under maintainer review.
 - **Reporting cross-reference**: vulnerabilities that may violate a §8
@@ -37,7 +51,7 @@
   protocol's published specification, or general OT-protocol domain
   knowledge, awaiting PMC ratification — every *(inferred)* tag has a
   matching §14 question.
-- **Draft confidence**: 50 documented / 3 maintainer / 45 inferred.
+- **Draft confidence**: 51 documented / 4 maintainer / 45 inferred.
 
 **About the project.** PLC4X provides a uniform client-side API
 (`PlcConnection` in Java; analogous in Go, C, Python) on top of a fleet of
@@ -111,16 +125,16 @@ split of the kind a network service would have. The roles are:
 
 ### Component-family table
 
-The main repo carves naturally into nine families with distinct threat
-profiles. Anything marked **out** below reappears in §3 with the
+The main repo carves naturally into a dozen families with distinct
+threat profiles. Anything marked **out** below reappears in §3 with the
 reason.
 
 | Family                                                                                                                                                                             | Representative entry point                                               | Touches outside the process?                    | In this model?                                                                                                                        |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | **Java public API (`plc4j/api`)**                                                                                                                                                  | `PlcDriverManager.getConnectionFactory().getConnection(url, auth)`       | no — pure dispatch                              | **yes**                                                                                                                               |
 | **Java SPI / runtime (`plc4j/spi`)**                                                                                                                                               | `AbstractPlcConnection`, `ConversationContext`, `Plc4xProtocolBase`      | no — orchestration                              | **yes**                                                                                                                               |
-| **Per-protocol drivers (`plc4j/drivers/{s7,modbus,opcua,ads,knxnetip,bacnet,c-bus,can,canopen,ctrlx,eip,firmata,iec-60870,logix,open-protocol,plc4x,profinet,profinet-ng,umas}`)** | one `PlcDriver` per protocol                                             | **yes — network**, via the registered transport | **yes**                                                                                                                               |
-| **Transports (`plc4j/transports/{tcp,udp,serial,raw-socket,pcap-replay,pcap-shared,socketcan,can,virtualcan,test}`)**                                                              | Netty socket / serial / pcap                                             | **yes — sockets, serial devices, libpcap**      | **yes**                                                                                                                               |
+| **Per-protocol drivers (`plc4j/drivers/{ab-eth,ads,bacnet,c-bus,can,canopen,ctrlx,eip,firmata,iec-60870,knxnetip,modbus,opcua,open-protocol,plc4x,profinet,profinet-ng,s7,simulated,slmp,umas}`)** | one `PlcDriver` per protocol                                             | **yes — network**, via the registered transport | **yes — but only for the drivers the protocol support table marks with a green check; see §3 item 11** |
+| **Transports (`plc4j/transports/{api,tcp,udp,serial,cotp,tls,raw-socket,pcap-replay,can,can-socketcan,can-virtualcan,test}`)** | blocking `SocketChannel` on a virtual thread per connection (TCP), `SSLSocket` (TLS), serial, libpcap | **yes — sockets, serial devices, libpcap**      | **yes**                                                                                                                               |
 | **OPC UA security subsystem** (`plc4j/drivers/opcua/.../security/`, `.../context/SecureChannel`)                                                                                   | certificate verifier, security-policy negotiator, secure-channel encoder | **yes — TLS-like primitives on the wire**       | **yes — distinguished from other drivers; see §8 P1**                                                                                 |
 | **Code-generation runtime (mspec read/write generators)** under `plc4j/.../readwrite/`, `plc4go/protocols/`, `plc4c/generated-sources/`                                            | generated parsers / serializers                                          | **yes — driven by remote-PLC bytes**            | **yes** — same trust level as the driver that uses it                                                                                 |
 | **Go bindings (`plc4go/`)**                                                                                                                                                        | `plc4go.NewPlcDriverManager()`                                           | as core                                         | **yes**                                                                                                                               |
@@ -129,7 +143,10 @@ reason.
 | **.NET bindings (`plc4net/`)**                                                                                                                                                     | n/a                                                                      | n/a                                             | **out** — README declares "not ready for usage - abandoned" *(documented: `README.md`)*                                               |
 | **PLC4X proxy driver (`plc4j/drivers/plc4x`)**                                                                                                                                     | `plc4x:tcp://host/?remote-connection-string=...`                         | network — outbound to a remote PLC4X server     | **yes for the client side; the server side is in `plc4x-extras` and out of scope** *(documented: `website/.../protocols/plc4x.adoc`)* |
 | **Simulated / mock drivers (`plc4j/drivers/{simulated,mock}`)**                                                                                                                    | `simulated://...`                                                        | no                                              | **yes for code-quality; not a security surface**                                                                                      |
-| **Utilities (`plc4j/utils/{pcap-replay,pcap-shared,plc-simulator,raw-sockets,test-generator,test-utils}`)**                                                                        | dev tooling                                                              | varies                                          | **out** — dev / test only *(inferred — §14 Q2)*                                                                                       |
+| **Utilities (`plc4j/utils/{raw-sockets,test-generator,test-utils}`)** | dev tooling                                                              | varies                                          | **out** — dev / test only *(inferred — §14 Q2)*                                                                                       |
+| **Client-side tools (`plc4j/tools/{connection-cache,opm,event-pump,capture-replay}`)** | `PlcConnectionCache`, `PlcEntityManager`, the event-pump's YAML job configuration | indirectly — they drive connections through the drivers | **yes** — they hold live connections, credentials and connection strings on behalf of the embedding application. Published from this repo (`plc4j-tools-*`), **not** part of the `plc4x-extras` carve-out. |
+| **Audit log (`plc4j/utils/audit-log/{api,impl}`)** | `audit-log-file` connection-string parameter | **yes — writes wire traces to the host filesystem** | **yes** — off unless a path is configured; when on it writes request/response traces (payload bytes, and connection metadata subject to the §5a redaction rules) to a rolling file the integrator must protect. |
+| **Subscription emulation (`plc4j/utils/subscription-emulation`)** | polling loop on top of a driver's read path | via the driver it wraps | **yes** — same trust level as the driver it polls. |
 | **Code-generation tooling under `code-generation/`**                                                                                                                               | mspec compiler invoked at build                                          | host filesystem                                 | **out** — build-time, not in the deployed artifact *(inferred — §14 Q2)*                                                              |
 | **`tools/`, `images/`, `media/`, `website/`, `licenses/`, `src/`, `.idea/`, `.github/`, `.mvn/`, `Dockerfile`, `docker-compose.yaml`, `Jenkinsfile`**                              | tooling, docs, build orchestration                                       | n/a                                             | **out** *(inferred — §14 Q2)*                                                                                                         |
 
@@ -159,11 +176,14 @@ any of these will be closed with the cited disposition.
    PLC *(documented: `README.md`, `plc4j/api/.../PlcConnection.java` —
    single connect/read/write/subscribe shape; transport inventory is
    exclusively client)*. Server / gateway functionality (OPC-UA Server,
-   PLC4X Server, Calcite, Camel, Kafka-Connect, Karaf, NiFi adapters,
-   Connection-Cache, OPM, Scraper) is published in the separate
-   **`plc4x-extras`** repository *(documented: `README.md`)* and is
-   **explicitly out of scope of this document** *(maintainer: PMC chair,
-   2026-05-29 16:06Z)*. → `OUT-OF-MODEL: unsupported-component`.
+   PLC4X Server, Calcite, Camel, Kafka-Connect, Karaf, NiFi adapters)
+   is published in the separate **`plc4x-extras`** repository
+   *(documented: `README.md`)* and is **explicitly out of scope of this
+   document** *(maintainer: PMC chair, 2026-05-29 16:06Z)*. →
+   `OUT-OF-MODEL: unsupported-component`. This carve-out does **not**
+   cover the client-side tooling that lives here in `plc4j/tools/` —
+   connection cache, OPM, event-pump, capture-replay — which is in
+   scope (§2).
 3. **A defender against the embedding application itself.** The embedding
    application supplies every connection URL, the `PlcAuthentication`,
    every tag-address string, and every value written. Anything the
@@ -227,6 +247,99 @@ any of these will be closed with the cited disposition.
     Maven Central signing, Jenkins build configuration, dependency
     freshness, reproducible builds. Out of model per the SKILL.
 
+11. **Drivers not marked as fully supported in the protocol support
+    table.** The per-language matrix in
+    `website/asciidoc/modules/users/pages/protocols/index.adoc` is the
+    authoritative statement of which drivers ship as supported: a green
+    check means the driver is complete and supported for that language
+    binding, a yellow exclamation means partial or experimental, and a
+    red cross means it does not exist there. **Only a driver / binding
+    combination carrying a green check is in this model**
+    *(maintainer: Chris Dutz, 2026-09-03)*. A driver the table marks
+    yellow is incomplete by declaration rather than by oversight, so a
+    report that it mishandles a malformed frame, leaks a socket, or
+    omits a check its complete siblings make describes unfinished work,
+    not a vulnerability in a shipped product. In PLC4J such a driver
+    additionally carries `maven.deploy.skip` in its POM *(documented:
+    `plc4j/drivers/*/pom.xml`)*, so it is not published to Maven
+    Central and no release artifact contains it. →
+    `OUT-OF-MODEL: unsupported-component`.
+
+    As the table stood on 2026-09-03, this excludes for **PLC4J**:
+    BACnet/IP, CAN (raw), C-Bus, ctrlX, DF1, Open-Protocol and
+    Profinet; and for **PLC4Go**: AB-Ethernet, CAN (raw), CANopen,
+    ctrlX, DF1, Firmata, **OPC-UA**, Open-Protocol, PLC4X
+    (proxy-protocol) and Profinet. Note the consequence for the one
+    security-bearing protocol in the set: the **Go** OPC UA driver is
+    marked partial and is therefore outside this model, while the Java
+    one is green and stays fully inside it, including every §8 property
+    that names OPC UA. `plc4c/` and `plc4py/` remain out under item 6
+    whatever their cells say. The table governs, not the lists above: a
+    driver enters or leaves the model when its cell changes (§12).
+
+12. **Wrong, corrupt, or hostile *configuration files* the operator
+    points the driver at.** Several drivers read a file the operator
+    names in the connection string: a `.knxproj` ETS project
+    (`knxproj-file-path`, with `knxproj-password`), a BACnet EDE file or
+    directory (`ede-file-path`, `ede-directory-path`), a Profinet GSDML
+    directory (`gsd-directory`), a key store or trust store
+    (`tls.keystore`, `tls.trust-store`), a pinned certificate
+    (`server-certificate-file`), a capture for the replay transport
+    (`pcap-file`), and the event-pump's job configuration. **These
+    arrive across B1, from the trusted caller — not across B2 from the
+    wire** *(§4, §6)*. The operator chose the file the same way they
+    chose the connection string, and anything they can express by
+    supplying a bad file they could equally express by supplying a bad
+    URL. A report that a truncated `.knxproj` throws, that a key store
+    in the wrong format fails the connection, that a garbled EDE column
+    yields a wrong tag, or that a GSDML which does not match the device
+    produces nonsense, describes a **correctness and error-message
+    matter**, not a vulnerability *(maintainer: Chris Dutz,
+    2026-09-03)*. → `OUT-OF-MODEL: trusted-input`; fix-worthy as
+    ordinary robustness, triaged as a normal bug.
+
+    Two things are **not** covered by this item, because the project
+    implemented them deliberately against a file it does not trust:
+    §8 P6 — XXE, external-DTD and external-schema resolution are
+    disabled in the ETS parser, so a `.knxproj` that reads a file off
+    the host or reaches a network resource is **`VALID`** — and the
+    bound on how far one `.knxproj` entry may expand, so a small file
+    that inflates without limit is **`VALID`** too. The line between
+    them: a bad file that fails to parse is out of model; a bad file
+    that makes the parser do something *beyond parsing* is in it.
+    Credentials read from any of these files are also still subject to
+    the §5a redaction rules.
+
+13. **Whether the endpoint the operator chose deserves to be trusted.**
+    PLC4X connects where it is told. The connection URL is trusted
+    input (item 3, §6 B1), and the library has no way to know whether
+    the thing answering on the other end is the device the operator
+    meant. A report of the shape "I stood up a server that is not what
+    it claims to be, pointed the driver at it, and the driver believed
+    it" — wrong process values, a fabricated browse tree, a controller
+    advertising a type or capability it does not have, a device that
+    answers every request with success — describes the **operator's
+    choice of endpoint**, not a defect in the library *(maintainer:
+    Chris Dutz, 2026-09-03)*. Nor does PLC4X judge whether an endpoint
+    deserves the credentials configured for it: forwarding the
+    operator's username and password to the address the operator named
+    is the function, not a leak. → `OUT-OF-MODEL: trusted-input` for the
+    semantic content of what the endpoint says;
+    `OUT-OF-MODEL: adversary-not-in-scope` where the report amounts to
+    "the integrator should not have connected there" (§3 items 7, 8).
+
+    This item is about **what the peer says**, never about **what its
+    bytes do to the driver.** Everything the parser must survive stays
+    in model and unchanged: §8 P4 — memory safety, bounded allocation,
+    no unbounded recursion, no hang on adversarial response bytes — is
+    `VALID` whoever sent those bytes, because a hostile endpoint and an
+    on-path attacker on a network the operator *did* trust reach exactly
+    the same code, and §7 names the latter as this model's primary
+    adversary. So are the OPC UA channel properties (§8 P1, P2, P7),
+    which exist precisely so that the endpoint does **not** have to be
+    trusted in advance: "the driver accepted a server certificate it
+    should have rejected" remains `VALID`.
+
 ## §4 Trust boundaries and data flow
 
 PLC4X has **two primary trust boundaries** plus one optional
@@ -238,7 +351,7 @@ maps to one of them.
 | B1                  | **Embedding application → PLC4X API surface**                                                                                                                                                       | trusted by construction                                                                                                                                                                                                                                                                                              | the API caller is trusted                                     | URL string, `PlcAuthentication`, tag-address strings, write values *(documented)*                                                                                                                     |
 | B2                  | **PLC4X driver → remote PLC over the wire** (Modbus, S7 PUT/GET, BACnet/IP, IEC-60870-5-104, Profinet, CANopen, KNXnet/IP, C-Bus, DF1, AB-Ethernet, EtherNet/IP, UMAS, ADS/AMS without credentials) | **none — by protocol design** *(documented per protocol)*                                                                                                                                                                                                                                                            | none on the wire; whatever the embedding application enforces | The OT-network perimeter is the only security control. Wire bytes returned to the driver are **untrusted input crossing into the parser** *(inferred — §14 Q3)*.                                      |
 | B2-OPCUA            | **PLC4X OPC UA driver → OPC UA server (encrypted policy)**                                                                                                                                          | server cert verified against trust store *(when `tls.trust-store` is set)*; client cert optional; username/password or token over the encrypted channel                                                                                                                                                              | server-side ACLs                                              | Mutually authenticated (cert + cert) and encrypted at the higher security policies; **see §8 P1, §10 item 4** *(documented: `website/.../protocols/opcua.adoc`, `plc4j/drivers/opcua/.../security/`)* |
-| B2-OPCUA-PERMISSIVE | **OPC UA driver in default (no `tls.trust-store`) mode**                                                                                                                                            | server certificates **are not validated** by default *(documented: `website/.../protocols/opcua.adoc` — "Unless explicitly disabled through configuration of `tls.trust-store` all server certificates will be accepted without validation"; `plc4j/drivers/opcua/.../security/PermissiveCertificateVerifier.java`)* | n/a                                                           | This is the OPC UA driver's *default* behavior. See **§5a "insecure-default case"**.                                                                                                                  |
+| B2-OPCUA-PERMISSIVE | **OPC UA driver with `tls.verify=false`** | server certificates **are not validated** — the driver installs `PermissiveCertificateVerifier` and logs a warning saying so *(documented: `plc4j/drivers/opcua/.../context/OpcuaDriverContext.java` `buildCertificateVerifier`)* | n/a                                                           | **No longer the default.** With `tls.verify` at its default of `true` and no trust anchor configured, the driver installs `RejectingCertificateVerifier` and the connection fails closed. See **§5a**. |
 | B2-ADS              | **ADS driver → Beckhoff TwinCAT (AMS route setup with credentials)**                                                                                                                                | username/password to the TwinCAT system for AMS-route setup, when a `PlcUsernamePasswordAuthentication` is supplied *(documented: `plc4j/drivers/ads/.../AdsProtocolLogic.java` lines 130–145)*                                                                                                                      | TwinCAT-side                                                  | The credentials are forwarded to the device; what the device does with them is outside PLC4X. ADS payload data itself is unauthenticated cleartext *(inferred — §14 Q9)*.                             |
 | B3                  | **PLC4X transport → host OS / NIC / serial port / libpcap**                                                                                                                                         | OS-level                                                                                                                                                                                                                                                                                                             | OS-level                                                      | Whatever the embedding process's UID, capabilities, and seccomp / AppArmor profile permit. The `raw-socket` transport needs `CAP_NET_RAW` on Linux *(inferred — §14 Q10)*.                            |
 | B4                  | **Code-generation runtime → operating system** at build time                                                                                                                                        | n/a — only the developer runs this                                                                                                                                                                                                                                                                                   | n/a                                                           | Build-time only; not part of the deployed artifact (out per §3 item 6)                                                                                                                                |
@@ -309,10 +422,19 @@ follows.
 - **Memory**: the JVM (or Go GC, or C `malloc`, or CPython allocator)
   provides the underlying memory model. PLC4X writes Java / Go / C /
   Python code at the language's normal trust level.
-- **Concurrency**: each `PlcConnection` is a Netty channel; calls
-  through `read`/`write`/`subscribe`/`browse` return
-  `CompletableFuture`s. Thread safety is per the documented Java API
-  contract *(inferred — §14 Q12)*.
+- **Concurrency**: **Netty is gone.** Since the SPI3 migration the Java
+  transports are plain JDK sockets — TCP is one virtual thread per
+  connection doing blocking `SocketChannel` I/O (no NIO selector, no
+  readiness-event loop), TLS is an `SSLSocket`, and no `io.netty`
+  artifact remains on the runtime classpath *(documented:
+  `plc4j/transports/tcp/.../TcpTransportInstance.java`; no Netty
+  dependency in any `plc4j` POM as of 2026-09-03)*. Calls through
+  `read`/`write`/`subscribe`/`browse` still return
+  `CompletableFuture`s, and thread safety is per the documented Java
+  API contract *(inferred — §14 Q12)*. A request waiting on the
+  per-connection permit is queued rather than parking the submitting
+  thread, which used to deadlock a driver that chained requests on its
+  own receive thread.
 - **Cryptography (OPC UA only)**: the JCE provider shipped with the
   JVM (OpenJDK / Oracle / IBM) provides AES, RSA, RSASSA-PSS,
   HMAC-SHA1/256, X.509 parsing
@@ -324,12 +446,26 @@ follows.
 - **Filesystem (KNX only)**: `.knxproj` ETS files are parsed via
   XML; XXE / external-DTD / external-schema are explicitly
   disabled *(documented: `plc4j/drivers/knxnetip/.../ets/EtsParser.java`
-  lines 65–71 — `factory.setFeature(DISALLOW_DOCTYPE_DECL, true)` +
-  `FEATURE_SECURE_PROCESSING` + empty `ACCESS_EXTERNAL_DTD/SCHEMA`)*.
+  lines 168–171 — empty `ACCESS_EXTERNAL_DTD/SCHEMA`,
+  `disallow-doctype-decl` and `FEATURE_SECURE_PROCESSING`; the line
+  numbers moved from 65–71 as the file grew)*. Since 2026-08-24 the
+  parser also **bounds how far one zip entry may expand**, since a
+  `.knxproj` entry declares its inflated size and can declare anything,
+  and cleans up what it unpacked.
 - **Filesystem (BACnet/IP only)**: EDE (Engineering Data Exchange)
   files describing the target devices are loaded from
   operator-configured paths *(documented:
   `plc4j/drivers/bacnet/.../configuration/BacNetIpConfiguration.java`)*.
+- **Filesystem (audit log, any driver)**: setting the `audit-log-file`
+  connection-string parameter makes the driver **write** request and
+  response traces to a rolling file on the host *(documented:
+  `plc4j/utils/audit-log/api/.../config/AuditLogConfiguration.java`,
+  `plc4j/utils/audit-log/README.md`)*. It is off unless a path is set,
+  and the implementation module has to be on the classpath. When on,
+  the file holds payload bytes and connection metadata: the parameter
+  redaction of §5a applies to what is rendered, but the traces are
+  plant data at rest and the integrator owns the file's permissions
+  and lifetime (§10).
 - **What PLC4X does NOT do to its host** (negative claims, awaiting
   maintainer ratification — these are predominantly *(inferred)*,
   see §14 Q13):
@@ -339,9 +475,16 @@ follows.
     §14 Q13)*;
   - **does not** open listening sockets — all sockets are outbound
     *(inferred from transport inventory — §14 Q13)*;
-  - **does not** read environment variables for security-sensitive
-    behavior beyond standard JVM/JNI conventions *(inferred —
-    §14 Q13)*;
+  - reads **one** environment variable that changes a security-relevant
+    bound: `PLC4X_MAX_NESTING_DEPTH` raises or lowers the 1024-level
+    limit on how deeply a parsed message may nest its types, and means
+    the same thing in all four bindings *(documented:
+    `plc4j/spi/.../AbstractBuffer.java`, `plc4go/spi/utils/ReadBufferByteBased.go`,
+    `plc4py/.../ReadBuffer.py`, `plc4c/spi/include/plc4c/spi/context.h`)*. A
+    value that is not a positive number leaves the default in place with a
+    warning. Beyond it, PLC4X **does not** read environment variables for
+    security-sensitive behavior outside standard JVM/JNI conventions
+    *(inferred — §14 Q13)*;
   - **does not** mutate process-wide global state (allocator, locale,
     `System.setSecurityManager`, etc.) at runtime *(inferred —
     §14 Q13)*;
@@ -360,41 +503,67 @@ collected here.
 
 | Knob                                                                                   | Default                                                                                                                                                                                                                                                                   | Maintainer stance                                                                                                                                                                                                          | Effect                                                                                                                                                                                                                                                                                            |
 |----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| OPC UA `security-policy`                                                               | `NONE` *(documented: `plc4j/drivers/opcua/.../config/OpcuaConfiguration.java`)*                                                                                                                                                                                           | **maintainer ruling required** — is "no encryption" a supported production posture, or dev-default? *(inferred — §14 Q14)*                                                                                                 | If `NONE`, the OPC UA channel runs unencrypted and unauthenticated; B2-OPCUA collapses to B2 (cleartext).                                                                                                                                                                                         |
+| OPC UA `security-policy`                                                               | `Basic256Sha256` *(documented: `plc4j/drivers/opcua/.../config/OpcuaConfiguration.java`; `website/.../protocols/opcua.adoc`)* | **hardened default** — `NONE` is now an explicit opt-in *(maintainer ruling, §14 Q14; shipped 2026-08-24)* | `NONE` means the channel is neither signed nor encrypted and the server is not authenticated at all, collapsing B2-OPCUA to B2. Asking for it is a deliberate act; nothing downgrades into it (see the `discovery` row). |
 | OPC UA `message-security`                                                              | `SIGN_ENCRYPT` *(documented)*                                                                                                                                                                                                                                             | hardened default                                                                                                                                                                                                           | When the security policy is not `NONE`, this forces sign-and-encrypt; flipping to `SIGN` (signed-cleartext) or `NONE` weakens the channel.                                                                                                                                                        |
-| OPC UA `tls.trust-store`                                                               | **unset** *(documented: `website/.../protocols/opcua.adoc` — "Unless explicitly disabled through configuration of `tls.trust-store` all server certificates will be accepted without validation"; `plc4j/drivers/opcua/.../security/PermissiveCertificateVerifier.java`)* | **The OPC UA driver defaults to `PermissiveCertificateVerifier` — server certificates are accepted without validation**. This is **the single highest-priority maintainer ruling** in the document. *(inferred — §14 Q15)* | Without a trust store, an MITM attacker on the OT network can present any certificate and the driver will trust it. Even with the security policy at `Basic256Sha256` and `SIGN_ENCRYPT`, the encryption peer is unauthenticated.                                                                 |
-| OPC UA `key-store-file` / `key-store-password`                                         | unset *(documented)*                                                                                                                                                                                                                                                      | operator must supply for mutual-TLS-like client auth                                                                                                                                                                       | If unset and a security policy ≠ `NONE` is configured, the driver auto-generates a self-signed client certificate *(documented: `website/.../protocols/opcua.adoc`)*. Auto-generated certs are not recoverable across restarts; they cannot satisfy a peer that requires a known client identity. |
-| OPC UA `discovery`                                                                     | `true` *(documented)*                                                                                                                                                                                                                                                     | enabled by default; **the discovery phase is conducted with security policy `NONE`** *(documented: `OpcuaConfiguration.java`)*                                                                                             | An attacker on the path between the driver and the discovery endpoint sees / can rewrite the advertised endpoint, security policies, and server certificate before the driver picks one.                                                                                                          |
-| OPC UA `username` / `password`                                                         | unset *(documented)*                                                                                                                                                                                                                                                      | operator-supplied                                                                                                                                                                                                          | Forwarded as the OPC UA `UserIdentityToken`; carried inside the secure channel when one exists, in cleartext otherwise.                                                                                                                                                                           |
-| OPC UA `channel-lifetime`, `session-timeout`, `negotiation-timeout`, `request-timeout` | 1 h / 2 min / 60 s / 30 s *(documented)*                                                                                                                                                                                                                                  | reasonable defaults                                                                                                                                                                                                        | DoS / timeout-tuning surface; not a security boundary.                                                                                                                                                                                                                                            |
+| OPC UA `tls.trust-store`                                                               | **unset** *(documented: `OpcuaConfiguration.java`, `OpcuaDriverContext.buildCertificateVerifier`)* | **fail-closed** — with `tls.verify` at its default, a connection with no trust anchor is refused, not accepted *(maintainer ruling, §14 Q15; shipped 2026-08-24)* | The verifier is chosen in this order: `tls.verify=false` → `PermissiveCertificateVerifier` (warned about); `tls.trust-store` set → `TrustStoreCertificateVerifier` (chain validation); `server-certificate-file` set → `PinnedCertificateVerifier` (exact certificate); otherwise → `RejectingCertificateVerifier`, so the handshake fails with no trust anchor rather than trusting whatever is presented. |
+| OPC UA `tls.verify` | `true` *(documented: `OpcuaConfiguration.java`)* | **hardened default** — verification on, opt-out only | Turning it off installs the permissive verifier and logs a warning naming the risk. This is the knob that replaced `insecure-certificate-verification`, with the opposite sense: a connection that used to set `insecure-certificate-verification=true` must now set `tls.verify=false`, and one that misses the rename gets verification. |
+| OPC UA `tls.keystore` / `tls.keystore-password` / `tls.keystore-type` | unset; `tls.keystore-type` `pkcs12`; `generated-key-size` 2048 *(documented)* | operator must supply for a stable client identity | If unset, the driver generates a self-signed application-instance certificate: since 2026-08-14 signed with SHA-256, carrying a positive 16-octet serial, marked as an end entity with the OPC UA Part 6 key usages and a subject key identifier — a certificate a modern server will accept, where the previous SHA-1 / CA-marked one was widely refused. It is still regenerated on every start, so it cannot satisfy a peer that requires a known client identity. The client identity taken from a key store is the first entry holding a private key, and a store with none, an unreadable key, or a non-RSA key fails naming the entry. |
+| OPC UA `discovery`                                                                     | `true` *(documented)* | enabled by default; **the discovery phase is still conducted with security policy `NONE`**, as the OPC UA spec has it *(documented: `OpcuaConfiguration.java`)* | An attacker on the path to the discovery endpoint still sees and can rewrite the advertised endpoints. What changed on 2026-08-24 is what the driver does next: it refuses to continue onto a channel weaker than the configured `security-policy` (it used to silently do exactly that), and a certificate learned during discovery is never used as its own trust anchor — it is checked against the configured verifier like any other. So a connection asking for `Basic256Sha256` now fails where it previously came up unprotected. |
+| OPC UA `username` / `password`                                                         | unset *(documented)*; `allow-insecure-credentials` `false` | operator-supplied; **the driver refuses to put a password on an unprotected channel** | Forwarded as the OPC UA `UserIdentityToken`, encrypted with the algorithm the server's user token policy names (it used to hard-code RSA-OAEP, which failed against servers asking for RSA-PKCS1.5). Over a channel that neither signs nor encrypts, the connection now fails instead of sending the credential in clear; `allow-insecure-credentials=true` sends it anyway, with a warning. |
+| OPC UA `channel-lifetime-ms`, `min-channel-lifetime-ms`, `session-timeout-ms`, `handshake-timeout-ms`, `request-timeout-ms` | 1 h / 5 s / 2 min / 60 s / 30 s *(documented)* | reasonable defaults | DoS / timeout-tuning surface; not a security boundary. `min-channel-lifetime-ms` bounds a lifetime the server revises downwards — channel renewals share one executor across every OPC UA connection in the JVM, so a server answering with a very short (or zero) lifetime used to set the renewal pace for all of them. Note the names: every duration ends in `-ms` since the 2026-08-28 configuration-vocabulary change, and `negotiation-timeout` is now `handshake-timeout-ms`. |
+| OPC UA `browse-max-references-per-node`, `browse-max-total-nodes`, `browse-max-depth` | 65536 / 1000000 / 64 *(documented)* | bounded by default; `0` disables a bound | A browse walks whatever tree the server describes, for as long as it describes one. These bound what a hostile or broken server can make one browse cost in memory and time; reaching a bound warns and returns what was found rather than failing. Setting any of them to `0` restores the unbounded behaviour. |
+| TLS transport `tls.verify`, `tls.ignore-common-name`, `tls.trust-store` | `true` / `false` / unset *(documented: `plc4j/transports/tls/.../TlsTransportConfiguration.java`)* | hardened defaults since 2026-08-24 | The transport now checks that the server certificate was issued for the host it connected to; `ignore-common-name` was declared but never consulted, so with `verify` on, any certificate from a trusted issuer was accepted for any host. `tls.trust-store` names the certificates to trust instead of the JVM's public authorities — previously the only way past a private CA was to turn verification off. `ignore-common-name=true` restores the old behaviour and logs a warning. |
 | ADS `PlcUsernamePasswordAuthentication` (when supplied)                                | unset (no AMS-route setup)                                                                                                                                                                                                                                                | operator-supplied                                                                                                                                                                                                          | When supplied, drives an AMS-route registration against the TwinCAT system using HTTP-style credentials *(documented: `plc4j/drivers/ads/.../AdsProtocolLogic.java`)*. The credentials are not protected by PLC4X on the wire; TwinCAT-side TLS is the device's responsibility.                   |
-| BACnet/IP `ede-file-path` / `ede-directory-path`                                       | unset                                                                                                                                                                                                                                                                     | operator-supplied                                                                                                                                                                                                          | If set, points at filesystem paths; standard file-permission rules apply.                                                                                                                                                                                                                         |
+| BACnet/IP `ede-file-path` / `ede-directory-path`                                       | unset                                                                                                                                                                                                                                                                     | operator-supplied                                                                                                                                                                                                          | If set, points at filesystem paths; standard file-permission rules apply. The BACnet/IP driver is itself out of model per §3 item 11; the knob is listed for completeness. |
 | KNX `.knxproj` parser                                                                  | XXE / external-DTD / external-schema **disabled** *(documented: `EtsParser.java`)*                                                                                                                                                                                        | hardened — this is the safe defaults case                                                                                                                                                                                  | Reports of the shape "XXE in `.knxproj` parsing" are `KNOWN-NON-FINDING`.                                                                                                                                                                                                                         |
 | S7 `controller-type`                                                                   | unset (auto-discover via SZL)                                                                                                                                                                                                                                             | operator-supplied for Siemens LOGO compatibility                                                                                                                                                                           | Functional knob; not a security boundary.                                                                                                                                                                                                                                                         |
 | Modbus connection options (`unit-id`, byte order)                                      | per spec                                                                                                                                                                                                                                                                  | functional knobs                                                                                                                                                                                                           | not security boundaries.                                                                                                                                                                                                                                                                          |
 | `plc4c/`, `plc4py/`, `plc4net/` builds                                                 | **README declares these "not ready for usage" (with `plc4net` "abandoned")** *(documented: `README.md`)*                                                                                                                                                                  | **OUT-OF-MODEL** for §8 properties; bugs reported against C / Python / .NET bindings should be triaged as code-quality / completeness, not as supported-product vulnerabilities until the maintainer reclassifies them     | A finding in `plc4c/` is `OUT-OF-MODEL: unsupported-component` until the README line changes.                                                                                                                                                                                                     |
 
-### The insecure-default case (OPC UA)
+### The OPC UA defaults (resolved 2026-08-24 — secure by default)
 
-The OPC UA driver's **defaults are dev/lab-grade, not production-grade**:
-`security-policy=NONE`, `tls.trust-store` unset, `discovery=true` over an
-unencrypted channel. Each of these defaults voids a §8 property the
-driver could otherwise provide. The §14 Q14, Q15, Q16 questions ask
-the maintainer to choose, per knob, between:
+Earlier revisions of this document described the OPC UA driver's
+defaults as **dev/lab-grade**: `security-policy=NONE`, no certificate
+verification, and a discovery phase the driver would silently continue
+from onto an unprotected channel. That was accurate when it was
+written; it is no longer what the code does. The §14 Q14 / Q15 rulings
+were resolved in favour of secure-by-default and implemented:
 
-- **(a) "the default is the supported posture"** — in which case a report
-  of "OPC UA driver accepts any server cert" is `VALID` against PLC4X,
-  and the documentation needs to make clearer what the trade-off is,
-  or
-- **(b) "the default is dev/test convenience; operator MUST configure
-  the production knobs per §10"** — in which case the report is
-  `OUT-OF-MODEL: non-default-build` and the §10 contract makes the
-  required knobs unambiguous.
+- `security-policy` defaults to **`Basic256Sha256`** with
+  `message-security=SIGN_ENCRYPT`, so a channel is signed and encrypted
+  unless `NONE` is asked for explicitly;
+- `tls.verify` defaults to **`true`**, and with no trust anchor
+  configured the driver installs `RejectingCertificateVerifier` — the
+  connection **fails closed** rather than trusting whatever certificate
+  arrives. `PermissiveCertificateVerifier` is reached only via
+  `tls.verify=false`, which logs a warning naming the risk;
+- the driver **refuses to settle for a channel weaker than the one
+  configured**, so the unauthenticated discovery phase can no longer
+  hand back an unprotected session to a connection that asked for a
+  protected one, and a certificate learned during discovery is never
+  its own trust anchor;
+- an endpoint has to match **both** the requested security policy and
+  the requested message security mode, and the **strongest** matching
+  endpoint is selected rather than the weakest — a server publishing a
+  wide-open endpoint beside a protected one is now reached over the
+  protected one;
+- a username and password are **not** put on a channel that neither
+  signs nor encrypts unless `allow-insecure-credentials=true`.
 
-Both stances are defensible; the maintainer ruling determines which §13
-disposition applies. **The text of §10 items 4–6 is written on
-hypothesis (b)** and will need adjustment if the maintainer chooses
-(a).
+What remains the operator's job is **naming a trust anchor** —
+`tls.trust-store` for chain validation, or `server-certificate-file` to
+pin one certificate (§10 item 3) — and provisioning a client key pair
+where the server authenticates its clients (§10 item 4). A connection
+that names neither now fails loudly at connect time instead of coming
+up unprotected, which is the intended behaviour and not a bug report.
+
+The consequence for §13: "the OPC UA driver accepts an
+attacker-presented certificate" is a **`VALID`** report — it would
+describe a regression against the shipped default, not a configuration
+choice — while "the OPC UA driver is unencrypted / unauthenticated by
+default" is now a **`KNOWN-NON-FINDING`** describing a state the code
+left behind. Check which release the report is against (§1: a report
+against release *N* is triaged against the model as it stood at *N*).
 
 ## §6 Assumptions about inputs
 
@@ -416,20 +585,28 @@ hypothesis (b)** and will need adjustment if the maintainer chooses
 | Cleartext OT-protocol response (Modbus, S7, BACnet/IP, IEC-60870-104, Profinet, CANopen, KNXnet/IP, C-Bus, DF1, AB-Ethernet, ADS payload, EtherNet/IP, UMAS) | every byte of every response frame | **yes** — anyone on the OT network with reachability can spoof               | **memory safety, bounded allocation, no infinite loop, no unbounded recursion** on malformed input — but **not** authenticity, integrity, or any payload-semantic guarantee *(inferred — §14 Q11)* |
 | OPC UA wire frames inside the secure channel                                                                                                                 | every byte                         | **yes** — but signed/encrypted by the negotiated policy when policy ≠ `NONE` | as above plus: correct verification of signature and MAC under the negotiated policy; correct decryption; correct chunk reassembly *(documented + inferred — §14 Q17)*                             |
 | OPC UA wire frames during discovery (`security-policy=NONE` phase)                                                                                           | every byte                         | **yes**                                                                      | memory safety on malformed responses; **the discovery handshake itself is not authenticated** *(documented)*                                                                                       |
-| OPC UA server certificate (presented during handshake)                                                                                                       | full DER bytes                     | **yes**                                                                      | when `tls.trust-store` is set: X.509 chain validation per JCE rules; when not set (default): **none** *(documented: §5a)*                                                                          |
+| OPC UA server certificate (presented during handshake)                                                                                                       | full DER bytes                     | **yes**                                                                      | `tls.trust-store` → X.509 chain validation per JCE rules; `server-certificate-file` → the presented certificate must equal the pinned one; neither, with `tls.verify=true` (the default) → **rejected**; `tls.verify=false` → none *(documented: §5a)* |
 | Serial-line frames                                                                                                                                           | every byte                         | yes if the serial channel is attacker-reachable                              | memory safety on malformed framing *(inferred — §14 Q11)*                                                                                                                                          |
-| libpcap capture / replay frames                                                                                                                              | every byte                         | yes if the capture file is attacker-controlled                               | the pcap-replay transport is a **dev/test tool**; if it's running in production, the integrator has put it there                                                                                   |
-| ETS `.knxproj` XML                                                                                                                                           | as XML                             | yes if the file is attacker-supplied                                         | XXE disabled *(documented)*; ZIP slip protection — *(inferred — §14 Q18)*                                                                                                                          |
-| BACnet EDE file                                                                                                                                              | as text                            | yes if the file is attacker-supplied                                         | parser robustness *(inferred — §14 Q18)*                                                                                                                                                           |
+| libpcap capture / replay frames                                                                                                                              | every byte                         | **no** — operator-supplied across B1, per §3 item 12 | the pcap-replay transport is a **dev/test tool**; if it's running in production, the integrator has put it there                                                                                   |
+| ETS `.knxproj` XML                                                                                                                                           | as XML                             | **no** — operator-supplied across B1, per §3 item 12 | a corrupt or wrong file is a correctness matter (§3 item 12); XXE / external-DTD / external-schema stay disabled and the per-entry expansion bound stays enforced, and a bypass of either is `VALID` (§8 P6) |
+| BACnet EDE file                                                                                                                                              | as text                            | **no** — operator-supplied across B1, per §3 item 12 | parser robustness as ordinary correctness; unbounded allocation from a bounded file is still `VALID` (§8 P4) |
 
 ### Size / shape / rate
 
-- PLC4X drivers **stream individual request/response frames**; there is
-  no documented per-call cap on response size beyond what the protocol
-  itself bounds (Modbus PDUs are spec-bounded, S7 PDU size is
-  negotiated, OPC UA chunk size is negotiated) *(documented: per
+- PLC4X drivers **stream individual request/response frames**. Beyond
+  what the protocol itself bounds (Modbus PDUs are spec-bounded, S7 PDU
+  size is negotiated, OPC UA chunk size is negotiated) *(documented: per
   protocol page; `S7Configuration.pduSize`,
-  `OpcuaConfiguration.limits.encoding.{send,receive}-buffer-size`)*.
+  `OpcuaConfiguration.limits.encoding.{send,receive}-buffer-size`)*, the
+  August 2026 hardening series added explicit bounds the model can now
+  rely on: **1024 levels of type nesting** in every generated parser in
+  all four bindings (`PLC4X_MAX_NESTING_DEPTH` moves it), OPC UA browse
+  caps (`browse-max-references-per-node` / `-total-nodes` / `-depth`), a
+  16 MiB per-tag budget in the simulated driver, per-driver ceilings on
+  the element count a tag address may name, a plausibility check on
+  declared frame lengths before the transport waits for them, and a
+  bound on what the raw-socket capture may leave queued. A parser that
+  cannot make progress now reports rather than looping.
 - **PLC4X provides no per-call rate limit or backpressure on the API
   side** — if the embedding application calls `read` in a hot loop, the
   driver will issue as many requests as the underlying transport allows
@@ -441,7 +618,7 @@ hypothesis (b)** and will need adjustment if the maintainer chooses
 
 | Actor                                                                                                                                                            | In scope?                                  | Capabilities granted                                                                                                                                                                                                                                                                 |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Network peer with reachability to the PLC** (the OT network)                                                                                                   | **yes — primary adversary for B2**         | can read, modify, drop, replay, or inject frames on the cleartext protocols. For the OPC UA protocol with a configured trust store, the peer is bounded by the cryptographic primitives. For OPC UA with the default `PermissiveCertificateVerifier`, the peer can MITM the channel. |
+| **Network peer with reachability to the PLC** (the OT network)                                                                                                   | **yes — primary adversary for B2**         | can read, modify, drop, replay, or inject frames on the cleartext protocols. For the OPC UA protocol with a configured trust store, the peer is bounded by the cryptographic primitives. For OPC UA with `tls.verify=false`, the peer can MITM the channel; with the default (`tls.verify=true`) a connection without a configured trust anchor fails closed instead. |
 | **Network peer between the driver and an OPC UA discovery endpoint**                                                                                             | **yes**                                    | the discovery handshake is unencrypted by spec *(documented)*; the peer can swap the advertised endpoint URL, certificate, or set of supported policies.                                                                                                                             |
 | **Author of a malformed-but-parseable response from a real PLC firmware** (buggy or compromised device firmware sending bytes a well-behaved firmware would not) | **yes — wire-parser robustness must hold** | causes the driver to parse adversarial bytes; in-model for memory safety, hang, unbounded allocation.                                                                                                                                                                                |
 | **Author of a malformed `.knxproj` or BACnet EDE file**                                                                                                          | **yes for parser robustness**              | causes the offline-file parser to crash, hang, or escape from its expected sandbox (XXE blocked per §5a).                                                                                                                                                                            |
@@ -478,13 +655,17 @@ of the security work is delegated to the integrator (§10).
 
 ### P1 — OPC UA secure-channel confidentiality and integrity, when configured
 
-- **Condition**: `security-policy` is set to one of `Basic128Rsa15`,
+- **Condition**: `security-policy` is one of `Basic128Rsa15`,
   `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, or
   `Aes256_Sha256_RsaPss` *(documented:
-  `plc4j/drivers/opcua/.../security/SecurityPolicy.java`)*, AND
-  `message-security` is `SIGN` or `SIGN_ENCRYPT` *(documented)*, AND
-  `tls.trust-store` is set to a trust store containing the expected
-  server certificate (or its issuer) *(documented: `website/.../protocols/opcua.adoc`)*.
+  `plc4j/drivers/opcua/.../security/SecurityPolicy.java`)* — since
+  2026-08-24 `Basic256Sha256` is the **default**, so this half of the
+  condition holds unless `NONE` was asked for — AND `message-security`
+  is `SIGN` or `SIGN_ENCRYPT` (`SIGN_ENCRYPT` by default)
+  *(documented)*, AND a trust anchor is configured: `tls.trust-store`
+  containing the expected server certificate or its issuer, or
+  `server-certificate-file` pinning that certificate *(documented:
+  `website/.../protocols/opcua.adoc`, `OpcuaDriverContext.buildCertificateVerifier`)*.
 - **Violation symptom**: wire bytes between the driver and the server
   that an on-path attacker can decrypt (without the configured key) or
   modify without the driver detecting the modification.
@@ -496,9 +677,14 @@ of the security work is delegated to the integrator (§10).
 
 ### P2 — OPC UA server-certificate authentication, when a trust store is configured
 
-- **Condition**: `tls.trust-store` is set; the trust store contains
-  the expected certificate or a chain root *(documented:
-  `website/.../protocols/opcua.adoc`)*.
+- **Condition**: a trust anchor is configured — `tls.trust-store`
+  containing the expected certificate or a chain root, or
+  `server-certificate-file` naming the exact certificate to pin
+  *(documented: `website/.../protocols/opcua.adoc`,
+  `OpcuaDriverContext.buildCertificateVerifier`)*. With `tls.verify` at
+  its default and neither one set, the driver rejects every server
+  certificate, so the failure mode is a refused connection rather than
+  an unverified one.
 - **Violation symptom**: the OPC UA driver completes a handshake with a
   server presenting a certificate that does not chain to a trust-store
   root, and proceeds to exchange application-layer messages.
@@ -531,8 +717,18 @@ of the security work is delegated to the integrator (§10).
   — heap / stack corruption, OOB read/write, use-after-free.
 - **Severity**: **security-critical** (the OT network is the §7 primary
   adversary), `VALID` per §13.
-- *(inferred — §14 Q11)*. **This is the most reachable §8 property
-  for the scan target, and the most likely site of real findings.**
+- *(inferred — §14 Q11; partly documented since 2026-08-24)*. **This is
+  still the most reachable §8 property for a scan target**, but it is no
+  longer an untested aspiration: every generated parser refuses more
+  than 1024 levels of type nesting in all four bindings; the Java and Go
+  testsuites parse **every truncation of every testsuite message**, so a
+  message that stops short is a reported parse failure rather than a
+  hang, an out-of-range read or a half-built object; a manual array that
+  makes no progress terminates; an announced optional field must
+  actually be present; and an unchecked exception out of a parser is
+  contained in the receive path instead of ending the thread that owns
+  the channel. A finding here is still `VALID` — the point is that the
+  obvious classes have been swept, so a new one is worth reporting.
 
 ### P5 — Tag-address parser correctness and bounded resource use, on caller-supplied address strings
 
@@ -557,9 +753,10 @@ of the security work is delegated to the integrator (§10).
   external entity, external DTD, or external schema, allowing
   file-disclosure / SSRF from the `.knxproj`.
 - **Severity**: **security-critical**, `VALID` per §13.
-- *(documented: `EtsParser.java` lines 65–71)*. This is the one
-  obvious "we hardened this" property in the repo and we cite it
-  explicitly.
+- *(documented: `EtsParser.java` lines 168–171 — the line numbers moved
+  as the file grew)*. Alongside it the parser now bounds how far a
+  single `.knxproj` zip entry may expand, so a declared inflated size is
+  no longer taken at face value, and cleans up what it unpacked.
 
 ### P7 — OPC UA secure-channel implementation tracks the OPC UA spec's security-policy URIs
 
@@ -629,16 +826,18 @@ important one for an integrator.**
 
 ### False-friend properties (call out separately)
 
-- **"OPC UA is encrypted" — only with non-default configuration.** A
-  reader who knows OPC UA has "Secure: encryption, authentication, and
-  auditing" in its spec slogan
-  *(`website/.../protocols/opcua.adoc` line 264)* would assume the
-  PLC4X OPC UA driver provides those properties by default. **It does
-  not.** Defaults are `security-policy=NONE` (no encryption), no
-  trust store (no server-identity validation), discovery over an
-  unencrypted channel. All three must be flipped from default for the
-  cryptographic story to mean what an OPC UA reader expects.
-  *(inferred — §14 Q14, Q15, Q16)*
+- **"OPC UA is encrypted" — true by default since 2026-08-24, but only
+  once a trust anchor is named.** The driver now defaults to
+  `security-policy=Basic256Sha256`, `message-security=SIGN_ENCRYPT` and
+  `tls.verify=true`, so the channel an OPC UA reader expects is what
+  the driver asks for. What it cannot supply for the operator is the
+  **trust anchor**: with none configured the connection is refused
+  rather than completed unverified (§5a). The false friend that
+  remains is the reverse of the old one — `security-policy=NONE` and
+  `tls.verify=false` are still expressible, still documented, and a
+  configuration carrying either has none of these properties whatever
+  the word "OPC UA" suggests. *(documented: `OpcuaConfiguration.java`,
+  `OpcuaDriverContext.java`; maintainer rulings §14 Q14, Q15)*
 - **OPC UA discovery is unencrypted by spec.** The OPC UA *spec*
   conducts discovery over `security-policy=NONE`. An attacker on the
   path during discovery can rewrite advertised endpoints, server
@@ -714,18 +913,28 @@ The embedding application / integrator deploying PLC4X in production
    proxy, or operate the cleartext protocol exclusively inside a
    point-to-point cellular-modem channel). PLC4X does not bundle
    such a tunnel. *(integrator)*
-3. **For OPC UA in production: set `security-policy` to
-   `Basic256Sha256` or stronger AND `message-security` to
-   `SIGN_ENCRYPT` AND configure a `tls.trust-store` that contains
-   only the expected server certificate or its issuing CA.** The
-   default of "`NONE`, no trust store" is **not** the production
-   posture *(inferred — §14 Q14, Q15)*.
-4. **For OPC UA where mutual authentication is required: provision a
-   client certificate and load it via `key-store-file` /
-   `key-store-password`.** The auto-generated self-signed certificate
-   the driver falls back to is not recoverable across restarts and
-   cannot satisfy a peer that requires a stable client identity
-   *(documented: `website/.../protocols/opcua.adoc`)*.
+3. **For OPC UA in production: name a trust anchor.** The channel is
+   already signed and encrypted by default (`security-policy=Basic256Sha256`,
+   `message-security=SIGN_ENCRYPT`, `tls.verify=true`), but the driver
+   cannot know which server it should trust: configure a
+   `tls.trust-store` holding the expected server certificate or its
+   issuing CA, or `server-certificate-file` to pin exactly one
+   certificate. Without either, the connection is refused — that is the
+   intended behaviour, not a defect *(documented: `OpcuaConfiguration.java`,
+   `OpcuaDriverContext.buildCertificateVerifier`; maintainer §14 Q15)*.
+   Do **not** reach for `tls.verify=false` to get past it; that is the
+   dev/lab escape hatch and it disables the check entirely.
+4. **For OPC UA where the server authenticates its clients: provision a
+   client key pair and load it via `tls.keystore` /
+   `tls.keystore-password`** (with `tls.keystore-type`, and
+   `generated-key-size` where a server demands 4096-bit keys). The
+   self-signed certificate the driver generates when no key store is
+   configured is now well-formed enough for a server to accept, but it
+   is regenerated on every start and so cannot satisfy a peer that
+   requires a stable client identity. Where the server wants an X509
+   *user* identity rather than a username and password, supply it as
+   `PlcCertificateAuthentication` *(documented:
+   `website/.../protocols/opcua.adoc`; GH-1845)*.
 5. **For OPC UA where discovery is over a hostile path: disable
    `discovery` and configure the endpoint explicitly via
    `endpoint-host`, `endpoint-port`.** The discovery handshake is
@@ -747,6 +956,12 @@ The embedding application / integrator deploying PLC4X in production
    process specifically rather than running as `root`. *(integrator)*
 10. **Treat the `simulated://`, `mock://`, `pcap-replay` drivers as
     dev / test fixtures, not as production endpoints.** *(integrator)*
+10a. **If `audit-log-file` is set, protect the file it writes.** The
+    audit log records request and response traces — plant data, and
+    whatever a payload happens to carry — to a rolling file on the
+    host. Give it a path only the embedding process can read, and a
+    retention policy. It is off unless configured *(documented:
+    `plc4j/utils/audit-log/README.md`)*. *(integrator)*
 11. **Do not deploy `plc4c/`, `plc4py/`, or `plc4net/` artifacts in
     production until the README line ("not ready for usage") is
     removed.** *(integrator; documented: `README.md`)*
@@ -762,12 +977,21 @@ The embedding application / integrator deploying PLC4X in production
   untrusted network and trusting the OT-network protocol's "auth" to
   hold.** Modbus, S7 PUT/GET, etc., do not have authentication. The
   OT-network perimeter (§10 item 1) is the *only* control.
-- **Running OPC UA with `security-policy=NONE` in production.** The
-  default. → §9 false-friend item 1.
-- **Running OPC UA with a configured security policy but no
-  `tls.trust-store`.** The driver uses `PermissiveCertificateVerifier`
-  by default — every server certificate is accepted. An MITM gets the
-  encryption key. → §5a.
+- **Asking for `security-policy=NONE` in production.** No longer the
+  default, but still expressible — and a configuration carrying it has
+  an unsigned, unencrypted channel to an unauthenticated server. → §9
+  false-friend item 1.
+- **Reaching for `tls.verify=false` to get a connection to come up.**
+  This is the shape the fail-closed default provokes: the connection is
+  refused because no trust anchor is configured, and turning
+  verification off makes it succeed. It installs
+  `PermissiveCertificateVerifier`, so an MITM gets the encryption key —
+  the very property the signed-and-encrypted channel was for. Name a
+  `tls.trust-store` or a `server-certificate-file` instead. → §5a,
+  §10 item 3.
+- **Carrying `ignore-common-name=true` on the TLS transport past the
+  device that needed it.** It accepts a certificate issued for any
+  other host, which is what a machine in the middle needs. → §5a.
 - **Treating `discovery=true` as part of the security boundary.**
   Discovery is over `security-policy=NONE` by OPC UA spec. → §9
   false-friend.
@@ -839,23 +1063,38 @@ every wire-format property of every driver.**
   Firmata is a hobbyist Arduino protocol; the security model is
   "the serial cable is your perimeter". → §3 item 1, §9. `BY-DESIGN`.
 
-### Driver-default non-findings (pending maintainer ruling)
+### Driver-default non-findings
 
-- **"OPC UA driver accepts any server certificate."** True by default
-  (`PermissiveCertificateVerifier`); the §10 item 3 contract requires
-  the operator to set `tls.trust-store`. **Maintainer ruling (chrisdutz,
-  §14 Q15):** this default "should be changed and reported" — it is
-  **not** the supported posture, so a report is **`VALID`** (a gap the
-  PMC intends to fix toward secure-by-default), not
-  `OUT-OF-MODEL: non-default-build`.
+- **"OPC UA driver accepts any server certificate."** **No longer true
+  of any default.** Since 2026-08-24 `tls.verify` defaults to `true`
+  and a connection with no trust anchor is refused
+  (`RejectingCertificateVerifier`); certificates are accepted without
+  validation only under an explicit `tls.verify=false`, which logs a
+  warning. A report describing the old behaviour against current code
+  is a `KNOWN-NON-FINDING`; a report showing that current code still
+  accepts an attacker-presented certificate with the defaults in place
+  is **`VALID`** — check which release the report is against
+  *(maintainer §14 Q15; `OpcuaDriverContext.buildCertificateVerifier`)*.
+- **"OPC UA driver is unencrypted by default / `security-policy=NONE`."**
+  Stale: the default is `Basic256Sha256` with `SIGN_ENCRYPT`.
+  `KNOWN-NON-FINDING` against current code. → §5a.
+- **"OPC UA connection fails when no trust store is configured."**
+  Working as designed — fail-closed is the point (§10 item 3). Not a
+  bug, and not a reason to recommend `tls.verify=false`.
+  `KNOWN-NON-FINDING`.
 - **"OPC UA driver does discovery in cleartext."** True by spec; not a
-  driver bug. → §9 false-friend item 2.
+  driver bug. The driver no longer *continues* from discovery onto a
+  channel weaker than the configured one, and never treats a
+  certificate learned there as a trust anchor. → §9 false-friend
+  item 2.
 - **"OPC UA driver auto-generates a self-signed client certificate."**
-  Documented behavior when `key-store-file` is unset
-  *(`website/.../protocols/opcua.adoc`)*. The auto-generated cert is
-  intended as a "get-it-working" convenience; production should
-  provision an explicit one. → §10 item 4. `OUT-OF-MODEL:
-  non-default-build` pending §14 Q14.
+  Documented behavior when `tls.keystore` is unset
+  *(`website/.../protocols/opcua.adoc`)*. Since 2026-08-14 the
+  generated certificate is SHA-256 signed, end-entity marked, with a
+  positive 16-octet serial and a subject key identifier; it is still a
+  "get-it-working" convenience and is regenerated on every start, so
+  production should provision an explicit one. → §10 item 4.
+  `OUT-OF-MODEL: non-default-build`.
 - **"OPC UA driver uses `Basic128Rsa15`/`Basic256` policies which are
   deprecated by the OPC Foundation."** Yes — the driver supports them
   *(documented: `SecurityPolicy.java`)* because some PLC firmware
@@ -875,6 +1114,15 @@ every wire-format property of every driver.**
 - **"Cryptographic finding in `plc4c/` / `plc4py/` / `plc4net/`."**
   README flags these as not-ready. → §3 item 6. `OUT-OF-MODEL:
   unsupported-component` pending the README line being removed.
+- **"Driver X mishandles a malformed frame / leaks a socket / skips a
+  check the other drivers make",** where the protocol support table
+  does not mark X with a green check for that binding (as of
+  2026-09-03, for PLC4J: BACnet/IP, CAN, C-Bus, ctrlX, DF1,
+  Open-Protocol, Profinet; for PLC4Go additionally AB-Ethernet,
+  CANopen, Firmata, OPC-UA, PLC4X-proxy). The driver is declared
+  partial, and in PLC4J it is not deployed to Maven Central at all. →
+  §3 item 11. `OUT-OF-MODEL: unsupported-component` until its cell
+  turns green.
 - **"`code-generation/` mspec compiler has X."** Build-time only,
   not in the runtime artifact. → §3 item 6. `OUT-OF-MODEL:
   unsupported-component`.
@@ -883,11 +1131,40 @@ every wire-format property of every driver.**
 - **"OPC-UA Server / PLC4X Server / Calcite / Camel / Kafka-Connect /
   NiFi adapter has X."** Out of this repo (in `plc4x-extras`). →
   §3 item 2. `OUT-OF-MODEL: unsupported-component`.
-- **"Vendored Eclipse Milo / Netty / Jackson / commons-* has CVE-Y."**
+- **"Vendored Eclipse Milo / Netty has CVE-Y."** Neither is a
+  dependency any more: the OPC UA driver has been native since 0.9.0,
+  and Netty left with the SPI3 transports — no `io.netty` artifact is
+  on the runtime classpath *(verified 2026-09-03)*. A report naming
+  them against current PLC4X is a `KNOWN-NON-FINDING`.
+- **"Dependency X (Jackson, commons-*, Bouncy Castle, …) has CVE-Y."**
   Report upstream; PLC4X picks up fixes via dependency-version bumps.
   `OUT-OF-MODEL: unsupported-component` *(inferred — §14 Q26)*.
 - **"SQL injection / XSS / SSRF in the website asciidoc tree."**
   Documentation, not the deployed library. → §3 item 6.
+
+### Operator-supplied-input non-findings
+
+- **"A corrupt / truncated / hand-edited `.knxproj` makes the KNX driver
+  throw."** The file comes from the operator across B1. → §3 item 12.
+  `OUT-OF-MODEL: trusted-input` (fix as ordinary robustness). The
+  exceptions stay: an entity resolved out of that file, or an entry that
+  inflates without bound, is `VALID` (§8 P6).
+- **"A malformed EDE file / GSDML directory / pcap capture / key store
+  makes the driver fail or produce wrong tags."** Same shape, same
+  answer. → §3 item 12. `OUT-OF-MODEL: trusted-input`.
+- **"I pointed the driver at a server I control and it believed what the
+  server said."** Wrong values, a fabricated browse tree, a controller
+  claiming a type it does not have — the operator chose the endpoint. →
+  §3 item 13. `OUT-OF-MODEL: trusted-input`. What those bytes do to the
+  *parser* is a different report and stays `VALID` (§8 P4), as does an
+  OPC UA channel that accepts a certificate it should have rejected
+  (§8 P1, P2).
+- **"The driver sends the configured credentials to whatever host the
+  connection string names."** That is the function. → §3 item 13.
+  `OUT-OF-MODEL: trusted-input`. (Sending them over a channel that
+  neither signs nor encrypts is a *different* claim, and the OPC UA
+  driver refuses that by default — see §5a
+  `allow-insecure-credentials`.)
 
 ### Integrator-deployment non-findings
 
@@ -915,8 +1192,24 @@ Revise this document when any of the following lands:
   `security-policy`, `tls.trust-store`, or `message-security`.
 - `plc4c/`, `plc4py/`, or `plc4net/` has its "not ready for usage"
   README flag removed — those move from §3 item 6 to in-model.
+- A driver's cell in the protocol support table
+  (`website/asciidoc/modules/users/pages/protocols/index.adoc`) changes
+  to or from a green check — that moves the driver into or out of §3
+  item 11, and for PLC4J the `maven.deploy.skip` flag in its POM has to
+  follow the same way.
 - The boundary with `plc4x-extras` shifts (e.g. an integration is
-  brought back into the main repo, or vice versa).
+  brought back into the main repo, or vice versa). This has already
+  happened once without the document following: the connection cache,
+  OPM and the scraper's successor live in `plc4j/tools/` here.
+- A module family appears or disappears under `plc4j/` — the §2
+  component table is an inventory and goes stale silently. It was last
+  reconciled against the tree on 2026-09-03.
+- The transport stack changes shape (it moved off Netty to virtual-thread
+  blocking I/O in SPI3, which invalidated the §5 concurrency text).
+- A driver starts treating one of the operator-supplied files of §3
+  item 12 as untrusted input — e.g. a `.knxproj` fetched from a device
+  or a network share rather than named by the operator. That moves the
+  file across B1 into B2 and the carve-out no longer applies to it.
 - A vulnerability report that cannot be cleanly routed to one of the
   §13 dispositions: that is evidence the model has a gap.
 
@@ -928,10 +1221,10 @@ A report against PLC4X receives exactly one of the following.
 |----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
 | `VALID`                                | Violates a §8 property via an in-scope §7 adversary using an in-scope §6 input — typically a wire-parser memory-safety break (P4), an OPC UA secure-channel break (P1/P2/P7), or KNX-XML XXE bypass (P6).                                                                                                      | §8, §6, §7           |
 | `VALID-HARDENING`                      | No §8 property violated, but a §11 misuse pattern can be made harder to fall into by code change (e.g. issue a runtime warning when OPC UA runs `security-policy=NONE`). Fixed at maintainer discretion, typically no CVE.                                                                                     | §11                  |
-| `OUT-OF-MODEL: trusted-input`          | Requires attacker control of a §6 parameter the model marks trusted — the connection URL, the auth object, the value being written, tag-address strings (per §3 item 5 when the integrator has not opted them into untrusted-string handling).                                                                 | §6                   |
+| `OUT-OF-MODEL: trusted-input`          | Requires attacker control of a §6 parameter the model marks trusted — the connection URL, the auth object, the value being written, tag-address strings (per §3 item 5 when the integrator has not opted them into untrusted-string handling), a configuration file the operator points the driver at (§3 item 12), or the choice of endpoint and what that endpoint claims (§3 item 13). | §6, §3 items 12–13 |
 | `OUT-OF-MODEL: adversary-not-in-scope` | Requires a §7 actor the model excludes — embedding application is hostile, side-channel observer, quantum adversary, OT-network perimeter is the integrator's problem.                                                                                                                                         | §7                   |
-| `OUT-OF-MODEL: unsupported-component`  | Lands in `plc4c/`, `plc4py/`, `plc4net/`, `tools/`, `code-generation/`, `plc4j/utils/`, `plc4j/drivers/{simulated,mock}`, `plc4x-extras` content, vendored upstream code, or repo infrastructure.                                                                                                              | §3 item 2, §3 item 6 |
-| `OUT-OF-MODEL: non-default-build`      | Only manifests under a §5a knob the maintainer has ruled is dev/test. **Note:** per the maintainer (chrisdutz, §14 Q14/Q15/Q16) the OPC UA insecure defaults are moving to secure-by-default — the permissive certificate verifier in particular is a gap to fix (`VALID`), not a non-default-build exclusion. | §5a                  |
+| `OUT-OF-MODEL: unsupported-component`  | Lands in `plc4c/`, `plc4py/`, `plc4net/`, `tools/`, `code-generation/`, `plc4j/utils/`, `plc4j/drivers/{simulated,mock}`, `plc4x-extras` content, vendored upstream code, repo infrastructure, or a driver the protocol support table does not mark with a green check for that binding. | §3 item 2, §3 item 6, §3 item 11 |
+| `OUT-OF-MODEL: non-default-build`      | Only manifests under a §5a knob the maintainer has ruled is dev/test — for OPC UA that now means an explicit `security-policy=NONE`, `tls.verify=false` or `allow-insecure-credentials=true`, and on the TLS transport `ignore-common-name=true`. **Note:** the OPC UA secure-by-default work the §14 Q14/Q15 rulings called for shipped on 2026-08-24, so a report about the *defaults* is either a `KNOWN-NON-FINDING` (it describes the pre-2026-08-24 behaviour) or `VALID` (it shows the current defaults failing); it is no longer excluded here. | §5a |
 | `BY-DESIGN: protocol-disclaimed`       | Concerns a property the **protocol** (not the library) does not provide — every "Modbus / S7 / BACnet / etc. is unauthenticated" report.                                                                                                                                                                       | §9, §3 item 1, §11a  |
 | `BY-DESIGN: property-disclaimed`       | Concerns a §9 property the library explicitly does not provide (built-in TLS tunneling, end-user authn, DoS protection at the API).                                                                                                                                                                            | §9                   |
 | `KNOWN-NON-FINDING`                    | Matches a §11a recurring false positive.                                                                                                                                                                                                                                                                       | §11a                 |
@@ -1007,6 +1300,12 @@ posture — the SPI3 rewrite makes the insecure path explicitly opt-in and
 the secure path the new default; the current `NONE` default is dev/lab
 convenience, **not** a supported production posture. *(maps to §5a, §10, §11a, §13)*
 
+**Shipped 2026-08-24 — question closed.** `security-policy` now defaults
+to `Basic256Sha256` with `message-security=SIGN_ENCRYPT`, and `NONE` is
+an explicit opt-in. "OPC UA runs unencrypted by default" is a
+`KNOWN-NON-FINDING` against current code; asking for `NONE` is a §11
+misuse pattern.
+
 **Q15.** OPC UA default `PermissiveCertificateVerifier` — the
 single highest-priority question. When `tls.trust-store` is unset,
 the driver accepts every server certificate. Is "OPC UA driver accepts
@@ -1017,6 +1316,14 @@ that the OPC UA driver accepts an attacker-presented certificate is
 therefore **`VALID`** (a security gap the PMC intends to fix toward
 secure-by-default), not `OUT-OF-MODEL: non-default-build`. *(maps to §5a, §10 item 3, §11a, §13)*
 
+**Shipped 2026-08-24 — question closed.** `tls.verify` defaults to
+`true`; the verifier is chosen as trust-store → pinned certificate →
+reject, so a connection with no trust anchor now **fails closed**.
+`PermissiveCertificateVerifier` survives only behind an explicit
+`tls.verify=false`, which warns. The disposition stands: if current
+code with default settings accepts an attacker-presented certificate,
+that is `VALID`.
+
 **Q16.** OPC UA `discovery=true` over `security-policy=NONE`. The
 spec mandates discovery in cleartext; the driver follows the spec.
 Confirm that "OPC UA discovery handshake unauthenticated" is `BY-DESIGN:
@@ -1026,6 +1333,15 @@ protocol-disclaimed` per §9 false-friend item 2 — not a PLC4X bug.
 per the OPC UA spec (`BY-DESIGN: protocol-disclaimed`); separately, the
 broader OPC UA channel is moving to secure-by-default in SPI3 (see Q14/Q15).
 *(maps to §3 item 1, §9, §10 item 5)*
+
+**Shipped 2026-08-24 — question closed.** Discovery is still conducted
+with `NONE`, as the spec has it, but the driver no longer proceeds from
+it onto a channel weaker than the configured one, and a certificate
+learned during discovery is checked against the configured verifier
+rather than trusted for being the one that arrived. The remaining
+exposure — an on-path attacker rewriting advertised endpoints — is the
+protocol's, and §10 item 5 (disable `discovery`, configure
+`endpoint-host` / `endpoint-port`) is still the remedy.
 
 ### Wave 3 — wire-parser robustness, the most likely site of real findings
 
@@ -1186,24 +1502,25 @@ security-policy artefacts are:
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|-----------------------------------------------------------|
 | `README.md` ("`plc4c/`, `plc4py/` not ready for usage; `plc4net/` abandoned")                                                                                                                                                                                                                                                                                       | scope carve-out                     | §3 item 6, §5a                                            |
 | `README.md` ("The Industrial IoT adapter … client-side library across multiple PLC protocols")                                                                                                                                                                                                                                                                      | scope framing                       | §2                                                        |
-| `website/.../protocols/opcua.adoc` ("Unless explicitly disabled through configuration of `tls.trust-store` all server certificates will be accepted without validation")                                                                                                                                                                                            | default-permissive verifier         | §4 B2-OPCUA-PERMISSIVE, §5a, §9 false-friend item 1, §11a |
+| `plc4j/drivers/opcua/.../context/OpcuaDriverContext.java` (`buildCertificateVerifier`: verify → trust-store → pinned → reject) | fail-closed certificate verification (supersedes the "accepted without validation" wording the website carried before 2026-08-24) | §4 B2-OPCUA, §5a, §9 false-friend item 1, §11a |
 | `website/.../protocols/opcua.adoc` ("discovery phase is always conducted using `NONE` security policy" — paraphrased from `OpcuaConfiguration.java` discovery doc)                                                                                                                                                                                                  | discovery unencrypted               | §4 B2-OPCUA-PERMISSIVE, §9 false-friend item 2            |
 | `website/.../protocols/opcua.adoc` ("`message-security` … `SIGN_ENCRYPT` … high security settings and full encryption")                                                                                                                                                                                                                                             | secure-channel message security     | §5a, §8 P1                                                |
-| `website/.../protocols/opcua.adoc` ("There is transport level certificate which can be provided though keystore options, but there is also a X509 Certificate which can be used for authentication (currently unsupported by PLC4X)")                                                                                                                               | client-X509-auth not implemented    | §11a, §14 Q14                                             |
+| `website/.../protocols/opcua.adoc` ("User authentication" / "User certificate": anonymous, username-password and X509 user certificate via `PlcCertificateAuthentication`) | client X509 user auth is implemented — supersedes the older "currently unsupported by PLC4X" wording, removed with the implementation in GH-1845 | §5a, §10 item 4, §11a |
 | `website/.../protocols/opcua.adoc` (compatibility list: Eclipse Milo, OPC Foundation .NET, etc.)                                                                                                                                                                                                                                                                    | tested reference servers            | §8 P7                                                     |
 | `website/.../protocols/s7.adoc` ("PUT/GET functions")                                                                                                                                                                                                                                                                                                               | S7 mode                             | §3 item 1, §11a, §14 Q23                                  |
 | `website/.../protocols/s7.adoc` ("Siemens `LOGO` device … requires `?controller-type=LOGO`")                                                                                                                                                                                                                                                                        | functional knob                     | §5a (non-security row)                                    |
 | `website/.../protocols/modbus.adoc` (no security section)                                                                                                                                                                                                                                                                                                           | Modbus is unauthenticated           | §3 item 1, §11a (disclaimer-by-omission)                  |
 | `website/.../protocols/canopen.adoc` ("CANopen … address areas")                                                                                                                                                                                                                                                                                                    | CANopen scope                       | §3 item 1, §11a                                           |
 | `website/.../protocols/ads.adoc` ("device-independent and fieldbus independent interface for communication between Beckhoff automation devices")                                                                                                                                                                                                                    | ADS scope                           | §3 item 1, §11a                                           |
-| `website/.../protocols/index.adoc`                                                                                                                                                                                                                                                                                                                                  | per-language driver-coverage matrix | §2 component table                                        |
+| `website/.../protocols/index.adoc`                                                                                                                                                                                                                                                                                                                                  | per-language driver-coverage matrix | §2 component table, §3 item 11, §11a, §12 |
 | `website/asciidoc/.../security.adoc` ("For more information about reporting vulnerabilities, see the Apache Security Team page")                                                                                                                                                                                                                                    | reporting channel                   | §1 reporting cross-reference                              |
 | `website/asciidoc/.../developers/maturity.adoc` (QU20, QU30)                                                                                                                                                                                                                                                                                                        | maturity posture                    | §1 reporting cross-reference                              |
-| `plc4j/drivers/opcua/.../security/PermissiveCertificateVerifier.java` (no-op `checkCertificateTrusted`)                                                                                                                                                                                                                                                             | implements the default              | §4 B2-OPCUA-PERMISSIVE, §5a                               |
+| `plc4j/drivers/opcua/.../security/{Permissive,TrustStore,Pinned,Rejecting}CertificateVerifier.java` | the four verifier strategies; `Rejecting` is the no-anchor default, `Permissive` needs `tls.verify=false` | §4 B2-OPCUA, §5a, §8 P2 |
 | `plc4j/drivers/opcua/.../security/SecurityPolicy.java` (enum of `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`)                                                                                                                                                                                             | supported policies                  | §5a, §8 P1, P7, §11a, §14 Q25                             |
-| `plc4j/drivers/opcua/.../config/OpcuaConfiguration.java` (`@ConfigurationParameter` set incl. `trust-store-file`, `discovery`, `username`, `password`, `key-store-file`, `key-store-password`, `security-policy=NONE`, `message-security=SIGN_ENCRYPT`, `channel-lifetime=3600000`, `session-timeout=120000`, `negotiation-timeout=60000`, `request-timeout=30000`) | knob inventory                      | §5a, §6, §10                                              |
+| `plc4j/drivers/opcua/.../config/OpcuaConfiguration.java` (`@ConfigurationParameter` set incl. `tls.verify=true`, `tls.trust-store`, `server-certificate-file`, `tls.keystore`, `generated-key-size=2048`, `discovery=true`, `username`, `password`, `allow-insecure-credentials=false`, `security-policy=Basic256Sha256`, `message-security=SIGN_ENCRYPT`, `channel-lifetime-ms=3600000`, `min-channel-lifetime-ms=5000`, `session-timeout-ms=120000`, `handshake-timeout-ms=60000`, `request-timeout-ms=30000`, `browse-max-*`, `subscription-queue-size=1`) | knob inventory (verified against `website/.../partials/opcua.adoc`, generated from this class, on 2026-09-03) | §5a, §6, §10                                              |
 | `plc4j/drivers/knxnetip/.../ets/EtsParser.java` lines 65–71 (XXE/DTD/schema disabled, `FEATURE_SECURE_PROCESSING`)                                                                                                                                                                                                                                                  | hardened XML parser                 | §5 (filesystem-KNX), §8 P6, §11a code-base                |
 | `plc4j/drivers/ads/.../AdsProtocolLogic.java` lines 130–145 (`PlcUsernamePasswordAuthentication` instance check; `setupAmsRoute(...)` call)                                                                                                                                                                                                                         | ADS credential forwarding           | §4 B2-ADS, §5a                                            |
 | `plc4j/api/.../authentication/PlcAuthentication.java`, `PlcUsernamePasswordAuthentication.java`, `PlcCertificateAuthentication.java`                                                                                                                                                                                                                                | auth type-system                    | §6, §9 false-friend                                       |
 | `plc4j/api/.../PlcConnection.java`, `PlcDriverManager.java`                                                                                                                                                                                                                                                                                                         | public API surface                  | §2, §4 B1, §6                                             |
-| `plc4j/transports/{tcp,udp,serial,raw-socket,pcap-replay,socketcan,can,virtualcan,test}` (no listening-socket entries)                                                                                                                                                                                                                                              | client-only transports              | §2, §3 item 2, §10 item 9                                 |
+| `plc4j/transports/{api,tcp,udp,serial,cotp,tls,raw-socket,pcap-replay,can,can-socketcan,can-virtualcan,test}` (no listening-socket entries; TCP is blocking `SocketChannel` on a virtual thread since SPI3, not Netty)                                                                                                                                                                                                                                              | client-only transports              | §2, §3 item 2, §10 item 9                                 |
+| `plc4j/transports/tls/.../config/TlsTransportConfiguration.java` (`verify=true`, `ignore-common-name=false`, `trust-store`, `trust-store-password`, `trust-store-type`, `version`, `keystore*`) | TLS transport trust knobs; hostname checking added 2026-08-24 | §5a, §10 item 3, §11 |
