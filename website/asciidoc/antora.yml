@@ -28,3 +28,4 @@ nav:
 asciidoc:
   attributes:
     current-last-released-version: '0.12.0'
+    current-full-version: '0.12.0'
