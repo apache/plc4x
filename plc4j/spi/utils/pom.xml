@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-spi</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-spi-utils</artifactId>
@@ -30,7 +30,7 @@
   <name>PLC4J: SPI: Utils</name>
 
   <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:18Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -38,13 +38,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-buffers-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
 
     <!-- Test Dependencies -->

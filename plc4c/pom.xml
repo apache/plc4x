@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4c</artifactId>
@@ -32,7 +32,7 @@
   <description>Implementation of the protocol adapters for usage as C library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:18Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
     <unity.version>2.5.2</unity.version>
     <!-- Tell Sonar where to find the sources -->
     <!--sonar.sources></sonar.sources-->
@@ -346,7 +346,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-c</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -354,21 +354,21 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-plc4x</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-s7</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
