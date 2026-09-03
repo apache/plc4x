@@ -171,6 +171,10 @@
     <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
     <mockito.version>5.23.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
+    <!-- Used by the maven-site skin declaration in
+         code-generation/protocol-test/src/site/site.xml - that file is ISO-8859-1 encoded,
+         so a plain grep treats it as binary and will not show you the reference. -->
+    <reflow.skin.version>2.3.3</reflow.skin.version>
     <saxon.version>13.0</saxon.version>
     <semver4j.version>3.1.0</semver4j.version>
     <slf4j.version>2.0.18</slf4j.version>
