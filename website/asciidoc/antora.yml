@@ -31,5 +31,5 @@ nav:
 - modules/developers/nav.adoc
 asciidoc:
   attributes:
-    current-last-released-version: '0.13.0'
-    current-full-version: '0.13.0'
+    current-last-released-version: '0.13.1'
+    current-full-version: '0.13.1'
