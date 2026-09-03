@@ -1683,9 +1683,11 @@ public enum KnxManufacturer {
 
   M_KOLORS_INDIA_PRIVATE_LIMITED((int) 828, (int) 890, "KOLORS INDIA PRIVATE LIMITED"),
 
-  M_ABB___RESERVED((int) 829, (int) 43954, "ABB - reserved"),
+  M_GERALD_DOCENKO((int) 829, (int) 891, "Gerald Docenko"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 830, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_ABB___RESERVED((int) 830, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 831, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

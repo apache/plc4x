@@ -5848,6 +5848,28 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
+            } if( datapointType == KnxDatapointType.DPT_Colour_HSV ) { // Struct
+
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    var reserved = readBuffer.ReadByte("", 8);
+                    if(reserved != 0x00) {
+                        Logger.Info("Expected constant value {expected} but got {got} for reserved field.", 0x00, reserved);
+                    }
+                }
+
+                // Simple Field (h)
+                var h = readBuffer.ReadByte("", 8);
+
+                // Simple Field (s)
+                var s = readBuffer.ReadByte("", 8);
+
+                // Simple Field (v)
+                var v = readBuffer.ReadByte("", 8);
+
+                var _map = new Dictionary<string, IPlcValue>();
+
+                return new PlcStruct(_map);
             } if( datapointType == KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII ) { // STRING
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -10462,6 +10484,21 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (b)
                 var b = (byte) _value.GetStruct()["b"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (b));
+            return writeBuffer;
+        } if( datapointType == KnxDatapointType.DPT_Colour_HSV ) { // Struct
+                var writeBuffer = new WriteBuffer();
+
+                // Reserved Field
+                writeBuffer.WriteByte("", 8, (byte) 0x00);
+                // Simple Field (h)
+                var h = (byte) _value.GetStruct()["h"].GetByte();
+                writeBuffer.WriteByte("", 8, (byte) (h));
+                // Simple Field (s)
+                var s = (byte) _value.GetStruct()["s"].GetByte();
+                writeBuffer.WriteByte("", 8, (byte) (s));
+                // Simple Field (v)
+                var v = (byte) _value.GetStruct()["v"].GetByte();
+                writeBuffer.WriteByte("", 8, (byte) (v));
             return writeBuffer;
         } if( datapointType == KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII ) { // STRING
                 var writeBuffer = new WriteBuffer();

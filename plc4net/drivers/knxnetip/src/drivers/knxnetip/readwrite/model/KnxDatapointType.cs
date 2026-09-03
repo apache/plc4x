@@ -361,25 +361,26 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         DPT_MeteringValue = 333,
         DPT_MBus_Address = 334,
         DPT_Colour_RGB = 335,
-        DPT_LanguageCodeAlpha2_ASCII = 336,
-        DPT_Tariff_ActiveEnergy = 337,
-        DPT_Prioritised_Mode_Control = 338,
-        DPT_DALI_Control_Gear_Diagnostic = 339,
-        DPT_DALI_Diagnostics = 340,
-        DPT_CombinedPosition = 341,
-        DPT_StatusSAB = 342,
-        DPT_Colour_xyY = 343,
-        DPT_Converter_Status = 344,
-        DPT_Converter_Test_Result = 345,
-        DPT_Battery_Info = 346,
-        DPT_Brightness_Colour_Temperature_Transition = 347,
-        DPT_Brightness_Colour_Temperature_Control = 348,
-        DPT_Colour_RGBW = 349,
-        DPT_Relative_Control_RGBW = 350,
-        DPT_Relative_Control_RGB = 351,
-        DPT_GeographicalLocation = 352,
-        DPT_TempRoomSetpSetF16_4 = 353,
-        DPT_TempRoomSetpSetShiftF16_4 = 354,
+        DPT_Colour_HSV = 336,
+        DPT_LanguageCodeAlpha2_ASCII = 337,
+        DPT_Tariff_ActiveEnergy = 338,
+        DPT_Prioritised_Mode_Control = 339,
+        DPT_DALI_Control_Gear_Diagnostic = 340,
+        DPT_DALI_Diagnostics = 341,
+        DPT_CombinedPosition = 342,
+        DPT_StatusSAB = 343,
+        DPT_Colour_xyY = 344,
+        DPT_Converter_Status = 345,
+        DPT_Converter_Test_Result = 346,
+        DPT_Battery_Info = 347,
+        DPT_Brightness_Colour_Temperature_Transition = 348,
+        DPT_Brightness_Colour_Temperature_Control = 349,
+        DPT_Colour_RGBW = 350,
+        DPT_Relative_Control_RGBW = 351,
+        DPT_Relative_Control_RGB = 352,
+        DPT_GeographicalLocation = 353,
+        DPT_TempRoomSetpSetF16_4 = 354,
+        DPT_TempRoomSetpSetShiftF16_4 = 355,
     }
 
     public static class KnxDatapointTypeInfo
@@ -1181,67 +1182,70 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_Colour_RGB: { /* '335' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '336' */
+                case KnxDatapointType.DPT_Colour_HSV: { /* '336' */
+                    return 601;
+                }
+                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '337' */
                     return 1;
                 }
-                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '337' */
+                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '338' */
                     return 1;
                 }
-                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '338' */
+                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '339' */
                     return 1;
-                }
-                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '339' */
-                    return 600;
                 }
                 case KnxDatapointType.DPT_UpDown: { /* '34' */
                     return 8;
                 }
-                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '340' */
+                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '340' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_CombinedPosition: { /* '341' */
+                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '341' */
+                    return 600;
+                }
+                case KnxDatapointType.DPT_CombinedPosition: { /* '342' */
                     return 800;
                 }
-                case KnxDatapointType.DPT_StatusSAB: { /* '342' */
+                case KnxDatapointType.DPT_StatusSAB: { /* '343' */
                     return 800;
                 }
-                case KnxDatapointType.DPT_Colour_xyY: { /* '343' */
+                case KnxDatapointType.DPT_Colour_xyY: { /* '344' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_Converter_Status: { /* '344' */
+                case KnxDatapointType.DPT_Converter_Status: { /* '345' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_Converter_Test_Result: { /* '345' */
+                case KnxDatapointType.DPT_Converter_Test_Result: { /* '346' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_Battery_Info: { /* '346' */
+                case KnxDatapointType.DPT_Battery_Info: { /* '347' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '347' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '348' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '348' */
-                    return 600;
-                }
-                case KnxDatapointType.DPT_Colour_RGBW: { /* '349' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '349' */
                     return 600;
                 }
                 case KnxDatapointType.DPT_OpenClose: { /* '35' */
                     return 9;
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '350' */
+                case KnxDatapointType.DPT_Colour_RGBW: { /* '350' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '351' */
+                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '351' */
                     return 600;
                 }
-                case KnxDatapointType.DPT_GeographicalLocation: { /* '352' */
+                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '352' */
+                    return 600;
+                }
+                case KnxDatapointType.DPT_GeographicalLocation: { /* '353' */
                     return 1;
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '353' */
+                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '354' */
                     return 100;
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '354' */
+                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '355' */
                     return 101;
                 }
                 case KnxDatapointType.DPT_Start: { /* '36' */
@@ -2256,67 +2260,70 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_Colour_RGB: { /* '335' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '336' */
+                case KnxDatapointType.DPT_Colour_HSV: { /* '336' */
+                    return types.PlcValueType.Struct;
+                }
+                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '337' */
                     return types.PlcValueType.STRING;
                 }
-                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '337' */
+                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '338' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '338' */
-                    return types.PlcValueType.Struct;
-                }
-                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '339' */
+                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '339' */
                     return types.PlcValueType.Struct;
                 }
                 case KnxDatapointType.DPT_UpDown: { /* '34' */
                     return types.PlcValueType.BOOL;
                 }
-                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '340' */
+                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '340' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_CombinedPosition: { /* '341' */
+                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '341' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_StatusSAB: { /* '342' */
+                case KnxDatapointType.DPT_CombinedPosition: { /* '342' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Colour_xyY: { /* '343' */
+                case KnxDatapointType.DPT_StatusSAB: { /* '343' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Converter_Status: { /* '344' */
+                case KnxDatapointType.DPT_Colour_xyY: { /* '344' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Converter_Test_Result: { /* '345' */
+                case KnxDatapointType.DPT_Converter_Status: { /* '345' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Battery_Info: { /* '346' */
+                case KnxDatapointType.DPT_Converter_Test_Result: { /* '346' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '347' */
+                case KnxDatapointType.DPT_Battery_Info: { /* '347' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '348' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '348' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Colour_RGBW: { /* '349' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '349' */
                     return types.PlcValueType.Struct;
                 }
                 case KnxDatapointType.DPT_OpenClose: { /* '35' */
                     return types.PlcValueType.BOOL;
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '350' */
+                case KnxDatapointType.DPT_Colour_RGBW: { /* '350' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '351' */
+                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '351' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_GeographicalLocation: { /* '352' */
+                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '352' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '353' */
+                case KnxDatapointType.DPT_GeographicalLocation: { /* '353' */
                     return types.PlcValueType.Struct;
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '354' */
+                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '354' */
+                    return types.PlcValueType.Struct;
+                }
+                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '355' */
                     return types.PlcValueType.Struct;
                 }
                 case KnxDatapointType.DPT_Start: { /* '36' */
@@ -3331,67 +3338,70 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_Colour_RGB: { /* '335' */
                     return "RGB value 3x(0..255)";
                 }
-                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '336' */
+                case KnxDatapointType.DPT_Colour_HSV: { /* '336' */
+                    return "Colour HSV";
+                }
+                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '337' */
                     return "language code (ASCII)";
                 }
-                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '337' */
+                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '338' */
                     return "electrical energy with tariff";
                 }
-                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '338' */
+                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '339' */
                     return "priority control";
-                }
-                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '339' */
-                    return "diagnostic value";
                 }
                 case KnxDatapointType.DPT_UpDown: { /* '34' */
                     return "up/down";
                 }
-                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '340' */
+                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '340' */
                     return "diagnostic value";
                 }
-                case KnxDatapointType.DPT_CombinedPosition: { /* '341' */
+                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '341' */
+                    return "diagnostic value";
+                }
+                case KnxDatapointType.DPT_CombinedPosition: { /* '342' */
                     return "combined position";
                 }
-                case KnxDatapointType.DPT_StatusSAB: { /* '342' */
+                case KnxDatapointType.DPT_StatusSAB: { /* '343' */
                     return "status sunblind & shutter actuator";
                 }
-                case KnxDatapointType.DPT_Colour_xyY: { /* '343' */
+                case KnxDatapointType.DPT_Colour_xyY: { /* '344' */
                     return "colour xyY";
                 }
-                case KnxDatapointType.DPT_Converter_Status: { /* '344' */
+                case KnxDatapointType.DPT_Converter_Status: { /* '345' */
                     return "DALI converter status";
                 }
-                case KnxDatapointType.DPT_Converter_Test_Result: { /* '345' */
+                case KnxDatapointType.DPT_Converter_Test_Result: { /* '346' */
                     return "DALI converter test result";
                 }
-                case KnxDatapointType.DPT_Battery_Info: { /* '346' */
+                case KnxDatapointType.DPT_Battery_Info: { /* '347' */
                     return "Battery Information";
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '347' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '348' */
                     return "brightness colour temperature transition";
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '348' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '349' */
                     return "brightness colour temperature control";
-                }
-                case KnxDatapointType.DPT_Colour_RGBW: { /* '349' */
-                    return "RGBW value 4x(0..100%)";
                 }
                 case KnxDatapointType.DPT_OpenClose: { /* '35' */
                     return "open/close";
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '350' */
+                case KnxDatapointType.DPT_Colour_RGBW: { /* '350' */
+                    return "RGBW value 4x(0..100%)";
+                }
+                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '351' */
                     return "RGBW relative control";
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '351' */
+                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '352' */
                     return "RGB relative control";
                 }
-                case KnxDatapointType.DPT_GeographicalLocation: { /* '352' */
+                case KnxDatapointType.DPT_GeographicalLocation: { /* '353' */
                     return "geographical location (longitude and latitude) expressed in degrees";
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '353' */
+                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '354' */
                     return "Temperature setpoint setting for 4 HVAC Modes";
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '354' */
+                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '355' */
                     return "Temperature setpoint shift setting for 4 HVAC Modes";
                 }
                 case KnxDatapointType.DPT_Start: { /* '36' */
@@ -4406,67 +4416,70 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_Colour_RGB: { /* '335' */
                     return "DPST-232-600";
                 }
-                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '336' */
+                case KnxDatapointType.DPT_Colour_HSV: { /* '336' */
+                    return "DPST-232-601";
+                }
+                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '337' */
                     return "DPST-234-1";
                 }
-                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '337' */
+                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '338' */
                     return "DPST-235-1";
                 }
-                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '338' */
+                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '339' */
                     return "DPST-236-1";
-                }
-                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '339' */
-                    return "DPST-237-600";
                 }
                 case KnxDatapointType.DPT_UpDown: { /* '34' */
                     return "DPST-1-8";
                 }
-                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '340' */
+                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '340' */
+                    return "DPST-237-600";
+                }
+                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '341' */
                     return "DPST-238-600";
                 }
-                case KnxDatapointType.DPT_CombinedPosition: { /* '341' */
+                case KnxDatapointType.DPT_CombinedPosition: { /* '342' */
                     return "DPST-240-800";
                 }
-                case KnxDatapointType.DPT_StatusSAB: { /* '342' */
+                case KnxDatapointType.DPT_StatusSAB: { /* '343' */
                     return "DPST-241-800";
                 }
-                case KnxDatapointType.DPT_Colour_xyY: { /* '343' */
+                case KnxDatapointType.DPT_Colour_xyY: { /* '344' */
                     return "DPST-242-600";
                 }
-                case KnxDatapointType.DPT_Converter_Status: { /* '344' */
+                case KnxDatapointType.DPT_Converter_Status: { /* '345' */
                     return "DPST-244-600";
                 }
-                case KnxDatapointType.DPT_Converter_Test_Result: { /* '345' */
+                case KnxDatapointType.DPT_Converter_Test_Result: { /* '346' */
                     return "DPST-245-600";
                 }
-                case KnxDatapointType.DPT_Battery_Info: { /* '346' */
+                case KnxDatapointType.DPT_Battery_Info: { /* '347' */
                     return "DPST-246-600";
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '347' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '348' */
                     return "DPST-249-600";
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '348' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '349' */
                     return "DPST-250-600";
-                }
-                case KnxDatapointType.DPT_Colour_RGBW: { /* '349' */
-                    return "DPST-251-600";
                 }
                 case KnxDatapointType.DPT_OpenClose: { /* '35' */
                     return "DPST-1-9";
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '350' */
+                case KnxDatapointType.DPT_Colour_RGBW: { /* '350' */
+                    return "DPST-251-600";
+                }
+                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '351' */
                     return "DPST-252-600";
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '351' */
+                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '352' */
                     return "DPST-254-600";
                 }
-                case KnxDatapointType.DPT_GeographicalLocation: { /* '352' */
+                case KnxDatapointType.DPT_GeographicalLocation: { /* '353' */
                     return "DPST-255-1";
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '353' */
+                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '354' */
                     return "DPST-275-100";
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '354' */
+                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '355' */
                     return "DPST-275-101";
                 }
                 case KnxDatapointType.DPT_Start: { /* '36' */
@@ -5481,67 +5494,70 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_Colour_RGB: { /* '335' */
                     return model.KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB;
                 }
-                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '336' */
+                case KnxDatapointType.DPT_Colour_HSV: { /* '336' */
+                    return model.KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB;
+                }
+                case KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII: { /* '337' */
                     return model.KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1;
                 }
-                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '337' */
+                case KnxDatapointType.DPT_Tariff_ActiveEnergy: { /* '338' */
                     return model.KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY;
                 }
-                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '338' */
+                case KnxDatapointType.DPT_Prioritised_Mode_Control: { /* '339' */
                     return model.KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL;
-                }
-                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '339' */
-                    return model.KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT;
                 }
                 case KnxDatapointType.DPT_UpDown: { /* '34' */
                     return model.KnxDatapointMainType.DPT_1_BIT;
                 }
-                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '340' */
+                case KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic: { /* '340' */
+                    return model.KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT;
+                }
+                case KnxDatapointType.DPT_DALI_Diagnostics: { /* '341' */
                     return model.KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT;
                 }
-                case KnxDatapointType.DPT_CombinedPosition: { /* '341' */
+                case KnxDatapointType.DPT_CombinedPosition: { /* '342' */
                     return model.KnxDatapointMainType.DPT_POSITIONS;
                 }
-                case KnxDatapointType.DPT_StatusSAB: { /* '342' */
+                case KnxDatapointType.DPT_StatusSAB: { /* '343' */
                     return model.KnxDatapointMainType.DPT_STATUS_32_BIT;
                 }
-                case KnxDatapointType.DPT_Colour_xyY: { /* '343' */
+                case KnxDatapointType.DPT_Colour_xyY: { /* '344' */
                     return model.KnxDatapointMainType.DPT_STATUS_48_BIT;
                 }
-                case KnxDatapointType.DPT_Converter_Status: { /* '344' */
+                case KnxDatapointType.DPT_Converter_Status: { /* '345' */
                     return model.KnxDatapointMainType.DPT_CONVERTER_STATUS;
                 }
-                case KnxDatapointType.DPT_Converter_Test_Result: { /* '345' */
+                case KnxDatapointType.DPT_Converter_Test_Result: { /* '346' */
                     return model.KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT;
                 }
-                case KnxDatapointType.DPT_Battery_Info: { /* '346' */
+                case KnxDatapointType.DPT_Battery_Info: { /* '347' */
                     return model.KnxDatapointMainType.DPT_BATTERY_INFORMATION;
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '347' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition: { /* '348' */
                     return model.KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION;
                 }
-                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '348' */
+                case KnxDatapointType.DPT_Brightness_Colour_Temperature_Control: { /* '349' */
                     return model.KnxDatapointMainType.DPT_STATUS_24_BIT;
-                }
-                case KnxDatapointType.DPT_Colour_RGBW: { /* '349' */
-                    return model.KnxDatapointMainType.DPT_COLOUR_RGBW;
                 }
                 case KnxDatapointType.DPT_OpenClose: { /* '35' */
                     return model.KnxDatapointMainType.DPT_1_BIT;
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '350' */
+                case KnxDatapointType.DPT_Colour_RGBW: { /* '350' */
+                    return model.KnxDatapointMainType.DPT_COLOUR_RGBW;
+                }
+                case KnxDatapointType.DPT_Relative_Control_RGBW: { /* '351' */
                     return model.KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW;
                 }
-                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '351' */
+                case KnxDatapointType.DPT_Relative_Control_RGB: { /* '352' */
                     return model.KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB;
                 }
-                case KnxDatapointType.DPT_GeographicalLocation: { /* '352' */
+                case KnxDatapointType.DPT_GeographicalLocation: { /* '353' */
                     return model.KnxDatapointMainType.DPT_F32F32;
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '353' */
+                case KnxDatapointType.DPT_TempRoomSetpSetF16_4: { /* '354' */
                     return model.KnxDatapointMainType.DPT_F16F16F16F16;
                 }
-                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '354' */
+                case KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4: { /* '355' */
                     return model.KnxDatapointMainType.DPT_F16F16F16F16;
                 }
                 case KnxDatapointType.DPT_Start: { /* '36' */

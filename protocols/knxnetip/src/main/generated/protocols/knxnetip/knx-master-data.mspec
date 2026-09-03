@@ -426,25 +426,26 @@
     ['333' DPT_MeteringValue ['DPST-229-1', '1', 'DPT_4_1_1_BYTE_COMBINED_INFORMATION', '"metering value (value,encoding,cmd)"', 'Struct']]
     ['334' DPT_MBus_Address ['DPST-230-1000', '1000', 'DPT_MBUS_ADDRESS', '"MBus address"', 'Struct']]
     ['335' DPT_Colour_RGB ['DPST-232-600', '600', 'DPT_3_BYTE_COLOUR_RGB', '"RGB value 3x(0..255)"', 'Struct']]
-    ['336' DPT_LanguageCodeAlpha2_ASCII ['DPST-234-1', '1', 'DPT_LANGUAGE_CODE_ISO_639_1', '"language code (ASCII)"', 'STRING']]
-    ['337' DPT_Tariff_ActiveEnergy ['DPST-235-1', '1', 'DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY', '"electrical energy with tariff"', 'Struct']]
-    ['338' DPT_Prioritised_Mode_Control ['DPST-236-1', '1', 'DPT_PRIORITISED_MODE_CONTROL', '"priority control"', 'Struct']]
-    ['339' DPT_DALI_Control_Gear_Diagnostic ['DPST-237-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_16_BIT', '"diagnostic value"', 'Struct']]
-    ['340' DPT_DALI_Diagnostics ['DPST-238-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_8_BIT', '"diagnostic value"', 'Struct']]
-    ['341' DPT_CombinedPosition ['DPST-240-800', '800', 'DPT_POSITIONS', '"combined position"', 'Struct']]
-    ['342' DPT_StatusSAB ['DPST-241-800', '800', 'DPT_STATUS_32_BIT', '"status sunblind & shutter actuator"', 'Struct']]
-    ['343' DPT_Colour_xyY ['DPST-242-600', '600', 'DPT_STATUS_48_BIT', '"colour xyY"', 'Struct']]
-    ['344' DPT_Converter_Status ['DPST-244-600', '600', 'DPT_CONVERTER_STATUS', '"DALI converter status"', 'Struct']]
-    ['345' DPT_Converter_Test_Result ['DPST-245-600', '600', 'DPT_CONVERTER_TEST_RESULT', '"DALI converter test result"', 'Struct']]
-    ['346' DPT_Battery_Info ['DPST-246-600', '600', 'DPT_BATTERY_INFORMATION', '"Battery Information"', 'Struct']]
-    ['347' DPT_Brightness_Colour_Temperature_Transition ['DPST-249-600', '600', 'DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION', '"brightness colour temperature transition"', 'Struct']]
-    ['348' DPT_Brightness_Colour_Temperature_Control ['DPST-250-600', '600', 'DPT_STATUS_24_BIT', '"brightness colour temperature control"', 'Struct']]
-    ['349' DPT_Colour_RGBW ['DPST-251-600', '600', 'DPT_COLOUR_RGBW', '"RGBW value 4x(0..100%)"', 'Struct']]
-    ['350' DPT_Relative_Control_RGBW ['DPST-252-600', '600', 'DPT_RELATIVE_CONTROL_RGBW', '"RGBW relative control"', 'Struct']]
-    ['351' DPT_Relative_Control_RGB ['DPST-254-600', '600', 'DPT_RELATIVE_CONTROL_RGB', '"RGB relative control"', 'Struct']]
-    ['352' DPT_GeographicalLocation ['DPST-255-1', '1', 'DPT_F32F32', '"geographical location (longitude and latitude) expressed in degrees"', 'Struct']]
-    ['353' DPT_TempRoomSetpSetF16_4 ['DPST-275-100', '100', 'DPT_F16F16F16F16', '"Temperature setpoint setting for 4 HVAC Modes"', 'Struct']]
-    ['354' DPT_TempRoomSetpSetShiftF16_4 ['DPST-275-101', '101', 'DPT_F16F16F16F16', '"Temperature setpoint shift setting for 4 HVAC Modes"', 'Struct']]
+    ['336' DPT_Colour_HSV ['DPST-232-601', '601', 'DPT_3_BYTE_COLOUR_RGB', '"Colour HSV"', 'Struct']]
+    ['337' DPT_LanguageCodeAlpha2_ASCII ['DPST-234-1', '1', 'DPT_LANGUAGE_CODE_ISO_639_1', '"language code (ASCII)"', 'STRING']]
+    ['338' DPT_Tariff_ActiveEnergy ['DPST-235-1', '1', 'DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY', '"electrical energy with tariff"', 'Struct']]
+    ['339' DPT_Prioritised_Mode_Control ['DPST-236-1', '1', 'DPT_PRIORITISED_MODE_CONTROL', '"priority control"', 'Struct']]
+    ['340' DPT_DALI_Control_Gear_Diagnostic ['DPST-237-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_16_BIT', '"diagnostic value"', 'Struct']]
+    ['341' DPT_DALI_Diagnostics ['DPST-238-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_8_BIT', '"diagnostic value"', 'Struct']]
+    ['342' DPT_CombinedPosition ['DPST-240-800', '800', 'DPT_POSITIONS', '"combined position"', 'Struct']]
+    ['343' DPT_StatusSAB ['DPST-241-800', '800', 'DPT_STATUS_32_BIT', '"status sunblind & shutter actuator"', 'Struct']]
+    ['344' DPT_Colour_xyY ['DPST-242-600', '600', 'DPT_STATUS_48_BIT', '"colour xyY"', 'Struct']]
+    ['345' DPT_Converter_Status ['DPST-244-600', '600', 'DPT_CONVERTER_STATUS', '"DALI converter status"', 'Struct']]
+    ['346' DPT_Converter_Test_Result ['DPST-245-600', '600', 'DPT_CONVERTER_TEST_RESULT', '"DALI converter test result"', 'Struct']]
+    ['347' DPT_Battery_Info ['DPST-246-600', '600', 'DPT_BATTERY_INFORMATION', '"Battery Information"', 'Struct']]
+    ['348' DPT_Brightness_Colour_Temperature_Transition ['DPST-249-600', '600', 'DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION', '"brightness colour temperature transition"', 'Struct']]
+    ['349' DPT_Brightness_Colour_Temperature_Control ['DPST-250-600', '600', 'DPT_STATUS_24_BIT', '"brightness colour temperature control"', 'Struct']]
+    ['350' DPT_Colour_RGBW ['DPST-251-600', '600', 'DPT_COLOUR_RGBW', '"RGBW value 4x(0..100%)"', 'Struct']]
+    ['351' DPT_Relative_Control_RGBW ['DPST-252-600', '600', 'DPT_RELATIVE_CONTROL_RGBW', '"RGBW relative control"', 'Struct']]
+    ['352' DPT_Relative_Control_RGB ['DPST-254-600', '600', 'DPT_RELATIVE_CONTROL_RGB', '"RGB relative control"', 'Struct']]
+    ['353' DPT_GeographicalLocation ['DPST-255-1', '1', 'DPT_F32F32', '"geographical location (longitude and latitude) expressed in degrees"', 'Struct']]
+    ['354' DPT_TempRoomSetpSetF16_4 ['DPST-275-100', '100', 'DPT_F16F16F16F16', '"Temperature setpoint setting for 4 HVAC Modes"', 'Struct']]
+    ['355' DPT_TempRoomSetpSetShiftF16_4 ['DPST-275-101', '101', 'DPT_F16F16F16F16', '"Temperature setpoint shift setting for 4 HVAC Modes"', 'Struct']]
     
 ]
 
@@ -1581,8 +1582,9 @@
     ['826' M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ ['888', '"Guangzhou YingLight technology Co.,Ltd."']]
     ['827' M_RUEDIGER_WOLF_AB ['889', '"Rüdiger Wolf AB"']]
     ['828' M_KOLORS_INDIA_PRIVATE_LIMITED ['890', '"KOLORS INDIA PRIVATE LIMITED"']]
-    ['829' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['830' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['829' M_GERALD_DOCENKO ['891', '"Gerald Docenko"']]
+    ['830' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['831' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
@@ -4513,6 +4515,19 @@
                     [simple uint 8 g]
                 
                     [simple uint 8 b]
+                
+        ]
+    
+        ['DPT_Colour_HSV' Struct
+           // Field Size 24
+           [reserved uint 8 '0x00']
+
+                    
+                    [simple uint 8 h]
+                
+                    [simple uint 8 s]
+                
+                    [simple uint 8 v]
                 
         ]
     
