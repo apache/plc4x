@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-tools</artifactId>
@@ -32,7 +32,7 @@
   <description>A collection of tools that provide additional services to users.</description>
 
   <properties>
-    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T22:02:06Z</project.build.outputTimestamp>
   </properties>
 
   <subprojects>
