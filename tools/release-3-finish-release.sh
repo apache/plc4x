@@ -652,7 +652,9 @@ else
             exit 1;;
     esac
 
-    if ! svn move -m "Release Apache PLC4X $RELEASED_VERSION" \
+    # Reuses the Nexus credentials from "settings.xml", see "svn_authenticated".
+    read_asf_credentials
+    if ! svn_authenticated move -m "Release Apache PLC4X $RELEASED_VERSION" \
             "$DIST_DEV/$RELEASED_VERSION/$RELEASE_CANDIDATE" \
             "$DIST_RELEASE/$RELEASED_VERSION"; then
         echo "❌ Got non-0 exit code from moving the release candidate in SVN, aborting."
@@ -711,7 +713,7 @@ if svn ls "$DIST_RELEASE/$RELEASED_VERSION/" > /dev/null 2>&1 \
     svn ls -R "$DIST_DEV/$RELEASED_VERSION/" | sed 's|^|  |'
     read -r -p "Remove them? (yes/no) " yn
     if [[ "$yn" == "yes" ]]; then
-        if ! svn rm -m "Removed the staged release candidates of PLC4X $RELEASED_VERSION" \
+        if ! svn_authenticated rm -m "Removed the staged release candidates of PLC4X $RELEASED_VERSION" \
                 "$DIST_DEV/$RELEASED_VERSION"; then
             echo "❌ Got non-0 exit code from removing the staged release candidates, aborting."
             exit 1

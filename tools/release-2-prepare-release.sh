@@ -417,7 +417,15 @@ fi
 ########################################################################################################################
 
 cd "$DIRECTORY/out/stage/$RELEASE_VERSION" || exit
-svn import "$RELEASE_CANDIDATE" "$DIST_DEV/$RELEASE_VERSION/$RELEASE_CANDIDATE" -m"Staging of $RELEASE_CANDIDATE of PLC4X $RELEASE_VERSION"
+# The Nexus credentials from "settings.xml" are the same Apache account the SVN wants, so reuse
+# them rather than asking for them again. Falls back to prompting if they are not readable.
+read_asf_credentials
+if ! svn_authenticated import "$RELEASE_CANDIDATE" "$DIST_DEV/$RELEASE_VERSION/$RELEASE_CANDIDATE" \
+        -m"Staging of $RELEASE_CANDIDATE of PLC4X $RELEASE_VERSION"; then
+    echo "❌ Got non-0 exit code from importing the release candidate into SVN, aborting."
+    exit 1
+fi
+echo "✅ Staged $RELEASE_CANDIDATE under $DIST_DEV/$RELEASE_VERSION/$RELEASE_CANDIDATE"
 
 ########################################################################################################################
 # 11. Prepare the [VOTE] and [DISCUSS] emails

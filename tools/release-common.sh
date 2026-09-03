@@ -36,3 +36,47 @@ DIST_BASE="https://dist.apache.org/repos/dist"
 DIST_DEV="$DIST_BASE/dev/plc4x"
 DIST_RELEASE="$DIST_BASE/release/plc4x"
 KEYS_URL="$DIST_RELEASE/KEYS"
+
+# At the ASF the same LDAP account is behind the Nexus staging repository and the dist.apache.org
+# SVN, so the credentials Maven already has in "settings.xml" are the ones svn keeps asking for.
+# "read_asf_credentials" digs them out, "svn_authenticated" uses them if they are there.
+#
+# Nothing is lost when they cannot be read: the functions fall back to letting svn prompt, which
+# is what the release scripts did before. A password that Maven has encrypted ("{...}") is such a
+# case - decrypting that here would mean reimplementing Maven's key handling.
+ASF_USERNAME=""
+ASF_PASSWORD=""
+
+read_asf_credentials() {
+    local settings="${MAVEN_SETTINGS:-$HOME/.m2/settings.xml}"
+    local server_id="apache.releases.https"
+
+    if [[ ! -f "$settings" ]] || ! command -v xmllint > /dev/null 2>&1; then
+        return 0
+    fi
+
+    local username password
+    username=$(xmllint --xpath "string(//*[local-name()='server'][*[local-name()='id']='$server_id']/*[local-name()='username'])" "$settings" 2>/dev/null)
+    password=$(xmllint --xpath "string(//*[local-name()='server'][*[local-name()='id']='$server_id']/*[local-name()='password'])" "$settings" 2>/dev/null)
+
+    if [[ -z "$username" || -z "$password" || "$password" == \{* ]]; then
+        return 0
+    fi
+
+    ASF_USERNAME="$username"
+    ASF_PASSWORD="$password"
+}
+
+# Runs an svn command with those credentials, passing the password through stdin so that it never
+# shows up in the process list. If they turn out not to work - the Nexus credentials can be a user
+# token, which the SVN does not know about - the same command is run again interactively.
+svn_authenticated() {
+    if [[ -n "$ASF_USERNAME" && -n "$ASF_PASSWORD" ]]; then
+        if printf '%s' "$ASF_PASSWORD" \
+                | svn --username "$ASF_USERNAME" --password-from-stdin --non-interactive "$@"; then
+            return 0
+        fi
+        echo "⚠️  The credentials from settings.xml were not accepted by svn, asking instead."
+    fi
+    svn "$@"
+}
