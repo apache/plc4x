@@ -159,6 +159,7 @@
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
     <javapoet.version>0.17.0</javapoet.version>
+    <jaxb.version>4.0.5</jaxb.version>
     <jna.version>5.19.1</jna.version>
     <joda-time.version>2.14.3</joda-time.version>
     <jserialcom.version>2.11.4</jserialcom.version>
@@ -493,12 +494,8 @@
         <version>20260814</version>
       </dependency>
 
-      <!-- NOTE: xmlunit-core is what drags "jakarta.xml.bind:jakarta.xml.bind-api" into the
-           build - test scope only, and only in the modules using plc4j-utils-test-utils.
-           It is deliberately left unmanaged: the last time a jaxb version was pinned in this
-           pom it broke the Milo stack (see commit 54c90dba81, which moved that pin out again).
-           If you ever do need to manage it, do it in the transitive-dependencies section
-           below and re-run the opcua tests. -->
+      <!-- NOTE: xmlunit-core is what pulls "jakarta.xml.bind:jakarta.xml.bind-api" into the
+           build (test scope only). It is managed in the transitive section below. -->
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
@@ -658,6 +655,21 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcutil-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
+      </dependency>
+
+      <!-- Pulled in by xmlunit-core (test scope), which declares it in a JDK9+ profile for its
+           optional JaxbBuilder. No PLC4X code imports javax.xml.bind / jakarta.xml.bind, so the
+           jar is never actually loaded - it is managed purely to keep the old 2.3.3 line, and
+           its CVE surface, out of the build.
+           History: a jaxb pin in this pom once broke the embedded Milo stack and was moved out
+           again (commit 54c90dba81). That failure mode is gone - neither Milo nor jaxb-runtime
+           is part of this build any more. Verified 2026-09-03 that moving to the 4.x line (a
+           javax -> jakarta package rename, so the riskiest possible bump) keeps the opcua
+           driver suite green, including its Milo container integration tests. -->
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${jaxb.version}</version>
       </dependency>
 
 
