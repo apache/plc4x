@@ -28,6 +28,22 @@ fi
 # shellcheck source=release-common.sh
 source "$DIRECTORY/tools/release-common.sh"
 
+# "release:prepare" is the long part of this script, and everything after it (perform, signing,
+# staging, the emails) is what tends to need a second attempt. With "--resume <release-version>"
+# the preparation and its push are skipped, so an already tagged release can be picked up from
+# there instead of building it all over again. The version has to be given explicitly because by
+# then the poms already hold the next development version.
+RESUME=false
+if [[ "$1" == "--resume" ]]; then
+    RESUME=true
+    RESUME_VERSION="$2"
+    if [[ ! "$RESUME_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "❌ '--resume' needs the release version that was prepared, for example:"
+        echo "   $0 --resume 1.0.0"
+        exit 1
+    fi
+fi
+
 
 ########################################################################################################################
 # 0. Check if there are uncommitted changes as these would automatically be committed (local)
@@ -48,24 +64,43 @@ if [[ ! "$PROJECT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?$ ]]; then
     exit 1
 fi
 RELEASE_VERSION=${PROJECT_VERSION%"-SNAPSHOT"}
+if [[ "$RESUME" == true ]]; then
+    # After a completed preparation the poms hold the next development version, so the version
+    # read above is not the one being released.
+    RELEASE_VERSION="$RESUME_VERSION"
+fi
 TAG_NAME="v$RELEASE_VERSION"
 IFS='.' read -ra VERSION_SEGMENTS <<< "$RELEASE_VERSION"
 NEW_VERSION="${VERSION_SEGMENTS[0]}.${VERSION_SEGMENTS[1]}.$((VERSION_SEGMENTS[2] + 1))-SNAPSHOT"
 
-# Check if a local tag already exists (This can happen if a first release attempt failed)
-if git -C "$DIRECTORY" rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-  echo "❌ Tag '$TAG_NAME' exists locally. Please delete with 'git tag -d $TAG_NAME'"
-  exit 1
+if [[ "$RESUME" == true ]]; then
+  # Resuming only makes sense once the tag the release is built from is on the remote, as
+  # "release:perform" checks that tag out from there.
+  if ! git -C "$DIRECTORY" rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+    echo "❌ Tag '$TAG_NAME' does not exist locally, so there is nothing to resume from."
+    exit 1
+  fi
+  if ! git -C "$DIRECTORY" ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME$"; then
+    echo "❌ Tag '$TAG_NAME' is not on remote 'origin'. Push it with 'git push origin $TAG_NAME'"
+    exit 1
+  fi
+  echo "✅ Resuming the release of $RELEASE_VERSION from tag '$TAG_NAME'."
 else
-  echo "✅ Tag '$TAG_NAME' does not exist locally."
-fi
+  # Check if a local tag already exists (This can happen if a first release attempt failed)
+  if git -C "$DIRECTORY" rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+    echo "❌ Tag '$TAG_NAME' exists locally. Please delete with 'git tag -d $TAG_NAME'"
+    exit 1
+  else
+    echo "✅ Tag '$TAG_NAME' does not exist locally."
+  fi
 
-# Check if a remote tag already exists (This can happen if a first release attempt failed)
-if git -C "$DIRECTORY" ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME$"; then
-  echo "❌ Tag '$TAG_NAME' exists on remote 'origin'. Please delete with 'git push origin --delete $TAG_NAME'"
-  exit 1
-else
-  echo "✅ Tag '$TAG_NAME' does not exist on remote 'origin'."
+  # Check if a remote tag already exists (This can happen if a first release attempt failed)
+  if git -C "$DIRECTORY" ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME$"; then
+    echo "❌ Tag '$TAG_NAME' exists on remote 'origin'. Please delete with 'git push origin --delete $TAG_NAME'"
+    exit 1
+  else
+    echo "✅ Tag '$TAG_NAME' does not exist on remote 'origin'."
+  fi
 fi
 
 # The Antora documentation version of this branch was already set by 'release-1-create-branch.sh'.
@@ -73,6 +108,10 @@ fi
 ########################################################################################################################
 # 1. Do a simple release-prepare command
 ########################################################################################################################
+
+if [[ "$RESUME" == true ]]; then
+    echo "⏭  Skipping the release preparation and its push, resuming with 'release:perform'."
+else
 
 # Attempt to read user.name and user.email (local first, then global)
 GIT_USER_NAME=$(git config user.name || git config --global user.name)
@@ -102,7 +141,7 @@ if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
              GIT_CONFIG_KEY_1=user.email GIT_CONFIG_VALUE_1=\"$GIT_USER_EMAIL\" \
              GIT_CONFIG_KEY_2=commit.gpgsign GIT_CONFIG_VALUE_2=false \
              GIT_CONFIG_KEY_3=tag.gpgsign GIT_CONFIG_VALUE_3=false && \
-           /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository release:prepare -DautoVersionSubmodules=true -DreleaseVersion='$RELEASE_VERSION' -DdevelopmentVersion='$NEW_VERSION' -Dtag='$TAG_NAME'"; then
+           /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository release:prepare -DautoVersionSubmodules=true -DpushChanges=false -DreleaseVersion='$RELEASE_VERSION' -DdevelopmentVersion='$NEW_VERSION' -Dtag='$TAG_NAME'"; then
     echo "❌ Got non-0 exit code from docker compose, aborting."
     exit 1
 fi
@@ -114,6 +153,8 @@ fi
 if ! git -C "$DIRECTORY" push; then
     echo "❌ Got non-0 exit code from pushing changes to git, aborting."
     exit 1
+fi
+
 fi
 
 TAG_COMMIT_HASH=$(git -C "$DIRECTORY" rev-list -n 1 "$TAG_NAME")
