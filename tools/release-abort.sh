@@ -31,7 +31,7 @@ DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # Maven 4 prefixes even quiet output with "[INFO] [stdout] ", so take the last token of the
 # last line rather than the whole output.
-CURRENT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec | tail -n 1 | awk '{print $NF}')
+CURRENT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q --non-recursive -Dexpression=project.version -DforceStdout help:evaluate | tail -n 1 | awk '{print $NF}')
 
 # The version to go back to cannot be derived reliably: after "release:branch" the poms hold the
 # next minor version, after "release:prepare" the next bugfix version, and in between the release
