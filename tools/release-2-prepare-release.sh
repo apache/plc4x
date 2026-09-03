@@ -28,20 +28,66 @@ fi
 # shellcheck source=release-common.sh
 source "$DIRECTORY/tools/release-common.sh"
 
-# "release:prepare" is the long part of this script, and everything after it (perform, signing,
-# staging, the emails) is what tends to need a second attempt. With "--resume <release-version>"
-# the preparation and its push are skipped, so an already tagged release can be picked up from
-# there instead of building it all over again. The version has to be given explicitly because by
-# then the poms already hold the next development version.
+# A release rarely fails in the part that takes the longest. "release:prepare" builds and verifies
+# everything, "release:perform" builds it again from the tag, and what tends to need a second
+# attempt is what comes after: staging to Nexus, the checks, the SVN import. So the script can be
+# started at a later point with:
+#
+#   $0 --resume <release-version> [--from prepare|perform|staging]
+#
+# The release version has to be given explicitly, because once the preparation has finished the
+# poms already hold the next development version. "--from" defaults to "perform", which is where
+# an interrupted preparation is picked up:
+#
+#   --from perform   the tag exists and is pushed, build and sign the artifacts from it
+#   --from staging   the artifacts in "out/.local-artifacts-dir" are built and signed already,
+#                    carry on with the Nexus staging
 RESUME=false
-if [[ "$1" == "--resume" ]]; then
-    RESUME=true
-    RESUME_VERSION="$2"
+RESUME_VERSION=""
+START_PHASE="prepare"
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --resume)
+            RESUME=true
+            RESUME_VERSION="$2"
+            # Default for a resumed run, "--from" can still move it further along.
+            if [[ "$START_PHASE" == "prepare" ]]; then
+                START_PHASE="perform"
+            fi
+            shift 2
+            ;;
+        --from)
+            START_PHASE="$2"
+            shift 2
+            ;;
+        *)
+            echo "❌ Unknown argument '$1'."
+            echo "   Usage: $0 [--resume <release-version> [--from prepare|perform|staging]]"
+            exit 1
+            ;;
+    esac
+done
+
+case "$START_PHASE" in
+    prepare|perform|staging) ;;
+    *)
+        echo "❌ Unknown phase '$START_PHASE', expected one of 'prepare', 'perform' or 'staging'."
+        exit 1
+        ;;
+esac
+
+if [[ "$RESUME" == true ]]; then
     if [[ ! "$RESUME_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         echo "❌ '--resume' needs the release version that was prepared, for example:"
         echo "   $0 --resume 1.0.0"
         exit 1
     fi
+elif [[ "$START_PHASE" != "prepare" ]]; then
+    # Without the release version there is no way to tell which tag to build and which artifacts
+    # to look for, as the poms have moved on to the next development version by then.
+    echo "❌ '--from $START_PHASE' only works together with '--resume <release-version>', for example:"
+    echo "   $0 --resume 1.0.0 --from $START_PHASE"
+    exit 1
 fi
 
 
@@ -109,8 +155,8 @@ fi
 # 1. Do a simple release-prepare command
 ########################################################################################################################
 
-if [[ "$RESUME" == true ]]; then
-    echo "⏭  Skipping the release preparation and its push, resuming with 'release:perform'."
+if [[ "$START_PHASE" != "prepare" ]]; then
+    echo "⏭  Skipping the release preparation and its push."
 else
 
 # Attempt to read user.name and user.email (local first, then global)
@@ -164,6 +210,15 @@ echo "✅ Tag '$TAG_NAME' has hash '$TAG_COMMIT_HASH'"
 # 3. Do a simple release-perform command skip signing of artifacts and deploy to local directory (inside the Docker container)
 ########################################################################################################################
 
+if [[ "$START_PHASE" == "staging" ]]; then
+    echo "⏭  Skipping 'release:perform', using the artifacts already in 'out/.local-artifacts-dir'."
+    if [[ ! -d "$DIRECTORY/out/.local-artifacts-dir" ]]; then
+        echo "❌ '$DIRECTORY/out/.local-artifacts-dir' does not exist, so there is nothing to stage."
+        echo "   Start from '--from perform' to build the artifacts from the tag first."
+        exit 1
+    fi
+else
+
 echo "Performing Release:"
 if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
         bash -c "/ws/mvnw -e -Dmaven.repo.local=/ws/out/.repository -DaltDeploymentRepository=snapshot-repo::file:/ws/out/.local-artifacts-dir release:perform"; then
@@ -195,14 +250,17 @@ if [[ "$SIGNED_ARTIFACTS" -eq 0 ]]; then
 fi
 echo "✅ Signed $SIGNED_ARTIFACTS artifacts."
 
+fi
+
 ########################################################################################################################
 # 5. Deploy the artifacts to Nexus and close the staging repo
 ########################################################################################################################
 
 echo "Deploying artifacts:"
 # Clean up any pre-existing properties file, as otherwise we'll also deploy that,
-# and that will cause errors when closing.
-rm "$DIRECTORY/out/.local-artifacts-dir/$STAGING_PROFILE_ID.properties"
+# and that will cause errors when closing. It is only there after a previous staging attempt,
+# hence the "-f".
+rm -f "$DIRECTORY/out/.local-artifacts-dir/$STAGING_PROFILE_ID.properties"
 if ! "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:deploy-staged-repository -DstagingProfileId=$STAGING_PROFILE_ID; then
     echo "❌ Got non-0 exit code from staging artifacts, aborting."
     exit 1
