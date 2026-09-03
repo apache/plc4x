@@ -110,60 +110,72 @@
     <plc4x-code-generation.version>1.9.0</plc4x-code-generation.version>
 
     <antlr.version>4.13.2</antlr.version>
-    <apiguardian.version>1.1.2</apiguardian.version>
     <assertj.version>3.27.7</assertj.version>
     <awaitility.version>4.3.0</awaitility.version>
     <bouncycastle.version>1.85</bouncycastle.version>
-    <byte-buddy.version>1.18.12</byte-buddy.version>
+    <!-- Bouncy Castle occasionally ships a patch release for "bcprov" alone (1.80.2, 1.81.1,
+         1.85.2 ...) while "bcpkix", "bctls" and "bcutil" stay on the base version. Those three
+         all resolve down to bcprov, so a single shared property would either hold bcprov back
+         or point the other three at a version that was never published. Hence the separate
+         property: keep it on the newest patch of the "bouncycastle.version" line, and move both
+         together when the base version changes. -->
+    <bouncycastle-prov.version>1.85.2</bouncycastle-prov.version>
+    <byte-buddy.version>1.18.13</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
-    <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.11.0</commons-cli.version>
     <commons-codec.version>1.22.1</commons-codec.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-configuration2.version>2.15.1</commons-configuration2.version>
     <commons-io.version>2.22.0</commons-io.version>
     <commons-lang3.version>3.20.0</commons-lang3.version>
-    <commons-logging.version>1.3.5</commons-logging.version>
     <commons-net.version>3.13.0</commons-net.version>
     <commons-text.version>1.15.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
+    <docker-java.version>3.7.1</docker-java.version>
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.5.2</equalsverifier.version>
+    <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     <freemarker.version>2.3.35</freemarker.version>
+    <glob.version>0.9.0</glob.version>
     <groovy.version>5.1.1</groovy.version>
+    <gson.version>2.14.0</gson.version>
     <guava.version>33.7.1-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <!-- Since Jackson 2.20 the "jackson-annotations" artifact is released with a two-segment
          version (2.20, 2.21, 2.22) while all the implementation artifacts (core, databind,
-         dataformat-*) keep the usual three segments (2.21.4). So "jackson-annotations" needs
+         dataformat-*) keep the usual three segments (2.22.2). So "jackson-annotations" needs
          its own property: it is NOT a stale or diverging version, it's just how Jackson
          numbers that one artifact. See the comment in jackson-bom, which does exactly the
          same thing with its "jackson.version.annotations" property.
-         When bumping: "jackson.broken.version" is the MINOR line of "jackson.version",
-         i.e. jackson.version 2.21.4 pairs with jackson.broken.version 2.21. -->
-    <jackson.version>2.21.4</jackson.version>
-    <jackson.broken.version>2.22</jackson.broken.version>
-    <woodstox-core.version>7.1.1</woodstox-core.version>
-    <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
-    <jaxb.version>4.0.4</jaxb.version>
-    <jetty-util.version>12.1.0</jetty-util.version>
+         When bumping: take "jackson-api.version" from the "jackson.version.annotations"
+         property of the matching jackson-bom - it does not track the patch line, so several
+         "jackson.version" releases in a row can map to the same value (both 2.21.4 and
+         2.22.2 pair with jackson-annotations 2.22). -->
+    <jackson-api.version>2.22</jackson-api.version>
+    <jackson.version>${jackson-api.version}.2</jackson.version>
+    <woodstox-core.version>7.2.2</woodstox-core.version>
+    <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
+    <java-websocket.version>1.6.0</java-websocket.version>
+    <javapoet.version>0.17.0</javapoet.version>
     <jna.version>5.19.1</jna.version>
+    <joda-time.version>2.14.3</joda-time.version>
     <jserialcom.version>2.11.4</jserialcom.version>
+    <jsoup.version>1.22.2</jsoup.version>
+    <jssc.version>2.10.2</jssc.version>
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
-    <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.6.3</logback.version>
-    <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
+    <maven-artifact.version>3.9.16</maven-artifact.version>
+    <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
     <mockito.version>5.23.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
+    <saxon.version>13.0</saxon.version>
+    <semver4j.version>3.1.0</semver4j.version>
     <slf4j.version>2.0.18</slf4j.version>
+    <testcontainers.version>2.0.5</testcontainers.version>
+    <testcontainers-virtualavr.version>0.0.2</testcontainers-virtualavr.version>
     <xmlunit.version>2.13.0</xmlunit.version>
-
-    <!-- Site properties -->
-    <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.11</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.3.1</asciidoctorj.diagram.version>
 
     <skip-code-generation>false</skip-code-generation>
     <skip-code-generation-tests>true</skip-code-generation-tests>
@@ -174,7 +186,6 @@
     <skip-pgp-signing>true</skip-pgp-signing>
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
-    <reflow.skin.version>2.3.3</reflow.skin.version>
   </properties>
 
   <subprojects>
@@ -290,7 +301,11 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>${maven.version}</version>
+        <!-- NOTE: Do not use "${maven.version}" here - that property is not defined in this pom,
+             so it falls through to Maven's built-in one, which is the version of the Maven
+             RUNTIME executing the build. The managed version would then silently change
+             whenever the build is run with a different Maven. -->
+        <version>${maven-artifact.version}</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.plexus</groupId>
@@ -308,7 +323,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.broken.version}</version>
+        <version>${jackson-api.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -389,7 +404,7 @@
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk18on</artifactId>
-        <version>${bouncycastle.version}</version>
+        <version>${bouncycastle-prov.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -478,6 +493,12 @@
         <version>20260814</version>
       </dependency>
 
+      <!-- NOTE: xmlunit-core is what drags "jakarta.xml.bind:jakarta.xml.bind-api" into the
+           build - test scope only, and only in the modules using plc4j-utils-test-utils.
+           It is deliberately left unmanaged: the last time a jaxb version was pinned in this
+           pom it broke the Milo stack (see commit 54c90dba81, which moved that pin out again).
+           If you ever do need to manage it, do it in the transitive-dependencies section
+           below and re-run the opcua tests. -->
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
@@ -518,6 +539,96 @@
         <version>${guava.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-api</artifactId>
+        <version>${docker-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${gson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hrakaroo</groupId>
+        <artifactId>glob</artifactId>
+        <version>${glob.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.palantir.javapoet</groupId>
+        <artifactId>javapoet</artifactId>
+        <version>${javapoet.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.vdurmont</groupId>
+        <artifactId>semver4j</artifactId>
+        <version>${semver4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.java-native</groupId>
+        <artifactId>jssc</artifactId>
+        <version>${jssc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.pfichtner</groupId>
+        <artifactId>testcontainers-virtualavr</artifactId>
+        <version>${testcontainers-virtualavr.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+        <version>${jakarta-annotation.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-xml</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpmime</artifactId>
+        <version>${httpclient.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.java-websocket</groupId>
+        <artifactId>Java-WebSocket</artifactId>
+        <version>${java-websocket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${testcontainers.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-junit-jupiter</artifactId>
+        <version>${testcontainers.version}</version>
+      </dependency>
+
       <!-- *****************************************************************************
       **********************************************************************************
       **                             Transitive dependencies                          **
@@ -547,6 +658,34 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcutil-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
+      </dependency>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Pulled in by mockito-core - managed so it cannot drift away from byte-buddy itself -->
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy-agent</artifactId>
+        <version>${byte-buddy.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -590,7 +729,7 @@
           <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.14.3</version>
+            <version>${joda-time.version}</version>
           </dependency>
           <dependency>
             <groupId>org.apache.groovy</groupId>
@@ -886,12 +1025,12 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.12.0</version>
+            <version>${extra-enforcer-rules.version}</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-dependency-tree</artifactId>
-            <version>3.3.0</version>
+            <version>${maven-dependency-tree.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1218,6 +1357,48 @@
             </dependency-->
           </dependencies>
         </plugin>
+
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>2.0.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.google.code.maven-replacer-plugin</groupId>
+          <artifactId>replacer</artifactId>
+          <version>1.5.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.igormaznitsa</groupId>
+          <artifactId>gosdk-wrapper-maven-plugin</artifactId>
+          <version>1.1.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>net.nicoulaj.maven.plugins</groupId>
+          <artifactId>checksum-maven-plugin</artifactId>
+          <version>1.11</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.gmavenplus</groupId>
+          <artifactId>gmavenplus-plugin</artifactId>
+          <version>5.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>xml-maven-plugin</artifactId>
+          <version>1.2.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.cyclonedx</groupId>
+          <artifactId>cyclonedx-maven-plugin</artifactId>
+          <version>2.9.3</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -1284,7 +1465,6 @@
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <!-- Do some pre-build checks and report any findings to the user -->
               <execution>
@@ -1598,7 +1778,6 @@
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
             <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.11</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <executions>
@@ -1662,7 +1841,6 @@
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>
-            <version>2.9.3</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <configuration>

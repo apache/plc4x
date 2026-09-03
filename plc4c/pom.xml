@@ -90,7 +90,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
-        <version>1.2.1</version>
         <executions>
           <!--execution>
             <id>generate-modbus-tests</id>
@@ -163,7 +162,7 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>13.0</version>
+            <version>${saxon.version}</version>
           </dependency>
         </dependencies>
       </plugin>

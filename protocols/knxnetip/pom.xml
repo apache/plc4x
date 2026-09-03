@@ -109,7 +109,6 @@
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <!-- Do some pre-build checks and report any findings to the user -->
               <execution>
@@ -134,7 +133,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>xml-maven-plugin</artifactId>
-            <version>1.2.1</version>
             <executions>
               <execution>
                 <phase>generate-resources</phase>
@@ -162,7 +160,7 @@
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>13.0</version>
+                <version>${saxon.version}</version>
               </dependency>
             </dependencies>
           </plugin>

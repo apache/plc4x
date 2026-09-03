@@ -337,7 +337,6 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
         <executions>
           <!--
             The documentation refers to the current version in a lot of places (dependency
@@ -396,7 +395,6 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>2.0.1</version>
 
         <executions>
           <execution>

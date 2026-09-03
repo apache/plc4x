@@ -141,7 +141,6 @@
     <dependency>
       <groupId>com.palantir.javapoet</groupId>
       <artifactId>javapoet</artifactId>
-      <version>0.17.0</version>
     </dependency>
   </dependencies>
 

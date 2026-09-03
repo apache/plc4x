@@ -84,7 +84,6 @@
           <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
-            <version>5.1.0</version>
             <executions>
               <!-- Do some pre-build checks and report any findings to the user -->
               <execution>
@@ -155,7 +154,7 @@
               <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.22.2</version>
+                <version>${jsoup.version}</version>
               </dependency>
             </dependencies>
           </plugin>
