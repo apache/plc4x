@@ -67,7 +67,34 @@
           <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.9.16</version>
+            <version>${maven-artifact.version}</version>
+          </dependency>
+          <!--
+            Drivers that are not deployed (they are not marked as fully supported
+            for Java in website/asciidoc/modules/users/pages/protocols/index.adoc)
+            are not dependencies of this meta-package, as the released artifact
+            would then reference artifacts nobody can resolve. They are needed
+            here so their configuration tables keep being generated.
+          -->
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-bacnet</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-c-bus</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-open-protocol</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-profinet-ng</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -85,18 +112,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-bacnet</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-c-bus</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -138,12 +153,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-open-protocol</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <scope>runtime</scope>
@@ -157,12 +166,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-plc4x</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-profinet-ng</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>

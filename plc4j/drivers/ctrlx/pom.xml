@@ -32,6 +32,13 @@
 
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <!--
+      This driver is not marked as fully supported for Java in the protocol
+      support table (website/asciidoc/modules/users/pages/protocols/index.adoc),
+      so it is built and installed locally, but not published to a repository.
+      Remove this once the driver is marked with a green check for Java.
+    -->
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <build>
@@ -184,7 +191,6 @@
     <dependency>
       <groupId>jakarta.annotation</groupId>
       <artifactId>jakarta.annotation-api</artifactId>
-      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -197,7 +203,6 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpmime</artifactId>
-      <version>4.5.14</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -214,12 +219,10 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.22.1</version>
     </dependency>
     <dependency>
       <groupId>com.hrakaroo</groupId>
       <artifactId>glob</artifactId>
-      <version>0.9.0</version>
     </dependency>
 
     <!-- Logging -->
@@ -232,15 +235,5 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib</artifactId>
-        <version>2.4.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>

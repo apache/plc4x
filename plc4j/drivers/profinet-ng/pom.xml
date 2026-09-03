@@ -32,6 +32,13 @@
 
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <!--
+      This driver is not marked as fully supported for Java in the protocol
+      support table (website/asciidoc/modules/users/pages/protocols/index.adoc),
+      so it is built and installed locally, but not published to a repository.
+      Remove this once the driver is marked with a green check for Java.
+    -->
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <build>
