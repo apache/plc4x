@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -96,6 +97,11 @@ public class SharedRawSocketManager {
     public void releaseHandle(SharedHandle handle) {
         HandleKey key = handle.getKey();
 
+        // "compute" holds a lock on the map entry for as long as the function runs, and closing a
+        // pcap handle can block for a long time if a capture thread is stuck in the native library.
+        // So only the reference counting happens in here - the close is done afterwards, otherwise
+        // every other acquire and release for the same interface would block behind it.
+        AtomicBoolean wasLastReference = new AtomicBoolean(false);
         sharedHandles.compute(key, (k, existing) -> {
             if (existing == null) {
                 LOGGER.warn("Attempted to release non-existent handle: {}", key);
@@ -106,13 +112,17 @@ public class SharedRawSocketManager {
             LOGGER.debug("Released shared pcap handle {} (refCount={})", key, refCount);
 
             if (refCount <= 0) {
-                existing.getHandle().close();
-                LOGGER.info("Closed shared pcap handle {}", key);
-                return null; // Remove from map
+                wasLastReference.set(true);
+                return null; // Remove from map, it is closed below
             }
 
             return existing;
         });
+
+        if (wasLastReference.get()) {
+            handle.getHandle().close();
+            LOGGER.info("Closed shared pcap handle {}", key);
+        }
     }
 
     /**
