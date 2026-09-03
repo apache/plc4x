@@ -76,7 +76,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		return nil, errors.Errorf("couldn't find transport for given transport url %v", transportUrl)
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	driverOptions["defaultTcpPort"] = []string{strconv.FormatUint(uint64(readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT), 10)}
+	driverOptions["defaultTcpPort"] = []string{strconv.FormatUint(uint64(readWriteModel.Constant_CBUSTCPDEFAULTPORT), 10)}
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
