@@ -30,7 +30,7 @@ The driver can be found in the Maven module
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-mock</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
       <scope>test</scope>
    </dependency>
 ----

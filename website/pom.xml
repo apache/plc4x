@@ -340,7 +340,7 @@
         <executions>
           <!--
             The documentation refers to the current version in a lot of places (dependency
-            snippets, download instructions, ...) via the "current-last-released-version" and
+            snippets, download instructions, ...) via the "current-project-version" and
             "current-full-version" AsciiDoc attributes. Both are defined in the component
             descriptor "asciidoc/antora.yml", and were easy to forget when the version of the
             project was bumped. This keeps them in sync with the version of the Maven project.
@@ -362,8 +362,8 @@
               <regex>true</regex>
               <replacements>
                 <replacement>
-                  <token>current-last-released-version: '[^']*'</token>
-                  <value>current-last-released-version: '${project.version}'</value>
+                  <token>current-project-version: '[^']*'</token>
+                  <value>current-project-version: '${project.version}'</value>
                 </replacement>
                 <replacement>
                   <token>current-full-version: '[^']*'</token>
