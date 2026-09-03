@@ -30,7 +30,7 @@
   <description>Transport using libpcap to replay pcapng files to simulate a raw socket.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:18Z</project.build.outputTimestamp>
   </properties>
 
   <build>

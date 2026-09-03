@@ -31,7 +31,7 @@
   <description>Implementation of a PLC4X driver for the Open-Protocol protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:18Z</project.build.outputTimestamp>
     <!--
       This driver is not marked as fully supported for Java in the protocol
       support table (website/asciidoc/modules/users/pages/protocols/index.adoc),
