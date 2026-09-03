@@ -128,7 +128,7 @@ public static void main(String[] args) {
 
 As reading every property of an entity in a separate request is usually quite sub-ideal, there is also a way to force the reading of all fields in one request (if the protocol supports that).
 
-This is done by defining a method that does not start with `get{field-name}` or `is{field-name}` (in case of booleans).
+This is done by defining a method that does not start with `get\{field-name}` or `is\{field-name}` (in case of booleans).
 When calling this method the OPM system will update all properties defined in the current entity (respecting the cache time however)
 
 So when adding this method to our example entity:

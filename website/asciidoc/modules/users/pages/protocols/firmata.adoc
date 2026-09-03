@@ -78,7 +78,7 @@ starting at pin 3; it now means one pin, the fifth. Rewrite these as `3[0..3]`.
 
 A Firmata address always begins with a `digital:` or `analog:` prefix, naming which of the two
 address forms below applies. See xref:array-notation.adoc[Addressing arrays] for the
-`[{selection}]` part shared by both.
+`[\{selection}]` part shared by both.
 
 The Java driver caps the pin number itself at 3 digits (0-999, `FirmataTag.ADDRESS_PATTERN`,
 `\d{1,3}`), and separately caps the address plus selection at the 256 pins the protocol can name
@@ -99,7 +99,7 @@ The `start-address` is a plain integer. `special-config` can be used to configur
 input pin to something else than `INPUT`; currently the only supported option is `PULLUP`, which
 configures the Arduino's digital input pin to use its built-in pullup-resistor.
 
-Both the `[{selection}]` and the `:{special-config}` parts are optional.
+Both the `[\{selection}]` and the `:\{special-config}` parts are optional.
 
 A normal `Arduino Uno` is equipped with 14 digital inputs: 0-13.
 
@@ -113,7 +113,7 @@ The full format for an analog address is:
 analog:{start-address}[{selection}]
 ----
 
-The `start-address` is a plain integer, and `[{selection}]` is optional.
+The `start-address` is a plain integer, and `[\{selection}]` is optional.
 
 A normal `Arduino Uno` is equipped with 6 analog inputs: 0-5.
 
@@ -137,4 +137,4 @@ analog:0[0..2]
 
 == More Information
 
-* xref:array-notation.adoc[Addressing arrays] - the shared `[{selection}]` syntax.
+* xref:array-notation.adoc[Addressing arrays] - the shared `[\{selection}]` syntax.

@@ -185,7 +185,7 @@ If you want to access a given element number, please use the two-argument versio
 
 PLC4X provides getters and setters for a wide variety of Java types and automatically handles the type conversion.
 However, when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
-In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
+In order to avoid causing this exception to be thrown, however there are `isValid\{TypeName}` methods that you can use to check if the value is compatible.
 
 === Writing Data
 

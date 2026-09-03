@@ -44,7 +44,7 @@
 +++
 <h4>raw-socket</h4>
 +++
-|`raw-socket.interface-name` |STRING | | |Network interface name to use (e.g., "eth0", "en0", "\\Device\\NPF_{GUID}" on Windows). If not specified, will use the first available interface.
+|`raw-socket.interface-name` |STRING | | |Network interface name to use (e.g., "eth0", "en0", "\\Device\\NPF_\{GUID}" on Windows). If not specified, will use the first available interface.
 |`raw-socket.local-address` |STRING | | |Local MAC address to send from. If not set, uses interface's MAC address.
 |`raw-socket.remote-address` |STRING | |required |Remote MAC address to send to.
 |`raw-socket.protocol-id` |INT | |required |EtherType / Protocol number (e.g., 0x88B5 for PROFINET, 0x88CC for LLDP, custom values)

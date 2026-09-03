@@ -35,19 +35,19 @@ tag handler and implements none of the four operations below.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Reads a unit's status via a `status/` tag.
 
 |
-2+| `write`
+| `write`
 | Sends a SAL command via a `sal/` tag.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Monitors SAL or MMI traffic via a `salmonitor/` or `mmimonitor/` tag.
 
 |
-2+| `browse`
+| `browse`
 | Discovers installed units and their attributes via an `info/` query.
 |===
 
@@ -125,7 +125,7 @@ unit and/or one identify attribute.
 === Data Types
 
 C-Bus tags are commands and status requests, not typed memory addresses, so no
-`:{data-type}` suffix is used or accepted. Values are decoded from the C-Bus response as a
+`:\{data-type}` suffix is used or accepted. Values are decoded from the C-Bus response as a
 `Struct` (or `NULL` for `status/`); there is no data type to select on the address itself.
 
 === Examples

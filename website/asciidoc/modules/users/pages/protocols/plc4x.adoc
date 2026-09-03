@@ -46,7 +46,7 @@ The `plc4x` protocol connection has the following format:
 plc4x:{transport}://{host}:{port}?remote-connection-string={url-encoded-connection-string}&username={user}&password={pass}
 ----
 
-`{transport}` is `tls` (the default, and used when no transport is given) or `tcp`
+`\{transport}` is `tls` (the default, and used when no transport is given) or `tcp`
 (plaintext, an explicit opt-in for trusted networks or testing). `remote-connection-string`
 is the URL-encoded connection string the proxy should open against the actual PLC.
 `username` and `password` are mandatory.
@@ -72,7 +72,7 @@ xref:protocols/index.adoc[protocol support matrix] for what each implementation 
 
 A `plc4x` tag address names a tag on the *remote* connection that the proxy opened -
 not a tag on the proxy connection itself. The driver does not parse or validate the
-address; it splits off the trailing `:{type}` suffix and passes the remainder straight
+address; it splits off the trailing `:\{type}` suffix and passes the remainder straight
 through to the remote connection, so the address must follow the tag syntax of
 whichever driver the `remote-connection-string` points at:
 ----
@@ -88,7 +88,7 @@ STDOUT/foo:INT
 
 === Data Types
 
-The trailing `:{data-type}` suffix is one of the standard PLC4X value types, for
+The trailing `:\{data-type}` suffix is one of the standard PLC4X value types, for
 example `BOOL`, `BYTE`, `WORD`, `DWORD`, `USINT`, `UINT`, `UDINT`, `ULINT`, `SINT`,
 `INT`, `DINT`, `LINT`, `REAL`, `LREAL`, `CHAR` or `WCHAR`.
 

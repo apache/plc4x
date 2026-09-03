@@ -38,7 +38,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `{{current-last-released-version}}`, we create a branch `release/{code-generation-short-version}`.
+So if currently the project version in develop is `{{current-last-released-version}}`, we create a branch `release/\{code-generation-short-version}`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -54,21 +54,21 @@ So in case of preparing the release branch for `{{current-last-released-version}
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -DbranchName=releases/code-generation/{code-generation-short-version}
+   mvn release:branch -DbranchName=releases/code-generation/\{code-generation-short-version}
 ----
 
 The plugin will then aks for the version:
 
 [subs="verbatim,attributes"]
 ----
-   What is the new working copy version for "PLC4X Build Tools: Code Generation"? (org.apache.plc4x.plugins:plc4x-code-generation) {code-generation-bugfix-version}-SNAPSHOT: : {code-generation-development-version}-SNAPSHOT
+   What is the new working copy version for "PLC4X Build Tools: Code Generation"? (org.apache.plc4x.plugins:plc4x-code-generation) \{code-generation-bugfix-version}-SNAPSHOT: : \{code-generation-development-version}-SNAPSHOT
 ----
 
 Where the suggested default is manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `releases/code-generation/{code-generation-short-version}` branch is created.
+However in the end the versions of the `develop` branch are updated and a new `releases/code-generation/\{code-generation-short-version}` branch is created.
 
 == Preparing `develop` for the next iteration
 
@@ -79,7 +79,7 @@ Here comes a template:
 [subs="verbatim,attributes"]
 ----
 ==============================================================
-(Unreleased) Apache PLC4X {code-generation-development-version}-SNAPSHOT
+(Unreleased) Apache PLC4X \{code-generation-development-version}-SNAPSHOT
 ==============================================================
 
 New Features
@@ -130,7 +130,7 @@ After that, the following command will to all preparation steps for the release:
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix, keep it as it is)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `releases/code-generation/{release-version}` (`releases/code-generation/{{current-last-released-version}}` in our case)
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `releases/code-generation/\{release-version}` (`releases/code-generation/{{current-last-released-version}}` in our case)
 3. The next development version (The version present in the pom after the release) (leave it as it is suggested by the plugin)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
@@ -168,7 +168,7 @@ After that should come a second commit:
 
 image::release-git-diff-next-development-iteration.png[]
 
-This now updates the versions again, but this time from the release version to the one we selected for the next development iteration (in this case `{code-generation-bugfix-version}-SNAPSHOT`)
+This now updates the versions again, but this time from the release version to the one we selected for the next development iteration (in this case `\{code-generation-bugfix-version}-SNAPSHOT`)
 
 NOTE: If the commit history doesn't look like this, something went wrong.
 
@@ -205,7 +205,7 @@ You can think of a `staging repository` as a dedicated repository created on the
 
 After the build you will have a nice and clean Maven repository at https://repository.apache.org/ that contains only artifacts from the current build.
 
-After the build it is important to log in to `Nexus` at https://repository.apache.org/, select `Staging Repositories` and find the repository with the name: `orgapacheplc4x-{somenumber}`.
+After the build it is important to log in to `Nexus` at https://repository.apache.org/, select `Staging Repositories` and find the repository with the name: `orgapacheplc4x-\{somenumber}`.
 
 Select that and click on the `Close` button.
 
@@ -282,7 +282,7 @@ are required to pass.
 
 Repository: https://gitbox.apache.org/repos/asf/plc4x-build-tools.git
 Release tag: releases/code-generation/{{current-last-released-version}}
-Hash for the release tag: {replacethiswiththerealgitcommittag}
+Hash for the release tag: \{replacethiswiththerealgitcommittag}
 
 Per [3] "Before voting +1 PMC members are required to download
 the signed source code package, compile it as provided, and test
@@ -296,7 +296,7 @@ You can achieve the above by following [4].
 [ ]  -1 reject (explanation required)
 
 
-[1] https://repository.apache.org/content/repositories/orgapacheplc4x-{somefourdigitnumber}
+[1] https://repository.apache.org/content/repositories/orgapacheplc4x-\{somefourdigitnumber}
 [2] https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{current-last-released-version}}/rc1/
 [3] https://www.apache.org/legal/release-policy.html#approving-a-release
 [4] https://plc4x.apache.org/plc4x/latest/developers/release/validation.html

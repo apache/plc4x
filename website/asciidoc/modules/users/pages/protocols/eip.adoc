@@ -34,20 +34,20 @@ xref:protocols/logix.adoc[Logix] for that protocol's page.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Go and Java. Reads one or more tags, or a selection of an array tag.
 
 |
-2+| `write`
+| `write`
 | Go and Java. Writes one or more tags, or a selection of an array tag.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Java only, polling-emulated. EtherNet/IP has no push mechanism here, so a
 subscription is a periodic read underneath, not a device-initiated notification.
 
 |
-2+| `discover`
+| `discover`
 | Go and Java. Discovers devices on the network. This is the discovery API, not
 `browse`: the driver has no tag-browsing support.
 

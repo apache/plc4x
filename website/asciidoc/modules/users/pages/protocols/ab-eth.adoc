@@ -32,21 +32,21 @@ on) rather than by symbolic tag name.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Reads a single element (or an array of elements) from a file.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Polling-emulated. AB-ETH has no native subscription or change notification
 mechanism. Subscriptions are emulated by polling the tag on the regular read path
 (cyclic and change-of-state subscriptions are both supported this way).
 
 |
-2+| `write`
+| `write`
 | Not supported, in either the Java or the Go driver.
 
 |
-2+| `browse`
+| `browse`
 | Not supported.
 |===
 

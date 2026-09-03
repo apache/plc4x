@@ -51,15 +51,15 @@ commercial support for PLC4X drivers are listed on the project website.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | C, Go and Java.
 
 |
-2+| `write`
+| `write`
 | C, Go and Java.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Go and Java. Two independent flavors: cyclic (`CYC`) push of ordinary tags at a
 requested interval, and alarm subscriptions (`ALM` for a live push feed, `QUERY:ALARM_S` /
 `QUERY:ALARM_8` for a one-shot fetch of what is currently buffered). Both ride the S7Comm
@@ -69,13 +69,13 @@ subsystem the S7-300/S7-400 family does - rejects a subscription with `UNSUPPORT
 driver does not subscribe.
 
 |
-2+| `browse`
+| `browse`
 | Go and Java, under the same UserData-service condition as `subscribe`. Enumerates the
 static memory areas plus the data blocks (`DB`) currently present on the connected device -
 this is a live inventory of what can be addressed, not a network scan.
 
 |
-2+| `discover`
+| `discover`
 | Java only, and only when the optional `pcap4j` runtime and a system `libpcap` are
 installed. Sends a PROFINET DCP broadcast and collects device announcements - this is the
 network-discovery API, not `browse`; it finds devices, it does not enumerate tags on one.
@@ -1202,12 +1202,12 @@ From the obtained StringBuilder, you can use the JSON processor of your choice t
 == More Information
 1. https://snap7.sourceforge.net/
 2. https://support.industry.siemens.com/cs/document/13649203/simatic-net-pc-software-s7-programming-interface?dti=0&dl=en&lc=es-ES
-1. https://support.industry.siemens.com/cs/document/109797648/simatic-comparison-list-for-s7-300-s7-400-s7-1200-s7-1500?dti=0&lc=en-WW
-2. https://support.industry.siemens.com/cs/mdm/109746537?c=98956468747&lc=es-DO
-3. https://support.industry.siemens.com/cs/document/15166942/writing-user-specific-information-to-the-diagnostic-buffer-of-a-cpu-(sfc-52)?dti=0&lc=en-ES
-4. https://support.industry.siemens.com/cs/document/24013249/how-do-you-display-alarm_s-or-alarm_d-messages-with-process-values-(so-called-associated-values)-on-a-wincc-flexible-operator-panel-?dti=0&lc=en-WW
-5. https://support.industry.siemens.com/cs/document/109481157/comunicaci%C3%B3n-entre-paneles-de-operador-simatic-hmi-y-convertidores-de-frecuencia-sinamics-g120-para-el-manejo-y-la-visualizaci%C3%B3n-de-avisos-de-fallo-y-de-advertencia-(enlace-directo-sin-controlador)?dti=0&lc=es-WW
-6. https://support.industry.siemens.com/cs/document/97550333/sinamics-g-s-hmi-direct-access?dti=0&lc=en-WW
-7. https://support.industry.siemens.com/cs/document/21402122/technology-cpus-technology-template-error-messages-?dti=0&lc=en-WW
-8. https://support.industry.siemens.com/cs/document/77467239/transforming-warning-and-error-messages-of-a-sinamics-drive-with-the-aid-of-the-xml-parser-and-integrating-them-into-a-step-7-hmi-project?dti=0&lc=en-WW
-9. https://support.industry.siemens.com/cs/document/24037531/%C2%BFqu%C3%A9-pasos-de-configuraci%C3%B3n-hay-que-realizar-en-el-simotion-scout-y-el-wincc-flexible-para-que-se-muestren-los-avisos-alarm_s-y-las-alarmas-tecnol%C3%B3gicas-dentro-del-wincc-flexible-runtime-?dti=0&lc=es-ES
+3. https://support.industry.siemens.com/cs/document/109797648/simatic-comparison-list-for-s7-300-s7-400-s7-1200-s7-1500?dti=0&lc=en-WW
+4. https://support.industry.siemens.com/cs/mdm/109746537?c=98956468747&lc=es-DO
+5. https://support.industry.siemens.com/cs/document/15166942/writing-user-specific-information-to-the-diagnostic-buffer-of-a-cpu-(sfc-52)?dti=0&lc=en-ES
+6. https://support.industry.siemens.com/cs/document/24013249/how-do-you-display-alarm_s-or-alarm_d-messages-with-process-values-(so-called-associated-values)-on-a-wincc-flexible-operator-panel-?dti=0&lc=en-WW
+7. https://support.industry.siemens.com/cs/document/109481157/comunicaci%C3%B3n-entre-paneles-de-operador-simatic-hmi-y-convertidores-de-frecuencia-sinamics-g120-para-el-manejo-y-la-visualizaci%C3%B3n-de-avisos-de-fallo-y-de-advertencia-(enlace-directo-sin-controlador)?dti=0&lc=es-WW
+8. https://support.industry.siemens.com/cs/document/97550333/sinamics-g-s-hmi-direct-access?dti=0&lc=en-WW
+9. https://support.industry.siemens.com/cs/document/21402122/technology-cpus-technology-template-error-messages-?dti=0&lc=en-WW
+10. https://support.industry.siemens.com/cs/document/77467239/transforming-warning-and-error-messages-of-a-sinamics-drive-with-the-aid-of-the-xml-parser-and-integrating-them-into-a-step-7-hmi-project?dti=0&lc=en-WW
+11. https://support.industry.siemens.com/cs/document/24037531/%C2%BFqu%C3%A9-pasos-de-configuraci%C3%B3n-hay-que-realizar-en-el-simotion-scout-y-el-wincc-flexible-para-que-se-muestren-los-avisos-alarm_s-y-las-alarmas-tecnol%C3%B3gicas-dentro-del-wincc-flexible-runtime-?dti=0&lc=es-ES

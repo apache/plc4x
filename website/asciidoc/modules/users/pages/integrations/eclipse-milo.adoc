@@ -104,7 +104,7 @@ java -jar plc4x-opcua-server-0.8.0-uber-jar.jar -c {path-to-config-file} -i
 This will start the OPC UA server with the interactive switch (-i). This prompts the server to ask for usernames and
 passwords upon startup. However, during normal operation the -i switch should be left out.
 
-If a certificate isn't available at *{path-to-security-dir}/security/plc4x-opcuaserver.pfx* then a self signed is
+If a certificate isn't available at *\{path-to-security-dir}/security/plc4x-opcuaserver.pfx* then a self signed is
 created. This certificate is password protected with the security password given during startup.
 
 If you place another certificate here make sure it is password protected and set the password by running the server
@@ -121,5 +121,5 @@ opc.tcp://{ip.address}:12687/plc4x
 Replacing the {ip.address} with the servers IP address.
 
 If you want to use an encrypted connection be sure to move the client certificate created in
-*{path-to-security-dir}/security/pki/rejected* to the trusted directory. Otherwise the client will receive a security error
+*\{path-to-security-dir}/security/pki/rejected* to the trusted directory. Otherwise the client will receive a security error
 when trying to connect.

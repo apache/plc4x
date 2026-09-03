@@ -35,7 +35,7 @@ The driver can be found in the Maven module
    </dependency>
 ----
 
-The connection string Syntax for the mock driver is `mock:{name-of-the-connection}`. So you can use multiple Mock Devices at the same time.
+The connection string Syntax for the mock driver is `mock:\{name-of-the-connection}`. So you can use multiple Mock Devices at the same time.
 
 The Mock Driver does nothing else than forwarding all Requests to a `Virtual Device which we can provide to control all responses and also Monitor them, e.g. for unit tests.
 The Interface for the Mock Device is

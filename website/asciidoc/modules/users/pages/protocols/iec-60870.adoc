@@ -35,7 +35,7 @@ receives what the station reports.
 |Name |Value |Description
 
 |
-2+| `subscribe`
+| `subscribe`
 | Go and Java. The only supported operation. A subscription's tag address selects which
 information objects of which station(s) are delivered to it; the station itself decides
 what and when to send.

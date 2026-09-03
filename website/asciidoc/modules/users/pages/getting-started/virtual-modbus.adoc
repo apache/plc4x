@@ -110,16 +110,16 @@ For Modbus there is no universally agreed upon notation for addresses, however a
 |Modbus Type |PLC4X Address Syntax
 
 |Discrete Inputs
-|`discrete-input:{start-number}` or `discrete-input:{start-number}[{number-of-elements}]`
+|`discrete-input:\{start-number}` or `discrete-input:\{start-number}[\{number-of-elements}]`
 
 |Coils
-|`coil:{start-number}` or `coil:{start-number}[{number-of-elements}]`
+|`coil:\{start-number}` or `coil:\{start-number}[\{number-of-elements}]`
 
 |Input Registers
-|`input-register:{start-number}` or `input-register:{start-number}[{number-of-elements}]`
+|`input-register:\{start-number}` or `input-register:\{start-number}[\{number-of-elements}]`
 
 |Holding Registers
-|`holding-register:{start-number}` or `holding-register:{start-number}[{number-of-elements}]`
+|`holding-register:\{start-number}` or `holding-register:\{start-number}[\{number-of-elements}]`
 |===
 
 All addresses support a notation with and without a size. If the size is not specified, then PLC4X assumes a size of `1`.
@@ -312,7 +312,7 @@ If you want to access a given element number, please use the two-argument versio
 
 PLC4X provides getters and setters for a wide variety of Java types and automatically handles the type conversion.
 However, when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
-In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
+In order to avoid causing this exception to be thrown, however there are `isValid\{TypeName}` methods that you can use to check if the value is compatible.
 
 === Writing Data
 

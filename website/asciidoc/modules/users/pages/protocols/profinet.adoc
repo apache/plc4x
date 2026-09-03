@@ -77,7 +77,7 @@ profinet:raw://{ip-address}:{port}?{options}
 
 ----
 
-Where the {ip-address}, unlike other PLC4X driver, uses the local IP address of the network interface you would like to bind to.
+Where the \{ip-address}, unlike other PLC4X driver, uses the local IP address of the network interface you would like to bind to.
 This allows us to connect to multiple devices at once via the devices parameter.
 
 An example of this connection string which has two devices test-device-1 and test-device-2, connected on the localhost interface would be:-

@@ -33,20 +33,20 @@ against.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Java only. Reads the full range of supported PLC4X data types, in single and bulk requests.
 
 |
-2+| `write`
+| `write`
 | Java only. Writes the full range of supported PLC4X data types, in single and bulk requests.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Java only. Subscriptions are possible on both an event and a cyclic basis - see
 <<OPC UA Data Change Notification>> and <<OPC UA Event Notification>>.
 
 |
-2+| `browse`
+| `browse`
 | Java only. Browses the nodes exposed by the connected server, starting from the standard
 `Objects` folder.
 

@@ -47,7 +47,7 @@ between the two; where that is the case it is called out below.
 2+| `ping`
 
 |
-2+| `subscribe`
+| `subscribe`
 | Java, polling-emulated. Go, native - the Go driver's subscriptions are not built on
 top of polling reads.
 |===
@@ -98,7 +98,7 @@ xref:array-notation.adoc[Addressing arrays].
 ====
 
 IMPORTANT: The Java driver takes the data type from the PLC's data dictionary, so an address carries
-no `:{data-type}` suffix - appending one makes the address invalid.
+no `:\{data-type}` suffix - appending one makes the address invalid.
 
 === Memory Areas
 

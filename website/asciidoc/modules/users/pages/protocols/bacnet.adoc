@@ -40,15 +40,15 @@ notifications seen on the network and has to filter them itself.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Go only. Reads one or more object properties via a tag address.
 
 |
-2+| `write`
+| `write`
 | Go only. Writes one or more object properties, optionally at a given priority.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Go and Java. Go subscribes to COV notifications for an object; Java receives all COV
 traffic broadcast on the network and cannot narrow it to a single object, since it has no
 working tag address syntax.
@@ -103,12 +103,12 @@ Optional. Selects a single element of an array-valued property. This is not the 
 xref:array-notation.adoc[array notation] - it addresses one scalar element of a BACnet
 array property, not a run of consecutive values.
 
-`{writePriority}`::
+`\{writePriority}`::
 Optional, write only. The BACnet priority (1-16) at which the write is issued.
 
 === Data Types
 
-BACnet tags carry no `:{data-type}` suffix. The value's type is determined from the
+BACnet tags carry no `:\{data-type}` suffix. The value's type is determined from the
 object and property being read or written, not selected on the address.
 
 === Examples
@@ -120,8 +120,8 @@ object and property being read or written, not selected on the address.
 |`ANALOG_INPUT,1/PRESENT_VALUE` |present value of analog input `1`
 |`12345,7/4242` |proprietary property `4242` of proprietary object type `12345`, instance `7`
 |`ANALOG_VALUE,2/PRESENT_VALUE[3]` |element `3` of analog value `2`'s present-value array
-|`ANALOG_OUTPUT,1/PRESENT_VALUE{8}` |write the present value of analog output `1` at priority `8`
-|`ANALOG_OUTPUT,5/PRESENT_VALUE[2]{16}` |write element `2` of analog output `5`'s present-value array, at priority `16`
+|`ANALOG_OUTPUT,1/PRESENT_VALUE\{8}` |write the present value of analog output `1` at priority `8`
+|`ANALOG_OUTPUT,5/PRESENT_VALUE[2]\{16}` |write element `2` of analog output `5`'s present-value array, at priority `16`
 |`ANALOG_INPUT,1/PRESENT_VALUE&OBJECT_NAME&UNITS` |present value, object name and units of analog input `1` in one read
 |`ANALOG_VALUE,5/PRESENT_VALUE[1]&PRIORITY_ARRAY[16]` |element `1` of the present-value array and element `16` of the priority array of analog value `5`
 |===

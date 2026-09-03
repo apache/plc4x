@@ -163,7 +163,7 @@ So if a driver or language requires further customization, these options can be 
 For a list of all supported options for a given language template, please refer to the corresponding language page.
 
 Currently, the `Java` module makes use of such an option for specifying the Java `package` the generated code uses.
-If no `package` option is provided, the default package `org.apache.plc4x.{language-name}.{protocol-name}.{output-flavor}` is used, but especially when generating custom drivers, which are not part of the Apache PLC4X project, different package names are better suited.
+If no `package` option is provided, the default package `org.apache.plc4x.\{language-name}.\{protocol-name}.\{output-flavor}` is used, but especially when generating custom drivers, which are not part of the Apache PLC4X project, different package names are better suited.
 So in these cases, the user can simply override the default package name.
 
 There is also an additional parameter: `outputDir`, which defaults to `${project.build.directory}/generated-sources/plc4x/` and usually shouldn't require being changed in case of a `Java` project, but usually requires tweaking when generating code for other languages.

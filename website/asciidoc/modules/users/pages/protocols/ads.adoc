@@ -34,20 +34,20 @@ Specification for ADS devices: https://infosys.beckhoff.com/english.php?content=
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Reads one or more tags, addressed directly, as a string, or symbolically.
 
 |
-2+| `write`
+| `write`
 | Writes one or more tags, addressed directly, as a string, or symbolically.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Subscribes to a symbolic handle resolved on the device. Works whether or not
 `load-symbol-and-data-type-tables` is enabled.
 
 |
-2+| `browse`
+| `browse`
 | Lists the symbol table. Requires `load-symbol-and-data-type-tables`; with it disabled a
 browse request is answered with `UNSUPPORTED`.
 

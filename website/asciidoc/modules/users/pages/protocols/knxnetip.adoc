@@ -33,23 +33,23 @@ that bus through a KNXnet/IP interface on the IP network.
 |Name |Value |Description
 
 |
-2+| `read`
+| `read`
 | Go and Java. Reads the value of a group address. Requires the datapoint type to be
 known, either from a `:DPT…` suffix on the tag or from a loaded ETS project.
 
 |
-2+| `write`
+| `write`
 | Go and Java. Writes the value of a group address. Requires the datapoint type, same
 as `read`.
 
 |
-2+| `subscribe`
+| `subscribe`
 | Go and Java. Subscribes to telegrams on the bus. Each address segment may use a
 wildcard, so subscriptions can span a whole line, a whole room, or a whole datapoint
 across the installation.
 
 |
-2+| `browse`
+| `browse`
 | Go and Java, with different results. Java lists the group addresses known to a
 loaded ETS project, filtered by a browse query. Go connects live to devices on the
 bus, either enumerating them by KNX individual address (a device query) or listing a
@@ -93,11 +93,11 @@ suffixed with a datapoint type:
 [cols="2" ,options="header"]
 |===
 |Name |Description
-|1-level address |`{main-group}` alone, 0-65535.
-|2-level address |`{main-group}/{sub-group}`, main-group 0-31, sub-group 0-2047.
-|3-level address |`{main-group}/{middle-group}/{sub-group}`, main-group 0-31,
+|1-level address |`\{main-group}` alone, 0-65535.
+|2-level address |`\{main-group}/\{sub-group}`, main-group 0-31, sub-group 0-2047.
+|3-level address |`\{main-group}/\{middle-group}/\{sub-group}`, main-group 0-31,
 middle-group 0-7, sub-group 0-255.
-|DPT suffix (optional) |`:DPT{main}[.{sub}]`, e.g. `:DPT9.001`. See
+|DPT suffix (optional) |`:DPT\{main}[.\{sub}]`, e.g. `:DPT9.001`. See
 <<Datapoint Type Suffix>> below.
 |===
 
@@ -112,7 +112,7 @@ syntax - consult the Go driver's own source for what it accepts.
 
 === Datapoint Type Suffix
 
-An address may carry an optional datapoint-type suffix `:DPT{main}[.{sub}]`, which tells the driver
+An address may carry an optional datapoint-type suffix `:DPT\{main}[.\{sub}]`, which tells the driver
 how to interpret the value on the wire:
 
 ----
@@ -138,7 +138,7 @@ supported when subscribing to events.
 === Data Types
 
 The value on the wire is interpreted using a KNX Datapoint Type (DPT), identified as
-`DPT{main}[.{sub}]` - for example `DPT1` (1-bit boolean), `DPT5` (8-bit unsigned) or
+`DPT\{main}[.\{sub}]` - for example `DPT1` (1-bit boolean), `DPT5` (8-bit unsigned) or
 `DPT9.001` (2-byte float, temperature in °C). The datapoint type comes from the `:DPT…`
 tag suffix when present, and otherwise from the group address's entry in a loaded
 `knxproj-file-path` ETS project. When a sub-number is not given in the suffix (`DPT9`

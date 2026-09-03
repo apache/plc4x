@@ -332,7 +332,7 @@ running drivers built against older core versions.
 - This version doesn't provide a Beckhoff AMS/ADS driver as this
 driver is still being ported to the new mspec format.
 - All drivers connection strings now follow the same pattern:
-{protocol-code:(transport-code:)?//{transport-config}(?{params})?
+{protocol-code:(transport-code:)?//\{transport-config}(?\{params})?
 Please check the drivers documentation on our website:
 xref:protocols/s7.adoc[S7 driver documentation]
 - The karaf-feature modules are removed as the drivers now all
@@ -458,8 +458,8 @@ This is the first release of Apache PLC4X as top-level project.
   So there is no 'plc4j-core' module anymore. Just remove that
   dependency.
 - The driver artifact names have changed so if you were using
-  a `plc4j-protocol-{name}` you now need to change this to
-  `plc4j-driver-{name}`
+  a `plc4j-protocol-\{name}` you now need to change this to
+  `plc4j-driver-\{name}`
 
 ==== Bug Fixes
 
@@ -474,7 +474,7 @@ This is the first release of Apache PLC4X as top-level project.
 
 ==== Changes:
 
-* Changed API: instead of passing request object to `read({read-request})`, `write({write-request})` or `subscribe({subscribe-request})` methods now the `execute()` method is called on the request itself
+* Changed API: instead of passing request object to `read(\{read-request})`, `write(\{write-request})` or `subscribe(\{subscribe-request})` methods now the `execute()` method is called on the request itself
 * New Connection Pool component
 * New OPM (Object PLC Mapping) component (JPA for PLCs)
 * Bug fixes
