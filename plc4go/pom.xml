@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4go</artifactId>
@@ -32,7 +32,7 @@
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:18Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>.</sonar.sources>
     <sonar.inclusions>**</sonar.inclusions>
@@ -433,7 +433,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -441,7 +441,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -449,7 +449,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -457,7 +457,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-c-bus</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -465,7 +465,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -473,7 +473,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-eip</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -481,7 +481,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-firmata</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -489,7 +489,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -497,7 +497,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -505,7 +505,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-opcua</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -513,7 +513,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -521,7 +521,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-slmp</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -529,7 +529,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-iec-60870</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -537,7 +537,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -817,7 +817,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-go</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -825,105 +825,105 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-umas</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-slmp</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-iec-60870</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ab-eth</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ads</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-bacnetip</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-c-bus</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-df1</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-eip</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-firmata</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-knxnetip</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-opcua</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-s7</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-simulated</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

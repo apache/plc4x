@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-code-generation-protocol-test</artifactId>
@@ -31,7 +31,7 @@
   <description>Fake protocol intended for demonstrating the different features and aspects of MSpec.</description>
 
   <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:18Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -214,7 +214,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
