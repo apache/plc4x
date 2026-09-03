@@ -109,6 +109,15 @@ namespace org.apache.plc4net.spi.test.drivers
                 new S7PayloadReadVarResponse(payloadItems))));
         }
 
+        /// <summary>
+        /// A bare Ack (ROSCTR 0x02) with a header-level error and no parameter or
+        /// payload - how a CPU refuses a request before it looks at the items. Its
+        /// 12-byte frame (10-byte header + errorClass + errorCode) is exactly the
+        /// case the driver used to mis-frame as 10 bytes.
+        /// </summary>
+        private static byte[] HeaderErrorAck(byte errorClass, byte errorCode) =>
+            WrapS7(Serialize(new S7MessageResponse(1, errorClass, errorCode, null, null)));
+
         [Theory]
         [InlineData("%DB1.DBW10", S7Tag.AreaType.DataBlock, 1, 10, -1, 2)]
         [InlineData("%DB1.DBX0.0", S7Tag.AreaType.DataBlock, 1, 0, 0, 1)]
@@ -392,6 +401,54 @@ namespace org.apache.plc4net.spi.test.drivers
                 (DefaultPlcReadRequest)builder.Build());
 
             Assert.Equal(PlcResponseCode.NotFound, response.GetResponseCode("missing"));
+        }
+
+        [Fact]
+        public async Task Read_maps_a_header_level_refusal_to_access_denied()
+        {
+            // A CPU with PUT/GET disabled answers every Read Var with a bare Ack
+            // carrying error 0x8104 - not an item-level error inside an AckData.
+            var inner = HandshakeReady();
+            inner.Inject(HeaderErrorAck(0x81, 0x04));
+
+            var connection = new S7Connection(
+                ConnectionString.Parse("s7://192.168.0.1?remote-rack=0&remote-slot=1"),
+                new CotpTransportInstance(inner));
+            connection.Connect();
+
+            var builder = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+            builder.AddTagAddress("v", "%DB100.DBW0");
+            var response = (DefaultPlcReadResponse)await connection.Read(
+                (DefaultPlcReadRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.AccessDenied, response.GetResponseCode("v"));
+        }
+
+        [Fact]
+        public async Task A_bare_Ack_is_framed_as_12_bytes_and_does_not_desync_the_next_request()
+        {
+            // Regression guard: ROSCTR 0x02 carries errorClass + errorCode after the
+            // 10-byte common header. Reading only 10 left those two bytes in the
+            // buffer, and every following response was parsed off by two.
+            var inner = HandshakeReady();
+            inner.Inject(HeaderErrorAck(0x81, 0x04));                              // 1st read: refused
+            inner.Inject(ReadVarAck((DataTransportSize.BYTE_WORD_DWORD, new byte[] { 0xBE, 0xEF }))); // 2nd read: OK
+
+            var connection = new S7Connection(
+                ConnectionString.Parse("s7://192.168.0.1?remote-rack=0&remote-slot=1"),
+                new CotpTransportInstance(inner));
+            connection.Connect();
+
+            var b1 = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+            b1.AddTagAddress("v", "%DB100.DBW0");
+            var r1 = (DefaultPlcReadResponse)await connection.Read((DefaultPlcReadRequest)b1.Build());
+            Assert.Equal(PlcResponseCode.AccessDenied, r1.GetResponseCode("v"));
+
+            var b2 = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+            b2.AddTagAddress("v", "%DB1.DBW0");
+            var r2 = (DefaultPlcReadResponse)await connection.Read((DefaultPlcReadRequest)b2.Build());
+            Assert.Equal(PlcResponseCode.Ok, r2.GetResponseCode("v"));
+            Assert.Equal((ushort)0xBEEF, r2.GetValue("v").GetUshort());
         }
 
         // ── Write path (PlcWriter) ──────────────────────────────

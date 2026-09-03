@@ -55,7 +55,7 @@ namespace org.apache.plc4net.tools.s7verify
             {
                 Console.Error.WriteLine(
                     "usage: s7-verify <host> [--rack N] [--slot N] [--db N] " +
-                    "[--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN]");
+                    "[--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN] [--read <address>]");
                 return 2;
             }
 
@@ -73,6 +73,14 @@ namespace org.apache.plc4net.tools.s7verify
             if (opts.TryGetValue("device-group", out var dg)) query.Add($"remote-device-group={dg}");
             if (opts.TryGetValue("remote-tsap", out var tsap)) query.Add($"remote-tsap={tsap}");
             var connectionString = $"s7://{host}?{string.Join("&", query)}";
+
+            // --read <address>: connect, read one tag, print the outcome, exit. A
+            // focused probe for troubleshooting a single address without running the
+            // whole suite or needing DB100 to exist.
+            if (opts.TryGetValue("read", out var probeAddress))
+            {
+                return await ProbeSingleRead(connectionString, probeAddress);
+            }
 
             var report = new Report();
             report.Line("# S7 Hardware Verification Report");
@@ -118,10 +126,13 @@ namespace org.apache.plc4net.tools.s7verify
                 await WriteRoundTrip(reader, writer, connection, report, $"%DB{db}.DBW18",
                     b => b.AddTag("w", $"%DB{db}.DBW18", (short)6789),
                     v => unchecked((short)v.GetUshort()).ToString(CultureInfo.InvariantCulture), "6789");
+                // 12345.5 is exact in IEEE-754 single, so a byte-perfect round-trip
+                // renders back to the same string. (A value like 12345.678f is really
+                // 12345.6787..., which would fail a literal string compare.)
                 await WriteRoundTrip(reader, writer, connection, report, $"%DB{db}.DBD20",
-                    b => b.AddTag("w", $"%DB{db}.DBD20", 12345.678f),
+                    b => b.AddTag("w", $"%DB{db}.DBD20", 12345.5f),
                     v => BitConverter.Int32BitsToSingle(unchecked((int)v.GetUint()))
-                        .ToString("0.###", CultureInfo.InvariantCulture), "12345.678");
+                        .ToString("0.###", CultureInfo.InvariantCulture), "12345.5");
 
                 // ── error path ──
                 await ErrorPath(reader, connection, report);
@@ -149,6 +160,60 @@ namespace org.apache.plc4net.tools.s7verify
                 report.Flush();
                 connection?.Close();
             }
+        }
+
+        private static async Task<int> ProbeSingleRead(string connectionString, string address)
+        {
+            Console.WriteLine($"Connecting: {connectionString}");
+            IPlcConnection? connection = null;
+            try
+            {
+                var driver = new S7Driver(new DefaultTransportManager());
+                connection = driver.Connect(connectionString);
+                var s7 = (S7Connection)connection;
+                Console.WriteLine($"Connected. Negotiated PDU length: {s7.NegotiatedPduLength} bytes");
+
+                var reader = (PlcReader)connection;
+                var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+                rb.AddTagAddress("tag", address);
+                var resp = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
+
+                var code = resp.GetResponseCode("tag");
+                Console.WriteLine($"Read {address}: {code}");
+                if (code == PlcResponseCode.Ok)
+                {
+                    Console.WriteLine($"  value: {Render(resp.GetValue("tag"))}");
+                    return 0;
+                }
+                if (code == PlcResponseCode.AccessDenied)
+                {
+                    Console.WriteLine(
+                        "  The CPU refused access (S7 error 0x8104). Enable \"Permit access with " +
+                        "PUT/GET communication from remote partner\" in the CPU's Protection & " +
+                        "Security settings, then recompile and download.");
+                }
+                return 1;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"FAIL - {e.GetType().Name}: {e.Message}");
+                return 1;
+            }
+            finally
+            {
+                connection?.Close();
+            }
+        }
+
+        /// <summary>Renders a scalar <see cref="IPlcValue"/> without assuming its concrete type.</summary>
+        private static string Render(IPlcValue v)
+        {
+            if (v.IsBool()) return v.GetBool().ToString();
+            if (v.IsByte()) return $"0x{v.GetByte():X2}";
+            if (v.IsUshort()) return $"0x{v.GetUshort():X4} ({unchecked((short)v.GetUshort())})";
+            if (v.IsUint()) return $"0x{v.GetUint():X8} ({unchecked((int)v.GetUint())})";
+            var raw = v.GetRaw();
+            return raw != null ? BitConverter.ToString(raw) : v.GetString();
         }
 
         private static async Task ReadScalar(PlcReader reader, IPlcConnection connection, Report report,

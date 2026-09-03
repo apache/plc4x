@@ -229,7 +229,7 @@ namespace org.apache.plc4net.drivers.s7
             var pduRef = (ushort)(Interlocked.Increment(ref _pduRef) & 0xFFFF);
             TransportInstance.Write(S7Constants.BuildSetupCommunication(pduRef));
 
-            S7MessageResponseData response;
+            S7Response response;
             try
             {
                 response = ParseResponse(
@@ -246,6 +246,13 @@ namespace org.apache.plc4net.drivers.s7
                 throw new PlcConnectionException(e.Message, e);
             }
 
+            if (response.HasError)
+            {
+                throw new PlcConnectionException(
+                    $"S7 Setup Communication rejected: error 0x{response.ErrorClass:X2}{response.ErrorCode:X2}"
+                    + DescribeS7Error(response.ErrorClass, response.ErrorCode) + ".");
+            }
+
             if (response.Parameter is not S7ParameterSetupCommunication setup)
             {
                 throw new PlcConnectionException(
@@ -259,9 +266,35 @@ namespace org.apache.plc4net.drivers.s7
         }
 
         /// <summary>
-        /// Parses one S7 message and asserts it is an error-free AckData response.
+        /// The parts of an S7 acknowledgement the driver acts on. A CPU answers a
+        /// Job with either an AckData (ROSCTR 0x03, carries the payload) or - when it
+        /// refuses the request before looking at the items - a bare Ack (ROSCTR
+        /// 0x02). Both put the same 2-byte error-info field first, so both land here.
         /// </summary>
-        private static S7MessageResponseData ParseResponse(byte[] bytes)
+        private readonly struct S7Response
+        {
+            public S7Response(byte errorClass, byte errorCode, S7Parameter? parameter, S7Payload? payload)
+            {
+                ErrorClass = errorClass;
+                ErrorCode = errorCode;
+                Parameter = parameter;
+                Payload = payload;
+            }
+
+            public byte ErrorClass { get; }
+            public byte ErrorCode { get; }
+            public S7Parameter? Parameter { get; }
+            public S7Payload? Payload { get; }
+            public bool HasError => ErrorClass != 0x00 || ErrorCode != 0x00;
+        }
+
+        /// <summary>
+        /// Parses one S7 message and reduces it to its error info, parameter and
+        /// payload. Throws only when the bytes are not a parseable acknowledgement -
+        /// a CPU-reported error is data the caller maps to a response code, not an
+        /// exception.
+        /// </summary>
+        private static S7Response ParseResponse(byte[] bytes)
         {
             S7Message message;
             try
@@ -273,17 +306,46 @@ namespace org.apache.plc4net.drivers.s7
                 throw new S7DriverException("S7 response could not be parsed.", e);
             }
 
-            if (message is not S7MessageResponseData response)
+            return message switch
             {
-                throw new S7DriverException(
-                    $"S7 response is a {message.GetType().Name}, not an AckData message.");
-            }
-            if (response.ErrorClass != 0x00 || response.ErrorCode != 0x00)
+                S7MessageResponseData d => new S7Response(d.ErrorClass, d.ErrorCode, d.Parameter, d.Payload),
+                S7MessageResponse a => new S7Response(a.ErrorClass, a.ErrorCode, a.Parameter, a.Payload),
+                _ => throw new S7DriverException(
+                    $"S7 response is a {message.GetType().Name}, not an acknowledgement."),
+            };
+        }
+
+        /// <summary>
+        /// Maps an S7 header-level error (errorClass / errorCode) to a response code,
+        /// mirroring the Java driver's mapping. Class 0x81 code 0x04 is the CPU
+        /// refusing PUT/GET access; an S7-300 reports the same refusal as 0x83/0x04;
+        /// class 0x85 is a supply/access error.
+        /// </summary>
+        private static PlcResponseCode MapHeaderError(byte errorClass, byte errorCode)
+        {
+            if (errorClass == 0x81 && errorCode == 0x04) return PlcResponseCode.AccessDenied;
+            if (errorClass == 0x83 && errorCode == 0x04) return PlcResponseCode.AccessDenied;
+            if (errorClass == 0x85) return PlcResponseCode.AccessDenied;
+            return PlcResponseCode.InternalError;
+        }
+
+        /// <summary>
+        /// A human-readable hint for the S7 header errors a misconfigured CPU most
+        /// often returns, appended to connection-level exception messages.
+        /// </summary>
+        private static string DescribeS7Error(byte errorClass, byte errorCode)
+        {
+            if (errorClass == 0x81 && errorCode == 0x04 || errorClass == 0x83 && errorCode == 0x04)
             {
-                throw new S7DriverException(
-                    $"S7 request rejected: error 0x{response.ErrorClass:X2}{response.ErrorCode:X2}.");
+                return " (the CPU refused access: tick \"Permit access with PUT/GET communication "
+                     + "from remote partner\" in the CPU Protection & Security settings, and make "
+                     + "sure the data block has \"Optimized block access\" unticked)";
             }
-            return response;
+            if (errorClass == 0x85)
+            {
+                return " (access error: the address is out of range or the block does not exist)";
+            }
+            return string.Empty;
         }
 
         private static IPlcValue ParseValue(DataTransportSize transportSize, byte[] data)
@@ -320,7 +382,12 @@ namespace org.apache.plc4net.drivers.s7
                     $"Not an S7 message: first byte 0x{header[0]:X2} (expected 0x32).");
             }
 
-            var headerLength = header[1] == S7Constants.AckData ? 12 : 10;
+            // ROSCTR 0x02 (Ack) and 0x03 (AckData) both carry a 2-byte error-info
+            // field (errorClass, errorCode) after the 10-byte common header; a Job
+            // (0x01) and UserData (0x07) do not. Treating a bare Ack as a 10-byte
+            // header truncates those two bytes and desyncs every following frame.
+            var headerLength =
+                header[1] == S7Constants.Ack || header[1] == S7Constants.AckData ? 12 : 10;
             var paramLength = (header[6] << 8) | header[7];
             var dataLength = (header[8] << 8) | header[9];
             var total = headerLength + paramLength + dataLength;
@@ -403,6 +470,18 @@ namespace org.apache.plc4net.drivers.s7
                 var response = ParseResponse(
                     await ReadOneS7MessageAsync(cancellationToken).ConfigureAwait(false));
 
+                if (response.HasError)
+                {
+                    var code = MapHeaderError(response.ErrorClass, response.ErrorCode);
+                    Logger.LogWarning(
+                        "S7 CPU refused the read: error 0x{ErrorClass:X2}{ErrorCode:X2}{Hint}",
+                        response.ErrorClass, response.ErrorCode,
+                        DescribeS7Error(response.ErrorClass, response.ErrorCode));
+                    foreach (var name in tagNames)
+                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(code);
+                    return new DefaultPlcReadResponse(request, results);
+                }
+
                 if (response.Payload is not S7PayloadReadVarResponse payload)
                 {
                     foreach (var name in tagNames)
@@ -474,6 +553,18 @@ namespace org.apache.plc4net.drivers.s7
                 var response = ParseResponse(
                     await ReadOneS7MessageAsync(cancellationToken).ConfigureAwait(false));
 
+                if (response.HasError)
+                {
+                    var code = MapHeaderError(response.ErrorClass, response.ErrorCode);
+                    Logger.LogWarning(
+                        "S7 CPU refused the write: error 0x{ErrorClass:X2}{ErrorCode:X2}{Hint}",
+                        response.ErrorClass, response.ErrorCode,
+                        DescribeS7Error(response.ErrorClass, response.ErrorCode));
+                    foreach (var name in tagNames)
+                        codes[name] = code;
+                    return new DefaultPlcWriteResponse(request, codes);
+                }
+
                 if (response.Payload is not S7PayloadWriteVarResponse payload)
                 {
                     foreach (var name in tagNames)
@@ -484,10 +575,15 @@ namespace org.apache.plc4net.drivers.s7
                 for (var i = 0; i < tagNames.Count; i++)
                 {
                     var name = tagNames[i];
-                    codes[name] = i < payload.Items.Count
-                                  && payload.Items[i].ReturnCode == DataTransportErrorCode.OK
+                    if (i >= payload.Items.Count)
+                    {
+                        codes[name] = PlcResponseCode.InternalError;
+                        continue;
+                    }
+                    var returnCode = payload.Items[i].ReturnCode;
+                    codes[name] = returnCode == DataTransportErrorCode.OK
                         ? PlcResponseCode.Ok
-                        : PlcResponseCode.InternalError;
+                        : MapReturnCode(returnCode);
                 }
             }
             catch (OperationCanceledException)

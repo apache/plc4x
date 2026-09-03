@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **413** |
-| Passing | 413 |
+| Total test cases | **415** |
+| Passing | 415 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,7 +37,7 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 368 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/spi-test` | `plc4net-spi-test` | 370 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
 | `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 45 | KNX group-address parsing and DPT resolution; the KNXnet/IP connection - handshake, group Read / Write, bus monitor - against a scripted gateway on a loopback UDP socket; DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following
@@ -171,7 +171,7 @@ negotiation (default 1024, negotiated 512), and Close propagation.
 | Area | Tests | File |
 |---|---|---|
 | Modbus driver | 10 | `spi-test/drivers/ModbusDriverTests.cs` |
-| S7 driver | 28 | `spi-test/drivers/S7DriverTests.cs` |
+| S7 driver | 30 | `spi-test/drivers/S7DriverTests.cs` |
 
 The Modbus tests cover: tag parsing, Read Coils / Read Holding Registers PDU
 construction, Write Single/Multiple PDU construction, and response parsing.
@@ -182,10 +182,12 @@ The S7 tests cover: tag parsing for all seven address forms (DB, M, I, Q, C,
 T, plus bit offsets), Read / Write / Setup-Communication PDUs round-tripped
 through the generated `S7Message` model (memory-area and transport-size codes,
 item structure), the Read path decoded item by item, an S7 item error mapped
-to a `PlcResponseCode`, TPKT frame wrap/unwrap, Java-parity TSAP encoding
-(remote 0x0101, local 0x0311), `remote-device-group` / explicit TSAP override,
-S7 Setup Communication on every `Connect` (and a clean failure when the CPU
-does not answer), non-COTP transport rejection, out-of-range rack/slot
+to a `PlcResponseCode`, a header-level refusal (a bare Ack, ROSCTR 0x02,
+carrying error `0x8104`) mapped to `AccessDenied` and framed as 12 bytes so it
+does not desync the next request, TPKT frame wrap/unwrap, Java-parity TSAP
+encoding (remote 0x0101, local 0x0311), `remote-device-group` / explicit TSAP
+override, S7 Setup Communication on every `Connect` (and a clean failure when
+the CPU does not answer), non-COTP transport rejection, out-of-range rack/slot
 rejection, and non-numeric parameter rejection.  The generated model
 round-trips the shared S7 `ParserSerializerTestsuite.xml` vectors (see *Code
 generation* above).
@@ -234,13 +236,16 @@ not part of PR validation.
 
 ## Hardware verification
 
-**S7-1200 / S7-1500 (Siemens)** — pending a run.  The hardware is physically
-available; the ICLA was filed and acknowledged on 2026-08-02.  The COTP
-handshake, S7 Setup Communication and Read / Write Var PDUs are verified
-against the shared `ParserSerializerTestsuite.xml` vectors and round-trip
-through the generated model.  The end-to-end path through a real PLC is run
-with `tools/s7-verify` — see **`docs/s7-hardware-verification.md`** for the
-TIA Portal setup (a non-optimized DB, PUT/GET enabled) and the command:
+**S7-1200 (Siemens, DC/DC/DC)** — **verified 2026-09-03, PASS 12/12**.  The COTP
+handshake, S7 Setup Communication (PDU 240) and single-item reads of every
+scalar width, a three-item read, a write + read-back of an INT and a REAL, and
+an error path were all exercised end to end against the CPU at rack 0 / slot 1
+with the rack/slot-default TSAP `0x0101`.  The run log is in
+**`docs/s7-hardware-report.md`**; the TIA Portal setup (non-optimized DB,
+PUT/GET enabled *and downloaded*) and troubleshooting table are in
+**`docs/s7-hardware-verification.md`**.  The run also found and fixed a driver
+bug — a bare Ack (ROSCTR 0x02) was framed as 10 bytes instead of 12, desyncing
+every request after a CPU refusal.
 
 ```
 dotnet run --project tools/s7-verify -- <ip> --db 100 > docs/s7-hardware-report.md
