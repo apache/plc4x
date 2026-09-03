@@ -45,9 +45,12 @@ CIP symbolic-addressing page that documents the same tag syntax.
 2+| `subscribe`
 | Java only, polling-emulated. EtherNet/IP has no push mechanism here, so a subscription is a periodic read underneath, not a device-initiated notification.
 
-|===
+|
+2+| `discover`
+| Go only. Device discovery is available separately through the discovery API, not through
+`browse`. The Java `LogixDriver` does not implement discovery.
 
-Device discovery is available separately through the discovery API, not through `browse`.
+|===
 
 == Connection String
 

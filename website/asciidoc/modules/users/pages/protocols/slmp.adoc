@@ -34,8 +34,6 @@ wider MELSEC command set are not implemented in either language.
 |===
 |Name |Value |Description
 
-3+|Supported Operations
-
 |
 2+| `read`
 

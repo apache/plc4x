@@ -37,6 +37,12 @@ connect to, and it is the driver most people reach for first when learning PLC4X
 | `write`
 | Supports all standard IEC 61131 data types outlined below.
 
+|
+| `subscribe`
+| Java only, and a real implementation rather than polling-emulated: it supports
+CYCLIC, CHANGE_OF_STATE and EVENT subscriptions directly. The Go driver's subscriber
+is a stub and does not subscribe.
+
 |===
 
 == Connection String

@@ -33,7 +33,6 @@ wish to utilize one.
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-3+|Supported Operations
 
 | CANopen SDO
 | `read` / `write`

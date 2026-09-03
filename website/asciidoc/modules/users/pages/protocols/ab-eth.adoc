@@ -27,23 +27,27 @@ on) rather than by symbolic tag name.
 
 == Supported Operations
 
-[cols="1,4"]
+[cols="2,2a,5a"]
 |===
-|Operation |Notes
+|Name |Value |Description
 
-|Read
-|Reads a single element (or an array of elements) from a file.
+|
+2+| `read`
+| Reads a single element (or an array of elements) from a file.
 
-|Subscribe
-|AB-ETH has no native subscription or change notification mechanism.
-Subscriptions are emulated by polling the tag on the regular read path
+|
+2+| `subscribe`
+| Polling-emulated. AB-ETH has no native subscription or change notification
+mechanism. Subscriptions are emulated by polling the tag on the regular read path
 (cyclic and change-of-state subscriptions are both supported this way).
 
-|Write
-|Not supported, in either the Java or the Go driver.
+|
+2+| `write`
+| Not supported, in either the Java or the Go driver.
 
-|Browse
-|Not supported.
+|
+2+| `browse`
+| Not supported.
 |===
 
 == Connection String

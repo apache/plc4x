@@ -33,13 +33,17 @@ Modbus is the most widely used driver in PLC4X, with implementations in C, Go, J
 |===
 |Name |Value |Description
 
-3+|Supported Operations
-
 |
 2+| `read`
 
 |
 2+| `write`
+
+|
+2+| `subscribe`
+| Java only, polling-emulated. Modbus has no push mechanism, so a subscription is a
+periodic read underneath, not a device-initiated notification. The Go driver does not
+subscribe.
 |===
 
 == Connection String
