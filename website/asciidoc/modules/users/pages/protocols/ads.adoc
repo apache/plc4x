@@ -21,17 +21,63 @@
 
 image::users/protocols/ads_banner.png[banner,512,167]
 
-
-
-
-
 The ADS (automation device specification) describes a device-independent and fieldbus independent interface for communication between Beckhoff automation devices running TwinCAT and other devices implementing this interface. https://www.home-assistant.io/integrations/ads/ Source (accessed 7 August 2022)
 
 ADS device concept: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
 
 Specification for ADS devices: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
 
-== Structure AMS/TCP Packet
+== Supported Operations
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+2+| `read`
+| Reads one or more tags, addressed directly, as a string, or symbolically.
+
+|
+2+| `write`
+| Writes one or more tags, addressed directly, as a string, or symbolically.
+
+|
+2+| `subscribe`
+| Subscribes to a symbolic handle resolved on the device. Works whether or not
+`load-symbol-and-data-type-tables` is enabled.
+
+|
+2+| `browse`
+| Lists the symbol table. Requires `load-symbol-and-data-type-tables`; with it disabled a
+browse request is answered with `UNSUPPORTED`.
+
+|===
+
+== Connection String
+
+The ADS connection string has the following format:
+----
+ads:tcp://{ip-address}[:{port}]?{options}
+----
+`tcp` is the only supported transport. The port defaults to the ADS TCP port and normally
+does not need to be given. `target-ams-net-id`, `target-ams-port`, `source-ams-net-id` and
+`source-ams-port` are required options:
+----
+ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1
+----
+
+== Connection String Options
+
+include::partial$ads.adoc[]
+
+== Tag Addresses
+
+Addressing is implemented in Go and Java. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
+
+=== General Format
+
+The driver accepts three kinds of addresses.
 
 [NOTE]
 ====
@@ -39,60 +85,111 @@ Array selection uses the shared notation - a single index, an inclusive range, a
 optionally the array's declared lower bound, placed before the type. See
 xref:array-notation.adoc[Addressing arrays].
 ====
-ADS (Automation Device Specification) is the TwinCAT communication protocol that specifies the interaction between two ADS devices. For example, it defines what operations can be executed on another ADS device, what parameters are necessary for that and what return value is sent after execution.
 
-AMS (Automation Message Specification) specifies the exchange of the ADS data. A major component of the communication protocol is the AmsNetId. This is specified in the AMS/ADS package for the source and target device. An ADS device can be explicitly addressed using the AmsNetId.
-Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= (accessed 7 August 2022)
-
-== Address Format
-
-The driver accepts three kinds of addresses.
-
-*Symbolic addresses* use the variable name as it is known in the PLC program:
-
-----
-MAIN.g_plant.channels[1].setpoints[4]
-----
-
-Array indices may appear at any position of the path, not only at the end.
-
-Symbolic addresses are resolved against the symbol- and data-type-table, so they require
-`load-symbol-and-data-type-tables` to be enabled (the default). With that option disabled the
-tables are never fetched and a symbolic address is rejected with an error saying so - use a direct
-address instead. Subscriptions are the exception: they resolve symbol handles on the device and
-work either way.
-
-*Direct addresses* name the index group and index offset explicitly, in decimal or hexadecimal, and
-carry the data type:
+*Direct addresses* name the index group and index offset explicitly, in decimal or
+hexadecimal, and carry the data type:
 
 ----
 {IndexGroup}/{IndexOffset}:{TYPE}
-{IndexGroup}/{IndexOffset}:{TYPE}[{numberOfElements}]
+{IndexGroup}/{IndexOffset}[{selection}]:{TYPE}
 ----
 
-.Examples
-[cols="2" ,options="header"]
-|===
-|Address |Meaning
-|`16448/16448:DINT` |one DINT at index group 16448, offset 16448
-|`0x4040/0x4040:DINT` |the same address in hexadecimal
-|`16448/16448:INT[10]` |an array of 10 INTs
-|===
+Direct addresses need no symbol table and therefore work regardless of the
+`load-symbol-and-data-type-tables` setting.
 
-*Direct string addresses* additionally carry the fixed length of the string:
+*Direct string addresses* are a direct address whose type is `STRING` or `WSTRING`, and
+additionally carry the fixed length of the string:
 
 ----
 {IndexGroup}/{IndexOffset}:STRING({length})
 {IndexGroup}/{IndexOffset}:WSTRING({length})
+{IndexGroup}/{IndexOffset}[{selection}]:STRING({length})
 ----
 
-Unlike symbolic addresses, direct addresses need no symbol table and therefore work regardless of
-the `load-symbol-and-data-type-tables` setting. Browsing does need it, since it lists the symbol
-table; with the option disabled a browse request is answered with `UNSUPPORTED`.
+*Symbolic addresses* use the variable name as it is known in the PLC program, with array
+indices appearing at any position of the path, not only at the end:
 
-== Connection String Options
+----
+{symbol}
+{symbol}[{selection}]
+{symbol}.{member}
+----
 
-include::partial$ads.adoc[]
+Symbolic addresses are resolved against the symbol- and data-type-table, so they require
+`load-symbol-and-data-type-tables` to be enabled (the default). With that option disabled the
+tables are never fetched and a symbolic address is rejected with an error saying so - use a
+direct address instead. Subscriptions are the exception: they resolve symbol handles on the
+device and work either way. Only the last dimension of a selection may be a range; an
+interior segment may only carry a bare index, since a range there would name several
+disjoint elements at once rather than one contiguous read.
+
+CAUTION: Java caps a direct address's index group and index offset at 8 hex digits or 10
+decimal digits; Go's port dropped that cap, so an address with more digits than a 32-bit
+value could ever need still matches the Go pattern and is rejected only later, if at all -
+for example `0x123456789/0:BOOL` is accepted by Go but rejected by Java. Separately, Java
+requires a symbolic address's path to be a dotted run of identifier segments
+(`[a-zA-Z_]\w*`, each optionally followed by bracketed indices); Go's pattern accepts
+anything containing no `[` as the symbol name - punctuation, spaces, a leading digit,
+anything - so for example `foo-bar` is accepted by Go but rejected by Java. This page
+documents the Java syntax; consult the Go driver's own source for what it accepts.
+
+=== Data Types
+
+The ADS type name given in a direct address maps to a `PlcValueType` as follows:
+
+[cols="2,2" ,options="header"]
+|===
+|ADS type |PlcValueType
+|BOOL |BOOL
+|BYTE, BIT8, BITARR8 |BYTE
+|WORD, BITARR16 |WORD
+|DWORD, BITARR32 |DWORD
+|SINT, INT8 |SINT
+|USINT, UINT8 |USINT
+|INT, INT16 |INT
+|UINT, UINT16 |UINT
+|DINT, INT32 |DINT
+|UDINT, UINT32 |UDINT
+|LINT, INT64 |LINT
+|ULINT, UINT64 |ULINT
+|REAL, FLOAT |REAL
+|LREAL, DOUBLE |LREAL
+|CHAR |CHAR
+|WCHAR |WCHAR
+|STRING |STRING
+|WSTRING |WSTRING
+|TIME |TIME
+|LTIME |LTIME
+|DATE |DATE
+|TIME_OF_DAY, TOD |TIME_OF_DAY
+|DATE_AND_TIME, DT |DATE_AND_TIME
+|===
+
+A symbolic address carries no type in the address itself; its type is resolved from the
+device's data-type table, so a symbolic address is not restricted to this list.
+
+=== Examples
+
+.Examples
+[cols="2,3" ,options="header"]
+|===
+|Address |Meaning
+|`16448/1234:DINT` |a single DINT at index group 16448, offset 1234
+|`0x4040/0xFF[0..4]:LREAL` |five LREALs in hexadecimal, starting at offset 0xFF
+|`100/200:STRING(80)` |an 80-character STRING at index group 100, offset 200
+|`0x10/0x20[0..2]:WSTRING(40)` |three 40-character WSTRINGs in hexadecimal
+|`Main.value` |a symbolic address
+|`MAIN.g_arr[1..8]` |elements 1 to 8 of a symbolic array
+|===
+
+== Protocol Details
+
+=== Structure AMS/TCP Packet
+
+ADS (Automation Device Specification) is the TwinCAT communication protocol that specifies the interaction between two ADS devices. For example, it defines what operations can be executed on another ADS device, what parameters are necessary for that and what return value is sent after execution.
+
+AMS (Automation Message Specification) specifies the exchange of the ADS data. A major component of the communication protocol is the AmsNetId. This is specified in the AMS/ADS package for the source and target device. An ADS device can be explicitly addressed using the AmsNetId.
+Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= (accessed 7 August 2022)
 
 [%header, cols=3*]
 |===
@@ -114,8 +211,6 @@ include::partial$ads.adoc[]
 
 |===
 
-== More details on
-For details about the protocol look here: http://www.beckhoff.com/ 
+== More Information
+For details about the protocol look here: http://www.beckhoff.com/
 & (German Handbook: https://download.beckhoff.com/download/Document/automation/twincat3/TwinCAT_3_ADS_INTRO_DE.pdf)
-
-

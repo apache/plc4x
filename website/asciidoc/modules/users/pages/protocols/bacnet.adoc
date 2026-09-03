@@ -21,28 +21,107 @@
 
 image::users/protocols/bacnet_banner.png[banner,512,167]
 
+BACnet (Building Automation and Control Networks) is a data communication protocol for
+building automation and control - HVAC, lighting, access control and similar building
+services. BACnet/IP carries BACnet traffic over UDP/IP, typically on the well-known port
+`47808`.
 
-
-
-
-== BACnet (Building Automation and Control Networks)
+The Go driver is the complete implementation: it reads and writes object properties,
+discovers devices on the network, and subscribes to change-of-value (COV) notifications.
+The Java driver is a *passive listener*: it joins the network and reports the COV
+notifications it observes, but has no working tag address syntax, so a subscription
+cannot be narrowed to a single object - every registered consumer receives all COV
+notifications seen on the network and has to filter them itself.
 
 == Supported Operations
 
-IMPORTANT: This driver is a *passive listener*. It supports subscriptions only - reading, writing
-and browsing are not implemented and a request for any of them is rejected.
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
 
-The driver joins the network and reports the change-of-value (COV) notifications it observes. There
-is no handshake with a device and no request/response exchange.
+|
+2+| `read`
+| Go only. Reads one or more object properties via a tag address.
 
-Tag addresses are not interpreted yet, so a subscription cannot be narrowed to a single object -
-every registered consumer receives all COV notifications seen on the network, and has to filter
-them itself.
+|
+2+| `write`
+| Go only. Writes one or more object properties, optionally at a given priority.
+
+|
+2+| `subscribe`
+| Go and Java. Go subscribes to COV notifications for an object; Java receives all COV
+traffic broadcast on the network and cannot narrow it to a single object, since it has no
+working tag address syntax.
+|===
+
+Neither driver supports `browse`. The Go driver does support device *discovery*
+(`WhoIs`/`IAm`, `Discoverer.go`) - a separate PLC4X operation, reached through the
+discovery API rather than a browse request, that finds devices on the network rather
+than enumerating objects on one.
+
+== Connection String
+
+BACnet/IP has the following connection string format:
+----
+bacnet-ip:{transport}://{ip-address}:{port}?{options}
+----
+The only supported transport is `udp`:
+----
+bacnet-ip:udp://192.168.178.101:47808
+----
 
 == Connection String Options
 
 include::partial$bacnet-ip.adoc[]
 
-== More details on
+== Tag Addresses
 
-http://www.bacnet.org/[BACnet - A Data Communication Protocol for Building Automation and Control Networks]
+Addressing is implemented in Go only. The Java driver receives broadcast traffic as
+subscriptions and has no working tag address syntax. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
+
+=== General Format
+
+----
+<objectType>,<objectInstance>/<propertyIdentifier>[<arrayIndex>]{<writePriority>}[&<propertyIdentifier>[<arrayIndex>]{<writePriority>}]*
+----
+
+`objectType`::
+A BACnet object type, either by name (`ANALOG_INPUT`, `ANALOG_VALUE`, `ANALOG_OUTPUT`,
+...) or as a numeric proprietary type identifier.
+
+`objectInstance`::
+The object's numeric instance number.
+
+`propertyIdentifier`::
+One or more property identifiers, joined by `&`, each by name (`PRESENT_VALUE`,
+`OBJECT_NAME`, `DESCRIPTION`, `UNITS`, `PRIORITY_ARRAY`, ...) or as a numeric proprietary
+property identifier.
+
+`[arrayIndex]`::
+Optional. Selects a single element of an array-valued property. This is not the unified
+xref:array-notation.adoc[array notation] - it addresses one scalar element of a BACnet
+array property, not a run of consecutive values.
+
+`{writePriority}`::
+Optional, write only. The BACnet priority (1-16) at which the write is issued.
+
+=== Data Types
+
+BACnet tags carry no `:{data-type}` suffix. The value's type is determined from the
+object and property being read or written, not selected on the address.
+
+=== Examples
+
+.Examples
+[cols="2,3" ,options="header"]
+|===
+|Address |Meaning
+|`ANALOG_INPUT,1/PRESENT_VALUE` |present value of analog input `1`
+|`12345,7/4242` |proprietary property `4242` of proprietary object type `12345`, instance `7`
+|`ANALOG_VALUE,2/PRESENT_VALUE[3]` |element `3` of analog value `2`'s present-value array
+|`ANALOG_OUTPUT,1/PRESENT_VALUE{8}` |write the present value of analog output `1` at priority `8`
+|`ANALOG_OUTPUT,5/PRESENT_VALUE[2]{16}` |write element `2` of analog output `5`'s present-value array, at priority `16`
+|`ANALOG_INPUT,1/PRESENT_VALUE&OBJECT_NAME&UNITS` |present value, object name and units of analog input `1` in one read
+|`ANALOG_VALUE,5/PRESENT_VALUE[1]&PRIORITY_ARRAY[16]` |element `1` of the present-value array and element `16` of the priority array of analog value `5`
+|===

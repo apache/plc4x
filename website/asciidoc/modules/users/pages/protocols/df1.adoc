@@ -19,6 +19,10 @@
 
 = DF1
 
+NOTE: No language implementation of this driver is usable yet. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation
+currently does.
+
 IMPORTANT: There is no DF1 driver you can connect with. DF1 currently exists as a protocol
 specification and a generated read/write model only - there is no `df1` connection code in any of
 the language ports, so there is nothing to put a connection string into. This page is kept for

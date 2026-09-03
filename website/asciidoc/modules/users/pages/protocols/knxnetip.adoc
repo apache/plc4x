@@ -21,23 +21,94 @@
 
 image::users/protocols/knx_banner.png[banner,512,167]
 
+KNXnet/IP is the IP tunnelling and routing extension of KNX, the field bus used in home
+and building automation for lighting, heating, shutters and similar building services.
+Devices exchange telegrams addressed to group addresses over the bus; the driver reaches
+that bus through a KNXnet/IP interface on the IP network.
 
+== Supported Operations
 
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
 
+|
+2+| `read`
+| Go and Java. Reads the value of a group address. Requires the datapoint type to be
+known, either from a `:DPT…` suffix on the tag or from a loaded ETS project.
+
+|
+2+| `write`
+| Go and Java. Writes the value of a group address. Requires the datapoint type, same
+as `read`.
+
+|
+2+| `subscribe`
+| Go and Java. Subscribes to telegrams on the bus. Each address segment may use a
+wildcard, so subscriptions can span a whole line, a whole room, or a whole datapoint
+across the installation.
+
+|
+2+| `browse`
+| Go and Java, with different results. Java lists the group addresses known to a
+loaded ETS project, filtered by a browse query. Go connects live to devices on the
+bus, either enumerating them by KNX individual address (a device query) or listing a
+connected device's communication objects (a communication object query).
+
+|===
+
+== Connection String
+
+The KNXnet/IP connection string has the following format:
+----
+knxnet-ip://{ip-address}[:{port}]?{options}
+----
+`udp` is the only supported transport and is the default, so it is omitted from the
+connection string. The port defaults to `3671`:
+----
+knxnet-ip://192.168.42.28
+----
 
 == Connection String Options
 
 include::partial$knxnet-ip.adoc[]
 
-== Individual Resource Address Format
+== Tag Addresses
 
-KNX Addresses usually have one of the following structures:
+Addressing is implemented in Go and Java. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
 
-- 3-level Address: `{main-group(0-31)}`/`{middle-group(0-7)}`/`{sub-group(0-255)}`
-- 2-level Address: `{main-group(0-31)}`/`{sub-group(0-2047)}`
-- 1-level Address: `{sub-group(0-65535)}`
+=== General Format
 
-Depending on the `group-address-num-levels` configured in the connection string or defined in the knxproj-file configured by the `knxproj-file-path` connection string parameter, the corresponding address pattern has to be used.
+A tag names a KNX group address, using one of three levels of structure, optionally
+suffixed with a datapoint type:
+
+----
+{main-group}
+{main-group}/{sub-group}
+{main-group}/{middle-group}/{sub-group}
+{address}:DPT{main}[.{sub}]
+----
+
+[cols="2" ,options="header"]
+|===
+|Name |Description
+|1-level address |`{main-group}` alone, 0-65535.
+|2-level address |`{main-group}/{sub-group}`, main-group 0-31, sub-group 0-2047.
+|3-level address |`{main-group}/{middle-group}/{sub-group}`, main-group 0-31,
+middle-group 0-7, sub-group 0-255.
+|DPT suffix (optional) |`:DPT{main}[.{sub}]`, e.g. `:DPT9.001`. See
+<<Datapoint Type Suffix>> below.
+|===
+
+Which of the three level counts is expected is controlled by the
+`group-address-num-levels` connection string parameter, or by the levels recorded in a
+loaded `knxproj-file-path` project.
+
+CAUTION: Go additionally accepts a bracketed list or range in any segment, such as
+`1/2/[3,4]` or `1/[1-3]/*`. Java's parser only ever accepts a bare digit run or a lone
+`*` in each position; `1/2/[3,4]` is rejected by Java. This page documents the Java
+syntax - consult the Go driver's own source for what it accepts.
 
 === Datapoint Type Suffix
 
@@ -53,11 +124,61 @@ from somewhere. If no `knxproj-file-path` is configured, this suffix is *require
 writing - a request for a plain `1/2/3` fails because the datapoint type cannot be resolved.
 Browsing likewise requires a `knxproj-file-path`.
 
-However, when subscribing for events, each segment allows using of the wildcard character `*`.
-If the addresses used in the KNX installation are structured, this way it is possible to, for example (depending on the scheme used):
+However, when subscribing for events, each segment allows use of the wildcard character `*`.
+If the addresses used in the KNX installation are structured, this makes it possible to,
+for example (depending on the scheme used):
 
 - Collect all information for a given level of your building: `1/*/*`
 - Collect all information for a given room: `2/4/*`
 - Collect all information about heating in all rooms: `*/*/50`
 
-NOTE: Don't use wildcards when explicitly reading or writing data, this is only supported when subscribing to events.
+NOTE: Don't use wildcards when explicitly reading or writing data - this is only
+supported when subscribing to events.
+
+=== Data Types
+
+The value on the wire is interpreted using a KNX Datapoint Type (DPT), identified as
+`DPT{main}[.{sub}]` - for example `DPT1` (1-bit boolean), `DPT5` (8-bit unsigned) or
+`DPT9.001` (2-byte float, temperature in °C). The datapoint type comes from the `:DPT…`
+tag suffix when present, and otherwise from the group address's entry in a loaded
+`knxproj-file-path` ETS project. When a sub-number is not given in the suffix (`DPT9`
+rather than `DPT9.001`), the driver resolves it to the first sub-type registered under
+that main number.
+
+=== Examples
+
+.Examples
+[cols="2,3" ,options="header"]
+|===
+|Address |Meaning
+|`1/2/3` |a 3-level group address
+|`12/3000` |a 2-level group address
+|`12345` |a 1-level group address
+|`1/2/3:DPT9.001` |a 3-level group address, decoded as a 2-byte float
+|`*/*/*` |(subscribe only) every group address, at any level
+|===
+
+== Notes and Tips
+
+=== Browse Queries
+
+`browse` takes a separate query syntax, not a tag address: each of the three levels may
+be a literal number or the wildcard `*`, and the whole query may itself be `*` or `**`
+to mean everything.
+
+.Accepted browse queries
+[cols="2,3" ,options="header"]
+|===
+|Query |Meaning
+|`*` or `**` |every group address
+|`1/*` |every group address under main-group 1
+|`1/2/*` |every group address under main-group 1, middle-group 2
+|`1/2/3` |exactly group address `1/2/3`
+|`*/2/3` |every group address with middle-group 2, sub-group 3
+|===
+
+== Protocol Details
+
+KNXnet/IP devices can be discovered on the network. Configuration and setup particulars
+for KNX installations, including how to supply an ETS project via `knxproj-file-path`,
+are covered by the connection string options above.

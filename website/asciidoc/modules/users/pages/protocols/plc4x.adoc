@@ -17,47 +17,91 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-= PLC4X (Proxy) (TCP)
+= PLC4X (Proxy)
 
+The `plc4x` protocol is PLC4X's own proxy protocol: one PLC4X instance (typically the
+xref:tools/plc4x-server.adoc[PLC4X Server]) accepts connections from a `plc4x` client
+and relays reads and writes on to a real PLC using any other PLC4X driver (`s7`,
+`modbus`, `ads`, `opcua`, `simulated`, ...). It is useful when a PLC is
+only reachable from the machine running the server - for example behind a firewall or
+on an isolated OT network - while clients live elsewhere. Authentication is mandatory
+and the default transport is TLS.
 
+== Supported Operations
+
+[cols="1,4"]
+|===
+|Operation |What it does here
+
+|`read` |Reads a tag from the remote PLC via the proxy.
+|`write` |Writes a tag on the remote PLC via the proxy.
+|===
+
+Subscribing and browsing are not supported: the driver only overrides read and write.
+
+== Connection String
+
+The `plc4x` protocol connection has the following format:
+----
+plc4x:{transport}://{host}:{port}?remote-connection-string={url-encoded-connection-string}&username={user}&password={pass}
+----
+
+`{transport}` is `tls` (the default, and used when no transport is given) or `tcp`
+(plaintext, an explicit opt-in for trusted networks or testing). `remote-connection-string`
+is the URL-encoded connection string the proxy should open against the actual PLC.
+`username` and `password` are mandatory.
+
+Example connection strings, TLS (default) and plaintext TCP:
+----
+plc4x:tls://host:59837?remote-connection-string=s7&username=op&password=hunter2&tls.verify=false
+----
+----
+plc4x://host?remote-connection-string=s7%3A%2F%2Foperator%3Ahunter2%40plc%3A102
+----
 
 == Connection String Options
 
 include::partial$plc4x.adoc[]
 
-== Connection String Options
+== Tag Addresses
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-3+|Supported Operations:
-|
-2+| `read`
-|
-2+| `write`
-|
-2+| `subscribe`
-
-|===
-
-== Individual Resource Address Format
-
-=== Connection String
-
-The `plc4x` protocol connection has the following connection string format:-
-----
-plc4x:{transport}://{ip-address/hostname}:{port}?remote-connection-string={url-encoded-connection-string}
-----
-
-An example connection string would look like:-
-----
-plc4x://127.0.0.1?remote-connection-string=simulated%3A%2F%2Flocalhost
-----
-Note the transport, port and option fields are optional.
-The remote connection string: `simulated://localhost` is encoded as `simulated%3A%2F%2Flocalhost`
+Addressing is implemented in C and Java. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
 
 === General Format
 
-The address format is simply the address format of the used remote connection.
-So if you specify a remote connection as `simulated`, please follow the address format of that driver.
+A `plc4x` tag address names a tag on the *remote* connection that the proxy opened -
+not a tag on the proxy connection itself. The driver does not parse or validate the
+address; it splits off the trailing `:{type}` suffix and passes the remainder straight
+through to the remote connection, so the address must follow the tag syntax of
+whichever driver the `remote-connection-string` points at:
+----
+{remote-tag-address}:{data-type}
+----
+
+For example, with a remote connection to a `simulated` PLC, a tag address is a
+`simulated`-driver address followed by the PLC4X value type:
+----
+RANDOM/foo:BOOL
+STDOUT/foo:INT
+----
+
+=== Data Types
+
+The trailing `:{data-type}` suffix is one of the standard PLC4X value types, for
+example `BOOL`, `BYTE`, `WORD`, `DWORD`, `USINT`, `UINT`, `UDINT`, `ULINT`, `SINT`,
+`INT`, `DINT`, `LINT`, `REAL`, `LREAL`, `CHAR` or `WCHAR`.
+
+=== Examples
+
+Reading from and writing to a remote `simulated` connection:
+----
+RANDOM/foo:BOOL
+RANDOM/foo:DWORD
+RANDOM/foo:LREAL
+----
+----
+STDOUT/foo:BOOL
+STDOUT/foo:UDINT
+STDOUT/foo:WCHAR
+----

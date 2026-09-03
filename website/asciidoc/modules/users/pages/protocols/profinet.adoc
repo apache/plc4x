@@ -19,6 +19,10 @@
 
 = Profinet (In Development)
 
+NOTE: No language implementation of this driver is usable yet. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation
+currently does.
+
 WARNING: The PROFINET driver is not usable yet. Two parallel implementations exist in the code base
 (`plc4j-driver-profinet` and `plc4j-driver-profinet-ng`, of which only the latter is shipped) and
 neither completes a working exchange - the subscription response future is never completed and

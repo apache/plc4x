@@ -19,200 +19,96 @@
 
 = OPC UA
 
+https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA] (OPC Unified Architecture) is a
+platform independent, service-oriented protocol for industrial communication, released in 2008 as
+the successor to the COM-based OPC Classic specifications. It is spoken by a wide range of
+industrial automation devices, PLCs and SCADA systems - see
+<<Compatibility with OPC-UA Servers>> for the server implementations this driver has been tested
+against.
 
-
-== Connection String Options
-
-[NOTE]
-====
-Array selection uses the shared notation - a single index, an inclusive range, and
-optionally the array's declared lower bound, placed before the type. See
-xref:array-notation.adoc[Addressing arrays].
-====
-
-include::partial$opcua.adoc[]
+== Supported Operations
 
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-3+|Supported Operations
 
-|| `read`      |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
-|| `write`     |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
-|| `subscribe` |Subscriptions are possible with events on event- and cyclic-basis
+|
+2+| `read`
+| Java only. Reads the full range of supported PLC4X data types, in single and bulk requests.
+
+|
+2+| `write`
+| Java only. Writes the full range of supported PLC4X data types, in single and bulk requests.
+
+|
+2+| `subscribe`
+| Java only. Subscriptions are possible on both an event and a cyclic basis - see
+<<OPC UA Data Change Notification>> and <<OPC UA Event Notification>>.
+
+|
+2+| `browse`
+| Java only. Browses the nodes exposed by the connected server, starting from the standard
+`Objects` folder.
 
 |===
 
+The Go driver works over an unencrypted channel only (`security-policy=None`), does not browse,
+and does not chunk messages - a request or response that exceeds one chunk fails.
+
 == Connection String
 
-The OPC UA drivers uses the connection string
+The OPC UA driver uses the connection string
 
 ----
-
 opcua:{transport}://{ip-address}:{port}?{options}
-
 ----
 
-An example of this connection string would be:-
+An example of this connection string would be:
 
 ----
-
 opcua:tcp://127.0.0.1:12686?discovery=true&username=admin&password=password
-
 ----
 
 Note the transport, port and options fields are optional.
 
-== Secure communication
-The secure channel implementation within Apache PLC4X project have been tested against existing open source server implementations.
-This includes Eclipse Milo (all modes) as well as OPC Foundation .NET server (except `Basic128Rsa15`).
-Manual tests proven that driver is able to communicate with OPC UA server launched on PLCs as well as commercial simulators.
+== Connection String Options
 
-Depending on actual configuration of remote end there might be necessity to prepare client certificate.
-Preparation of certificate is beyond driver, however in case when no client certificate is provided, it will be auto-generated to establish a session.
-Please follow our tutorial xref:getting-started/opcua-client-certificate.adoc[on provisioning of client private key and certificate].
-By following it you will be able to create self-signed certificate for use with both hardware and software based OPC-UA servers.
-Please note that there are multiple appearances of certificates within specification.
-There is the application instance certificate securing the communication channel, which is provided through the keystore options described below, and there is a X509 certificate identifying the *user*, which is supplied separately - see <<User authentication>>.
+include::partial$opcua.adoc[]
 
-The security modes differ between themselves by strength of applied signature and encryption algorithms.
-Driver is able to communicate with single security mode at the time.
-Additionally, to security policy it is possible to specify `message-security` option which indicates expected security settings after initial handshake.
-By default, this option is set to `SIGN_ENCRYPT` which imposes high security settings and full encryption of exchanged message payloads.
-In case when additional diagnostics is needed payloads has to be traced through TRACE level log entries.
-The `SIGN` mode gives possibility o browse packets in tools such wireshark.
+== Tag Addresses
 
-=== Certificate verification
-The OPC UA specification defines its own procedures for certificate validation.
+Addressing is implemented in Java. The Go driver works over an unencrypted channel only and does
+not browse. See the xref:protocols/index.adoc[protocol support matrix] for what each
+implementation does.
 
-The driver verifies the server certificate by default and fails closed: if no trust anchor is
-configured, the server certificate is rejected and the connection fails. Configure one of:
+=== General Format
 
-* `tls.trust-store` - validate the certificate chain against the given trust store. The acceptance
-relies on regular TLS checks (expiry date, certificate path etc.); it does not validate OPC UA
-specific parts such as the application URI.
-* `server-certificate-file` - pin trust to exactly that certificate. Only the certificate read from
-the configured file is trusted; a certificate learned over the unauthenticated discovery channel is
-never used as a trust anchor.
-
-WARNING: `tls.verify=false` disables server certificate verification
-altogether. This makes the connection vulnerable to man-in-the-middle attacks and is intended for
-local testing only.
-
-=== Client certificate
-
-If no `tls.keystore` is configured, the driver generates a self-signed application instance
-certificate for the session. It is a 2048 bit RSA key signed with SHA-256; use `generated-key-size`
-to ask for a larger key when the server demands one:
+To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of
+the OPC UA server it is connecting to. It includes the namespace (`ns`) of the hierarchy tree,
+followed by the type of identifier - string (`s`), numeric (`i`), binary (`b`) or guid (`g`) - and
+its address.
 
 ----
-opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256&message-security=SIGN_ENCRYPT&generated-key-size=4096
-----
-
-A generated certificate is fresh for every connection, so a server that keeps a trust list will
-reject it until it is trusted there. For anything beyond a first connection attempt, supply your own
-certificate through `tls.keystore` instead - see
-xref:getting-started/opcua-client-certificate.adoc[the client certificate tutorial].
-
-== User authentication
-
-Beside securing the channel, OPC UA authenticates the user of a session. The driver supports all
-three token types the specification defines: anonymous, username/password and a X509 user
-certificate.
-
-Anonymous access is what you get when no credentials are supplied. A username and password can come
-from the connection string:
-
-----
-opcua:tcp://127.0.0.1:12686?username=admin&password=password
-----
-
-or, together with the certificate variant, from a `PlcAuthentication` handed to the driver manager.
-The object passed to `getConnection` decides which token type the driver asks the server for, and
-credentials given this way take precedence over those in the connection string:
-
-[source,java]
-----
-PlcConnection connection = driverManager.getConnection(
-    "opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256",
-    new PlcUsernamePasswordAuthentication("admin", "password"));
-----
-
-=== User certificate
-
-To authenticate as a user with a X509 certificate, pass a `PlcCertificateAuthentication` carrying
-the key store that holds the user certificate and its private key:
-
-[source,java]
-----
-KeyStore keyStore = KeyStore.getInstance("PKCS12");
-try (InputStream in = new FileInputStream("user.p12")) {
-    keyStore.load(in, "changeit".toCharArray());
-}
-
-PlcConnection connection = driverManager.getConnection(
-    "opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256",
-    new PlcCertificateAuthentication(keyStore, "changeit".toCharArray()));
-----
-
-The driver takes the first key store entry holding a private key. When the store holds more than one
-identity, name the one to use:
-
-[source,java]
-----
-new PlcCertificateAuthentication(keyStore, "changeit".toCharArray(), "operator");
-----
-
-The certificate has to use an RSA key, and the server has to trust it - servers usually keep a
-separate trust list for user certificates, distinct from the one for application instance
-certificates.
-
-NOTE: This is not the same certificate as the one configured through `tls.keystore`. That one is
-the application instance certificate: it secures the channel and says which installation is
-talking, whereas the user certificate says who is talking. Nothing stops you from using the same
-certificate for both, provided the server trusts it for both purposes.
-
-The driver proves possession of the private key by signing the server certificate and server nonce,
-using the security policy the server declares for its certificate user token policy. A server that
-offers certificate authentication with a security policy of `None` leaves no algorithm to sign
-with; the driver refuses such an endpoint rather than sending an unverifiable token.
-
-=== Negotiation procedure
-Depending on settings driver might or might not attempt to discover endpoints from remote server.
-In case when `discovery` option is set to `true` driver will look up server certificate through connection attempt.
-The discovery option also enables checks of server endpoints for matching security settings.
-
-Once initial discovery is completed and driver finds endpoint matching its security settings it will launch second connection attempt which will switch to configured security mode.
-
-Each connection attempt made by driver attempt to use limits described in table above.
-Role of these options is declaration of values accepted and expected by client.
-Once server returns its limits (`Acknowledge` for supplied `Hello` call) driver picks values from these.
-The only one note is that driver takes minimum of local receive and remote send buffer size.
-It does same with local send and remote receive buffer.
-
-Usual values of `encoding.send-buffer-size` and `encoding.receive-buffer-size` PLC devices remain at 8196 bytes.
-
-NOTE: Due to lack of complete implementation of negotiation and chunking logic the OPC UA driver prior Apache PLC4X 0.11 release could supply calls exceeding server limits.
-
-== Address Format
-To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of the OPC UA server it is
-connecting to.
-It includes the namespace(`ns`) of the hierarchy tree followed by the type of identifier string(`s`), numeric(`i`),
-binary(`b`) or guid(`g`) and its address. The Data Type is an optional field, if it is not included a default data type
-is selected based on the datatype of the returned value. For Unsigned data types it needs to be included otherwise.
-
-----
-
 ns={namespace-index};[s|i|g|b]={Identifier};a=attributeId;{Data Type}
-
 ----
 
-The `a` parameter which stands for `attributeId` of an object is optional, and by default it is assumed to be Value 13 (`0x0d`).
-Value of this parameter can be specified using numeric value or OPC-UA attribute name (case-sensitive).
+The `a` parameter, standing for the `attributeId` of an object, is optional and defaults to
+`Value` (`0x0d`, i.e. `13`). Its value can be given as either the numeric id or the OPC-UA
+attribute name (case-sensitive).
+
+The Data Type is also optional; when omitted, a default data type is selected based on the
+datatype of the returned value. For unsigned data types it needs to be given explicitly.
+
+An address may end with a selection of an array's elements - a single index, an inclusive range,
+and optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+
+Note the identifiers `s`, `i`, `b` and `g` specify the format of the address, not the data type of
+the returned value.
 
 === Data Types
 
-The following data types are supported
+The following data types are supported:
 
 - BOOL (boolean)
 - SINT (int 8)
@@ -238,10 +134,7 @@ The following data types are supported
 - DATE_AND_TIME (date and time)
 - LDATE_AND_TIME (date and time)
 
-
-=== Example of a valid OPC UA address:
-
-The following are examples of valid addresses
+=== Examples
 
 String address:
 ----
@@ -249,7 +142,7 @@ ns=2;s=HelloWorld/ScalarTypes/Boolean
 ns=2;s=HelloWorld/ScalarTypes/Boolean;BOOL
 ns=2;s=HelloWorld/ScalarTypes/Boolean;a=Value;BOOL
 ----
-Numeric address
+Numeric address:
 ----
 ns=1;i=1337
 ns=1;i=1337;DINT
@@ -261,52 +154,205 @@ ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
 ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;REAL
 ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;a=Value;REAL
 ----
-Event Subscription:
+Event subscription:
 ----
 ns=0;i=2253;a=EventNotifier;BOOL|EventId=x,EventType=x,Severity=x,Time=x,Message=x
 ----
 
-Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
-The `a` attribute is required only for event subscriptions which additionally makes use of tag config.
-Tag config is appended after a `|` as a comma-separated `key=value` list naming the event
-fields to request. The values are placeholders and are ignored, but they must be non-empty
-and alphanumeric, and a `;{Data Type}` segment has to precede the `|` - otherwise the config
-is silently dropped.
+The `a` attribute is required only for event subscriptions, which additionally make use of tag
+config. Tag config is appended after a `|` as a comma-separated `key=value` list naming the event
+fields to request. The values are placeholders and are ignored, but they must be non-empty and
+alphanumeric, and a `;{Data Type}` segment has to precede the `|` - otherwise the config is
+silently dropped. See <<OPC UA Event Notification>> for the supported event fields.
 
-== Some useful tips
+CAUTION: The `;a=<attributeId>` suffix is Java-only - the Go driver's address pattern has no
+`;a=` group (and no trailing `|key=val,...` tag-config group at all), so an address such as
+`ns=2;s=Foo;a=13` is accepted by Java but rejected by Go. This page documents the Java syntax;
+consult the Go driver's own source for what it accepts.
+
+== Notes and Tips
 
 The namespace (e.g. `ns=2`) within the address is specific to the server you are connecting to.
-Objects appearing in namespaces can, and will vary, as namespaces are used to separate scope of objects.
+Objects appearing in namespaces can, and will, vary, as namespaces are used to separate the scope
+of objects.
 
-OPC-UA servers support subscriptions which allow to reduce amount of data exchanged between client and server.
-There are three primary subscription modes: Data Change Notification, Status Change Notification and Event Notification.
-Currently, Apache PLC4X client supports Data Change Notification and Event Notification.
+OPC-UA servers support subscriptions, which allow the amount of data exchanged between client and
+server to be reduced. There are three primary subscription modes: Data Change Notification, Status
+Change Notification and Event Notification. Apache PLC4X currently supports Data Change
+Notification and Event Notification. Under the hood, subscriptions still require the client to
+request data through a `PublishRequest`.
 
-Under the hood subscriptions still require client to request data though PublishRequest.
+== Protocol Details
 
-=== OPC UA Data Change Notification
+=== Secure communication
 
-Data change notifications are created with list of tags, after which client need to send publish requests.
-Upon each publish request server will send response which will include values of all tag for which subscription was created.
-While OPC-UA specification permits mutation of subscription contents, PLC4X API does not allow that.
+The secure channel implementation within the Apache PLC4X project has been tested against
+existing open source server implementations. This includes Eclipse Milo (all modes) as well as
+the OPC Foundation .NET server (except `Basic128Rsa15`). Manual tests have proven that the driver
+is able to communicate with OPC UA servers launched on PLCs as well as commercial simulators.
 
-By default, `Cyclic` and `Change of State` subscriptions operations defined in PLC4X client API result in data change notifications.
+Depending on the configuration of the remote end, it may be necessary to prepare a client
+certificate. Preparation of a certificate is beyond the driver; however, when no client
+certificate is provided, one is auto-generated to establish a session. Please follow our tutorial
+xref:getting-started/opcua-client-certificate.adoc[on provisioning of client private key and
+certificate]. By following it you will be able to create a self-signed certificate for use with
+both hardware and software based OPC-UA servers. Note that there are multiple appearances of
+certificates within the specification: there is the application instance certificate securing the
+communication channel, which is provided through the keystore options described below, and there
+is a X509 certificate identifying the *user*, which is supplied separately - see
+<<User authentication>>.
 
-=== OPC UA Event Notification
+The security modes differ from each other by the strength of the applied signature and encryption
+algorithms. The driver is able to communicate with a single security mode at a time. In addition
+to the security policy, it is possible to specify the `message-security` option, which indicates
+the expected security settings after the initial handshake. By default, this option is set to
+`SIGN_ENCRYPT`, which imposes high security settings and full encryption of exchanged message
+payloads. When additional diagnostics are needed, payloads have to be traced through TRACE level
+log entries. The `SIGN` mode makes it possible to browse packets in tools such as Wireshark.
 
-Third mode of subscription defined by PLC4X API is `Event Subscription`.
-This kind of subscription is available since PLC4X 0.13 and have slightly different syntax, which brings more complex data.
-OPC-UA events can be used to receive notifications of various kinds which appear when specific situation happens.
-In other protocols this kind of behavior can function as alarms or alerts.
+==== Certificate verification
 
-In order to create OPC-UA event subscription you need to:
+The OPC UA specification defines its own procedures for certificate validation.
+
+The driver verifies the server certificate by default and fails closed: if no trust anchor is
+configured, the server certificate is rejected and the connection fails. Configure one of:
+
+* `tls.trust-store` - validate the certificate chain against the given trust store. The acceptance
+relies on regular TLS checks (expiry date, certificate path etc.); it does not validate OPC UA
+specific parts such as the application URI.
+* `server-certificate-file` - pin trust to exactly that certificate. Only the certificate read
+from the configured file is trusted; a certificate learned over the unauthenticated discovery
+channel is never used as a trust anchor.
+
+WARNING: `tls.verify=false` disables server certificate verification altogether. This makes the
+connection vulnerable to man-in-the-middle attacks and is intended for local testing only.
+
+==== Client certificate
+
+If no `tls.keystore` is configured, the driver generates a self-signed application instance
+certificate for the session. It is a 2048 bit RSA key signed with SHA-256; use
+`generated-key-size` to ask for a larger key when the server demands one:
+
+----
+opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256&message-security=SIGN_ENCRYPT&generated-key-size=4096
+----
+
+A generated certificate is fresh for every connection, so a server that keeps a trust list will
+reject it until it is trusted there. For anything beyond a first connection attempt, supply your
+own certificate through `tls.keystore` instead - see
+xref:getting-started/opcua-client-certificate.adoc[the client certificate tutorial].
+
+=== User authentication
+
+Besides securing the channel, OPC UA authenticates the user of a session. The driver supports all
+three token types the specification defines: anonymous, username/password and a X509 user
+certificate.
+
+Anonymous access is what you get when no credentials are supplied. A username and password can
+come from the connection string:
+
+----
+opcua:tcp://127.0.0.1:12686?username=admin&password=password
+----
+
+or, together with the certificate variant, from a `PlcAuthentication` handed to the driver
+manager. The object passed to `getConnection` decides which token type the driver asks the server
+for, and credentials given this way take precedence over those in the connection string:
+
+[source,java]
+----
+PlcConnection connection = driverManager.getConnection(
+    "opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256",
+    new PlcUsernamePasswordAuthentication("admin", "password"));
+----
+
+==== User certificate
+
+To authenticate as a user with a X509 certificate, pass a `PlcCertificateAuthentication` carrying
+the key store that holds the user certificate and its private key:
+
+[source,java]
+----
+KeyStore keyStore = KeyStore.getInstance("PKCS12");
+try (InputStream in = new FileInputStream("user.p12")) {
+    keyStore.load(in, "changeit".toCharArray());
+}
+
+PlcConnection connection = driverManager.getConnection(
+    "opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256",
+    new PlcCertificateAuthentication(keyStore, "changeit".toCharArray()));
+----
+
+The driver takes the first key store entry holding a private key. When the store holds more than
+one identity, name the one to use:
+
+[source,java]
+----
+new PlcCertificateAuthentication(keyStore, "changeit".toCharArray(), "operator");
+----
+
+The certificate has to use an RSA key, and the server has to trust it - servers usually keep a
+separate trust list for user certificates, distinct from the one for application instance
+certificates.
+
+NOTE: This is not the same certificate as the one configured through `tls.keystore`. That one is
+the application instance certificate: it secures the channel and says which installation is
+talking, whereas the user certificate says who is talking. Nothing stops you from using the same
+certificate for both, provided the server trusts it for both purposes.
+
+The driver proves possession of the private key by signing the server certificate and server
+nonce, using the security policy the server declares for its certificate user token policy. A
+server that offers certificate authentication with a security policy of `None` leaves no algorithm
+to sign with; the driver refuses such an endpoint rather than sending an unverifiable token.
+
+==== Negotiation procedure
+
+Depending on the settings, the driver might or might not attempt to discover endpoints from the
+remote server. When the `discovery` option is set to `true`, the driver looks up the server
+certificate through a connection attempt. The discovery option also enables checks of server
+endpoints for matching security settings.
+
+Once initial discovery is completed and the driver finds an endpoint matching its security
+settings, it launches a second connection attempt which switches to the configured security mode.
+
+Each connection attempt made by the driver uses the limits described in the connection string
+options above; these declare the values accepted and expected by the client. Once the server
+returns its own limits (`Acknowledge` for the supplied `Hello` call), the driver picks values from
+these - taking the minimum of the local receive and remote send buffer sizes, and likewise the
+minimum of the local send and remote receive buffer sizes.
+
+Usual values for `encoding.send-buffer-size` and `encoding.receive-buffer-size` on PLC devices
+remain at 8196 bytes.
+
+NOTE: Due to a lack of complete implementation of negotiation and chunking logic, the OPC UA
+driver prior to the Apache PLC4X 0.11 release could supply calls exceeding server limits.
+
+==== OPC UA Data Change Notification
+
+Data change notifications are created with a list of tags, after which the client needs to send
+publish requests. Upon each publish request, the server sends a response which includes the values
+of all tags for which a subscription was created. While the OPC-UA specification permits mutation
+of subscription contents, the PLC4X API does not allow that.
+
+By default, `Cyclic` and `Change of State` subscription operations defined in the PLC4X client API
+result in data change notifications.
+
+==== OPC UA Event Notification
+
+The third mode of subscription defined by the PLC4X API is `Event Subscription`. This kind of
+subscription is available since PLC4X 0.13 and has a slightly different syntax, which brings more
+complex data. OPC-UA events can be used to receive notifications of various kinds, which appear
+when a specific situation happens. In other protocols this kind of behavior can function as alarms
+or alerts.
+
+In order to create an OPC-UA event subscription you need to:
 
 - define `a=EventNotifier` or `a=12`
 - specify event fields to retrieve through a tag config
 
-The tag config key must match OPC-UA event field.
-The tag config value is not used, thus it can not be used to specify filter criteria for field value.
-Fields which are supported are defined in OPC UA `BaseEventType`:
+The tag config key must match an OPC-UA event field. The tag config value is not used, so it
+cannot be used to specify filter criteria for a field value. The fields that are supported are
+defined in the OPC UA `BaseEventType`:
 
 - `EventId`
 - `EventType`
@@ -320,26 +366,30 @@ Fields which are supported are defined in OPC UA `BaseEventType`:
 
 Example syntax: `ns=0;i=2253;a=EventNotifier;BOOL|EventId=x,EventType=x,Severity=x,Time=x,Message=x`.
 
-Subscription event generated by client upon receiving notification will contain an object (`PlcSTRUCT`/`Map`) which will contain all requested fields.
-Please note that Apache PLC4X does only basic normalization of data, thus your application need to take care of actual processing of event data.
+A subscription event generated by the client upon receiving a notification contains an object
+(`PlcSTRUCT`/`Map`) holding all requested fields. Note that Apache PLC4X only does basic
+normalization of the data, so your application needs to take care of the actual processing of
+event data.
 
-== Tag metadata
+=== Tag metadata
 
-This driver supports tag metadata.
-Beyond standard metadata fields such `timestamp` and `timestamp_source` it can provide following keys:
+This driver supports tag metadata. Beyond standard metadata fields such as `timestamp` and
+`timestamp_source`, it can provide the following keys:
 
 - `opcua_quality`
 - `opcua_server_timestamp`
 - `opcua_source_timestamp`
 
-Appearance of these fields is conditional, they are provided only when it can be sourced from packets exchanged between client and server.
-This means that depending on operation conducted by client (read/write/subscribe) metadata will vary.
+The appearance of these fields is conditional; they are provided only when they can be sourced
+from packets exchanged between client and server. This means that, depending on the operation
+conducted by the client (read/write/subscribe), the metadata will vary.
 
-== Compatibility with OPC-UA Servers
+=== Compatibility with OPC-UA Servers
 
-There are multiple OPC-UA server implementations.
-Each of it have its own specifics, sometimes showing up more detailed security handling or further edge case buried in specification.
-So far Apache PLC4X OPC-UA client have been confirmed to be working with below servers (order in chronology of passed tests/confirmed compatibility):
+There are multiple OPC-UA server implementations, each with its own specifics, sometimes showing
+more detailed security handling or other edge cases buried in the specification. So far the
+Apache PLC4X OPC-UA client has been confirmed to work with the servers below (in chronological
+order of passed tests/confirmed compatibility):
 
 * version 0.13
 - https://github.com/node-opcua/node-opcua[node-opcua]
@@ -349,14 +399,10 @@ So far Apache PLC4X OPC-UA client have been confirmed to be working with below s
 - Simatic OPC UA S7-1200 Basic
 - https://github.com/OPCFoundation/UA-.NETStandard[OPC Foundation UA-.NET Standard]
 - Simocode OPC UA server
-* versions prior 0.12
+* versions prior to 0.12
 - https://eclipse.dev/milo/[Eclipse Milo]
 
-
-== More details on OPC UA
-
-https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
-The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.
+== More Information
 
 This multi-layered approach accomplishes the original design specification goals of:
 
@@ -365,3 +411,6 @@ This multi-layered approach accomplishes the original design specification goals
 * Secure: encryption, authentication, and auditing
 * Extensible: ability to add new features without affecting existing applications
 * Comprehensive information modeling: for defining complex information
+
+See the https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA] page at the OPC
+Foundation for more details.
