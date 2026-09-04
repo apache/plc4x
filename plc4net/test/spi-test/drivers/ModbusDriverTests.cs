@@ -332,13 +332,41 @@ namespace org.apache.plc4net.spi.test.drivers
             var b1 = conn.ReadRequestBuilder;
             b1.AddTagAddress("v", "holding:99");
             var r1 = (DefaultPlcReadResponse)await conn.Read((DefaultPlcReadRequest)b1.Build());
-            Assert.NotEqual(PlcResponseCode.Ok, r1.GetResponseCode("v"));
+            // ILLEGAL DATA ADDRESS maps to InvalidAddress, not a blanket InternalError.
+            Assert.Equal(PlcResponseCode.InvalidAddress, r1.GetResponseCode("v"));
 
             var b2 = conn.ReadRequestBuilder;
             b2.AddTagAddress("v", "holding:0");
             var r2 = (DefaultPlcReadResponse)await conn.Read((DefaultPlcReadRequest)b2.Build());
             Assert.Equal(PlcResponseCode.Ok, r2.GetResponseCode("v"));
             Assert.Equal((ushort)0xBEEF, r2.GetValue("v").GetUshort());
+        }
+
+        [Fact]
+        public async Task Tcp_a_stale_response_from_a_timed_out_read_does_not_brick_the_connection()
+        {
+            var inner = new ScriptedTransportInstance();
+            var conn = new ModbusConnection(
+                ConnectionString.Parse(
+                    "modbus-tcp://10.0.0.9:502?unit-identifier=1&request-timeout=150"), inner);
+            conn.Connect();
+
+            // Read 1: nothing to read -> RequestTimeout (tx 2).
+            var b1 = conn.ReadRequestBuilder;
+            b1.AddTagAddress("v", "holding:0");
+            var r1 = (DefaultPlcReadResponse)await conn.Read((DefaultPlcReadRequest)b1.Build());
+            Assert.Equal(PlcResponseCode.RequestTimeout, r1.GetResponseCode("v"));
+
+            // Now tx 2's response turns up late, with read 2's tx-3 response behind it.
+            inner.Inject(MbapFrame(2, 1, new byte[] { 0x03, 0x02, 0x11, 0x11 }));
+            inner.Inject(MbapFrame(3, 1, new byte[] { 0x03, 0x02, 0x22, 0x22 }));
+
+            var b2 = conn.ReadRequestBuilder;
+            b2.AddTagAddress("v", "holding:0");
+            var r2 = (DefaultPlcReadResponse)await conn.Read((DefaultPlcReadRequest)b2.Build());
+            // The driver skips the stale tx-2 frame and returns tx 3.
+            Assert.Equal(PlcResponseCode.Ok, r2.GetResponseCode("v"));
+            Assert.Equal((ushort)0x2222, r2.GetValue("v").GetUshort());
         }
     }
 }

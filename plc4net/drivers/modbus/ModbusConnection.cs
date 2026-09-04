@@ -43,6 +43,8 @@ namespace org.apache.plc4net.drivers.modbus
     {
         private int _nextTransactionId = 1;
 
+        private readonly int _responseTimeoutMs;
+
         public ModbusConnection(ConnectionString connectionString, ITransportInstance transport)
             : base(connectionString, transport)
         {
@@ -51,6 +53,7 @@ namespace org.apache.plc4net.drivers.modbus
                 throw new PlcConnectionException(
                     $"unit-identifier must be in [0,255], got {unitId}.");
             UnitId = (byte)unitId;
+            _responseTimeoutMs = connectionString.GetIntParameter("request-timeout", 5000);
         }
 
         public byte UnitId { get; }
@@ -135,7 +138,7 @@ namespace org.apache.plc4net.drivers.modbus
                         "Modbus Read failed for tag '{TagName}'",
                         name);
                     results[name] = new DefaultPlcTagErrorItem<IPlcValue>(
-                        PlcResponseCode.InternalError);
+                        MapModbusException(ex));
                 }
             }
 
@@ -187,14 +190,14 @@ namespace org.apache.plc4net.drivers.modbus
                 }
                 catch (OperationCanceledException)
                 {
-                    codes[name] = PlcResponseCode.InternalError;
+                    throw; // Propagate cancellation — do not mask as a per-tag error.
                 }
                 catch (Exception ex)
                 {
                     Logger.LogWarning(ex,
                         "Modbus Write failed for tag '{TagName}'",
                         name);
-                    codes[name] = PlcResponseCode.InternalError;
+                    codes[name] = MapModbusException(ex);
                 }
             }
 
@@ -203,15 +206,49 @@ namespace org.apache.plc4net.drivers.modbus
 
         // ── Byte-level I/O ─────────────────────────────────────
 
+        // Unit id + a 252-byte PDU. A length field outside [2, 253] is garbled.
+        private const int MaxModbusResponseLen = 253;
+
+        // Modbus is strict request/response with one outstanding transaction per
+        // connection. The gate serialises callers so two concurrent Read/Write
+        // calls cannot interleave on the wire and swallow each other's frames.
+        private readonly SemaphoreSlim _io = new SemaphoreSlim(1, 1);
+
+        public override void Close()
+        {
+            try { base.Close(); }
+            finally { _io.Dispose(); }
+        }
+
         private async Task<byte[]> SendAndReceive(
             byte[] pduData, CancellationToken cancellationToken = default)
         {
+            await _io.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                return await SendAndReceiveLocked(pduData, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not ModbusDriverException)
+            {
+                // A timeout or a torn read may have stranded a partial frame;
+                // do not let the next call mis-parse it. A ModbusDriverException
+                // means the response was read in full — leave the buffer alone.
+                DrainReadBuffer();
+                throw;
+            }
+            finally
+            {
+                _io.Release();
+            }
+        }
+
+        private async Task<byte[]> SendAndReceiveLocked(
+            byte[] pduData, CancellationToken cancellationToken)
+        {
             var txId = (ushort)(Interlocked.Increment(ref _nextTransactionId) & 0xFFFF);
 
-            // Build MBAP header.
             var pduLen = 1 + pduData.Length;
-            var totalLen = 6 + 1 + pduData.Length;
-            var frame = new byte[totalLen];
+            var frame = new byte[6 + pduLen];
             frame[0] = (byte)(txId >> 8);
             frame[1] = (byte)(txId & 0xFF);
             frame[2] = 0; frame[3] = 0;
@@ -221,57 +258,103 @@ namespace org.apache.plc4net.drivers.modbus
             Array.Copy(pduData, 0, frame, 7, pduData.Length);
 
             TransportInstance.Write(frame);
+            var deadline = Environment.TickCount64 + _responseTimeoutMs;
 
-            // Poll for response honouring cancellation.
-            var deadline = Environment.TickCount64 + 5000;
-            while (Environment.TickCount64 < deadline)
+            // Loop so a stale response left by an earlier timed-out request is
+            // skipped (wrong transaction id) rather than mis-parsed as ours, and
+            // a garbled length field resyncs by dropping a byte.
+            while (true)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                await WaitForBytes(8, deadline, cancellationToken).ConfigureAwait(false);
 
-                var available = TransportInstance.GetNumBytesAvailable();
-                if (available >= 8) break;
-                await Task.Delay(2, cancellationToken).ConfigureAwait(false);
+                var header = TransportInstance.PeekReadableBytes(6);
+                var respLen = (header[4] << 8) | header[5];
+                if (respLen < 2 || respLen > MaxModbusResponseLen)
+                {
+                    TransportInstance.Read(1); // resync
+                    continue;
+                }
+
+                var totalRespLen = 6 + respLen;
+                // The frame may still be arriving (a TCP↔serial gateway forwards
+                // it byte by byte); wait for all of it, not just the header.
+                await WaitForBytes(totalRespLen, deadline, cancellationToken).ConfigureAwait(false);
+                var frameBytes = TransportInstance.Read(totalRespLen);
+
+                var respTxId = (ushort)((frameBytes[0] << 8) | frameBytes[1]);
+                if (respTxId != txId)
+                {
+                    Logger.LogDebug(
+                        "Modbus: discarded a stale response (tx {Got}, want {Want})",
+                        respTxId, txId);
+                    continue;
+                }
+
+                var functionCode = frameBytes[7];
+                if ((functionCode & 0x80) != 0)
+                {
+                    var errorCode = frameBytes.Length > 8 ? frameBytes[8] : (byte)0;
+                    var name = Enum.IsDefined(typeof(ModbusErrorCode), errorCode)
+                        ? ((ModbusErrorCode)errorCode).ToString() : "unknown";
+                    throw new ModbusDriverException(
+                        $"Modbus exception: function 0x{functionCode & 0x7F:X2}, "
+                        + $"code 0x{errorCode:X2} ({name}).", errorCode);
+                }
+
+                var dataLen = totalRespLen - 8;
+                if (dataLen <= 0) return Array.Empty<byte>();
+                var result = new byte[dataLen];
+                Array.Copy(frameBytes, 8, result, 0, dataLen);
+                return result;
             }
+        }
 
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var available2 = TransportInstance.GetNumBytesAvailable();
-            if (available2 < 8)
-                throw new TimeoutException("No Modbus response received within timeout.");
-
-            var header = TransportInstance.PeekReadableBytes(6);
-            var respLen = (ushort)((header[4] << 8) | header[5]);
-            var totalRespLen = 6 + respLen;
-
-            // Re-query availability — data may have arrived since the initial check.
-            var availNow = TransportInstance.GetNumBytesAvailable();
-            if (availNow < totalRespLen)
-                throw new Exception($"Incomplete response: need {totalRespLen}, have {availNow}.");
-
-            var frameBytes = TransportInstance.Read(totalRespLen);
-
-            // Validate transaction ID matches the request.
-            var respTxId = (ushort)((frameBytes[0] << 8) | frameBytes[1]);
-            if (respTxId != txId)
-                throw new Exception(
-                    $"Transaction ID mismatch: sent {txId}, received {respTxId}.");
-
-            var functionCode = frameBytes[7];
-
-            // Check for error response.
-            if ((functionCode & 0x80) != 0)
+        private async Task WaitForBytes(int count, long deadline, CancellationToken ct)
+        {
+            while (TransportInstance.GetNumBytesAvailable() < count)
             {
-                var errorCode = frameBytes.Length > 8 ? frameBytes[8] : (byte)0;
-                throw new Exception(
-                    $"Modbus error: function={functionCode & 0x7F:X2}, code={errorCode:X2}");
+                ct.ThrowIfCancellationRequested();
+                if (Environment.TickCount64 >= deadline)
+                {
+                    throw new TimeoutException(
+                        $"No complete Modbus response within {_responseTimeoutMs} ms "
+                        + $"({TransportInstance.GetNumBytesAvailable()} of {count} bytes).");
+                }
+                await Task.Delay(2, ct).ConfigureAwait(false);
             }
+        }
 
-            var dataLen = totalRespLen - 8;
-            if (dataLen <= 0) return Array.Empty<byte>();
+        private void DrainReadBuffer()
+        {
+            var n = TransportInstance.GetNumBytesAvailable();
+            if (n > 0)
+            {
+                TransportInstance.Read(n);
+            }
+        }
 
-            var result = new byte[dataLen];
-            Array.Copy(frameBytes, 8, result, 0, dataLen);
-            return result;
+        /// <summary>
+        /// Maps a failure from <see cref="SendAndReceive"/> to a response code,
+        /// mirroring plc4j's ModbusTcpConnection.getErrorCode().
+        /// </summary>
+        internal static PlcResponseCode MapModbusException(Exception ex)
+        {
+            switch (ex)
+            {
+                case TimeoutException:
+                    return PlcResponseCode.RequestTimeout;
+                case ModbusDriverException m when m.ExceptionCode != 0:
+                    return m.ExceptionCode switch
+                    {
+                        (byte)ModbusErrorCode.IllegalFunction => PlcResponseCode.Unsupported,
+                        (byte)ModbusErrorCode.IllegalDataAddress => PlcResponseCode.InvalidAddress,
+                        (byte)ModbusErrorCode.IllegalDataValue => PlcResponseCode.InvalidDatatype,
+                        (byte)ModbusErrorCode.SlaveDeviceBusy => PlcResponseCode.RequestTimeout,
+                        _ => PlcResponseCode.InternalError,
+                    };
+                default:
+                    return PlcResponseCode.InternalError;
+            }
         }
     }
 }

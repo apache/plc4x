@@ -30,6 +30,13 @@ namespace org.apache.plc4net.types
         InvalidAddress,
         InvalidDatatype,
         InternalError,
-        ResponsePending
+        ResponsePending,
+
+        /// <summary>The device did not answer within the request timeout.</summary>
+        RequestTimeout,
+
+        /// <summary>The device rejected the request as unsupported (e.g. an
+        /// illegal function code).</summary>
+        Unsupported
     }
 }

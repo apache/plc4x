@@ -23,5 +23,16 @@ namespace org.apache.plc4net.drivers.modbus
     {
         public ModbusDriverException(string message) : base(message) { }
         public ModbusDriverException(string message, System.Exception inner) : base(message, inner) { }
+
+        /// <summary>
+        /// The Modbus exception code (function-code high bit set), or 0 when the
+        /// failure is not a device exception response.
+        /// </summary>
+        public byte ExceptionCode { get; }
+
+        public ModbusDriverException(string message, byte exceptionCode) : base(message)
+        {
+            ExceptionCode = exceptionCode;
+        }
     }
 }
