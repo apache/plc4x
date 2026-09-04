@@ -63,6 +63,8 @@ jobs:
               missing=1
             fi
           done < <(git ls-files \
+            'plc4net/*.cs' 'plc4net/*.csproj' 'plc4net/*.props' \
+            'plc4net/*.g4' 'plc4net/*.md' 'plc4net/*.yml' \
             'plc4net/**/*.cs' 'plc4net/**/*.csproj' 'plc4net/**/*.props' \
             'plc4net/**/*.g4' 'plc4net/**/*.md' 'plc4net/**/*.yml' \
             'plc4net/Makefile' \
