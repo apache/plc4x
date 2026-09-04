@@ -241,7 +241,7 @@ not part of PR validation.
 
 ## Hardware verification
 
-**S7-1200 (Siemens, DC/DC/DC)** — **verified 2026-09-03, PASS 12/12**.  The COTP
+**S7-1214C (Siemens, DC/DC/DC — S7-1200 family)** — **verified 2026-09-03, PASS 12/12**.  The COTP
 handshake, S7 Setup Communication (PDU 240) and single-item reads of every
 scalar width, a three-item read, a write + read-back of an INT and a REAL, and
 an error path were all exercised end to end against the CPU at rack 0 / slot 1
@@ -266,7 +266,7 @@ the same job for Modbus TCP (`ModbusConnection`) and Modbus RTU
 (`ModbusRtuConnection` over the serial transport — the first real exercise of
 `SerialTransportInstance`).  The RTU path also runs a raw request/response on the
 wire, independent of the driver's framing, so a framing fault is visible even
-when the driver mis-decodes.  Setup (an S7-1200 + CM 1241 as `MB_SLAVE`) and the
+when the driver mis-decodes.  Setup (an S7-1214C + CM 1241 as `MB_SLAVE`) and the
 troubleshooting table are in **`docs/modbus-hardware-verification.md`**.
 
 ```

@@ -30,9 +30,9 @@ transports:
   own framing, so a framing problem is visible even if the driver mis-decodes.
 
 Status: **not yet verified against hardware** — planned against a Siemens
-S7-1200 with a **CM 1241 (RS422/485)** communication module running `MB_SLAVE`.
+S7-1214C with a **CM 1241 (RS422/485)** communication module running `MB_SLAVE`.
 
-## 1a. Prepare an S7-1200 + CM 1241 as a Modbus RTU slave (TIA Portal)
+## 1a. Prepare an S7-1214C + CM 1241 as a Modbus RTU slave (TIA Portal)
 
 1. **Add the CM 1241** to the device configuration. For a bus use the
    **CM 1241 (RS422/485)** (`6ES7241-1CH3x`); set the port to

@@ -24,7 +24,7 @@ then connects, runs S7 Setup Communication, reads every scalar type from a data
 block, round-trips a write, and checks an error path. It prints a Markdown
 report and exits 0 on pass, 1 on any failure.
 
-Verified against: **Siemens S7-1200 (DC/DC/DC), 2026-09-03 — PASS 12/12.**
+Verified against: **Siemens S7-1214C DC/DC/DC (S7-1200 family), 2026-09-03 — PASS 12/12.**
 See [s7-hardware-report.md](s7-hardware-report.md) for the run log.
 
 ## 1. Prepare the PLC (TIA Portal)
@@ -100,7 +100,7 @@ DB100 nor the full layout.
 
 | Symptom | Try |
 |---|---|
-| `No COTP Connection Confirm received` | Wrong rack/slot, or the S7-1200/1500 wants a different connection resource. Retry with `--device-group OTHERS` (TSAP `0x03rs`), then `--remote-tsap 0x0301`, `0x0302`, `0x0300`, `0x0201`. Record which one works. (The S7-1200 verified on 2026-09-03 needed none of these — the rack/slot default `0x0101` worked.) |
+| `No COTP Connection Confirm received` | Wrong rack/slot, or the S7-1200/1500 wants a different connection resource. Retry with `--device-group OTHERS` (TSAP `0x03rs`), then `--remote-tsap 0x0301`, `0x0302`, `0x0300`, `0x0201`. Record which one works. (The S7-1214C verified on 2026-09-03 needed none of these — the rack/slot default `0x0101` worked.) |
 | `No S7 Setup Communication response` | PUT/GET not enabled, wrong rack/slot, or wrong TSAP. |
 | Connect succeeds but **every** read/write is `AccessDenied` (S7 error `0x8104`) | PUT/GET is not effective on the CPU. Tick "Permit access with PUT/GET communication from remote partner", then **compile the hardware configuration and download it** — the offline setting alone changes nothing. Check the *Access level* table is "Full access (no protection)". |
 | Connection drops immediately | Another master already holds the single PG connection — close TIA Portal's online view, or use a dedicated S7 connection + `--remote-tsap`. |

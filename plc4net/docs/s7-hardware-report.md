@@ -21,9 +21,9 @@
 Output of `tools/s7-verify` against real hardware. The procedure and the data
 block layout are in [s7-hardware-verification.md](s7-hardware-verification.md).
 
-## 2026-09-03 — Siemens S7-1200 (DC/DC/DC)
+## 2026-09-03 — Siemens S7-1214C (DC/DC/DC)
 
-- **Device**: SIMATIC S7-1200, DC/DC/DC CPU, rack 0 / slot 1
+- **Device**: SIMATIC S7-1214C DC/DC/DC (S7-1200 family), rack 0 / slot 1
 - **Connection**: `s7://192.168.1.11` (default TSAPs: remote `0x0101`, local `0x0311`)
 - **Negotiated PDU length**: 240 bytes
 - **Data block**: DB100, non-optimized, laid out per the procedure doc
