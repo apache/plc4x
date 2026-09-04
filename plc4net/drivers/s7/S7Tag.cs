@@ -17,6 +17,7 @@
 // under the License.
 //
 
+using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using org.apache.plc4net.model;
@@ -75,6 +76,21 @@ namespace org.apache.plc4net.drivers.s7
             if (string.IsNullOrWhiteSpace(tagAddress))
                 throw new S7DriverException("Tag address must not be empty.");
 
+            try
+            {
+                return ParseInternal(tagAddress);
+            }
+            catch (Exception e) when (e is FormatException or OverflowException)
+            {
+                // A number in the address that does not fit an int must read as
+                // a driver error, not an unhandled framework exception.
+                throw new S7DriverException(
+                    $"Cannot parse S7 tag address '{tagAddress}': {e.Message}", e);
+            }
+        }
+
+        private static S7Tag ParseInternal(string tagAddress)
+        {
             // DB: %DB1.DBW10, %DB1.DBX0.0, %DB1.DBD20
             var dbMatch = DbPattern.Match(tagAddress);
             if (dbMatch.Success)
@@ -85,7 +101,7 @@ namespace org.apache.plc4net.drivers.s7
                 var size = type switch { "X" => 1, "B" => 1, "W" => 2, "D" => 4, "C" => 1, _ => 1 };
                 var bit = dbMatch.Groups["bit"].Success
                     ? int.Parse(dbMatch.Groups["bit"].Value, CultureInfo.InvariantCulture) : -1;
-                return new S7Tag(AreaType.DataBlock, db, offset, bit, size);
+                return Validated(new S7Tag(AreaType.DataBlock, db, offset, bit, size), tagAddress);
             }
 
             // T/C: %T0, %C5 — checked before MioPattern to avoid [MIQ] capture.
@@ -95,7 +111,7 @@ namespace org.apache.plc4net.drivers.s7
                 var area = ctMatch.Groups["area"].Value.ToUpperInvariant() == "T"
                     ? AreaType.Timer : AreaType.Counter;
                 var num = int.Parse(ctMatch.Groups["num"].Value, CultureInfo.InvariantCulture);
-                return new S7Tag(area, 0, num, -1, 2);
+                return Validated(new S7Tag(area, 0, num, -1, 2), tagAddress);
             }
 
             // M/I/Q: %M0.0, %I0.0, %Q4.5
@@ -112,12 +128,27 @@ namespace org.apache.plc4net.drivers.s7
                 var offset = int.Parse(mioMatch.Groups["offset"].Value, CultureInfo.InvariantCulture);
                 var bit = mioMatch.Groups["bit"].Success
                     ? int.Parse(mioMatch.Groups["bit"].Value, CultureInfo.InvariantCulture) : -1;
-                return new S7Tag(area, 0, offset, bit, 1);
+                return Validated(new S7Tag(area, 0, offset, bit, 1), tagAddress);
             }
 
             throw new S7DriverException(
                 $"Cannot parse S7 tag address '{tagAddress}'. " +
                 "Expected format: %DBn.DBTm, %MBn, %IBn, %QBn, %Cn, or %Tn.");
+        }
+
+        // The S7-ANY address item carries the DB number and the byte address in
+        // 16 bits each and the bit address in 3 bits; a value that would be
+        // silently truncated on the wire is rejected here instead.
+        private static S7Tag Validated(S7Tag tag, string address)
+        {
+            if (tag.DbNumber is < 0 or > ushort.MaxValue)
+                throw new S7DriverException($"S7 DB number out of range in '{address}'.");
+            if (tag.ByteOffset is < 0 or > ushort.MaxValue)
+                throw new S7DriverException($"S7 byte offset out of range in '{address}'.");
+            if (tag.BitOffset is < -1 or > 7)
+                throw new S7DriverException(
+                    $"S7 bit offset must be 0–7 in '{address}', got {tag.BitOffset}.");
+            return tag;
         }
 
         public override string ToString()

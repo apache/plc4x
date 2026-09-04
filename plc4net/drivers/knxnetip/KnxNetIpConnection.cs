@@ -451,16 +451,19 @@ namespace org.apache.plc4net.drivers.knxnetip
 
         /// <summary>
         /// Tells the connection the datapoint type of a group address, so inbound
-        /// telegrams for it decode to a typed value. A <c>1/2/3:DPT9.001</c> tag
-        /// registers its own hint when read; this is for addresses only monitored.
+        /// telegrams for it decode to a typed value — for addresses that are only
+        /// monitored, never read.
         /// </summary>
+        /// <exception cref="PlcInvalidFieldException">the DPT id is not recognised.</exception>
         public void RegisterDatapointHint(string groupAddress, string dptId)
         {
             var dpt = KnxNetIpTag.ResolveDatapointType(dptId);
-            if (dpt.HasValue)
+            if (!dpt.HasValue)
             {
-                _dptHints[groupAddress] = dpt.Value;
+                throw new PlcInvalidFieldException(
+                    $"Unknown KNX datapoint type '{dptId}'.");
             }
+            _dptHints[groupAddress] = dpt.Value;
         }
 
         // ── PlcReader ──────────────────────────────────────────
@@ -502,11 +505,13 @@ namespace org.apache.plc4net.drivers.knxnetip
         {
             var wire = tag.ToWireAddress(_groupAddressLevels);
             var groupAddress = DecodeGroupAddress(wire);
+
+            // The tag's own :DPT suffix decodes this read's payload (below). It
+            // is NOT persisted into _dptHints — a plain read must not silently
+            // change how later unrelated telegrams for this group address are
+            // decoded and dispatched to bus-monitor listeners. Use
+            // RegisterDatapointHint for that.
             var dpt = tag.ResolveDatapointType();
-            if (dpt.HasValue)
-            {
-                _dptHints[groupAddress] = dpt.Value;
-            }
 
             var responseSlot = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
             _pendingReads[groupAddress] = responseSlot;

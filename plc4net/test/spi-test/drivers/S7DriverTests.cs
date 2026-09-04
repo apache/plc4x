@@ -145,6 +145,12 @@ namespace org.apache.plc4net.spi.test.drivers
             Assert.Throws<S7DriverException>(() => S7Tag.Parse(""));
             Assert.Throws<S7DriverException>(() => S7Tag.Parse("garbage"));
             Assert.Throws<S7DriverException>(() => S7Tag.Parse("%X0.0"));
+            // Out-of-range numbers are a driver error, not an unhandled
+            // OverflowException / a value silently truncated on the wire.
+            Assert.Throws<S7DriverException>(() => S7Tag.Parse("%DB99999999999.DBW0"));
+            Assert.Throws<S7DriverException>(() => S7Tag.Parse("%DB1.DBD70000"));
+            Assert.Throws<S7DriverException>(() => S7Tag.Parse("%M0.9"));
+            Assert.Throws<S7DriverException>(() => S7Tag.Parse("%DB1.DBX0.8"));
         }
 
         [Fact]

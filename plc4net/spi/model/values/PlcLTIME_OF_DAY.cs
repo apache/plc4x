@@ -18,6 +18,7 @@
 //
 
 using System;
+using org.apache.plc4net.spi.generation;
 
 namespace org.apache.plc4net.spi.model.values
 {
@@ -35,8 +36,17 @@ namespace org.apache.plc4net.spi.model.values
             this.nanosecondsSinceMidnight = nanosecondsSinceMidnight;
         }
 
-        public static PlcLTIME_OF_DAY OfNanosecondsSinceMidnight(ulong nanosecondsSinceMidnight) =>
-            new PlcLTIME_OF_DAY(nanosecondsSinceMidnight);
+        private const ulong NanosPerDay = 86_400_000_000_000UL;
+
+        public static PlcLTIME_OF_DAY OfNanosecondsSinceMidnight(ulong nanosecondsSinceMidnight)
+        {
+            if (nanosecondsSinceMidnight >= NanosPerDay)
+            {
+                throw new ParseException(
+                    $"LTIME_OF_DAY {nanosecondsSinceMidnight} ns is not within a 24-hour day.");
+            }
+            return new PlcLTIME_OF_DAY(nanosecondsSinceMidnight);
+        }
 
         public ulong GetNanosecondsSinceMidnight()
         {
@@ -50,7 +60,8 @@ namespace org.apache.plc4net.spi.model.values
 
         public override TimeOnly GetTime()
         {
-            return TimeOnly.FromTimeSpan(TimeSpan.FromTicks((long) (nanosecondsSinceMidnight / 100)));
+            var ns = Math.Min(nanosecondsSinceMidnight, NanosPerDay - 1);
+            return TimeOnly.FromTimeSpan(TimeSpan.FromTicks((long) (ns / 100)));
         }
 
         protected bool Equals(PlcLTIME_OF_DAY other)

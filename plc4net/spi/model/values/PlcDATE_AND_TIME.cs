@@ -18,6 +18,7 @@
 //
 
 using System;
+using org.apache.plc4net.spi.generation;
 
 namespace org.apache.plc4net.spi.model.values
 {
@@ -33,10 +34,21 @@ namespace org.apache.plc4net.spi.model.values
         }
 
         public static PlcDATE_AND_TIME OfSegments(
-            int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) =>
-            new PlcDATE_AND_TIME(new DateTime(
-                year, month == 0 ? 1 : month, day == 0 ? 1 : day, hour, minutes, seconds)
-                .AddTicks(nanoseconds / 100));
+            int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds)
+        {
+            try
+            {
+                return new PlcDATE_AND_TIME(new DateTime(
+                        year, month == 0 ? 1 : month, day == 0 ? 1 : day, hour, minutes, seconds)
+                    .AddTicks(nanoseconds / 100));
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                throw new ParseException(
+                    $"DATE_AND_TIME {year:D4}-{month:D2}-{day:D2} "
+                    + $"{hour:D2}:{minutes:D2}:{seconds:D2} is not a valid instant.", e);
+            }
+        }
 
         public override bool IsDateTime()
         {

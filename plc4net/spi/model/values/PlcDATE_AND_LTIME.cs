@@ -18,6 +18,7 @@
 //
 
 using System;
+using org.apache.plc4net.spi.generation;
 
 namespace org.apache.plc4net.spi.model.values
 {
@@ -57,10 +58,21 @@ namespace org.apache.plc4net.spi.model.values
         }
 
         public static PlcDATE_AND_LTIME OfSegments(
-            int year, int month, int day, int hour, int minutes, int seconds, long nanoseconds) =>
-            new PlcDATE_AND_LTIME(
-                new DateTime(year, month == 0 ? 1 : month, day == 0 ? 1 : day, hour, minutes, seconds),
-                (uint) nanoseconds);
+            int year, int month, int day, int hour, int minutes, int seconds, long nanoseconds)
+        {
+            try
+            {
+                return new PlcDATE_AND_LTIME(
+                    new DateTime(year, month == 0 ? 1 : month, day == 0 ? 1 : day, hour, minutes, seconds),
+                    (uint) nanoseconds);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                throw new ParseException(
+                    $"DATE_AND_LTIME {year:D4}-{month:D2}-{day:D2} "
+                    + $"{hour:D2}:{minutes:D2}:{seconds:D2} is not a valid instant.", e);
+            }
+        }
 
         public uint GetNanosecondsOfSecond()
         {

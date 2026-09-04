@@ -43,6 +43,11 @@ namespace org.apache.plc4net.drivers.knxnetip
 
         protected override int GetMinimumHeaderSize() => 6;
 
+        // KNXnet/IP frames on a tunnelling connection are a few dozen bytes; a
+        // SEARCH_RESPONSE with every DIB is still well under 1 kB. 4096 is a
+        // generous ceiling that no legitimate frame reaches.
+        private const int MaxFrameSize = 4096;
+
         protected override int CalculateTotalMessageSize(byte[] header, int availableBytes)
         {
             if (header[0] != 0x06 || header[1] != 0x10)
@@ -58,6 +63,15 @@ namespace org.apache.plc4net.drivers.knxnetip
                 // a partial frame and staying off by a few bytes forever.
                 throw new MessageCodecException(
                     $"KNXnet/IP frame length {total} is shorter than the 6-byte header.");
+            }
+            if (total > MaxFrameSize)
+            {
+                // A KNXnet/IP tunnelling frame is well under 1 kB. A larger
+                // length field is a corrupt or spoofed frame — reject it so the
+                // codec drops a byte and resyncs, rather than waiting forever for
+                // bytes that will never arrive (which stalls the heartbeat too).
+                throw new MessageCodecException(
+                    $"KNXnet/IP frame length {total} exceeds the {MaxFrameSize}-byte cap.");
             }
             return total;
         }

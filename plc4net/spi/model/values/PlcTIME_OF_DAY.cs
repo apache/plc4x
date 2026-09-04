@@ -18,12 +18,15 @@
 //
 
 using System;
+using org.apache.plc4net.spi.generation;
 
 namespace org.apache.plc4net.spi.model.values
 {
     /// <summary>IEC 61131 <c>TIME_OF_DAY</c> - a wall-clock time, no date.</summary>
     public class PlcTIME_OF_DAY : PlcSimpleValueAdapter
     {
+        private const long MillisPerDay = 86_400_000L;
+
         private readonly TimeOnly value;
 
         public PlcTIME_OF_DAY(TimeOnly value)
@@ -31,8 +34,18 @@ namespace org.apache.plc4net.spi.model.values
             this.value = value;
         }
 
-        public static PlcTIME_OF_DAY OfMillisecondsSinceMidnight(long millisecondsSinceMidnight) =>
-            new PlcTIME_OF_DAY(TimeOnly.FromTimeSpan(TimeSpan.FromMilliseconds(millisecondsSinceMidnight)));
+        public static PlcTIME_OF_DAY OfMillisecondsSinceMidnight(long millisecondsSinceMidnight)
+        {
+            if (millisecondsSinceMidnight < 0 || millisecondsSinceMidnight >= MillisPerDay)
+            {
+                // A corrupt frame must surface as a ParseException the codec can
+                // catch, not a framework ArgumentOutOfRangeException that escapes
+                // the receive loop.
+                throw new ParseException(
+                    $"TIME_OF_DAY {millisecondsSinceMidnight} ms is not within a 24-hour day.");
+            }
+            return new PlcTIME_OF_DAY(TimeOnly.FromTimeSpan(TimeSpan.FromMilliseconds(millisecondsSinceMidnight)));
+        }
 
         public override bool IsTime()
         {

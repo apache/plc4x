@@ -61,8 +61,19 @@ namespace org.apache.plc4net.transports.serial
 
             // Open the port and start the read loop immediately —
             // the transport instance IS the connection, so its
-            // lifecycle is bound to the serial port's.
-            _port.Open();
+            // lifecycle is bound to the serial port's. If Open() fails
+            // (port missing / busy / denied) dispose what was built so
+            // far rather than leak the CTS and the half-open port.
+            try
+            {
+                _port.Open();
+            }
+            catch
+            {
+                _readCts.Dispose();
+                _port.Dispose();
+                throw;
+            }
             _ = Task.Run(() => ReadLoopAsync(_readCts.Token));
         }
 
@@ -75,21 +86,39 @@ namespace org.apache.plc4net.transports.serial
             {
                 try
                 {
+                    // Backpressure: if the codec has not drained the ring buffer
+                    // there is no room. Wait and retry rather than truncate the
+                    // read — dropping bytes here misaligns every following frame.
+                    int free;
+                    lock (_readBuffer) { free = _readBuffer.RemainingForWriting; }
+                    if (free == 0)
+                    {
+                        await Task.Delay(1, ct).ConfigureAwait(false);
+                        continue;
+                    }
+
                     // SerialPort.BaseStream.ReadAsync does not respect
                     // CancellationToken natively; the token cancels the
                     // polling task.
+                    var toRead = Math.Min(buf.Length, free);
                     var bytesRead = await _port.BaseStream.ReadAsync(
-                        buf, 0, buf.Length, ct).ConfigureAwait(false);
+                        buf, 0, toRead, ct).ConfigureAwait(false);
                     if (bytesRead == 0) break;
 
                     lock (_readBuffer)
                     {
-                        var toWrite = Math.Min(bytesRead,
-                            _readBuffer.RemainingForWriting);
-                        if (toWrite > 0)
-                            _readBuffer.Write(buf, 0, toWrite);
+                        _readBuffer.Write(buf, 0, bytesRead);
                     }
-                    _dataListener?.Invoke();
+
+                    try
+                    {
+                        _dataListener?.Invoke();
+                    }
+                    catch (Exception listenerEx)
+                    {
+                        // A throwing listener must not kill the read loop.
+                        _disconnectListener?.Invoke(listenerEx);
+                    }
                 }
                 catch (OperationCanceledException)
                 {

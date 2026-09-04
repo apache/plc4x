@@ -224,6 +224,22 @@ namespace org.apache.plc4net.spi.test.model.values
         }
 
         [Fact]
+        public void Out_of_range_temporal_wire_data_throws_ParseException_not_a_framework_exception()
+        {
+            // The generated DataItem parse path feeds these raw wire numbers
+            // straight in; a framework ArgumentOutOfRangeException would escape
+            // MessageCodecBase's catch and tear down the receive loop.
+            Assert.Throws<org.apache.plc4net.spi.generation.ParseException>(
+                () => PlcTIME_OF_DAY.OfMillisecondsSinceMidnight(0xFFFFFFFFL));
+            Assert.Throws<org.apache.plc4net.spi.generation.ParseException>(
+                () => PlcLTIME_OF_DAY.OfNanosecondsSinceMidnight(ulong.MaxValue));
+            Assert.Throws<org.apache.plc4net.spi.generation.ParseException>(
+                () => PlcDATE_AND_TIME.OfSegments(0, 0, 0, 0, 0, 0, 0));
+            Assert.Throws<org.apache.plc4net.spi.generation.ParseException>(
+                () => PlcDATE_AND_LTIME.OfSegments(70000, 1, 1, 0, 0, 0, 0));
+        }
+
+        [Fact]
         public void Null_value_is_null_equatable_and_hashable()
         {
             // PlcNULL.Equals()/GetHashCode() threw NotImplementedException and
