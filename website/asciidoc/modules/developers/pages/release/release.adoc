@@ -24,6 +24,10 @@
 We've mostly automated most of the steps and checks in the project's `tools` directory.
 The only prerequisite for this is generally having `Docker` installed as we're using a `reference machine` to ensure reproducible builds.
 
+Before anything else, check that your machine is actually able to do a release:
+
+- `release-preflight.sh`: Verifies the things a release needs - the tools, your git identity, a signing key that is usable and published in the `KEYS` file, the Nexus and SVN credentials and enough disk space. It changes nothing, takes a minute, and saves finding out about an expired password an hour into the release.
+
 In regular intervals and especially before starting the release process run:
 
 - `release-0-update-generated-code.sh`: Deletes all generated code and then re-generates it (Gets rid of no longer valid types), refreshes the generated driver documentation and updates the NOTICE year.
@@ -96,13 +100,13 @@ If you happen to have multiple keys, adding the following profile to your `setti
       </properties>
     </profile>
 
-Currently, there is a Java-Version sweet-spot for being able to release all modules and that is Java 11.
+The Java version the release is built with is not yours to pick: every Maven build the release scripts run happens inside the container described by `tools/docker-compose.yaml`, and its image (`azul/zulu-openjdk:21`) pins it to `Java 21`.
+That is the whole point of the reference machine - the artifacts must not depend on what you happen to have installed.
 
-So be sure to set `Java 11` as the java version used to do the release.
+On the host you still need a `Java 21` JDK, because the prerequisite check of the build requires at least that version, and the scripts run Maven on the host for the steps that do not belong in the container.
 
-Also, at least `Maven 3.6` is required for CMake.
-
-Ideally use the Maven-Wrapper to ensure the Maven version fits the build.
+The minimum Maven version is `4.0.0-rc-5`, which the root `pom.xml` enforces.
+Ideally use the Maven-Wrapper, which pins exactly that version, so the question does not come up.
 
 [NOTE]
 ====
@@ -124,6 +128,10 @@ They are meant to be run in order, and each one prints which script to run next 
 [cols="1,3"]
 |===
 |Script |What it covers
+
+|`release-preflight.sh`
+|Checks the preconditions of a release without changing anything. Run it first.
+See <<checking-your-system-is-ready>>.
 
 |`release-0-update-generated-code.sh`
 |Throws away and re-generates all generated code, refreshes the driver documentation and the `NOTICE` year.
@@ -159,6 +167,52 @@ Start each step from a clean checkout.
 
 Note that the signing in `release-2-prepare-release.sh` and all `git` and `svn` operations run on your machine, not inside the container.
 So GPG, your git credentials and your Apache SVN credentials all have to work on the host.
+
+[#checking-your-system-is-ready]
+== Checking your system is ready
+
+Almost everything that has gone wrong with a release so far was a precondition that could have been checked in seconds: a Nexus password that had expired, a signing key that is not in the `KEYS` file, a `gpg` agent that cannot sign without asking for a passphrase.
+A release runs for the better part of an hour, so those are expensive minutes to lose.
+
+----
+./tools/release-preflight.sh
+----
+
+The script only reads: it creates no commit, no tag, no staging repository and no SVN directory, so it is safe to run at any time - while setting your system up for the first time, or right before starting a release.
+None of the other scripts call it, so running it is up to you.
+
+It checks:
+
+[cols="1,3"]
+|===
+|Area |What it checks
+
+|Tools
+|`git`, `docker`, `gpg`, `svn`, `curl`, `java` and `shasum` are installed, and the Docker daemon is actually running.
+
+|Git
+|`user.name` and `user.email` are configured, the working tree is clean, and `origin` accepts your credentials for pushing (a `git push --dry-run`, which authenticates without changing anything).
+
+|Signing
+|A secret key is available (`user.signingkey`, or the first one `gpg` lists), it carries an `@apache.org` address, it can sign a throwaway file without asking for input, and its fingerprint is present in the published `KEYS` file.
+
+|Nexus
+|The `apache.releases.https` credentials from your `settings.xml` are accepted, by making the read-only `nexus-staging:rc-list` call the staging deployment would make.
+
+|SVN
+|The `dist/dev` directory the release candidate gets imported into is readable.
+
+|Resources
+|At least `20 GB` are free on the volume holding the checkout.
+|===
+
+Checks do not stop at the first problem - the point is to see everything that needs fixing in one go, so the script always runs to the end and prints a summary.
+Findings come in two flavours: a `⚠️` warning is something to be aware of, a `❌` failure is something that will stop the release, and only the latter makes the script exit non-zero.
+
+Pass `--offline` to skip everything that needs the network (the push, `KEYS`, Nexus and SVN checks).
+
+NOTE: A green run means the preconditions hold, not that the release will succeed.
+Read access to SVN does not prove you may commit, and an accepted `git push --dry-run` does not prove the branch protection rules in `.asf.yaml` will let the real push through.
 
 == Preparing the codebase for a release
 
