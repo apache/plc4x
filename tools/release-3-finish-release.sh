@@ -295,6 +295,25 @@ if ! sed_in_place "$ANTORA_DESCRIPTOR" -E \
 fi
 echo "✅ '$ANTORA_DESCRIPTOR' now advertises $RELEASED_VERSION in its dependency snippets."
 
+# "current-full-version" is the same value without the "-SNAPSHOT" suffix, and it is what the
+# release and validation runbooks of this branch render their example URLs and commands from. A
+# released version never carries that suffix, so here it is simply the released version as well.
+# Without this, the attribute keeps the value "release-1-create-branch.sh" derived when the branch
+# was cut, and a second release from the same branch (0.13.1 after 0.13.0) leaves the branch
+# claiming two different versions - the snippets updated above, the runbooks one release behind.
+# Older branches may not have the attribute at all, and that is not worth aborting a finished
+# release over.
+if grep -qE "^[[:space:]]*current-full-version:" "$ANTORA_DESCRIPTOR"; then
+    if ! sed_in_place "$ANTORA_DESCRIPTOR" -E \
+            "s|^([[:space:]]*)current-full-version:.*|\\1current-full-version: '$RELEASED_VERSION'|"; then
+        echo "❌ Got non-0 exit code from updating 'current-full-version', aborting."
+        exit 1
+    fi
+    echo "✅ '$ANTORA_DESCRIPTOR' now names $RELEASED_VERSION in its release runbooks."
+else
+    echo "⚠️  '$ANTORA_DESCRIPTOR' has no 'current-full-version' attribute, skipping it."
+fi
+
 # The copy of the download page on this branch is what ".../plc4x/latest/users/download.html"
 # will be served from, so it has to list the release too.
 update_download_page "$DIRECTORY/website/asciidoc/modules/users/pages/download.adoc" \

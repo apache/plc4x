@@ -43,6 +43,6 @@ asciidoc:
     # the Maven property set by website/src/main/script/preSiteGeneration.groovy, which reads
     # plc4x-doap.rdf and really is the last released version - that one belongs to the
     # maven-site build, not to Antora.
-    current-project-version: '1.0.0-SNAPSHOT'
-    current-full-version: '1.0.0'
+    current-project-version: '1.1.0-SNAPSHOT'
+    current-full-version: '1.1.0'
 
