@@ -43,7 +43,7 @@ dependency into the one `.nupkg`, so each is a self-contained `dotnet tool`.
 
 ## Version
 
-`Directory.Build.props` pins `<Version>1.0.0-SNAPSHOT</Version>` — the Maven
+`Directory.Build.props` pins `<Version>1.1.0-SNAPSHOT</Version>` — the Maven
 reactor version (`plc4x/pom.xml`). The Maven build overrides it with
 `-p:Version=${project.version}`. **Do not hard-code a different number** (a bare
 `0.0.1` desyncs from the reactor and reads as a stable release). For a local test
@@ -97,9 +97,46 @@ local feed.
 > and fail to copy. A path like `C:\Users\<you>\consumer` is safe; a deep
 > `%TEMP%\...` one is not.
 
+## Pre-release feed (GitHub Packages)
+
+For consumers who need a build before the ASF ships one, a fork can publish to
+its own GitHub Packages NuGet feed. The package ids do not change, so a project
+switches feeds without touching its `<PackageReference>`s.
+
+Give each build a unique prerelease version — GitHub Packages, like nuget.org,
+refuses to overwrite one:
+
+```bash
+V="1.1.0-preview.$(date +%Y%m%d%H%M)"
+dotnet pack plc4net/plc4net.sln -c Release -p:Version="$V" -o ./_stage
+
+# A classic PAT with write:packages. In GitHub Actions, GITHUB_TOKEN already has it.
+dotnet nuget add source "https://nuget.pkg.github.com/<OWNER>/index.json" \
+  --name gh --username <OWNER> --password "$GH_TOKEN" --store-password-in-clear-text
+for p in ./_stage/*.nupkg; do dotnet nuget push "$p" -s gh --skip-duplicate; done
+```
+
+Consuming it needs a PAT too (GitHub Packages authenticates every read, even a
+public feed):
+
+```xml
+<!-- nuget.config -->
+<packageSources>
+  <clear />
+  <add key="gh" value="https://nuget.pkg.github.com/<OWNER>/index.json" />
+  <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+</packageSources>
+<packageSourceCredentials>
+  <gh>
+    <add key="Username" value="<OWNER>" />
+    <add key="ClearTextPassword" value="%GH_TOKEN%" />
+  </gh>
+</packageSourceCredentials>
+```
+
 ## Publishing to nuget.org
 
 Not done from this branch. .NET package publishing for an Apache project goes
 through the ASF release process (PMC vote, signed artifacts, the project's
 NuGet account), the same as the Maven artifacts. Until then the version stays
-`1.0.0-SNAPSHOT`.
+`1.1.0-SNAPSHOT` and the `plc4net-*` ids stay unclaimed on nuget.org.

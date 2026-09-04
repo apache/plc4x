@@ -47,6 +47,19 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <!-- Overridden by the Maven build via -p:Version=${project.version}. -->
     <Version>1.1.0-SNAPSHOT</Version>
+    <!-- Per-project <Title> stays specific; this is the fallback prose NuGet wants. -->
+    <Description>Apache PLC4X for .NET (plc4net): industrial-protocol drivers — Modbus, S7, KNXnet/IP — on one API.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/apache/plc4x</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- Embed the PDB in the assembly so a symbol server is not needed and every
+         feed (GitHub Packages does not take .snupkg) carries usable symbols. -->
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
+
+  <!-- Ship the package readme in every packable project. -->
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)PACKAGE.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
 
 </Project>
