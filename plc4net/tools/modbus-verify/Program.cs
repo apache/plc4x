@@ -235,7 +235,7 @@ namespace org.apache.plc4net.tools.modbusverify
                 driverCode = response.GetResponseCode("data");
                 if (driverCode == PlcResponseCode.Ok)
                 {
-                    PrintValue(w, "data", response.GetValue("data"));
+                    PrintValue(w, "data", response.GetValue("data"), tag.Type);
                 }
                 else
                 {
@@ -454,6 +454,7 @@ namespace org.apache.plc4net.tools.modbusverify
                 var connection = new ModbusConnection(connString, tcp);
                 connection.Connect();
 
+                var tag = ModbusTag.Parse(readAddress);
                 var builder = connection.ReadRequestBuilder;
                 builder.AddTagAddress("data", readAddress);
                 var request = (DefaultPlcReadRequest)builder.Build();
@@ -467,7 +468,7 @@ namespace org.apache.plc4net.tools.modbusverify
                 var code = response.GetResponseCode("data");
                 if (code == PlcResponseCode.Ok)
                 {
-                    PrintValue(w, "data", response.GetValue("data"));
+                    PrintValue(w, "data", response.GetValue("data"), tag.Type);
                 }
                 else
                 {
@@ -540,7 +541,16 @@ namespace org.apache.plc4net.tools.modbusverify
         private static int StopBitCount(string stopBits) =>
             stopBits.Equals("Two", StringComparison.OrdinalIgnoreCase) ? 2 : 1;
 
-        private static void PrintValue(TextWriter w, string name, IPlcValue v)
+        /// <summary>
+        /// Renders a value by the Modbus tag type that produced it, not by probing
+        /// <see cref="IPlcValue"/> predicates: plc4net's value model coerces freely
+        /// between related scalar types (a BOOL also answers <c>IsByte()</c> /
+        /// <c>IsUshort()</c> / <c>IsInt()</c> true, and every numeric answers
+        /// <c>IsBool()</c> true - see PlcBOOL.cs / PlcSimpleNumericValueAdapter.cs),
+        /// so "the" type of a value can't be recovered from it after the fact. The
+        /// tag the driver was asked to read already says what it is.
+        /// </summary>
+        private static void PrintValue(TextWriter w, string name, IPlcValue v, ModbusTag.TagType tagType)
         {
             if (v == null)
             {
@@ -548,19 +558,20 @@ namespace org.apache.plc4net.tools.modbusverify
                 return;
             }
 
-            if (!v.IsSimple())
+            switch (tagType)
             {
-                w.WriteLine($"- **{name}**: (complex)");
-                return;
+                case ModbusTag.TagType.Coil:
+                case ModbusTag.TagType.DiscreteInput:
+                    w.WriteLine($"- **{name}**: `{v.GetBool()}` (BOOL)");
+                    break;
+                case ModbusTag.TagType.HoldingRegister:
+                case ModbusTag.TagType.InputRegister:
+                    w.WriteLine($"- **{name}**: {v.GetUshort()} (UINT16)");
+                    break;
+                default:
+                    w.WriteLine($"- **{name}**: `{v}`");
+                    break;
             }
-
-            if (v.IsBool()) w.WriteLine($"- **{name}**: `{v.GetBool()}` (BOOL)");
-            else if (v.IsByte()) w.WriteLine($"- **{name}**: 0x{v.GetByte():X2} (BYTE)");
-            else if (v.IsUshort()) w.WriteLine($"- **{name}**: {v.GetUshort()} (UINT16)");
-            else if (v.IsUint()) w.WriteLine($"- **{name}**: {v.GetUint()} (UINT32)");
-            else if (v.IsInt()) w.WriteLine($"- **{name}**: {v.GetInt()} (INT32)");
-            else if (v.IsFloat()) w.WriteLine($"- **{name}**: {v.GetFloat()} (REAL)");
-            else w.WriteLine($"- **{name}**: `{v}`");
         }
     }
 }

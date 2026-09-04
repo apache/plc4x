@@ -128,6 +128,26 @@ namespace org.apache.plc4net.drivers.modbus
                                 PlcResponseCode.Ok, new PlcUINT(regs[0]));
                             break;
 
+                        case ModbusTag.TagType.DiscreteInput:
+                            response = await SendAndReceive(
+                                ModbusPDU.BuildReadBitsRequest(
+                                    ModbusFunctionCodes.ReadDiscreteInputs, tag.Address, 1),
+                                cancellationToken).ConfigureAwait(false);
+                            var discreteBits = ModbusPDU.ParseReadBitsResponse(response, 1);
+                            results[name] = new DefaultPlcResponseItem<IPlcValue>(
+                                PlcResponseCode.Ok, new PlcBOOL(discreteBits[0]));
+                            break;
+
+                        case ModbusTag.TagType.InputRegister:
+                            response = await SendAndReceive(
+                                ModbusPDU.BuildReadRegistersRequest(
+                                    ModbusFunctionCodes.ReadInputRegisters, tag.Address, 1),
+                                cancellationToken).ConfigureAwait(false);
+                            var inputRegs = ModbusPDU.ParseReadRegistersResponse(response, 1);
+                            results[name] = new DefaultPlcResponseItem<IPlcValue>(
+                                PlcResponseCode.Ok, new PlcUINT(inputRegs[0]));
+                            break;
+
                         default:
                             results[name] = new DefaultPlcTagErrorItem<IPlcValue>(
                                 PlcResponseCode.AccessDenied);

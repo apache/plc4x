@@ -355,6 +355,62 @@ namespace org.apache.plc4net.spi.test.drivers
             }, sent);
         }
 
+        // Input registers and discrete inputs previously fell through ModbusConnection.Read's
+        // `default` case to AccessDenied without ever reaching the wire — ModbusRtuConnection
+        // already handled all four tag types, ModbusConnection (TCP) only handled two.
+
+        [Fact]
+        public async Task Tcp_read_input_register_returns_the_value()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(MbapFrame(2, 1, new byte[] { 0x04, 0x02, 0x12, 0x34 }));
+
+            var conn = new ModbusConnection(
+                ConnectionString.Parse("modbus-tcp://10.0.0.9:502?unit-identifier=1"), inner);
+            conn.Connect();
+
+            var builder = conn.ReadRequestBuilder;
+            builder.AddTagAddress("v", "input:0");
+            var rsp = (DefaultPlcReadResponse)await conn.Read(
+                (DefaultPlcReadRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.Ok, rsp.GetResponseCode("v"));
+            Assert.Equal((ushort)0x1234, rsp.GetValue("v").GetUshort());
+
+            var sent = Assert.Single(inner.Written);
+            Assert.Equal(new byte[]
+            {
+                0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x01, // MBAP: tx 2, len 6, unit 1
+                0x04, 0x00, 0x00, 0x00, 0x01,             // read input register 0, qty 1
+            }, sent);
+        }
+
+        [Fact]
+        public async Task Tcp_read_discrete_input_returns_the_value()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(MbapFrame(2, 1, new byte[] { 0x02, 0x01, 0x01 })); // ON
+
+            var conn = new ModbusConnection(
+                ConnectionString.Parse("modbus-tcp://10.0.0.9:502?unit-identifier=1"), inner);
+            conn.Connect();
+
+            var builder = conn.ReadRequestBuilder;
+            builder.AddTagAddress("v", "discrete:3");
+            var rsp = (DefaultPlcReadResponse)await conn.Read(
+                (DefaultPlcReadRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.Ok, rsp.GetResponseCode("v"));
+            Assert.True(rsp.GetValue("v").GetBool());
+
+            var sent = Assert.Single(inner.Written);
+            Assert.Equal(new byte[]
+            {
+                0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x01, // MBAP: tx 2, len 6, unit 1
+                0x02, 0x00, 0x03, 0x00, 0x01,             // read discrete input 3, qty 1
+            }, sent);
+        }
+
         [Fact]
         public async Task Tcp_write_single_register_returns_OK()
         {
