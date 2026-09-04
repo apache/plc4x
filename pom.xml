@@ -158,7 +158,7 @@
     <woodstox-core.version>7.2.2</woodstox-core.version>
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
-    <javapoet.version>0.17.0</javapoet.version>
+    <javapoet.version>0.19.0</javapoet.version>
     <jaxb.version>4.0.5</jaxb.version>
     <jna.version>5.19.1</jna.version>
     <joda-time.version>2.14.3</joda-time.version>
