@@ -46,6 +46,11 @@ namespace org.apache.plc4net.drivers.modbus
     public class ModbusRtuConnection : ConnectionBase, PlcReader, PlcWriter
     {
         private byte _slaveAddress = 1;
+        private readonly int _responseTimeoutMs;
+
+        // One outstanding transaction per connection — serialise callers so two
+        // Read/Write calls cannot interleave on the half-duplex bus.
+        private readonly SemaphoreSlim _io = new SemaphoreSlim(1, 1);
 
         public ModbusRtuConnection(
             ConnectionString connectionString,
@@ -58,9 +63,16 @@ namespace org.apache.plc4net.drivers.modbus
                     nameof(connectionString),
                     $"Modbus RTU address must be 1–247, got {addr}.");
             _slaveAddress = (byte)addr;
+            _responseTimeoutMs = connectionString.GetIntParameter("request-timeout", 1000);
         }
 
         public byte SlaveAddress => _slaveAddress;
+
+        public override void Close()
+        {
+            try { base.Close(); }
+            finally { _io.Dispose(); }
+        }
 
         // ── IPlcConnection ──────────────────────────────────
 
@@ -117,7 +129,7 @@ namespace org.apache.plc4net.drivers.modbus
                     Logger.LogWarning(ex,
                         "Modbus RTU Read failed for tag '{TagName}'", name);
                     results[name] = new DefaultPlcTagErrorItem<IPlcValue>(
-                        PlcResponseCode.InternalError);
+                        ModbusConnection.MapModbusException(ex));
                 }
             }
 
@@ -152,13 +164,13 @@ namespace org.apache.plc4net.drivers.modbus
                 }
                 catch (OperationCanceledException)
                 {
-                    codes[name] = PlcResponseCode.InternalError;
+                    throw;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogWarning(ex,
                         "Modbus RTU Write failed for tag '{TagName}'", name);
-                    codes[name] = PlcResponseCode.InternalError;
+                    codes[name] = ModbusConnection.MapModbusException(ex);
                 }
             }
 
@@ -178,51 +190,129 @@ namespace org.apache.plc4net.drivers.modbus
             return frame;
         }
 
-        private async Task<byte[]> SendAndReceive(
-            byte[] pdu, CancellationToken ct)
-        {
-            var frame = BuildRtuFrame(pdu);
-            TransportInstance.Write(frame);
+        private const int MaxRtuFrameLen = 256;
 
-            // Wait for the response.  Modbus RTU is half-duplex;
-            // the slave responds with its own address + function
-            // code + data + CRC.
-            var deadline = Environment.TickCount64 + 2000;
-            while (Environment.TickCount64 < deadline)
+        private async Task<byte[]> SendAndReceive(byte[] pdu, CancellationToken ct)
+        {
+            await _io.WaitAsync(ct).ConfigureAwait(false);
+            try
             {
-                var available = TransportInstance.GetNumBytesAvailable();
-                if (available >= 4) break; // addr + func + 2-byte CRC minimum
-                await Task.Delay(5, ct).ConfigureAwait(false);
+                return await SendAndReceiveLocked(pdu, ct).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not ModbusDriverException)
+            {
+                DrainReadBuffer();
+                throw;
+            }
+            finally
+            {
+                _io.Release();
+            }
+        }
+
+        private async Task<byte[]> SendAndReceiveLocked(byte[] pdu, CancellationToken ct)
+        {
+            var request = BuildRtuFrame(pdu);
+
+            // A frame left in the buffer by an earlier timeout would be read as
+            // if it answered this request.
+            DrainReadBuffer();
+            TransportInstance.Write(request);
+            var deadline = Environment.TickCount64 + _responseTimeoutMs;
+
+            // Some 2-wire RS-485 adapters echo the transmitter onto the
+            // receiver, so the request bytes arrive ahead of the answer. Only a
+            // read is safe to de-echo: a write's response is byte-identical to
+            // its request, so a lone match there is the response, not an echo.
+            var isRead = pdu.Length > 0 && pdu[0] is >= ModbusFunctionCodes.ReadCoils
+                                                   and <= ModbusFunctionCodes.ReadInputRegisters;
+            if (isRead)
+            {
+                var settle = Environment.TickCount64 + 40;
+                while (Environment.TickCount64 < settle
+                       && TransportInstance.GetNumBytesAvailable() < request.Length)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await Task.Delay(2, ct).ConfigureAwait(false);
+                }
+                if (TransportInstance.GetNumBytesAvailable() >= request.Length
+                    && TransportInstance.PeekReadableBytes(request.Length)
+                        .AsSpan().SequenceEqual(request))
+                {
+                    TransportInstance.Read(request.Length);
+                    Logger.LogDebug(
+                        "Modbus RTU: discarded a {N}-byte transmitter echo.", request.Length);
+                }
             }
 
-            ct.ThrowIfCancellationRequested();
-
-            var avail = TransportInstance.GetNumBytesAvailable();
-            if (avail < 4)
-                throw new TimeoutException(
-                    "No Modbus RTU response received within timeout.");
-
-            var response = TransportInstance.Read(avail);
-
-            if (response.Length < 4
-                || !ModbusCRC.Validate(response, response.Length))
+            // Read the header (addr + function [+ byte count / exception code])
+            // and work out the exact frame length from the function code.
+            await WaitForBytes(3, deadline, ct).ConfigureAwait(false);
+            var head = TransportInstance.PeekReadableBytes(3);
+            if (head[0] != _slaveAddress)
                 throw new ModbusDriverException(
-                    "Modbus RTU response failed CRC validation.");
+                    $"Modbus RTU: response address {head[0]}, expected {_slaveAddress}.");
 
-            if (response[0] != _slaveAddress)
+            var fc = head[1];
+            var total = (fc & 0x80) != 0
+                ? 5 // addr + fc + code + crc
+                : fc switch
+                {
+                    ModbusFunctionCodes.ReadCoils or ModbusFunctionCodes.ReadDiscreteInputs
+                        or ModbusFunctionCodes.ReadHoldingRegisters
+                        or ModbusFunctionCodes.ReadInputRegisters
+                        => 3 + head[2] + 2, // addr + fc + byteCount + data + crc
+                    _ => 8,                 // write single/multiple echo: addr + fc + addr(2) + val(2) + crc
+                };
+            if (total is < 5 or > MaxRtuFrameLen)
+                throw new ModbusDriverException($"Modbus RTU: implausible frame length {total}.");
+
+            await WaitForBytes(total, deadline, ct).ConfigureAwait(false);
+            var frame = TransportInstance.Read(total);
+
+            if (!ModbusCRC.Validate(frame, frame.Length))
+            {
+                DrainReadBuffer(); // the length guess was wrong / the line is noisy
+                throw new ModbusDriverException("Modbus RTU: response failed CRC validation.");
+            }
+
+            if ((frame[1] & 0x80) != 0)
+            {
+                var code = frame[2];
+                var enumName = Enum.IsDefined(typeof(ModbusErrorCode), code)
+                    ? ((ModbusErrorCode)code).ToString() : "unknown";
                 throw new ModbusDriverException(
-                    $"Modbus RTU address mismatch: expected {_slaveAddress}, got {response[0]}.");
+                    $"Modbus RTU exception: function 0x{frame[1] & 0x7F:X2}, "
+                    + $"code 0x{code:X2} ({enumName}).", code);
+            }
 
-            // Check for Modbus exception (function code with high bit set).
-            if ((response[1] & 0x80) != 0)
-                throw new ModbusDriverException(
-                    $"Modbus RTU exception: function 0x{(response[1] & 0x7F):X2}, code 0x{response[2]:X2}.");
-
-            // Return PDU without address and CRC.
-            var pduLen = response.Length - 3; // addr(1) + crc(2)
-            var result = new byte[pduLen];
-            Array.Copy(response, 1, result, 0, pduLen);
+            var result = new byte[frame.Length - 3]; // strip addr(1) + crc(2)
+            Array.Copy(frame, 1, result, 0, result.Length);
             return result;
+        }
+
+        private async Task WaitForBytes(int count, long deadline, CancellationToken ct)
+        {
+            while (TransportInstance.GetNumBytesAvailable() < count)
+            {
+                ct.ThrowIfCancellationRequested();
+                if (Environment.TickCount64 >= deadline)
+                {
+                    throw new TimeoutException(
+                        $"No complete Modbus RTU response within {_responseTimeoutMs} ms "
+                        + $"({TransportInstance.GetNumBytesAvailable()} of {count} bytes).");
+                }
+                await Task.Delay(2, ct).ConfigureAwait(false);
+            }
+        }
+
+        private void DrainReadBuffer()
+        {
+            var n = TransportInstance.GetNumBytesAvailable();
+            if (n > 0)
+            {
+                TransportInstance.Read(n);
+            }
         }
 
         // ── PDU helpers (shared logic with Modbus TCP) ──────
@@ -304,7 +394,7 @@ namespace org.apache.plc4net.drivers.modbus
             if (funcCode is ModbusFunctionCodes.ReadHoldingRegisters
                            or ModbusFunctionCodes.ReadInputRegisters)
             {
-                if (pdu.Length >= 3)
+                if (pdu.Length >= 4)
                 {
                     var val = (ushort)((pdu[2] << 8) | pdu[3]);
                     return new org.apache.plc4net.spi.model.values.PlcUINT(val);

@@ -196,48 +196,65 @@ namespace org.apache.plc4net.spi.test.drivers
 
         // ── RTU connection ─────────────────────────────────────
 
+        private static byte[] RtuFrame(byte addr, byte[] pdu)
+        {
+            var f = new byte[1 + pdu.Length + 2];
+            f[0] = addr;
+            Array.Copy(pdu, 0, f, 1, pdu.Length);
+            var crc = ModbusCRC.Compute(f, 0, f.Length - 2);
+            f[^2] = crc[0];
+            f[^1] = crc[1];
+            return f;
+        }
+
+        // The RTU connection drains stale bytes before it writes, so a response
+        // has to arrive *after* the request — inject it once the request lands.
+        private static void InjectAfterRequest(
+            ScriptedTransportInstance inner, params byte[][] frames)
+        {
+            _ = Task.Run(async () =>
+            {
+                for (var i = 0; i < 200 && inner.Written.Count == 0; i++)
+                {
+                    await Task.Delay(2);
+                }
+                foreach (var f in frames)
+                {
+                    inner.Inject(f);
+                }
+            });
+        }
+
         [Fact]
-        public async Task Rtu_read_holding_register_returns_OK()
+        public async Task Rtu_read_holding_register_returns_the_value()
         {
             var inner = new ScriptedTransportInstance();
-            // Modbus RTU response: addr=1, func=0x03, len=2, val=0x0042, CRC
-            var pdu = new byte[] { 0x01, 0x03, 0x02, 0x00, 0x42 };
-            var crc = ModbusCRC.Compute(pdu);
-            var response = new byte[pdu.Length + 2];
-            Array.Copy(pdu, response, pdu.Length);
-            response[response.Length - 2] = crc[0];
-            response[response.Length - 1] = crc[1];
-            inner.Inject(response);
-
             var conn = new ModbusRtuConnection(
-                ConnectionString.Parse("modbus-rtu://COM1?unit-identifier=1"),
-                inner);
+                ConnectionString.Parse("modbus-rtu://COM1?unit-identifier=1"), inner);
             conn.Connect();
+
+            InjectAfterRequest(inner,
+                RtuFrame(1, new byte[] { 0x03, 0x02, 0x00, 0x42 }));
 
             var builder = conn.ReadRequestBuilder;
             builder.AddTagAddress("v", "holding:0");
-            var rsp = await conn.Read((DefaultPlcReadRequest)builder.Build());
+            var rsp = (DefaultPlcReadResponse)await conn.Read(
+                (DefaultPlcReadRequest)builder.Build());
 
-            Assert.NotNull(rsp);
+            Assert.Equal(PlcResponseCode.Ok, rsp.GetResponseCode("v"));
+            Assert.Equal((ushort)0x0042, rsp.GetValue("v").GetUshort());
         }
 
         [Fact]
         public async Task Rtu_write_single_coil_returns_OK()
         {
             var inner = new ScriptedTransportInstance();
-            // Echo: addr=1, func=0x05, addr_hi=0x00, addr_lo=0x0A, val_hi=0xFF, val_lo=0x00
-            var pdu = new byte[] { 0x01, 0x05, 0x00, 0x0A, 0xFF, 0x00 };
-            var crc = ModbusCRC.Compute(pdu);
-            var response = new byte[pdu.Length + 2];
-            Array.Copy(pdu, response, pdu.Length);
-            response[response.Length - 2] = crc[0];
-            response[response.Length - 1] = crc[1];
-            inner.Inject(response);
-
             var conn = new ModbusRtuConnection(
-                ConnectionString.Parse("modbus-rtu://COM1?unit-identifier=1"),
-                inner);
+                ConnectionString.Parse("modbus-rtu://COM1?unit-identifier=1"), inner);
             conn.Connect();
+
+            InjectAfterRequest(inner,
+                RtuFrame(1, new byte[] { 0x05, 0x00, 0x0A, 0xFF, 0x00 }));
 
             var wb = (DefaultPlcWriteRequestBuilder)conn.WriteRequestBuilder;
             wb.AddTag("c", "coil:10", true);
@@ -245,6 +262,47 @@ namespace org.apache.plc4net.spi.test.drivers
                 (DefaultPlcWriteRequest)wb.Build());
 
             Assert.Equal(PlcResponseCode.Ok, wRsp.GetResponseCode("c"));
+        }
+
+        [Fact]
+        public async Task Rtu_a_half_duplex_echo_is_stripped_not_decoded_as_a_value()
+        {
+            var inner = new ScriptedTransportInstance();
+            var conn = new ModbusRtuConnection(
+                ConnectionString.Parse(
+                    "modbus-rtu://COM1?unit-identifier=1&request-timeout=400"), inner);
+            conn.Connect();
+
+            // The adapter echoes our request (holding:7, qty 1), then the slave answers.
+            var echo = RtuFrame(1, new byte[] { 0x03, 0x00, 0x07, 0x00, 0x01 });
+            var real = RtuFrame(1, new byte[] { 0x03, 0x02, 0xBE, 0xEF });
+            InjectAfterRequest(inner, echo, real);
+
+            var builder = conn.ReadRequestBuilder;
+            builder.AddTagAddress("v", "holding:7");
+            var rsp = (DefaultPlcReadResponse)await conn.Read(
+                (DefaultPlcReadRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.Ok, rsp.GetResponseCode("v"));
+            Assert.Equal((ushort)0xBEEF, rsp.GetValue("v").GetUshort());
+        }
+
+        [Fact]
+        public async Task Rtu_an_exception_response_maps_to_a_specific_code()
+        {
+            var inner = new ScriptedTransportInstance();
+            var conn = new ModbusRtuConnection(
+                ConnectionString.Parse("modbus-rtu://COM1?unit-identifier=1"), inner);
+            conn.Connect();
+
+            InjectAfterRequest(inner, RtuFrame(1, new byte[] { 0x83, 0x02 }));
+
+            var builder = conn.ReadRequestBuilder;
+            builder.AddTagAddress("v", "holding:9999");
+            var rsp = (DefaultPlcReadResponse)await conn.Read(
+                (DefaultPlcReadRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.InvalidAddress, rsp.GetResponseCode("v"));
         }
 
         // ── TCP connection ─────────────────────────────────────
