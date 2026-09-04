@@ -315,6 +315,63 @@ To run it, you need a driver on the classpath. `plc4j-driver-all` gives you ever
 </dependency>
 ----
 
+== What can a connection actually do?
+
+Everything above describes a *driver* and needs no device, which is what makes it useful while a
+user is still filling in a connection dialog. Which operations you may actually *call* is a
+different question, and it can only be answered once you are connected:
+
+[source,java]
+----
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+
+try (PlcConnection connection =
+         driverManager.getConnectionFactory().getConnection("s7://10.0.0.1")) {
+
+    PlcConnectionMetadata metadata = connection.getMetadata();
+
+    boolean canRead      = metadata.isReadSupported();       // <1>
+    boolean canWrite     = metadata.isWriteSupported();
+    boolean canSubscribe = metadata.isSubscribeSupported();
+    boolean canBrowse    = metadata.isBrowseSupported();
+}
+----
+<1> Four booleans, one per operation. Gate your buttons, menu entries and pipeline steps on them.
+
+`getConnection(...)` connects before it returns, so by the time you hold a `PlcConnection` the
+answer is available. There is no earlier moment to ask: `PlcConnectionMetadata` hangs off the
+connection, not off the driver, and a connection that never connected cannot tell you what the
+device at the other end offers.
+
+That split is the whole point, because "unsupported" has two quite different causes:
+
+* **The driver does not implement the operation.** This is a property of the driver, and the
+  default answer is derived from it - `ConnectionBase` reports an operation as supported exactly
+  if the connection class implements the corresponding hook. `ctrlx`, for instance, reports all
+  four as `false`, because its read, write and subscribe builders are not implemented and its
+  browse implementation does not work yet.
+* **The device does not offer it.** Only the driver can know this, and only after talking to the
+  device. `s7` is the example: reading and writing are always supported, while browsing and
+  subscribing ride S7Comm UserData services, so the driver probes for them during connect and
+  reports `false` for a device - a LOGO, typically - that does not answer. The same driver and
+  the same connection string therefore give different answers for different controllers, which is
+  precisely why this cannot be a static property of the driver.
+
+CAUTION: Check the metadata before building a request, not after. A driver that does not support
+an operation is not obliged to fail politely - `ctrlx` returns `null` from its request builders,
+so an unchecked call gets you a `NullPointerException` rather than a helpful exception.
+
+If you hand out connections through the xref:tools/connection-cache.adoc[connection cache], the
+leased connection delegates `getMetadata()` to the connection it borrowed, so you get the same
+answers. Ask while you hold the lease: once it is returned, every method on it - this one
+included - throws a `PlcRuntimeException`.
+
+TIP: PLC4Go has the same concept under different names: `connection.GetMetadata()` returns a
+`PlcConnectionMetadata` whose methods are called `CanRead()`, `CanWrite()`, `CanSubscribe()` and
+`CanBrowse()`, plus a `GetConnectionAttributes()` map. It is the one piece of metadata that is
+*not* Java-only - what PLC4Go has no equivalent for is everything else on this page.
+
 == Things to watch out for
 
 * `getProtocolCodes()` is an unordered `Set` - sort before displaying.
@@ -324,3 +381,6 @@ To run it, you need a driver on the classpath. `plc4j-driver-all` gives you ever
   return `null`, but none of them promise content either.
 * Ask for transport options per driver-and-transport pair, not per transport code.
 * Treat `isSecret()` options as credentials everywhere: masked in the UI, redacted in logs.
+* Driver metadata and connection metadata are different things: `PlcDriverMetadata` describes what
+  a driver can be configured with and needs no device, `PlcConnectionMetadata` describes what an
+  established connection supports and exists only after a successful connect.
