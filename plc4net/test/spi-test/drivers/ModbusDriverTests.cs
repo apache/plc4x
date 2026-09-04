@@ -246,5 +246,99 @@ namespace org.apache.plc4net.spi.test.drivers
 
             Assert.Equal(PlcResponseCode.Ok, wRsp.GetResponseCode("c"));
         }
+
+        // ── TCP connection ─────────────────────────────────────
+        //
+        // ModbusConnection is the closest a driver test gets to a real Modbus
+        // TCP device: it builds the MBAP header, correlates the transaction id,
+        // and runs the SendAndReceive read loop. A physical PLC still has to be
+        // checked with tools/modbus-verify <host>, but these pin the framing.
+
+        // MBAP + PDU. The connection numbers transactions from 1 with a
+        // pre-increment, so the first request on a fresh connection is id 2.
+        private static byte[] MbapFrame(ushort transactionId, byte unitId, byte[] pdu)
+        {
+            var frame = new byte[7 + pdu.Length];
+            frame[0] = (byte)(transactionId >> 8);
+            frame[1] = (byte)(transactionId & 0xFF);
+            frame[2] = 0x00;
+            frame[3] = 0x00;
+            frame[4] = (byte)((pdu.Length + 1) >> 8);
+            frame[5] = (byte)((pdu.Length + 1) & 0xFF);
+            frame[6] = unitId;
+            Array.Copy(pdu, 0, frame, 7, pdu.Length);
+            return frame;
+        }
+
+        [Fact]
+        public async Task Tcp_read_holding_register_returns_the_value()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(MbapFrame(2, 1, new byte[] { 0x03, 0x02, 0x00, 0x42 }));
+
+            var conn = new ModbusConnection(
+                ConnectionString.Parse("modbus-tcp://10.0.0.9:502?unit-identifier=1"), inner);
+            conn.Connect();
+
+            var builder = conn.ReadRequestBuilder;
+            builder.AddTagAddress("v", "holding:0");
+            var rsp = (DefaultPlcReadResponse)await conn.Read(
+                (DefaultPlcReadRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.Ok, rsp.GetResponseCode("v"));
+            Assert.Equal((ushort)0x0042, rsp.GetValue("v").GetUshort());
+
+            // The request that went on the wire is a well-formed MBAP read.
+            var sent = Assert.Single(inner.Written);
+            Assert.Equal(new byte[]
+            {
+                0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x01, // MBAP: tx 2, len 6, unit 1
+                0x03, 0x00, 0x00, 0x00, 0x01,             // read holding register 0, qty 1
+            }, sent);
+        }
+
+        [Fact]
+        public async Task Tcp_write_single_register_returns_OK()
+        {
+            var inner = new ScriptedTransportInstance();
+            // A Write Single Register response echoes the request.
+            inner.Inject(MbapFrame(2, 1, new byte[] { 0x06, 0x00, 0x05, 0x12, 0x34 }));
+
+            var conn = new ModbusConnection(
+                ConnectionString.Parse("modbus-tcp://10.0.0.9:502?unit-identifier=1"), inner);
+            conn.Connect();
+
+            var wb = (DefaultPlcWriteRequestBuilder)conn.WriteRequestBuilder;
+            wb.AddTag("r", "holding:5", (ushort)0x1234);
+            var wRsp = (DefaultPlcWriteResponse)await conn.Write(
+                (DefaultPlcWriteRequest)wb.Build());
+
+            Assert.Equal(PlcResponseCode.Ok, wRsp.GetResponseCode("r"));
+        }
+
+        [Fact]
+        public async Task Tcp_a_modbus_exception_fails_the_tag_and_the_connection_survives()
+        {
+            var inner = new ScriptedTransportInstance();
+            // ILLEGAL DATA ADDRESS (0x02) for the first read...
+            inner.Inject(MbapFrame(2, 1, new byte[] { 0x83, 0x02 }));
+            // ...then a good response for the second (transaction id 3).
+            inner.Inject(MbapFrame(3, 1, new byte[] { 0x03, 0x02, 0xBE, 0xEF }));
+
+            var conn = new ModbusConnection(
+                ConnectionString.Parse("modbus-tcp://10.0.0.9:502?unit-identifier=1"), inner);
+            conn.Connect();
+
+            var b1 = conn.ReadRequestBuilder;
+            b1.AddTagAddress("v", "holding:99");
+            var r1 = (DefaultPlcReadResponse)await conn.Read((DefaultPlcReadRequest)b1.Build());
+            Assert.NotEqual(PlcResponseCode.Ok, r1.GetResponseCode("v"));
+
+            var b2 = conn.ReadRequestBuilder;
+            b2.AddTagAddress("v", "holding:0");
+            var r2 = (DefaultPlcReadResponse)await conn.Read((DefaultPlcReadRequest)b2.Build());
+            Assert.Equal(PlcResponseCode.Ok, r2.GetResponseCode("v"));
+            Assert.Equal((ushort)0xBEEF, r2.GetValue("v").GetUshort());
+        }
     }
 }

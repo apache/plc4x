@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **415** |
-| Passing | 415 |
+| Total test cases | **418** |
+| Passing | 418 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,7 +37,7 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 370 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/spi-test` | `plc4net-spi-test` | 373 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
 | `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 45 | KNX group-address parsing and DPT resolution; the KNXnet/IP connection - handshake, group Read / Write, bus monitor - against a scripted gateway on a loopback UDP socket; DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following
@@ -170,13 +170,18 @@ negotiation (default 1024, negotiated 512), and Close propagation.
 
 | Area | Tests | File |
 |---|---|---|
-| Modbus driver | 10 | `spi-test/drivers/ModbusDriverTests.cs` |
+| Modbus driver | 18 | `spi-test/drivers/ModbusDriverTests.cs` |
 | S7 driver | 30 | `spi-test/drivers/S7DriverTests.cs` |
 
 The Modbus tests cover: tag parsing, Read Coils / Read Holding Registers PDU
-construction, Write Single/Multiple PDU construction, and response parsing.
-PDU test vectors derive from the Modbus Application Protocol Specification
-v1.1b.
+construction, Write Single/Multiple PDU construction, response parsing, and the
+CRC-16. PDU test vectors derive from the Modbus Application Protocol
+Specification v1.1b. `ModbusConnection` (TCP) is exercised end to end over a
+scripted transport — a Read Holding Registers request with the MBAP header and
+transaction id asserted on the wire, a Write Single Register, and a Modbus
+exception response that fails the tag without killing the connection.
+`ModbusRtuConnection` has the same for RTU framing + CRC. A physical device is
+still verified separately with `tools/modbus-verify` (`docs/modbus-hardware-verification.md`).
 
 The S7 tests cover: tag parsing for all seven address forms (DB, M, I, Q, C,
 T, plus bit offsets), Read / Write / Setup-Communication PDUs round-tripped
