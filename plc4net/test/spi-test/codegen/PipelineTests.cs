@@ -1,0 +1,355 @@
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using System.IO;
+using System.Linq;
+using org.apache.plc4net.tools.codegen;
+using org.apache.plc4net.tools.codegen.model;
+using org.apache.plc4net.tools.codegen.model.fields;
+using org.apache.plc4net.tools.codegen.output;
+using Xunit;
+
+namespace org.apache.plc4net.spi.test.codegen
+{
+    /// <summary>
+    /// End-to-end for the pure-.NET mspec toolchain: text → type-model IR
+    /// (<see cref="MspecModelBuilder"/>) → C# (<see cref="CSharpGenerator"/>).
+    /// The generated Modbus model is compiled for real by the modbus project
+    /// (and exercised against the test vectors in
+    /// <see cref="ModbusGeneratedRoundTripTests"/>); this covers the shapes
+    /// the IR and the emitter have to get right.
+    /// </summary>
+    public class PipelineTests
+    {
+        // ── IR ──────────────────────────────────────────────────
+
+        [Fact]
+        public void A_plain_type_has_its_fields_in_order()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type Item
+    [simple uint 8  referenceType]
+    [simple uint 16 fileNumber]
+]
+");
+            var item = Assert.Single(model.Types);
+            Assert.Equal("Item", item.Name);
+            Assert.Equal(new[] { "referenceType", "fileNumber" }, item.Fields.Select(f => f.Name));
+            var f0 = Assert.IsType<SimpleField>(item.Fields[0]);
+            var t0 = Assert.IsType<SimpleTypeReference>(f0.Type);
+            Assert.Equal(8, t0.SizeInBits);
+        }
+
+        [Fact]
+        public void A_discriminated_type_lifts_its_cases_to_top_level_children()
+        {
+            var model = MspecModelBuilder.Build(@"
+[discriminatedType Pdu(bit response)
+    [discriminator uint 8 code]
+    [typeSwitch code
+        ['0x01' PduA [simple uint 16 a]]
+        ['0x02' PduB [simple uint 16 b]]
+    ]
+]
+");
+            var parent = model.FindType("Pdu");
+            Assert.True(parent.IsDiscriminatedParent);
+
+            var a = model.FindType("PduA");
+            Assert.Equal("Pdu", a.ParentName);
+            Assert.True(a.IsDiscriminatedChild);
+            Assert.Single(a.DiscriminatorValues);
+
+            Assert.Equal(new[] { "PduA", "PduB" }, parent.TypeSwitch.CaseNames);
+        }
+
+        [Fact]
+        public void An_enum_carries_its_base_type_and_values()
+        {
+            var model = MspecModelBuilder.Build("[enum uint 8 E ['1' A] ['2' B]]");
+            var e = Assert.Single(model.Enums);
+            Assert.Equal(SimpleTypeReference.Base.UInt, e.BaseType.BaseType);
+            Assert.Equal(8, e.BaseType.SizeInBits);
+            Assert.Equal(new[] { "A", "B" }, e.Values.Select(v => v.Name));
+        }
+
+        [Fact]
+        public void An_enum_typed_field_resolves_to_an_enum_reference()
+        {
+            var model = MspecModelBuilder.Build(@"
+[enum uint 8 ErrorCode ['1' BAD]]
+[type Err [simple ErrorCode code]]
+");
+            var field = model.FindType("Err").Fields[0];
+            Assert.IsType<EnumTypeReference>(field.Type);
+        }
+
+        // ── generation ──────────────────────────────────────────
+
+        [Fact]
+        public void Generates_a_file_per_type_and_enum()
+        {
+            var model = MspecModelBuilder.Build(@"
+[enum uint 8 E ['1' A]]
+[type T [simple uint 8 x]]
+");
+            var files = new CSharpGenerator(model, "demo", "demo.readwrite").Generate();
+            Assert.Contains("model/T.cs", files.Keys);
+            Assert.Contains("model/E.cs", files.Keys);
+        }
+
+        [Fact]
+        public void A_generated_type_has_parse_serialize_and_length()
+        {
+            var model = MspecModelBuilder.Build("[type T [simple uint 16 startingAddress]]");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("public static T StaticParse(ReadBuffer readBuffer)", code);
+            Assert.Contains("readBuffer.ReadUshort(\"startingAddress\", 16)", code);
+            Assert.Contains("public void Serialize(WriteBuffer writeBuffer)", code);
+            Assert.Contains("writeBuffer.WriteUshort(\"startingAddress\", 16, StartingAddress)", code);
+            Assert.Contains("public int GetLengthInBits()", code);
+        }
+
+        [Fact]
+        public void An_implicit_field_is_read_and_discarded_but_written_from_its_formula()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type T
+    [implicit uint 8 byteCount 'COUNT(value)']
+    [array    byte   value count 'byteCount']
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            // parse: byteCount read into a local, then used as the array length
+            Assert.Contains("var byteCount = readBuffer.ReadByte(\"byteCount\", 8);", code);
+            Assert.Contains("readBuffer.ReadByteArray(\"value\", (int) (byteCount) * 8)", code);
+            // serialize: byteCount computed from the array, not stored
+            Assert.Contains("writeBuffer.WriteByte(\"byteCount\", 8, (byte) (Value.Length));", code);
+            Assert.DoesNotContain("public byte ByteCount", code);
+        }
+
+        [Fact]
+        public void An_optional_field_is_nullable_and_conditional()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type T
+    [simple   uint 16 dataLength]
+    [optional uint 8  extra 'dataLength >= 12']
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("public byte? Extra { get; }", code);
+            // parse: only read when the condition holds
+            Assert.Contains("byte? extra = null;", code);
+            Assert.Contains("if ((dataLength >= 12))", code);
+            // serialize / length: guarded by the null check
+            Assert.Contains("if (Extra != null)", code);
+            Assert.Contains("(Extra != null ? 8 : 0)", code);
+        }
+
+        [Fact]
+        public void A_padding_field_loops_the_repeat_count()
+        {
+            var model = MspecModelBuilder.Build(
+                "[type T [simple uint 8 n] [padding uint 8 pad '0x00' 'n % 2']]");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("var _timesPadding = (int) ((n % 2));", code);
+            Assert.Contains("while (_timesPadding-- > 0)", code);
+        }
+
+        [Fact]
+        public void A_vstring_field_uses_its_run_time_length_expression()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type T
+    [simple uint 16 len]
+    [simple vstring 'len * 8' text stringEncoding='""UTF8""']
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("public string Text { get; }", code);
+            Assert.Contains("readBuffer.ReadString(\"text\", (int) ((len * 8)), System.Text.Encoding.UTF8)", code);
+            Assert.Contains("writeBuffer.WriteString(\"text\", (int) ((Len * 8)), \"UTF8\", Text)", code);
+            Assert.Contains("lengthInBits += ((Len * 8));", code);
+        }
+
+        [Fact]
+        public void The_real_modbus_mspec_generates_without_throwing()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            if (repoRoot == null)
+            {
+                return;
+            }
+            var mspec = Path.Combine(repoRoot,
+                "protocols", "modbus", "src", "main", "resources",
+                "protocols", "modbus", "modbus.mspec");
+
+            var model = MspecModelBuilder.BuildFile(mspec);
+            var files = new CSharpGenerator(
+                model, "modbus", "org.apache.plc4net.drivers.modbus.readwrite").Generate();
+
+            Assert.True(model.Types.Count > 40);
+            Assert.Contains("model/ModbusADU.cs", files.Keys);
+            Assert.Contains("model/ModbusPDU.cs", files.Keys);
+            Assert.All(files.Values, src => Assert.Contains("DO NOT EDIT", src));
+        }
+
+        // ── dataIo struct cases (KnxDatapoint / KnxProperty) ────
+
+        [Fact]
+        public void A_dataIo_struct_case_bundles_its_fields_into_a_PlcStruct()
+        {
+            var model = MspecModelBuilder.Build(@"
+[dataIo Composite(vstring kind)
+    [typeSwitch kind
+        ['SWITCH' Struct
+            [reserved uint 6 '0x00']
+            [simple   bit    control]
+            [simple   bit    onOff  ]
+        ]
+    ]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Composite.cs"];
+
+            Assert.DoesNotContain("NotImplementedException", code);
+            Assert.Contains("var _map = new System.Collections.Generic.Dictionary<string, IPlcValue>();", code);
+            Assert.Contains("_map[\"control\"] = new PlcBOOL((bool) control);", code);
+            Assert.Contains("_map[\"onOff\"] = new PlcBOOL((bool) onOff);", code);
+            Assert.Contains("return new PlcStruct(_map);", code);
+            // serialize reads each field back off the struct
+            Assert.Contains("_value.GetValue(\"control\").GetBool()", code);
+        }
+
+        [Fact]
+        public void A_dataIo_struct_case_with_a_byte_array_uses_PlcRawByteArray()
+        {
+            var model = MspecModelBuilder.Build(@"
+[dataIo Composite(vstring kind)
+    [typeSwitch kind
+        ['POLL' Struct
+            [array    byte   groupAddress count '2']
+            [simple   bit    disable          ]
+            [reserved uint 3 '0x00'            ]
+            [simple   uint 4 pollingSoftNr     ]
+        ]
+    ]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Composite.cs"];
+
+            Assert.DoesNotContain("NotImplementedException", code);
+            Assert.Contains("readBuffer.ReadByteArray(\"groupAddress\", (int) (2) * 8)", code);
+            Assert.Contains("_map[\"groupAddress\"] = new PlcRawByteArray(groupAddress);", code);
+            Assert.Contains("writeBuffer.WriteByteArray(\"groupAddress\", _value.GetValue(\"groupAddress\").GetRaw())", code);
+            Assert.Contains("lengthInBits += ((2) * 8);", code);
+        }
+
+        [Fact]
+        public void A_dataIo_case_with_no_discriminator_is_the_else_branch()
+        {
+            // KnxProperty ends with a `[* … List]` catch-all; emitting it as
+            // `else if (true)` left an unreachable fallback return (CS0162).
+            var model = MspecModelBuilder.Build(@"
+[dataIo Prop(KnxT kind, uint 8 len)
+    [typeSwitch kind
+        ['A' USINT
+            [simple uint 8 value]
+        ]
+        [       List
+            [array byte value count 'len']
+        ]
+    ]
+]
+[enum uint 8 KnxT ['1' A]]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Prop.cs"];
+
+            Assert.Contains("else\n", code.Replace("\r\n", "\n"));
+            Assert.DoesNotContain("else if (true)", code);
+            // the fallback return is only for a chain that can fall through
+            var parseBody = code.Split("StaticSerialize")[0];
+            Assert.DoesNotContain("return new PlcNULL();", parseBody);
+        }
+
+        [Fact]
+        public void An_external_enum_is_left_to_the_SPI()
+        {
+            var model = MspecModelBuilder.Build(@"
+[enum PlcValueType external='true']
+[enum uint 8 E(PlcValueType t) ['1' A ['BOOL']]]
+");
+            var files = new CSharpGenerator(model, "demo", "demo.readwrite").Generate();
+
+            Assert.DoesNotContain("model/PlcValueType.cs", files.Keys);
+            // and no accessor that would return the type we cannot see
+            Assert.DoesNotContain("GetT(this E value)", files["model/E.cs"]);
+        }
+
+        [Fact]
+        public void A_hyphenated_enum_id_round_trips_as_a_string_literal()
+        {
+            // 'DPST-1-1' lexes as `DPST - 1 - 1`; a string-typed parameter can
+            // only mean the literal text.
+            var model = MspecModelBuilder.Build(@"
+[enum uint 16 DptId(vstring id, string 8 code) ['1' FIRST ['DPST-1-1', '409']]]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/DptId.cs"];
+
+            Assert.Contains("\"DPST-1-1\"", code);
+            Assert.DoesNotContain("DPST - 1", code);
+            // a bare number for a string parameter is the literal too
+            Assert.Contains("\"409\"", code);
+        }
+
+        [Fact]
+        public void The_real_knx_mspec_generates_compilable_datapoints()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            if (repoRoot == null)
+            {
+                return;
+            }
+            var knxDir = Path.Combine(repoRoot,
+                "protocols", "knxnetip", "src", "main");
+            var model = MspecModelBuilder.BuildFiles(
+                Directory.GetFiles(Path.Combine(knxDir, "resources", "protocols", "knxnetip"), "*.mspec")
+                    .Concat(Directory.GetFiles(Path.Combine(knxDir, "generated", "protocols", "knxnetip"), "*.mspec"))
+                    .ToArray());
+            var files = new CSharpGenerator(
+                model, "knxnetip", "org.apache.plc4net.drivers.knxnetip.readwrite").Generate();
+
+            // external enum: not emitted
+            Assert.DoesNotContain("model/PlcValueType.cs", files.Keys);
+            // hyphenated id: a literal, not subtraction
+            Assert.Contains("\"DPST-1-1\"", files["model/KnxDatapointType.cs"]);
+            Assert.DoesNotContain("DPST - 1", files["model/KnxDatapointType.cs"]);
+            // struct dataIo cases populate the map
+            Assert.Contains("return new PlcStruct(_map);", files["model/KnxDatapoint.cs"]);
+            Assert.Contains("new PlcRawByteArray(groupAddress)", files["model/KnxProperty.cs"]);
+            Assert.DoesNotContain("NotImplementedException", files["model/KnxProperty.cs"]);
+        }
+    }
+}

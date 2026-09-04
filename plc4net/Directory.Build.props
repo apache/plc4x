@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<Project>
+
+  <!--
+    Properties shared by every PLC4Net project. Keeping them here means a
+    framework or version bump is a one-line change instead of a sweep over
+    every .csproj.
+  -->
+  <PropertyGroup>
+    <!--
+      net8.0 (LTS) replaces the previous net452 target. .NET Framework 4.5.2
+      went out of support in April 2022 and cannot be built on the Linux and
+      macOS CI runners, which is what kept PLC4Net off the CI matrix.
+    -->
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>annotations</Nullable>
+    <!-- The module builds warning-clean today; keep it that way in CI so a
+         later change cannot quietly regress it. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>org.apache.plc4net</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Apache PLC4X</Authors>
+    <Copyright>The Apache Software Foundation</Copyright>
+    <PackageProjectUrl>https://plc4x.apache.org</PackageProjectUrl>
+    <!-- PackageLicenseUrl is deprecated (NU5125); the SPDX expression replaces it. -->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <!-- Overridden by the Maven build via -p:Version=${project.version}. -->
+    <Version>1.1.0-SNAPSHOT</Version>
+    <!--
+      AssemblyVersion is pinned to MAJOR.0.0.0 so it stays stable across every
+      1.x build; the NuGet package version and FileVersion still track -p:Version.
+      Without this a consumer that restored two packages built at different
+      -p:Version values gets a binding mismatch (driver-s7 refs plc4net-spi
+      1.1.0.0, the packed plc4net-spi.dll is 0.0.1.0).
+    -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <!-- Per-project <Title> stays specific; this is the fallback prose NuGet wants. -->
+    <Description>Apache PLC4X for .NET (plc4net): industrial-protocol drivers — Modbus, S7, KNXnet/IP — on one API.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/apache/plc4x</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- Embed the PDB in the assembly so a symbol server is not needed and every
+         feed (GitHub Packages does not take .snupkg) carries usable symbols. -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <!-- Ship the package readme in every packable project. -->
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)PACKAGE.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+</Project>
