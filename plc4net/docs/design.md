@@ -263,10 +263,10 @@ Read/Write ──► MBAP header + PDU ──► Write() │ Peek() + Read()
 
 | Gap | Description |
 | --- | --- |
-| GAP-1 | Serial transport **hardware verification** — `SerialTransportInstance` (a `System.IO.Ports` wrapper) is implemented but has no unit test (its constructor opens a real port) and has not run against real RS-485 hardware. |
-| GAP-2 | Modbus RTU **hardware verification** — `ModbusRtuConnection` is implemented and unit-tested against a scripted transport, but `SendAndReceive` (which reads whatever is available once ≥ 4 bytes arrive, with no expected-length or t3.5 gap check) has not faced a real byte-at-a-time UART. `tools/modbus-verify <COMx>` is the harness; planned against an S7-1214C + CM 1241 running `MB_SLAVE`. |
-| GAP-3 | S7 Write — `WriteRequestBuilder` throws `NotSupportedException` |
-| GAP-4 | COTP fragmentation — PDUs > negotiated TPDU size throw instead of splitting |
+| GAP-1 | Serial transport **hardware verification** — `SerialTransportInstance` (a `System.IO.Ports` wrapper) is implemented (with ring-buffer backpressure and a length-framed RTU receive), but has no unit test of the wrapper itself and has not run against real RS-485 hardware. |
+| GAP-2 | Modbus RTU **hardware verification** — `ModbusRtuConnection` frames the response by its function-code length, strips a half-duplex TX echo, and resyncs after a timeout, all unit-tested against a scripted transport, but has not faced a real byte-at-a-time UART. `tools/modbus-verify <COMx>` is the harness; planned against an S7-1214C + CM 1241 running `MB_SLAVE`. |
+| GAP-3 | Multi-PDU requests — a Read / Write whose frame would exceed the negotiated PDU is rejected with a clear message (S7) rather than split across PDUs; `S7VarRequestParameterItem` / COTP DT fragmentation of an oversized payload is not implemented. |
+| GAP-3b | Generator: two enum constants that share a wire value (S7 `TransportSize.COUNTER` / `DATE_AND_TIME`, both `0x1C`) collapse to one C# enum member — a reference-type-enum limitation. And a `[checksum]` field is read but not yet *verified* against a recomputation on parse (`ModbusRtuADU` / `ModbusAsciiADU`; the RTU driver validates the CRC itself). |
 | GAP-5 | ~~S7 hardware verification~~ — **done 2026-09-03**, PASS 12/12 against a Siemens S7-1214C (DC/DC/DC), see `docs/s7-hardware-report.md`. |
 | GAP-6 | SPI subscription path — there is no `PlcSubscriber` function interface, so a KNX bus monitor registers a driver-specific `RegisterGroupValueListener` callback instead of a `PlcSubscriptionRequest`. KNX hardware verification is also outstanding (no gateway on hand; the driver is tested against a scripted one). |
 | GAP-7 | TLS transport — needed for OPC UA secure channels |

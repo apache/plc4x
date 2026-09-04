@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **418** |
-| Passing | 418 |
+| Total test cases | **428** |
+| Passing | 428 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,7 +37,7 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 373 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/spi-test` | `plc4net-spi-test` | 383 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
 | `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 45 | KNX group-address parsing and DPT resolution; the KNXnet/IP connection - handshake, group Read / Write, bus monitor - against a scripted gateway on a loopback UDP socket; DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following
@@ -170,8 +170,8 @@ negotiation (default 1024, negotiated 512), and Close propagation.
 
 | Area | Tests | File |
 |---|---|---|
-| Modbus driver | 18 | `spi-test/drivers/ModbusDriverTests.cs` |
-| S7 driver | 30 | `spi-test/drivers/S7DriverTests.cs` |
+| Modbus driver | 23 | `spi-test/drivers/ModbusDriverTests.cs` |
+| S7 driver | 33 | `spi-test/drivers/S7DriverTests.cs` |
 
 The Modbus tests cover: tag parsing, Read Coils / Read Holding Registers PDU
 construction, Write Single/Multiple PDU construction, response parsing, and the
@@ -180,8 +180,11 @@ Specification v1.1b. `ModbusConnection` (TCP) is exercised end to end over a
 scripted transport — a Read Holding Registers request with the MBAP header and
 transaction id asserted on the wire, a Write Single Register, and a Modbus
 exception response that fails the tag without killing the connection.
-`ModbusRtuConnection` has the same for RTU framing + CRC. A physical device is
-still verified separately with `tools/modbus-verify` (`docs/modbus-hardware-verification.md`).
+`ModbusRtuConnection` has the same for RTU framing + CRC, plus a half-duplex
+transmitter echo that is stripped rather than decoded as a value, and a stale
+response from a timed-out request that no longer bricks the connection. A
+physical device is still verified separately with `tools/modbus-verify`
+(`docs/modbus-hardware-verification.md`).
 
 The S7 tests cover: tag parsing for all seven address forms (DB, M, I, Q, C,
 T, plus bit offsets), Read / Write / Setup-Communication PDUs round-tripped
@@ -189,7 +192,9 @@ through the generated `S7Message` model (memory-area and transport-size codes,
 item structure), the Read path decoded item by item, an S7 item error mapped
 to a `PlcResponseCode`, a header-level refusal (a bare Ack, ROSCTR 0x02,
 carrying error `0x8104`) mapped to `AccessDenied` and framed as 12 bytes so it
-does not desync the next request, TPKT frame wrap/unwrap, Java-parity TSAP
+does not desync the next request, a stale response whose TPDU reference is not
+the request's being skipped, a write value wider than the tag being rejected,
+TPKT frame wrap/unwrap, Java-parity TSAP
 encoding (remote 0x0101, local 0x0311), `remote-device-group` / explicit TSAP
 override, S7 Setup Communication on every `Connect` (and a clean failure when
 the CPU does not answer), non-COTP transport rejection, out-of-range rack/slot
