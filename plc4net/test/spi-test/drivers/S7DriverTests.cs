@@ -527,5 +527,19 @@ namespace org.apache.plc4net.spi.test.drivers
             Assert.Equal(S7Constants.WriteVar, writeVarPdu[10]); // first parameter byte
         }
 
+        [Fact]
+        public void Write_value_wider_than_the_tag_is_rejected()
+        {
+            // EncodeWriteValue used to encode by the .NET value's runtime type,
+            // so an int for a byte tag put 4 bytes on the wire for a 1-byte
+            // address item.
+            var m0 = S7Tag.Parse("%M0");           // BYTE
+            var db = S7Tag.Parse("%DB1.DBW0");     // WORD
+            Assert.Equal(new byte[] { 0x42 }, S7Connection.EncodeWriteValue((byte)0x42, m0));
+            Assert.Equal(new byte[] { 0x12, 0x34 }, S7Connection.EncodeWriteValue((ushort)0x1234, db));
+            Assert.Equal(new byte[] { 0x00, 0x05 }, S7Connection.EncodeWriteValue(5, db)); // int coerced to WORD
+            Assert.Throws<S7DriverException>(() => S7Connection.EncodeWriteValue(70000, db));
+            Assert.Throws<S7DriverException>(() => S7Connection.EncodeWriteValue(1.5f, db));
+        }
     }
 }

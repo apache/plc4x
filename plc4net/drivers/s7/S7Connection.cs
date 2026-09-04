@@ -609,44 +609,68 @@ namespace org.apache.plc4net.drivers.s7
         /// <summary>
         /// Encodes a raw value (IPlcValue, or a primitive .NET type such as
         /// byte / ushort / int / bool / string) into the big-endian byte
-        /// representation that S7 Write Var expects on the wire.
+        /// representation S7 Write Var expects — exactly <c>tag.DataTypeSize</c>
+        /// bytes for a scalar, so the payload width always matches the address
+        /// item the CPU is told to expect.
         /// </summary>
-        private static byte[] EncodeWriteValue(object raw, S7Tag tag)
+        internal static byte[] EncodeWriteValue(object raw, S7Tag tag)
         {
-            // If the builder already wrapped it in a PlcValue, decode from there.
-            if (raw is IPlcValue pv)
+            // Bit tag: a single 0/1 byte.
+            if (tag.BitOffset >= 0)
             {
-                if (tag.DataTypeSize == 1 && tag.BitOffset >= 0)
+                var bit = raw switch
                 {
-                    bool b = pv.IsBool() ? pv.GetBool() :
-                             pv.IsByte() ? pv.GetByte() != 0 : false;
-                    return new[] { (byte)(b ? 0x01 : 0x00) };
-                }
-                if (pv.IsBool())   return new[] { (byte)(pv.GetBool() ? 1 : 0) };
-                if (pv.IsByte())   return new[] { pv.GetByte() };
-                if (pv.IsUshort()) { var v = pv.GetUshort(); return new[] { (byte)(v >> 8), (byte)v }; }
-                if (pv.IsUint())   { var v = pv.GetUint();   return new[] { (byte)(v >> 24), (byte)(v >> 16), (byte)(v >> 8), (byte)v }; }
-                if (pv.IsInt())    { var v = unchecked((uint)pv.GetInt()); return new[] { (byte)(v >> 24), (byte)(v >> 16), (byte)(v >> 8), (byte)v }; }
-                if (pv.IsShort())  { var v = unchecked((ushort)pv.GetShort()); return new[] { (byte)(v >> 8), (byte)v }; }
+                    bool bo => bo,
+                    IPlcValue pv => pv.IsBool() ? pv.GetBool() : pv.GetLong() != 0,
+                    _ => System.Convert.ToInt64(raw, System.Globalization.CultureInfo.InvariantCulture) != 0,
+                };
+                return new[] { (byte)(bit ? 0x01 : 0x00) };
             }
 
-            // Raw .NET primitives (the common case through the builder API).
-            switch (raw)
+            var width = tag.DataTypeSize; // 1, 2 or 4
+
+            // REAL: only a 4-byte tag can hold one.
+            var isFloat = raw is float || (raw is IPlcValue fv && fv.IsFloat());
+            if (isFloat)
             {
-                case bool b:      return new[] { (byte)(b ? 1 : 0) };
-                case byte by:     return new[] { by };
-                case ushort us:   return new[] { (byte)(us >> 8), (byte)us };
-                case short s:     return new[] { (byte)(unchecked((ushort)s) >> 8), (byte)unchecked((ushort)s) };
-                case uint ui:     return new[] { (byte)(ui >> 24), (byte)(ui >> 16), (byte)(ui >> 8), (byte)ui };
-                case int i:       return new[] { (byte)(unchecked((uint)i) >> 24), (byte)(unchecked((uint)i) >> 16), (byte)(unchecked((uint)i) >> 8), (byte)unchecked((uint)i) };
-                case float f:     { var bits = BitConverter.GetBytes(f);
-                                    if (BitConverter.IsLittleEndian) Array.Reverse(bits);
-                                    return bits; }
-                case string str:  return System.Text.Encoding.ASCII.GetBytes(str);
+                if (width != 4)
+                {
+                    throw new S7DriverException(
+                        $"S7 Write: a REAL needs a 4-byte tag, this one is {width}.");
+                }
+                var f = raw is float ff ? ff : ((IPlcValue)raw).GetFloat();
+                var bits = BitConverter.GetBytes(f);
+                if (BitConverter.IsLittleEndian) System.Array.Reverse(bits);
+                return bits;
             }
 
-            throw new NotSupportedException(
-                $"S7 Write: cannot encode value of type {raw.GetType().Name}.");
+            if (raw is string str)
+            {
+                return System.Text.Encoding.ASCII.GetBytes(str);
+            }
+
+            // Integer: coerce to `width` big-endian bytes, range-checked so a
+            // caller passing an int for a byte tag fails loudly instead of
+            // putting 4 bytes on the wire for a 1-byte address item.
+            long value = raw switch
+            {
+                IPlcValue pv => pv.IsLong() ? pv.GetLong() : pv.GetInt(),
+                _ => System.Convert.ToInt64(raw, System.Globalization.CultureInfo.InvariantCulture),
+            };
+            long maxUnsigned = width switch { 1 => byte.MaxValue, 2 => ushort.MaxValue, _ => uint.MaxValue };
+            long minSigned = width switch { 1 => sbyte.MinValue, 2 => short.MinValue, _ => int.MinValue };
+            if (value > maxUnsigned || value < minSigned)
+            {
+                throw new S7DriverException(
+                    $"S7 Write: value {value} does not fit the {width}-byte tag.");
+            }
+            var u = unchecked((ulong)value);
+            var bytes = new byte[width];
+            for (var i = 0; i < width; i++)
+            {
+                bytes[width - 1 - i] = (byte)(u >> (8 * i));
+            }
+            return bytes;
         }
 
         private static PlcResponseCode MapReturnCode(DataTransportErrorCode code) => code switch

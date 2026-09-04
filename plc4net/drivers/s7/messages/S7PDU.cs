@@ -105,6 +105,13 @@ namespace org.apache.plc4net.drivers.s7.messages
 
         private static TransportSize AddressTransportSize(S7Tag tag)
         {
+            // A counter / timer is addressed with its own transport size, not
+            // as a WORD — the CPU reads the S7-ANY area (COUNTERS / TIMERS)
+            // together with TransportSize.COUNTER.
+            if (tag.Area is S7Tag.AreaType.Counter or S7Tag.AreaType.Timer)
+            {
+                return TransportSize.COUNTER;
+            }
             if (tag.BitOffset >= 0)
             {
                 return TransportSize.BOOL;
