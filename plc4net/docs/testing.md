@@ -256,13 +256,26 @@ reads every scalar type from the DB, round-trips a write, and checks an error
 path.  It also packs as a local `dotnet tool` so the same check can be run the
 way a NuGet consumer would.
 
+**Modbus** — **not yet verified against hardware.**  `tools/modbus-verify` does
+the same job for Modbus TCP (`ModbusConnection`) and Modbus RTU
+(`ModbusRtuConnection` over the serial transport — the first real exercise of
+`SerialTransportInstance`).  The RTU path also runs a raw request/response on the
+wire, independent of the driver's framing, so a framing fault is visible even
+when the driver mis-decodes.  Setup (an S7-1200 + CM 1241 as `MB_SLAVE`) and the
+troubleshooting table are in **`docs/modbus-hardware-verification.md`**.
+
+```
+dotnet run --project tools/modbus-verify -- COM3 1 holding:0 --baud 19200 --parity Even
+dotnet run --project tools/modbus-verify -- <ip> 502 1 holding:0
+```
+
 ## What is deliberately not tested
 
 | Area | Reason |
 |---|---|
-| Modbus against real hardware | Simulated via TestTransport; byte-identical response for unit-test purposes. Hardware verification planned. |
+| Modbus against real hardware | Simulated via TestTransport; byte-identical response for unit-test purposes. `tools/modbus-verify` runs against a real TCP or RTU device — hardware verification planned, see `docs/modbus-hardware-verification.md`. |
 | S7 reads larger than one PDU | A read whose response would exceed the negotiated PDU length is not split into multiple requests. |
 | S7 typed reads | A read returns the raw bytes typed by width (`PlcBYTE` / `PlcUINT` / `PlcUDINT`, or `PlcBOOL` for a bit) - a REAL / DINT is reinterpreted by the caller. |
 | Subscribe / Browse / Ping / Discovery | Interfaces declared; no implementation exists. |
 | COTP PDU fragmentation | Payloads exceeding the negotiated TPDU size throw `TransportException`. |
-| TLS, Serial, UDP transports | Not yet implemented. |
+| TLS transport | Not yet implemented. (Serial and UDP are implemented — UDP is unit-tested and drives the KNXnet/IP suite; the serial transport's `System.IO.Ports` wrapper has no unit test and is first exercised by `tools/modbus-verify`.) |

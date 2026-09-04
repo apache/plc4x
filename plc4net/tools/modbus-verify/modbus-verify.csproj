@@ -22,13 +22,24 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <Title>PLC4Net: Modbus Verification</Title>
-    <IsPackable>false</IsPackable>
     <AssemblyName>modbus-verify</AssemblyName>
+    <!--
+      Packable as a local dotnet tool, the same as s7-verify: `dotnet pack`
+      bundles every dependency into one self-contained .nupkg so the hardware
+      check can be run the way a NuGet consumer would. Not published anywhere -
+      see docs/modbus-hardware-verification.md.
+    -->
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>modbus-verify</ToolCommandName>
+    <PackageId>plc4net-modbus-verify</PackageId>
+    <Description>Local Modbus TCP / RTU hardware verification harness for the plc4net Modbus driver.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\api\api.csproj" />
     <ProjectReference Include="..\..\drivers\modbus\modbus.csproj" />
+    <ProjectReference Include="..\..\transports\serial\serial.csproj" />
     <ProjectReference Include="..\..\transports\tcp\tcp.csproj" />
   </ItemGroup>
 
