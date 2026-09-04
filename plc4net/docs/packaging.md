@@ -44,14 +44,26 @@ dependency into the one `.nupkg`, so each is a self-contained `dotnet tool`.
 ## Version
 
 `Directory.Build.props` pins `<Version>1.1.0-SNAPSHOT</Version>` — the Maven
-reactor version (`plc4x/pom.xml`). The Maven build overrides it with
-`-p:Version=${project.version}`. **Do not hard-code a different number** (a bare
-`0.0.1` desyncs from the reactor and reads as a stable release). For a local test
-build, override at pack time instead — nothing committed changes:
+reactor version (`plc4x/pom.xml`), overridden by the Maven build with
+`-p:Version=${project.version}`. **Do not hard-code a different number in the
+props.** Override at pack time instead — nothing committed changes:
 
 ```bash
 dotnet pack plc4net.sln -c Release -p:Version=0.0.1-test.1 -o ./_stage
 ```
+
+`<AssemblyVersion>` is pinned to `1.0.0.0` (stable across all of 1.x); only the
+package version and `<FileVersion>` follow `-p:Version`. This matters: if two
+packages are built at different `-p:Version` values and a consumer restores a
+mix of them, a floating AssemblyVersion gives a load-time binding mismatch
+(`plc4net-driver-s7` references `plc4net-spi 1.1.0.0`, the packed
+`plc4net-spi.dll` is `0.0.1.0`, and the runtime cannot bind). A fork publishing
+its own line should pin it too — `-p:AssemblyVersion=<its major>.0.0.0`.
+
+**A `-p:Version` change alone does not trigger a rebuild** (MSBuild sees no
+source change), so `dotnet pack` would package a stale assembly. Always
+`dotnet build --no-incremental -p:Version=X` first, then `dotnet pack --no-build
+-p:Version=X`.
 
 ## Local feed round trip
 
@@ -97,26 +109,43 @@ local feed.
 > and fail to copy. A path like `C:\Users\<you>\consumer` is safe; a deep
 > `%TEMP%\...` one is not.
 
-## Pre-release feed (GitHub Packages)
+## Pre-release feed (GitHub Packages) — verified
 
-For consumers who need a build before the ASF ships one, a fork can publish to
-its own GitHub Packages NuGet feed. The package ids do not change, so a project
-switches feeds without touching its `<PackageReference>`s.
-
-Give each build a unique prerelease version — GitHub Packages, like nuget.org,
-refuses to overwrite one:
+A fork can publish to its **own** GitHub Packages NuGet feed on an **independent
+version line** (the fork's, not the reactor's), for consumers who need a build
+before the ASF ships one. The package ids do not change, so a consumer switches
+feeds without touching its `<PackageReference>`s. Verified working against
+`nuget.pkg.github.com/openIndu` on 2026-09-04.
 
 ```bash
-V="1.1.0-preview.$(date +%Y%m%d%H%M)"
-dotnet pack plc4net/plc4net.sln -c Release -p:Version="$V" -o ./_stage
+OWNER=<your org>
+V="0.0.1-preview.$(date +%Y%m%d%H%M)"   # the fork's own line, independent of 1.x
+FEED="https://nuget.pkg.github.com/$OWNER/index.json"
+TOKEN=<gh OAuth token with write:packages, or a classic PAT>
 
-# A classic PAT with write:packages. In GitHub Actions, GITHUB_TOKEN already has it.
-dotnet nuget add source "https://nuget.pkg.github.com/<OWNER>/index.json" \
-  --name gh --username <OWNER> --password "$GH_TOKEN" --store-password-in-clear-text
-for p in ./_stage/*.nupkg; do dotnet nuget push "$p" -s gh --skip-duplicate; done
+# GitHub Packages links a package to a repo it can see under <OWNER>; the
+# committed RepositoryUrl points at apache/plc4x, so override it. Build first
+# (--no-incremental) so the assembly is actually recompiled at this version;
+# pin AssemblyVersion so cross-package references stay consistent.
+PROPS="-p:Version=$V -p:AssemblyVersion=0.0.1.0 -p:RepositoryUrl=https://github.com/$OWNER/plc4x"
+dotnet build plc4net/plc4net.sln -c Release --no-incremental $PROPS
+dotnet pack  plc4net/plc4net.sln -c Release --no-build      $PROPS -o ./_stage
+
+dotnet nuget add source "$FEED" --name gh --username "$OWNER" \
+  --password "$TOKEN" --store-password-in-clear-text
+for p in ./_stage/*.nupkg; do
+  dotnet nuget push "$p" -s gh --api-key "$TOKEN" --skip-duplicate
+done
 ```
 
-Consuming it needs a PAT too (GitHub Packages authenticates every read, even a
+A `gh auth` OAuth token with the `write:packages` scope
+(`gh auth refresh -h github.com -s write:packages,read:packages`) is enough for
+the push; GitHub Packages does **not** require a classic PAT here. A newly
+pushed version takes ~10–30 s to appear in the feed index — clear the client
+cache (`dotnet nuget locals http-cache --clear`) and retry a restore that
+`NU1603`s to an older version.
+
+Consuming it needs a token too (GitHub Packages authenticates every read, even a
 public feed):
 
 ```xml

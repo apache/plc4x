@@ -47,6 +47,14 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <!-- Overridden by the Maven build via -p:Version=${project.version}. -->
     <Version>1.1.0-SNAPSHOT</Version>
+    <!--
+      AssemblyVersion is pinned to MAJOR.0.0.0 so it stays stable across every
+      1.x build; the NuGet package version and FileVersion still track -p:Version.
+      Without this a consumer that restored two packages built at different
+      -p:Version values gets a binding mismatch (driver-s7 refs plc4net-spi
+      1.1.0.0, the packed plc4net-spi.dll is 0.0.1.0).
+    -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <!-- Per-project <Title> stays specific; this is the fallback prose NuGet wants. -->
     <Description>Apache PLC4X for .NET (plc4net): industrial-protocol drivers — Modbus, S7, KNXnet/IP — on one API.</Description>
     <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
