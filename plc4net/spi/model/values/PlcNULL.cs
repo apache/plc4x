@@ -21,29 +21,44 @@ using org.apache.plc4net.api.value;
 
 namespace org.apache.plc4net.spi.model.values
 {
+    /// <summary>
+    /// The absence of a value — the fall-through result of a <c>[dataIo]</c>
+    /// parse and of an unresolved lookup. All instances are equal.
+    /// </summary>
     public class PlcNULL : PlcValueAdapter
     {
         public PlcNULL()
         {
         }
 
-        protected bool Equals(PlcNULL other)
+        public override bool IsNull()
         {
-            throw new System.NotImplementedException();
+            return true;
+        }
+
+        public override bool IsNullable()
+        {
+            return true;
+        }
+
+        public override string GetString()
+        {
+            return "null";
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((PlcNULL) obj);
+            return obj is PlcNULL;
         }
 
         public override int GetHashCode()
         {
-            throw new System.NotImplementedException();
+            return 0;
         }
-        
+
+        public override string ToString()
+        {
+            return "PlcNULL";
+        }
     }
 }

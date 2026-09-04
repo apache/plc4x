@@ -194,5 +194,47 @@ namespace org.apache.plc4net.spi.test.model.values
                 new PlcRawByteArray(new byte[] { 0x0A, 0x0B }),
                 new PlcRawByteArray(new byte[] { 0x0A, 0x0C }));
         }
+
+        [Fact]
+        public void Bit_string_is_also_a_plain_number_and_string_through_the_interface()
+        {
+            // PlcBitString overrode only the unsigned + bit accessors, so GetInt()
+            // returned 0 and GetString() null on a value held as IPlcValue.
+            IPlcValue w = new PlcWORD(0x1234);
+            Assert.True(w.IsSimple());
+            Assert.Equal(0x1234, w.GetInt());
+            Assert.Equal((short) 0x1234, w.GetShort());
+            Assert.Equal(0x1234L, w.GetLong());
+            Assert.Equal("4660", w.GetString());
+            Assert.Equal((ushort) 0x1234, w.GetUshort());
+
+            IPlcValue b = new PlcBYTE(0xA1);
+            Assert.Equal(0xA1, b.GetInt());
+            Assert.Equal("161", b.GetString());
+        }
+
+        [Fact]
+        public void Bool_is_also_a_number_and_lowercase_text_through_the_interface()
+        {
+            IPlcValue t = new PlcBOOL(true);
+            Assert.Equal(1, t.GetInt());
+            Assert.Equal((byte) 1, t.GetByte());
+            Assert.Equal("true", t.GetString());
+            Assert.Equal("false", ((IPlcValue) new PlcBOOL(false)).GetString());
+        }
+
+        [Fact]
+        public void Null_value_is_null_equatable_and_hashable()
+        {
+            // PlcNULL.Equals()/GetHashCode() threw NotImplementedException and
+            // IsNull() answered false off the base — it is the fall-through of
+            // every generated DataItem.StaticParse.
+            IPlcValue n = new PlcNULL();
+            Assert.True(n.IsNull());
+            Assert.True(n.IsNullable());
+            Assert.Equal(new PlcNULL(), new PlcNULL());
+            Assert.Equal(new PlcNULL().GetHashCode(), new PlcNULL().GetHashCode());
+            _ = new HashSet<IPlcValue> { new PlcNULL(), new PlcNULL() };
+        }
     }
 }

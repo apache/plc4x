@@ -17,15 +17,19 @@
 // under the License.
 //
 
+using System;
+using System.Globalization;
+
 namespace org.apache.plc4net.spi.model.values
 {
     /// <summary>
     /// Base for the IEC bit-string values (<c>BYTE</c>, <c>WORD</c>, <c>DWORD</c>,
     /// <c>LWORD</c>). Keeps the pattern as a right-aligned <see cref="ulong"/> and
-    /// serves it both as individual bits and as the unsigned integer of the
-    /// matching width, so a value survives a parse/serialize round trip.
+    /// serves it both as individual bits and as the (unsigned) integer of the
+    /// matching width, so a value survives a parse/serialize round trip and a
+    /// consumer holding it as <see cref="IPlcValue"/> can still read a number.
     /// </summary>
-    public class PlcBitString : PlcValueAdapter
+    public class PlcBitString : PlcSimpleValueAdapter
     {
         private readonly ulong _bits;
         private readonly int _byteWidth;
@@ -96,6 +100,63 @@ namespace org.apache.plc4net.spi.model.values
         public override ulong GetUlong()
         {
             return _bits;
+        }
+
+        // ── signed-integer + string views (a BYTE/WORD is also a plain number) ──
+
+        public override bool IsShort()
+        {
+            return _bits <= (ulong) short.MaxValue;
+        }
+
+        public override short GetShort()
+        {
+            if (!IsShort())
+            {
+                throw new ArgumentOutOfRangeException(nameof(GetShort),
+                    $"bit-string value {_bits} does not fit in a short");
+            }
+            return (short) _bits;
+        }
+
+        public override bool IsInt()
+        {
+            return _bits <= int.MaxValue;
+        }
+
+        public override int GetInt()
+        {
+            if (!IsInt())
+            {
+                throw new ArgumentOutOfRangeException(nameof(GetInt),
+                    $"bit-string value {_bits} does not fit in an int");
+            }
+            return (int) _bits;
+        }
+
+        public override bool IsLong()
+        {
+            return _bits <= long.MaxValue;
+        }
+
+        public override long GetLong()
+        {
+            if (!IsLong())
+            {
+                throw new ArgumentOutOfRangeException(nameof(GetLong),
+                    $"bit-string value {_bits} does not fit in a long");
+            }
+            return (long) _bits;
+        }
+
+        public override bool IsString()
+        {
+            return true;
+        }
+
+        public override string GetString()
+        {
+            return _bits.ToString(CultureInfo.InvariantCulture);
         }
 
         public override int GetBoolLength()

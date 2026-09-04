@@ -45,6 +45,17 @@ namespace org.apache.plc4net.spi.model.values
             return new[] { value };
         }
 
+        // A BOOL is also 1/0 as a number and "true"/"false" as text (matching plc4j).
+
+        public override bool IsByte() => true;
+        public override byte GetByte() => (byte) (value ? 1 : 0);
+
+        public override bool IsUshort() => true;
+        public override ushort GetUshort() => (ushort) (value ? 1 : 0);
+
+        public override bool IsInt() => true;
+        public override int GetInt() => value ? 1 : 0;
+
         public override bool IsString()
         {
             return true;
@@ -52,7 +63,7 @@ namespace org.apache.plc4net.spi.model.values
 
         public override string GetString()
         {
-            return value.ToString();
+            return value ? "true" : "false";
         }
 
         protected bool Equals(PlcBOOL other)
