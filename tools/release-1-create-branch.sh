@@ -169,10 +169,18 @@ fi
 # "pre-release" URL segments, so no branch ever has to know whether it is the current
 # release. That only works if every branch keeps its version unique and up to date.
 #
+# The descriptor also carries two asciidoc attributes that name the Maven version of the branch:
+# "current-project-version" ("${project.version}" verbatim, so with "-SNAPSHOT") for the dependency
+# snippets in the docs, and "current-full-version" (the same without "-SNAPSHOT") for the release
+# documentation. The "sync-antora-version" execution in "website/pom.xml" keeps them up to date on
+# every build, but that does not help here: the build in step 5 runs before the version is bumped,
+# and nothing would commit the result afterwards. So set them here as well.
+#
 # Sets "version:" (and optionally "prerelease:") in an antora.yml. Arguments:
-#   $1 the antora.yml to edit, $2 the version to set, $3 the prerelease value (optional)
+#   $1 the antora.yml to edit, $2 the version to set, $3 the prerelease value (optional),
+#   $4 the Maven version of the branch, e.g. "1.1.0-SNAPSHOT" (optional)
 update_antora_version() {
-  local descriptor="$1" version="$2" prerelease="$3"
+  local descriptor="$1" version="$2" prerelease="$3" project_version="$4"
 
   if [[ ! -f "$descriptor" ]]; then
     echo "❌ Antora descriptor '$descriptor' not found, aborting."
@@ -196,11 +204,26 @@ update_antora_version() {
       exit 1
     fi
   fi
+  if [[ -n "$project_version" ]]; then
+    local full_version="${project_version%"-SNAPSHOT"}"
+    for attribute in "current-project-version:$project_version" "current-full-version:$full_version"; do
+      local key="${attribute%%:*}" value="${attribute#*:}"
+      if ! grep -qE "^ *$key:" "$descriptor"; then
+        echo "❌ No '$key:' attribute found in '$descriptor', aborting."
+        exit 1
+      fi
+      if ! sed_in_place "$descriptor" -E "s|^( *)$key:.*|\\1$key: '$value'|"; then
+        echo "❌ Got non-0 exit code from updating '$key' in '$descriptor', aborting."
+        exit 1
+      fi
+    done
+    echo "✅ '$descriptor' now names the Maven version '$project_version'."
+  fi
   echo "✅ '$descriptor' now documents version '$version'."
 }
 
 # "develop" stays a prerelease, it just moves on to the next version.
-update_antora_version "$ANTORA_DESCRIPTOR" "$NEW_DOCS_VERSION" "True"
+update_antora_version "$ANTORA_DESCRIPTOR" "$NEW_DOCS_VERSION" "True" "$NEW_VERSION"
 
 ########################################################################################################################
 # 8. Commit the change (local)
@@ -251,7 +274,7 @@ fi
 # would appear under its own version number rather than as ".../plc4x/latest/...".
 # 'release-3-finish-release.sh' clears the flag in the same run, and that is what makes this
 # branch the published release.
-update_antora_version "$ANTORA_DESCRIPTOR" "$RELEASE_VERSION" "True"
+update_antora_version "$ANTORA_DESCRIPTOR" "$RELEASE_VERSION" "True" "$PROJECT_VERSION"
 
 # Usually there is nothing to commit here: the branch was cut from "develop" before step 6b moved
 # it on, so it already documents the version being released. Only a "develop" that was out of sync

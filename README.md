@@ -74,11 +74,12 @@ And brings stand-alone (Java) utils such as:
 * PLC4X Server: Enables you to communicate with a central PLC4X Server which then communicates with devices via PLC4X.
 
 It also provides (Java) tools for usage inside an application:
-Both the integration modules as also the OPC-UA Server and PLC4X Server are being released as part of the plc4x-extras release.
 
 * Connection Cache: New implementation of our framework for re-using and sharing PLC connections
 * OPM: Object-Plc-Mapping: Allows binding PLC fields to properties in java POJOs similar to JPA
 * Scraper: Utility to do scheduled and repeated data collection.
+
+Both the integration modules as also the OPC-UA Server and PLC4X Server are being released as part of the plc4x-extras release.
 
 ## Getting started
 
@@ -101,17 +102,17 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 Currently, the project is configured to require the following software:
 
-1. Java 21 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to point to that.
+1. Java 21 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that.
 2. Git (even when working on the source distribution)
 3. (Optional, for running all tests) `libpcap/Npcap` for raw socket tests in Java or use of `passive-mode` drivers
 4. (Optional, for running all tests) `Docker` for running some tests making use of `Testcontainers`
-5. (Optional, for building the website) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
+5. (Optional, for building the website) Network access to [kroki.io](https://kroki.io/): The diagrams in the documentation are rendered by the Kroki server at build-time, so no local diagram tooling needs to be installed
 
 WARNING: The code generation uses a utility which requires some additional VM settings. When running a build from the root, the settings in the `.mvn/jvm.config` are automatically applied. 
 When building only a submodule, it is important to set the vm-args: `--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED`. 
 In Intellij, for example, set these in the IDE settings under: Preferences | Build, Execution, Deployment | Build Tools | Maven | Runner: JVM Options.
 
-When doing a full build, we automatically run a prerequisite check and fail the build with an explanation of what to do, if not all requirements are meet.
+When doing a full build, we automatically run a prerequisite check and fail the build with an explanation of what to do, if not all requirements are met.
 
 A more detailed description is available on our website:
 
@@ -132,7 +133,9 @@ All requirements are retrieved by the build itself
 
 #### For building `PLC4Net` we also need:
 
-1. DotNet SDK 7.0 or above
+1. DotNet SDK 7.0 or above (the projects set `LangVersion 11.0`, which needs at least the 7.0 SDK)
+2. The `.NET Framework 4.5.2` targeting pack: the projects target `net452`, so the matching reference assemblies have to be available.
+   On `Windows` these come with the Visual Studio ".NET Framework 4.5.2 targeting pack" component, on `Mac`/`Linux` they are provided by `Mono`.
 
 ### Building with Docker
 
@@ -154,12 +157,12 @@ Per default, it will store files locally:
 
 The reason for this is that otherwise the artifacts would be packaged in with the source-release artifact, resulting in a 12GB or more zip archive.
 However, saving it in the main `target` directory would make the build delete the local repo every time a `mvn clean` is run.
-The `out` directory however is excluded per default from the assembly descriptor, and therefore it is not included in the source zim.
+The `out` directory however is excluded per default from the assembly descriptor, and therefore it is not included in the source zip.
 
 ### Getting Started
 
 You must have at least Java 21 installed on your system and connectivity to Maven Central for downloading external third party dependencies. 
-Maven 4.0.0-rc-6 or newer is required to build, so be sure it's installed and available on your system (the bundled Maven-Wrapper takes care of this automatically).
+Maven 4.0.0-rc-5 or newer is required to build, so be sure it's installed and available on your system (the bundled Maven-Wrapper takes care of this automatically).
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. 
 If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
