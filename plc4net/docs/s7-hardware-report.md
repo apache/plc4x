@@ -21,6 +21,39 @@
 Output of `tools/s7-verify` against real hardware. The procedure and the data
 block layout are in [s7-hardware-verification.md](s7-hardware-verification.md).
 
+## 2026-09-04 — Siemens S7-1214C (DC/DC/DC), re-verify
+
+Re-run on `feature/plc4net-revival` at `39e3792a0` — after `develop` was merged,
+the prerequisite check was raised to the .NET 8 SDK and `AssemblyVersion` was
+pinned. No S7 driver code changed since the 2026-09-03 run; this confirms those
+build/infra commits did not regress the driver.
+
+- **Device**: SIMATIC S7-1214C DC/DC/DC, rack 0 / slot 1
+- **Connection**: `s7://192.168.1.11?remote-rack=0&remote-slot=1&request-timeout=5000` (default TSAPs)
+- **Negotiated PDU length**: 240 bytes
+- **Data block**: DB100, non-optimized, unchanged from 2026-09-03
+- **Result**: **PASS (12/12)**, two consecutive runs. Extra probe: single read of
+  `%I0.0` returned `Ok` (`False`) — exercises `%I` area addressing outside the DB.
+
+```
+| | Step | Detail |
+|---|---|---|
+| OK | Connect | COTP + Setup Communication ok, negotiated PDU length 240 bytes |
+| OK | Read BOOL %DB100.DBX0.0 | = true |
+| OK | Read BYTE %DB100.DBB1 | = 0xA5 |
+| OK | Read INT %DB100.DBW2 | = -12345 |
+| OK | Read DINT %DB100.DBD4 | = -1000000 |
+| OK | Read REAL %DB100.DBD8 | = 3.1416 |
+| OK | Read WORD %DB100.DBW12 | = 0xBEEF |
+| OK | Read DWORD %DB100.DBD14 | = 0xDEADBEEF |
+| OK | Read 3 tags in one request | all three correct |
+| OK | Write + read-back %DB100.DBW18 | = 6789 |
+| OK | Write + read-back %DB100.DBD20 | = 12345.5 |
+| OK | Read a non-existent DB | rejected with NotFound (connection survived) |
+
+## Result: PASS (12/12)
+```
+
 ## 2026-09-03 — Siemens S7-1214C (DC/DC/DC)
 
 - **Device**: SIMATIC S7-1214C DC/DC/DC (S7-1200 family), rack 0 / slot 1
