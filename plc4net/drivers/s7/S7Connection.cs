@@ -222,6 +222,15 @@ namespace org.apache.plc4net.drivers.s7
             // S7 Setup Communication - negotiate PDU length and parallel-job limits.
             // A real CPU ignores Read / Write Var until this has completed.
             PerformSetupCommunication();
+
+            // Surface the real cause when the link drops mid-session (a cable
+            // pull or a CPU stop) instead of leaving the caller with a bare
+            // timeout on its next request.
+            if (TransportInstance is IAsyncTransportInstance async)
+            {
+                async.RegisterDisconnectListener(ex =>
+                    Logger.LogWarning(ex, "S7 transport disconnected"));
+            }
         }
 
         private void PerformSetupCommunication()

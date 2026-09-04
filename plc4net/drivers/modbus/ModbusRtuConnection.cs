@@ -64,6 +64,12 @@ namespace org.apache.plc4net.drivers.modbus
                     $"Modbus RTU address must be 1–247, got {addr}.");
             _slaveAddress = (byte)addr;
             _responseTimeoutMs = connectionString.GetIntParameter("request-timeout", 1000);
+
+            if (transport is IAsyncTransportInstance async)
+            {
+                async.RegisterDisconnectListener(ex =>
+                    Logger.LogWarning(ex, "Modbus RTU serial port disconnected"));
+            }
         }
 
         public byte SlaveAddress => _slaveAddress;

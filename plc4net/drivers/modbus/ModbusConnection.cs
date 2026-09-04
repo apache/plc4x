@@ -54,6 +54,12 @@ namespace org.apache.plc4net.drivers.modbus
                     $"unit-identifier must be in [0,255], got {unitId}.");
             UnitId = (byte)unitId;
             _responseTimeoutMs = connectionString.GetIntParameter("request-timeout", 5000);
+
+            if (transport is IAsyncTransportInstance async)
+            {
+                async.RegisterDisconnectListener(ex =>
+                    Logger.LogWarning(ex, "Modbus TCP transport disconnected"));
+            }
         }
 
         public byte UnitId { get; }

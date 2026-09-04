@@ -28,7 +28,7 @@ namespace org.apache.plc4net.transports.cotp
     /// COTP protocol support for S7 communication (connection establishment
     /// via CR/CC handshake, Data Transfer via DT frames).
     /// </summary>
-    public class CotpTransportInstance : BaseTransportInstance
+    public class CotpTransportInstance : BaseTransportInstance, IAsyncTransportInstance
     {
         private readonly ITransportInstance _inner;
         private readonly object _handshakeLock = new object();
@@ -458,6 +458,37 @@ namespace org.apache.plc4net.transports.cotp
                 _handshakeDone = false;
                 _handshakeInProgress = false;
             }
+        }
+
+        // ── IAsyncTransportInstance ──────────────────────────────
+        //
+        // COTP itself has no read loop; these forward to the inner transport so
+        // a driver over COTP (S7) can still learn why the socket dropped. The
+        // data-listener side is unused by the S7 driver's polling model.
+
+        public void RegisterDataListener(Action listener)
+        {
+            (_inner as IAsyncTransportInstance)?.RegisterDataListener(listener);
+        }
+
+        public void RemoveDataListener()
+        {
+            (_inner as IAsyncTransportInstance)?.RemoveDataListener();
+        }
+
+        public void RegisterDisconnectListener(Action<Exception> listener)
+        {
+            (_inner as IAsyncTransportInstance)?.RegisterDisconnectListener(ex =>
+            {
+                // A peer COTP/TCP drop invalidates the handshake state too.
+                _handshakeDone = false;
+                listener(ex);
+            });
+        }
+
+        public void RemoveDisconnectListener()
+        {
+            (_inner as IAsyncTransportInstance)?.RemoveDisconnectListener();
         }
 
         /// <summary>
