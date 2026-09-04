@@ -89,22 +89,30 @@ namespace org.apache.plc4net.spi.test.drivers
             return wb.GetBytes();
         }
 
-        private static byte[] WriteVarAck(int numItems)
+        // _pduRef starts at 1; Setup Communication takes it to 2 in Connect(),
+        // so the first Read/Write after a handshake sends TPDU reference 3.
+        private const ushort FirstOpRef = 3;
+
+        private static byte[] WriteVarAck(int numItems, ushort tpduRef = FirstOpRef)
         {
             var items = new List<S7VarPayloadStatusItem>();
             for (var i = 0; i < numItems; i++)
                 items.Add(new S7VarPayloadStatusItem(DataTransportErrorCode.OK));
-            return WrapS7(Serialize(new S7MessageResponseData(1, 0, 0,
+            return WrapS7(Serialize(new S7MessageResponseData(tpduRef, 0, 0,
                 new S7ParameterWriteVarResponse((byte)numItems),
                 new S7PayloadWriteVarResponse(items))));
         }
 
-        private static byte[] ReadVarAck(params (DataTransportSize Size, byte[] Data)[] items)
+        private static byte[] ReadVarAck(params (DataTransportSize Size, byte[] Data)[] items) =>
+            ReadVarAck(FirstOpRef, items);
+
+        private static byte[] ReadVarAck(
+            ushort tpduRef, params (DataTransportSize Size, byte[] Data)[] items)
         {
             var payloadItems = new List<S7VarPayloadDataItem>();
             foreach (var (size, data) in items)
                 payloadItems.Add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, size, data));
-            return WrapS7(Serialize(new S7MessageResponseData(1, 0, 0,
+            return WrapS7(Serialize(new S7MessageResponseData(tpduRef, 0, 0,
                 new S7ParameterReadVarResponse((byte)items.Length),
                 new S7PayloadReadVarResponse(payloadItems))));
         }
@@ -115,8 +123,9 @@ namespace org.apache.plc4net.spi.test.drivers
         /// 12-byte frame (10-byte header + errorClass + errorCode) is exactly the
         /// case the driver used to mis-frame as 10 bytes.
         /// </summary>
-        private static byte[] HeaderErrorAck(byte errorClass, byte errorCode) =>
-            WrapS7(Serialize(new S7MessageResponse(1, errorClass, errorCode, null, null)));
+        private static byte[] HeaderErrorAck(
+            byte errorClass, byte errorCode, ushort tpduRef = FirstOpRef) =>
+            WrapS7(Serialize(new S7MessageResponse(tpduRef, errorClass, errorCode, null, null)));
 
         [Theory]
         [InlineData("%DB1.DBW10", S7Tag.AreaType.DataBlock, 1, 10, -1, 2)]
@@ -389,7 +398,7 @@ namespace org.apache.plc4net.spi.test.drivers
         public async Task Read_maps_an_S7_item_error_to_a_response_code()
         {
             var inner = HandshakeReady();
-            inner.Inject(WrapS7(Serialize(new S7MessageResponseData(1, 0, 0,
+            inner.Inject(WrapS7(Serialize(new S7MessageResponseData(FirstOpRef, 0, 0,
                 new S7ParameterReadVarResponse(1),
                 new S7PayloadReadVarResponse(new List<S7VarPayloadDataItem>
                 {
@@ -437,8 +446,9 @@ namespace org.apache.plc4net.spi.test.drivers
             // 10-byte common header. Reading only 10 left those two bytes in the
             // buffer, and every following response was parsed off by two.
             var inner = HandshakeReady();
-            inner.Inject(HeaderErrorAck(0x81, 0x04));                              // 1st read: refused
-            inner.Inject(ReadVarAck((DataTransportSize.BYTE_WORD_DWORD, new byte[] { 0xBE, 0xEF }))); // 2nd read: OK
+            inner.Inject(HeaderErrorAck(0x81, 0x04, tpduRef: 3));                  // 1st read: refused
+            inner.Inject(ReadVarAck((ushort)4,
+                (DataTransportSize.BYTE_WORD_DWORD, new byte[] { 0xBE, 0xEF }))); // 2nd read: OK
 
             var connection = new S7Connection(
                 ConnectionString.Parse("s7://192.168.0.1?remote-rack=0&remote-slot=1"),
@@ -455,6 +465,27 @@ namespace org.apache.plc4net.spi.test.drivers
             var r2 = (DefaultPlcReadResponse)await connection.Read((DefaultPlcReadRequest)b2.Build());
             Assert.Equal(PlcResponseCode.Ok, r2.GetResponseCode("v"));
             Assert.Equal((ushort)0xBEEF, r2.GetValue("v").GetUshort());
+        }
+
+        [Fact]
+        public async Task A_stale_response_with_the_wrong_TPDU_reference_is_skipped()
+        {
+            var inner = HandshakeReady();
+            // A leftover from an earlier timed-out request (ref 99), then this
+            // read's real answer (ref 3).
+            inner.Inject(ReadVarAck((ushort)99, (DataTransportSize.BYTE_WORD_DWORD, new byte[] { 0x11, 0x11 })));
+            inner.Inject(ReadVarAck((ushort)3, (DataTransportSize.BYTE_WORD_DWORD, new byte[] { 0xBE, 0xEF })));
+
+            var connection = new S7Connection(
+                ConnectionString.Parse("s7://192.168.0.1?remote-rack=0&remote-slot=1"),
+                new CotpTransportInstance(inner));
+            connection.Connect();
+
+            var b = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+            b.AddTagAddress("v", "%DB1.DBW0");
+            var r = (DefaultPlcReadResponse)await connection.Read((DefaultPlcReadRequest)b.Build());
+            Assert.Equal(PlcResponseCode.Ok, r.GetResponseCode("v"));
+            Assert.Equal((ushort)0xBEEF, r.GetValue("v").GetUshort());
         }
 
         // ── Write path (PlcWriter) ──────────────────────────────

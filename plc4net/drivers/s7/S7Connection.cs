@@ -273,14 +273,17 @@ namespace org.apache.plc4net.drivers.s7
         /// </summary>
         private readonly struct S7Response
         {
-            public S7Response(byte errorClass, byte errorCode, S7Parameter? parameter, S7Payload? payload)
+            public S7Response(ushort tpduReference, byte errorClass, byte errorCode,
+                S7Parameter? parameter, S7Payload? payload)
             {
+                TpduReference = tpduReference;
                 ErrorClass = errorClass;
                 ErrorCode = errorCode;
                 Parameter = parameter;
                 Payload = payload;
             }
 
+            public ushort TpduReference { get; }
             public byte ErrorClass { get; }
             public byte ErrorCode { get; }
             public S7Parameter? Parameter { get; }
@@ -308,11 +311,92 @@ namespace org.apache.plc4net.drivers.s7
 
             return message switch
             {
-                S7MessageResponseData d => new S7Response(d.ErrorClass, d.ErrorCode, d.Parameter, d.Payload),
-                S7MessageResponse a => new S7Response(a.ErrorClass, a.ErrorCode, a.Parameter, a.Payload),
+                S7MessageResponseData d => new S7Response(
+                    d.TpduReference, d.ErrorClass, d.ErrorCode, d.Parameter, d.Payload),
+                S7MessageResponse a => new S7Response(
+                    a.TpduReference, a.ErrorClass, a.ErrorCode, a.Parameter, a.Payload),
                 _ => throw new S7DriverException(
                     $"S7 response is a {message.GetType().Name}, not an acknowledgement."),
             };
+        }
+
+        // Serialises the send/receive pair — the PLC4X contract is one
+        // outstanding request per connection, and the raw-poll receive path is
+        // not safe against two callers interleaving on the wire.
+        private readonly SemaphoreSlim _io = new SemaphoreSlim(1, 1);
+
+        public override void Close()
+        {
+            try { base.Close(); }
+            finally { _io.Dispose(); }
+        }
+
+        /// <summary>
+        /// Writes a request and reads its acknowledgement, correlating on the
+        /// TPDU reference so a stale response left by an earlier timed-out call
+        /// is skipped rather than returned. Drains the transport on any failure.
+        /// </summary>
+        private async Task<S7Response> SendAndReceiveS7(
+            byte[] request, ushort pduRef, CancellationToken ct)
+        {
+            await _io.WaitAsync(ct).ConfigureAwait(false);
+            try
+            {
+                TransportInstance.Write(request);
+                var deadline = Environment.TickCount64 + _requestTimeoutMs;
+                while (true)
+                {
+                    var response = ParseResponse(
+                        await ReadOneS7MessageAsync(ct).ConfigureAwait(false));
+                    if (response.TpduReference == pduRef)
+                    {
+                        return response;
+                    }
+                    Logger.LogDebug(
+                        "S7: discarded a stale response (tpdu {Got}, want {Want})",
+                        response.TpduReference, pduRef);
+                    if (Environment.TickCount64 >= deadline)
+                    {
+                        throw new TimeoutException(
+                            "S7: no response with the expected TPDU reference.");
+                    }
+                }
+            }
+            catch
+            {
+                DrainTransport(); // leave no partial frame for the next call
+                throw;
+            }
+            finally
+            {
+                _io.Release();
+            }
+        }
+
+        private void DrainTransport()
+        {
+            var n = TransportInstance.GetNumBytesAvailable();
+            if (n > 0)
+            {
+                TransportInstance.Read(n);
+            }
+        }
+
+        /// <summary>
+        /// Whether a Read/Write of these tags fits one negotiated PDU. Estimates
+        /// the S7 header (12) + parameter (2) + per-item (4 header + data rounded
+        /// up to an even byte count) for the response, and the request side.
+        /// </summary>
+        private bool FitsOnePdu(List<S7Tag> tags)
+        {
+            var response = 14;
+            var request = 12 + tags.Count * 12;
+            foreach (var t in tags)
+            {
+                var dataBytes = t.BitOffset >= 0 ? 1 : (t.DataTypeSize + 1) & ~1;
+                response += 4 + dataBytes;
+            }
+            return response <= NegotiatedPduLength && request <= NegotiatedPduLength;
         }
 
         /// <summary>
@@ -462,13 +546,28 @@ namespace org.apache.plc4net.drivers.s7
             }
 
             var results = new Dictionary<string, PlcResponseItem<IPlcValue>>();
+
+            // The driver does not split a request across PDUs yet; a read whose
+            // response would exceed the negotiated size fails with a clear
+            // message rather than a truncated / rejected frame.
+            if (NegotiatedPduLength > 0 && !FitsOnePdu(tags))
+            {
+                foreach (var name in tagNames)
+                {
+                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InternalError);
+                }
+                Logger.LogWarning(
+                    "S7 read of {Count} tag(s) would exceed the negotiated {Pdu}-byte PDU; "
+                    + "split it into smaller requests.", tags.Count, NegotiatedPduLength);
+                return new DefaultPlcReadResponse(request, results);
+            }
+
             try
             {
                 var pduRef = (ushort)(Interlocked.Increment(ref _pduRef) & 0xFFFF);
-                TransportInstance.Write(S7Constants.BuildReadRequest(pduRef, tags));
-
-                var response = ParseResponse(
-                    await ReadOneS7MessageAsync(cancellationToken).ConfigureAwait(false));
+                var response = await SendAndReceiveS7(
+                    S7Constants.BuildReadRequest(pduRef, tags), pduRef, cancellationToken)
+                    .ConfigureAwait(false);
 
                 if (response.HasError)
                 {
@@ -548,10 +647,9 @@ namespace org.apache.plc4net.drivers.s7
             try
             {
                 var pduRef = (ushort)(Interlocked.Increment(ref _pduRef) & 0xFFFF);
-                TransportInstance.Write(S7Constants.BuildWriteRequest(pduRef, items));
-
-                var response = ParseResponse(
-                    await ReadOneS7MessageAsync(cancellationToken).ConfigureAwait(false));
+                var response = await SendAndReceiveS7(
+                    S7Constants.BuildWriteRequest(pduRef, items), pduRef, cancellationToken)
+                    .ConfigureAwait(false);
 
                 if (response.HasError)
                 {
