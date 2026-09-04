@@ -66,6 +66,6 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             return lengthInBits;
         }
 
-        public int GetLengthInBytes() => GetLengthInBits() / 8;
+        public int GetLengthInBytes() => (GetLengthInBits() + 7) / 8;
     }
 }

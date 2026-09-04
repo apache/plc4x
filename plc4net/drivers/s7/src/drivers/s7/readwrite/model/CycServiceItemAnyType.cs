@@ -45,7 +45,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
 
         public static CycServiceItemAnyType StaticParse(ReadBuffer readBuffer, byte byteLength, byte syntaxId)
         {
-            var transportSize = TransportSizeExtensions.FirstEnumForFieldCode(readBuffer.ReadByte("transportSize", 8));
+            var transportSize = (TransportSizeExtensions.FirstEnumForFieldCode(readBuffer.ReadByte("transportSize", 8)) ?? throw new ParseException("unrecognised TransportSize code on the wire"));
             var length = readBuffer.ReadUshort("length", 16);
             var dbNumber = readBuffer.ReadUshort("dbNumber", 16);
             var memoryArea = (MemoryArea) readBuffer.ReadByte("memoryArea", 8);

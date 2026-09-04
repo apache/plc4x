@@ -69,6 +69,6 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             return lengthInBits;
         }
 
-        public int GetLengthInBytes() => GetLengthInBits() / 8;
+        public int GetLengthInBytes() => (GetLengthInBits() + 7) / 8;
     }
 }

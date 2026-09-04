@@ -646,7 +646,10 @@ namespace org.apache.plc4net.tools.codegen.output
             }
             if (!childMethod)
             {
-                c.Line($"public int GetLengthInBytes() => GetLengthInBits({(lastItem ? "false" : "")}) / 8;");
+                // Round up: a type that is not byte-aligned still occupies a
+                // whole trailing byte on the wire (plc4j and the dataIo path
+                // both ceil).
+                c.Line($"public int GetLengthInBytes() => (GetLengthInBits({(lastItem ? "false" : "")}) + 7) / 8;");
             }
         }
 
@@ -834,13 +837,15 @@ namespace org.apache.plc4net.tools.codegen.output
                     }
                     var keyType = e.Arguments[ki].Type;
                     var rows = e.Values.Where(v => v.ConstantValues.Count > ki).ToList();
-                    c.Line($"public static {e.Name} FirstEnumForField{Pascal(key)}({CSharpTypeMapper.CSharpType(keyType)} {Camel(key)}) => {Camel(key)} switch");
+                    c.Line($"public static {e.Name}? FirstEnumForField{Pascal(key)}({CSharpTypeMapper.CSharpType(keyType)} {Camel(key)}) => {Camel(key)} switch");
                     c.Line("{");
                     c.Indent();
                     // "first" lookup: the earliest constant wins each key value.
                     string PatternFor(EnumValue v) => RenderEnumParamValue(v.ConstantValues[ki], keyType, r);
                     EmitEnumArms(c, rows, PatternFor, PatternFor, v => $"{e.Name}.{v.Name}");
-                    c.Line("_ => default,");
+                    // An unmapped key is null, not a bogus `(T) 0` — the caller
+                    // (a parse path) then fails loudly with a real value in hand.
+                    c.Line("_ => null,");
                     c.Outdent();
                     c.Line("};");
                 }
@@ -1848,7 +1853,8 @@ namespace org.apache.plc4net.tools.codegen.output
             if (ef.Type is EnumTypeReference et && ef.KeyAccessor != null)
             {
                 var baseRead = CSharpTypeMapper.ReadCall(et.BaseType, ef.Name);
-                return $"{et.Name}Extensions.FirstEnumForField{Pascal(ef.KeyAccessor)}({baseRead})";
+                return $"({et.Name}Extensions.FirstEnumForField{Pascal(ef.KeyAccessor)}({baseRead}) "
+                       + $"?? throw new ParseException(\"unrecognised {et.Name} {ef.KeyAccessor} on the wire\"))";
             }
             return ReadFieldValue(ef, r);
         }

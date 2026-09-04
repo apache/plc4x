@@ -456,7 +456,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             TransportSize.DTL => false,
             _ => default,
         };
-        public static TransportSize FirstEnumForFieldCode(byte code) => code switch
+        public static TransportSize? FirstEnumForFieldCode(byte code) => code switch
         {
             0x01 => TransportSize.BOOL,
             0x02 => TransportSize.BYTE,
@@ -470,7 +470,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             0x03 => TransportSize.CHAR,
             0x13 => TransportSize.WCHAR,
             0x0A => TransportSize.TOD,
-            _ => default,
+            _ => null,
         };
     }
 }

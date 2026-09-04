@@ -84,6 +84,25 @@ namespace org.apache.plc4net.spi.test.codegen
         }
 
         [Fact]
+        public void The_generated_RTU_and_ASCII_ADUs_serialize_without_throwing()
+        {
+            // ModbusStaticHelper.RtuCrcCheck / AsciiLrcCheck were throwing stubs,
+            // so ModbusRtuADU.Serialize() / ModbusAsciiADU.Serialize() blew up.
+            var pdu = new ModbusPDUReadHoldingRegistersRequest(0x0000, 1);
+
+            var rtu = new ModbusRtuADU(0x01, pdu);
+            var rtuBuf = new WriteBuffer();
+            rtu.Serialize(rtuBuf);
+            // addr(1) + FC(1) + start(2) + qty(2) + crc(2)
+            Assert.Equal(8, rtuBuf.GetBytes().Length);
+
+            var ascii = new ModbusAsciiADU(0x01, pdu);
+            var asciiBuf = new WriteBuffer();
+            ascii.Serialize(asciiBuf);
+            Assert.Equal(7, asciiBuf.GetBytes().Length); // ... + lrc(1)
+        }
+
+        [Fact]
         public void The_discriminated_type_resolves_to_the_expected_concrete_class()
         {
             var suite = LoadSuite();
