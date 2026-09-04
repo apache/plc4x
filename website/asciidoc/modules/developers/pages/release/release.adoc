@@ -75,7 +75,7 @@ There repos are defined in the `apache` parent pom and is identical for all Apac
 
 Additionally, all artifacts are automatically signed by the release build. In order to be able to do this you need to set up GPG.
 
-The key being used to sign the artifacts will have to be linked to your Apache E-Mail ({apache-id}@apache.org) and verified by at least one fellow Apache committer (Ideally more) that have trusted keys themselves.
+The key being used to sign the artifacts will have to be linked to your Apache E-Mail (\{apache-id}@apache.org) and verified by at least one fellow Apache committer (Ideally more) that have trusted keys themselves.
 Usually for this you have to get in touch - in real life - with any Apache committer with a trusted key.
 Attending an `ApacheCon` is usually a great way to do this as usually every ApacheCon has a `Key Signing event` in its schedule.
 He can then sign your key and hereby enable you to sign Apache release artifacts.
@@ -328,7 +328,7 @@ Log in to https://repository.apache.org, open `Staging Profiles`, select `org.ap
 +
 IMPORTANT: These are the checks that catch the classic first-time-release-manager mistakes.
 If the first fails, your key is not in the `KEYS` file yet - add it, following the format documented in the file itself.
-If the second fails, you signed with a key that is not registered to your `{apache-id}@apache.org` address; the script prints the user ids the key does carry.
+If the second fails, you signed with a key that is not registered to your `\{apache-id}@apache.org` address; the script prints the user ids the key does carry.
 A key may have several user ids and only one of them has to be the Apache one.
 
 8. Re-computes the SHA-512 of the source-release zip and compares it against the `.sha512` file.

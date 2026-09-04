@@ -24,7 +24,7 @@ A client using the `plc4x` driver connects to this server, and the server opens 
 
 This is useful when the PLCs are only reachable from the machine running the server (e.g. behind a firewall or on an isolated OT network), while the clients live elsewhere.
 
-[graphviz,plc4x-server-architecture,svg]
+[graphviz,plc4x-server-architecture,svg,opts="inline",svg-type="inline"]
 ----
 digraph plc4x_server {
     rankdir=LR;

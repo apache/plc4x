@@ -65,7 +65,7 @@ fi
 
 # Maven 4 prefixes even quiet output with "[INFO] [stdout] ", so take the last token of the
 # last line rather than the whole output.
-PROJECT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec | tail -n 1 | awk '{print $NF}')
+PROJECT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q --non-recursive -Dexpression=project.version -DforceStdout help:evaluate | tail -n 1 | awk '{print $NF}')
 if [[ -z "$PROJECT_VERSION" ]]; then
     echo "❌ Could not determine the project version, aborting."
     exit 1

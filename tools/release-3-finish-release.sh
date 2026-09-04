@@ -264,6 +264,37 @@ if ! sed_in_place "$ANTORA_DESCRIPTOR" -E "s|^prerelease:.*|prerelease: False|";
 fi
 echo "✅ '$ANTORA_DESCRIPTOR' now publishes $RELEASED_VERSION as the current release."
 
+# The dependency snippets throughout the docs of this branch ("<version>...</version>", the Gradle
+# equivalents, the capture-replay jar name, ...) all render from a single Antora attribute. On
+# "develop" that attribute is kept in sync with "${project.version}" by the "sync-antora-version"
+# execution in website/pom.xml, which is correct there. It is NOT correct here:
+# "release-2-prepare-release.sh" has already moved the poms on to the next bugfix SNAPSHOT, so
+# "${project.version}" on this branch is something nobody can depend on (0.13.2-SNAPSHOT while
+# 0.13.1 is what was released). Take the value from the release tag instead, so that
+# ".../plc4x/latest/..." tells people to depend on the version that actually exists.
+#
+# Branches cut before the attribute was renamed still carry the old name, and this script has to
+# keep working for a bugfix release on one of those, so accept either spelling.
+ANTORA_VERSION_ATTRIBUTE=""
+for candidate in current-project-version current-last-released-version; do
+    if grep -qE "^[[:space:]]*$candidate:" "$ANTORA_DESCRIPTOR"; then
+        ANTORA_VERSION_ATTRIBUTE="$candidate"
+        break
+    fi
+done
+if [[ -z "$ANTORA_VERSION_ATTRIBUTE" ]]; then
+    echo "❌ '$ANTORA_DESCRIPTOR' has neither a 'current-project-version' nor a legacy"
+    echo "   'current-last-released-version' attribute, aborting."
+    echo "   Without it the documentation would advertise a version nobody can depend on."
+    exit 1
+fi
+if ! sed_in_place "$ANTORA_DESCRIPTOR" -E \
+        "s|^([[:space:]]*)$ANTORA_VERSION_ATTRIBUTE:.*|\\1$ANTORA_VERSION_ATTRIBUTE: '$RELEASED_VERSION'|"; then
+    echo "❌ Got non-0 exit code from updating '$ANTORA_VERSION_ATTRIBUTE', aborting."
+    exit 1
+fi
+echo "✅ '$ANTORA_DESCRIPTOR' now advertises $RELEASED_VERSION in its dependency snippets."
+
 # The copy of the download page on this branch is what ".../plc4x/latest/users/download.html"
 # will be served from, so it has to list the release too.
 update_download_page "$DIRECTORY/website/asciidoc/modules/users/pages/download.adoc" \

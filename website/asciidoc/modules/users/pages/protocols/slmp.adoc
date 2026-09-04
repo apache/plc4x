@@ -24,20 +24,9 @@ is used by Mitsubishi Electric MELSEC PLCs such as the iQ-R, iQ-F, Q and L serie
 
 The driver communicates using binary 3E frames over TCP.
 
-This initial version is *read-only* and supports reading word devices (D, W and R).
-
-(Supported by Plc4J Only)
-
-== Connection String Options
-
-[NOTE]
-====
-Array selection uses the shared notation - a single index, an inclusive range, and
-optionally the array's declared lower bound, placed before the type. See
-xref:array-notation.adoc[Addressing arrays].
-====
-
-include::partial$slmp.adoc[]
+Both the Go and Java drivers address the word devices D, W and R only. This is the
+driver's deliberate scope, not an unfinished port: the bit devices (M, X, Y, B) and the
+wider MELSEC command set are not implemented in either language.
 
 == Supported Operations
 
@@ -45,15 +34,18 @@ include::partial$slmp.adoc[]
 |===
 |Name |Value |Description
 
-3+|Supported Operations
-
 |
 2+| `read`
+
+|
+2+| `write`
+
+|
+2+| `subscribe` (polling-emulated only - SLMP has no native push mechanism, so a
+subscription is really a periodic read under the hood)
 |===
 
-== Individual Resource Address Format
-
-=== Connection String
+== Connection String
 
 SLMP has the following connection string format:
 ----
@@ -65,23 +57,33 @@ slmp:tcp://192.168.0.10:5007
 ----
 Note the transport, port and option fields are optional.
 
+== Connection String Options
+
+include::partial$slmp.adoc[]
+
+== Tag Addresses
+
+Addressing is implemented in Go and Java. Both address the word devices D, W and R
+only. See the xref:protocols/index.adoc[protocol support matrix] for what each
+implementation does.
+
 === General Format
+
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
 
 In general all SLMP addresses have this format:
 
 ----
-{device}{address}:{data-type}[{quantity}]
+{device}{address}[selection]:{data-type}
 ----
 
 If the data-type part is omitted, it defaults to `WORD`.
-If the quantity part is omitted, the default of `1` is assumed.
-
-Examples:
-
-- `D350` (one word from data register 350)
-- `D350:DINT` (one 32-bit integer, occupying two words)
-- `R200:REAL[4]` (four floats from file register 200)
-- `W0x1A:WORD[10]` (ten words from link register 0x1A)
+If no selection is given, a single element is assumed.
 
 === Devices
 
@@ -91,10 +93,10 @@ The following word devices are supported:
 - `R` (file register, decimal address)
 - `W` (link register, hexadecimal address; an optional `0x` prefix is accepted)
 
-The `0x` prefix is only valid for hexadecimally addressed devices.
+The `0x` prefix is only valid for hexadecimally addressed devices (W).
 
-A single read request may cover at most 960 words (a conservative single-frame ceiling);
-larger requests are rejected instead of being split.
+A single read or write request may cover at most 960 words (a conservative
+single-frame ceiling); larger requests are rejected instead of being split.
 
 === Data Types
 
@@ -109,3 +111,11 @@ The following data types are supported:
 
 Multi-word types (DINT, UDINT, REAL) are decoded from consecutive words in
 little-endian (low-word-first) order, as transmitted by the PLC.
+
+=== Examples
+
+- `D350` (one word from data register 350, default WORD type)
+- `D350:DINT` (one 32-bit integer, occupying two words, from data register 350)
+- `R200[0..3]:REAL` (four floats from file register 200)
+- `W1A[0..9]:WORD` (ten words from link register 0x1A)
+- `W0x1A` (link register 0x1A, using the explicit `0x` prefix form)

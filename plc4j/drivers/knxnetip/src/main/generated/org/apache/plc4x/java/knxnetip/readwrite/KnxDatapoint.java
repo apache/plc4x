@@ -5311,6 +5311,28 @@ public class KnxDatapoint {
         _map.put("g", new PlcUSINT(g));
         _map.put("b", new PlcUSINT(b));
         return new PlcStruct(_map);
+      } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Colour_HSV)) {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Struct
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Reserved Field
+        FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("KnxDatapoint.reserved0"));
+
+        // Simple Field: h
+        short h = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("h"));
+
+        // Simple Field: s
+        short s = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("s"));
+
+        // Simple Field: v
+        short v = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("v"));
+
+        Map<String, PlcValue> _map = new HashMap<>();
+        _map.put("h", new PlcUSINT(h));
+        _map.put("s", new PlcUSINT(s));
+        _map.put("v", new PlcUSINT(v));
+        return new PlcStruct(_map);
       } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII)) {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // STRING
@@ -9892,6 +9914,21 @@ public class KnxDatapoint {
 
       // Simple Field: b
       FieldWriterFactory.writeSimpleField((short) _value.getStruct().get("b").getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("b"));
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Colour_HSV)) {
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Struct
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Reserved Field
+      FieldWriterFactory.writeReservedField((short) 0x00, DataWriterFactory.writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field: h
+      FieldWriterFactory.writeSimpleField((short) _value.getStruct().get("h").getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("h"));
+
+      // Simple Field: s
+      FieldWriterFactory.writeSimpleField((short) _value.getStruct().get("s").getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("s"));
+
+      // Simple Field: v
+      FieldWriterFactory.writeSimpleField((short) _value.getStruct().get("v").getShort(), DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("v"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // STRING
@@ -14291,6 +14328,21 @@ public class KnxDatapoint {
       lengthInBits += 8;
 
       // Simple Field: b
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Colour_HSV)) {
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Struct
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Reserved Field
+      lengthInBits += 8;
+
+      // Simple Field: h
+      lengthInBits += 8;
+
+      // Simple Field: s
+      lengthInBits += 8;
+
+      // Simple Field: v
       lengthInBits += 8;
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII)) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

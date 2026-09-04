@@ -7178,6 +7178,40 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = b // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
+	case datapointType == KnxDatapointType_DPT_Colour_HSV: // Struct
+		// Struct
+		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Simple Field (h)
+		h, _hErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("h", 8)
+		if _hErr != nil {
+			return nil, errors.Wrap(_hErr, "Error parsing 'h' field")
+		}
+		_map["Struct"] = values.NewPlcUSINT(h)
+		_ = h // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+
+		// Simple Field (s)
+		s, _sErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("s", 8)
+		if _sErr != nil {
+			return nil, errors.Wrap(_sErr, "Error parsing 's' field")
+		}
+		_map["Struct"] = values.NewPlcUSINT(s)
+		_ = s // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+
+		// Simple Field (v)
+		v, _vErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("v", 8)
+		if _vErr != nil {
+			return nil, errors.Wrap(_vErr, "Error parsing 'v' field")
+		}
+		_map["Struct"] = values.NewPlcUSINT(v)
+		_ = v // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		readBuffer.CloseContext("KnxDatapoint")
+		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
@@ -13177,6 +13211,26 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		// Simple Field (b)
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("b", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'b' field")
+		}
+	case datapointType == KnxDatapointType_DPT_Colour_HSV: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Simple Field (h)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("h", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'h' field")
+		}
+
+		// Simple Field (s)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("s", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 's' field")
+		}
+
+		// Simple Field (v)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("v", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'v' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
 		// Reserved Field (Just skip the bytes)

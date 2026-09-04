@@ -383,25 +383,26 @@ const (
 	KnxDatapointType_DPT_MeteringValue                            KnxDatapointType = 333
 	KnxDatapointType_DPT_MBus_Address                             KnxDatapointType = 334
 	KnxDatapointType_DPT_Colour_RGB                               KnxDatapointType = 335
-	KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII                 KnxDatapointType = 336
-	KnxDatapointType_DPT_Tariff_ActiveEnergy                      KnxDatapointType = 337
-	KnxDatapointType_DPT_Prioritised_Mode_Control                 KnxDatapointType = 338
-	KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic             KnxDatapointType = 339
-	KnxDatapointType_DPT_DALI_Diagnostics                         KnxDatapointType = 340
-	KnxDatapointType_DPT_CombinedPosition                         KnxDatapointType = 341
-	KnxDatapointType_DPT_StatusSAB                                KnxDatapointType = 342
-	KnxDatapointType_DPT_Colour_xyY                               KnxDatapointType = 343
-	KnxDatapointType_DPT_Converter_Status                         KnxDatapointType = 344
-	KnxDatapointType_DPT_Converter_Test_Result                    KnxDatapointType = 345
-	KnxDatapointType_DPT_Battery_Info                             KnxDatapointType = 346
-	KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition KnxDatapointType = 347
-	KnxDatapointType_DPT_Brightness_Colour_Temperature_Control    KnxDatapointType = 348
-	KnxDatapointType_DPT_Colour_RGBW                              KnxDatapointType = 349
-	KnxDatapointType_DPT_Relative_Control_RGBW                    KnxDatapointType = 350
-	KnxDatapointType_DPT_Relative_Control_RGB                     KnxDatapointType = 351
-	KnxDatapointType_DPT_GeographicalLocation                     KnxDatapointType = 352
-	KnxDatapointType_DPT_TempRoomSetpSetF16_4                     KnxDatapointType = 353
-	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4                KnxDatapointType = 354
+	KnxDatapointType_DPT_Colour_HSV                               KnxDatapointType = 336
+	KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII                 KnxDatapointType = 337
+	KnxDatapointType_DPT_Tariff_ActiveEnergy                      KnxDatapointType = 338
+	KnxDatapointType_DPT_Prioritised_Mode_Control                 KnxDatapointType = 339
+	KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic             KnxDatapointType = 340
+	KnxDatapointType_DPT_DALI_Diagnostics                         KnxDatapointType = 341
+	KnxDatapointType_DPT_CombinedPosition                         KnxDatapointType = 342
+	KnxDatapointType_DPT_StatusSAB                                KnxDatapointType = 343
+	KnxDatapointType_DPT_Colour_xyY                               KnxDatapointType = 344
+	KnxDatapointType_DPT_Converter_Status                         KnxDatapointType = 345
+	KnxDatapointType_DPT_Converter_Test_Result                    KnxDatapointType = 346
+	KnxDatapointType_DPT_Battery_Info                             KnxDatapointType = 347
+	KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition KnxDatapointType = 348
+	KnxDatapointType_DPT_Brightness_Colour_Temperature_Control    KnxDatapointType = 349
+	KnxDatapointType_DPT_Colour_RGBW                              KnxDatapointType = 350
+	KnxDatapointType_DPT_Relative_Control_RGBW                    KnxDatapointType = 351
+	KnxDatapointType_DPT_Relative_Control_RGB                     KnxDatapointType = 352
+	KnxDatapointType_DPT_GeographicalLocation                     KnxDatapointType = 353
+	KnxDatapointType_DPT_TempRoomSetpSetF16_4                     KnxDatapointType = 354
+	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4                KnxDatapointType = 355
 )
 
 var KnxDatapointTypeValues []KnxDatapointType
@@ -745,6 +746,7 @@ func init() {
 		KnxDatapointType_DPT_MeteringValue,
 		KnxDatapointType_DPT_MBus_Address,
 		KnxDatapointType_DPT_Colour_RGB,
+		KnxDatapointType_DPT_Colour_HSV,
 		KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII,
 		KnxDatapointType_DPT_Tariff_ActiveEnergy,
 		KnxDatapointType_DPT_Prioritised_Mode_Control,
@@ -1827,7 +1829,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 336:
 		{ /* '336' */
-			return 1
+			return 601
 		}
 	case 337:
 		{ /* '337' */
@@ -1839,7 +1841,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 339:
 		{ /* '339' */
-			return 600
+			return 1
 		}
 	case 34:
 		{ /* '34' */
@@ -1851,7 +1853,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 341:
 		{ /* '341' */
-			return 800
+			return 600
 		}
 	case 342:
 		{ /* '342' */
@@ -1859,7 +1861,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 343:
 		{ /* '343' */
-			return 600
+			return 800
 		}
 	case 344:
 		{ /* '344' */
@@ -1899,14 +1901,18 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 352:
 		{ /* '352' */
-			return 1
+			return 600
 		}
 	case 353:
 		{ /* '353' */
-			return 100
+			return 1
 		}
 	case 354:
 		{ /* '354' */
+			return 100
+		}
+	case 355:
+		{ /* '355' */
 			return 101
 		}
 	case 36:
@@ -3265,11 +3271,11 @@ func (e KnxDatapointType) PlcValueTpe() values.PlcValueType {
 		}
 	case 336:
 		{ /* '336' */
-			return values.STRING
+			return values.Struct
 		}
 	case 337:
 		{ /* '337' */
-			return values.Struct
+			return values.STRING
 		}
 	case 338:
 		{ /* '338' */
@@ -3345,6 +3351,10 @@ func (e KnxDatapointType) PlcValueTpe() values.PlcValueType {
 		}
 	case 354:
 		{ /* '354' */
+			return values.Struct
+		}
+	case 355:
+		{ /* '355' */
 			return values.Struct
 		}
 	case 36:
@@ -4703,19 +4713,19 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 336:
 		{ /* '336' */
-			return "language code (ASCII)"
+			return "Colour HSV"
 		}
 	case 337:
 		{ /* '337' */
-			return "electrical energy with tariff"
+			return "language code (ASCII)"
 		}
 	case 338:
 		{ /* '338' */
-			return "priority control"
+			return "electrical energy with tariff"
 		}
 	case 339:
 		{ /* '339' */
-			return "diagnostic value"
+			return "priority control"
 		}
 	case 34:
 		{ /* '34' */
@@ -4727,39 +4737,39 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 341:
 		{ /* '341' */
-			return "combined position"
+			return "diagnostic value"
 		}
 	case 342:
 		{ /* '342' */
-			return "status sunblind & shutter actuator"
+			return "combined position"
 		}
 	case 343:
 		{ /* '343' */
-			return "colour xyY"
+			return "status sunblind & shutter actuator"
 		}
 	case 344:
 		{ /* '344' */
-			return "DALI converter status"
+			return "colour xyY"
 		}
 	case 345:
 		{ /* '345' */
-			return "DALI converter test result"
+			return "DALI converter status"
 		}
 	case 346:
 		{ /* '346' */
-			return "Battery Information"
+			return "DALI converter test result"
 		}
 	case 347:
 		{ /* '347' */
-			return "brightness colour temperature transition"
+			return "Battery Information"
 		}
 	case 348:
 		{ /* '348' */
-			return "brightness colour temperature control"
+			return "brightness colour temperature transition"
 		}
 	case 349:
 		{ /* '349' */
-			return "RGBW value 4x(0..100%)"
+			return "brightness colour temperature control"
 		}
 	case 35:
 		{ /* '35' */
@@ -4767,22 +4777,26 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 350:
 		{ /* '350' */
-			return "RGBW relative control"
+			return "RGBW value 4x(0..100%)"
 		}
 	case 351:
 		{ /* '351' */
-			return "RGB relative control"
+			return "RGBW relative control"
 		}
 	case 352:
 		{ /* '352' */
-			return "geographical location (longitude and latitude) expressed in degrees"
+			return "RGB relative control"
 		}
 	case 353:
 		{ /* '353' */
-			return "Temperature setpoint setting for 4 HVAC Modes"
+			return "geographical location (longitude and latitude) expressed in degrees"
 		}
 	case 354:
 		{ /* '354' */
+			return "Temperature setpoint setting for 4 HVAC Modes"
+		}
+	case 355:
+		{ /* '355' */
 			return "Temperature setpoint shift setting for 4 HVAC Modes"
 		}
 	case 36:
@@ -6141,19 +6155,19 @@ func (e KnxDatapointType) Id() string {
 		}
 	case 336:
 		{ /* '336' */
-			return "DPST-234-1"
+			return "DPST-232-601"
 		}
 	case 337:
 		{ /* '337' */
-			return "DPST-235-1"
+			return "DPST-234-1"
 		}
 	case 338:
 		{ /* '338' */
-			return "DPST-236-1"
+			return "DPST-235-1"
 		}
 	case 339:
 		{ /* '339' */
-			return "DPST-237-600"
+			return "DPST-236-1"
 		}
 	case 34:
 		{ /* '34' */
@@ -6161,43 +6175,43 @@ func (e KnxDatapointType) Id() string {
 		}
 	case 340:
 		{ /* '340' */
-			return "DPST-238-600"
+			return "DPST-237-600"
 		}
 	case 341:
 		{ /* '341' */
-			return "DPST-240-800"
+			return "DPST-238-600"
 		}
 	case 342:
 		{ /* '342' */
-			return "DPST-241-800"
+			return "DPST-240-800"
 		}
 	case 343:
 		{ /* '343' */
-			return "DPST-242-600"
+			return "DPST-241-800"
 		}
 	case 344:
 		{ /* '344' */
-			return "DPST-244-600"
+			return "DPST-242-600"
 		}
 	case 345:
 		{ /* '345' */
-			return "DPST-245-600"
+			return "DPST-244-600"
 		}
 	case 346:
 		{ /* '346' */
-			return "DPST-246-600"
+			return "DPST-245-600"
 		}
 	case 347:
 		{ /* '347' */
-			return "DPST-249-600"
+			return "DPST-246-600"
 		}
 	case 348:
 		{ /* '348' */
-			return "DPST-250-600"
+			return "DPST-249-600"
 		}
 	case 349:
 		{ /* '349' */
-			return "DPST-251-600"
+			return "DPST-250-600"
 		}
 	case 35:
 		{ /* '35' */
@@ -6205,22 +6219,26 @@ func (e KnxDatapointType) Id() string {
 		}
 	case 350:
 		{ /* '350' */
-			return "DPST-252-600"
+			return "DPST-251-600"
 		}
 	case 351:
 		{ /* '351' */
-			return "DPST-254-600"
+			return "DPST-252-600"
 		}
 	case 352:
 		{ /* '352' */
-			return "DPST-255-1"
+			return "DPST-254-600"
 		}
 	case 353:
 		{ /* '353' */
-			return "DPST-275-100"
+			return "DPST-255-1"
 		}
 	case 354:
 		{ /* '354' */
+			return "DPST-275-100"
+		}
+	case 355:
+		{ /* '355' */
 			return "DPST-275-101"
 		}
 	case 36:
@@ -7579,19 +7597,19 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 336:
 		{ /* '336' */
-			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
 		}
 	case 337:
 		{ /* '337' */
-			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
 		}
 	case 338:
 		{ /* '338' */
-			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
 		}
 	case 339:
 		{ /* '339' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
 		}
 	case 34:
 		{ /* '34' */
@@ -7599,43 +7617,43 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 340:
 		{ /* '340' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
 		}
 	case 341:
 		{ /* '341' */
-			return KnxDatapointMainType_DPT_POSITIONS
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
 		}
 	case 342:
 		{ /* '342' */
-			return KnxDatapointMainType_DPT_STATUS_32_BIT
+			return KnxDatapointMainType_DPT_POSITIONS
 		}
 	case 343:
 		{ /* '343' */
-			return KnxDatapointMainType_DPT_STATUS_48_BIT
+			return KnxDatapointMainType_DPT_STATUS_32_BIT
 		}
 	case 344:
 		{ /* '344' */
-			return KnxDatapointMainType_DPT_CONVERTER_STATUS
+			return KnxDatapointMainType_DPT_STATUS_48_BIT
 		}
 	case 345:
 		{ /* '345' */
-			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+			return KnxDatapointMainType_DPT_CONVERTER_STATUS
 		}
 	case 346:
 		{ /* '346' */
-			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
 		}
 	case 347:
 		{ /* '347' */
-			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
 		}
 	case 348:
 		{ /* '348' */
-			return KnxDatapointMainType_DPT_STATUS_24_BIT
+			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
 		}
 	case 349:
 		{ /* '349' */
-			return KnxDatapointMainType_DPT_COLOUR_RGBW
+			return KnxDatapointMainType_DPT_STATUS_24_BIT
 		}
 	case 35:
 		{ /* '35' */
@@ -7643,22 +7661,26 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 350:
 		{ /* '350' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+			return KnxDatapointMainType_DPT_COLOUR_RGBW
 		}
 	case 351:
 		{ /* '351' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
 		}
 	case 352:
 		{ /* '352' */
-			return KnxDatapointMainType_DPT_F32F32
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
 		}
 	case 353:
 		{ /* '353' */
-			return KnxDatapointMainType_DPT_F16F16F16F16
+			return KnxDatapointMainType_DPT_F32F32
 		}
 	case 354:
 		{ /* '354' */
+			return KnxDatapointMainType_DPT_F16F16F16F16
+		}
+	case 355:
+		{ /* '355' */
 			return KnxDatapointMainType_DPT_F16F16F16F16
 		}
 	case 36:
@@ -8487,46 +8509,48 @@ func KnxDatapointTypeByValue(value uint32) (enum KnxDatapointType, ok bool) {
 	case 335:
 		return KnxDatapointType_DPT_Colour_RGB, true
 	case 336:
-		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII, true
+		return KnxDatapointType_DPT_Colour_HSV, true
 	case 337:
-		return KnxDatapointType_DPT_Tariff_ActiveEnergy, true
+		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII, true
 	case 338:
-		return KnxDatapointType_DPT_Prioritised_Mode_Control, true
+		return KnxDatapointType_DPT_Tariff_ActiveEnergy, true
 	case 339:
-		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic, true
+		return KnxDatapointType_DPT_Prioritised_Mode_Control, true
 	case 34:
 		return KnxDatapointType_DPT_UpDown, true
 	case 340:
-		return KnxDatapointType_DPT_DALI_Diagnostics, true
+		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic, true
 	case 341:
-		return KnxDatapointType_DPT_CombinedPosition, true
+		return KnxDatapointType_DPT_DALI_Diagnostics, true
 	case 342:
-		return KnxDatapointType_DPT_StatusSAB, true
+		return KnxDatapointType_DPT_CombinedPosition, true
 	case 343:
-		return KnxDatapointType_DPT_Colour_xyY, true
+		return KnxDatapointType_DPT_StatusSAB, true
 	case 344:
-		return KnxDatapointType_DPT_Converter_Status, true
+		return KnxDatapointType_DPT_Colour_xyY, true
 	case 345:
-		return KnxDatapointType_DPT_Converter_Test_Result, true
+		return KnxDatapointType_DPT_Converter_Status, true
 	case 346:
-		return KnxDatapointType_DPT_Battery_Info, true
+		return KnxDatapointType_DPT_Converter_Test_Result, true
 	case 347:
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition, true
+		return KnxDatapointType_DPT_Battery_Info, true
 	case 348:
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control, true
+		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition, true
 	case 349:
-		return KnxDatapointType_DPT_Colour_RGBW, true
+		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control, true
 	case 35:
 		return KnxDatapointType_DPT_OpenClose, true
 	case 350:
-		return KnxDatapointType_DPT_Relative_Control_RGBW, true
+		return KnxDatapointType_DPT_Colour_RGBW, true
 	case 351:
-		return KnxDatapointType_DPT_Relative_Control_RGB, true
+		return KnxDatapointType_DPT_Relative_Control_RGBW, true
 	case 352:
-		return KnxDatapointType_DPT_GeographicalLocation, true
+		return KnxDatapointType_DPT_Relative_Control_RGB, true
 	case 353:
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_4, true
+		return KnxDatapointType_DPT_GeographicalLocation, true
 	case 354:
+		return KnxDatapointType_DPT_TempRoomSetpSetF16_4, true
+	case 355:
 		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4, true
 	case 36:
 		return KnxDatapointType_DPT_Start, true
@@ -9202,16 +9226,18 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_MBus_Address, true
 	case "DPT_Colour_RGB":
 		return KnxDatapointType_DPT_Colour_RGB, true
+	case "DPT_Colour_HSV":
+		return KnxDatapointType_DPT_Colour_HSV, true
 	case "DPT_LanguageCodeAlpha2_ASCII":
 		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII, true
 	case "DPT_Tariff_ActiveEnergy":
 		return KnxDatapointType_DPT_Tariff_ActiveEnergy, true
 	case "DPT_Prioritised_Mode_Control":
 		return KnxDatapointType_DPT_Prioritised_Mode_Control, true
-	case "DPT_DALI_Control_Gear_Diagnostic":
-		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic, true
 	case "DPT_UpDown":
 		return KnxDatapointType_DPT_UpDown, true
+	case "DPT_DALI_Control_Gear_Diagnostic":
+		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic, true
 	case "DPT_DALI_Diagnostics":
 		return KnxDatapointType_DPT_DALI_Diagnostics, true
 	case "DPT_CombinedPosition":
@@ -9230,10 +9256,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition, true
 	case "DPT_Brightness_Colour_Temperature_Control":
 		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control, true
-	case "DPT_Colour_RGBW":
-		return KnxDatapointType_DPT_Colour_RGBW, true
 	case "DPT_OpenClose":
 		return KnxDatapointType_DPT_OpenClose, true
+	case "DPT_Colour_RGBW":
+		return KnxDatapointType_DPT_Colour_RGBW, true
 	case "DPT_Relative_Control_RGBW":
 		return KnxDatapointType_DPT_Relative_Control_RGBW, true
 	case "DPT_Relative_Control_RGB":
@@ -9999,16 +10025,18 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_MBus_Address"
 	case KnxDatapointType_DPT_Colour_RGB:
 		return "DPT_Colour_RGB"
+	case KnxDatapointType_DPT_Colour_HSV:
+		return "DPT_Colour_HSV"
 	case KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII:
 		return "DPT_LanguageCodeAlpha2_ASCII"
 	case KnxDatapointType_DPT_Tariff_ActiveEnergy:
 		return "DPT_Tariff_ActiveEnergy"
 	case KnxDatapointType_DPT_Prioritised_Mode_Control:
 		return "DPT_Prioritised_Mode_Control"
-	case KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic:
-		return "DPT_DALI_Control_Gear_Diagnostic"
 	case KnxDatapointType_DPT_UpDown:
 		return "DPT_UpDown"
+	case KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic:
+		return "DPT_DALI_Control_Gear_Diagnostic"
 	case KnxDatapointType_DPT_DALI_Diagnostics:
 		return "DPT_DALI_Diagnostics"
 	case KnxDatapointType_DPT_CombinedPosition:
@@ -10027,10 +10055,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Brightness_Colour_Temperature_Transition"
 	case KnxDatapointType_DPT_Brightness_Colour_Temperature_Control:
 		return "DPT_Brightness_Colour_Temperature_Control"
-	case KnxDatapointType_DPT_Colour_RGBW:
-		return "DPT_Colour_RGBW"
 	case KnxDatapointType_DPT_OpenClose:
 		return "DPT_OpenClose"
+	case KnxDatapointType_DPT_Colour_RGBW:
+		return "DPT_Colour_RGBW"
 	case KnxDatapointType_DPT_Relative_Control_RGBW:
 		return "DPT_Relative_Control_RGBW"
 	case KnxDatapointType_DPT_Relative_Control_RGB:

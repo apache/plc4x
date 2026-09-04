@@ -46,7 +46,7 @@
     <!-- PackageLicenseUrl is deprecated (NU5125); the SPDX expression replaces it. -->
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <!-- Overridden by the Maven build via -p:Version=${project.version}. -->
-    <Version>1.0.0-SNAPSHOT</Version>
+    <Version>1.1.0-SNAPSHOT</Version>
   </PropertyGroup>
 
 </Project>

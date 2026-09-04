@@ -29,7 +29,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:exclamation[role="yellow"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |ADS /AMS
@@ -50,7 +50,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |CANopen
@@ -99,7 +99,7 @@ implementation's driver manager - a protocol specification on its own is not eno
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:exclamation[role="yellow"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
 |icon:times[role="red"]
 
 |IEC-60870

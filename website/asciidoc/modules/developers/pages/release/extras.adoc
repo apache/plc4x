@@ -32,7 +32,7 @@ IMPORTANT: Please be sure to execute the release with a Java version 11 or the K
 [subs="verbatim,attributes"]
 ----
    ./mvnw -P with-c,with-go,with-java -DbranchName=rel/{current-short-version} release:branch
---
+----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
 * [ ] Switch to the release branch and prepare the `RELEASE_NOTES`

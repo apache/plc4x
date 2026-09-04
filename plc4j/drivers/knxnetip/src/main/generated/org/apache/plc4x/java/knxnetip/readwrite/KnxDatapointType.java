@@ -698,43 +698,45 @@ public enum KnxDatapointType {
 
   DPT_Colour_RGB((long) 335L, (int) 600, PlcValueType.Struct, "RGB value 3x(0..255)", "DPST-232-600", KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB),
 
-  DPT_LanguageCodeAlpha2_ASCII((long) 336L, (int) 1, PlcValueType.STRING, "language code (ASCII)", "DPST-234-1", KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1),
+  DPT_Colour_HSV((long) 336L, (int) 601, PlcValueType.Struct, "Colour HSV", "DPST-232-601", KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB),
 
-  DPT_Tariff_ActiveEnergy((long) 337L, (int) 1, PlcValueType.Struct, "electrical energy with tariff", "DPST-235-1", KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY),
+  DPT_LanguageCodeAlpha2_ASCII((long) 337L, (int) 1, PlcValueType.STRING, "language code (ASCII)", "DPST-234-1", KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1),
 
-  DPT_Prioritised_Mode_Control((long) 338L, (int) 1, PlcValueType.Struct, "priority control", "DPST-236-1", KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL),
+  DPT_Tariff_ActiveEnergy((long) 338L, (int) 1, PlcValueType.Struct, "electrical energy with tariff", "DPST-235-1", KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY),
 
-  DPT_DALI_Control_Gear_Diagnostic((long) 339L, (int) 600, PlcValueType.Struct, "diagnostic value", "DPST-237-600", KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT),
+  DPT_Prioritised_Mode_Control((long) 339L, (int) 1, PlcValueType.Struct, "priority control", "DPST-236-1", KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL),
 
-  DPT_DALI_Diagnostics((long) 340L, (int) 600, PlcValueType.Struct, "diagnostic value", "DPST-238-600", KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT),
+  DPT_DALI_Control_Gear_Diagnostic((long) 340L, (int) 600, PlcValueType.Struct, "diagnostic value", "DPST-237-600", KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT),
 
-  DPT_CombinedPosition((long) 341L, (int) 800, PlcValueType.Struct, "combined position", "DPST-240-800", KnxDatapointMainType.DPT_POSITIONS),
+  DPT_DALI_Diagnostics((long) 341L, (int) 600, PlcValueType.Struct, "diagnostic value", "DPST-238-600", KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT),
 
-  DPT_StatusSAB((long) 342L, (int) 800, PlcValueType.Struct, "status sunblind & shutter actuator", "DPST-241-800", KnxDatapointMainType.DPT_STATUS_32_BIT),
+  DPT_CombinedPosition((long) 342L, (int) 800, PlcValueType.Struct, "combined position", "DPST-240-800", KnxDatapointMainType.DPT_POSITIONS),
 
-  DPT_Colour_xyY((long) 343L, (int) 600, PlcValueType.Struct, "colour xyY", "DPST-242-600", KnxDatapointMainType.DPT_STATUS_48_BIT),
+  DPT_StatusSAB((long) 343L, (int) 800, PlcValueType.Struct, "status sunblind & shutter actuator", "DPST-241-800", KnxDatapointMainType.DPT_STATUS_32_BIT),
 
-  DPT_Converter_Status((long) 344L, (int) 600, PlcValueType.Struct, "DALI converter status", "DPST-244-600", KnxDatapointMainType.DPT_CONVERTER_STATUS),
+  DPT_Colour_xyY((long) 344L, (int) 600, PlcValueType.Struct, "colour xyY", "DPST-242-600", KnxDatapointMainType.DPT_STATUS_48_BIT),
 
-  DPT_Converter_Test_Result((long) 345L, (int) 600, PlcValueType.Struct, "DALI converter test result", "DPST-245-600", KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT),
+  DPT_Converter_Status((long) 345L, (int) 600, PlcValueType.Struct, "DALI converter status", "DPST-244-600", KnxDatapointMainType.DPT_CONVERTER_STATUS),
 
-  DPT_Battery_Info((long) 346L, (int) 600, PlcValueType.Struct, "Battery Information", "DPST-246-600", KnxDatapointMainType.DPT_BATTERY_INFORMATION),
+  DPT_Converter_Test_Result((long) 346L, (int) 600, PlcValueType.Struct, "DALI converter test result", "DPST-245-600", KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT),
 
-  DPT_Brightness_Colour_Temperature_Transition((long) 347L, (int) 600, PlcValueType.Struct, "brightness colour temperature transition", "DPST-249-600", KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION),
+  DPT_Battery_Info((long) 347L, (int) 600, PlcValueType.Struct, "Battery Information", "DPST-246-600", KnxDatapointMainType.DPT_BATTERY_INFORMATION),
 
-  DPT_Brightness_Colour_Temperature_Control((long) 348L, (int) 600, PlcValueType.Struct, "brightness colour temperature control", "DPST-250-600", KnxDatapointMainType.DPT_STATUS_24_BIT),
+  DPT_Brightness_Colour_Temperature_Transition((long) 348L, (int) 600, PlcValueType.Struct, "brightness colour temperature transition", "DPST-249-600", KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION),
 
-  DPT_Colour_RGBW((long) 349L, (int) 600, PlcValueType.Struct, "RGBW value 4x(0..100%)", "DPST-251-600", KnxDatapointMainType.DPT_COLOUR_RGBW),
+  DPT_Brightness_Colour_Temperature_Control((long) 349L, (int) 600, PlcValueType.Struct, "brightness colour temperature control", "DPST-250-600", KnxDatapointMainType.DPT_STATUS_24_BIT),
 
-  DPT_Relative_Control_RGBW((long) 350L, (int) 600, PlcValueType.Struct, "RGBW relative control", "DPST-252-600", KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW),
+  DPT_Colour_RGBW((long) 350L, (int) 600, PlcValueType.Struct, "RGBW value 4x(0..100%)", "DPST-251-600", KnxDatapointMainType.DPT_COLOUR_RGBW),
 
-  DPT_Relative_Control_RGB((long) 351L, (int) 600, PlcValueType.Struct, "RGB relative control", "DPST-254-600", KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB),
+  DPT_Relative_Control_RGBW((long) 351L, (int) 600, PlcValueType.Struct, "RGBW relative control", "DPST-252-600", KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW),
 
-  DPT_GeographicalLocation((long) 352L, (int) 1, PlcValueType.Struct, "geographical location (longitude and latitude) expressed in degrees", "DPST-255-1", KnxDatapointMainType.DPT_F32F32),
+  DPT_Relative_Control_RGB((long) 352L, (int) 600, PlcValueType.Struct, "RGB relative control", "DPST-254-600", KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB),
 
-  DPT_TempRoomSetpSetF16_4((long) 353L, (int) 100, PlcValueType.Struct, "Temperature setpoint setting for 4 HVAC Modes", "DPST-275-100", KnxDatapointMainType.DPT_F16F16F16F16),
+  DPT_GeographicalLocation((long) 353L, (int) 1, PlcValueType.Struct, "geographical location (longitude and latitude) expressed in degrees", "DPST-255-1", KnxDatapointMainType.DPT_F32F32),
 
-  DPT_TempRoomSetpSetShiftF16_4((long) 354L, (int) 101, PlcValueType.Struct, "Temperature setpoint shift setting for 4 HVAC Modes", "DPST-275-101", KnxDatapointMainType.DPT_F16F16F16F16);
+  DPT_TempRoomSetpSetF16_4((long) 354L, (int) 100, PlcValueType.Struct, "Temperature setpoint setting for 4 HVAC Modes", "DPST-275-100", KnxDatapointMainType.DPT_F16F16F16F16),
+
+  DPT_TempRoomSetpSetShiftF16_4((long) 355L, (int) 101, PlcValueType.Struct, "Temperature setpoint shift setting for 4 HVAC Modes", "DPST-275-101", KnxDatapointMainType.DPT_F16F16F16F16);
 
   private static final Map<Long, KnxDatapointType> map;
 

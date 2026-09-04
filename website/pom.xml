@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-website</artifactId>
@@ -31,7 +31,7 @@
   <description />
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
     <bootstrap.version>5.3.3</bootstrap.version>
     <popper.version>2.8.0</popper.version>
     <jquery.version>4.0.0</jquery.version>
@@ -337,11 +337,10 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
         <executions>
           <!--
             The documentation refers to the current version in a lot of places (dependency
-            snippets, download instructions, ...) via the "current-last-released-version" and
+            snippets, download instructions, ...) via the "current-project-version" and
             "current-full-version" AsciiDoc attributes. Both are defined in the component
             descriptor "asciidoc/antora.yml", and were easy to forget when the version of the
             project was bumped. This keeps them in sync with the version of the Maven project.
@@ -363,8 +362,8 @@
               <regex>true</regex>
               <replacements>
                 <replacement>
-                  <token>current-last-released-version: '[^']*'</token>
-                  <value>current-last-released-version: '${project.version}'</value>
+                  <token>current-project-version: '[^']*'</token>
+                  <value>current-project-version: '${project.version}'</value>
                 </replacement>
                 <replacement>
                   <token>current-full-version: '[^']*'</token>
@@ -396,7 +395,6 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>2.0.1</version>
 
         <executions>
           <execution>
@@ -472,7 +470,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

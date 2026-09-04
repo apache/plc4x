@@ -4065,6 +4065,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 _map["b"] = new PlcUSINT((byte) b);
                 return new PlcStruct(_map);
             }
+            else if (Equals(datapointType, KnxDatapointType.DPT_Colour_HSV))
+            {
+                // Struct
+                {
+                    var reserved = readBuffer.ReadByte("reserved", 8);
+                    if (!Equals(reserved, (byte) (0x00))) { /* mspec reserved: value differs from the spec default */ }
+                }
+                var h = readBuffer.ReadByte("h", 8);
+                var s = readBuffer.ReadByte("s", 8);
+                var v = readBuffer.ReadByte("v", 8);
+                var _map = new System.Collections.Generic.Dictionary<string, IPlcValue>();
+                _map["h"] = new PlcUSINT((byte) h);
+                _map["s"] = new PlcUSINT((byte) s);
+                _map["v"] = new PlcUSINT((byte) v);
+                return new PlcStruct(_map);
+            }
             else if (Equals(datapointType, KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII))
             {
                 // STRING
@@ -6838,6 +6854,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 writeBuffer.WriteByte("g", 8, (byte) _value.GetValue("g").GetByte());
                 writeBuffer.WriteByte("b", 8, (byte) _value.GetValue("b").GetByte());
             }
+            else if (Equals(datapointType, KnxDatapointType.DPT_Colour_HSV))
+            {
+                // Struct
+                writeBuffer.WriteByte("reserved", 8, (byte) (0x00));
+                writeBuffer.WriteByte("h", 8, (byte) _value.GetValue("h").GetByte());
+                writeBuffer.WriteByte("s", 8, (byte) _value.GetValue("s").GetByte());
+                writeBuffer.WriteByte("v", 8, (byte) _value.GetValue("v").GetByte());
+            }
             else if (Equals(datapointType, KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII))
             {
                 // STRING
@@ -9337,6 +9361,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 lengthInBits += 8;
             }
             else if (Equals(datapointType, KnxDatapointType.DPT_Colour_RGB))
+            {
+                // Struct
+                lengthInBits += 8;
+                lengthInBits += 8;
+                lengthInBits += 8;
+                lengthInBits += 8;
+            }
+            else if (Equals(datapointType, KnxDatapointType.DPT_Colour_HSV))
             {
                 // Struct
                 lengthInBits += 8;

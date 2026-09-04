@@ -28,23 +28,11 @@ The Data Dictionary needs to be enabled on the PLC.
 NOTE: The driver is available in Java and in Plc4Py. The tag address syntax differs slightly
 between the two; where that is the case it is called out below.
 
-== Connection String Options
-
-[NOTE]
-====
-Array selection uses the shared notation - a single index, an inclusive range, and
-optionally the array's declared lower bound, placed before the type. See
-xref:array-notation.adoc[Addressing arrays].
-====
-
-include::partial$umas.adoc[]
 == Supported Operations
 
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-3+|Supported Operations
 
 |
 2+| `read`
@@ -57,11 +45,14 @@ include::partial$umas.adoc[]
 
 |
 2+| `ping`
+
+|
+| `subscribe`
+| Java, polling-emulated. Go, native - the Go driver's subscriptions are not built on
+top of polling reads.
 |===
 
-== Individual Resource Address Format
-
-=== Connection String
+== Connection String
 
 UMAS has the following connection string format:-
 ----
@@ -73,6 +64,14 @@ umas:tcp://127.0.0.1:502
 ----
 Note the transport, port and option fields are optional.
 
+== Connection String Options
+
+include::partial$umas.adoc[]
+
+== Tag Addresses
+
+Addressing is implemented in Go, Java and Python. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
 
 === General Format
 
@@ -91,18 +90,15 @@ e.g. A tag with a BOOL data type could be `TESTING_BOOL_1`, whereas if it is a U
 followed by the child `TESTING_UDT_1.START`, which in itself could be a BOOL.
 An index in square brackets selects a single element and may appear at any position of the path.
 
-.Examples
-[cols="2" ,options="header"]
-|===
-|Address |Meaning
-|`g_r32` |a simple global variable
-|`g_plant.meta.r32` |a nested struct member
-|`g_arrInt[3]` |the fourth element of an array
-|`g_plant.items[2].value` |mixed struct and array access
-|===
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
 
 IMPORTANT: The Java driver takes the data type from the PLC's data dictionary, so an address carries
-no `:{data-type}` suffix - appending one makes the address invalid.
+no `:\{data-type}` suffix - appending one makes the address invalid.
 
 === Memory Areas
 
@@ -137,3 +133,30 @@ The following data types are supported
 - DATE
 - TOD (Time of Day)
 - DATE_AND_TIME
+
+=== Examples
+
+[cols="2" ,options="header"]
+|===
+|Address |Meaning
+|`g_r32` |a simple global variable
+|`g_plant.meta.r32` |a nested struct member
+|`g_arrInt[3]` |the fourth element of an array
+|`g_plant.items[2].value` |mixed struct and array access
+|===
+
+== Notes and Tips
+
+The Go driver's generated `DataItem` parser has no case for `DATE`, `TIME_OF_DAY` (`TOD`) or
+`DATE_AND_TIME` - by itself it would fall through to "unsupported type" for those three.
+The driver works around that gap: `decodeReadResponse` and `encodeWriteValue` in
+`plc4go/internal/umas/Values.go` hand-decode and hand-encode all three temporal types (plus
+`STRING`), the same way plc4j's `UmasConnection` does, so reads and writes of `DATE` and
+`TIME_OF_DAY` tags succeed rather than being refused. Every data type listed above reads and
+writes in both languages.
+
+UMAS ships no captured test data in any language - there is no packet capture or golden byte
+sequence for either driver to compare against. The Java and Go drivers are instead verified
+against each other: their symbolic-address pattern is byte-for-byte identical, and the Go
+temporal/string decoding above is a deliberate port of plc4j's hand-decoding. Treat this driver's
+correctness as validated by cross-implementation agreement, not by a real captured exchange.

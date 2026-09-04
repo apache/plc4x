@@ -51,7 +51,7 @@ fi
 
 # Maven 4 prefixes even quiet output with "[INFO] [stdout] ", so take the last token of the
 # last line rather than the whole output.
-PROJECT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec | tail -n 1 | awk '{print $NF}')
+PROJECT_VERSION=$("$DIRECTORY/mvnw" -f "$DIRECTORY/pom.xml" -q --non-recursive -Dexpression=project.version -DforceStdout help:evaluate | tail -n 1 | awk '{print $NF}')
 if [[ ! "$PROJECT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?$ ]]; then
     echo "❌ Could not read a usable project version, got '$PROJECT_VERSION'."
     echo "   Everything below derives the branch and tag names from it, so aborting."
@@ -118,9 +118,17 @@ if [[ -z "$GIT_USER_NAME" || -z "$GIT_USER_EMAIL" ]]; then
   exit 1
 fi
 
+# The container mounts this repository, so git inside it reads the very same ".git/config".
+# If that enables commit/tag signing, every commit the release plugin creates fails with
+# "gpg failed to sign the data", as the container has neither the key nor a gpg-agent. Passing
+# the identity and the signing switches as GIT_CONFIG_* environment variables overrides the
+# config files for the container only, so nothing is written back into the user's repository.
 if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
-        bash -c "git config user.name \"$GIT_USER_NAME\" && \
-           git config user.email \"$GIT_USER_EMAIL\" && \
+        bash -c "export GIT_CONFIG_COUNT=4 \
+             GIT_CONFIG_KEY_0=user.name GIT_CONFIG_VALUE_0=\"$GIT_USER_NAME\" \
+             GIT_CONFIG_KEY_1=user.email GIT_CONFIG_VALUE_1=\"$GIT_USER_EMAIL\" \
+             GIT_CONFIG_KEY_2=commit.gpgsign GIT_CONFIG_VALUE_2=false \
+             GIT_CONFIG_KEY_3=tag.gpgsign GIT_CONFIG_VALUE_3=false && \
            /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpushChanges=false -DdevelopmentVersion='$NEW_VERSION' -DbranchName='$BRANCH_NAME'"; then
     echo "❌ Got non-0 exit code from docker compose, aborting."
     exit 1

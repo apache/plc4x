@@ -84,7 +84,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		return nil, errors.Errorf("couldn't find transport for given transport url %v", transportUrl)
 	}
 	// Provide a default-port to the transport, used if the user doesn't provide one in the connection string.
-	driverOptions["defaultUdpPort"] = []string{strconv.FormatUint(uint64(model.BacnetConstants_BACNETUDPDEFAULTPORT), 10)}
+	driverOptions["defaultUdpPort"] = []string{strconv.FormatUint(uint64(model.Constant_BACNETUDPDEFAULTPORT), 10)}
 	// Set so_reuse by default so multiple BACnet processes can share the BACnet/IP UDP port.
 	if _, ok := driverOptions["so-reuse"]; !ok {
 		driverOptions["so-reuse"] = []string{"true"}
@@ -101,7 +101,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	// bind. Callers that need to co-locate multiple BACnet connections in one
 	// process can override via the "local-port" driver option (uint), or 0
 	// for explicit ephemeral.
-	localPort := int(model.BacnetConstants_BACNETUDPDEFAULTPORT)
+	localPort := int(model.Constant_BACNETUDPDEFAULTPORT)
 	if val, ok := driverOptions["local-port"]; ok && len(val) > 0 {
 		if parsed, parseErr := strconv.Atoi(val[0]); parseErr != nil {
 			connectionLog.Warn().Err(parseErr).Str("local-port", val[0]).Msg("ignoring invalid local-port option")

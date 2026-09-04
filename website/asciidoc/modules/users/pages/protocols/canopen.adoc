@@ -21,142 +21,76 @@
 
 image::users/protocols/can_banner.png[banner,512,167]
 
+CANopen is a specific protocol built on top of CAN bus, widely used to coordinate
+simple field devices - drives, I/O modules, sensors - that share a single bus.
+The CANopen specification defines an Object Dictionary (OD), and this driver
+honors that structure through index and sub-index addressing of fields. It does
+not ship an Electronic Data Sheet (EDS) parser, leaving that to applications that
+wish to utilize one.
 
-
-
-
-== CAN in Automation
-
-CANopen is a specific protocol built on top of CAN bus.
-
-== Connection String Options
-
-include::partial$canopen.adoc[]
+== Supported Operations
 
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-3+|Supported Operations
-
-| CANopen PDO
-| `read` / `write`
-| PDO messages are broadcasted to the bus and have to be mapped at application layer.
 
 | CANopen SDO
 | `read` / `write`
 | SDO are request/response conversations. Both read and write path is supported.
 
+| CANopen PDO
+| `write`
+| PDO messages are broadcasted to the bus and have to be mapped at application layer.
+
 |
 | `subscribe`
 | - Receiving PDO messages requires construction of valid subscription.
-- It is possible to subscribe to CANopen NMT messages.
+- It is possible to subscribe to CANopen NMT and HEARTBEAT messages.
 |===
 
-== More details on the driver
+== Connection String
 
-CAN, despite (or due) to its popularity has ambiguous meaning.
-There are multiple articles and sources which attempts to give introduction, yet very few of them is consistent between each other.
+The connection string layout is `canopen:<transport-code>://<transport-address>`.
 
-There are two dominant formats of frames - CAN 2.0A and 2.0B:
+- `canopen:can-socketcan://can0`
+- `canopen:can-virtualcan://test`
 
-- CAN 2.0A uses 11 bit identifier and up to 8 bytes of data.
-- CAN 2.0B uses 29 bit identifier and up to 8 bytes of data.
+== Connection String Options
 
-To make things worse with introduction of CAN FD amount of combinations increased even more.
-Double check frame format as this integration supports CANopen and does not support CANopen FD nor CAN 2.0B.
+include::partial$canopen.adoc[]
 
-Further reading on CAN flavors:
-https://en.wikipedia.org/wiki/CAN_bus[https://en.wikipedia.org/wiki/CAN_bus]
+== Tag Addresses
 
-Default transport used with this protocol is socketcan.
-Currently, only 2.0A format (up to 8 bytes of data) is supported.
+Addressing is implemented in Java. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
 
-Implemented driver supports currently socketcan transport.
-Change of transport requires code modifications and injection of new "transport" type which will encode CANopen payloads to specific frame format.
-
-Socketcan seems to be most widespread way to access CAN bus.
-It also masks different hardware variants which might come with their own drivers.
-
-The CANopen specification defines Object Dictionary (OD).
-This driver does honor OD structure through usage of index and sub index for addressing fields.
-It does not ship Electronic Data Sheet (EDS) parser leaving it for applications who wish to utilize it.
-
-== Address Format
+=== General Format
 
 CANopen specification defines several groups of addresses dedicated to certain kind of operations.
 Critical services and message exchanges related with them have lower identifiers making them wining eventual bus access.
 
-The array size block is necessary only if application expect same value several times.
-If SDO returns for example 4 values of UNSIGNED8 it can be declared as `<service>:<nodeId>:UNSIGNED8[4]` for PDO.
-Equivalent for SDO is `<service>:<nodeId>:<index>/<subindex>:UNSIGNED8[4]`.
+SDO addresses request/response reads and writes against a single Object Dictionary entry: `SDO:nodeId:index/subindex:type[arraySize]`.
+Both expedited and segmented transfer modes are supported, chosen automatically based on payload length; block transfer is not supported.
+All numeric values - nodeId, index, subindex - can be specified using hexadecimal notation (ie. `0xA`). An optional `/answerNodeId` after the
+node ID lets the response be expected from a different node than the request was sent to.
 
-[cols="1,1a,1a,2a"]
-|===
-|Service | Format |Supported operations |Description
+PDO addresses identify one of the four transmit or receive PDO channels of a node: `TRANSMIT_PDO_1:nodeId:type[arraySize]` through
+`RECEIVE_PDO_4:nodeId:type[arraySize]`. PDO is an asynchronous broadcast, so receiving it requires a subscription; a subscriber is notified
+with the value mapped to the type given in the address.
 
-| SDO
-| SDO:nodeId:index/subindex:type[arraySize]
-| - `read`
-- `write`
-| SDO is for request/response communication.
-Both expedited and segmented modes are supported.
-No support for block transfer.
+NMT addresses target the Network Management service, which is broadcast using CAN node ID `0` and carries the highest priority on the bus.
+The syntax is `NMT` or `NMT:nodeId`; omitting the node ID (or using `0`) is a wildcard that subscribes to state updates for all bus
+participants. A subscription receives a structure with two fields, `node` (USINT) and `state` (USINT). Writable values indicate the
+requested NMT state and are supplied as USINT: `0x01` START, `0x02` STOP, `0x80` PRE_OPERATIONAL, `0x81` RESET_NODE, `0x82`
+RESET_COMMUNICATION. The `NMTStateRequest` enumeration can be used on the application side instead of the plain numbers.
 
-Transfer kind is automatically determined based on payload length.
-All numeric values - ndodeId, index, subindex can be specified using hexadecimal notation (ie. `0xA`).
+Heartbeat addresses subscribe to the lowest-priority service on the bus, which still indicates a node's operating state (booted,
+operational). The syntax is `HEARTBEAT` or `HEARTBEAT:nodeId`; as with NMT, omitting the node ID (or using `0`) subscribes to all bus
+participants. A subscription receives the same two-field structure as NMT: `node` (USINT) and `state` (USINT).
 
-| PDO
-|
- - TRANSMIT_PDO_1:nodeId:type[arraySize]
- - RECEIVE_PDO_1:nodeId:type[arraySize]
- - TRANSMIT_PDO_2:nodeId:type[arraySize]
- - RECEIVE_PDO_2:nodeId:type[arraySize]
- - TRANSMIT_PDO_3:nodeId:type[arraySize]
- - RECEIVE_PDO_3:nodeId:type[arraySize]
- - TRANSMIT_PDO_4:nodeId:type[arraySize]
- - RECEIVE_PDO_4:nodeId:type[arraySize]
-| - `subscribe`
-- `write`
-| PDO is an asynchronous operation hence receiving of it requires subscription.
-Check Apache PLC4X API documentation for more detailed example of how to use subscriptions API.
-Subscriber will be notified with value mapped to type defined in field syntax.
+=== Data Types
 
-| NMT
-| - NMT
-- NMT:nodeId
-| - `subscribe`
-- `write`
-| NMT messages are sent using CAN node ID `0`.
-They have the highest priority on the bus.
-Messages of this kind indicate operating state of a node (booted, operational).
-
-Subscriptions to this service receive structure with two fields: `node` (USINT) and `state` (USINT).
-If subscription sets `nodeId` to 0 it will receive state updates for all bus participants.
-Supported write values (USINT):
-
- * `0x01` -> START
- * `0x02` -> STOP
- * `0x80` -> PRE_OPERATIONAL
- * `0x81` -> RESET_NODE
- * `0x82` -> RESET_COMMUNICATION
-
-On application side, for convenience, you can use `NMTStateRequest` enumeration instead of plain numbers.
-Be aware that passed number is parsed as an enum, so vendor customization on unused bits are not supported.
-
-| HEARTBEAT
-| - HEARTBEAT
-- HEARTBEAT:nodeId
-| - `subscribe`
-| HEARTBEAT messages have the lowest priority on the bus.
-They have the highest priority on the bus.
-Messages of this kind indicate operating state of an node (booted, operational).
-
-Subscriptions to this service receive structure with two fields: `node` (USINT) and `state` (USINT).
-If subscription sets `nodeId` to 0 it will receive state updates for all bus participants.
-
-|===
-
-Below table contains type mapping defined in CANopen specification.
+CANopen defines its own set of data types, which this driver maps onto PLC4X types as follows:
 
 [cols="2,2,2"]
 |===
@@ -189,11 +123,43 @@ Below table contains type mapping defined in CANopen specification.
 |===
 
 All string types are decoded using UTF-8 encoding regardless of their kind (octet, visible, unicode).
-In case if device returns text using different encoding it is recommended to use `RECORD` type and construct text manually above PLC4X.
+In case a device returns text using a different encoding, it is recommended to use the `RECORD` type and construct the text manually above PLC4X.
 
-The size in case of variable length structures is automatically assumed to full length of SDO answer.
-In case of writing length of field can be ommited.
-For example request `write(SDO:1:2/3:RECORD, payload)` will try to write whole payload to specified address.
-Same applies to responses sent by devies as requester often might not know full length of reply payload.
+The size of variable-length structures is automatically assumed to be the full length of the SDO answer.
+When writing, the length of the field can be omitted; for example `write(SDO:1:2/3:RECORD, payload)` will try to write the whole payload to the specified address.
+The same applies to responses sent by devices, as the requester often does not know the full length of the reply payload beforehand.
 
+=== Examples
 
+- `SDO:20:0x10/0xAA:RECORD` - read/write the object at index `0x10`, sub-index `0xAA` on node 20 as a `RECORD`.
+- `SDO:20/22:0x10/0xAA:RECORD` - same object, but the response is expected from node 22 instead of node 20.
+- `SDO:20:0x30/40:BOOLEAN` - object at index `0x30`, sub-index `40` (decimal) on node 20, as a `BOOLEAN`.
+- `RECEIVE_PDO_2:20:RECORD` - the second receive PDO of node 20, mapped as a `RECORD`.
+- `NMT:20` - subscribe to or write NMT state changes of node 20.
+- `NMT` - subscribe to NMT state changes of every node on the bus (wildcard).
+- `HEARTBEAT` - subscribe to heartbeat messages of every node on the bus (wildcard).
+
+== Protocol Details
+
+CAN, despite (or due) to its popularity has ambiguous meaning.
+There are multiple articles and sources which attempts to give introduction, yet very few of them is consistent between each other.
+
+There are two dominant formats of frames - CAN 2.0A and 2.0B:
+
+- CAN 2.0A uses 11 bit identifier and up to 8 bytes of data.
+- CAN 2.0B uses 29 bit identifier and up to 8 bytes of data.
+
+To make things worse with introduction of CAN FD amount of combinations increased even more.
+Double check frame format as this integration supports CANopen and does not support CANopen FD nor CAN 2.0B.
+
+Further reading on CAN flavors:
+https://en.wikipedia.org/wiki/CAN_bus[https://en.wikipedia.org/wiki/CAN_bus]
+
+Default transport used with this protocol is socketcan.
+Currently, only 2.0A format (up to 8 bytes of data) is supported.
+
+Implemented driver supports currently socketcan transport.
+Change of transport requires code modifications and injection of new "transport" type which will encode CANopen payloads to specific frame format.
+
+Socketcan seems to be most widespread way to access CAN bus.
+It also masks different hardware variants which might come with their own drivers.

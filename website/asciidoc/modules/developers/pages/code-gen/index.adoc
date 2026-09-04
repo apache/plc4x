@@ -30,7 +30,7 @@ So in the end we need 3 parts:
 
 This maven plugin uses a given protocol definition as well as a language template and generates code for reading/writing data in that protocol with the given language.
 
-[ditaa,code-generation-intro]
+[ditaa,code-generation-intro,svg,opts="inline",svg-type="inline"]
 ....
                   +------------+
                   |c05A        |
@@ -68,7 +68,7 @@ These add more layers to the hierarchy.
 
 So for example in case of generating a `Siemens S7` Driver for `Java` this would look like this:
 
-[ditaa,code-generation-intro-s7-java]
+[ditaa,code-generation-intro-s7-java,svg,opts="inline",svg-type="inline"]
 ....
                +------------+
                |c05A        |
@@ -163,7 +163,7 @@ So if a driver or language requires further customization, these options can be 
 For a list of all supported options for a given language template, please refer to the corresponding language page.
 
 Currently, the `Java` module makes use of such an option for specifying the Java `package` the generated code uses.
-If no `package` option is provided, the default package `org.apache.plc4x.{language-name}.{protocol-name}.{output-flavor}` is used, but especially when generating custom drivers, which are not part of the Apache PLC4X project, different package names are better suited.
+If no `package` option is provided, the default package `org.apache.plc4x.\{language-name}.\{protocol-name}.\{output-flavor}` is used, but especially when generating custom drivers, which are not part of the Apache PLC4X project, different package names are better suited.
 So in these cases, the user can simply override the default package name.
 
 There is also an additional parameter: `outputDir`, which defaults to `${project.build.directory}/generated-sources/plc4x/` and usually shouldn't require being changed in case of a `Java` project, but usually requires tweaking when generating code for other languages.
@@ -199,7 +199,7 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
   <parent>
     <groupId>org.apache.plc4x.plugins</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>{current-last-released-version}</version>
+    <version>{current-project-version}</version>
   </parent>
 
   <artifactId>test-java-s7-driver</artifactId>
@@ -231,13 +231,13 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-driver-base-java</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -245,7 +245,7 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-protocol-s7</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -263,7 +263,7 @@ The dependency:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-driver-base-java</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
     </dependency>
 ....
 
@@ -276,7 +276,7 @@ The definitions of both the `s7` protocol and `java` language are provided by th
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -289,7 +289,7 @@ and:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-protocol-s7</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

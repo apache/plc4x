@@ -19,6 +19,10 @@
 
 = CtrlX
 
+NOTE: No language implementation of this driver is usable yet. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation
+currently does.
+
 WARNING: This driver is unfinished and not usable yet. Pinging is the only thing that works;
 discovery is an unimplemented stub, there is no tag address syntax, so reading and writing are not
 available, and the browse implementation does not work yet either. This page describes the current

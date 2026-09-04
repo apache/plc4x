@@ -156,7 +156,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		if err := ctx.Err(); err != nil {
 			return err
 		}
-		responseAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.localAddress, model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
+		responseAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.localAddress, model.Constant_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
 			return errors.Wrap(err, "error resolving udp")
 		}
@@ -233,12 +233,12 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}
 
 		// Create a not-connected UDP connection to the broadcast address
-		requestAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.broadcastAddress.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
+		requestAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.broadcastAddress.String(), model.Constant_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
 			d.log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error resolving target socket for broadcast search")
 			continue
 		}
-		/*localAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", ipv4Addr.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
+		/*localAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", ipv4Addr.String(), model.Constant_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
 		m.log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Msg("Error resolving local address for broadcast search")
 			continue
@@ -359,7 +359,7 @@ func (d *Discoverer) handleDiscoveryResponse(ctx context.Context, discoveryItem 
 
 	// Add an entry to the results.
 	remoteAddress, err2 := url.Parse("udp://" + fromAddr.IP.String() + ":" +
-		strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
+		strconv.Itoa(int(driverModel.Constant_ADSTCPDEFAULTPORT)))
 	if err2 == nil {
 		plcDiscoveryItem := spiModel.NewDefaultPlcDiscoveryItem(
 			"ads",

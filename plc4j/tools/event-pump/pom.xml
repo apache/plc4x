@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-tools-event-pump</artifactId>
@@ -31,7 +31,7 @@
   <description>An event-based system for fetching PLC data and pumping it to a consumer.</description>
 
   <properties>
-    <project.build.outputTimestamp>2026-07-16T15:00:59Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -39,14 +39,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
 
     <!-- SPI Values (for value transformation) -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-values</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Logging -->

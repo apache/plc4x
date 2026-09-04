@@ -19,12 +19,53 @@
 
 = IEC-60870
 
+IEC 60870-5-104 is a telecontrol protocol used to monitor and control geographically
+distributed process equipment - substations, RTUs and similar equipment in electric
+power systems. It runs over TCP/IP, typically on the well-known port `2404`.
+
+The protocol is push driven: once a session is established, the remote station (RTU)
+sends unsolicited application service data units (ASDUs) for the information objects it
+holds. There is nothing for a client to actively read or write - it only subscribes and
+receives what the station reports.
+
 == Supported Operations
 
-IMPORTANT: This driver supports *subscriptions only* - reading, writing and browsing are not
-implemented and a request for any of them is rejected.
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+| `subscribe`
+| Go and Java. The only supported operation. A subscription's tag address selects which
+information objects of which station(s) are delivered to it; the station itself decides
+what and when to send.
+|===
+
+IMPORTANT: Reading, writing and browsing are not implemented and a request for any of
+them is rejected.
+
+== Connection String
+
+IEC 60870-5-104 has the following connection string format:
+----
+iec-60870-5-104:tcp://{ip-address}:{port}?{options}
+----
+The only supported transport is `tcp`, defaulting to port `2404`:
+----
+iec-60870-5-104:tcp://192.168.178.101:2404
+----
+
+== Connection String Options
+
+include::partial$iec-60870-5-104.adoc[]
 
 == Tag Addresses
+
+Addressing is implemented in Go and Java. The protocol is push driven, so tags are used
+with subscriptions only. See the xref:protocols/index.adoc[protocol support matrix] for
+what each implementation does.
+
+=== General Format
 
 A tag address names one information object of one station and is written as `<asdu>/<ioa>`:
 
@@ -47,22 +88,6 @@ copying examples between the two drivers.
 A `+*+` may take the place of any number and makes that position a wildcard, so that one subscription
 can cover a whole station, a whole octet range, or everything the connection reports.
 
-.Examples
-[cols="1,3"]
-|===
-| Address | Meaning
-
-| `1/2`            | ASDU 1, information object 2
-| `65535/16777215` | the widest address both fields can carry
-| `1/2/3`          | ASDU 513 (low octet 1, high octet 2), information object 3
-| `1/2.3.4`        | ASDU 1, information object 262914 (low 2, middle 3, high 4)
-| `1/2/3.4.5`      | ASDU 513, information object 328707
-| `+*/*+`            | every information object of every station
-| `+1/*+`            | every information object of ASDU 1
-| `+*/3.4.5+`        | information object 328707 of every station
-| `+1/2/3.*.5+`      | low and high octet pinned, middle octet wildcarded
-|===
-
 Surrounding whitespace is trimmed and leading zeros are accepted, up to the number of digits the
 maximum of that component has (3 for an octet, 5 for a whole ASDU address, 8 for a whole information
 object address). So `007/002.03.004` is accepted while `000007/2` is not. Whitespace *inside* an
@@ -83,6 +108,32 @@ therefore needs its addresses reviewed - in particular a bare `+*+` is no longer
 "everything" address is `+*/*+` - and consumer-side filtering can now be dropped.
 ====
 
-== Connection String Options
+=== Data Types
 
-include::partial$iec-60870-5-104.adoc[]
+A tag address carries no type information: the datatype of an information object follows from the
+type identification of the ASDU that delivers it, which is only known at runtime, not from the
+address itself.
+
+Both drivers attach the information object's *quality descriptor* to the delivered value as
+metadata alongside it, rather than silently folding it into the value: `invalid`, `notTopical`,
+`substituted`, `blocked` and, where the ASDU carries it, `overflow`. A reading the station marked
+invalid, blocked, substituted or not topical therefore does not arrive looking like a good one -
+check this metadata before trusting a value.
+
+=== Examples
+
+.Examples
+[cols="1,3"]
+|===
+| Address | Meaning
+
+| `1/2`            | ASDU 1, information object 2
+| `65535/16777215` | the widest address both fields can carry
+| `1/2/3`          | ASDU 513 (low octet 1, high octet 2), information object 3
+| `1/2.3.4`        | ASDU 1, information object 262914 (low 2, middle 3, high 4)
+| `1/2/3.4.5`      | ASDU 513, information object 328707
+| `+*/*+`            | every information object of every station
+| `+1/*+`            | every information object of ASDU 1
+| `+*/3.4.5+`        | information object 328707 of every station
+| `+1/2/3.*.5+`      | low and high octet pinned, middle octet wildcarded
+|===

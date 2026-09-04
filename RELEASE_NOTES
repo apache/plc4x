@@ -1,5 +1,18 @@
 ==============================================================
-(Unreleased) Apache PLC4X 1.0.0-SNAPSHOT
+(Unreleased) Apache PLC4X 1.1.0-SNAPSHOT
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+==============================================================
+Apache PLC4X 1.0.0
 ==============================================================
 
 New Features
@@ -93,6 +106,69 @@ New Features
   full range: a DWORD reads as 0 to 4294967295 and an LWORD as 0 to
   18446744073709551615. Their signed counterparts are unchanged - a
   DINT of 0xFFFFFFFF still reads as -1.
+- Modbus: STRING and WSTRING values can now be read and written, in
+  PLC4J, PLC4Go and PLC4C. The length of one string is written in
+  parentheses the way the S7 driver spells it, so
+  "holding-register:1[0..2]:STRING(20)" is three 20-character
+  strings.
+- OPC-UA: A new "subscription-queue-size" parameter (default 1) keeps
+  the values a server queues between publishes. With a depth above
+  one, change-of-state items are sampled at the server's fastest rate
+  and every queued value is delivered instead of only the last. At the
+  default nothing changes, and event and cyclic items keep a queue of
+  one either way.
+- OPC-UA: A new "min-channel-lifetime-ms" parameter (default 5000)
+  bounds a channel lifetime the server revises downwards. Channel
+  renewals run on one executor shared by every OPC UA connection in
+  the JVM, so a single server answering with a very short - or zero -
+  lifetime used to set the pace for all of them.
+- OPC-UA: Added authentication with an X509 user certificate
+  (GH-1845).
+- EtherNet/IP: The driver falls back to "Get Attribute Single" where a
+  device does not answer "Get Attribute All", so the Connection
+  Manager and the Message Router are detected on devices that only
+  support the single-attribute form.
+- S7: A connection reports what the device says about itself.
+  "readDeviceIdentification()" reads the module type, order number,
+  serial number, firmware version and protection level out of the SZL
+  lists, following a list the CPU splits across several PDUs.
+- The event-pump accepts a trigger interval in milliseconds
+  ("intervalMillis" / "initialDelayMillis") beside the existing
+  whole-second form. Giving the same setting in both units fails at
+  startup rather than silently picking one.
+- Go: PLC4Go gained five drivers - AB-Ethernet, Firmata,
+  IEC 60870-5-104, SLMP (MELSEC) and UMAS - taking it from nine
+  drivers to fourteen. AB-Ethernet and Firmata are as partial as they
+  are in Java (one does not write, the other does not read),
+  IEC 60870-5-104 subscribes and nothing else because the protocol is
+  push driven, and SLMP addresses the word devices D, W and R.
+- Go: The EtherNet/IP driver was brought up to the Java driver's
+  level: all three read and write paths (sequential, message-router
+  and connected), the plc4j connect handshake, UDP broadcast discovery
+  (ListIdentity) over per-interface sockets, a "logix" driver alias
+  forcing little-endian encapsulation, and the "bigEndian",
+  "forceUnconnectedOperation", "communicationPath" and
+  "connectionSerialNumber" options.
+- Go: The S7 driver gained browse (static areas and DB block
+  enumeration), alarm and cyclic subscriptions with alarm query and
+  push dispatch, a real round-trip ping, and parsing of S5TIME,
+  variable-length strings and alarm tag addresses.
+- Go: Modbus RTU and Modbus ASCII have codecs of their own, including
+  the RTU CRC and the ASCII LRC, and the tag, value and configuration
+  gaps to the Java driver are closed.
+- Go: The KNXnet/IP driver writes group addresses, and its
+  subscriptions work.
+- Go: A polling-subscription base is part of the default connection
+  set, so a driver whose protocol has no subscriptions can offer them
+  the way the Java drivers do.
+- Go: PlcDATE and PlcTIME_OF_DAY expose their components rather than
+  only the whole value.
+- Go: Every timeout is named (utils.WithNamedTimeout), so an expiry
+  says which timeout it was.
+- The API's "Option" type reports whether a configuration option
+  carries a secret ("isSecret()"), which is what redaction now asks
+  instead of guessing from the parameter's name. It is a default
+  method returning false, so existing implementations keep compiling.
 
 Incompatible changes
 --------------------
@@ -667,6 +743,34 @@ Incompatible changes
   address forms, which carry a real element count, moved to the new notation.
 - BACnet/IP addresses are unchanged. Its bracket is a property array index,
   which already meant what the notation says an index means.
+- A connection reports the operations its driver actually implements.
+  ConnectionBase answered "true" to isReadSupported(),
+  isWriteSupported(), isSubscribeSupported() and isBrowseSupported()
+  for every driver built on it, whatever that driver implemented, so
+  the metadata a tool uses to decide what to offer was not worth
+  reading. In PLC4Go the EtherNet/IP and Modbus connections left
+  ProvidesSubscribing and ProvidesBrowsing at their zero value,
+  reporting "false" by accident rather than by decision. Both now
+  state what they support, so code branching on these flags will see
+  different - and correct - answers.
+- S7: The day-of-week nibble of a DATE_AND_TIME is numbered the way an
+  S7 numbers it, counting from Sunday as 1 to Saturday as 7. Both
+  bindings filled it from their date library, which counts from
+  Monday, so every DATE_AND_TIME written to a PLC carried a day of
+  week one short. Parsing rotates back, so the value still round-trips
+  through PlcDATE_AND_TIME, whose getter keeps the ISO-8601 numbering
+  that KNX DPT 19.001 needs. Only IEC61131_DATE_AND_TIME is affected;
+  the DTL variant already carried the Siemens numbering.
+- Go: PlcDATE_AND_TIME's GetDayOfWeek() returns the numbering PLC4J
+  returns - 1 for Monday through 7 for Sunday - rather than Go's
+  time.Weekday, which counts Sunday as 0. A zero there means "no day
+  given" in KNX DPT 19.001 and is simply invalid for S7.
+- Go: A request that runs out of time is reported as a timeout rather
+  than as an INTERNAL_ERROR. This covers both the driver's own
+  request timeout and a deadline the caller set on the context it
+  passed in - the idiomatic way to call this - so code telling a
+  timeout from a real failure to know whether retrying makes sense
+  will now see the timeout it was looking for.
 
 Changed Maven Coordinates
 -------------------------
@@ -789,6 +893,106 @@ Bug Fixes
   tag declares no longer throws out of the response handler; it is
   reported as INTERNAL_ERROR for that tag, which is what a
   truncated multi-element reply already did.
+- Modbus (Java): Several fixes to the read optimizer. The unit-id was
+  dropped while a request was being optimized, so an optimized read
+  went out with the default unit-id instead of the one the tag named
+  (#2686); a read of coils returned only the first value (#2060); a
+  non-BOOL tag pointed at coils is reported instead of being misread;
+  and the trailing register pad was sized from a string length of one,
+  so an odd number of STRING or WSTRING values picked up a pad byte
+  the registers did not need.
+- EtherNet/IP: Fixed reading arrays, which generally did not work
+  (#1008). A response is no longer handed to a request it does not
+  belong to, and a tag address that cannot be parsed is reported for
+  that tag rather than failing the request.
+- Tag addresses that cannot be parsed are reported per tag in the
+  EtherNet/IP, Modbus, OPC UA, S7 and simulated drivers, as the API
+  promises. One unparseable address used to fail the whole request,
+  including the tags that were fine.
+- S7: A controller refusing a request because PUT/GET communication is
+  disabled is reported as ACCESS_DENIED. Only two of the three header
+  forms were mapped, so the 0x83/0x04 an S7-300 sends read as
+  INTERNAL_ERROR and a refused write could not be told from a failed
+  one (GH-599). Also fixed an asymmetry between the tags a request
+  accepts and the tags it hands back (#2388), and a timestamp for the
+  year 2000, which parsed but could not be serialized again.
+- SPI: A request waiting for a permit no longer blocks the thread it
+  was submitted on. A driver chaining requests runs the follow-up on
+  whichever thread completed the previous one, typically the
+  connection's receive thread, which then parked waiting for a permit
+  that only it could have freed - the connection recovered when an
+  unrelated request timed out. Negotiated max-amq is often 1 to 3 on
+  an S7-300, which makes this easy to reach. Requests are queued and
+  started in submission order as permits free up.
+- SPI: An unchecked exception out of a generated parser is reported as
+  the parse failure it is instead of ending the thread that owns the
+  channel, which left the transport claiming to be open with nobody
+  reading it.
+- A message that stops short is refused rather than half-believed, in
+  both the Java and the Go bindings: a manual array whose reader
+  cannot make progress ends instead of looping (a firmata sysex
+  message ending mid-string was an endless supply of items), an
+  optional field the message announces has to actually be present, a
+  BACnet tag header length is derived only from fields that were read,
+  an S7 payload is read only when its parameter was, and the cast of a
+  parsed complex field is checked. plc4c and plc4py carry the same
+  nesting-depth bound as Java and Go.
+- OPC-UA: The self-signed certificate the driver generates when no key
+  store is configured - the one most servers see on a first connect -
+  is now one a modern server accepts: signed with SHA-256 rather than
+  SHA1withRSA, a positive serial of sixteen octets rather than forty
+  random bytes, marked as an end entity rather than as a certificate
+  authority, and carrying a subject key identifier.
+- OPC-UA: The client identity is the first key store entry that holds
+  a private key, not whatever alias comes first. The tutorial's own
+  set-up has "ca" sorting before "client", so the driver could hand
+  the server the CA entry, or carry on with a null private key; the
+  server just closed the connection. A store with no private key, an
+  entry that cannot be read (which is what a wrong key-store password
+  looks like) and a non-RSA key each now fail naming the entry and the
+  reason.
+- OPC-UA: The certificate chain is sent in the asymmetric security
+  header, not the client certificate alone, so a server that trusts
+  the issuing CA rather than the certificate itself can build a path
+  to its trust anchor. The thumbprint still covers the client
+  certificate, as the specification requires.
+- OPC-UA: A username token is encrypted with the algorithm the
+  server's user token policy names, instead of always RSA-OAEP, so
+  username and password authentication works against a server asking
+  for RSA-PKCS1.5 (#2154).
+- OPC-UA: A subscription hands out one PlcSubscriptionHandle rather
+  than an identical one per tag (#1896) - corrected for every driver
+  that supports subscriptions - and tags registered with
+  addCyclicField(...) produce events again, through the same
+  cyclic-subscription emulation the other drivers use, since OPC UA
+  itself has no cyclic subscriptions (#1102).
+- OPC-UA: The stream a key store is read from is closed, as is the
+  reader a BACnet EDE file is parsed from.
+- ADS: With "load-symbol-and-data-type-tables=false" a symbolic
+  address is refused with a message saying the tables were not loaded,
+  rather than failing as an unknown symbol or, when browsing, as
+  nothing at all. Reading and writing are limited to direct addresses
+  in that mode; subscriptions are unaffected, since they resolve
+  symbol handles on the device (#1626).
+- OPM: The PlcEntityManager caches the proxy classes it generates
+  rather than generating a new one on every connect, which used to
+  grow the metaspace of an application connecting repeatedly (#1935),
+  and List and array fields are mapped instead of mishandled (#1947).
+- NiFi: The connection-string validator closes the connection it opens
+  to test the string. NiFi validates on every configuration change and
+  while the dialog is open, so each round left a connection behind -
+  for OPC UA a secure channel and a session the device holds until
+  they time out, which on hardware with a small connection limit locks
+  everyone else out. It also catches an unchecked rejection, which is
+  how some drivers report a bad connection string.
+- KNXnet/IP: A browse answers the query it was asked rather than every
+  query in the request, and reading a knxproj cleans up what it
+  unpacked.
+- Go: A future publishes its error before the flag that releases
+  whoever is waiting on it, a blocking subscription consumer no longer
+  wedges the poller for everyone else, the codec survives a reconnect
+  and a late expectation, and the KNXnet/IP discoverer no longer leaks
+  a goroutine and a socket per discovery.
 
 ==============================================================
 Apache PLC4X 0.13.1

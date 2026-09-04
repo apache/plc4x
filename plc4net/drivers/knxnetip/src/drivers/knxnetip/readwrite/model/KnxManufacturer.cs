@@ -852,8 +852,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ = 826,
         M_RUEDIGER_WOLF_AB = 827,
         M_KOLORS_INDIA_PRIVATE_LIMITED = 828,
-        M_ABB___RESERVED = 829,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 830,
+        M_GERALD_DOCENKO = 829,
+        M_ABB___RESERVED = 830,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 831,
     }
 
     public static class KnxManufacturerExtensions
@@ -1689,6 +1690,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             KnxManufacturer.M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ => 888,
             KnxManufacturer.M_RUEDIGER_WOLF_AB => 889,
             KnxManufacturer.M_KOLORS_INDIA_PRIVATE_LIMITED => 890,
+            KnxManufacturer.M_GERALD_DOCENKO => 891,
             KnxManufacturer.M_ABB___RESERVED => 43954,
             KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED => 43959,
             _ => default,
@@ -2524,6 +2526,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             KnxManufacturer.M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ => "Guangzhou YingLight technology Co.,Ltd.",
             KnxManufacturer.M_RUEDIGER_WOLF_AB => "Rüdiger Wolf AB",
             KnxManufacturer.M_KOLORS_INDIA_PRIVATE_LIMITED => "KOLORS INDIA PRIVATE LIMITED",
+            KnxManufacturer.M_GERALD_DOCENKO => "Gerald Docenko",
             KnxManufacturer.M_ABB___RESERVED => "ABB - reserved",
             KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED => "Busch-Jaeger Elektro - reserved",
             _ => default,

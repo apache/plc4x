@@ -19,60 +19,135 @@
 
 = Logix
 
+Logix is the tag-based addressing style used by Allen-Bradley/Rockwell ControlLogix,
+CompactLogix and similar controllers that speak CIP (Common Industrial Protocol) over
+EtherNet/IP.
 
+This page covers the `logix` driver code, which is registered by the same `eip` module
+and shares its Java tag class - see xref:protocols/eip.adoc[EtherNet/IP] for the generic
+CIP symbolic-addressing page that documents the same tag syntax.
+
+== Supported Operations
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+| `read`
+| Go and Java. Reads one or more tags, or a selection of an array tag.
+
+|
+| `write`
+| Go and Java. Writes one or more tags, or a selection of an array tag.
+
+|
+| `subscribe`
+| Java only, polling-emulated. EtherNet/IP has no push mechanism here, so a subscription is a periodic read underneath, not a device-initiated notification.
+
+|
+| `discover`
+| Go only. Device discovery is available separately through the discovery API, not through
+`browse`. The Java `LogixDriver` does not implement discovery.
+
+|===
+
+== Connection String
+
+Logix has the following connection string format:
+----
+logix:tcp://{ip-address}:{port}?{options}
+----
+`tcp` is the only supported transport. The port and options are optional. An example
+connection string would look like:
+----
+logix:tcp://127.0.0.1:44818?communication-path=[1,1]
+----
 
 == Connection String Options
 
 include::partial$logix.adoc[]
 
-== Individual Resource Address Format
+== Tag Addresses
 
-=== Connection String
-
-Logix has the following connection string format:-
-----
-logix:tcp://{ip-address}:{port}?{options}
-----
-An example connection string would look like:-
-----
-logix:tcp://127.0.0.1:44818?communication-path=[1,1]
-----
-Note the port and option fields are optional.
-
+Addressing is implemented in Go and Java. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
 
 === General Format
 
-In general all Logix addresses have this format:
+To read and write data to a PLC4X device, the Logix driver uses symbolic segments. This
+is used to refer to objects through their symbolic names. This makes reading data a lot
+easier, as you do not need to specify the Datatype for reading.
 
 ----
 {tagname}
 {tagname}:{DataType}
-{tagname}:{numberOfElements}
-{tagname}[{startIndex}]:{DataType}:{numberOfElements}
+{tagname}[{selection}]
+{tagname}[{selection}]:{DataType}
 ----
 
-The tag name matches that found in the controller and may optionally be prefixed with `%`.
-An array index is appended to the tag name and has to be its last part.
+[cols="2" ,options="header"]
+|===
+|Name |Description
+|Tagname |symbolic name of the data. May optionally be prefixed with `%`.
+|Selection (optional)|which elements of an array to read - a single index or an inclusive range. It follows the tag name, before the data type. See xref:array-notation.adoc[Addressing arrays].
+|DataType (optional)|the data type of the value. Defaults to `DINT` when omitted, so for anything that is not a 32-bit integer it should be given explicitly - also when reading.
+|===
 
-If the number-of-elements part is omitted, `1` is assumed.
-If the data type is omitted it defaults to `DINT`, so for anything that is not a 32-bit integer it
-has to be given explicitly - also when reading.
+NOTE: The selection comes *before* the data type, and a range says how many elements are read.
+Reading four DINTs starting at index 0 is `myArray[0..3]:DINT`.
 
-NOTE: The data type comes *before* the number of elements. Reading four DINTs starting at index 0
-is `myArray[0]:DINT:4`.
+NOTE: A CIP array index travels in a `MemberID`, whose instance field is a `uint 8`, so a
+selection cannot start past index 255. A range may run beyond it - the request carries a
+start and a count - but it cannot begin there.
+
+CAUTION: The Java driver's tag name does not require a leading `%` - `rate:DINT` parses in
+Java. The Go driver's address pattern requires the tag name to start with `%`, so the same
+address is rejected there. This page documents the Java syntax; consult the Go driver's own
+source for what it accepts.
 
 === Data Types
 
-The following data types are supported
+These are the data types the driver can encode and decode:
 
-- BOOL (boolean)
-- SINT (int 8)
-- INT (int 16)
-- DINT (int 32)
-- LINT (int 64)
-- REAL (float)
-- LREAL (double)
-- STRING (character string)
+[cols="2" ,options="header"]
+|===
+|To store a|Use this data type
+|Bit|BOOL
+|8-bit bit string|BYTE
+|16-bit bit string|WORD
+|32-bit bit string|DWORD
+|64-bit bit string|LWORD
+|8-bit integer|SINT
+|16-bit integer|INT
+|32-bit integer|DINT
+|64-bit integer|LINT
+|8-bit unsigned integer|USINT
+|16-bit unsigned integer|UINT
+|32-bit unsigned integer|UDINT
+|64-bit unsigned integer|ULINT
+|32-bit float|REAL
+|64-bit float|LREAL
+|Character string|STRING
+|===
+
+NOTE: The unsigned and bit string types cover their full range, so a `UDINT` or `DWORD` is returned
+in the range 0 to 4294967295 and a `ULINT` or `LWORD` in the range 0 to 18446744073709551615. Their
+signed counterparts are unchanged: a `DINT` of `0xFFFFFFFF` still reads as -1.
 
 NOTE: Other CIP data types are accepted by the address parser but are not encoded or decoded by the
 driver; reading such a tag results in a response code of `INTERNAL_ERROR` rather than a value.
+
+=== Examples
+
+.Examples
+[cols="2,3" ,options="header"]
+|===
+|Address |Meaning
+|`myTag` |a single element of `myTag`, decoded as `DINT`
+|`myTag:REAL` |a single element of `myTag`, decoded as `REAL`
+|`myTag[0..3]` |four elements of `myTag`, decoded as `DINT`
+|`myArray[3]:DINT` |element 3 of `myArray`
+|`myArray[0..3]:DINT` |elements 0 to 3 of `myArray`, returned as a list
+|`%myTag:REAL` |a single element of `myTag`, decoded as `REAL` - the `%` prefix is optional
+|===

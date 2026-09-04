@@ -46,7 +46,7 @@ partition Connect #EEEECC {
     "Send ListServices request" ..> "Receive ListServices response"
     "Receive ListServices response" -->[If successfull, extract 'CIP encapsulation support' setting] "Send EipConnectionRequest request"
     "Send EipConnectionRequest request" ..> "Receive EipConnectionRequest response"
-    if "Response is an EipConnectionResponse"?
+    if "Response is an EipConnectionResponse?"
         -->[true] "Send GetAllAttributes request"
     else
         -->[false] "Send OpenConnectionManager request"

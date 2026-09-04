@@ -19,8 +19,120 @@
 
 = AB-ETH
 
+AB-ETH speaks the Allen-Bradley DF1 protocol tunnelled over Ethernet (the
+"PCCC over Ethernet/IP" encapsulation used by older Allen-Bradley/Rockwell
+PLC-5 and SLC 500 controllers). It addresses data in the controller's
+file-based memory (integer files, status files, timers, counters, and so
+on) rather than by symbolic tag name.
 
+== Supported Operations
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+| `read`
+| Reads a single element (or an array of elements) from a file.
+
+|
+| `subscribe`
+| Polling-emulated. AB-ETH has no native subscription or change notification
+mechanism. Subscriptions are emulated by polling the tag on the regular read path
+(cyclic and change-of-state subscriptions are both supported this way).
+
+|
+| `write`
+| Not supported, in either the Java or the Go driver.
+
+|
+| `browse`
+| Not supported.
+|===
+
+== Connection String
+
+----
+ab-eth://<host>[:<port>]
+----
+
+Example, over the default `tcp` transport:
+
+----
+ab-eth://192.168.24.40
+----
 
 == Connection String Options
 
 include::partial$ab-eth.adoc[]
+
+== Tag Addresses
+
+Addressing is implemented in Java. The Go driver reads but does not write.
+See the xref:protocols/index.adoc[protocol support matrix] for what each
+implementation does.
+
+=== General Format
+
+----
+N<fileNumber>:<elementNumber>[/<bitNumber>]:<dataType>[[<size>]]
+----
+
+* `fileNumber` - the integer file number (1 to 7 digits).
+* `elementNumber` - the element number within that file (1 to 7 digits).
+* `bitNumber` - optional; a bit within the addressed element (1 to 7
+  digits), separated from the element number by `/`.
+* `dataType` - the data type to interpret the element as; see
+  <<Data Types>> below.
+* `size` - optional; the number of bytes to read, in square brackets.
+  `WORD` and `SINGLEBIT` always use a fixed 2-byte size and `DWORD` always
+  uses a fixed 4-byte size, regardless of what is given here; every other
+  data type requires this to be given explicitly.
+
+=== Data Types
+
+The `dataType` segment is matched case-insensitively against the driver's
+`FileType` enum:
+
+[cols="1,3"]
+|===
+|Type |Notes
+
+|`STATUS` |Processor status file.
+|`BIT` |Bit file.
+|`TIMER` |Timer file.
+|`COUNTER` |Counter file.
+|`CONTROL` |Control file.
+|`INTEGER` |Integer file.
+|`FLOAT` |Floating-point file.
+|`OUTPUT` |Output file.
+|`INPUT` |Input file.
+|`STRING` |String file.
+|`ASCII` |ASCII file.
+|`BCD` |Binary-coded decimal file.
+|`WORD` |Custom 2-byte integer, read from an integer file. Fixed 2-byte size.
+|`DWORD` |Custom 4-byte integer, read from an integer file. Fixed 4-byte size.
+|`SINGLEBIT` |Custom single bit, read from an integer file. Fixed 2-byte size.
+|===
+
+=== Examples
+
+----
+N7:0:WORD
+----
+Element 0 of integer file 7, read as a 2-byte `WORD`.
+
+----
+N7:5:DWORD
+----
+Element 5 of integer file 7, read as a 4-byte `DWORD`.
+
+----
+N7:3:INTEGER[8]
+----
+Element 3 of integer file 7, read as an `INTEGER` with an explicit 8-byte size.
+
+----
+N7:0/3:WORD
+----
+Bit 3 of element 0 in integer file 7, read as a `WORD`.

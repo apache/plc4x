@@ -38,7 +38,7 @@ The Event-Pump can be found in the Maven module:
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-tools-event-pump</artifactId>
-      <version>{current-last-released-version}</version>
+      <version>{current-project-version}</version>
     </dependency>
 ----
 

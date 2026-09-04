@@ -872,8 +872,9 @@ const (
 	KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_            KnxManufacturer = 826
 	KnxManufacturer_M_RUEDIGER_WOLF_AB                                   KnxManufacturer = 827
 	KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED                       KnxManufacturer = 828
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 829
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 830
+	KnxManufacturer_M_GERALD_DOCENKO                                     KnxManufacturer = 829
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 830
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 831
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1710,6 +1711,7 @@ func init() {
 		KnxManufacturer_M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_,
 		KnxManufacturer_M_RUEDIGER_WOLF_AB,
 		KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED,
+		KnxManufacturer_M_GERALD_DOCENKO,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4963,7 +4965,7 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 829:
 		{ /* '829' */
-			return 43954
+			return 891
 		}
 	case 83:
 		{ /* '83' */
@@ -4971,6 +4973,10 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 830:
 		{ /* '830' */
+			return 43954
+		}
+	case 831:
+		{ /* '831' */
 			return 43959
 		}
 	case 84:
@@ -8305,7 +8311,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 829:
 		{ /* '829' */
-			return "ABB - reserved"
+			return "Gerald Docenko"
 		}
 	case 83:
 		{ /* '83' */
@@ -8313,6 +8319,10 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 830:
 		{ /* '830' */
+			return "ABB - reserved"
+		}
+	case 831:
+		{ /* '831' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 84:
@@ -10023,10 +10033,12 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 828:
 		return KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED, true
 	case 829:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_GERALD_DOCENKO, true
 	case 83:
 		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
 	case 830:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 831:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 84:
 		return KnxManufacturer_M_INNOTEAM, true
@@ -11690,10 +11702,12 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_RUEDIGER_WOLF_AB, true
 	case "M_KOLORS_INDIA_PRIVATE_LIMITED":
 		return KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED, true
-	case "M_ABB___RESERVED":
-		return KnxManufacturer_M_ABB___RESERVED, true
+	case "M_GERALD_DOCENKO":
+		return KnxManufacturer_M_GERALD_DOCENKO, true
 	case "M_DURABLE_TECHNOLOGIES":
 		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
+	case "M_ABB___RESERVED":
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_INNOTEAM":
@@ -13430,10 +13444,12 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_RUEDIGER_WOLF_AB"
 	case KnxManufacturer_M_KOLORS_INDIA_PRIVATE_LIMITED:
 		return "M_KOLORS_INDIA_PRIVATE_LIMITED"
-	case KnxManufacturer_M_ABB___RESERVED:
-		return "M_ABB___RESERVED"
+	case KnxManufacturer_M_GERALD_DOCENKO:
+		return "M_GERALD_DOCENKO"
 	case KnxManufacturer_M_DURABLE_TECHNOLOGIES:
 		return "M_DURABLE_TECHNOLOGIES"
+	case KnxManufacturer_M_ABB___RESERVED:
+		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_INNOTEAM:

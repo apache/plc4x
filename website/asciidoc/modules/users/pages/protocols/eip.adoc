@@ -19,33 +19,74 @@
 
 = EtherNet/IP
 
+EtherNet/IP is Rockwell Automation's implementation of CIP (Common Industrial Protocol)
+over standard Ethernet/TCP-IP. It is used by Allen-Bradley/Rockwell PLCs and by other CIP
+devices that address data through symbolic tag names rather than fixed memory addresses.
 
+This page covers the `eip` driver, which speaks generic CIP symbolic addressing. The same
+Java tag class also backs the `logix` driver code, registered by the same module - see
+xref:protocols/logix.adoc[Logix] for that protocol's page.
+
+== Supported Operations
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+| `read`
+| Go and Java. Reads one or more tags, or a selection of an array tag.
+
+|
+| `write`
+| Go and Java. Writes one or more tags, or a selection of an array tag.
+
+|
+| `subscribe`
+| Java only, polling-emulated. EtherNet/IP has no push mechanism here, so a
+subscription is a periodic read underneath, not a device-initiated notification.
+
+|
+| `discover`
+| Go and Java. Discovers devices on the network. This is the discovery API, not
+`browse`: the driver has no tag-browsing support.
+
+|===
+
+== Connection String
+
+The EtherNet/IP connection string has the following format:
+----
+eip://{ip-address}:{port}?{options}
+----
+`tcp` is the only supported transport and is the default, so it is omitted from the
+connection string. The port defaults to `44818` and normally does not need to be given:
+----
+eip://192.168.24.32
+----
 
 == Connection String Options
 
-[NOTE]
-====
-Array selection uses the shared notation - a single index, an inclusive range, and
-optionally the array's declared lower bound, placed before the type. See
-xref:array-notation.adoc[Addressing arrays].
-====
-
 include::partial$eip.adoc[]
 
-== Address Format
+== Tag Addresses
+
+Addressing is implemented in Go and Java. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
+
+=== General Format
 
 To read and write data to a PLC4X device, the EtherNet/IP driver uses symbolic segments.
- This is used to refer to objects through their symbolic names. This makes reading data a lot easier, as you do not
- need to specify the Datatype for reading.
+This is used to refer to objects through their symbolic names. This makes reading data a
+lot easier, as you do not need to specify the Datatype for reading.
 
 ----
-
 {tagname}
 {tagname}:{DataType}
-{tagname}:{numberOfElements}
-{tagname}[{startIndex}]:{DataType}:{numberOfElements}
-
+{tagname}[{selection}]
+{tagname}[{selection}]:{DataType}
 ----
+
 [cols="2" ,options="header"]
 |===
 |Name |Description
@@ -55,22 +96,16 @@ To read and write data to a PLC4X device, the EtherNet/IP driver uses symbolic s
 |===
 
 NOTE: The selection comes *before* the data type, and a range says how many elements are read.
- Reading four DINTs starting at index 0 is `myArray[0..3]:DINT`.
+Reading four DINTs starting at index 0 is `myArray[0..3]:DINT`.
 
-.Examples
-[cols="2" ,options="header"]
-|===
-|Address |Meaning
-|`myTag` |a single element of `myTag`, decoded as `DINT`
-|`myTag:REAL` |a single element of `myTag`, decoded as `REAL`
-|`myTag[0..3]` |four elements of `myTag`, decoded as `DINT`
-|`myArray[3]:DINT` |element 3 of `myArray`
-|`myArray[0..3]:DINT` |elements 0 to 3 of `myArray`, returned as a list
-|===
+NOTE: A CIP array index travels in a `MemberID`, whose instance field is a `uint 8`, so a
+selection cannot start past index 255. A range may run beyond it - the request carries a
+start and a count - but it cannot begin there.
 
-A CIP array index travels in a `MemberID`, whose instance field is a `uint 8`, so a selection
-cannot start past index 255. A range may run beyond it - the request carries a start and a
-count - but it cannot begin there.
+CAUTION: The Java driver's tag name does not require a leading `%` - `rate:DINT` parses in
+Java. The Go driver's address pattern requires the tag name to start with `%`, so the same
+address is rejected there. This page documents the Java syntax; consult the Go driver's own
+source for what it accepts.
 
 === Data Types
 
@@ -98,8 +133,22 @@ These are the data types the driver can encode and decode:
 |===
 
 NOTE: The unsigned and bit string types cover their full range, so a `UDINT` or `DWORD` is returned
- in the range 0 to 4294967295 and a `ULINT` or `LWORD` in the range 0 to 18446744073709551615. Their
- signed counterparts are unchanged: a `DINT` of `0xFFFFFFFF` still reads as -1.
+in the range 0 to 4294967295 and a `ULINT` or `LWORD` in the range 0 to 18446744073709551615. Their
+signed counterparts are unchanged: a `DINT` of `0xFFFFFFFF` still reads as -1.
 
 NOTE: Other CIP data types are accepted by the address parser but are not encoded or decoded by the
- driver; reading such a tag results in a response code of `INTERNAL_ERROR` rather than a value.
+driver; reading such a tag results in a response code of `INTERNAL_ERROR` rather than a value.
+
+=== Examples
+
+.Examples
+[cols="2,3" ,options="header"]
+|===
+|Address |Meaning
+|`myTag` |a single element of `myTag`, decoded as `DINT`
+|`myTag:REAL` |a single element of `myTag`, decoded as `REAL`
+|`myTag[0..3]` |four elements of `myTag`, decoded as `DINT`
+|`myArray[3]:DINT` |element 3 of `myArray`
+|`myArray[0..3]:DINT` |elements 0 to 3 of `myArray`, returned as a list
+|`%myTag:REAL` |a single element of `myTag`, decoded as `REAL` - the `%` prefix is optional
+|===
