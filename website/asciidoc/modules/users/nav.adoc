@@ -36,6 +36,7 @@
 
 ** xref:array-notation.adoc[Addressing arrays]
 ** xref:driver-metadata.adoc[Discovering Drivers and their Configuration]
+** xref:audit-log.adoc[Recording an Audit-Log]
 ** xref:protocols/index.adoc[Protocols]
 *** xref:protocols/ab-eth.adoc[]
 *** xref:protocols/ads.adoc[]

@@ -1,0 +1,250 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:icons: font
+
+= Recording an Audit-Log
+
+When something goes wrong between your application and a PLC, the interesting question is almost
+never "what did my code do?" - it is "what actually went over the wire, and what came back?".
+
+The audit-log answers that. Switch it on and PLC4X writes a complete, ordered trace of one
+connection to a file: the API calls you made, the protocol messages the driver built from them,
+the raw bytes it put on the wire, the bytes that came back, and every state change in between.
+
+You do not change a line of code to get it. It is a connection-string parameter.
+
+NOTE: The audit-log is part of *PLC4J* (Java). PLC4Go, PLC4Py and PLC4C have no equivalent.
+
+== Switching it on
+
+Add `log.audit-log-file` to your connection string, pointing at the file you want written:
+
+[source]
+----
+modbus-tcp://192.168.1.100?log.audit-log-file=/tmp/modbus-debug.log
+----
+
+That is the whole configuration. The parameter works on every driver and every transport, and it
+combines with all the other connection-string options as usual:
+
+[source]
+----
+s7://10.0.0.1?remote-rack=0&remote-slot=1&log.audit-log-file=/var/log/plc4x/s7-line-3.log
+----
+
+Parent directories are created for you if they do not exist yet.
+
+If the parameter is missing or empty, audit logging is off and costs nothing at all - the driver
+holds a no-op implementation that does not even format the messages it is not writing.
+
+== What you need on the classpath
+
+The audit-log is split into an API and an implementation, so that ordinary deployments never
+carry the file-writing machinery. Drivers compile against the API; the implementation is picked
+up reflectively at runtime *if it is there*.
+
+To actually get a file, add the implementation at runtime scope:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-utils-audit-log-impl</artifactId>
+  <version>{page-component-version}</version>
+  <scope>runtime</scope>
+</dependency>
+----
+
+The implementation writes through Logback, which PLC4X declares as `provided` - so
+`logback-classic` has to be on your runtime classpath too. If your application already uses
+Logback as its SLF4J binding (most do), you have it. If you use a different binding, add
+`ch.qos.logback:logback-classic` alongside it for as long as you need the audit-log.
+
+CAUTION: This is the one thing that fails quietly. Without the implementation module, PLC4X logs
+`Audit log implementation not found on classpath. Audit logging will be disabled.` at INFO level
+through your normal logger and carries on with no audit file. If you configured a path and got no
+file, check that message first.
+
+When it *has* found everything, you will see this instead:
+
+[source]
+----
+INFO org.apache.plc4x.java.utils.auditlog.api.AuditLog -- Audit log implementation found on classpath. Audit logging enabled.
+INFO org.apache.plc4x.java.utils.auditlog.api.AuditLog -- Audit log initialized for file: /tmp/modbus-debug.log
+----
+
+== What the log looks like
+
+Every line has the same shape:
+
+[source]
+----
+[timestamp] [eventType] [source] message
+----
+
+`source` is the protocol code of the driver that produced the entry - `modbus-tcp`, `s7`, `ads`.
+It is what lets you tell two connections apart if you ever point them at the same file.
+
+Here is a complete trace of one connection that opens, reads a single holding register and
+closes again:
+
+[source]
+----
+[2026-09-05 18:33:37.883] [SYSTEM] [modbus-tcp] Creating Transport with config: {"connectTimeout":5000,"readTimeout":0,"writeTimeout":0,"tcpNoDelay":true,"keepAlive":false,"sendBufferSize":81920,"receiveBufferSize":81920,"localAddress":null,"localPort":0,"defaultPort":502}
+[2026-09-05 18:33:37.895] [CONNECT] [modbus-tcp] Connected to: localhost:61188 with local address: localhost:61189
+[2026-09-05 18:33:37.900] [CONFIG] [modbus-tcp] Starting connection using configuration: ModbusTcpConfiguration{requestTimeout=5000, unitIdentifier=1, pingAddress=4x00001:BOOL, defaultPayloadByteOrder=BIG_ENDIAN, maxCoilsPerRequest=2000, maxRegistersPerRequest=125}
+[2026-09-05 18:33:37.907] [SYSTEM] [modbus-tcp] Started async event-driven receive mode
+[2026-09-05 18:33:37.907] [CONNECT] [modbus-tcp] Modbus TCP connection established
+[2026-09-05 18:33:37.907] [SYSTEM] [modbus-tcp] Connection state changed: CONNECTED
+[2026-09-05 18:33:37.912] [API_REQUEST] [modbus-tcp] Read request: [temperature]
+[2026-09-05 18:33:37.921] [OUTGOING_MESSAGE] [modbus-tcp] Sending Modbus TCP request, txId=1
+[2026-09-05 18:33:37.932] [OUTGOING_BYTES] [modbus-tcp] Write: 000100000006010300000001
+[2026-09-05 18:33:37.932] [INCOMING_BYTES] [modbus-tcp] 00010000000701030412345678
+[2026-09-05 18:33:37.943] [INCOMING_MESSAGE] [modbus-tcp] Received Modbus TCP response, txId=1
+[2026-09-05 18:33:37.945] [API_RESPONSE] [modbus-tcp] Block read response: 4 bytes for 1 tags
+[2026-09-05 18:33:37.954] [CLOSE] [modbus-tcp] Connection closed
+[2026-09-05 18:33:37.954] [SYSTEM] [modbus-tcp] Connection state changed: DISCONNECTED
+----
+
+Read top to bottom, that is the entire life of the request: your `read()` call
+(`API_REQUEST`), the Modbus PDU the driver built (`OUTGOING_MESSAGE`), the twelve bytes it sent
+(`OUTGOING_BYTES`), the thirteen that came back (`INCOMING_BYTES`), the parsed response
+(`INCOMING_MESSAGE`) and finally the values handed back to you (`API_RESPONSE`).
+
+TIP: The `OUTGOING_BYTES` and `INCOMING_BYTES` lines are plain hex. Paste one into Wireshark's
+"Import from Hex Dump" and you get the same dissection you would have got from a capture - without
+having to be on the machine when it went wrong.
+
+=== Event types
+
+[cols="1,3"]
+|===
+|Event type |What produced it
+
+|`CONFIG` |The configuration the connection was started with.
+|`SYSTEM` |Transport setup, receive-mode selection, connection state changes.
+|`CONNECT` |Transport-level and protocol-level connection establishment.
+|`API_REQUEST` |A call you made: read, write, subscribe, browse, ping.
+|`API_RESPONSE` |The result handed back to your code.
+|`OUTGOING_MESSAGE` |A parsed protocol message on its way out.
+|`OUTGOING_BYTES` |The raw bytes written to the wire, as hex.
+|`INCOMING_BYTES` |The raw bytes read from the wire, as hex.
+|`INCOMING_MESSAGE` |A parsed protocol message that came in.
+|`API_EVENT` |Asynchronous events such as subscription notifications.
+|`CLOSE` |Connection teardown.
+|`ERROR` |Anything that failed - unexpected disconnects, protocol errors, timeouts.
+|===
+
+How much detail you get per event type depends on the driver. The framework contributes the
+`API_*`, `CONFIG`, `CLOSE` and connection-state entries for every driver alike; the byte-level and
+message-level entries come from the transport and the driver, and the more mature drivers say more.
+
+== Rolling and file size
+
+A byte-level trace of a busy connection grows fast, so the file rolls itself:
+
+* a new file is started when the current one reaches *10 MB*, and once per day
+* archives are named `\{filename}.\{date}.\{index}.gz` - e.g. `modbus-debug.log.2026-09-05.0.gz`
+* *30 days* of history are kept, capped at *1 GB* total
+* archives are GZIP-compressed
+
+None of this is configurable. The audit-log is a debugging instrument you switch on for a
+while, not a permanent logging pipeline - if you want to keep traces indefinitely, copy them
+somewhere else.
+
+== Reading and writing the log from code
+
+Every connection that PLC4X builds implements `AuditLogProvider`, so if you need it, the same log
+object is reachable from your own code:
+
+[source,java]
+----
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLogEventType;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLogProvider;
+
+try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory()
+        .getConnection("modbus-tcp://192.168.1.100?log.audit-log-file=/tmp/modbus-debug.log")) {
+
+    if (connection instanceof AuditLogProvider auditLogProvider) {
+        AuditLog auditLog = auditLogProvider.getAuditLog();
+
+        if (auditLog.isEnabled()) {                                          // <1>
+            auditLog.write(AuditLogEventType.SYSTEM, "Starting batch 47");   // <2>
+            auditLog.write(AuditLogEventType.SYSTEM, "Recipe", recipe);      // <3>
+        }
+    }
+
+    // ... your reads and writes, which land in the same file, in order ...
+}
+----
+<1> Cheap, and worth checking before you build a message you may not need.
+<2> Your entry appears in the trace with the same `[timestamp] [type] [source]` prefix.
+<3> The three-argument form serialises the object to JSON with Jackson, falling back to
+`toString()` if it cannot.
+
+This is the useful trick for correlating a trace with your own application: mark the beginning of
+a batch, a recipe change, a shift, and you can find that point again in a 10 MB trace of hex.
+
+If you want an audit-log that is not tied to a connection - in a tool of your own, say - build one
+directly:
+
+[source,java]
+----
+AuditLog auditLog = AuditLog.builder()
+    .withSource("line-3-supervisor")
+    .withAuditLogFile("/var/log/plc4x/supervisor.log")
+    .build();
+
+auditLog.write(AuditLogEventType.SYSTEM, "Supervisor started");
+// ...
+auditLog.close();
+----
+
+The builder applies the same rules as the connection string: no file path, or no implementation on
+the classpath, and you get the no-op instance back rather than an exception.
+
+== Turning a trace into a test
+
+The audit-log was built with a second purpose in mind. A trace that contains both the raw bytes
+and the parsed messages of a real conversation is most of what is needed to reproduce that
+conversation as a driver test - which is how a bug you saw once on a machine you cannot reach
+becomes a regression test that runs on every build.
+
+If you hit a driver bug, an audit-log attached to the issue is by far the most useful thing you
+can send. See xref:preparing-issues.adoc[] for what else helps.
+
+== Before you share the file
+
+An audit-log is a recording of everything your application said to the PLC and everything the PLC
+said back. Treat it accordingly:
+
+* *Payloads are in there in full.* Every value you read and, more to the point, every value you
+  wrote, as hex and usually as a parsed message too.
+* *The `CONFIG` line contains the connection configuration.* Drivers mask the parameters they
+  declare as secret - an OPC UA password shows up as `******` - but the file was never designed
+  as a redaction boundary. Read the first few lines before you attach it to a public issue.
+* *TLS session keys, if you asked for them.* The `tls-psk.log-session-keys` transport option
+  writes session keys into the audit-log in `SSLKEYLOGFILE` format, so Wireshark can decrypt a
+  capture of the connection. That is exactly as sensitive as it sounds; use it on a test system.
+
+== Known gaps
+
+* The `simulated` driver takes a shortcut past the standard connection setup and produces no
+  audit-log, even with the parameter set. It talks to no network, so there is nothing to trace.
+* The `ctrlx` driver has no audit-log support.
+* `API_EVENT` is defined but not yet emitted by any driver.
