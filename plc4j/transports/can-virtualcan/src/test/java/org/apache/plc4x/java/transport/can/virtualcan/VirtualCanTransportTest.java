@@ -68,7 +68,7 @@ class VirtualCanTransportTest {
         config.busName = "test-bus";
 
         TransportInstance<VirtualCanTransportConfiguration> instance =
-                transport.createTransportInstance("can-virtualcan://test", config, AuditLog.builder().build());
+                transport.createTransportInstance("", config, AuditLog.builder().build());
 
         assertNotNull(instance);
         assertTrue(instance.isOpen());
@@ -96,5 +96,79 @@ class VirtualCanTransportTest {
 
         assertThrows(IllegalArgumentException.class, () ->
                 transport.createTransportInstance("can-virtualcan://test", wrongConfig, AuditLog.builder().build()));
+    }
+
+    @Test
+    void testAddressSegmentNamesTheBus() throws Exception {
+        VirtualCanTransportConfiguration config = new VirtualCanTransportConfiguration();
+
+        TransportInstance<VirtualCanTransportConfiguration> instance =
+                transport.createTransportInstance("addressed-bus", config, AuditLog.builder().build());
+
+        assertEquals("addressed-bus", config.busName);
+
+        instance.close();
+    }
+
+    @Test
+    void testBusNameOptionUsedWhenAddressSegmentIsEmpty() throws Exception {
+        VirtualCanTransportConfiguration config = new VirtualCanTransportConfiguration();
+        config.busName = "configured-bus";
+
+        TransportInstance<VirtualCanTransportConfiguration> instance =
+                transport.createTransportInstance("", config, AuditLog.builder().build());
+
+        assertEquals("configured-bus", config.busName);
+
+        instance.close();
+    }
+
+    @Test
+    void testAddressSegmentWinsOverBusNameOption() throws Exception {
+        VirtualCanTransportConfiguration config = new VirtualCanTransportConfiguration();
+        config.busName = "configured-bus";
+
+        TransportInstance<VirtualCanTransportConfiguration> instance =
+                transport.createTransportInstance("addressed-bus", config, AuditLog.builder().build());
+
+        assertEquals("addressed-bus", config.busName);
+
+        instance.close();
+    }
+
+    @Test
+    void testInstancesAddressedToDifferentBusesAreIsolated() throws Exception {
+        VirtualCanTransportInstance instanceA = (VirtualCanTransportInstance) transport.createTransportInstance(
+                "bus-alpha", new VirtualCanTransportConfiguration(), AuditLog.builder().build());
+        VirtualCanTransportInstance instanceB = (VirtualCanTransportInstance) transport.createTransportInstance(
+                "bus-beta", new VirtualCanTransportConfiguration(), AuditLog.builder().build());
+
+        try {
+            instanceA.write(new byte[]{0x0A, 0x0B});
+
+            // Before the address segment was honoured both of these landed on the bus named
+            // "default" and this frame arrived at instanceB.
+            assertEquals(0, instanceB.getNumBytesAvailable());
+        } finally {
+            instanceA.close();
+            instanceB.close();
+        }
+    }
+
+    @Test
+    void testInstancesAddressedToTheSameBusExchangeFrames() throws Exception {
+        VirtualCanTransportInstance sender = (VirtualCanTransportInstance) transport.createTransportInstance(
+                "shared-bus", new VirtualCanTransportConfiguration(), AuditLog.builder().build());
+        VirtualCanTransportInstance receiver = (VirtualCanTransportInstance) transport.createTransportInstance(
+                "shared-bus", new VirtualCanTransportConfiguration(), AuditLog.builder().build());
+
+        try {
+            sender.write(new byte[]{0x0A, 0x0B});
+
+            assertEquals(2, receiver.getNumBytesAvailable());
+        } finally {
+            sender.close();
+            receiver.close();
+        }
     }
 }

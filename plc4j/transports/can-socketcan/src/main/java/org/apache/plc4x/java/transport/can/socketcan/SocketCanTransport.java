@@ -68,6 +68,21 @@ public class SocketCanTransport implements Transport<SocketCanTransportConfigura
                     configuration.getClass().getSimpleName()));
         }
 
+        // The address segment of the connection string names the interface - "can-socketcan://can0" -
+        // the way every other transport is addressed by it. The "interface-name" parameter stays as
+        // the alternative for callers that assemble a connection string out of options alone;
+        // naming the interface in both places is contradictory, and the address segment wins.
+        if (transportUrl != null && !transportUrl.trim().isEmpty()) {
+            socketCanConfig.interfaceName = transportUrl.trim();
+        }
+        // Checked here rather than with @Required on the configuration field: that check runs while
+        // the configuration is being built, before the address segment has been seen, and would
+        // reject the very form this method accepts.
+        if (socketCanConfig.interfaceName == null || socketCanConfig.interfaceName.trim().isEmpty()) {
+            throw new TransportException("No CAN interface given. Name it in the connection string "
+                + "('can-socketcan://can0') or with the 'can-socketcan.interface-name' option.");
+        }
+
         LOGGER.debug("Creating SocketCAN transport instance for interface {} (reuseInterface={})",
                 socketCanConfig.interfaceName, socketCanConfig.reuseInterface);
         return new SocketCanTransportInstance(sharedCanManager, socketCanConfig, auditLog);
