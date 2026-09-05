@@ -19,51 +19,31 @@
 
 = SocketCAN
 
+SocketCAN is the Linux kernel's way of exposing a CAN bus, and this transport is a client of it.
+It is one of the two concrete xref:transports/can.adoc[CAN transports]; the other is the in-memory
+xref:transports/can-virtualcan.adoc[Virtual CAN].
 
+Because it goes through the kernel, PLC4X does not handle bus access, arbitration or timing - the
+CAN layer below does. It has been used successfully with the `vcan` and `gs_usb` drivers.
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
+NOTE: Linux only. SocketCAN has its own frame representation - fixed-length frames (a CAN 2.0A
+frame always takes 16 bytes) and a 29-bit identifier field where a standard CAN frame uses 11,
+with the remaining 3 bits carrying flags.
 
-|Code
-2+|`socketcan`
+== Transport syntax
 
-|Name
-2+|SocketCAN (software bridge to CAN).
-
-|Maven Dependency
-2+|
-[subs=attributes+]
 ----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transports-socketcan</artifactId>
-  <version>{current-project-version}</version>
-</dependency>
+{name of the CAN interface}
 ----
 
-|Transport Syntax:
-|
+.Example
+[source]
 ----
-{name of the socketcan interface}
+canopen:can-socketcan://can0
+canopen:can-socketcan://vcan0?can-socketcan.read-timeout-ms=500
 ----
-|Can differ depending on the OS:
 
-- can0
-- vcan0
+The interface can also be named with the `can-socketcan.interface-name` option instead; the
+address segment wins if both name one. One of the two has to be given.
 
-|Options:
-2+|*none*
-|===
-
-SocketCAN is linux specific way to access CAN bus.
-It has its own representation of CAN frames, buffers and so on.
-This means that you have to program your application against socketcan and not raw can interfaces.
-
-Primary difference is fixed length of socketcan frames (CAN 2.0A always takes 16 bytes) and extended size of CAN identifier.
-Standard CAN frame uses 11 bits while socketcan uses 29 and appends flags to remaining 3 bits.
-
-Use of socketcan means that Apache PLC4X does not handle low level bus access, arbitration, coordination and so on.
-This is done by socketcan and layer below it.
-
-This transport have been successfully tested with `vcan` as well as `gs_usb` drivers.
+include::partial$transport-can-socketcan.adoc[]

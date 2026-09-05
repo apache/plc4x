@@ -19,36 +19,30 @@
 
 = Raw Socket
 
+Sends and receives Ethernet frames directly on a network interface, below IP. Protocols that are
+not carried over TCP or UDP at all - PROFINET real-time traffic, for instance - need this.
 
+It captures and injects through libpcap, so the host needs a libpcap (Linux, macOS) or Npcap
+(Windows) installation, and the process needs permission to open the interface in capture mode -
+root, `CAP_NET_RAW`, or membership of a group the packet-capture device belongs to.
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
+== Transport syntax
 
-|Code
-2+|`raw`
+Everything this transport needs comes from its configuration parameters, and the address segment
+of the connection string is not interpreted. Drivers using it therefore leave it empty or fill it
+with something meaningful to the driver itself.
 
-|Name
-2+|Raw Socket Communication
-
-|Maven Dependency
-2+|
-[subs=attributes+]
+.Example
+[source]
 ----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transports-raw-socket</artifactId>
-  <version>{current-project-version}</version>
-</dependency>
+profinet://?raw-socket.interface-name=en0&raw-socket.remote-address=00:0e:cf:12:34:56&raw-socket.protocol-id=34962
 ----
 
-|Transport Syntax:
-|
-----
-{device-name}
-----
-|Name of the network device doing the capture
+include::partial$transport-raw-socket.adoc[]
 
-|Options:
-2+|*none*
-|===
+`raw-socket.remote-address` and `raw-socket.protocol-id` have no sensible default and must be
+given. The protocol id is the EtherType - `0x88B5` (34997) and `0x8892` (34962) for PROFINET,
+`0x88CC` (35020) for LLDP.
+
+TIP: If frames go missing under load, raise `raw-socket.receive-queue-size` - it bounds how many
+bytes of captured frames may wait for the driver before the oldest are dropped.

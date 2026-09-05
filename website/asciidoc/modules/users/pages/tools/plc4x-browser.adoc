@@ -1,0 +1,90 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= PLC4X Browser
+
+The `PLC4X Browser` is an interactive terminal application for talking to PLCs without writing any code.
+
+You connect to a device, browse the tags it exposes and then read, write or subscribe to them.
+
+It is written in Go and lives in the https://github.com/apache/plc4x-extras/tree/develop/plc4go/tools/plc4xbrowser[plc4x-extras] repository.
+
+== Building and running
+
+[source,bash]
+----
+cd plc4go
+go run ./tools/plc4xbrowser --demo
+----
+
+Or build a standalone binary:
+
+[source,bash]
+----
+go build -o plc4xbrowser ./tools/plc4xbrowser
+----
+
+The browser does not require `cgo`.
+
+With `--demo` it starts against simulated devices, so it can be tried out without any hardware.
+Without the switch it talks to real devices.
+
+== Commands
+
+Inside the application, `help` lists the available commands:
+
+[cols="1,2"]
+|===
+|Command |Purpose
+
+|`register <protocol>` |Register a driver and its transports
+|`discover <protocol>` |Find devices on the network
+|`connect <connection string>` |Open a connection
+|`disconnect <connection>` |Close a connection
+|`read` / `write` / `browse` / `subscribe` |Open the request composer
+|`read-direct <connection> <tag>` |One-shot single-tag read
+|`write-direct <connection> <tag> <value>` |One-shot single-tag write
+|`browse-direct <connection> [query]` |List the tags a connection exposes
+|`subscribe-direct <connection> <tag>` |Subscribe to a single tag
+|`log level <level>` / `log clear` |Control logging
+|`history`, `clear`, `help`, `quit` |Housekeeping
+|===
+
+Every driver shipped by `plc4go` can be registered.
+The protocol code used by `register` and `discover` is the same code the connection string uses, for example `s7`,
+`modbus-tcp`, `ads`, `bacnet-ip`, `knxnet-ip`, `opcua` or `umas`.
+
+Since a serial connection string has no host, a serial port is named in the path instead:
+
+----
+modbus-rtu:///dev/ttyUSB0
+firmata:///dev/ttyACM0
+----
+
+== Configuration
+
+The browser stores its configuration as YAML in the user's config directory.
+It remembers the last ten commands, the last ten hosts, the log level and which drivers to register automatically on
+startup.
+
+== Stopping things
+
+`Ctrl+C` aborts the operation that is currently running rather than ending the session, so a read hanging on an
+unreachable device can be cancelled without losing the open connections.
+With nothing running it offers to quit; `q`, `Ctrl+D` and the typed `quit` command exit as well.

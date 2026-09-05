@@ -19,8 +19,80 @@
 
 = Apache Calcite
 
+https://calcite.apache.org/[Apache Calcite] is an industry-standard SQL parser, validator and JDBC driver, which can
+put a SQL front-end in front of practically any data source.
 
+The PLC4X Calcite integration is such a data source: it turns the tag-batches of an xref:tools/event-pump.adoc[Event-Pump]
+configuration into SQL tables, so PLC data can be queried with plain SQL over JDBC.
 
-https://calcite.apache.org/[Apache Calcite]
-Standard SQL
-Industry-standard SQL parser, validator and JDBC driver.
+The module lives in the https://github.com/apache/plc4x-extras/tree/develop/plc4j/integrations/apache-calcite[plc4x-extras] repository:
+
+[subs=attributes+]
+----
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-apache-calcite</artifactId>
+      <version>{current-project-version}</version>
+    </dependency>
+----
+
+== How it maps to SQL
+
+The integration is configured with an ordinary Event-Pump configuration file.
+
+* Every *batch* in that file becomes one *table*, named after the batch `id`.
+* Every *tag* of the batch becomes a *column*, named after the tag.
+* Two columns are prepended to each table: `timestamp` (when the values were read) and `source` (the id of the
+connection they came from).
+
+Column types are inferred from the first record that arrives, so a query blocks until the pump has delivered its first
+response for that batch.
+
+== Configuring the schema
+
+Calcite is pointed at the integration with a `model.json`, using `Plc4xSchemaFactory`:
+
+[source,json]
+----
+{
+  "version": "1.0",
+  "defaultSchema": "PLC4X",
+  "schemas": [
+    {
+      "name": "PLC4X",
+      "type": "custom",
+      "factory": "org.apache.plc4x.Plc4xSchemaFactory",
+      "operand": {
+        "config": "/path/to/event-pump.yml",
+        "limit": 100
+      }
+    }
+  ]
+}
+----
+
+`config`::
+Path to the Event-Pump configuration file. `.json` and `.xml` files are loaded as JSON and XML respectively, anything
+else as YAML.
+
+`limit`::
+The number of rows a table keeps. A positive value gives a bounded table holding the last `limit` records - the usual
+choice for ad-hoc queries. A value of `0` or less gives a *streaming* table instead, which never terminates and is meant
+to be used with Calcite's streaming SQL.
+
+== Querying
+
+With the model in place, any JDBC client can be pointed at it:
+
+[source,java]
+----
+Properties properties = new Properties();
+properties.put("model", "/path/to/model.json");
+try (Connection connection = DriverManager.getConnection("jdbc:calcite:", properties)) {
+    ResultSet rs = connection.createStatement().executeQuery(
+        "SELECT timestamp, temperature, pressure FROM boiler");
+    while (rs.next()) {
+        // ...
+    }
+}
+----

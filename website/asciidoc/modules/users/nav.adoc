@@ -32,6 +32,14 @@
 *** xref:getting-started/virtual-modbus.adoc[Virtual Modbus]
 *** xref:getting-started/opcua-client-certificate.adoc[]
 
+** xref:migrations/index.adoc[Migrations]
+*** xref:migrations/0.13.1-to-1.0.0/index.adoc[0.13.1 to 1.0.0]
+**** xref:migrations/0.13.1-to-1.0.0/plc4j.adoc[Java]
+**** xref:migrations/0.13.1-to-1.0.0/plc4go.adoc[Go]
+**** xref:migrations/0.13.1-to-1.0.0/plc4c.adoc[C]
+**** xref:migrations/0.13.1-to-1.0.0/plc4cs.adoc[C#]
+**** xref:migrations/0.13.1-to-1.0.0/plc4py.adoc[Python]
+
 ** xref:blogs-videos-and-slides.adoc[]
 
 ** xref:array-notation.adoc[Addressing arrays]
@@ -61,9 +69,14 @@
 ** xref:transports/index.adoc[]
 *** xref:transports/tcp.adoc[]
 *** xref:transports/udp.adoc[]
-*** xref:transports/serial.adoc[]
-*** xref:transports/socketcan.adoc[]
+*** xref:transports/tls.adoc[]
+*** xref:transports/tls-psk.adoc[]
+*** xref:transports/cotp.adoc[]
 *** xref:transports/raw-socket.adoc[]
+*** xref:transports/serial.adoc[]
+*** xref:transports/can.adoc[CAN bus]
+*** xref:transports/socketcan.adoc[]
+*** xref:transports/can-virtualcan.adoc[]
 *** xref:transports/pcap-replay.adoc[]
 
 ** xref:integrations/index.adoc[]
@@ -74,13 +87,15 @@
 *** xref:integrations/apache-nifi.adoc[]
 *** xref:integrations/apache-streampipes.adoc[]
 *** xref:integrations/eclipse-ditto.adoc[]
-*** xref:integrations/eclipse-milo.adoc[]
 
 ** xref:tools/index.adoc[]
 *** xref:tools/capture-replay.adoc[]
 *** xref:tools/connection-cache.adoc[]
 *** xref:tools/event-pump.adoc[]
+*** xref:tools/opcua-server.adoc[]
 *** xref:tools/opm.adoc[]
+*** xref:tools/pcap-analyzer.adoc[]
+*** xref:tools/plc4x-browser.adoc[]
 *** xref:tools/plc4x-server.adoc[]
 *** xref:tools/testing.adoc[]
 

@@ -20,29 +20,19 @@
 [cols="2,2a,2a,2a,4a"]
 |===
 |Name |Type |Default Value |Required |Description
-|Name 4+|Firmata
-|Code 4+|`firmata`
+|Name 4+|Serial
+|Code 4+|`serial`
 |Maven Dependency 4+|
 
 [subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-firmata</artifactId>
+  <artifactId>plc4j-transports-serial</artifactId>
   <version>{page-component-version}</version>
 </dependency>
 ----
-|Default Transport 4+|`serial`
-|Supported Transports 4+|
- - `serial`
- - `tcp`
 5+|Config options:
-|`request-timeout-ms` |INT |10000| |Maximum time (in milliseconds) to wait for the initial firmware-report reply during connection setup.
-5+|Transport config options:
-5+|
-+++
-<h4>serial</h4>
-+++
 |`serial.baud-rate` |INT |9600| |Baud rate (bits per second)
 |`serial.data-bits` |INT |8| |Number of data bits (5, 6, 7, or 8)
 |`serial.stop-bits` |INT |1| |Number of stop bits (1 or 2)
@@ -54,17 +44,4 @@
 |`serial.rts` |BOOLEAN |false| |Enable RTS (Request To Send) signal
 |`serial.reuse-port` |BOOLEAN |false| |Reuse the underlying serial port across multiple transport instances. When true, instances with the same port will share a connection. This is useful for protocols where multiple logical connections share one serial port. Connections sharing a port must target distinct unit ids; Modbus RTU responses carry no transaction ids, so same-unit traffic from multiple connections cannot be told apart.
 |`serial.interframe-delay` |INT |0| |Interframe delay in milliseconds for protocols that need spacing between messages. Applies to shared and dedicated ports; the gap is measured from the last write or received data.
-5+|
-+++
-<h4>tcp</h4>
-+++
-|`tcp.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
-|`tcp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
-|`tcp.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
-|`tcp.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
-|`tcp.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
-|`tcp.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
-|`tcp.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
-|`tcp.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
-|`tcp.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
 |===

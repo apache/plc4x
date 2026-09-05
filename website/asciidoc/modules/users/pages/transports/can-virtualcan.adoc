@@ -17,28 +17,32 @@
 :imagesdir: ../../images/
 :icons: font
 
-= UDP
+= Virtual CAN
 
-A connectionless UDP socket. Used by protocols that broadcast, that talk to devices which never
-open a connection of their own, or that were simply specified on top of UDP.
+An in-memory CAN bus. Every transport instance naming the same bus exchanges frames with the
+others directly, with no kernel, no hardware and no driver installation involved.
+
+It is the counterpart to the xref:transports/socketcan.adoc[SocketCAN transport] for tests,
+demonstrations and development: two connections on one bus can talk to each other on a laptop that
+has no CAN hardware at all.
 
 == Transport syntax
 
 ----
-{IP address or hostname}[:{port}]
+{name of the virtual bus}
 ----
 
-The port may be omitted if the driver declares a default port for the protocol.
+Instances naming the same bus see each other's frames. The bus is created on first use, so any
+name will do as long as both ends agree on it.
 
 .Example
 [source]
 ----
-knxnet-ip://192.168.1.10
-modbus-tcp:udp://192.168.1.100:502
+canopen:can-virtualcan://test-bus
+genericcan:can-virtualcan://test-bus
 ----
 
-include::partial$transport-udp.adoc[]
+The bus can also be named with the `can-virtualcan.bus-name` option instead; the address segment
+wins if both name one. Naming neither connects to the bus called `default`.
 
-Set `udp.broadcast=true` to send to a broadcast address, and `udp.share-socket=true` when several
-connections have to share one local port - which is what protocols that answer on a fixed port
-require.
+include::partial$transport-can-virtualcan.adoc[]

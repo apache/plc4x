@@ -1,0 +1,58 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= TLS
+
+The xref:transports/tcp.adoc[TCP transport] with a TLS layer on top, authenticated with
+certificates. Everything a driver sends is encrypted in transit; nothing about the protocol above
+changes, so any driver that supports `tcp` and declares `tls` can be switched over by changing
+the transport code alone.
+
+== Transport syntax
+
+----
+{IP address or hostname}[:{port}]
+----
+
+NOTE: The port is *not* switched to a secure default for you. A protocol whose plain-text default
+is 502 still defaults to 502 here - name the TLS port explicitly if the device listens elsewhere.
+
+.Example
+[source]
+----
+modbus-tcp:tls://192.168.1.100:802?tls.trust-store=/etc/plc4x/truststore.p12&tls.trust-store-password=secret
+----
+
+include::partial$transport-tls.adoc[]
+
+The socket options below the TLS-specific ones are inherited from the
+xref:transports/tcp.adoc[TCP transport].
+
+== Certificates
+
+By default the JVM's own list of public certificate authorities is used, which is rarely what a
+plant network wants. Point `tls.trust-store` at a keystore holding the certificates you are
+willing to trust instead, and `tls.keystore` at your own certificate and private key when the
+device asks the client to authenticate as well (mutual TLS).
+
+CAUTION: `tls.verify=false` turns TLS into encryption without authentication - it stops
+eavesdropping but not an attacker who can redirect your traffic. `tls.ignore-common-name=true` is
+the narrower escape hatch for the common case of a device whose certificate was issued for a name
+it is no longer reachable under. Both exist for bringing a line up; neither belongs in a running
+plant.

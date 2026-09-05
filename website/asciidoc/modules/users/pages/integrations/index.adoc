@@ -19,4 +19,52 @@
 
 = Integrations
 
+Integrations connect PLC4X to other systems: data-processing frameworks, message brokers, databases and digital-twin platforms.
 
+They fall into two groups, depending on who maintains them.
+
+== Maintained by PLC4X
+
+These live in the https://github.com/apache/plc4x-extras[plc4x-extras] repository and are released together with PLC4X.
+
+[cols="1,3"]
+|===
+|Integration |Description
+
+|xref:integrations/apache-calcite.adoc[Apache Calcite]
+|Exposes the tags of an xref:tools/event-pump.adoc[Event-Pump] configuration as SQL tables, so PLC data can be queried over JDBC.
+
+|xref:integrations/apache-kafka.adoc[Apache Kafka]
+|Kafka Connect source and sink connectors that stream PLC data into Kafka topics and write values back to devices.
+
+|xref:integrations/apache-nifi.adoc[Apache NiFi]
+|`Source` and `Sink` processors for building NiFi data-flows on top of PLC4X.
+|===
+
+== Maintained by other projects
+
+The following integrations use PLC4X but are developed and released by the respective projects.
+Their own documentation is the authoritative source.
+
+[cols="1,3"]
+|===
+|Integration |Description
+
+|xref:integrations/apache-camel.adoc[Apache Camel]
+|A Camel component for reading from and writing to PLCs inside Camel routes.
+
+|xref:integrations/apache-iotdb.adoc[Apache IoTDB]
+|Storing PLC data collected with PLC4X as time-series data in Apache IoTDB.
+
+|xref:integrations/apache-streampipes.adoc[Apache StreamPipes]
+|PLC4X-based S7 and Modbus adapters for the StreamPipes IIoT connectors.
+
+|xref:integrations/eclipse-ditto.adoc[Eclipse Ditto]
+|Feeding PLC data into the digital twins managed by Eclipse Ditto.
+|===
+
+[NOTE]
+====
+Looking for a way to run PLC4X as a server rather than as a library?
+See xref:tools/plc4x-server.adoc[] and xref:tools/opcua-server.adoc[] in the xref:tools/index.adoc[Tools] section.
+====

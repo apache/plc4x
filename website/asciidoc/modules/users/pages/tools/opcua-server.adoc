@@ -15,22 +15,30 @@
 //  limitations under the License.
 //
 
-= Eclipse Milo (OPC UA Server)
+= OPC UA Server
 
+The `OPC UA Server` turns PLC4X into an industrial OPC UA gateway.
 
+It opens PLC4X connections to any number of devices, and publishes the tags configured for them as an OPC UA address
+space, so that any OPC UA client can read and write them - no matter which protocol the device itself speaks.
 
-The PLC4X OPC UA server integration is based around the Eclipse Milo OPC UA server. It uses PLC4X to communicate with
-industrial devices effectively acting as a industrial OPC UA gateway.
+The server is built on the https://projects.eclipse.org/projects/iot.milo[Eclipse Milo] OPC UA stack.
+
+It lives in the https://github.com/apache/plc4x-extras/tree/develop/plc4j/tools/opcua-server[plc4x-extras] repository.
+
+NOTE: Do not confuse this with the xref:protocols/opcua.adoc[OPC UA driver], which lets a PLC4X application act as an
+OPC UA _client_.
 
 == Building the server
 
-The OPC UA server can be built using maven as part of the PLC4X build.
+From the module directory:
+
+[source,bash]
 ----
-mvn install
+mvn package
 ----
 
-This creates a target directory within plc4x/plc4j/integrations/opcua-server containing a jar file which is the main java
-executable.
+This creates the runnable fat-jar `target/plc4x-opcua-server-{current-project-version}-uber-jar.jar`.
 
 == Configuration File
 
@@ -98,8 +106,10 @@ httpPort: 8445
 == Running
 
 To run the java executable execute:-
+
+[subs=attributes+]
 ----
-java -jar plc4x-opcua-server-0.8.0-uber-jar.jar -c {path-to-config-file} -i
+java -jar plc4x-opcua-server-{current-project-version}-uber-jar.jar -c \{path-to-config-file} -i
 ----
 This will start the OPC UA server with the interactive switch (-i). This prompts the server to ask for usernames and
 passwords upon startup. However, during normal operation the -i switch should be left out.
@@ -108,9 +118,11 @@ If a certificate isn't available at *\{path-to-security-dir}/security/plc4x-opcu
 created. This certificate is password protected with the security password given during startup.
 
 If you place another certificate here make sure it is password protected and set the password by running the server
-again with --set-password switch.
+again with the `-s` / `--set-passwords` switch.
+
+[subs=attributes+]
 ----
-java -jar plc4x-opcua-server-0.8.0-uber-jar.jar -c {path-to-config-file} -i -s
+java -jar plc4x-opcua-server-{current-project-version}-uber-jar.jar -c \{path-to-config-file} -i -s
 ----
 
 Once the OPC UA server is running you are able to connect to it from your favorite OPC UA client using the connection

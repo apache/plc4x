@@ -76,4 +76,5 @@ Please have a look on xref:protocols/can.adoc[CAN] describe usage of CAN driver 
 
 == Compatible CAN transports
 
-- xref:transports/socketcan.adoc[SocketCAN]
+- xref:transports/socketcan.adoc[SocketCAN] - a real CAN bus through the Linux kernel
+- xref:transports/can-virtualcan.adoc[Virtual CAN] - an in-memory bus for tests and development

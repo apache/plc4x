@@ -19,52 +19,31 @@
 
 = PCAP Replay
 
+Replays a previously recorded PCAP or PCAPNG capture as if it were a live device. Nothing is sent
+to a network: the driver connects, and the frames it "receives" come out of the file.
 
+This is a debugging and development transport. It is what lets you work on a driver against a
+capture taken from a machine you cannot reach, and it pairs naturally with the
+xref:audit-log.adoc[audit-log] - record once, then replay as often as you need.
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
+== Transport syntax
 
-|Code
-2+|`pcap`
+The capture is named by the `pcap-replay.pcap-file` parameter; the address segment of the
+connection string is not interpreted.
 
-|Name
-2+|PCAP file replay
-
-|Maven Dependency
-2+|
-[subs=attributes+]
+.Example
+[source]
 ----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transports-pcap-replay</artifactId>
-  <version>{current-project-version}</version>
-</dependency>
+profinet:pcap-replay://?pcap-replay.pcap-file=/tmp/line-3.pcapng&pcap-replay.speed-factor=1.0
 ----
 
-|Transport Syntax:
-|
-----
-{pcap-path}
-----
-|Path to the PCAP or PCAPNG file containing the network recording.
+include::partial$transport-pcap-replay.adoc[]
 
-3+|Options:
+Two options are worth knowing before the first run:
 
-|
-|`replay-speed-factor` (1)
-|Numeric value for changing the replay speed:
-
-* 1 = Normal speed (default)
-* 0 = Maximum speed
-* 0.5 = Half speed
-* 2 = Double speed
-
-|
-|`loop` (false)
-|Should the replay start at the beginning of the file as soon as the end is reached?
-
-* true = Automatically start again
-* false = Stop at the end (default)
-
-|===
+* `pcap-replay.speed-factor` defaults to `0`, which replays the capture as fast as it can be read.
+  Set it to `1.0` to reproduce the original timing - which is what you want when the bug you are
+  chasing is a timing one.
+* `pcap-replay.only-incoming-packets` defaults to `true`, so by default only the frames the device
+  sent are replayed and the driver's own requests go nowhere. That is the right setting for
+  standing in for a device.

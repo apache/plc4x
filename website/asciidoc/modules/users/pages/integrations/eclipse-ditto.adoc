@@ -21,8 +21,11 @@
 
 
 
-… where IoT devices and their digital twins get together
+https://eclipse.dev/ditto/[Eclipse Ditto] - "… where IoT devices and their digital twins get together" - manages the
+digital twins of IoT devices.
 
-https://www.eclipse.org/ditto/
+PLC4X can be used to feed such a twin with live data from a PLC.
 
-Eclipse Ditto - PLC4X Example: https://github.com/eclipse/ditto-examples/tree/master/plc4x
+This integration is maintained by the Eclipse Ditto project.
+A complete example is available in their examples repository:
+https://github.com/eclipse-ditto/ditto-examples/tree/master/plc4x[ditto-examples / plc4x].

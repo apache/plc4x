@@ -20,35 +20,27 @@
 [cols="2,2a,2a,2a,4a"]
 |===
 |Name |Type |Default Value |Required |Description
-|Name 4+|Clipsal C-Bus
-|Code 4+|`c-bus`
+|Name 4+|UDP
+|Code 4+|`udp`
 |Maven Dependency 4+|
 
 [subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-c-bus</artifactId>
+  <artifactId>plc4j-transports-udp</artifactId>
   <version>{page-component-version}</version>
 </dependency>
 ----
-|Default Transport 4+|`tcp`
-|Supported Transports 4+|
- - `tcp`
 5+|Config options:
-|`srchk` |BOOLEAN |false| |Source check.
-5+|Transport config options:
-5+|
-+++
-<h4>tcp</h4>
-+++
-|`tcp.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
-|`tcp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
-|`tcp.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
-|`tcp.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
-|`tcp.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
-|`tcp.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
-|`tcp.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
-|`tcp.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
-|`tcp.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
+|`udp.local-address` |STRING | | |Local address to bind to. If not set, binds to all interfaces.
+|`udp.local-port` |INT |0| |Local port to bind to. 0 uses ephemeral port.
+|`udp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`udp.max-packet-size` |INT |65507| |Maximum UDP packet size in bytes.
+|`udp.send-buffer-size` |INT |0| |Send buffer size in bytes. 0 uses system default.
+|`udp.receive-buffer-size` |INT |0| |Receive buffer size in bytes. 0 uses system default.
+|`udp.broadcast` |BOOLEAN |false| |Enable SO_BROADCAST for sending broadcast packets.
+|`udp.reuse-address` |BOOLEAN |false| |Enable SO_REUSEADDR to allow multiple bindings to the same address/port.
+|`udp.share-socket` |BOOLEAN |false| |Share the underlying UDP socket across multiple transport instances. When true, instances with the same localAddress:localPort will share a socket. This is useful for protocols where multiple logical connections share one UDP port.
+|`udp.multicast-ttl` |INT |1| |Time-to-live for multicast packets (1-255).
 |===

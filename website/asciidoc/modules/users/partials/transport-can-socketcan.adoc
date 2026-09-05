@@ -20,35 +20,23 @@
 [cols="2,2a,2a,2a,4a"]
 |===
 |Name |Type |Default Value |Required |Description
-|Name 4+|Clipsal C-Bus
-|Code 4+|`c-bus`
+|Name 4+|SocketCAN
+|Code 4+|`can-socketcan`
 |Maven Dependency 4+|
 
 [subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-c-bus</artifactId>
+  <artifactId>plc4j-transports-can-socketcan</artifactId>
   <version>{page-component-version}</version>
 </dependency>
 ----
-|Default Transport 4+|`tcp`
-|Supported Transports 4+|
- - `tcp`
 5+|Config options:
-|`srchk` |BOOLEAN |false| |Source check.
-5+|Transport config options:
-5+|
-+++
-<h4>tcp</h4>
-+++
-|`tcp.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
-|`tcp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
-|`tcp.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
-|`tcp.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
-|`tcp.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
-|`tcp.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
-|`tcp.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
-|`tcp.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
-|`tcp.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
+|`can-socketcan.interface-name` |STRING | | |Linux CAN interface name (e.g., "can0", "vcan0"). Alternative to naming the interface in the address segment of the connection string, which takes precedence.
+|`can-socketcan.reuse-interface` |BOOLEAN |false| |Share CAN socket across multiple transport instances on the same interface
+|`can-socketcan.read-timeout-ms` |INT |1000| |Read timeout in milliseconds for blocking reads on the CAN socket
+|`can-socketcan.filter-ids` |STRING | | |Comma-separated list of accepted CAN IDs (decimal or 0x hex). Empty means accept all.
+|`can-socketcan.filter-range-start` |INT |-1| |Start of accepted CAN ID range (inclusive). -1 means no range filtering.
+|`can-socketcan.filter-range-end` |INT |-1| |End of accepted CAN ID range (inclusive). -1 means no range filtering.
 |===

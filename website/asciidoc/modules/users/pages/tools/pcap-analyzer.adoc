@@ -1,0 +1,75 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= PCAP Analyzer
+
+The `PCAP Analyzer` replays captured protocol traffic through the PLC4X codecs and reports what goes wrong.
+
+For every packet it feeds the application payload into a real PLC4X codec, re-serializes the parsed message and
+compares the result against the original bytes.
+A mismatch means the reader and the writer of that message disagree, which makes the tool a regression harness for the
+codecs themselves - and a good way to find out why a driver fails on a particular device.
+
+It is written in Go and lives in the https://github.com/apache/plc4x-extras/tree/develop/plc4go/tools/plc4xpcapanalyzer[plc4x-extras] repository.
+
+TIP: If you want to feed a capture back into a running driver instead of into the codecs, have a look at
+xref:tools/capture-replay.adoc[] and at the xref:transports/pcap-replay.adoc[PCAP Replay transport].
+
+== Building and running
+
+[source,bash]
+----
+cd plc4go
+go run ./tools/plc4xpcapanalyzer ui --demo
+----
+
+Or build a standalone binary:
+
+[source,bash]
+----
+go build -o plc4xpcapanalyzer ./tools/plc4xpcapanalyzer
+----
+
+[IMPORTANT]
+====
+The analyzer reads captures through `gopacket/pcap` and therefore *requires cgo and libpcap*.
+Building with `CGO_ENABLED=0` fails.
+====
+
+== Commands
+
+----
+plc4xpcapanalyzer analyze <protocol> <capture>   # parse, reserialize and compare
+plc4xpcapanalyzer extract <protocol> <capture>   # dump the application payloads
+plc4xpcapanalyzer ui [capture]                   # the interactive terminal interface
+----
+
+The supported protocols are `bacnetip` and `c-bus`; `bacnet` and `cbus` are accepted as aliases.
+
+`extract` only prints payloads at verbosity 2 and above, so pass `-vv`.
+
+== Configuration
+
+Settings come from three places, in the usual order: a built-in default is overridden by the persisted session
+configuration, which is in turn overridden by a flag on the command line.
+`conf set` writes to the persisted layer, so a stored setting survives a restart without ever overriding a flag that was
+passed explicitly.
+
+NOTE: A flag passed with exactly its default value cannot be distinguished from an unset one, so for that field the
+persisted value wins.

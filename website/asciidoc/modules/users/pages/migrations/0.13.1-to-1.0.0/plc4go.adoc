@@ -1,0 +1,362 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+:icons: font
+
+= Migrating PLC4Go from 0.13.1 to 1.0.0
+
+This page covers the *Go* API changes. The changes to connection strings, tag addresses and
+defaults apply to every language and are described on the
+xref:migrations/0.13.1-to-1.0.0/index.adoc[overview page] - read that one first.
+
+PLC4Go changes more than any other binding in 1.0.0. The reason is a single decision: *a call that
+returns one result returns it directly, and every call that can block takes a `context.Context`.*
+The channel-and-result-struct pattern is gone from connecting, closing and pinging. It is kept
+where it earns its place - executing a request, which really is asynchronous.
+
+== Checklist
+
+. Move to Go 1.27.
+. Rewrite `GetConnection`, `Connect`, `Close` and `Ping` to the context-and-error form.
+. Drop the `...WithContext` variants; the context is now the first parameter of the plain call.
+. Rewrite connection-cache usage the same way.
+. Replace the `logging` package's level helpers.
+. Re-check code reading `ArrayInfo.GetUpperBound()` - the bounds are now inclusive.
+. Add the transport prefix to every transport option in your connection strings.
+. Re-check code branching on `ProvidesSubscribing` / `ProvidesBrowsing`.
+
+== Go 1.27
+
+`plc4go` now requires *Go 1.27*.
+
+The version floor bought a dependency removal: the `uuid` package it took from
+`github.com/google/uuid` now comes from the standard library, so that dependency is gone from
+`go.mod` and `go.sum` outright.
+
+== Connecting, closing and pinging
+
+`PlcConnection` and `PlcDriverManager` changed shape. The `PlcConnectionConnectResult` and
+`PlcConnectionCloseResult` types are gone, and `PlcConnection` implements `io.Closer`.
+
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`GetConnection(string) <-chan PlcConnectionConnectResult` |`GetConnection(ctx, string) (PlcConnection, error)`
+|`Connect() <-chan PlcConnectionConnectResult` |`Connect(ctx) error`
+|`ConnectWithContext(ctx) <-chan ...` |`Connect(ctx) error`
+|`Close() <-chan PlcConnectionCloseResult` |`Close() error`
+|`BlockingClose()` |`Close() error`
+|`Ping() <-chan PlcConnectionPingResult` |`Ping(ctx) error`
+|`Discover(cb, opts...)` |`Discover(ctx, cb, opts...)`
+|`DiscoverWithContext(ctx, cb, opts...)` |`Discover(ctx, cb, opts...)`
+|===
+
+The shape of the call site changes accordingly:
+
+[source,go]
+----
+// 0.13.1
+driverManager := plc4go.NewPlcDriverManager()
+drivers.RegisterModbusTcpDriver(driverManager)
+
+connectionRequestChanel := driverManager.GetConnection("modbus-tcp://192.168.23.30")
+connectionResult := <-connectionRequestChanel
+if connectionResult.GetErr() != nil {
+    fmt.Printf("error connecting: %s", connectionResult.GetErr().Error())
+    return
+}
+connection := connectionResult.GetConnection()
+defer connection.BlockingClose()
+----
+
+[source,go]
+----
+// 1.0.0
+driverManager := plc4go.NewPlcDriverManager()
+drivers.RegisterModbusTcpDriver(driverManager)
+
+ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+defer cancel()
+
+connection, err := driverManager.GetConnection(ctx, "modbus-tcp://192.168.23.30")
+if err != nil {
+    fmt.Printf("error connecting: %s", err.Error())
+    return
+}
+defer connection.Close()
+----
+
+TIP: `defer connection.Close()` is what `BlockingClose()` existed to make possible. It is now just
+the idiomatic Go line, and `go vet` understands it.
+
+=== `Invalidate()`
+
+`PlcConnection` gained `Invalidate()`, which marks a connection as irrecoverably failed so a cache
+can drop it without a health check. You do not have to call it - but if your code detects that a
+connection is dead in a way PLC4Go cannot see, calling it before returning the lease saves the
+cache a ping and saves the next caller a failed request.
+
+Transport errors are now classified and propagated through codecs and transports
+(`TransportErrorKind`), so the driver itself makes this call where it can.
+
+== Executing requests
+
+Request execution stays channel-based - it is genuinely asynchronous - but the `...WithContext`
+variants are gone. The context moved into the plain call:
+
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`Execute()` |`Execute(ctx)`
+|`ExecuteWithContext(ctx)` |`Execute(ctx)`
+|`ExecuteWithInterceptor(fn)` |`ExecuteWithInterceptor(ctx, fn)`
+|`ExecuteWithInterceptorWithContext(ctx, fn)` |`ExecuteWithInterceptor(ctx, fn)`
+|===
+
+This applies to read, write, subscription, unsubscription and browse requests alike.
+
+[source,go]
+----
+// 0.13.1
+readResult := <-readRequest.Execute()
+
+// 1.0.0
+readResult := <-readRequest.Execute(ctx)
+----
+
+If you have no meaningful context at the call site, `context.Background()` compiles - but a
+deadline is almost always the better answer, and it is now honoured:
+
+=== Timeouts are reported as timeouts
+
+A request that runs out of time is reported as a timeout rather than as an `INTERNAL_ERROR`. This
+covers both the driver's own request timeout and a deadline you set on the context you passed in.
+
+Code that told a timeout from a real failure - to decide whether retrying makes sense - will now
+see the timeout it was looking for. Code that treated `INTERNAL_ERROR` as "probably a timeout"
+should stop doing that.
+
+Every timeout inside PLC4Go is also named now (`utils.WithNamedTimeout`), so an expiry says which
+timeout it was.
+
+== The connection cache
+
+The cache follows the same rewrite:
+
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`GetConnection(string) <-chan PlcConnectionConnectResult` |`GetConnection(ctx, string) (PlcConnection, error)`
+|`GetConnectionWithContext(ctx, string) <-chan ...` |`GetConnection(ctx, string) (PlcConnection, error)`
+|`Close() <-chan PlcConnectionCacheCloseResult` |`Close() error`
+|`WithMaxResponseGrabTimeout(d)` |removed - see below
+| |`WithMaxIdleTime(d)` (new)
+|===
+
+[source,go]
+----
+// 1.0.0
+cache := cache.NewPlcConnectionCache(driverManager,
+    cache.WithMaxLeaseTime(30*time.Second),
+    cache.WithMaxIdleTime(5*time.Minute),
+)
+defer cache.Close()
+
+connection, err := cache.GetConnection(ctx, "modbus-tcp://192.168.23.30")
+if err != nil {
+    return err
+}
+defer connection.Close()
+----
+
+`WithMaxResponseGrabTimeout` is gone because there is no response to grab from a channel any more.
+
+`WithMaxIdleTime` is new: it discards cached connections that sat idle longer than the given
+duration and re-establishes them on the next lease (0 = keep forever, the default). Use it against
+remotes that silently reap idle connections - a half-open TCP connection is undetectable until the
+first write fails. Connections that report active subscription handles are exempt from the TTL,
+because their subscription state lives on the connection.
+
+== The `logging` package
+
+`pkg/api/logging` no longer sets or resets the global zerolog level. `ErrorLevel()`, `WarnLevel()`,
+`InfoLevel()`, `DebugLevel()`, `TraceLevel()` and `ResetLogging()` are gone, together with the
+`init()` that used to force the global logger to error level the moment the package was imported.
+
+That `init()` was the real problem: importing a PLC4X package changed the logging of the whole
+process.
+
+Pass a logger to PLC4X instead, which is explicit and scoped to the connection:
+
+[source,go]
+----
+// 1.0.0
+logger := zerolog.New(os.Stderr).Level(zerolog.DebugLevel)
+connection, err := driverManager.GetConnection(ctx, connectionString,
+    options.WithCustomLogger(logger))
+----
+
+If you relied on PLC4X quietening zerolog for you, set the level yourself:
+
+[source,go]
+----
+zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+----
+
+== Connection-string options need their transport prefix
+
+PLC4Go read a transport's options *unprefixed*, while PLC4J declares them on the transport and
+every example in the documentation spells them with the prefix. The documented connection string
+therefore set nothing in PLC4Go and said so nowhere.
+
+Transport options are now addressed under the transport's own code, and the unprefixed names are
+reported as unknown:
+
+[source]
+----
+tcp.connect-timeout-ms
+serial.baud-rate
+udp.so-reuse
+pcap.speed-factor
+----
+
+The same applies to the S7 driver's rack and slot, which live on the COTP transport:
+
+[cols="2,2"]
+|===
+|0.13.1 (PLC4Go) |1.0.0
+
+|`local-rack` |`cotp.local-rack`
+|`local-slot` |`cotp.local-slot`
+|`remote-rack` |`cotp.remote-rack`
+|`remote-slot` |`cotp.remote-slot`
+|===
+
+Options a driver injects into the map itself (`defaultTcpPort`) are not addressed by anyone and
+keep their bare names.
+
+=== OPC UA options
+
+PLC4Go's OPC UA driver read names derived from its own Go struct fields (`keyStoreFile`,
+`securityPolicy`) rather than the names PLC4J declares and the documentation lists. It now reads
+`tls.keystore`, `tls.keystore-password`, `security-policy` and
+`allow-unverified-security-policies`, like everything else.
+
+It also no longer *refuses* a connection on an unknown option - it warns, like every other driver -
+so a connection string accepted by PLC4J is no longer rejected in Go.
+
+== `ArrayInfo` bounds are inclusive
+
+[source,go]
+----
+GetSize() == GetUpperBound() - GetLowerBound() + 1
+----
+
+They were exclusive in PLC4Go, documented as a deliberate divergence, so `[0..7]` reported eight
+elements in Java and seven in Go - the same disagreement about the same address that the shared
+array notation exists to remove.
+
+WARNING: Code reading `GetUpperBound()` directly must be revisited. Nothing will fail to compile;
+the number is simply one different from what it was.
+
+`ArrayInfo` also gained `GetBase()` and `IsRange()`. Go has no default methods, so any
+implementation of the interface outside PLC4Go must add them.
+
+== Tag addresses
+
+The array notation changes described on the
+xref:migrations/0.13.1-to-1.0.0/index.adoc[overview page] apply
+to PLC4Go as well, and the Go parser is tested against the Java cases directly - one address now
+means one thing in either language.
+
+Two Go drivers change the meaning of addresses that still parse, so there is nothing to reject and
+nothing to warn about at runtime:
+
+* *ADS*: `[n]` was a *count* of n elements and is now the element at index n. `MAIN.g_arr[3]` read
+  three elements and now reads one. Rewrite as `MAIN.g_arr[0..2]`. ADS also drops the `[a:b]`
+  start-and-count form, which PLC4J never had: `MAIN.g_arr[2:4]` is written `MAIN.g_arr[2..5]`.
+* *Firmata*: `[n]` was a run of n pins and is now the pin at index n. `digital:2[3]` read three
+  pins from pin 2 and now reads pin 5. Rewrite as `digital:2[0..2]`.
+
+A count of zero no longer has a spelling. Several Go drivers accepted `[0]` and rejected it as
+"quantity must be greater than zero"; `[0]` now selects the first element.
+
+Addresses a driver renders back are now spelled the way its parser reads them. Several never
+round-tripped - BACnet/IP rendered `:` where the syntax wants `,`, KNXnet/IP device addresses
+rendered `/` where the syntax wants `.`, and the ADS direct form printed its index group as decimal
+digits behind an `0x` prefix, so 16416 came back as `0x16416`, a different address.
+
+== Values serialize differently
+
+If you parse the serialized form of a `PlcValue`, these change:
+
+* `PlcDWORD`, `PlcSINT`, `PlcULINT` and `PlcWSTRING` were serialized as `PlcDINT`, `PlcINT`,
+  `PlcUINT` and `PlcSTRING`. They now use their own names.
+* `PlcTIME` and `PlcLTIME` render ISO-8601 with hours, minutes, seconds and a sub-second fraction
+  instead of truncating to whole seconds.
+* `PlcDATE_AND_TIME` renders the UTC wall time in ISO-8601 rather than Go's local-zone default.
+* `PlcStruct` keeps a deterministic member order.
+* String-ish values carry `encoding="UTF-8"`.
+
+Separately, `PlcDATE_AND_TIME.GetDayOfWeek()` returns the numbering PLC4J returns - 1 for Monday
+through 7 for Sunday - rather than Go's `time.Weekday`, which counts Sunday as 0. A zero there
+means "no day given" in KNX DPT 19.001 and is simply invalid for S7.
+
+`PlcDATE` and `PlcTIME_OF_DAY` now expose their components rather than only the whole value.
+
+== Serial transport
+
+* *The default baud-rate changed from 115200 to 9600*, aligning with common serial defaults and
+  with the Java transport. Specify `serial.baud-rate` explicitly if you relied on the previous
+  default.
+* Reads and writes without an explicit context deadline are now bounded by the new
+  `serial.read-timeout-ms` / `serial.write-timeout-ms` options (default 1000 ms; set to 0 for the
+  previous blocking behaviour).
+* Invalid serial option values now fail connection creation instead of being silently ignored.
+
+The transport gained the full set of serial options in the connection string - data-bits,
+stop-bits, parity, flow-control, dtr, rts - plus shared-port operation (`reuse-port`, for
+multi-slave Modbus RTU) and inter-frame write pacing (`interframe-delay`).
+
+== Connection metadata
+
+The EtherNet/IP and Modbus connections left `ProvidesSubscribing` and `ProvidesBrowsing` at their
+zero value, reporting `false` by accident rather than by decision. Both now state what they
+support. Code branching on these flags will see different - and correct - answers.
+
+== New in 1.0.0
+
+Not migration work, but the reason a PLC4Go upgrade is usually worth it:
+
+* *Five new drivers*: AB-Ethernet, Firmata, IEC 60870-5-104, SLMP (MELSEC) and UMAS, taking
+  PLC4Go from nine drivers to fourteen. AB-Ethernet and Firmata are as partial as they are in Java;
+  IEC 60870-5-104 subscribes and nothing else, because the protocol is push driven.
+* *A production-grade BACnet/IP driver* with segmentation, write priority, directed and
+  multi-target WhoIs, routed addressing and array/bit-string property decoding.
+* *EtherNet/IP brought up to the Java driver's level*: all three read and write paths, UDP
+  broadcast discovery, a `logix` driver alias, and the `bigEndian`,
+  `forceUnconnectedOperation`, `communicationPath` and `connectionSerialNumber` options.
+* *S7* gained browse, alarm and cyclic subscriptions, a real round-trip ping, and parsing of
+  S5TIME, variable-length strings and alarm tag addresses.
+* *Modbus RTU and ASCII* have codecs of their own, closing the tag, value and configuration gaps
+  to the Java driver.
+* *KNXnet/IP* writes group addresses, and its subscriptions work.
+* *Polling-based subscriptions* are part of the default connection set, so a driver whose protocol
+  has no subscriptions can offer them the way the Java drivers do.

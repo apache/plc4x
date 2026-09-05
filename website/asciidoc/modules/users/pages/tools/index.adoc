@@ -19,3 +19,56 @@
 
 = Tools
 
+Next to the drivers and the API, PLC4X ships a number of tools that solve recurring tasks around PLC communication.
+
+== Application building blocks
+
+Libraries you add to your own application.
+
+[cols="1,3"]
+|===
+|Tool |Description
+
+|xref:tools/event-pump.adoc[Event-Pump]
+|Polls a set of tags on a schedule and hands every response to a listener. Replaces the `Scraper` of PLC4X 0.13 and earlier.
+
+|xref:tools/connection-cache.adoc[Connection Cache]
+|Shares a limited number of PLC connections between multiple parts of an application.
+
+|xref:tools/opm.adoc[Object PLC Mapping (OPM)]
+|Maps PLC tags onto annotated POJOs, in the spirit of JPA.
+|===
+
+== Servers
+
+Standalone applications that make PLCs reachable for other clients.
+
+[cols="1,3"]
+|===
+|Tool |Description
+
+|xref:tools/plc4x-server.adoc[PLC4X Server]
+|A relay server speaking the PLC4X proxy protocol, so clients using the `plc4x` driver can reach PLCs they have no direct network access to.
+
+|xref:tools/opcua-server.adoc[OPC UA Server]
+|An OPC UA gateway that exposes the tags of arbitrary PLC4X connections as an OPC UA address space.
+|===
+
+== Development and analysis
+
+[cols="1,3"]
+|===
+|Tool |Description
+
+|xref:tools/plc4x-browser.adoc[PLC4X Browser]
+|A terminal application for connecting to a PLC and browsing, reading, writing and subscribing to its tags.
+
+|xref:tools/pcap-analyzer.adoc[PCAP Analyzer]
+|Runs captured protocol traffic back through the PLC4X codecs and reports what fails to parse or reserialize.
+
+|xref:tools/capture-replay.adoc[Capture Replay]
+|Replays recorded network traffic onto a network device, mainly to develop and test passive-mode drivers.
+
+|xref:tools/testing.adoc[Testing without a PLC]
+|The mock and simulated drivers, for unit tests and for trying out the API without hardware.
+|===
