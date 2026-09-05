@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.transport.tcp.config;
 
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
@@ -31,6 +32,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Connection timeout in milliseconds.
      */
     @ConfigurationParameter("connect-timeout-ms")
+    @Description("Connection timeout in milliseconds.")
     @IntDefaultValue(5000)
     public int connectTimeout;
 
@@ -38,6 +40,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Socket read timeout in milliseconds. 0 means no timeout.
      */
     @ConfigurationParameter("read-timeout-ms")
+    @Description("Socket read timeout in milliseconds. 0 means no timeout.")
     @IntDefaultValue(0)
     public int readTimeout;
 
@@ -45,6 +48,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Socket write timeout in milliseconds. 0 means no timeout.
      */
     @ConfigurationParameter("write-timeout-ms")
+    @Description("Socket write timeout in milliseconds. 0 means no timeout.")
     @IntDefaultValue(0)
     public int writeTimeout;
 
@@ -52,6 +56,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Enable TCP_NODELAY (disable Nagle's algorithm).
      */
     @ConfigurationParameter("no-delay")
+    @Description("Enable TCP_NODELAY (disable Nagle's algorithm).")
     @BooleanDefaultValue(true)
     public boolean tcpNoDelay;
 
@@ -59,6 +64,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Enable SO_KEEPALIVE.
      */
     @ConfigurationParameter("keep-alive")
+    @Description("Enable SO_KEEPALIVE.")
     @BooleanDefaultValue(false)
     public boolean keepAlive;
 
@@ -66,6 +72,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Send buffer size in bytes. 0 uses system default.
      */
     @ConfigurationParameter("send-buffer-size")
+    @Description("Send buffer size in bytes. 0 uses system default.")
     @IntDefaultValue(81920)
     public int sendBufferSize;
 
@@ -73,6 +80,7 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Receive buffer size in bytes. 0 uses system default.
      */
     @ConfigurationParameter("receive-buffer-size")
+    @Description("Receive buffer size in bytes. 0 uses system default.")
     @IntDefaultValue(81920)
     public int receiveBufferSize;
 
@@ -80,12 +88,14 @@ public class TcpTransportConfiguration implements TransportConfiguration {
      * Local address to bind to (optional). If not set, uses default.
      */
     @ConfigurationParameter("local-address")
+    @Description("Local address to bind to (optional). If not set, uses default.")
     public String localAddress;
 
     /**
      * Local port to bind to (optional). 0 uses ephemeral port.
      */
     @ConfigurationParameter("local-port")
+    @Description("Local port to bind to (optional). 0 uses ephemeral port.")
     @IntDefaultValue(0)
     public int localPort;
 

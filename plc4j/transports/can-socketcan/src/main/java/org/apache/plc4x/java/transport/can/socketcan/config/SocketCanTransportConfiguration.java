@@ -21,7 +21,6 @@ package org.apache.plc4x.java.transport.can.socketcan.config;
 
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.config.annotations.Description;
-import org.apache.plc4x.java.spi.config.annotations.Required;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.can.config.CanTransportConfiguration;
@@ -36,11 +35,15 @@ public class SocketCanTransportConfiguration extends CanTransportConfiguration {
 
     /**
      * The Linux CAN interface name to use (e.g., "can0", "vcan0").
-     * This is a required parameter — the transport cannot be created without it.
+     * <p>
+     * The interface is normally named by the address segment of the connection string
+     * ({@code can-socketcan://can0}), which takes precedence over this parameter. One of the two
+     * has to be given: the transport rejects a connection that names no interface at all. It is
+     * deliberately not annotated {@code @Required}, because the required-parameter check runs
+     * while the configuration is built, before the address segment has been seen.
      */
     @ConfigurationParameter("interface-name")
-    @Description("Linux CAN interface name (e.g., \"can0\", \"vcan0\")")
-    @Required
+    @Description("Linux CAN interface name (e.g., \"can0\", \"vcan0\"). Alternative to naming the interface in the address segment of the connection string, which takes precedence.")
     public String interfaceName;
 
     /**
