@@ -1,0 +1,326 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+:icons: font
+
+= Migrating from 0.13.1 to 1.0.0
+
+1.0.0 is the first major release of Apache PLC4X, and it is where the incompatible changes that
+had been accumulating were made in one go rather than spread over the next five releases. This
+page describes the changes that apply *whatever language you use PLC4X from* - they are changes
+to connection strings, to tag addresses and to defaults, not to any one API.
+
+The API changes are language-specific and live on their own pages:
+
+[cols="1,3"]
+|===
+|Language |Guide
+
+|Java
+|xref:migrations/0.13.1-to-1.0.0/plc4j.adoc[Migrating PLC4J]
+
+|Go
+|xref:migrations/0.13.1-to-1.0.0/plc4go.adoc[Migrating PLC4Go]
+
+|C
+|xref:migrations/0.13.1-to-1.0.0/plc4c.adoc[Migrating PLC4C]
+
+|C#
+|xref:migrations/0.13.1-to-1.0.0/plc4cs.adoc[Migrating PLC4Net]
+
+|Python
+|xref:migrations/0.13.1-to-1.0.0/plc4py.adoc[Migrating PLC4Py]
+|===
+
+TIP: Work through this page first, then the page for your language. Most upgrades spend far more
+time on connection strings and tag addresses than on the API.
+
+== In one paragraph
+
+Tag addresses select array elements with one notation on every driver and in every language. Every
+connection-string parameter that names a duration ends in `-ms`, every TLS setting lives under
+`tls.`, and every transport setting is written under its transport's code. A driver refuses a
+transport it does not support. OPC UA and the TLS transport verify certificates by default, which
+means a connection that used to come up unprotected now fails and says why. Java needs 21, Go
+needs 1.27.
+
+== Tag addresses: one array notation
+
+This is the change most likely to touch your code, because it is in the strings your application
+passes to `addTagAddress(...)`.
+
+Array selection is now written *before* the data type, using `[n]` for a single element and
+`[lo..hi]` for an inclusive range:
+
+[source]
+----
+holding-register:1:INT[4]      <1>
+holding-register:1[0..3]:INT   <2>
+----
+<1> before - a *count* of four registers
+<2> now - the elements at index 0 through 3
+
+This replaces four incompatible spellings. `[4]` meant "four elements" in seven tag classes and
+"the fifth element" in two; it now means one element everywhere.
+
+Addresses in the old form no longer parse, and the error names the address to write instead - so
+the upgrade reports the change rather than quietly returning different data. There are exactly
+three exceptions where an address still parses and only its *meaning* moves, so nothing can warn
+you:
+
+* *Firmata* addresses carry no data type (`3[4]`), so the brackets did not move. `3[4]` used to
+  read four pins from pin 3 and now reads one pin, the fifth. Rewrite as `3[0..3]`.
+* *PLC4Go's ADS driver* used `[n]` as a count, unlike PLC4J's. `MAIN.g_arr[3]` read three
+  elements and now reads the element at index 3. Rewrite as `MAIN.g_arr[0..2]`.
+* *PLC4Go's Firmata driver* changes for the same reason PLC4J's does.
+
+The forms that changed, by driver:
+
+[cols="1,2,2"]
+|===
+|Driver |0.13.1 |1.0.0
+
+|S7 |`%DB42:28.0:BYTE[4]` |`%DB42:28.0[0..3]:BYTE`
+|S7 (string) |`%DB1:0:STRING(20)[4]` |`%DB1:0[0..3]:STRING(20)`
+|Modbus |`holding-register:1:INT[4]` |`holding-register:1[0..3]:INT`
+|SLMP |`D100:INT[4]` |`D100[0..3]:INT`
+|ADS (direct) |`0x4020/0:DINT[4]` |`0x4020/0[0..3]:DINT`
+|EtherNet/IP |`myArray[0]:DINT:4` |`myArray[0..3]:DINT`
+|Profinet |`tag:INT[4]` |`tag[0..3]:INT`
+|Profinet-NG |`1.2.INPUT.0:INT[4]` |`1.2.INPUT.0[0..3]:INT`
+|Simulated |`RANDOM/foo:INT[4]` |`RANDOM/foo[0..3]:INT`
+|KNXnet/IP (Go) |`1.2.3#4B1C:UINT[4]` |`1.2.3#4B1C[0..3]:UINT`
+|===
+
+OPC UA, C-Bus, BACnet/IP and KNXnet/IP group addresses are unchanged. OPC UA is the driver the
+shared notation was extracted from; the other three use brackets for something that is not an
+array selection.
+
+Two rules are worth knowing even if none of your addresses change:
+
+* *A single index and a one-element range are no longer the same thing.* `myTag[4]` selects one
+  element and yields a scalar, `myTag[4..4]` yields a list of one.
+* *An address that selects nothing now asks for the whole value.* For a scalar that is unchanged;
+  for an array it is every element, on the drivers that can ask the device for the extent (OPC UA,
+  ADS, UMAS).
+
+The full grammar, including the `;base` suffix for arrays a PLC declares as starting somewhere
+other than zero, is on the xref:array-notation.adoc[Addressing arrays] page.
+
+== Connection-string parameters: one vocabulary
+
+Parameter names are now spelled the same way in PLC4J and PLC4Go. A duration in milliseconds ends
+in `-ms`, TLS settings live under `tls.`, and a parameter aimed at a transport no longer repeats
+that transport's code, because the prefix already supplies it.
+
+The old names were *removed*, not deprecated. Supplying one is reported as an unknown parameter,
+naming the replacement - and the setting does not apply.
+
+.Durations
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`request-timeout` |`request-timeout-ms`
+|`timeout-request` (ads) |`request-timeout-ms`
+|`connect-timeout` |`connect-timeout-ms`
+|`read-timeout` |`read-timeout-ms`
+|`write-timeout` |`write-timeout-ms`
+|`session-timeout` |`session-timeout-ms`
+|`channel-lifetime` |`channel-lifetime-ms`
+|`min-channel-lifetime` |`min-channel-lifetime-ms`
+|`ha-heartbeat-interval` |`ha-heartbeat-interval-ms`
+|`ha-failover-timeout` |`ha-failover-timeout-ms`
+|===
+
+Establishing a socket and completing a protocol handshake are two settings, not one, so they now
+have two names. `connect-timeout-ms` is the socket connect; the COTP handshake and the OPC UA
+negotiation steps are `handshake-timeout-ms`:
+
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`cotp.cotp-connection-timeout` |`cotp.handshake-timeout-ms`
+|`negotiation-timeout` (opcua) |`handshake-timeout-ms`
+|===
+
+.Transport parameters no longer repeat their transport's code
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`tcp.tcp-no-delay` |`tcp.no-delay`
+|`cotp.cotp-tpdu-size` |`cotp.tpdu-size`
+|`tls.tls-version` |`tls.version`
+|===
+
+.TLS settings are addressed under `tls.`
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`tls.verify-ssl` |`tls.verify`
+|`key-store-file` (opcua) |`tls.keystore`
+|`key-store-password` |`tls.keystore-password`
+|`key-store-type` |`tls.keystore-type`
+|`trust-store-file` |`tls.trust-store`
+|`trust-store-password` |`tls.trust-store-password`
+|`trust-store-type` |`tls.trust-store-type`
+|===
+
+The trust store drops `-file` for the same reason the key store does: every one of these names a
+store, so saying so adds nothing.
+
+A name that a protocol specification fixes keeps its own spelling and units. SLMP's
+`monitoring-timer` is a field of the 3E request frame in the protocol's own units, not a value in
+milliseconds, so it is unchanged.
+
+WARNING: `insecure-certificate-verification` on the OPC UA driver became `tls.verify`, *with the
+opposite sense*. A connection that set `insecure-certificate-verification=true` must now set
+`tls.verify=false`. This one is not just a rename: if it is missed, the new default applies, which
+is to verify the server certificate.
+
+=== Unknown parameters are now reported
+
+A parameter PLC4X does not recognise is reported by name, with the nearest known name where there
+is one, in *both* PLC4J and PLC4Go. It remains a warning - a stray parameter does not fail a
+connection that would otherwise work - so the first run after an upgrade is a good place to read
+the log.
+
+The report also knows which transport the connection actually uses, so a parameter belonging to a
+different transport (`serial.baud-rate` on a TCP connection) is called out as misdirected rather
+than excused.
+
+PLC4Go's OPC UA driver used to *refuse* a connection on an unknown option. It now warns like every
+other driver.
+
+== A driver refuses a transport it does not support
+
+Pairing a driver with a transport it does not speak - a plain `tcp` transport with the S7 driver,
+which speaks COTP - now fails at connect time with an exception naming the transports the driver
+does support. It previously connected and then failed in a way that was much harder to read.
+
+Set `allow-unsupported-transport=true` if the non-standard pairing is intentional. That only
+bypasses the driver-supported check; the transport still has to be a registered one.
+
+== Secure by default
+
+Several defaults moved from "works everywhere" to "protects the connection". Each of these turns a
+connection that used to come up *unprotected* into one that fails and says why, so they need a
+decision rather than a rename.
+
+=== OPC UA
+
+* `security-policy` defaults to `Basic256Sha256` instead of `NONE`. A protected channel needs the
+  server's certificate to be known before the channel is opened, and the driver no longer falls
+  back from discovery onto a weaker channel than the one configured - which it used to do
+  silently. Name the certificate with `server-certificate-file`, or a trust store with
+  `tls.trust-store`; or set `discovery=false` if the endpoint needs no discovery; or ask for
+  `security-policy=NONE` to accept an unprotected channel as before.
+* A protected channel also needs a client key pair. Supply one with `tls.keystore` (plus
+  `tls.keystore-password` and `tls.keystore-type`), or the driver generates a throwaway
+  self-signed certificate, which a server that authenticates its clients will not accept.
+* The driver refuses to send a username and password over a channel that neither signs nor
+  encrypts. `allow-insecure-credentials=true` sends them anyway, with a warning.
+* An endpoint must match both the requested security policy *and* the requested message security
+  mode, and the strongest matching endpoint is selected rather than the weakest.
+
+=== TLS transport
+
+The transport now checks that the server's certificate was issued for the host it connected to.
+`ignore-common-name` was declared but never consulted, so this check did not happen at all.
+
+A connection to a device whose certificate names something other than the address it is reached at
+will now fail. `tls.trust-store` (with `tls.trust-store-password` and `tls.trust-store-type`) names
+the certificates to trust instead of the public authorities the JVM ships with;
+`ignore-common-name=true` restores the old behaviour and logs a warning saying so.
+
+=== ctrlX
+
+The driver no longer trusts the Bosch factory default certificate that ships inside the driver jar,
+and no longer accepts a certificate for any host regardless of the name it was issued for.
+Connections to a device still on its factory certificate will now fail;
+`allow-factory-default-certificate=true` restores the old behaviour, with a warning.
+
+=== The `plc4x` proxy driver
+
+* It defaults to the TLS transport instead of plaintext TCP. Existing plaintext connections must
+  name the transport explicitly: `plc4x:tcp://...`.
+* It requires username/password authentication on connect. Connecting without credentials, or with
+  invalid ones, is rejected with an `ACCESS_DENIED` handshake. Configure them with the new
+  `username` and `password` parameters.
+
+=== Credentials in logs
+
+Values carrying secrets are marked at their declaration and render as `<redacted>` wherever a
+configuration is logged, in both PLC4J and PLC4Go. This replaces guessing from parameter names,
+which could only ever be one parameter behind.
+
+PLC4Go used to log connection strings verbatim at debug level, so a password reached the log in
+clear at twenty call sites. It does not any more. A connection string nested inside another - the
+proxy driver's `remote-connection-string` - is redacted as a connection string in its own right.
+
+== Message nesting is bounded
+
+Every generated parser refuses a message that nests its types deeper than 1024 levels, in Java, Go,
+C and Python. Several types contain themselves - BACnet constructed data holds further constructed
+data, an OPC UA variant of type 24 holds further variants - so the depth of the value tree is the
+sender's to choose and one level costs a single byte on the wire.
+
+Set `PLC4X_MAX_NESTING_DEPTH` for a device whose messages genuinely nest deeper. It means the same
+thing in every binding, and a value that is not a positive number leaves the default in place with
+a warning. The deepest message in the project's own testsuites nests 36 levels.
+
+NOTE: PLC4Go's default *rose* from 255 to 1024 in the process, so one setting of the variable now
+means one depth whichever binding reads it.
+
+== Protocol-level corrections
+
+These change what goes on the wire or what a value decodes to. They are corrections, but a system
+that had adapted to the old behaviour needs attention.
+
+* *S7 `DATE_AND_TIME`*: the day-of-week nibble is now numbered the way an S7 numbers it - Sunday
+  as 1 through Saturday as 7. Both bindings filled it from their date library, which counts from
+  Monday, so every `DATE_AND_TIME` written to a PLC carried a day of week one short. Only
+  `IEC61131_DATE_AND_TIME` is affected; the DTL variant already carried the Siemens numbering.
+* *IEC 60870-5-104*: S-format acknowledgements are derived from the send sequence number of the
+  frames received, as the standard requires. The driver previously sent a different number
+  entirely. A station that checks acknowledgements will see different - correct - values.
+* *EtherNet/IP data type codes*: `LWORD` moves from `0x00D3` to `0x00D4` and `STRINGI` from
+  `0x00DD` to `0x00DE`. Each had been sharing its value with another type, and a duplicate key is
+  silently dropped from the generated lookup tables, so neither could be resolved at all. Anyone
+  who hardcoded the old `LWORD` value was addressing a `DWORD`.
+* *EtherNet/IP string writes* now emit the structure the read path parses, so what the driver
+  writes reads back as the same value. A write addressed as `:STRING` is now rejected - write
+  strings as `:STRUCTURED`.
+
+== Implausible element counts are rejected
+
+A tag address naming an implausible number of elements is now an invalid address rather than
+something the driver acts on. An element count is a request to allocate, and it used to be taken at
+face value. This affects the S7, ADS, Firmata, Modbus, Profinet, Profinet-NG and simulated drivers.
+In all of them a count too wide to be a number used to escape as a `NumberFormatException` instead
+of the invalid-tag error the tag parsers promise.
+
+== Where to go next
+
+* xref:migrations/0.13.1-to-1.0.0/plc4j.adoc[PLC4J (Java)]
+* xref:migrations/0.13.1-to-1.0.0/plc4go.adoc[PLC4Go (Go)]
+* xref:migrations/0.13.1-to-1.0.0/plc4c.adoc[PLC4C (C)]
+* xref:migrations/0.13.1-to-1.0.0/plc4cs.adoc[PLC4Net (C#)]
+* xref:migrations/0.13.1-to-1.0.0/plc4py.adoc[PLC4Py (Python)]

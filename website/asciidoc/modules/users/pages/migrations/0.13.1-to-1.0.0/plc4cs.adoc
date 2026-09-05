@@ -1,0 +1,58 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+:icons: font
+
+= Migrating PLC4Net from 0.13.1 to 1.0.0
+
+This page covers the *C# (.NET)* binding.
+
+[WARNING]
+====
+*PLC4Net is abandoned.* It is not ready for usage, it has no driver implementations, and no work
+went into it for 1.0.0 beyond keeping it compiling and refreshing the generated protocol data.
+
+If you are looking for a way to talk to a PLC from .NET today, the practical options are the
+xref:tools/plc4x-server.adoc[PLC4X Server] or the xref:tools/opcua-server.adoc[OPC UA Server] -
+both let a non-Java application reach any PLC that PLC4X can reach, over a protocol that has good
+.NET client libraries.
+====
+
+== Short version
+
+*There is nothing to migrate.* The `plc4net` API and SPI are the same as in 0.13.1. Nothing was
+added, renamed or removed.
+
+== What did change
+
+Only generated data, which affects nobody's source code:
+
+* The bundled KNX manufacturer data and the BACnet and KNX vendor IDs were refreshed for broader
+  device recognition. This is the same refresh every binding got.
+* The generated BACnet, OPC UA and KNX types were regenerated against the current mspec
+  definitions.
+
+== Building
+
+The PLC4X build migrated to Apache Maven 4. This only concerns you if you build `plc4net` from the
+PLC4X source tree with `-Pwith-dotnet`.
+
+== Everything else
+
+The changes described on the xref:migrations/0.13.1-to-1.0.0/index.adoc[overview page] - the array
+notation, the connection-string vocabulary, the security defaults - are changes to drivers, and
+`plc4net` has none. They become relevant only if the .NET binding is ever picked up again.

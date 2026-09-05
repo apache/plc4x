@@ -17,6 +17,21 @@
 :imagesdir: ../../images/
 :icons: font
 
-= Apache Edgent (Retired)
+= Migrations
 
+PLC4X keeps its API stable within a release line, but a major release is where the things that
+could not be fixed compatibly get fixed. This section collects, per release step, everything an
+existing application has to change - and nothing else.
 
+Each migration guide is split by programming language, because a change that rewrites half of a
+PLC4Go application may not touch a PLC4J one at all, and the other way around.
+
+[cols="1,3"]
+|===
+|Migration |Summary
+
+|xref:migrations/0.13.1-to-1.0.0/index.adoc[0.13.1 to 1.0.0]
+|The first major release. A new shared driver SPI, one array notation across all drivers and
+languages, one vocabulary for connection-string parameters, and secure-by-default TLS and OPC UA
+settings. Java 21 and Go 1.27 become the baseline.
+|===

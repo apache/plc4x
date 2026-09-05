@@ -44,8 +44,18 @@
 +++
 <h4>can-socketcan</h4>
 +++
+|`can-socketcan.interface-name` |STRING | | |Linux CAN interface name (e.g., "can0", "vcan0"). Alternative to naming the interface in the address segment of the connection string, which takes precedence.
+|`can-socketcan.reuse-interface` |BOOLEAN |false| |Share CAN socket across multiple transport instances on the same interface
+|`can-socketcan.read-timeout-ms` |INT |1000| |Read timeout in milliseconds for blocking reads on the CAN socket
+|`can-socketcan.filter-ids` |STRING | | |Comma-separated list of accepted CAN IDs (decimal or 0x hex). Empty means accept all.
+|`can-socketcan.filter-range-start` |INT |-1| |Start of accepted CAN ID range (inclusive). -1 means no range filtering.
+|`can-socketcan.filter-range-end` |INT |-1| |End of accepted CAN ID range (inclusive). -1 means no range filtering.
 5+|
 +++
 <h4>can-virtualcan</h4>
 +++
+|`can-virtualcan.bus-name` |STRING |default| |Name of the virtual CAN bus. Instances on the same bus exchange frames in-memory.
+|`can-virtualcan.filter-ids` |STRING | | |Comma-separated list of accepted CAN IDs (decimal or 0x hex). Empty means accept all.
+|`can-virtualcan.filter-range-start` |INT |-1| |Start of accepted CAN ID range (inclusive). -1 means no range filtering.
+|`can-virtualcan.filter-range-end` |INT |-1| |End of accepted CAN ID range (inclusive). -1 means no range filtering.
 |===

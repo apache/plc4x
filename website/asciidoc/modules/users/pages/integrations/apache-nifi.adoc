@@ -25,15 +25,20 @@ Apache NiFi allows creating systems that process data around the concept of data
 
 Apache PLC4X provides both `Source` as well as `Sink` processors for accessing data in PLCs or writing data to them.
 
+PLC4X supports both NiFi generations, in two separate sets of modules:
+
+[cols="1,1,1"]
+|===
+|NiFi generation |Module |`nar` artifact
+
+|NiFi 1.x |`plc4j/integrations/apache-nifi/nifi-1` |`plc4j-nifi-plc4x-nar`
+|NiFi 2.x |`plc4j/integrations/apache-nifi/nifi-2` |`plc4j-nifi-2-plc4x-nar`
+|===
+
 == Setting Up NiFi
 
-Even if the documentation of NiFi states it works with any Java version above 1.8, this is not quite true.
-
-I have found that NiFi only works with Java versions below 11. With `Java 1.8` you are definitely on the safe-side.
-
-When starting with newer versions the start script just terminates after logging a statement that NiFi is now starting.
-
-Other than that, I haven't encountered any other requirements.
+Use the Java version the NiFi release you are running requires - NiFi 1.x runs on Java 8, 11, 17 or 21, NiFi 2.x
+requires Java 21 or newer.
 
 As soon as you have started NiFi using the `nifi.sh run` or `run-nifi.bat` the Web-UI of NiFi should be available at: http://localhost:8080/nifi/
 
@@ -46,9 +51,12 @@ It might take a few seconds for the Web-UI to show up ... so if you're getting e
 
 In order to enable `Apache PLC4X` support in `Apache NiFi` all you need to do, is to copy our `nar` archive into the Nifi installations `lib` directory.
 
-You can either build the `nar` by building PLC4X and using the version in the `plc4j/integrations/apache-nifi/nifi-plc4x-nar/target` directory.
+You can either build the `nar` yourself from the https://github.com/apache/plc4x-extras/tree/develop/plc4j/integrations/apache-nifi[plc4x-extras] repository, and pick it up from the `target` directory of the matching `nar` module:
 
-Or you can download a released version from Maven central: https://search.maven.org/search?q=plc4j-nifi-plc4x-nar
+* NiFi 1.x: `plc4j/integrations/apache-nifi/nifi-1/nifi-plc4x-nar/target`
+* NiFi 2.x: `plc4j/integrations/apache-nifi/nifi-2/nifi-2-plc4x-nar/target`
+
+Or you can download a released version from Maven central: https://central.sonatype.com/search?q=plc4j-nifi-plc4x-nar[plc4j-nifi-plc4x-nar] / https://central.sonatype.com/search?q=plc4j-nifi-2-plc4x-nar[plc4j-nifi-2-plc4x-nar]
 
 image::integrations/nifi/empty-nifi-flow.png[]
 

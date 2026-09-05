@@ -19,39 +19,29 @@
 
 = Serial Port
 
+Communication over a serial port (RS-232, RS-485, or a USB adapter presenting itself as one).
 
+== Transport syntax
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-|Code
-2+|`serial`
-
-|Name
-2+|UDP Socket Communication
-
-|Maven Dependency
-2+|
-[subs=attributes+]
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transports-serial</artifactId>
-  <version>{current-project-version}</version>
-</dependency>
-----
-
-|Transport Syntax:
-|
 ----
 {name of the serial port}
 ----
-|Can differ depending on the OS:
 
-- Windows: "Com 1"
-- Mac & Linux: "/dev/ttyS0"
+The name depends on the operating system:
 
-|Options:
-2+|*none*
-|===
+- Windows: `COM1`
+- Linux: `/dev/ttyS0`, `/dev/ttyUSB0`
+- macOS: `/dev/tty.usbserial-XXXX`
+
+.Example
+[source]
+----
+modbus-rtu://COM1?serial.baud-rate=19200
+modbus-rtu:serial:///dev/ttyUSB0?serial.baud-rate=9600&serial.parity=even
+----
+
+include::partial$transport-serial.adoc[]
+
+On an RS-485 bus several devices share one physical port. `serial.reuse-port=true` lets several
+PLC4X connections share a single open port for that case - read the warning on that option before
+using it.

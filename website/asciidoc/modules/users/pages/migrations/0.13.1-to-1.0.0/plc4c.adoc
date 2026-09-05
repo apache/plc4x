@@ -1,0 +1,108 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+:icons: font
+
+= Migrating PLC4C from 0.13.1 to 1.0.0
+
+This page covers the *C* API. The changes to connection strings, tag addresses and defaults that
+apply to every language are described on the
+xref:migrations/0.13.1-to-1.0.0/index.adoc[overview page].
+
+NOTE: PLC4C is *not ready for production usage*. It ships four drivers - Modbus, S7, `plc4x` and
+simulated - and it is not the binding the 1.0.0 work concentrated on. This page is short because
+there is genuinely little to do.
+
+== Short version
+
+*The PLC4C API did not change.* Every function in `plc4c/api/include` that existed in 0.13.1 exists
+in 1.0.0 with the same signature. An application that compiled against 0.13.1 compiles against
+1.0.0.
+
+The changes below are additive, or they are runtime behaviour.
+
+== Additions to the API
+
+`plc4c_data_create_wstring_data(unsigned int size, char *s)` was added alongside the existing
+`plc4c_data_create_string_data`, as part of general `STRING` and `WSTRING` support for Modbus.
+
+The payload is a byte string in the encoding used on the wire, not a `wchar_t` sequence - the SPI
+has no wide-string reader that could produce one.
+
+== Message nesting is bounded
+
+A generated parser refuses a message that nests its types deeper than *1024* levels. Several
+protocol types contain themselves, so the depth of the value tree is the sender's to choose and one
+level costs a single byte on the wire; deep enough, that used to run the parser out of stack.
+
+Set the `PLC4X_MAX_NESTING_DEPTH` environment variable for a device whose messages genuinely nest
+deeper. It means the same thing in every PLC4X binding, and a value that is not a positive number
+between 1 and 65535 leaves the default in place with a warning.
+
+The deepest message in the project's own testsuites nests 36 levels, so this bounds only what no
+real device sends.
+
+== Tag addresses are unchanged
+
+[IMPORTANT]
+====
+This is the one place where PLC4C now *differs* from PLC4J and PLC4Go, and it is worth being
+explicit about it.
+
+1.0.0 introduced one array notation across all Java and Go drivers, in which the selection is
+written before the type and `[4]` means "the element at index 4":
+
+[source]
+----
+holding-register:1[0..3]:INT     # PLC4J and PLC4Go in 1.0.0
+----
+
+*PLC4C did not move.* Its Modbus parser still reads the old count-after-type form, in which `[4]`
+means "four elements":
+
+[source]
+----
+holding-register:1:INT[4]        # PLC4C, both in 0.13.1 and in 1.0.0
+----
+
+So your existing PLC4C addresses keep working unchanged - but an address copied from the
+xref:array-notation.adoc[Addressing arrays] page, or from a working PLC4J application, will not
+parse. Read the array-notation documentation as describing PLC4J and PLC4Go, not PLC4C.
+====
+
+== Modbus STRING and WSTRING are only partly there
+
+`STRING` and `WSTRING` were added to the Modbus data types, and the generated parser can decode
+them - but *PLC4C's Modbus tag has no notion of a string length*, so the driver reads every string
+as a single character.
+
+PLC4J and PLC4Go write the declared length in parentheses, the way the S7 driver spells it
+(`holding-register:1[0..2]:STRING(20)` is three 20-character strings). PLC4C's address parser reads
+the text between `:` and `[` as a data type name, so `STRING(20)` does not resolve to a data type
+at all.
+
+Treat Modbus strings as not yet usable from PLC4C. Nothing that worked in 0.13.1 broke - there was
+no `STRING` support there either.
+
+== Building
+
+The PLC4X build migrated to Apache Maven 4. This only concerns you if you build PLC4C from the
+PLC4X source tree with `-Pwith-c`; the CMake build of the generated sources is unchanged.
+
+WARNING: PLC4C's generated sources are checked into the repository. A plain `-Pwith-c` build
+compiles whatever is checked in, which after a protocol change may be stale. Add
+`-Pupdate-generated-code` to regenerate them.

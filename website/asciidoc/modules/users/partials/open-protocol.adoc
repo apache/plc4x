@@ -42,13 +42,13 @@
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout-ms` |INT |5000| |
-|`tcp.read-timeout-ms` |INT |0| |
-|`tcp.write-timeout-ms` |INT |0| |
-|`tcp.no-delay` |BOOLEAN |true| |
-|`tcp.keep-alive` |BOOLEAN |false| |
-|`tcp.send-buffer-size` |INT |81920| |
-|`tcp.receive-buffer-size` |INT |81920| |
-|`tcp.local-address` |STRING | | |
-|`tcp.local-port` |INT |0| |
+|`tcp.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
+|`tcp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`tcp.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
+|`tcp.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
+|`tcp.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
+|`tcp.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
+|`tcp.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
+|`tcp.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
+|`tcp.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
 |===

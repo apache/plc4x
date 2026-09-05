@@ -17,10 +17,15 @@
 :imagesdir: ../../images/
 :icons: font
 
-= UDP
+= COTP
 
-A connectionless UDP socket. Used by protocols that broadcast, that talk to devices which never
-open a connection of their own, or that were simply specified on top of UDP.
+COTP (Connection-Oriented Transport Protocol, ISO 8073 / RFC 905) layered over TPKT and TCP -
+the "ISO on TCP" stack that Siemens S7 equipment speaks. It is a TCP transport that performs the
+COTP connection handshake and negotiates a TPDU size before the driver sees the connection.
+
+Because the handshake carries the TSAPs that address a specific rack and slot, this transport is
+what the xref:protocols/s7.adoc[S7 driver] uses by default. Drivers normally derive the TSAP
+values themselves - override them only if you know the device expects something else.
 
 == Transport syntax
 
@@ -28,17 +33,16 @@ open a connection of their own, or that were simply specified on top of UDP.
 {IP address or hostname}[:{port}]
 ----
 
-The port may be omitted if the driver declares a default port for the protocol.
+The port defaults to the driver's default, which is 102 for S7.
 
 .Example
 [source]
 ----
-knxnet-ip://192.168.1.10
-modbus-tcp:udp://192.168.1.100:502
+s7://10.0.0.1
+s7:cotp://10.0.0.1:102?cotp.tpdu-size=1024
 ----
 
-include::partial$transport-udp.adoc[]
+include::partial$transport-cotp.adoc[]
 
-Set `udp.broadcast=true` to send to a broadcast address, and `udp.share-socket=true` when several
-connections have to share one local port - which is what protocols that answer on a fixed port
-require.
+The socket options are inherited from the xref:transports/tcp.adoc[TCP transport] and behave
+identically.

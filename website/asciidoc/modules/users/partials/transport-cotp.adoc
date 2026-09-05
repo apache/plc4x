@@ -20,40 +20,19 @@
 [cols="2,2a,2a,2a,4a"]
 |===
 |Name |Type |Default Value |Required |Description
-|Name 4+|Siemens S7 (Basic)
-|Code 4+|`s7`
+|Name 4+|COTP
+|Code 4+|`cotp`
 |Maven Dependency 4+|
 
 [subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-s7</artifactId>
+  <artifactId>plc4j-transports-cotp</artifactId>
   <version>{page-component-version}</version>
 </dependency>
 ----
-|Default Transport 4+|`cotp`
-|Supported Transports 4+|
- - `cotp`
 5+|Config options:
-|`pdu-size` |INT |1024| |Maximum size of an S7 data-packet sent to and received from the remote PLC.
-|`max-amq-caller` |INT |8| |Maximum number of unconfirmed requests the PLC will accept in parallel.
-|`max-amq-callee` |INT |8| |Maximum number of unconfirmed responses or requests PLC4X will accept in parallel.
-|`controller-type` |STRING |ANY| |Skip controller-type detection and assume the given type.
-|`read-timeout-ms` |INT |10000| |Maximum waiting time (in milliseconds) for a single S7 request/response exchange.
-|`ha-heartbeat-interval-ms` |INT |4000| |S7H dual-path only: interval between heartbeat ticks (in milliseconds). Each tick pings each inner connection so a standby disruption is detected within interval + ha-failover-timeout-ms. Lower values detect faster but generate more background traffic. Default 4000 (4s).
-|`ha-failover-timeout-ms` |INT |2000| |S7H dual-path only: maximum time (in milliseconds) the wrapper waits for an operation on the active inner before swapping to the alternate. The same value is used as the per-tick ping timeout in the heartbeat. Lower values fail over faster but risk swapping on transient slow responses. Default 2000 (2s).
-5+|Transport config options:
-5+|
-+++
-<h4>cotp</h4>
-+++
-|`cotp.local-rack` |INT |1| |Rack value for the client (PLC4X device).
-|`cotp.local-slot` |INT |1| |Slot value for the client (PLC4X device).
-|`cotp.local-device-group` |STRING |OTHERS| |Local Device Group.
-|`cotp.remote-rack` |INT |0| |Rack value for the remote main CPU (PLC).
-|`cotp.remote-slot` |INT |0| |Slot value for the remote main CPU (PLC).
-|`cotp.remote-device-group` |STRING |PG_OR_PC| |Remote Device Group.
 |`cotp.local-tsap` |INT |0| |Local TSAP (Transport Service Access Point) identifier.
 |`cotp.remote-tsap` |INT |0| |Remote TSAP (Transport Service Access Point) identifier.
 |`cotp.tpdu-size` |INT |8192| |COTP PDU size for data transmission. Valid values: 128, 256, 512, 1024, 2048, 4096, 8192.

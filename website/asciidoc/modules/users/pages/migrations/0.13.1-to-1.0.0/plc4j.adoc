@@ -1,0 +1,369 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+:icons: font
+
+= Migrating PLC4J from 0.13.1 to 1.0.0
+
+This page covers the *Java* API and build changes. The changes to connection strings, tag
+addresses and defaults apply to every language and are described on the
+xref:migrations/0.13.1-to-1.0.0/index.adoc[overview page] - read that one first.
+
+== Checklist
+
+. Move the build to Java 21 and, if you build PLC4X yourself, to Maven 4.
+. Update the Maven artifactIds that were renamed.
+. Replace `getConnectionManager()` with `getConnectionFactory()`.
+. Replace `CachedPlcConnectionManager` with `PlcConnectionCache`.
+. Replace the `Scraper` with the `Event-Pump`.
+. Update any `ConnectionStateListener` you implement.
+. Update any `PlcBrowseItem`, `PlcBrowseRequestInterceptor` or `ArrayInfo` you implement.
+. Rewrite EtherNet/IP `EipTag` construction, which is now immutable.
+. Re-check code that branches on `PlcConnectionMetadata`, which now tells the truth.
+
+== Build
+
+=== Java 21
+
+Java 11 support is dropped; the new baseline is *Java 21*.
+
+The `plc4j-api` module is intentionally held at *Java 17*, so an alternate driver implementation
+can still target 17. Everything else - the SPI, the drivers, the tools - needs 21.
+
+=== Maven 4
+
+The PLC4X build itself migrated to Apache Maven 4. This only concerns you if you build PLC4X from
+source; consuming the released artifacts works with Maven 3 as before.
+
+=== Changed Maven coordinates
+
+The `groupId` is unchanged (`org.apache.plc4x`). These artifactIds changed and must be updated in
+your `pom.xml`:
+
+.Tools modules renamed to the `plc4j-tools-*` pattern
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`plc4j-capture-replay` |`plc4j-tools-capture-replay`
+|`plc4j-connection-cache` |`plc4j-tools-connection-cache`
+|`plc4j-opm` |`plc4j-tools-opm`
+|===
+
+.Transport modules renamed from singular to plural
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`plc4j-transport-can` |`plc4j-transports-can`
+|`plc4j-transport-pcap-replay` |`plc4j-transports-pcap-replay`
+|`plc4j-transport-raw-socket` |`plc4j-transports-raw-socket`
+|`plc4j-transport-serial` |`plc4j-transports-serial`
+|`plc4j-transport-tcp` |`plc4j-transports-tcp`
+|`plc4j-transport-test` |`plc4j-transports-test`
+|`plc4j-transport-udp` |`plc4j-transports-udp`
+|`plc4j-transport-socketcan` |`plc4j-transports-can-socketcan`
+|`plc4j-transport-virtualcan` |`plc4j-transports-can-virtualcan`
+|===
+
+.Replaced and removed modules
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`plc4j-scraper` |`plc4j-tools-event-pump` (a rewrite, not a rename - see <<The Scraper is replaced by the Event-Pump>>)
+|`plc4j-scraper-ng` |removed (experimental)
+|`plc4j-transport-pcap-shared` |removed (obsolete)
+|===
+
+NOTE: 1.0.0 also *adds* modules - the `plc4j-spi-*` buffers/config/drivers/values split, the
+`plc4j-transports-api`/`-cotp`/`-tls` transports, `plc4j-utils-audit-log*` and
+`plc4j-utils-subscription-emulation`. These are new artifacts, not renames, and you only need them
+if you use what they provide.
+
+== Getting a connection
+
+The connection-creating methods moved from `PlcConnectionManager` to a new `PlcConnectionFactory`
+interface, and `PlcDriverManager` hands that out under a new name:
+
+[source,java]
+----
+// 0.13.1
+PlcConnection connection = PlcDriverManager.getDefault()
+    .getConnectionManager()
+    .getConnection("s7://192.168.1.192");
+
+// 1.0.0
+PlcConnection connection = PlcDriverManager.getDefault()
+    .getConnectionFactory()
+    .getConnection("s7://192.168.1.192");
+----
+
+`PlcConnectionManager` still exists. It now *extends* `PlcConnectionFactory` and adds `close()`,
+and is implemented only by managers that keep the connections they hand out - the connection cache
+being the one in the box. The distinction is the point of the split: a factory makes connections
+and owns nothing, a manager owns what it made and therefore has to be closed.
+
+If you accept a connection source as a parameter, `PlcConnectionFactory` is almost always the type
+you want:
+
+[source,java]
+----
+// works with the driver manager and with the cache
+public MyService(PlcConnectionFactory connectionFactory) { ... }
+----
+
+== The connection cache
+
+`CachedPlcConnectionManager` is renamed to `PlcConnectionCache`, matching the name the concept
+already has in PLC4Go. The Maven artifactId (`plc4j-tools-connection-cache`) and the package
+(`org.apache.plc4x.java.utils.cache`) are unchanged.
+
+The implementation was rewritten for more reliable resource handling, and it now re-subscribes
+transparently after a connection was lost and re-established.
+
+[cols="2,2"]
+|===
+|0.13.1 |1.0.0
+
+|`CachedPlcConnectionManager` |`PlcConnectionCache`
+|`PlcConnectionManagerClosedException` |`PlcConnectionCacheClosedException`
+|`getBuilder(PlcConnectionManager)` |`getBuilder()` + `withConnectionFactory(...)`
+|`withMaxLeaseTime(Duration)` |`withMaxLeaseTime(long, TimeUnit)`
+|`withMaxWaitTime(Duration)` |`withMaxWaitTime(long, TimeUnit)`
+|`withMaxIdleTime(Duration)` |`withMaxIdleTime(long, TimeUnit)`
+|===
+
+[source,java]
+----
+// 0.13.1
+CachedPlcConnectionManager cache = CachedPlcConnectionManager
+    .getBuilder(PlcDriverManager.getDefault().getConnectionManager())
+    .withMaxLeaseTime(Duration.ofSeconds(30))
+    .build();
+
+// 1.0.0
+PlcConnectionCache cache = PlcConnectionCache.getBuilder()
+    .withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory())
+    .withMaxLeaseTime(30, TimeUnit.SECONDS)
+    .build();
+----
+
+WARNING: `withConnectionFactory(...)` is not optional. `build()` throws an
+`IllegalStateException` without it, where the old builder defaulted to a fresh
+`DefaultPlcDriverManager`.
+
+The builder gained `withScheduler(...)`, `withPingTimeout(...)`, `withIdlePingThreshold(...)` and
+`withCloseTimeout(...)`; the cache gained `getCachedConnectionCount()` and
+`getActiveLeaseCount()`. `removeCachedConnection(String)` now returns a `boolean` saying whether
+anything was removed, and `close()` no longer declares a checked exception.
+
+See the xref:tools/connection-cache.adoc[Connection Cache] page for the full set of options.
+
+== The Scraper is replaced by the Event-Pump
+
+The `Scraper` (`plc4j-scraper`) is gone, together with the experimental `plc4j-scraper-ng`. Its
+replacement is the *Event-Pump* (`plc4j-tools-event-pump`), which does the same job - poll a set of
+tags on a schedule and hand every response to a listener - with a smaller API and proper handling
+of a PLC that answers more slowly than the configured interval.
+
+This is a rewrite, not a rename: there is no drop-in class mapping. The
+xref:tools/event-pump.adoc[Event-Pump] page has a *Migrating from the Scraper* section that walks
+through it.
+
+One thing worth knowing before you start: the trigger interval can now be given in milliseconds
+(`intervalMillis` / `initialDelayMillis`) as well as in whole seconds. Giving the same setting in
+both units fails at startup rather than silently picking one.
+
+== API interfaces you may implement
+
+=== `ConnectionStateListener`
+
+The two-method form is replaced by a single method taking an event, because "connected" and
+"disconnected" were never the only things worth reporting.
+
+[source,java]
+----
+// 0.13.1
+public class MyListener implements ConnectionStateListener {
+    @Override public void connected() { ... }
+    @Override public void disconnected() { ... }
+}
+
+// 1.0.0
+public class MyListener implements ConnectionStateListener {
+    @Override
+    public void onConnectionStateChanged(PlcConnectionStateChangedEvent event) {
+        switch (event.getChangeType()) {
+            case CONNECTED       -> ...;
+            case DISCONNECTED    -> ...;   // graceful, close() was called
+            case CONNECTION_LOST -> ...;   // unexpected: network error, timeout
+            case TAGS_CHANGED    -> ...;   // available tags changed, re-browse
+            case MODE_RUN,
+                 MODE_STOP,
+                 MODE_CONFIG    -> ...;   // the PLC changed operating mode
+        }
+    }
+}
+----
+
+`PlcConnectionStateChangedEvent` also carries `getDetails()`, a human-readable string describing
+what happened.
+
+NOTE: The old `disconnected()` covered both a graceful close and a lost connection. If your
+listener reconnected on `disconnected()`, it should now do that on `CONNECTION_LOST` only -
+reconnecting on `DISCONNECTED` would fight your own `close()`.
+
+=== `PlcBrowseItem`
+
+`isSubscribable()` returned a `boolean` that could not say *how* an item may be subscribed. It is
+replaced by `getSupportedSubscriptionTypes()`:
+
+[source,java]
+----
+// 1.0.0
+default Set<PlcSubscriptionType> getSupportedSubscriptionTypes() {
+    return Collections.emptySet();
+}
+
+default boolean isSubscribable() {
+    return !getSupportedSubscriptionTypes().isEmpty();
+}
+----
+
+Both are default methods, so a custom implementation keeps compiling - but it will report
+"not subscribable" until it overrides `getSupportedSubscriptionTypes()`. *Callers* need no change:
+`isSubscribable()` still answers the same question.
+
+=== `PlcBrowseRequestInterceptor`
+
+The signature gained the query the item came from, so an interceptor can tell which of several
+queries produced a result:
+
+[source,java]
+----
+// 0.13.1
+boolean intercept(PlcBrowseItem item);
+
+// 1.0.0
+boolean intercept(String queryName, PlcQuery query, PlcBrowseItem item);
+----
+
+=== `ArrayInfo`
+
+`ArrayInfo` gained `getBase()` and `isRange()`, both as default methods, so existing
+implementations keep compiling.
+
+More important is what the existing methods mean. The javadoc used to describe `[6]` as a
+six-element array, which was never what the drivers did. `getLowerBound()` and `getUpperBound()`
+are the indices *as the address wrote them*, both inclusive: for `[6]` both are 6, and for `[0..7]`
+`getSize()` is 8.
+
+`isRange()` exists because equal bounds alone cannot tell `myTag[4]` (one element, a scalar) from
+`myTag[4..4]` (a list of one). `PlcTag.getArrayInfo()` reports the shape of the value received -
+empty for a scalar, one entry per dimension for an array - so a consumer can tell the two apart
+without knowing the protocol.
+
+=== `Option`
+
+`Option` gained `isSecret()`, reporting whether a configuration option carries a secret. It is a
+default method returning `false`, so existing implementations keep compiling.
+
+This is what redaction now asks, instead of guessing from the parameter's name. If you declare
+configuration parameters of your own, mark the sensitive ones with `@Secret` - a name-based check
+remains as a backstop, but it can only ever be one parameter behind.
+
+== Behaviour changes in existing API
+
+=== A connection reports what its driver actually implements
+
+`ConnectionBase` answered `true` to `isReadSupported()`, `isWriteSupported()`,
+`isSubscribeSupported()` and `isBrowseSupported()` for every driver built on it, whatever that
+driver implemented. The metadata a tool used to decide what to offer was therefore not worth
+reading.
+
+Every connection now states what it supports, so code branching on these flags will see
+different - and correct - answers. If your application built a UI from them, expect fewer options
+to be offered, and expect that to be right.
+
+=== EtherNet/IP `EipTag` is immutable
+
+`EipTag` was the only tag class in PLC4J that exposed setters. `setType(...)` and
+`setElementNb(...)` are gone; give the type and the element count to the constructor instead.
+
+An element count below one is normalised to one rather than kept, so a tag built as `":INT:0"`, or
+through the `(tag, type)` constructor which used to leave the count at zero, now reads one element
+instead of none.
+
+=== Value serialization
+
+If you parse the XML or JSON rendering of a `PlcValue`, these change:
+
+* `WORD`, `DWORD` and `LWORD` serialize as `dataType="uint"` rather than through the signed
+  writers.
+* `PlcBYTE` serializes as a bit string.
+* `PlcTIME` renders as an ISO-8601 string, like `PlcLTIME`.
+
+These align the Java and Go renderings of the same value.
+
+=== Tag address errors are per tag
+
+An address that cannot be parsed is now reported for that tag rather than failing the whole
+request, in the EtherNet/IP, Modbus, OPC UA, S7 and simulated drivers - which is what the API
+always promised. A request mixing a bad address with good ones now returns results for the good
+ones and an error code for the bad one.
+
+== If you wrote your own driver
+
+All drivers were migrated to a new shared SPI, *SPI3*: dependency-free read/write buffers, an
+updated code-generation framework, a pluggable-transport system and a layered protocol-driver
+model. A driver written against the 0.13 SPI does not compile against 1.0.0.
+
+There is no mechanical migration for this. The most useful reference is a driver of comparable
+shape in the 1.0.0 source tree; the `plc4j-driver-modbus` and `plc4j-driver-s7` modules cover a
+simple request/response protocol and a connection-oriented one respectively.
+
+Two things are worth knowing before you start:
+
+* *A driver declares the transports it supports.*
+  `getMetadata().getSupportedTransportCodes()` is checked at connect time, and a connection naming
+  a transport outside that set is refused.
+* *Connection metadata is derived, not asserted.* `ConnectionBase` used to answer `true` to
+  `isReadSupported()`, `isWriteSupported()`, `isSubscribeSupported()` and `isBrowseSupported()`
+  regardless of what the driver implemented. It now derives each flag from whether your connection
+  class overrides the corresponding hook - `onRead`, `onWrite`, `onSubscribe`, and `onBrowse` or
+  `onBrowseWithInterceptor`. You do not declare anything; implement the hook and the metadata
+  follows.
+
+If your protocol has no subscriptions, you can get them from
+`plc4j-utils-subscription-emulation`, the polling-based emulation layer that Modbus, EtherNet/IP,
+AB-ETH, SLMP and UMAS now use for `CYCLIC` and `CHANGE_OF_STATE` subscriptions.
+
+== New in 1.0.0
+
+Not migration work, but worth knowing about once you are on 1.0.0:
+
+* xref:audit-log.adoc[Audit-Log] - a complete trace of one connection to a file, switched on with a
+  connection-string parameter and no code change at all. The single most useful thing to reach for
+  when a migrated connection behaves differently from the old one.
+* `PlcCertificateAuthentication` - X.509 user authentication, currently used by the OPC UA driver.
+* OPC UA gained structured values (`PlcStruct`), browse support, and tag data types derived from
+  the server's type model rather than guessed from the input data.
+* The Object-PLC-Mapping (xref:tools/opm.adoc[OPM]) module was ported to SPI3.
+* A new TCP transport using per-connection virtual-thread blocking I/O, which is what Java 21
+  bought.
+* S7 connections can report what the device says about itself, via `readDeviceIdentification()`.

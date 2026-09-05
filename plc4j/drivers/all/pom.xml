@@ -96,6 +96,29 @@
             <artifactId>plc4j-driver-profinet-ng</artifactId>
             <version>1.1.0-SNAPSHOT</version>
           </dependency>
+          <!--
+            The transport tables are generated from whatever transports the ServiceLoader finds
+            here. Every other transport arrives transitively through one of the drivers above;
+            these three reach no deployed driver at compile scope (the PCAP replay transport is a
+            debugging tool, and the CAN driver depends on the two CAN transports at test scope
+            only), so without naming them their pages would silently stop being generated - and
+            the CAN drivers' own tables would keep showing those transports with no options.
+          -->
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-pcap-replay</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-can-socketcan</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-can-virtualcan</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+          </dependency>
         </dependencies>
       </plugin>
     </plugins>

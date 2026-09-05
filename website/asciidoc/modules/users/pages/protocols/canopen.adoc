@@ -55,6 +55,10 @@ The connection string layout is `canopen:<transport-code>://<transport-address>`
 - `canopen:can-socketcan://can0`
 - `canopen:can-virtualcan://test`
 
+The interface and the bus name can also be given as options - `can-socketcan.interface-name` and
+`can-virtualcan.bus-name` - for callers that assemble a connection string out of options alone.
+The address segment wins if both name one.
+
 == Connection String Options
 
 include::partial$canopen.adoc[]

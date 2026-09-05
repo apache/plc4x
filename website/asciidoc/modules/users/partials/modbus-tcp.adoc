@@ -59,15 +59,15 @@ Allowed values are:  +
 +++
 <h4>tcp</h4>
 +++
-|`tcp.connect-timeout-ms` |INT |5000| |
-|`tcp.read-timeout-ms` |INT |0| |
-|`tcp.write-timeout-ms` |INT |0| |
-|`tcp.no-delay` |BOOLEAN |true| |
-|`tcp.keep-alive` |BOOLEAN |false| |
-|`tcp.send-buffer-size` |INT |81920| |
-|`tcp.receive-buffer-size` |INT |81920| |
-|`tcp.local-address` |STRING | | |
-|`tcp.local-port` |INT |0| |
+|`tcp.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
+|`tcp.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`tcp.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
+|`tcp.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
+|`tcp.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
+|`tcp.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
+|`tcp.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
+|`tcp.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
+|`tcp.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
 5+|
 +++
 <h4>tls</h4>
@@ -82,15 +82,15 @@ Allowed values are:  +
 |`tls.keystore-password` |STRING | | |Password for the client keystore.
 |`tls.keystore-type` |STRING | | |Keystore type (e.g., 'PKCS12', 'JKS'). Defaults to PKCS12.
 |`tls.log-session-keys` |BOOLEAN |false| |Log TLS session keys to the audit log in SSLKEYLOGFILE format for Wireshark decryption.
-|`tls.connect-timeout-ms` |INT |5000| |
-|`tls.read-timeout-ms` |INT |0| |
-|`tls.write-timeout-ms` |INT |0| |
-|`tls.no-delay` |BOOLEAN |true| |
-|`tls.keep-alive` |BOOLEAN |false| |
-|`tls.send-buffer-size` |INT |81920| |
-|`tls.receive-buffer-size` |INT |81920| |
-|`tls.local-address` |STRING | | |
-|`tls.local-port` |INT |0| |
+|`tls.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
+|`tls.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`tls.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
+|`tls.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
+|`tls.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
+|`tls.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
+|`tls.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
+|`tls.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
+|`tls.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
 5+|
 +++
 <h4>tls-psk</h4>
@@ -98,15 +98,15 @@ Allowed values are:  +
 |`tls-psk.psk-identity` |STRING | | |PSK identity string for TLS-PSK authentication. Must be used together with psk-key.
 |`tls-psk.psk-key` |STRING | | |PSK key as hexadecimal string for TLS-PSK authentication. Must be used together with psk-identity.
 |`tls-psk.log-session-keys` |BOOLEAN |false| |Log TLS session keys to the audit log in SSLKEYLOGFILE format for Wireshark decryption.
-|`tls-psk.connect-timeout-ms` |INT |5000| |
-|`tls-psk.read-timeout-ms` |INT |0| |
-|`tls-psk.write-timeout-ms` |INT |0| |
-|`tls-psk.no-delay` |BOOLEAN |true| |
-|`tls-psk.keep-alive` |BOOLEAN |false| |
-|`tls-psk.send-buffer-size` |INT |81920| |
-|`tls-psk.receive-buffer-size` |INT |81920| |
-|`tls-psk.local-address` |STRING | | |
-|`tls-psk.local-port` |INT |0| |
+|`tls-psk.connect-timeout-ms` |INT |5000| |Connection timeout in milliseconds.
+|`tls-psk.read-timeout-ms` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`tls-psk.write-timeout-ms` |INT |0| |Socket write timeout in milliseconds. 0 means no timeout.
+|`tls-psk.no-delay` |BOOLEAN |true| |Enable TCP_NODELAY (disable Nagle's algorithm).
+|`tls-psk.keep-alive` |BOOLEAN |false| |Enable SO_KEEPALIVE.
+|`tls-psk.send-buffer-size` |INT |81920| |Send buffer size in bytes. 0 uses system default.
+|`tls-psk.receive-buffer-size` |INT |81920| |Receive buffer size in bytes. 0 uses system default.
+|`tls-psk.local-address` |STRING | | |Local address to bind to (optional). If not set, uses default.
+|`tls-psk.local-port` |INT |0| |Local port to bind to (optional). 0 uses ephemeral port.
 5+|
 +++
 <h4>udp</h4>

@@ -1,0 +1,50 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= TLS-PSK
+
+TLS authenticated with a *pre-shared key* rather than certificates. Both sides are configured with
+the same identity and key, and no certificate infrastructure is involved - which is what makes it
+usable on devices too small to validate a certificate chain, and on plants with no PKI.
+
+It ships in the same artifact as the xref:transports/tls.adoc[TLS transport] and is selected with
+its own transport code.
+
+== Transport syntax
+
+----
+{IP address or hostname}[:{port}]
+----
+
+.Example
+[source]
+----
+modbus-tcp:tls-psk://192.168.1.100:802?tls-psk.psk-identity=line-3&tls-psk.psk-key=00112233445566778899aabbccddeeff
+----
+
+include::partial$transport-tls-psk.adoc[]
+
+`tls-psk.psk-identity` and `tls-psk.psk-key` belong together - the key is hex-encoded, and the
+connection fails if only one of the two is given. The remaining socket options are inherited from
+the xref:transports/tcp.adoc[TCP transport].
+
+TIP: `tls-psk.log-session-keys=true` writes the session keys into the
+xref:audit-log.adoc[audit-log] in `SSLKEYLOGFILE` format, so a Wireshark capture of the connection
+can be decrypted. That hands anyone holding the log the ability to read the traffic - use it on a
+test system.

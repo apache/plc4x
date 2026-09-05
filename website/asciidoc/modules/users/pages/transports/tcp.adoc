@@ -19,36 +19,25 @@
 
 = TCP
 
+The default transport for most Ethernet-based protocols: a plain TCP client socket.
 
+== Transport syntax
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-|Code
-2+|`tcp`
-
-|Name
-2+|TCP Socket Communication
-
-|Maven Dependency
-2+|
-[subs=attributes+]
 ----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transports-tcp</artifactId>
-  <version>{current-project-version}</version>
-</dependency>
+{IP address or hostname}[:{port}]
 ----
 
-|Transport Syntax:
-|
-----
-{IP address or hostname}:{port}
-----
-|The port can be omitted, if the protocol provides a default port value.
+The port may be omitted if the driver declares a default port for the protocol.
 
-|Options:
-2+|*none*
-|===
+.Example
+[source]
+----
+modbus-tcp://192.168.1.100
+modbus-tcp:tcp://plc-hall-2.example.com:502
+----
+
+include::partial$transport-tcp.adoc[]
+
+The options above are the ones this transport declares. Some drivers add their own on top of
+them - the ADS driver, for instance, adds AMS options to `tcp` - and those are listed in that
+driver's table on its xref:protocols/index.adoc[protocol page].
