@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.transport.can.socketcan;
 
 import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.transport.can.socketcan.config.SocketCanTransportConfiguration;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SocketCanTransportTest {
 
@@ -74,5 +76,59 @@ class SocketCanTransportTest {
         // On non-Linux platforms, should throw TransportException
         assertThrows(Exception.class, () ->
                 transport.createTransportInstance("can-socketcan://can0", config, auditLog));
+    }
+
+    @Test
+    void addressSegmentNamesTheInterface() {
+        SocketCanTransport transport = new SocketCanTransport();
+        AuditLog auditLog = Mockito.mock(AuditLog.class);
+        SocketCanTransportConfiguration config = new SocketCanTransportConfiguration();
+
+        // Opening the socket needs Linux, so the resolved interface is what is asserted here -
+        // it is settled before the platform check runs.
+        assertThrows(Exception.class, () ->
+                transport.createTransportInstance("can0", config, auditLog));
+
+        assertEquals("can0", config.interfaceName);
+    }
+
+    @Test
+    void addressSegmentWinsOverInterfaceNameOption() {
+        SocketCanTransport transport = new SocketCanTransport();
+        AuditLog auditLog = Mockito.mock(AuditLog.class);
+        SocketCanTransportConfiguration config = new SocketCanTransportConfiguration();
+        config.interfaceName = "vcan0";
+
+        assertThrows(Exception.class, () ->
+                transport.createTransportInstance("can0", config, auditLog));
+
+        assertEquals("can0", config.interfaceName);
+    }
+
+    @Test
+    void interfaceNameOptionUsedWhenAddressSegmentIsEmpty() {
+        SocketCanTransport transport = new SocketCanTransport();
+        AuditLog auditLog = Mockito.mock(AuditLog.class);
+        SocketCanTransportConfiguration config = new SocketCanTransportConfiguration();
+        config.interfaceName = "vcan0";
+
+        assertThrows(Exception.class, () ->
+                transport.createTransportInstance("", config, auditLog));
+
+        assertEquals("vcan0", config.interfaceName);
+    }
+
+    @Test
+    void noInterfaceAnywhereIsRejected() {
+        SocketCanTransport transport = new SocketCanTransport();
+        AuditLog auditLog = Mockito.mock(AuditLog.class);
+        SocketCanTransportConfiguration config = new SocketCanTransportConfiguration();
+
+        // Reported here rather than by the @Required check on the configuration field, which runs
+        // before the address segment has been seen and would reject "can-socketcan://can0".
+        TransportException e = assertThrows(TransportException.class, () ->
+                transport.createTransportInstance("", config, auditLog));
+
+        assertTrue(e.getMessage().contains("No CAN interface given"));
     }
 }

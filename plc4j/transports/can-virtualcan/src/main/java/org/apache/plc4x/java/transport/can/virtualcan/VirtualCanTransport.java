@@ -87,7 +87,31 @@ public class VirtualCanTransport implements Transport<VirtualCanTransportConfigu
                     configuration.getClass().getSimpleName()));
         }
 
+        // The address segment of the connection string names the bus - "can-virtualcan://test" -
+        // the way every other transport is addressed by it. The "bus-name" parameter stays as the
+        // alternative for callers that assemble a connection string out of options alone; naming
+        // the bus in both places is contradictory, and the address segment wins.
+        String busName = resolveBusName(transportUrl, virtualCanConfig);
+        if (!busName.equals(virtualCanConfig.busName)) {
+            virtualCanConfig.busName = busName;
+        }
+
         LOGGER.debug("Creating virtual CAN transport instance on bus '{}'", virtualCanConfig.busName);
         return new VirtualCanTransportInstance(virtualCanConfig, auditLog);
+    }
+
+    /**
+     * Works out which virtual bus to join: the address segment of the connection string if it
+     * carries one, and the {@code bus-name} configuration parameter otherwise.
+     *
+     * @param transportUrl the address segment of the connection string, possibly empty
+     * @param config       the transport configuration
+     * @return the name of the bus to connect to
+     */
+    private static String resolveBusName(String transportUrl, VirtualCanTransportConfiguration config) {
+        if (transportUrl != null && !transportUrl.trim().isEmpty()) {
+            return transportUrl.trim();
+        }
+        return config.busName;
     }
 }
