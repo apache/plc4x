@@ -91,7 +91,7 @@ class PcapReplayTransportTest {
         config.maxFrameSize = 1500;
 
         assertThrows(TransportException.class, () ->
-            transport.createTransportInstance("pcap-replay://test", config, AuditLog.builder().build())
+            transport.createTransportInstance("", config, AuditLog.builder().build())
         );
     }
 
@@ -104,7 +104,7 @@ class PcapReplayTransportTest {
         // Missing MAC addresses
 
         assertThrows(TransportException.class, () ->
-            transport.createTransportInstance("pcap-replay://test", config, AuditLog.builder().build())
+            transport.createTransportInstance("", config, AuditLog.builder().build())
         );
     }
 
@@ -124,7 +124,7 @@ class PcapReplayTransportTest {
 
         // Would fail due to invalid PCAP format, but tests configuration
         assertThrows(TransportException.class, () ->
-            transport.createTransportInstance("pcap-replay://test", config, AuditLog.builder().build())
+            transport.createTransportInstance("", config, AuditLog.builder().build())
         );
     }
 
@@ -142,7 +142,7 @@ class PcapReplayTransportTest {
         config.packetQueueSize = 1000;
 
         TransportInstance<PcapReplayTransportConfiguration> instance =
-            transport.createTransportInstance("pcap-replay://test", config, AuditLog.builder().build());
+            transport.createTransportInstance("", config, AuditLog.builder().build());
 
         assertNotNull(instance);
         assertTrue(instance.isOpen());
@@ -164,7 +164,7 @@ class PcapReplayTransportTest {
         config.packetQueueSize = 1000;
 
         TransportInstance<PcapReplayTransportConfiguration> instance =
-            transport.createTransportInstance("pcap-replay://test", config, AuditLog.builder().build());
+            transport.createTransportInstance("", config, AuditLog.builder().build());
 
         assertNotNull(instance);
         assertTrue(instance.isOpen());
@@ -185,7 +185,77 @@ class PcapReplayTransportTest {
         config.packetQueueSize = 1000;
 
         TransportInstance<PcapReplayTransportConfiguration> instance =
-            transport.createTransportInstance("pcap-replay://test", config, AuditLog.builder().build());
+            transport.createTransportInstance("", config, AuditLog.builder().build());
+
+        assertNotNull(instance);
+        instance.close();
+    }
+
+    @Test
+    void addressSegmentNamesTheCapture() {
+        PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
+        config.autoDetectMacAddresses = false;
+        config.localAddress = "00:11:22:33:44:55";
+        config.remoteAddress = "AA:BB:CC:DD:EE:FF";
+        config.protocolId = 0x88B5;
+        config.maxFrameSize = 1500;
+
+        assertThrows(TransportException.class, () ->
+            transport.createTransportInstance("/nonexistent/from-address.pcap", config,
+                AuditLog.builder().build()));
+
+        assertEquals("/nonexistent/from-address.pcap", config.pcapFile);
+    }
+
+    @Test
+    void addressSegmentWinsOverPcapFileOption() {
+        PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
+        config.pcapFile = "/nonexistent/from-option.pcap";
+        config.autoDetectMacAddresses = false;
+        config.localAddress = "00:11:22:33:44:55";
+        config.remoteAddress = "AA:BB:CC:DD:EE:FF";
+        config.protocolId = 0x88B5;
+        config.maxFrameSize = 1500;
+
+        assertThrows(TransportException.class, () ->
+            transport.createTransportInstance("/nonexistent/from-address.pcap", config,
+                AuditLog.builder().build()));
+
+        assertEquals("/nonexistent/from-address.pcap", config.pcapFile);
+    }
+
+    @Test
+    void noCaptureAnywhereIsRejected() {
+        PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
+
+        // Reported here rather than by the @Required check on the configuration field, which runs
+        // before the address segment has been seen and would reject "pcap-replay:///capture.pcap".
+        TransportException e = assertThrows(TransportException.class, () ->
+            transport.createTransportInstance("", config, AuditLog.builder().build()));
+
+        assertTrue(e.getMessage().contains("No PCAP file given"));
+    }
+
+    @Test
+    @RequirePcap
+    void absoluteFilesystemPathIsNotMistakenForAClasspathResource() throws Exception {
+        // A leading '/' selects a classpath resource, which is also how every absolute path on a
+        // unix filesystem starts. Before the classpath was checked for an actual hit, naming a
+        // capture by its absolute path failed with "Classpath resource not found".
+        PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
+        config.autoDetectMacAddresses = false;
+        config.localAddress = "00:11:22:33:44:55";
+        config.remoteAddress = "AA:BB:CC:DD:EE:FF";
+        config.protocolId = 0x88B5;
+        config.maxFrameSize = 1500;
+        config.packetQueueSize = 1000;
+
+        assertTrue(tempPcapFile.getAbsolutePath().startsWith("/"),
+            "this test only means anything on a unix-like filesystem");
+
+        TransportInstance<PcapReplayTransportConfiguration> instance =
+            transport.createTransportInstance(tempPcapFile.getAbsolutePath(), config,
+                AuditLog.builder().build());
 
         assertNotNull(instance);
         instance.close();

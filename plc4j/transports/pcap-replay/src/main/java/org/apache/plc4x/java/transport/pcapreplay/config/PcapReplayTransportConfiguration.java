@@ -21,7 +21,6 @@ package org.apache.plc4x.java.transport.pcapreplay.config;
 
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.config.annotations.Description;
-import org.apache.plc4x.java.spi.config.annotations.Required;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
@@ -31,10 +30,15 @@ public class PcapReplayTransportConfiguration implements TransportConfiguration 
 
     /**
      * Path to the PCAP file to replay.
+     * <p>
+     * The capture is normally named by the address segment of the connection string
+     * ({@code pcap-replay:///captures/line-3.pcapng}), which takes precedence over this parameter.
+     * One of the two has to be given: the transport rejects a connection that names no capture at
+     * all. It is deliberately not annotated {@code @Required}, because the required-parameter check
+     * runs while the configuration is built, before the address segment has been seen.
      */
     @ConfigurationParameter("pcap-file")
-    @Description("Path to the PCAP file to replay.")
-    @Required
+    @Description("Path to the PCAP file to replay. Alternative to naming the capture in the address segment of the connection string, which takes precedence.")
     public String pcapFile;
 
     /**

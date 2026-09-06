@@ -261,8 +261,11 @@ public class PcapFilePlayer {
      * @return The resolved filesystem path
      */
     private String resolvePcapFile(String pcapFile) {
-        // Check if it's a classpath resource (starts with '/')
-        if (pcapFile.startsWith("/")) {
+        // A leading '/' means a classpath resource - but it is also how every absolute path on a
+        // unix filesystem starts, so the classpath is only consulted when it actually holds
+        // something by that name. Without the fallback, "/captures/line-3.pcapng" could never name
+        // a file on disk, which is the ordinary way of pointing at a capture.
+        if (pcapFile.startsWith("/") && getClass().getResource(pcapFile) != null) {
             return extractClasspathResource(pcapFile);
         }
 

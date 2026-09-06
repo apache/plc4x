@@ -80,7 +80,7 @@ class RawSocketTransportTest {
 
         try {
             TransportInstance<RawSocketTransportConfiguration> instance = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config, AuditLog.builder().build());
+                nif.getName(), config, AuditLog.builder().build());
 
             assertNotNull(instance);
             assertTrue(instance.isOpen());
@@ -108,7 +108,7 @@ class RawSocketTransportTest {
 
         try {
             TransportInstance<RawSocketTransportConfiguration> instance = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config, AuditLog.builder().build());
+                nif.getName(), config, AuditLog.builder().build());
 
             assertNotNull(instance);
             assertTrue(instance.isOpen());
@@ -142,10 +142,10 @@ class RawSocketTransportTest {
 
         try {
             TransportInstance<RawSocketTransportConfiguration> instance1 = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config1, AuditLog.builder().build());
+                nif.getName(), config1, AuditLog.builder().build());
 
             TransportInstance<RawSocketTransportConfiguration> instance2 = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config2, AuditLog.builder().build());
+                nif.getName(), config2, AuditLog.builder().build());
 
             assertTrue(instance1.isOpen());
             assertTrue(instance2.isOpen());
@@ -181,7 +181,7 @@ class RawSocketTransportTest {
 
         try {
             TransportInstance<RawSocketTransportConfiguration> instance = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config, AuditLog.builder().build());
+                nif.getName(), config, AuditLog.builder().build());
 
             assertNotNull(instance);
             assertTrue(instance.isOpen());
@@ -209,7 +209,7 @@ class RawSocketTransportTest {
 
         try {
             TransportInstance<RawSocketTransportConfiguration> instance = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config, AuditLog.builder().build());
+                nif.getName(), config, AuditLog.builder().build());
 
             assertNotNull(instance);
             assertTrue(instance.isOpen());
@@ -237,7 +237,7 @@ class RawSocketTransportTest {
 
         try {
             TransportInstance<RawSocketTransportConfiguration> instance = transport.createTransportInstance(
-                "raw-socket://" + nif.getName(), config, AuditLog.builder().build());
+                nif.getName(), config, AuditLog.builder().build());
 
             assertNotNull(instance);
             assertTrue(instance.isOpen());
@@ -257,7 +257,7 @@ class RawSocketTransportTest {
         config.protocolId = 0x88B5;
 
         assertThrows(TransportException.class, () ->
-            transport.createTransportInstance("raw-socket://invalid", config, AuditLog.builder().build())
+            transport.createTransportInstance("invalid", config, AuditLog.builder().build())
         );
     }
 
@@ -267,7 +267,81 @@ class RawSocketTransportTest {
         TransportConfiguration wrongConfig = new TransportConfiguration() {};
 
         assertThrows(IllegalArgumentException.class, () ->
-            transport.createTransportInstance("raw-socket://test", wrongConfig, AuditLog.builder().build())
+            transport.createTransportInstance("en0", wrongConfig, AuditLog.builder().build())
         );
+    }
+
+    /**
+     * Attempts to create an instance and discards whatever comes back.
+     * <p>
+     * What happens next depends entirely on the machine: opening the interface goes through
+     * libpcap, which may be absent (a {@link LinkageError}, not an exception), may reject the
+     * interface, or may succeed on a host that has it. None of that is what these tests are
+     * about, so none of it is asserted on; the tests check the resolved configuration, which is
+     * settled before any of it happens.
+     */
+    private static void attemptCreation(RawSocketTransport transport, String addressSegment,
+                                        RawSocketTransportConfiguration config, AuditLog auditLog) {
+        TransportInstance<RawSocketTransportConfiguration> instance = null;
+        try {
+            instance = transport.createTransportInstance(addressSegment, config, auditLog);
+        } catch (Throwable ignored) {
+            // Deliberately ignored - see the javadoc above.
+        } finally {
+            if (instance != null) {
+                try {
+                    instance.close();
+                } catch (Exception ignored) {
+                    // Nothing useful to do in a test teardown path.
+                }
+            }
+        }
+    }
+
+    private static RawSocketTransportConfiguration addressedConfig() {
+        RawSocketTransportConfiguration config = new RawSocketTransportConfiguration();
+        config.remoteAddress = "AA:BB:CC:DD:EE:FF";
+        config.protocolId = 0x88B5;
+        return config;
+    }
+
+    @Test
+    void addressSegmentNamesTheInterface() {
+        RawSocketTransportConfiguration config = addressedConfig();
+
+        attemptCreation(new RawSocketTransport(), "addressed-nif", config, AuditLog.builder().build());
+
+        assertEquals("addressed-nif", config.interfaceName);
+    }
+
+    @Test
+    void addressSegmentWinsOverInterfaceNameOption() {
+        RawSocketTransportConfiguration config = addressedConfig();
+        config.interfaceName = "configured-nif";
+
+        attemptCreation(new RawSocketTransport(), "addressed-nif", config, AuditLog.builder().build());
+
+        assertEquals("addressed-nif", config.interfaceName);
+    }
+
+    @Test
+    void interfaceNameOptionUsedWhenAddressSegmentIsEmpty() {
+        RawSocketTransportConfiguration config = addressedConfig();
+        config.interfaceName = "configured-nif";
+
+        attemptCreation(new RawSocketTransport(), "", config, AuditLog.builder().build());
+
+        assertEquals("configured-nif", config.interfaceName);
+    }
+
+    @Test
+    void noInterfaceAnywhereLeavesTheChoiceToTheTransport() {
+        RawSocketTransportConfiguration config = addressedConfig();
+
+        // Unlike the CAN and PCAP transports, naming no interface is legitimate here - the
+        // transport falls back to the first one it finds - so nothing is rejected up front.
+        attemptCreation(new RawSocketTransport(), "", config, AuditLog.builder().build());
+
+        assertNull(config.interfaceName);
     }
 }

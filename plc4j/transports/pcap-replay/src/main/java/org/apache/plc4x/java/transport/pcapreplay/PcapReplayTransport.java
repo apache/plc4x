@@ -55,6 +55,23 @@ public class PcapReplayTransport implements Transport<PcapReplayTransportConfigu
                 PcapReplayTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
         }
 
+        // The address segment of the connection string names the capture -
+        // "pcap-replay:///captures/line-3.pcapng" - the way every other transport is addressed by
+        // it. The "pcap-file" parameter stays as the alternative for callers that assemble a
+        // connection string out of options alone; naming the file in both places is contradictory,
+        // and the address segment wins.
+        if (transportUrl != null && !transportUrl.trim().isEmpty()) {
+            pcapReplayTransportConfiguration.pcapFile = transportUrl.trim();
+        }
+        // Checked here rather than with @Required on the configuration field: that check runs while
+        // the configuration is being built, before the address segment has been seen, and would
+        // reject the very form this method accepts.
+        if (pcapReplayTransportConfiguration.pcapFile == null
+                || pcapReplayTransportConfiguration.pcapFile.trim().isEmpty()) {
+            throw new TransportException("No PCAP file given. Name it in the connection string "
+                + "('pcap-replay:///captures/line-3.pcapng') or with the 'pcap-replay.pcap-file' option.");
+        }
+
         LOGGER.debug("Creating PCAP replay transport for file: {}", pcapReplayTransportConfiguration.pcapFile);
         return new PcapReplayTransportInstance(pcapReplayTransportConfiguration, auditLog);
     }

@@ -56,7 +56,18 @@ public class RawSocketTransport implements Transport<RawSocketTransportConfigura
                 RawSocketTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
         }
 
-        LOGGER.debug("Creating raw socket transport instance for protocol 0x{} (reuseInterface={})",
+        // The address segment of the connection string names the network interface -
+        // "raw-socket://en0" - the way every other transport is addressed by it. The
+        // "interface-name" parameter stays as the alternative for callers that assemble a
+        // connection string out of options alone; naming the interface in both places is
+        // contradictory, and the address segment wins. Naming it in neither is still fine: the
+        // transport then falls back to the first interface it finds.
+        if (transportUrl != null && !transportUrl.trim().isEmpty()) {
+            rawSocketTransportConfiguration.interfaceName = transportUrl.trim();
+        }
+
+        LOGGER.debug("Creating raw socket transport instance on interface {} for protocol 0x{} (reuseInterface={})",
+        rawSocketTransportConfiguration.interfaceName,
         String.format("%04X", rawSocketTransportConfiguration.protocolId), rawSocketTransportConfiguration.reuseInterface);
         return new RawSocketTransportInstance(sharedRawSocketManager, rawSocketTransportConfiguration, auditLog);
     }
