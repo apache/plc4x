@@ -204,8 +204,12 @@ class CotpFramingTest {
         long cpuSpent = threadCpuTimeOfThisProcess() - cpuBefore;
         try {
             accepted.get(5, TimeUnit.SECONDS);
-            // 1.2 seconds of waiting should cost almost nothing. A spin costs about a second of it.
-            assertTrue(cpuSpent < 500_000_000L,
+            // A spin burns the whole 1200 ms wait; not spinning costs whatever loading the
+            // connect path's classes happens to cost on this machine, measured at ~170 ms on a
+            // fast laptop and ~510 ms on a loaded CI agent. The bound sits between the two rather
+            // than close to the fast figure, which is what made this fail for 508 ms of a 500 ms
+            // budget without anything having regressed.
+            assertTrue(cpuSpent < 800_000_000L,
                 "waiting for the confirm spent " + (cpuSpent / 1_000_000) + " ms of CPU on a 1200 ms wait");
         } finally {
             instance.close();
