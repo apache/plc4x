@@ -33,7 +33,7 @@
 </dependency>
 ----
 5+|Config options:
-|`pcap-replay.pcap-file` |STRING | |required |Path to the PCAP file to replay.
+|`pcap-replay.pcap-file` |STRING | | |Path to the PCAP file to replay. Alternative to naming the capture in the address segment of the connection string, which takes precedence.
 |`pcap-replay.local-address` |STRING | | |Local MAC address to simulate (acts as this device).
 |`pcap-replay.remote-address` |STRING | | |Remote MAC address to communicate with.
 |`pcap-replay.protocol-id` |INT |0| |EtherType / Protocol number to filter (e.g., 0x88B5 for PROFINET).

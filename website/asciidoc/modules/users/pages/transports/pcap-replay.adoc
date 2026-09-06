@@ -28,14 +28,25 @@ xref:audit-log.adoc[audit-log] - record once, then replay as often as you need.
 
 == Transport syntax
 
-The capture is named by the `pcap-replay.pcap-file` parameter; the address segment of the
-connection string is not interpreted.
+----
+{path to the capture}
+----
+
+An absolute path names a file on disk. A path that matches a resource on the classpath is read
+from there instead and unpacked to a temporary file, which is how the drivers' own tests ship
+their captures alongside the code.
 
 .Example
 [source]
 ----
-profinet:pcap-replay://?pcap-replay.pcap-file=/tmp/line-3.pcapng&pcap-replay.speed-factor=1.0
+profinet:pcap-replay:///var/captures/line-3.pcapng?pcap-replay.speed-factor=1.0
 ----
+
+NOTE: The three slashes are not a typo - two end the transport code, and the third begins the
+absolute path.
+
+The capture can also be named with the `pcap-replay.pcap-file` option instead; the address segment
+wins if both name one.
 
 include::partial$transport-pcap-replay.adoc[]
 

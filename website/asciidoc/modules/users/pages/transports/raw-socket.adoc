@@ -28,15 +28,22 @@ root, `CAP_NET_RAW`, or membership of a group the packet-capture device belongs 
 
 == Transport syntax
 
-Everything this transport needs comes from its configuration parameters, and the address segment
-of the connection string is not interpreted. Drivers using it therefore leave it empty or fill it
-with something meaningful to the driver itself.
+----
+{name of the network interface}
+----
+
+The name depends on the operating system - `eth0` or `enp3s0` on Linux, `en0` on macOS,
+`\\Device\\NPF_\{GUID}` on Windows. Leave it out and the transport takes the first interface it
+finds, which is only sensible on a machine with one.
 
 .Example
 [source]
 ----
-profinet://?raw-socket.interface-name=en0&raw-socket.remote-address=00:0e:cf:12:34:56&raw-socket.protocol-id=34962
+profinet://en0?raw-socket.remote-address=00:0e:cf:12:34:56&raw-socket.protocol-id=34962
 ----
+
+The interface can also be named with the `raw-socket.interface-name` option instead; the address
+segment wins if both name one.
 
 include::partial$transport-raw-socket.adoc[]
 
