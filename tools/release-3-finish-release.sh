@@ -721,6 +721,95 @@ echo "✅ Nexus staging repository '$STAGING_REPO_ID' released."
 fi
 
 ########################################################################################################################
+# 4d. Point the "release" branch at this release
+########################################################################################################################
+
+# The "release" branch carries the content of the newest release, as a merge of its tag, so that
+# there is one branch to check out to get "what is released right now". It is maintained by hand
+# up to and including 1.0.0, which is why it lagged a full release behind more than once.
+#
+# It must NOT be updated for every release. Once more than one branch is maintained at a time, a
+# bugfix off an older line (0.13.2 while 1.0.0 is out) would otherwise pull the branch backwards.
+# Same rule as "update_download_page" applies: only a version NEWER than what is already there.
+# The check is a recommendation, not a veto - the question is always asked, because "which line is
+# the current one" is a decision for the release manager, not for a "sort -V".
+
+if ! git -C "$DIRECTORY" fetch origin release; then
+    echo "⚠️  Could not fetch the 'release' branch, skipping it."
+    echo "   Merge '$RELEASE_TAG' into it by hand if it should carry $RELEASED_VERSION."
+elif git -C "$DIRECTORY" merge-base --is-ancestor "$RELEASE_TAG" origin/release; then
+    echo "✅ The 'release' branch already contains $RELEASE_TAG."
+else
+    # What the branch carries now, so the prompt can say what would be replaced.
+    RELEASE_BRANCH_TAG=$(git -C "$DIRECTORY" describe --tags --abbrev=0 --match "v*" origin/release 2>/dev/null)
+    RELEASE_BRANCH_VERSION=${RELEASE_BRANCH_TAG#v}
+
+    echo
+    if [[ -z "$RELEASE_BRANCH_VERSION" ]]; then
+        echo "The 'release' branch carries no recognizable release tag."
+        RECOMMENDED="yes"
+    elif [[ "$(printf '%s\n%s\n' "$RELEASED_VERSION" "$RELEASE_BRANCH_VERSION" | sort -V | tail -1)" == "$RELEASED_VERSION" ]]; then
+        echo "The 'release' branch currently carries $RELEASE_BRANCH_VERSION, and $RELEASED_VERSION is newer."
+        RECOMMENDED="yes"
+    else
+        echo "The 'release' branch currently carries $RELEASE_BRANCH_VERSION, which is NEWER than"
+        echo "$RELEASED_VERSION. This looks like a bugfix release off an older maintained branch, and"
+        echo "'release' is supposed to carry the newest release - updating it would pull it backwards."
+        RECOMMENDED="no"
+    fi
+    echo "Recommended answer: $RECOMMENDED"
+    read -r -p "Merge $RELEASE_TAG into the 'release' branch? (yes/no) " yn
+
+    if [[ "$yn" != "yes" ]]; then
+        echo "✅ Leaving the 'release' branch alone."
+    else
+        # Same throw-away worktree as the "develop" update above: the release branch stays checked
+        # out in the working copy the release manager is using.
+        RELEASE_WORKTREE=$(mktemp -d)
+        cleanup_release_worktree() {
+          git -C "$DIRECTORY" worktree remove --force "$RELEASE_WORKTREE" >/dev/null 2>&1
+          rm -rf "$RELEASE_WORKTREE"
+          git -C "$DIRECTORY" worktree prune >/dev/null 2>&1
+        }
+        trap cleanup_release_worktree EXIT
+        rmdir "$RELEASE_WORKTREE"
+        if ! git -C "$DIRECTORY" worktree add --detach "$RELEASE_WORKTREE" origin/release; then
+            echo "❌ Got non-0 exit code from creating a worktree for 'release', aborting."
+            exit 1
+        fi
+
+        # The branch has commits of its own that are on no other branch ("chore: House-keeping
+        # after the release of ..."), so this can never fast-forward, and an ordinary merge would
+        # conflict its way through the whole tree. Take the two parents from a "-s ours" merge,
+        # which never conflicts, and then force the tree to be exactly the tag's - which is what
+        # the merges done by hand for the earlier releases ended up being.
+        if ! git -C "$RELEASE_WORKTREE" merge -s ours --no-commit "$RELEASE_TAG" \
+                || ! git -C "$RELEASE_WORKTREE" read-tree -u --reset "$RELEASE_TAG" \
+                || ! git -C "$RELEASE_WORKTREE" commit -m "Merge tag '$RELEASE_TAG' into release"; then
+            echo "❌ Got non-0 exit code from merging $RELEASE_TAG into 'release', aborting."
+            exit 1
+        fi
+
+        # "-s ours" keeps whatever the branch had if the read-tree above did not take, and that
+        # would publish the previous release under this one's name - so prove the tree matches.
+        if ! git -C "$RELEASE_WORKTREE" diff --quiet "$RELEASE_TAG" HEAD; then
+            echo "❌ The 'release' branch would not match $RELEASE_TAG, aborting without pushing."
+            exit 1
+        fi
+
+        # The merge has "release" as its first parent, so this fast-forwards - no force needed,
+        # which also means the ".asf.yaml" protection on the branch is never in the way.
+        if ! git -C "$RELEASE_WORKTREE" push origin HEAD:release; then
+            echo "❌ Got non-0 exit code from pushing the 'release' branch, aborting."
+            exit 1
+        fi
+        echo "✅ The 'release' branch now carries $RELEASED_VERSION."
+        cleanup_release_worktree
+        trap - EXIT
+    fi
+fi
+
+########################################################################################################################
 # 5. Clean up what the release left behind
 ########################################################################################################################
 
