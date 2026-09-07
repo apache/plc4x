@@ -170,7 +170,7 @@ func (b *_NLMReserved) CreateNLMReservedBuilder() NLMReservedBuilder {
 ///////////////////////
 
 func (m *_NLMReserved) GetMessageType() uint8 {
-	return 0
+	return m.NLMContract.(*_NLM).messageType
 }
 
 ///////////////////////

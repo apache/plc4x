@@ -255,4 +255,39 @@
     </xml>
   </testcase>
 
+  <testcase>
+    <!-- An exception response carries the function code that failed, with the error flag set.
+         The typeSwitch case for ModbusPDUError matches on the error flag alone, so it has no
+         constant for functionFlag and the parsed value has to survive in order to be
+         serialized again. -->
+    <name>Error Response</name>
+    <raw>000100000003ff8302</raw>
+    <root-type>ModbusADU</root-type>
+    <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">3</length>
+          <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">true</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUError>
+                <exceptionCode>
+                  <ModbusErrorCode dataType="uint" bitLength="8" stringRepresentation="ILLEGAL_DATA_ADDRESS">2</ModbusErrorCode>
+                </exceptionCode>
+              </ModbusPDUError>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
 </test:testsuite>

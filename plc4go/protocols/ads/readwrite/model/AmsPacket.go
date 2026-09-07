@@ -104,6 +104,12 @@ type _AmsPacket struct {
 		AmsPacketContract
 		AmsPacketRequirements
 	}
+	// commandId as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	commandId CommandId
+	// response as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	response       bool
 	TargetAmsNetId AmsNetId
 	TargetAmsPort  uint16
 	SourceAmsNetId AmsNetId
@@ -938,6 +944,10 @@ func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteResponse for type-switch of AmsPacket")
 		}
 	case true: // AdsErrorResponse
+		// This case does not pin commandId, so AdsErrorResponse reads the parsed value back from here.
+		m.commandId = commandId
+		// This case does not pin response, so AdsErrorResponse reads the parsed value back from here.
+		m.response = response
 		if _child, err = new(_AdsErrorResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsErrorResponse for type-switch of AmsPacket")
 		}
@@ -1059,6 +1069,8 @@ func (m *_AmsPacket) deepCopy() *_AmsPacket {
 	}
 	_AmsPacketCopy := &_AmsPacket{
 		nil, // will be set by child
+		m.commandId,
+		m.response,
 		utils.DeepCopy[AmsNetId](m.TargetAmsNetId),
 		m.TargetAmsPort,
 		utils.DeepCopy[AmsNetId](m.SourceAmsNetId),

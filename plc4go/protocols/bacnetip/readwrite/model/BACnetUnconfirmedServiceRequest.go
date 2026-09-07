@@ -70,6 +70,9 @@ type _BACnetUnconfirmedServiceRequest struct {
 		BACnetUnconfirmedServiceRequestContract
 		BACnetUnconfirmedServiceRequestRequirements
 	}
+	// serviceChoice as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	serviceChoice BACnetUnconfirmedServiceChoice
 }
 
 var _ BACnetUnconfirmedServiceRequestContract = (*_BACnetUnconfirmedServiceRequest)(nil)
@@ -464,6 +467,8 @@ func (m *_BACnetUnconfirmedServiceRequest) parse(ctx context.Context, readBuffer
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case 0 == 0: // BACnetUnconfirmedServiceRequestUnknown
+		// This case does not pin serviceChoice, so BACnetUnconfirmedServiceRequestUnknown reads the parsed value back from here.
+		m.serviceChoice = serviceChoice
 		if _child, err = new(_BACnetUnconfirmedServiceRequestUnknown).parse(ctx, readBuffer, m, uint16(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnknown for type-switch of BACnetUnconfirmedServiceRequest")
 		}
@@ -517,6 +522,7 @@ func (m *_BACnetUnconfirmedServiceRequest) deepCopy() *_BACnetUnconfirmedService
 	}
 	_BACnetUnconfirmedServiceRequestCopy := &_BACnetUnconfirmedServiceRequest{
 		nil, // will be set by child
+		m.serviceChoice,
 	}
 	return _BACnetUnconfirmedServiceRequestCopy
 }

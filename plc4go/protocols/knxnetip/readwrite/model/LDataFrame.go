@@ -84,6 +84,9 @@ type _LDataFrame struct {
 		LDataFrameContract
 		LDataFrameRequirements
 	}
+	// polling as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	polling              bool
 	FrameType            bool
 	NotRepeated          bool
 	Priority             CEMIPriority
@@ -440,6 +443,8 @@ func (m *_LDataFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 			return nil, errors.Wrap(err, "Error parsing sub-type LPollData for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(false): // LDataFrameACK
+		// This case does not pin polling, so LDataFrameACK reads the parsed value back from here.
+		m.polling = polling
 		if _child, err = new(_LDataFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataFrameACK for type-switch of LDataFrame")
 		}
@@ -517,6 +522,7 @@ func (m *_LDataFrame) deepCopy() *_LDataFrame {
 	}
 	_LDataFrameCopy := &_LDataFrame{
 		nil, // will be set by child
+		m.polling,
 		m.FrameType,
 		m.NotRepeated,
 		m.Priority,

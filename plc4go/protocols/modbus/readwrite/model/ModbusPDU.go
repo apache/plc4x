@@ -74,6 +74,9 @@ type _ModbusPDU struct {
 		ModbusPDUContract
 		ModbusPDURequirements
 	}
+	// functionFlag as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	functionFlag uint8
 }
 
 var _ ModbusPDUContract = (*_ModbusPDU)(nil)
@@ -739,6 +742,8 @@ func (m *_ModbusPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, res
 	var _child ModbusPDU
 	switch {
 	case errorFlag == bool(true): // ModbusPDUError
+		// This case does not pin functionFlag, so ModbusPDUError reads the parsed value back from here.
+		m.functionFlag = functionFlag
 		if _child, err = new(_ModbusPDUError).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUError for type-switch of ModbusPDU")
 		}
@@ -948,6 +953,7 @@ func (m *_ModbusPDU) deepCopy() *_ModbusPDU {
 	}
 	_ModbusPDUCopy := &_ModbusPDU{
 		nil, // will be set by child
+		m.functionFlag,
 	}
 	return _ModbusPDUCopy
 }

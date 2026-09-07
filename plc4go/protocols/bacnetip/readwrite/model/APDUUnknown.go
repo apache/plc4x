@@ -181,7 +181,7 @@ func (b *_APDUUnknown) CreateAPDUUnknownBuilder() APDUUnknownBuilder {
 ///////////////////////
 
 func (m *_APDUUnknown) GetApduType() ApduType {
-	return 0
+	return m.APDUContract.(*_APDU).apduType
 }
 
 ///////////////////////

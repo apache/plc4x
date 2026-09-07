@@ -170,7 +170,7 @@ func (b *_BACnetUnconfirmedServiceRequestUnknown) CreateBACnetUnconfirmedService
 ///////////////////////
 
 func (m *_BACnetUnconfirmedServiceRequestUnknown) GetServiceChoice() BACnetUnconfirmedServiceChoice {
-	return 0
+	return m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).serviceChoice
 }
 
 ///////////////////////

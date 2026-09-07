@@ -70,6 +70,9 @@ type _APDU struct {
 		APDUContract
 		APDURequirements
 	}
+	// apduType as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	apduType ApduType
 }
 
 var _ APDUContract = (*_APDU)(nil)
@@ -400,6 +403,8 @@ func (m *_APDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLeng
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUAbort for type-switch of APDU")
 		}
 	case 0 == 0: // APDUUnknown
+		// This case does not pin apduType, so APDUUnknown reads the parsed value back from here.
+		m.apduType = apduType
 		if _child, err = new(_APDUUnknown).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUUnknown for type-switch of APDU")
 		}
@@ -453,6 +458,7 @@ func (m *_APDU) deepCopy() *_APDU {
 	}
 	_APDUCopy := &_APDU{
 		nil, // will be set by child
+		m.apduType,
 	}
 	return _APDUCopy
 }

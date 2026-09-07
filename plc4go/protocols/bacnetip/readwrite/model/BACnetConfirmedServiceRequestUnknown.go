@@ -170,7 +170,7 @@ func (b *_BACnetConfirmedServiceRequestUnknown) CreateBACnetConfirmedServiceRequ
 ///////////////////////
 
 func (m *_BACnetConfirmedServiceRequestUnknown) GetServiceChoice() BACnetConfirmedServiceChoice {
-	return 0
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serviceChoice
 }
 
 ///////////////////////

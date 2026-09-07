@@ -181,7 +181,7 @@ func (b *_NLMVendorProprietaryMessage) CreateNLMVendorProprietaryMessageBuilder(
 ///////////////////////
 
 func (m *_NLMVendorProprietaryMessage) GetMessageType() uint8 {
-	return 0
+	return m.NLMContract.(*_NLM).messageType
 }
 
 ///////////////////////

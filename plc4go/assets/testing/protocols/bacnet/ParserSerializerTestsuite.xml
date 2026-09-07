@@ -10037,4 +10037,92 @@
     </xml>
   </testcase>
 
+  <testcase>
+    <!-- A network layer message whose messageType falls in the reserved range. The typeSwitch
+         case matches it with a wildcard, so NLMReserved has no constant to return and the
+         parsed messageType has to survive in order to be serialized again. -->
+    <name>Network Layer Message: Reserved Message Type</name>
+    <raw>810a0007018042</raw>
+    <root-type>BVLC</root-type>
+    <xml>
+      <BVLC>
+        <bacnetType dataType="uint" bitLength="8">129</bacnetType>
+        <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
+        <bvlcLength dataType="uint" bitLength="16">7</bvlcLength>
+        <BVLCOriginalUnicastNPDU>
+          <npdu>
+            <NPDU>
+              <protocolVersionNumber dataType="uint" bitLength="8">1</protocolVersionNumber>
+              <control>
+                <NPDUControl>
+                  <messageTypeFieldPresent dataType="bit" bitLength="1">true</messageTypeFieldPresent>
+                  <reserved dataType="uint" bitLength="1">0</reserved>
+                  <destinationSpecified dataType="bit" bitLength="1">false</destinationSpecified>
+                  <reserved dataType="uint" bitLength="1">0</reserved>
+                  <sourceSpecified dataType="bit" bitLength="1">false</sourceSpecified>
+                  <expectingReply dataType="bit" bitLength="1">false</expectingReply>
+                  <networkPriority>
+                    <NPDUNetworkPriority dataType="uint" bitLength="2" stringRepresentation="NORMAL_MESSAGE">0</NPDUNetworkPriority>
+                  </networkPriority>
+                </NPDUControl>
+              </control>
+              <nlm>
+                <NLM>
+                  <messageType dataType="uint" bitLength="8">66</messageType>
+                  <NLMReserved></NLMReserved>
+                </NLM>
+              </nlm>
+              <apdu></apdu>
+            </NPDU>
+          </npdu>
+        </BVLCOriginalUnicastNPDU>
+      </BVLC>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <!-- Same situation for a vendor proprietary message, which is any messageType >= 128. -->
+    <name>Network Layer Message: Vendor Proprietary Message</name>
+    <raw>810a00090180800007</raw>
+    <root-type>BVLC</root-type>
+    <xml>
+      <BVLC>
+        <bacnetType dataType="uint" bitLength="8">129</bacnetType>
+        <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
+        <bvlcLength dataType="uint" bitLength="16">9</bvlcLength>
+        <BVLCOriginalUnicastNPDU>
+          <npdu>
+            <NPDU>
+              <protocolVersionNumber dataType="uint" bitLength="8">1</protocolVersionNumber>
+              <control>
+                <NPDUControl>
+                  <messageTypeFieldPresent dataType="bit" bitLength="1">true</messageTypeFieldPresent>
+                  <reserved dataType="uint" bitLength="1">0</reserved>
+                  <destinationSpecified dataType="bit" bitLength="1">false</destinationSpecified>
+                  <reserved dataType="uint" bitLength="1">0</reserved>
+                  <sourceSpecified dataType="bit" bitLength="1">false</sourceSpecified>
+                  <expectingReply dataType="bit" bitLength="1">false</expectingReply>
+                  <networkPriority>
+                    <NPDUNetworkPriority dataType="uint" bitLength="2" stringRepresentation="NORMAL_MESSAGE">0</NPDUNetworkPriority>
+                  </networkPriority>
+                </NPDUControl>
+              </control>
+              <nlm>
+                <NLM>
+                  <messageType dataType="uint" bitLength="8">128</messageType>
+                  <NLMVendorProprietaryMessage>
+                    <vendorId>
+                      <BACnetVendorId dataType="uint" bitLength="16" stringRepresentation="SIEMENS_SCHWEIZAG">7</BACnetVendorId>
+                    </vendorId>
+                  </NLMVendorProprietaryMessage>
+                </NLM>
+              </nlm>
+              <apdu></apdu>
+            </NPDU>
+          </npdu>
+        </BVLCOriginalUnicastNPDU>
+      </BVLC>
+    </xml>
+  </testcase>
+
 </test:testsuite>

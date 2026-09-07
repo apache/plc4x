@@ -161,7 +161,7 @@ func (m *_LDataFrameACK) GetNotAckFrame() bool {
 }
 
 func (m *_LDataFrameACK) GetPolling() bool {
-	return false
+	return m.LDataFrameContract.(*_LDataFrame).polling
 }
 
 ///////////////////////

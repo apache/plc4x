@@ -75,6 +75,9 @@ type _BACnetConfirmedServiceRequest struct {
 		BACnetConfirmedServiceRequestContract
 		BACnetConfirmedServiceRequestRequirements
 	}
+	// serviceChoice as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	serviceChoice        BACnetConfirmedServiceChoice
 	ServiceRequestLength uint32
 }
 
@@ -820,6 +823,8 @@ func (m *_BACnetConfirmedServiceRequest) parse(ctx context.Context, readBuffer u
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadPropertyConditional for type-switch of BACnetConfirmedServiceRequest")
 		}
 	case 0 == 0: // BACnetConfirmedServiceRequestUnknown
+		// This case does not pin serviceChoice, so BACnetConfirmedServiceRequestUnknown reads the parsed value back from here.
+		m.serviceChoice = serviceChoice
 		if _child, err = new(_BACnetConfirmedServiceRequestUnknown).parse(ctx, readBuffer, m, uint32(serviceRequestPayloadLength), uint32(serviceRequestLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestUnknown for type-switch of BACnetConfirmedServiceRequest")
 		}
@@ -879,6 +884,7 @@ func (m *_BACnetConfirmedServiceRequest) deepCopy() *_BACnetConfirmedServiceRequ
 	}
 	_BACnetConfirmedServiceRequestCopy := &_BACnetConfirmedServiceRequest{
 		nil, // will be set by child
+		m.serviceChoice,
 		m.ServiceRequestLength,
 	}
 	return _BACnetConfirmedServiceRequestCopy

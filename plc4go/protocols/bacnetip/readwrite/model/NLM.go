@@ -74,6 +74,9 @@ type _NLM struct {
 		NLMContract
 		NLMRequirements
 	}
+	// messageType as it was read from the wire, kept because at least one sub type does not
+	// pin this discriminator and has no constant of its own to return.
+	messageType uint8
 }
 
 var _ NLMContract = (*_NLM)(nil)
@@ -633,10 +636,14 @@ func (m *_NLM) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLengt
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMNetworkNumberIs for type-switch of NLM")
 		}
 	case 0 == 0 && isVendorProprietaryMessage == bool(false): // NLMReserved
+		// This case does not pin messageType, so NLMReserved reads the parsed value back from here.
+		m.messageType = messageType
 		if _child, err = new(_NLMReserved).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMReserved for type-switch of NLM")
 		}
 	case 0 == 0: // NLMVendorProprietaryMessage
+		// This case does not pin messageType, so NLMVendorProprietaryMessage reads the parsed value back from here.
+		m.messageType = messageType
 		if _child, err = new(_NLMVendorProprietaryMessage).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMVendorProprietaryMessage for type-switch of NLM")
 		}
@@ -696,6 +703,7 @@ func (m *_NLM) deepCopy() *_NLM {
 	}
 	_NLMCopy := &_NLM{
 		nil, // will be set by child
+		m.messageType,
 	}
 	return _NLMCopy
 }

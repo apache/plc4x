@@ -174,7 +174,7 @@ func (m *_ModbusPDUError) GetErrorFlag() bool {
 }
 
 func (m *_ModbusPDUError) GetFunctionFlag() uint8 {
-	return 0
+	return m.ModbusPDUContract.(*_ModbusPDU).functionFlag
 }
 
 ///////////////////////

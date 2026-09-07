@@ -157,11 +157,11 @@ func (b *_AdsErrorResponse) CreateAdsErrorResponseBuilder() AdsErrorResponseBuil
 ///////////////////////
 
 func (m *_AdsErrorResponse) GetCommandId() CommandId {
-	return 0
+	return m.AmsPacketContract.(*_AmsPacket).commandId
 }
 
 func (m *_AdsErrorResponse) GetResponse() bool {
-	return false
+	return m.AmsPacketContract.(*_AmsPacket).response
 }
 
 ///////////////////////
