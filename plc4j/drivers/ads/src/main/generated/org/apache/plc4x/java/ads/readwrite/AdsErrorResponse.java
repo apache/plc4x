@@ -37,7 +37,7 @@ public class AdsErrorResponse extends AmsPacket implements Message {
    */
   @Override
   public CommandId getCommandId() {
-    return null;
+    return this.commandId;
   }
 
   /**
@@ -45,7 +45,7 @@ public class AdsErrorResponse extends AmsPacket implements Message {
    */
   @Override
   public boolean getResponse() {
-    return false;
+    return this.response;
   }
 
   public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer) throws

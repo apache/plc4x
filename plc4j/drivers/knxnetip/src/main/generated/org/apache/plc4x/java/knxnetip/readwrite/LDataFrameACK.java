@@ -45,7 +45,7 @@ public class LDataFrameACK extends LDataFrame implements Message {
    */
   @Override
   public boolean getPolling() {
-    return false;
+    return this.polling;
   }
 
   public static LDataFrameBuilder staticParseLDataFrameBuilder(ReadBuffer readBuffer) throws

@@ -85,6 +85,15 @@ public class ComplexTypeGenerator extends BaseGenerator<ComplexTypeDefinition> {
                     }
                 }
 
+                // Keep the discriminators no sub type pins, so a sub type whose case leaves one
+                // open can read back what was parsed instead of returning a zero.
+                for (String discriminatorName : retainedDiscriminators(complexTypeDefinition)) {
+                    complexTypeBuilder.addField(FieldSpec.builder(toTypeName(discriminatorMap.get(discriminatorName), true), discriminatorName)
+                        .addModifiers(Modifier.PROTECTED)
+                        .addJavadoc("Discriminator field $L, as it was read from the wire.\n", discriminatorName)
+                        .build());
+                }
+
                 complexTypeBuilder.addMethod(MethodSpec.methodBuilder("serialize" + complexTypeDefinition.getName() + "Child")
                     .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT)
                     .addParameter(WriteBuffer.class, "writeBuffer")
@@ -125,6 +134,8 @@ public class ComplexTypeGenerator extends BaseGenerator<ComplexTypeDefinition> {
                         } else {
                             methodSpec.addStatement("return ($T) $L", typeName, toParseExpression(complexTypeDefinition, null, discriminatorType, discriminatorValueTerm, parserArguments));
                         }
+                    } else if (retainedDiscriminators(parentType).contains(discriminatorName)) {
+                        methodSpec.addStatement("return this.$L", discriminatorName);
                     } else {
                         methodSpec.addStatement("return $L", getNullValueForTypeReference(discriminatorType));
                     }
@@ -482,7 +493,20 @@ public class ComplexTypeGenerator extends BaseGenerator<ComplexTypeDefinition> {
             // - It's both a parent and a child -> create BuilderImpl instance and pass in builder
             // - It's neither a parent nor a child -> create current type directly
             if (complexTypeDefinition.isDiscriminatedParentTypeDefinition() && !complexTypeDefinition.isDiscriminatedChildTypeDefinition()) {
-                codeBlocksParse.add(CodeBlock.of("return builder.build($L);", CodeBlock.join(constructorArgCodeBlocks, ", ")));
+                List<String> retained = retainedDiscriminators(complexTypeDefinition);
+                if (retained.isEmpty()) {
+                    codeBlocksParse.add(CodeBlock.of("return builder.build($L);", CodeBlock.join(constructorArgCodeBlocks, ", ")));
+                } else {
+                    CodeBlock.Builder retainBlock = CodeBlock.builder();
+                    retainBlock.addStatement("$T _instance = builder.build($L)", ClassName.get(targetPackage, complexTypeDefinition.getName()), CodeBlock.join(constructorArgCodeBlocks, ", "));
+                    for (String discriminatorName : retained) {
+                        retainBlock.beginControlFlow("if (_retained$L != null)", StaticHelper.CAPITALIZE(discriminatorName));
+                        retainBlock.addStatement("_instance.$L = _retained$L", discriminatorName, StaticHelper.CAPITALIZE(discriminatorName));
+                        retainBlock.endControlFlow();
+                    }
+                    retainBlock.addStatement("return _instance");
+                    codeBlocksParse.add(retainBlock.build());
+                }
             } else if (complexTypeDefinition.isDiscriminatedChildTypeDefinition() && !complexTypeDefinition.isDiscriminatedParentTypeDefinition()) {
                 codeBlocksParse.add(CodeBlock.of("return new $T($L);", ClassName.get("", complexTypeDefinition.getParentType().orElseThrow().getName() + "BuilderImpl"), CodeBlock.join(constructorArgCodeBlocks, ", ")));
             } else if (complexTypeDefinition.isDiscriminatedChildTypeDefinition() && complexTypeDefinition.isDiscriminatedParentTypeDefinition()) {
@@ -659,6 +683,14 @@ public class ComplexTypeGenerator extends BaseGenerator<ComplexTypeDefinition> {
             expressionTypeNames.add(getLanguageTypeNameForTypeReference(typeReference, true));
             expressionParameters.add(toParseExpression(typeDefinition, switchField, typeReference, discriminatorExpression, parserArguments));
         }
+        ComplexTypeDefinition switchOwner = typeDefinition.asComplexTypeDefinition().orElseThrow();
+        Map<String, TypeReference> switchDiscriminatorTypes = getDiscriminatorTypes(switchOwner);
+        for (String discriminatorName : retainedDiscriminators(switchOwner)) {
+            // Boxed, so that only the cases that leave this discriminator open assign it.
+            parseBlockBuilder.addStatement("$T _retained$L = null",
+                toTypeName(switchDiscriminatorTypes.get(discriminatorName), true).box(),
+                StaticHelper.CAPITALIZE(discriminatorName));
+        }
         parseBlockBuilder.addStatement("$T builder = null", ClassName.get("", typeDefinition.getName() + "Builder"));
         CodeBlock.Builder switchBlock = CodeBlock.builder();
         boolean elseAdded = false;
@@ -700,6 +732,9 @@ public class ComplexTypeGenerator extends BaseGenerator<ComplexTypeDefinition> {
                 aCase.getAllParserArguments().orElseThrow().forEach(argument -> staticParseArgs.add(", $L", argument.getName()));
             }
             switchBlock.addStatement("builder = $T.staticParse$L(readBuffer$L)", ClassName.get(targetPackage, aCase.getName()), CodeBlock.of(typeDefinition.getName() + "Builder"), staticParseArgs.build());
+            for (String discriminatorName : retainedDiscriminatorsForCase(switchOwner, aCase)) {
+                switchBlock.addStatement("_retained$L = $L", StaticHelper.CAPITALIZE(discriminatorName), discriminatorName);
+            }
         }
         // If a switch field doesn't contain a single case, we need to skip the final closing bracket.
         if (!switchBlock.isEmpty()) {
@@ -745,5 +780,57 @@ public class ComplexTypeGenerator extends BaseGenerator<ComplexTypeDefinition> {
             return ArrayTypeName.of(TypeName.BYTE);
         }
         return getLanguageTypeNameForTypeReference(typeReference, allowPrimitive);
+    }
+
+    /**
+     * The discriminators a parent has to remember after parsing.
+     *
+     * <p>A sub type's discriminator getter is normally a constant, because the typeSwitch case pins
+     * the value. A case that leaves a discriminator open, by not mentioning it or by matching it with
+     * a wildcard, gives the sub type nothing to return. The parent therefore keeps the value it
+     * parsed and the sub type reads it back from there; otherwise the value is silently replaced by
+     * a zero, both when asking the sub type for it and when serializing the parent again.
+     *
+     * <p>Only discriminators that are fields of the parent qualify. Parser arguments are supplied by
+     * the caller instead of being read from the wire and are never serialized, and an implicit field
+     * is recomputed on serialization, so neither needs to be retained.
+     *
+     * <p>A type that is both a parent and a child hands a builder to its own parent rather than
+     * constructing an instance here, so it has nowhere to apply this. No such type needs it today.
+     */
+    protected List<String> retainedDiscriminators(ComplexTypeDefinition typeDefinition) {
+        if (!typeDefinition.isDiscriminatedParentTypeDefinition() || typeDefinition.getSwitchField().isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> retained = new ArrayList<>();
+        for (DiscriminatedComplexTypeDefinition aCase : typeDefinition.getSwitchField().orElseThrow().getCases()) {
+            for (String discriminatorName : retainedDiscriminatorsForCase(typeDefinition, aCase)) {
+                if (!retained.contains(discriminatorName)) {
+                    retained.add(discriminatorName);
+                }
+            }
+        }
+        return retained;
+    }
+
+    /**
+     * The retained discriminators one particular typeSwitch case leaves open. Assigning only these,
+     * in the case that needs them, keeps the parent free of state no sub type ever reads.
+     */
+    protected List<String> retainedDiscriminatorsForCase(ComplexTypeDefinition typeDefinition, DiscriminatedComplexTypeDefinition aCase) {
+        List<String> retained = new ArrayList<>();
+        for (Map.Entry<String, Term> discriminator : aCase.getDiscriminatorMap().entrySet()) {
+            Term term = discriminator.getValue();
+            if ((term != null) && !(term instanceof WildcardTerm)) {
+                continue;
+            }
+            String discriminatorName = discriminator.getKey();
+            if (typeDefinition.getNamedFieldByName(discriminatorName)
+                .filter(NamedField::isDiscriminatorField).isEmpty()) {
+                continue;
+            }
+            retained.add(discriminatorName);
+        }
+        return retained;
     }
 }

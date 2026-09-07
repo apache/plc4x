@@ -40,7 +40,7 @@ public class NLMReserved extends NLM implements Message {
    */
   @Override
   public short getMessageType() {
-    return 0;
+    return this.messageType;
   }
 
   /**

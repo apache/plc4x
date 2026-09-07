@@ -40,7 +40,7 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
    */
   @Override
   public BACnetUnconfirmedServiceChoice getServiceChoice() {
-    return null;
+    return this.serviceChoice;
   }
 
   /**

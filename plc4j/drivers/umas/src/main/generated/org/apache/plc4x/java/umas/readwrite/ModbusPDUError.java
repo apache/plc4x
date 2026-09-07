@@ -50,7 +50,7 @@ public class ModbusPDUError extends ModbusPDU implements Message {
    */
   @Override
   public byte getFunctionFlag() {
-    return 0;
+    return this.functionFlag;
   }
 
   /**

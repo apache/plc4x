@@ -45,7 +45,7 @@ public class APDUUnknown extends APDU implements Message {
    */
   @Override
   public ApduType getApduType() {
-    return null;
+    return this.apduType;
   }
 
   /**

@@ -48,6 +48,16 @@ public abstract class AmsPacket implements Message {
 
   public static final Boolean BROADCAST = false;
 
+  /**
+   * Discriminator field commandId, as it was read from the wire.
+   */
+  protected CommandId commandId;
+
+  /**
+   * Discriminator field response, as it was read from the wire.
+   */
+  protected boolean response;
+
   protected final AmsNetId targetAmsNetId;
 
   protected final int targetAmsPort;
@@ -239,6 +249,8 @@ public abstract class AmsPacket implements Message {
     long invokeId = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedLong(readBuffer, 32), WithOption.WithName("invokeId"));
 
     // Switch Field
+    CommandId _retainedCommandId = null;
+    Boolean _retainedResponse = null;
     AmsPacketBuilder builder = null;
     if (EvaluationHelper.equals(errorCode, (ReturnCode) (ReturnCode.OK)) && EvaluationHelper.equals(commandId, (CommandId) (CommandId.INVALID)) && EvaluationHelper.equals(response, (boolean) (false))) {
       builder = AdsInvalidRequest.staticParseAmsPacketBuilder(readBuffer);
@@ -282,13 +294,22 @@ public abstract class AmsPacket implements Message {
       builder = AdsReadWriteResponse.staticParseAmsPacketBuilder(readBuffer);
     } else {
       builder = AdsErrorResponse.staticParseAmsPacketBuilder(readBuffer);
+      _retainedCommandId = commandId;
+      _retainedResponse = response;
     }
     if (builder == null) {
       throw new BufferException("Unsupported case for discriminated type parameters parameters [errorCode, commandId, response]");
     }
 
     readBuffer.popContext();
-    return builder.build(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId);
+    AmsPacket _instance = builder.build(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId);
+    if (_retainedCommandId != null) {
+      _instance.commandId = _retainedCommandId;
+    }
+    if (_retainedResponse != null) {
+      _instance.response = _retainedResponse;
+    }
+    return _instance;
   }
 
   @Override
