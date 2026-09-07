@@ -686,14 +686,23 @@ fi
 ########################################################################################################################
 
 # Unlike the steps above there is no cheap way to ask Nexus whether this repository has already
-# been released, so if SVN says the release is already out, this is most likely a re-run and
-# releasing again would just fail. Ask instead of guessing - it is also the way to recover from a
-# run where the SVN move succeeded and this step did not.
+# been released, so if SVN says the release is already out, ask rather than guess. Do NOT phrase
+# that question as "it has probably been released already": the SVN move happens FIRST, so any run
+# that died between the two halves leaves exactly this state with the Maven artifacts still
+# unreleased - which is the whole reason this prompt exists. Guessing "already done" here is how
+# 1.0.0 ended up published in SVN with its staging repository still CLOSED.
 if [[ "$SVN_ALREADY_PUBLISHED" == "true" ]]; then
     echo
-    echo "$RELEASED_VERSION was already published in SVN, so the Nexus staging repository"
-    echo "'$STAGING_REPO_ID' has probably been released already too."
-    read -r -p "Try to release it anyway? (yes/no) " yn
+    echo "$RELEASED_VERSION is already published in SVN. That means one of two things:"
+    echo "  - the release is fully done and you are simply re-running this script, or"
+    echo "  - an earlier run moved the SVN part and then failed before releasing"
+    echo "    '$STAGING_REPO_ID', so the Maven artifacts are still NOT released."
+    echo
+    echo "Check $NEXUS_URL under 'Staging Repositories'. If '$STAGING_REPO_ID' is"
+    echo "still listed there as CLOSED, it has not been released and the answer is 'yes'."
+    echo "Answering 'yes' for an already released repository publishes nothing twice - the"
+    echo "goal just fails and this script stops with an error you can ignore."
+    read -r -p "Release '$STAGING_REPO_ID' now? (yes/no) " yn
     if [[ "$yn" != "yes" ]]; then
         echo "✅ Leaving the Nexus staging repository alone."
         STAGING_REPO_ID=""
@@ -701,7 +710,7 @@ if [[ "$SVN_ALREADY_PUBLISHED" == "true" ]]; then
 fi
 
 if [[ -n "$STAGING_REPO_ID" ]]; then
-if ! "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:rc-release \
+if ! MAVEN_OPTS="$NEXUS_MAVEN_OPTS" "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:rc-release \
         -DstagingRepositoryId="$STAGING_REPO_ID" -DstagingProfileId=$STAGING_PROFILE_ID; then
     echo "❌ Got non-0 exit code from releasing the Nexus staging repository."
     echo "   If it was already released, this is expected and can be ignored - check"
@@ -800,7 +809,7 @@ echo
 echo "Staging repositories currently on $NEXUS_URL:"
 # No "-q" here: the repository table is printed at INFO level, and quiet mode would leave the
 # prompt below asking for ids from a listing that was never shown.
-if ! "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:rc-list; then
+if ! MAVEN_OPTS="$NEXUS_MAVEN_OPTS" "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:rc-list; then
     echo "⚠️  Could not list the staging repositories - check them by hand at"
     echo "   $NEXUS_URL under 'Staging Repositories'."
 else
@@ -815,7 +824,7 @@ else
         read -r -p "Really drop '$DROP_REPOS'? (yes/no) " yn
         if [[ "$yn" != "yes" ]]; then
             echo "✅ Keeping all staging repositories."
-        elif ! "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:rc-drop \
+        elif ! MAVEN_OPTS="$NEXUS_MAVEN_OPTS" "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:rc-drop \
                 -DstagingRepositoryId="$DROP_REPOS"; then
             echo "❌ Got non-0 exit code from dropping the staging repositories, aborting."
             exit 1
