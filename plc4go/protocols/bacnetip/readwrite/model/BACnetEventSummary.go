@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -371,12 +371,12 @@ func CastBACnetEventSummary(structType any) BACnetEventSummary {
 	return nil
 }
 
-func (m *_BACnetEventSummary) GetTypeName() string {
+func (m *_BACnetEventSummary) GetPlx4xTypeName() string {
 	return "BACnetEventSummary"
 }
 
-func (m *_BACnetEventSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -402,7 +402,7 @@ func (m *_BACnetEventSummary) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetEventSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -417,7 +417,7 @@ func BACnetEventSummaryParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func BACnetEventSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
-	v, err := (&_BACnetEventSummary{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetEventSummary)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

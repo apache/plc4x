@@ -19,12 +19,12 @@
 
 package org.apache.plc4x.java.iec608705104.readwrite.utils;
 
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 
 public class StaticHelper {
 
     public static boolean finished(ReadBuffer readBuffer) {
-        return !readBuffer.hasMore(8);
+        return readBuffer.getRemainingBits() < 8;
     }
 
 }

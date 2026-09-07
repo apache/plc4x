@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAuthorizationMode = (*_BACnetConstructedDataAuthoriza
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationMode)(nil)
 
 // NewBACnetConstructedDataAuthorizationMode factory function for _BACnetConstructedDataAuthorizationMode
-func NewBACnetConstructedDataAuthorizationMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationMode BACnetAuthorizationModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationMode {
+func NewBACnetConstructedDataAuthorizationMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationMode BACnetAuthorizationModeTagged) *_BACnetConstructedDataAuthorizationMode {
 	if authorizationMode == nil {
 		panic("authorizationMode of type BACnetAuthorizationModeTagged for BACnetConstructedDataAuthorizationMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataAuthorizationMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AuthorizationMode:             authorizationMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAuthorizationMode(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthorizationMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthorizationMode"
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (authorizationMode)
 	lengthInBits += m.AuthorizationMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMinimumValue = (*_BACnetConstructedDataMinimumValue)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValue)(nil)
 
 // NewBACnetConstructedDataMinimumValue factory function for _BACnetConstructedDataMinimumValue
-func NewBACnetConstructedDataMinimumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValue {
+func NewBACnetConstructedDataMinimumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValue BACnetApplicationTagReal) *_BACnetConstructedDataMinimumValue {
 	if minimumValue == nil {
 		panic("minimumValue of type BACnetApplicationTagReal for BACnetConstructedDataMinimumValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMinimumValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinimumValue:                  minimumValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMinimumValue(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataMinimumValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMinimumValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinimumValue"
 }
 
-func (m *_BACnetConstructedDataMinimumValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMinimumValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumValue)
 	lengthInBits += m.MinimumValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMinimumValue) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMinimumValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDescription = (*_BACnetConstructedDataDescription)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescription)(nil)
 
 // NewBACnetConstructedDataDescription factory function for _BACnetConstructedDataDescription
-func NewBACnetConstructedDataDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, description BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescription {
+func NewBACnetConstructedDataDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, description BACnetApplicationTagCharacterString) *_BACnetConstructedDataDescription {
 	if description == nil {
 		panic("description of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescription must not be nil")
 	}
 	_result := &_BACnetConstructedDataDescription{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Description:                   description,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDescription(structType any) BACnetConstructedDataD
 	return nil
 }
 
-func (m *_BACnetConstructedDataDescription) GetTypeName() string {
+func (m *_BACnetConstructedDataDescription) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDescription"
 }
 
-func (m *_BACnetConstructedDataDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDescription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (description)
 	lengthInBits += m.Description.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDescription) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDescription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDescription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

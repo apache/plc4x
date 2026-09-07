@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ LPollDataReq = (*_LPollDataReq)(nil)
 var _ CEMIRequirements = (*_LPollDataReq)(nil)
 
 // NewLPollDataReq factory function for _LPollDataReq
-func NewLPollDataReq(size uint16) *_LPollDataReq {
+func NewLPollDataReq() *_LPollDataReq {
 	_result := &_LPollDataReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastLPollDataReq(structType any) LPollDataReq {
 	return nil
 }
 
-func (m *_LPollDataReq) GetTypeName() string {
+func (m *_LPollDataReq) GetPlx4xTypeName() string {
 	return "LPollDataReq"
 }
 
-func (m *_LPollDataReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_LPollDataReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_LPollDataReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LPollDataReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

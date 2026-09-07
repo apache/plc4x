@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -238,12 +238,12 @@ func CastBACnetApplicationTagDouble(structType any) BACnetApplicationTagDouble {
 	return nil
 }
 
-func (m *_BACnetApplicationTagDouble) GetTypeName() string {
+func (m *_BACnetApplicationTagDouble) GetPlx4xTypeName() string {
 	return "BACnetApplicationTagDouble"
 }
 
-func (m *_BACnetApplicationTagDouble) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).getLengthInBits(ctx))
+func (m *_BACnetApplicationTagDouble) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -253,7 +253,7 @@ func (m *_BACnetApplicationTagDouble) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetApplicationTagDouble) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetApplicationTagDouble) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -25,6 +25,7 @@ import (
 	"context"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
@@ -36,11 +37,10 @@ import (
 
 func TestNewTransportInstance(t *testing.T) {
 	type args struct {
-		localAddress   *net.UDPAddr
-		remoteAddress  *net.UDPAddr
-		connectTimeout uint32
-		soReUse        bool
-		transport      *Transport
+		localAddress  *net.UDPAddr
+		remoteAddress *net.UDPAddr
+		soReUse       bool
+		transport     *Transport
 	}
 	tests := []struct {
 		name string
@@ -56,7 +56,7 @@ func TestNewTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.localAddress, tt.args.remoteAddress, tt.args.connectTimeout, tt.args.soReUse, tt.args.transport); !assert.Equal(t, tt.want, got) {
+			if got := NewTransportInstance(tt.args.localAddress, tt.args.remoteAddress, tt.args.soReUse, tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -65,18 +65,18 @@ func TestNewTransportInstance(t *testing.T) {
 
 func TestTransportInstance_Close(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	tests := []struct {
 		name        string
 		fields      fields
-		manipulator func(t *testing.T, instance *TransportInstance)
+		setup       func(*testing.T, *fields)
+		manipulator func(*testing.T, *TransportInstance)
 		wantErr     bool
 	}{
 		{
@@ -91,15 +91,13 @@ func TestTransportInstance_Close(t *testing.T) {
 		},
 		{
 			name: "close success",
-			fields: fields{
-				udpConn: func() *net.UDPConn {
-					listener, err := nettest.NewLocalPacketListener("udp")
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.Error(t, listener.Close()) // Note: connection should have been closed
-					})
-					return listener.(*net.UDPConn)
-				}(),
+			setup: func(t *testing.T, fields *fields) {
+				listener, err := nettest.NewLocalPacketListener("udp")
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.Error(t, listener.Close()) // Note: connection should have been closed
+				})
+				fields.udpConn = listener.(*net.UDPConn)
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -108,14 +106,16 @@ func TestTransportInstance_Close(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
@@ -126,53 +126,14 @@ func TestTransportInstance_Close(t *testing.T) {
 		})
 	}
 }
-
 func TestTransportInstance_Connect(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
-	}{
-		{
-			name: "connect it (error)",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
-			}
-			if err := m.Connect(); (err != nil) != tt.wantErr {
-				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestTransportInstance_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	type args struct {
 		ctx context.Context
@@ -185,7 +146,7 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 	}{
 		{
 			name: "connect it",
-			args: args{ctx: context.Background()},
+			args: args{ctx: t.Context()},
 		},
 		{
 			name: "connect",
@@ -200,14 +161,14 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 					return listener.LocalAddr().(*net.UDPAddr)
 				}(),
 			},
-			args: args{ctx: context.Background()},
+			args: args{ctx: t.Context()},
 		},
 		{
 			name: "connect with wrong address", // TODO: not sure how to tests undialable ips here
 			fields: fields{
 				RemoteAddress: &net.UDPAddr{IP: net.IPv4(255, 255, 255, 255), Port: 12},
 			},
-			args: args{ctx: context.Background()},
+			args: args{ctx: t.Context()},
 		},
 		{
 			name: "connect with localAddress",
@@ -231,7 +192,7 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 					return listener.LocalAddr().(*net.UDPAddr)
 				}(),
 			},
-			args:    args{ctx: context.Background()},
+			args:    args{ctx: t.Context()},
 			wantErr: true,
 		},
 		{
@@ -246,7 +207,7 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 				}(),
 				SoReUse: true,
 			},
-			args: args{ctx: context.Background()},
+			args: args{ctx: t.Context()},
 		},
 		{
 			name: "connect reuse (used)",
@@ -262,7 +223,7 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 				}(),
 				SoReUse: true,
 			},
-			args:    args{ctx: context.Background()},
+			args:    args{ctx: t.Context()},
 			wantErr: true,
 		},
 		{
@@ -278,23 +239,22 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 					return listener.LocalAddr().(*net.UDPAddr)
 				}(),
 			},
-			args:    args{ctx: context.Background()},
+			args:    args{ctx: t.Context()},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
-			if err := m.ConnectWithContext(tt.args.ctx); (err != nil) != tt.wantErr {
-				t.Errorf("ConnectWithContext() error = %v, wantErr %v", err, tt.wantErr)
+			if err := m.Connect(tt.args.ctx); (err != nil) != tt.wantErr {
+				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -311,7 +271,8 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		reader         *bufio.Reader
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		until   func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		timeout time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -321,18 +282,30 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		wantErr     bool
 	}{
 		{
-			name:    "do it",
+			name: "do it",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			wantErr: true,
 		},
 		{
 			name: "do it with reader",
 			fields: fields{
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.(*net.UDPConn)
+				}(),
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
 			},
 			args: args{
 				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 2
 				},
+				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -342,18 +315,17 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.FillBuffer(tt.args.until); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(t.Context(), tt.args.until); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -362,13 +334,12 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 
 func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	tests := []struct {
 		name        string
@@ -397,13 +368,12 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
@@ -422,13 +392,12 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 
 func TestTransportInstance_IsConnected(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	tests := []struct {
 		name   string
@@ -442,13 +411,12 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if got := m.IsConnected(); got != tt.want {
 				t.Errorf("IsConnected() = %v, want %v", got, tt.want)
@@ -459,16 +427,16 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 
 func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	type args struct {
 		numBytes uint32
+		timeout  time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -482,6 +450,14 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			name: "peek it",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						_ = listener.Close()
+					})
+					return listener.(*net.UDPConn)
+				}(),
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -492,6 +468,14 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			name: "peek it 3",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						_ = listener.Close()
+					})
+					return listener.(*net.UDPConn)
+				}(),
 			},
 			args: args{
 				numBytes: 3,
@@ -509,18 +493,17 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.PeekReadableBytes(tt.args.numBytes)
+			got, err := m.PeekReadableBytes(t.Context(), tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -534,16 +517,16 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 
 func TestTransportInstance_Read(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	type args struct {
 		numBytes uint32
+		timeout  time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -557,6 +540,17 @@ func TestTransportInstance_Read(t *testing.T) {
 			name: "read it",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.(*net.UDPConn)
+				}(),
+			},
+			args: args{
+				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -567,9 +561,18 @@ func TestTransportInstance_Read(t *testing.T) {
 			name: "read it 3",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.(*net.UDPConn)
+				}(),
 			},
 			args: args{
 				numBytes: 3,
+				timeout:  10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -580,9 +583,18 @@ func TestTransportInstance_Read(t *testing.T) {
 			name: "read it 5",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.(*net.UDPConn)
+				}(),
 			},
 			args: args{
 				numBytes: 5,
+				timeout:  10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -597,18 +609,17 @@ func TestTransportInstance_Read(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Read(tt.args.numBytes)
+			got, err := m.Read(t.Context(), tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -622,13 +633,12 @@ func TestTransportInstance_Read(t *testing.T) {
 
 func TestTransportInstance_String(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	tests := []struct {
 		name   string
@@ -651,13 +661,12 @@ func TestTransportInstance_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if got := m.String(); got != tt.want {
 				t.Errorf("String() = %v, want %v", got, tt.want)
@@ -668,16 +677,16 @@ func TestTransportInstance_String(t *testing.T) {
 
 func TestTransportInstance_Write(t *testing.T) {
 	type fields struct {
-		LocalAddress   *net.UDPAddr
-		RemoteAddress  *net.UDPAddr
-		ConnectTimeout uint32
-		SoReUse        bool
-		transport      *Transport
-		udpConn        *net.UDPConn
-		reader         *bufio.Reader
+		LocalAddress  *net.UDPAddr
+		RemoteAddress *net.UDPAddr
+		SoReUse       bool
+		transport     *Transport
+		udpConn       *net.UDPConn
+		reader        *bufio.Reader
 	}
 	type args struct {
-		data []byte
+		data    []byte
+		timeout time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -693,6 +702,10 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it",
+			args: args{
+				data:    []byte{1, 2, 3, 4},
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				listener, err := nettest.NewLocalPacketListener("udp")
 				require.NoError(t, err)
@@ -709,6 +722,10 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it with remote",
+			args: args{
+				data:    []byte{1, 2, 3, 4},
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				listener, err := nettest.NewLocalPacketListener("udp")
 				require.NoError(t, err)
@@ -724,7 +741,6 @@ func TestTransportInstance_Write(t *testing.T) {
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
 			},
-			args: args{data: []byte{1, 2, 3, 4}},
 		},
 	}
 	for _, tt := range tests {
@@ -733,18 +749,17 @@ func TestTransportInstance_Write(t *testing.T) {
 				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &TransportInstance{
-				LocalAddress:   tt.fields.LocalAddress,
-				RemoteAddress:  tt.fields.RemoteAddress,
-				ConnectTimeout: tt.fields.ConnectTimeout,
-				SoReUse:        tt.fields.SoReUse,
-				transport:      tt.fields.transport,
-				udpConn:        tt.fields.udpConn,
-				reader:         tt.fields.reader,
+				LocalAddress:  tt.fields.LocalAddress,
+				RemoteAddress: tt.fields.RemoteAddress,
+				SoReUse:       tt.fields.SoReUse,
+				transport:     tt.fields.transport,
+				udpConn:       tt.fields.udpConn,
+				reader:        tt.fields.reader,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

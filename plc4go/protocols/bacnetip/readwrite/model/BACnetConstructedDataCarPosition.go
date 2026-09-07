@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCarPosition = (*_BACnetConstructedDataCarPosition)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarPosition)(nil)
 
 // NewBACnetConstructedDataCarPosition factory function for _BACnetConstructedDataCarPosition
-func NewBACnetConstructedDataCarPosition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carPosition BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarPosition {
+func NewBACnetConstructedDataCarPosition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carPosition BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataCarPosition {
 	if carPosition == nil {
 		panic("carPosition of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCarPosition must not be nil")
 	}
 	_result := &_BACnetConstructedDataCarPosition{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CarPosition:                   carPosition,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCarPosition(structType any) BACnetConstructedDataC
 	return nil
 }
 
-func (m *_BACnetConstructedDataCarPosition) GetTypeName() string {
+func (m *_BACnetConstructedDataCarPosition) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarPosition"
 }
 
-func (m *_BACnetConstructedDataCarPosition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCarPosition) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (carPosition)
 	lengthInBits += m.CarPosition.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCarPosition) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarPosition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCarPosition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

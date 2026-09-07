@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSlaveProxyEnable = (*_BACnetConstructedDataSlaveProxy
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
 
 // NewBACnetConstructedDataSlaveProxyEnable factory function for _BACnetConstructedDataSlaveProxyEnable
-func NewBACnetConstructedDataSlaveProxyEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveProxyEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
+func NewBACnetConstructedDataSlaveProxyEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveProxyEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataSlaveProxyEnable {
 	if slaveProxyEnable == nil {
 		panic("slaveProxyEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataSlaveProxyEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataSlaveProxyEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SlaveProxyEnable:              slaveProxyEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSlaveProxyEnable(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSlaveProxyEnable"
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (slaveProxyEnable)
 	lengthInBits += m.SlaveProxyEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

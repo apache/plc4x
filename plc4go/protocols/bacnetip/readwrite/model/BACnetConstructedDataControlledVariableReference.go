@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataControlledVariableReference = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableReference)(nil)
 
 // NewBACnetConstructedDataControlledVariableReference factory function for _BACnetConstructedDataControlledVariableReference
-func NewBACnetConstructedDataControlledVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableReference {
+func NewBACnetConstructedDataControlledVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableReference BACnetObjectPropertyReference) *_BACnetConstructedDataControlledVariableReference {
 	if controlledVariableReference == nil {
 		panic("controlledVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataControlledVariableReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataControlledVariableReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ControlledVariableReference:   controlledVariableReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataControlledVariableReference(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableReference) GetTypeName() string {
+func (m *_BACnetConstructedDataControlledVariableReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataControlledVariableReference"
 }
 
-func (m *_BACnetConstructedDataControlledVariableReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataControlledVariableReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (controlledVariableReference)
 	lengthInBits += m.ControlledVariableReference.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataControlledVariableReference) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataControlledVariableReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataControlledVariableReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

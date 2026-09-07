@@ -21,30 +21,46 @@ package org.apache.plc4x.java.cbus.readwrite.utils;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.cbus.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.Message;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class StaticHelper {
 
-    public static Checksum readAndValidateChecksum(ReadBuffer readBuffer, Message message, boolean srchk) throws ParseException {
+    /**
+     * Full set of buffer options the C-Bus binary encoding relies on. Just the
+     * byte-order isn't enough — the typed field writers/readers query the buffer
+     * for the integer/float/string encodings too, and fail without them.
+     */
+    public static final WithOption[] OPTIONS = {
+        WithByteBasedOption.WithByteOrder("BIG_ENDIAN"),
+        WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+        WithOption.WithSignedIntegerEncoding("twos-complement"),
+        WithOption.WithFloatEncoding("IEEE754"),
+        WithOption.WithStringEncoding("UTF8")
+    };
+
+    public static Checksum readAndValidateChecksum(ReadBuffer readBuffer, Message message, boolean srchk) throws BufferException {
         if (!srchk) {
             return null;
         }
         byte checksum = readBytesFromHex("chksum", readBuffer, false)[0];
-        try {
-            byte actualChecksum = getChecksum(message);
-            if (checksum != actualChecksum) {
-                throw new ParseException(String.format("Expected checksum 0x%x doesn't match actual checksum 0x%x", checksum, actualChecksum));
-            }
-        } catch (SerializationException e) {
-            throw new ParseException("Unable to calculate checksum", e);
+        byte actualChecksum = getChecksum(message);
+        if (checksum != actualChecksum) {
+            throw new BufferException(String.format("Expected checksum 0x%x doesn't match actual checksum 0x%x", checksum, actualChecksum));
         }
         return new Checksum(checksum);
     }
 
-    public static void calculateChecksum(WriteBuffer writeBuffer, Message message, boolean srchk) throws SerializationException {
+    public static void calculateChecksum(WriteBuffer writeBuffer, Message message, boolean srchk) throws BufferException {
         if (!srchk) {
             // Nothing to do when srchck is disabled
             return;
@@ -52,9 +68,9 @@ public class StaticHelper {
         writeToHex("chksum", writeBuffer, new byte[]{getChecksum(message)});
     }
 
-    private static byte getChecksum(Message message) throws SerializationException {
+    private static byte getChecksum(Message message) throws BufferException {
         byte checksum = 0x0;
-        WriteBufferByteBased checksumWriteBuffer = new WriteBufferByteBased(message.getLengthInBytes());
+        WriteBufferByteBased checksumWriteBuffer = new WriteBufferByteBased(new byte[message.getLengthInBytes()], OPTIONS);
         message.serialize(checksumWriteBuffer);
         for (byte aByte : checksumWriteBuffer.getBytes()) {
             checksum += aByte;
@@ -64,51 +80,52 @@ public class StaticHelper {
         return checksum;
     }
 
-    public static void writeCBusCommand(WriteBuffer writeBuffer, CBusCommand cbusCommand) throws SerializationException {
+    public static void writeCBusCommand(WriteBuffer writeBuffer, CBusCommand cbusCommand) throws BufferException {
         writeToHex("cbusCommand", writeBuffer, cbusCommand);
     }
 
-    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, CBusOptions cBusOptions, boolean srchk) throws ParseException {
+    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, CBusOptions cBusOptions, boolean srchk) throws BufferException {
         byte[] rawBytes = readBytesFromHex("cbusCommand", readBuffer, srchk);
-        return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
+        return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes, OPTIONS), cBusOptions);
     }
 
-    public static void writeEncodedReply(WriteBuffer writeBuffer, EncodedReply encodedReply) throws SerializationException {
+    public static void writeEncodedReply(WriteBuffer writeBuffer, EncodedReply encodedReply) throws BufferException {
         writeToHex("encodedReply", writeBuffer, encodedReply);
     }
 
-    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext, boolean srchk) throws ParseException {
+    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext, boolean srchk) throws BufferException {
         byte[] rawBytes = readBytesFromHex("encodedReply", readBuffer, srchk);
-        return EncodedReply.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions, requestContext);
+        return EncodedReply.staticParse(new ReadBufferByteBased(rawBytes, OPTIONS), cBusOptions, requestContext);
     }
 
-    public static void writeCALData(WriteBuffer writeBuffer, CALData calData) throws SerializationException {
+    public static void writeCALData(WriteBuffer writeBuffer, CALData calData) throws BufferException {
         writeToHex("calData", writeBuffer, calData);
     }
 
-    public static CALData readCALData(ReadBuffer readBuffer) throws ParseException {
+    public static CALData readCALData(ReadBuffer readBuffer) throws BufferException {
         byte[] rawBytes = readBytesFromHex("calData", readBuffer, false);
-        return CALData.staticParse(new ReadBufferByteBased(rawBytes), (RequestContext) null);
+        return CALData.staticParse(new ReadBufferByteBased(rawBytes, OPTIONS), (RequestContext) null);
     }
 
-    private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, boolean srchk) throws ParseException {
+    private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, boolean srchk) throws BufferException {
         int payloadLength = findHexEnd(readBuffer);
         if (payloadLength == 0) {
-            throw new ParseAssertException("Length is 0");
+            throw new BufferException("Length is 0");
         }
 
-        byte[] hexBytes = readBuffer.readByteArray(logicalName, payloadLength);
+        // findHexEnd counts hex characters (bytes); readBits takes bits.
+        byte[] hexBytes = readBuffer.readBits(payloadLength * 8, WithOption.WithName(logicalName));
         byte lastByte = hexBytes[hexBytes.length - 1];
         if ((lastByte >= 0x67) && (lastByte <= 0x7A)) {
-            // We need to reset the alpha
-            readBuffer.reset(readBuffer.getPos() - 1);
+            // We need to reset the alpha — back up one *byte* (8 bits).
+            readBuffer.setPositionInBits(readBuffer.getPositionInBits() - 8);
             hexBytes = Arrays.copyOf(hexBytes, hexBytes.length - 1);
         }
         byte[] rawBytes;
         try {
             rawBytes = Hex.decodeHex(new String(hexBytes));
         } catch (DecoderException e) {
-            throw new ParseException("error getting hex", e);
+            throw new BufferException("error getting hex", e);
         }
         if (srchk) {
             byte checksum = 0x0;
@@ -118,19 +135,19 @@ public class StaticHelper {
             if (checksum != 0x0) {
                 //throw new ParseException("Checksum validation failed");
             }
-            // We need to reset the last to hex bytes
-            readBuffer.reset(readBuffer.getPos() - 2);
+            // We need to reset the last two hex chars — that's 16 bits.
+            readBuffer.setPositionInBits(readBuffer.getPositionInBits() - 16);
             rawBytes = Arrays.copyOf(rawBytes, rawBytes.length - 1);
         }
         return rawBytes;
     }
 
-    private static int findHexEnd(ReadBuffer readBuffer) throws ParseException {
+    private static int findHexEnd(ReadBuffer readBuffer) throws BufferException {
         // TODO: find out if there is a smarter way to find the end...
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         int payloadLength = 0;
-        while (readBuffer.hasMore(8)) {
-            char hexByte = (char) readBuffer.readByte();
+        while (readBuffer.getRemainingBits() >= 8) {
+            char hexByte = (char) readBuffer.readSignedByte(8);
             boolean isHex = hexByte >= 'A' && hexByte <= 'F' || hexByte >= 'a' && hexByte <= 'f';
             boolean isNumber = hexByte >= '0' && hexByte <= '9';
             if (!isHex && !isNumber) {
@@ -138,173 +155,176 @@ public class StaticHelper {
             }
             payloadLength++;
         }
-        readBuffer.reset(oldPos);
+        readBuffer.setPositionInBits(oldPos);
         return payloadLength;
     }
 
-    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, Message message) throws SerializationException {
-        // TODO: maybe we use a writeBuffer hex based
-        WriteBufferByteBased payloadWriteBuffer = new WriteBufferByteBased(message.getLengthInBytes() * 2);
+    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, Message message) throws BufferException {
+        // Size the staging buffer to the message's actual byte length — not 2x.
+        // getBytes() returns the whole backing array (including any unused tail),
+        // and hex-encoding doubles that, so 2x sizing leads to a 4x overrun on
+        // the outer writeBuffer.
+        WriteBufferByteBased payloadWriteBuffer = new WriteBufferByteBased(new byte[message.getLengthInBytes()], OPTIONS);
         message.serialize(payloadWriteBuffer);
         writeToHex(logicalName, writeBuffer, payloadWriteBuffer.getBytes());
     }
 
-    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, byte[] bytes) throws SerializationException {
+    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, byte[] bytes) throws BufferException {
         byte[] hexBytes = Hex.encodeHexString(bytes, false).getBytes(StandardCharsets.UTF_8);
-        writeBuffer.writeByteArray(logicalName, hexBytes);
+        writeBuffer.writeBits(hexBytes.length * 8, hexBytes, WithOption.WithName(logicalName));
     }
 
     public static boolean knowsCALCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return CALCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsLightingCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return LightingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsSecurityCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return SecurityCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsMeteringCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return MeteringCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsTriggerControlCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return TriggerControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsEnableControlCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return EnableControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsTemperatureBroadcastCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return TemperatureBroadcastCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsAccessControlCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return AccessControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsMediaTransportControlCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return MediaTransportControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsClockAndTimekeepingCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return ClockAndTimekeepingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsTelephonyCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return TelephonyCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsAirConditioningCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return AirConditioningCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsMeasurementCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return MeasurementCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 
     public static boolean knowsErrorReportingCommandTypeContainer(ReadBuffer readBuffer) {
-        int oldPos = readBuffer.getPos();
+        int oldPos = readBuffer.getPositionInBits();
         try {
             return ErrorReportingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
-        } catch (ParseException ignore) {
+        } catch (BufferException ignore) {
             return false;
         } finally {
-            readBuffer.reset(oldPos);
+            readBuffer.setPositionInBits(oldPos);
         }
     }
 }

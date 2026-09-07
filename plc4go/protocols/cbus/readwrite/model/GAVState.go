@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,11 +106,11 @@ func CastGAVState(structType any) GAVState {
 	return castFunc(structType)
 }
 
-func (m GAVState) GetLengthInBits(ctx context.Context) uint16 {
+func (m GAVState) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m GAVState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m GAVState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

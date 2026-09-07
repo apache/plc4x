@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataRestartNotificationRecipients = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
 
 // NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
-func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
+func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient) *_BACnetConstructedDataRestartNotificationRecipients {
 	_result := &_BACnetConstructedDataRestartNotificationRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RestartNotificationRecipients: restartNotificationRecipients,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataRestartNotificationRecipients(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetTypeName() string {
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRestartNotificationRecipients"
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.RestartNotificationRecipients) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

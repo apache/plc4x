@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeDelayNormal = (*_BACnetConstructedDataTimeDelayNo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeDelayNormal)(nil)
 
 // NewBACnetConstructedDataTimeDelayNormal factory function for _BACnetConstructedDataTimeDelayNormal
-func NewBACnetConstructedDataTimeDelayNormal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelayNormal BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelayNormal {
+func NewBACnetConstructedDataTimeDelayNormal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelayNormal BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTimeDelayNormal {
 	if timeDelayNormal == nil {
 		panic("timeDelayNormal of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelayNormal must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeDelayNormal{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeDelayNormal:               timeDelayNormal,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimeDelayNormal(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeDelayNormal) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeDelayNormal"
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timeDelayNormal)
 	lengthInBits += m.TimeDelayNormal.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

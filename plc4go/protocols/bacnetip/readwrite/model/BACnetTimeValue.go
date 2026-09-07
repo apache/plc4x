@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetTimeValue(structType any) BACnetTimeValue {
 	return nil
 }
 
-func (m *_BACnetTimeValue) GetTypeName() string {
+func (m *_BACnetTimeValue) GetPlx4xTypeName() string {
 	return "BACnetTimeValue"
 }
 
-func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetTimeValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetTimeValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimeValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetTimeValueParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetTimeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeValue, error) {
-	v, err := (&_BACnetTimeValue{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetTimeValue)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataRoutingTable = (*_BACnetConstructedDataRoutingTable)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRoutingTable)(nil)
 
 // NewBACnetConstructedDataRoutingTable factory function for _BACnetConstructedDataRoutingTable
-func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
+func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry) *_BACnetConstructedDataRoutingTable {
 	_result := &_BACnetConstructedDataRoutingTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RoutingTable:                  routingTable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataRoutingTable(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataRoutingTable) GetTypeName() string {
+func (m *_BACnetConstructedDataRoutingTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRoutingTable"
 }
 
-func (m *_BACnetConstructedDataRoutingTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRoutingTable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.RoutingTable) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataRoutingTable) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRoutingTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRoutingTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

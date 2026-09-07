@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetPropertyStatesIntegerValue(structType any) BACnetPropertyStatesIn
 	return nil
 }
 
-func (m *_BACnetPropertyStatesIntegerValue) GetTypeName() string {
+func (m *_BACnetPropertyStatesIntegerValue) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesIntegerValue"
 }
 
-func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (integerValue)
 	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,10 +43,22 @@ type BACnetWeekNDayTagged interface {
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetMonth returns Month (property field)
+	// TODO: once we progress in codegen var enough that we can detect the source for array access we can use that again
+	// ... at the moment in java this produces a .get(0) call and this doesn't work with byte arrays
+	//[simple        BACnetTagPayloadOctetString  payload                                                         ]
+	// TODO see comment above
+	//[virtual       uint 8 month                                     'payload.octets[0]'   ]
+	// TODO: temporary
 	GetMonth() uint8
 	// GetWeekOfMonth returns WeekOfMonth (property field)
+	// TODO see comment above
+	//[virtual       uint 8 weekOfMonth                               'payload.octets[1]'   ]
+	// TODO: temporary
 	GetWeekOfMonth() uint8
 	// GetDayOfWeek returns DayOfWeek (property field)
+	// TODO see comment above
+	//[virtual       uint 8 dayOfWeek                                 'payload.octets[2]'   ]
+	// TODO: temporary
 	GetDayOfWeek() uint8
 	// GetOddMonths returns OddMonths (virtual field)
 	GetOddMonths() bool
@@ -88,20 +100,16 @@ type _BACnetWeekNDayTagged struct {
 	Month       uint8
 	WeekOfMonth uint8
 	DayOfWeek   uint8
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetWeekNDayTagged = (*_BACnetWeekNDayTagged)(nil)
 
 // NewBACnetWeekNDayTagged factory function for _BACnetWeekNDayTagged
-func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth uint8, dayOfWeek uint8, tagNumber uint8, tagClass TagClass) *_BACnetWeekNDayTagged {
+func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth uint8, dayOfWeek uint8) *_BACnetWeekNDayTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetWeekNDayTagged must not be nil")
 	}
-	return &_BACnetWeekNDayTagged{Header: header, Month: month, WeekOfMonth: weekOfMonth, DayOfWeek: dayOfWeek, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetWeekNDayTagged{Header: header, Month: month, WeekOfMonth: weekOfMonth, DayOfWeek: dayOfWeek}
 }
 
 ///////////////////////////////////////////////////////////
@@ -124,10 +132,6 @@ type BACnetWeekNDayTaggedBuilder interface {
 	WithWeekOfMonth(uint8) BACnetWeekNDayTaggedBuilder
 	// WithDayOfWeek adds DayOfWeek (property field)
 	WithDayOfWeek(uint8) BACnetWeekNDayTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetWeekNDayTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetWeekNDayTaggedBuilder
 	// Build builds the BACnetWeekNDayTagged or returns an error if something is wrong
 	Build() (BACnetWeekNDayTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -178,15 +182,6 @@ func (b *_BACnetWeekNDayTaggedBuilder) WithWeekOfMonth(weekOfMonth uint8) BACnet
 
 func (b *_BACnetWeekNDayTaggedBuilder) WithDayOfWeek(dayOfWeek uint8) BACnetWeekNDayTaggedBuilder {
 	b.DayOfWeek = dayOfWeek
-	return b
-}
-
-func (b *_BACnetWeekNDayTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetWeekNDayTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetWeekNDayTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetWeekNDayTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -359,12 +354,12 @@ func CastBACnetWeekNDayTagged(structType any) BACnetWeekNDayTagged {
 	return nil
 }
 
-func (m *_BACnetWeekNDayTagged) GetTypeName() string {
+func (m *_BACnetWeekNDayTagged) GetPlx4xTypeName() string {
 	return "BACnetWeekNDayTagged"
 }
 
-func (m *_BACnetWeekNDayTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetWeekNDayTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -409,7 +404,7 @@ func (m *_BACnetWeekNDayTagged) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetWeekNDayTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetWeekNDayTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -424,7 +419,7 @@ func BACnetWeekNDayTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 }
 
 func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetWeekNDayTagged, error) {
-	v, err := (&_BACnetWeekNDayTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetWeekNDayTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -693,19 +688,6 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetWeekNDayTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetWeekNDayTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetWeekNDayTagged) IsBACnetWeekNDayTagged() {}
 
 func (m *_BACnetWeekNDayTagged) DeepCopy() any {
@@ -721,8 +703,6 @@ func (m *_BACnetWeekNDayTagged) deepCopy() *_BACnetWeekNDayTagged {
 		m.Month,
 		m.WeekOfMonth,
 		m.DayOfWeek,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetWeekNDayTaggedCopy
 }

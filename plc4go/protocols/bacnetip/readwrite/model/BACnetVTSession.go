@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -243,12 +243,12 @@ func CastBACnetVTSession(structType any) BACnetVTSession {
 	return nil
 }
 
-func (m *_BACnetVTSession) GetTypeName() string {
+func (m *_BACnetVTSession) GetPlx4xTypeName() string {
 	return "BACnetVTSession"
 }
 
-func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (localVtSessionId)
 	lengthInBits += m.LocalVtSessionId.GetLengthInBits(ctx)
@@ -262,7 +262,7 @@ func (m *_BACnetVTSession) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetVTSession) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetVTSession) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +277,7 @@ func BACnetVTSessionParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
-	v, err := (&_BACnetVTSession{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetVTSession)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

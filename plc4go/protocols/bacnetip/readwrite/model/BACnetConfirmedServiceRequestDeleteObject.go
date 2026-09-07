@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,7 +59,7 @@ var _ BACnetConfirmedServiceRequestDeleteObject = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
 
 // NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
-func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
+func NewBACnetConfirmedServiceRequestDeleteObject(serviceRequestLength uint32, objectIdentifier BACnetApplicationTagObjectIdentifier) *_BACnetConfirmedServiceRequestDeleteObject {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestDeleteObject must not be nil")
 	}
@@ -225,12 +225,12 @@ func CastBACnetConfirmedServiceRequestDeleteObject(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeleteObject) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestDeleteObject) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestDeleteObject"
 }
 
-func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

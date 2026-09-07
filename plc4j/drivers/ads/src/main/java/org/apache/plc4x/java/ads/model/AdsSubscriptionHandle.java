@@ -19,21 +19,24 @@
 package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.ads.readwrite.AdsDataTypeTableEntry;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.drivers.functions.PlcSubscriber;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.function.Consumer;
 
-public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
+public class AdsSubscriptionHandle implements PlcSubscriptionHandle {
 
+    private final PlcSubscriber plcSubscriber;
     private final String tagName;
-
     private final AdsDataTypeTableEntry adsDataType;
-
     private final Long notificationHandle;
 
     public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String tagName, AdsDataTypeTableEntry adsDataType, Long notificationHandle) {
-        super(plcSubscriber);
+        this.plcSubscriber = plcSubscriber;
         this.tagName = tagName;
         this.adsDataType = adsDataType;
         this.notificationHandle = notificationHandle;
@@ -52,17 +55,18 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     }
 
     @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        return plcSubscriber.registerConsumer(consumer, Collections.singletonList(this));
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AdsSubscriptionHandle)) {
+        if (!(o instanceof AdsSubscriptionHandle that)) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
-        AdsSubscriptionHandle that = (AdsSubscriptionHandle) o;
         return Objects.equals(tagName, that.tagName) &&
             adsDataType == that.adsDataType &&
             Objects.equals(notificationHandle, that.notificationHandle);
@@ -70,7 +74,7 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), tagName, adsDataType, notificationHandle);
+        return Objects.hash(tagName, adsDataType, notificationHandle);
     }
 
     @Override
@@ -79,7 +83,7 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             "tagName='" + tagName + '\'' +
             ", adsDataType=" + adsDataType +
             ", notificationHandle=" + notificationHandle +
-            "} " + super.toString();
+            '}';
     }
 
 }

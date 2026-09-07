@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ VariantNodeId = (*_VariantNodeId)(nil)
 var _ VariantRequirements = (*_VariantNodeId)(nil)
 
 // NewVariantNodeId factory function for _VariantNodeId
-func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []NodeId) *_VariantNodeId {
+func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []NodeId) *_VariantNodeId {
 	_result := &_VariantNodeId{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -222,12 +222,12 @@ func CastVariantNodeId(structType any) VariantNodeId {
 	return nil
 }
 
-func (m *_VariantNodeId) GetTypeName() string {
+func (m *_VariantNodeId) GetPlx4xTypeName() string {
 	return "VariantNodeId"
 }
 
-func (m *_VariantNodeId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantNodeId) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -245,7 +245,7 @@ func (m *_VariantNodeId) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_VariantNodeId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantNodeId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

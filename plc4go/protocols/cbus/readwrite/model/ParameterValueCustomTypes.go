@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +61,12 @@ var _ ParameterValueCustomTypes = (*_ParameterValueCustomTypes)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueCustomTypes)(nil)
 
 // NewParameterValueCustomTypes factory function for _ParameterValueCustomTypes
-func NewParameterValueCustomTypes(value CustomTypes, numBytes uint8) *_ParameterValueCustomTypes {
+func NewParameterValueCustomTypes(value CustomTypes) *_ParameterValueCustomTypes {
 	if value == nil {
 		panic("value of type CustomTypes for ParameterValueCustomTypes must not be nil")
 	}
 	_result := &_ParameterValueCustomTypes{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 	}
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
@@ -225,12 +227,12 @@ func CastParameterValueCustomTypes(structType any) ParameterValueCustomTypes {
 	return nil
 }
 
-func (m *_ParameterValueCustomTypes) GetTypeName() string {
+func (m *_ParameterValueCustomTypes) GetPlx4xTypeName() string {
 	return "ParameterValueCustomTypes"
 }
 
-func (m *_ParameterValueCustomTypes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+func (m *_ParameterValueCustomTypes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
@@ -238,7 +240,7 @@ func (m *_ParameterValueCustomTypes) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_ParameterValueCustomTypes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterValueCustomTypes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +255,7 @@ func (m *_ParameterValueCustomTypes) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	value, err := ReadSimpleField[CustomTypes](ctx, "value", ReadComplex[CustomTypes](CustomTypesParseWithBufferProducer((uint8)(numBytes)), readBuffer))
+	value, err := ReadSimpleField[CustomTypes](ctx, "value", ReadComplex[CustomTypes](CustomTypesParseWithBufferProducer((uint8)(numBytes)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -267,7 +269,7 @@ func (m *_ParameterValueCustomTypes) parse(ctx context.Context, readBuffer utils
 }
 
 func (m *_ParameterValueCustomTypes) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (m *_ParameterValueCustomTypes) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueCustomTypes")
 		}
 
-		if err := WriteSimpleField[CustomTypes](ctx, "value", m.GetValue(), WriteComplex[CustomTypes](writeBuffer)); err != nil {
+		if err := WriteSimpleField[CustomTypes](ctx, "value", m.GetValue(), WriteComplex[CustomTypes](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

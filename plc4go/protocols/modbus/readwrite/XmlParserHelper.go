@@ -24,9 +24,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,15 +52,12 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 		if err != nil {
 			return nil, err
 		}
-		numberOfValues := uint16(parsedUint1)
-		bigEndian := parserArguments[2] == "true"
-		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues, bigEndian)
+		stringLength := uint16(parsedUint1)
+		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, stringLength)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusDeviceInformationObject":
 		return ModbusDeviceInformationObjectParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusConstants":
-		return ModbusConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return ModbusPDUWriteFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDU":

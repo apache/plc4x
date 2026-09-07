@@ -27,6 +27,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -51,19 +52,24 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
 	connection := NewConnection(
 		NewDevice(
 			"test",
-			append(d._options, options.WithCustomLogger(d.log))...,
+			append(d._options, options.WithCustomLogger(connectionLog))...,
 		),
 		d.GetPlcTagHandler(),
 		d.valueHandler,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Stringer("connection", connection).Msg("Connecting and returning connection")
-	return connection.ConnectWithContext(ctx)
+	connectionLog.Trace().Interface("connection", connection).Msg("Connecting")
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	connectionLog.Trace().Interface("connection", connection).Msg("Connected")
+	return connection, nil
 }
 
 // SupportsDiscovery returns true if this driver supports discovery

@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastIdentityMappingRuleType(structType any) IdentityMappingRuleType {
 	return nil
 }
 
-func (m *_IdentityMappingRuleType) GetTypeName() string {
+func (m *_IdentityMappingRuleType) GetPlx4xTypeName() string {
 	return "IdentityMappingRuleType"
 }
 
-func (m *_IdentityMappingRuleType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_IdentityMappingRuleType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (criteriaType)
 	lengthInBits += 32
@@ -256,7 +257,7 @@ func (m *_IdentityMappingRuleType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_IdentityMappingRuleType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentityMappingRuleType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -271,13 +272,13 @@ func (m *_IdentityMappingRuleType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	criteriaType, err := ReadEnumField[IdentityCriteriaType](ctx, "criteriaType", "IdentityCriteriaType", ReadEnum(IdentityCriteriaTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	criteriaType, err := ReadEnumField[IdentityCriteriaType](ctx, "criteriaType", "IdentityCriteriaType", ReadEnum(IdentityCriteriaTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'criteriaType' field"))
 	}
 	m.CriteriaType = criteriaType
 
-	criteria, err := ReadSimpleField[PascalString](ctx, "criteria", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	criteria, err := ReadSimpleField[PascalString](ctx, "criteria", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'criteria' field"))
 	}
@@ -308,11 +309,11 @@ func (m *_IdentityMappingRuleType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for IdentityMappingRuleType")
 		}
 
-		if err := WriteSimpleEnumField[IdentityCriteriaType](ctx, "criteriaType", "IdentityCriteriaType", m.GetCriteriaType(), WriteEnum[IdentityCriteriaType, uint32](IdentityCriteriaType.GetValue, IdentityCriteriaType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[IdentityCriteriaType](ctx, "criteriaType", "IdentityCriteriaType", m.GetCriteriaType(), WriteEnum[IdentityCriteriaType, uint32](IdentityCriteriaType.GetValue, IdentityCriteriaType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'criteriaType' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "criteria", m.GetCriteria(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "criteria", m.GetCriteria(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'criteria' field")
 		}
 

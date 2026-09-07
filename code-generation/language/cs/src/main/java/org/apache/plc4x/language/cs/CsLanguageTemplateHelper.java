@@ -1269,4 +1269,16 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return sb.toString();
     }
 
+    public boolean isRawByteArray(DiscriminatedComplexTypeDefinition currentCase) {
+        Optional<Field> valueFieldOptional = currentCase.getFields().stream().filter(field -> field.isNamedField() && field.asNamedField().orElseThrow().getName().equals("value")).findFirst();
+        if (valueFieldOptional.isPresent()) {
+            Field valueField = valueFieldOptional.get();
+            if (valueField.isTypedField()) {
+                TypedField typedField = valueField.asTypedField().orElseThrow();
+                return typedField.getType().isArrayTypeReference() && typedField.getType().asArrayTypeReference().orElseThrow().getElementTypeReference().isByteBased();
+            }
+        }
+        return false;
+    }
+
 }

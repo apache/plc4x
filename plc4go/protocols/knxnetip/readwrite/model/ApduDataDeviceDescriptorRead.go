@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ ApduDataDeviceDescriptorRead = (*_ApduDataDeviceDescriptorRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorRead)(nil)
 
 // NewApduDataDeviceDescriptorRead factory function for _ApduDataDeviceDescriptorRead
-func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
+func NewApduDataDeviceDescriptorRead(descriptorType uint8) *_ApduDataDeviceDescriptorRead {
 	_result := &_ApduDataDeviceDescriptorRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		DescriptorType:   descriptorType,
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
@@ -207,12 +207,12 @@ func CastApduDataDeviceDescriptorRead(structType any) ApduDataDeviceDescriptorRe
 	return nil
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetTypeName() string {
+func (m *_ApduDataDeviceDescriptorRead) GetPlx4xTypeName() string {
 	return "ApduDataDeviceDescriptorRead"
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -220,7 +220,7 @@ func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

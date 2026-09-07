@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -257,12 +258,12 @@ func CastTransferSubscriptionsRequest(structType any) TransferSubscriptionsReque
 	return nil
 }
 
-func (m *_TransferSubscriptionsRequest) GetTypeName() string {
+func (m *_TransferSubscriptionsRequest) GetPlx4xTypeName() string {
 	return "TransferSubscriptionsRequest"
 }
 
-func (m *_TransferSubscriptionsRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_TransferSubscriptionsRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -272,7 +273,7 @@ func (m *_TransferSubscriptionsRequest) GetLengthInBits(ctx context.Context) uin
 
 	// Array field
 	if len(m.SubscriptionIds) > 0 {
-		lengthInBits += 32 * uint16(len(m.SubscriptionIds))
+		lengthInBits += 32 * uint64(len(m.SubscriptionIds))
 	}
 
 	// Reserved Field (reserved)
@@ -284,7 +285,7 @@ func (m *_TransferSubscriptionsRequest) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_TransferSubscriptionsRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TransferSubscriptionsRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -299,31 +300,31 @@ func (m *_TransferSubscriptionsRequest) parse(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfSubscriptionIds, err := ReadImplicitField[int32](ctx, "noOfSubscriptionIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSubscriptionIds, err := ReadImplicitField[int32](ctx, "noOfSubscriptionIds", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscriptionIds' field"))
 	}
 	_ = noOfSubscriptionIds
 
-	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfSubscriptionIds))
+	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfSubscriptionIds), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionIds' field"))
 	}
 	m.SubscriptionIds = subscriptionIds
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	sendInitialValues, err := ReadSimpleField(ctx, "sendInitialValues", ReadBoolean(readBuffer))
+	sendInitialValues, err := ReadSimpleField(ctx, "sendInitialValues", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendInitialValues' field"))
 	}
@@ -354,23 +355,23 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for TransferSubscriptionsRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfSubscriptionIds := int32(utils.InlineIf(bool((m.GetSubscriptionIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSubscriptionIds()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSubscriptionIds", noOfSubscriptionIds, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSubscriptionIds", noOfSubscriptionIds, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSubscriptionIds' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "subscriptionIds", m.GetSubscriptionIds(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "subscriptionIds", m.GetSubscriptionIds(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionIds' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "sendInitialValues", m.GetSendInitialValues(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "sendInitialValues", m.GetSendInitialValues(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sendInitialValues' field")
 		}
 

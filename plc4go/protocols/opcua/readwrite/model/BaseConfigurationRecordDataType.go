@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastBaseConfigurationRecordDataType(structType any) BaseConfigurationRecord
 	return nil
 }
 
-func (m *_BaseConfigurationRecordDataType) GetTypeName() string {
+func (m *_BaseConfigurationRecordDataType) GetPlx4xTypeName() string {
 	return "BaseConfigurationRecordDataType"
 }
 
-func (m *_BaseConfigurationRecordDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_BaseConfigurationRecordDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_BaseConfigurationRecordDataType) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BaseConfigurationRecordDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BaseConfigurationRecordDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_BaseConfigurationRecordDataType) parse(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRecordProperties' field"))
 	}
 	_ = noOfRecordProperties
 
-	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties))
+	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordProperties' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_BaseConfigurationRecordDataType) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BaseConfigurationRecordDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 		noOfRecordProperties := int32(utils.InlineIf(bool((m.GetRecordProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRecordProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRecordProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'recordProperties' field")
 		}
 

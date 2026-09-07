@@ -19,6 +19,9 @@
 
 = Open-Protocol (Torque-Tools)
 
+NOTE: No language implementation of this driver is usable yet. See the
+xref:protocols/index.adoc[protocol support matrix] for what each implementation
+currently does.
 
 
 == Connection String Options

@@ -52,7 +52,7 @@ plc4c_s7_read_write_cyc_service_item_type plc4c_s7_read_write_cyc_service_item_t
 
 // Constant values.
 static const uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID_const = 0x12;
-uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID() {
+const uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID() {
   return PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID_const;
 }
 
@@ -60,6 +60,15 @@ uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID() {
 plc4c_return_code plc4c_s7_read_write_cyc_service_item_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_cyc_service_item_type** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
+
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_cyc_service_item_type));

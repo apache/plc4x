@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastSpanContextDataType(structType any) SpanContextDataType {
 	return nil
 }
 
-func (m *_SpanContextDataType) GetTypeName() string {
+func (m *_SpanContextDataType) GetPlx4xTypeName() string {
 	return "SpanContextDataType"
 }
 
-func (m *_SpanContextDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SpanContextDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (traceId)
 	lengthInBits += m.TraceId.GetLengthInBits(ctx)
@@ -256,7 +257,7 @@ func (m *_SpanContextDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SpanContextDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SpanContextDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -271,13 +272,13 @@ func (m *_SpanContextDataType) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	traceId, err := ReadSimpleField[GuidValue](ctx, "traceId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer))
+	traceId, err := ReadSimpleField[GuidValue](ctx, "traceId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'traceId' field"))
 	}
 	m.TraceId = traceId
 
-	spanId, err := ReadSimpleField(ctx, "spanId", ReadUnsignedLong(readBuffer, uint8(64)))
+	spanId, err := ReadSimpleField(ctx, "spanId", ReadUnsignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'spanId' field"))
 	}
@@ -308,11 +309,11 @@ func (m *_SpanContextDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for SpanContextDataType")
 		}
 
-		if err := WriteSimpleField[GuidValue](ctx, "traceId", m.GetTraceId(), WriteComplex[GuidValue](writeBuffer)); err != nil {
+		if err := WriteSimpleField[GuidValue](ctx, "traceId", m.GetTraceId(), WriteComplex[GuidValue](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'traceId' field")
 		}
 
-		if err := WriteSimpleField[uint64](ctx, "spanId", m.GetSpanId(), WriteUnsignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[uint64](ctx, "spanId", m.GetSpanId(), WriteUnsignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'spanId' field")
 		}
 

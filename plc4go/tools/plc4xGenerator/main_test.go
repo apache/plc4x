@@ -26,16 +26,14 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestBanana(t *testing.T) {
-	typeNames = utils.ToPtr("Example")
-	suffix = utils.ToPtr("_test")
-	tests = utils.ToPtr(true)
-	pkgIndex = utils.ToPtr(1)
-	output = utils.ToPtr(path.Join(t.TempDir(), "aTestOutput.go"))
+	typeNames = new("Example")
+	suffix = new("_test")
+	tests = new(true)
+	pkgIndex = new(1)
+	output = new(path.Join(t.TempDir(), "aTestOutput.go"))
 	main()
 	time.Sleep(1 * time.Second)
 	file, err := os.ReadFile(outputFile)

@@ -37,10 +37,10 @@ class ChunkFactoryTest {
     public static final Map<Integer, Entry<PrivateKey, X509Certificate>> CERTIFICATES = new ConcurrentHashMap<>();
 
     private OpcuaProtocolLimits limits = new OpcuaProtocolLimits(
-        8196,
-        8196,
-        8196 * 10,
-        10
+        8196L,
+        8196L,
+        8196L * 10,
+        10L
     );
 
     @ParameterizedTest

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetConfirmedServiceRequestConfirmedTextMessage = (*_BACnetConfirmedServ
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessage)(nil)
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for _BACnetConfirmedServiceRequestConfirmedTextMessage
-func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
+func NewBACnetConfirmedServiceRequestConfirmedTextMessage(serviceRequestLength uint32, textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
 	if textMessageSourceDevice == nil {
 		panic("textMessageSourceDevice of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
 	}
@@ -318,12 +318,12 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessage"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (textMessageSourceDevice)
 	lengthInBits += m.TextMessageSourceDevice.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -414,7 +414,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'textMessageSourceDevice' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", GetRef(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", new(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageClass' field")
 		}
 

@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,8 +49,6 @@ type IdentifyReplyCommand interface {
 
 // IdentifyReplyCommandContract provides a set of functions which can be overwritten by a sub struct
 type IdentifyReplyCommandContract interface {
-	// GetNumBytes() returns a parser argument
-	GetNumBytes() uint8
 	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommand()
 	// CreateBuilder creates a IdentifyReplyCommandBuilder
@@ -58,8 +57,8 @@ type IdentifyReplyCommandContract interface {
 
 // IdentifyReplyCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type IdentifyReplyCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetAttribute returns Attribute (discriminator field)
 	GetAttribute() Attribute
 }
@@ -70,16 +69,13 @@ type _IdentifyReplyCommand struct {
 		IdentifyReplyCommandContract
 		IdentifyReplyCommandRequirements
 	}
-
-	// Arguments.
-	NumBytes uint8
 }
 
 var _ IdentifyReplyCommandContract = (*_IdentifyReplyCommand)(nil)
 
 // NewIdentifyReplyCommand factory function for _IdentifyReplyCommand
-func NewIdentifyReplyCommand(numBytes uint8) *_IdentifyReplyCommand {
-	return &_IdentifyReplyCommand{NumBytes: numBytes}
+func NewIdentifyReplyCommand() *_IdentifyReplyCommand {
+	return &_IdentifyReplyCommand{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,8 +88,6 @@ type IdentifyReplyCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() IdentifyReplyCommandBuilder
-	// WithArgNumBytes sets a parser argument
-	WithArgNumBytes(uint8) IdentifyReplyCommandBuilder
 	// AsIdentifyReplyCommandManufacturer converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
 	AsIdentifyReplyCommandManufacturer() IdentifyReplyCommandManufacturerBuilder
 	// AsIdentifyReplyCommandType converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
@@ -162,11 +156,6 @@ type _IdentifyReplyCommandBuilder struct {
 var _ (IdentifyReplyCommandBuilder) = (*_IdentifyReplyCommandBuilder)(nil)
 
 func (b *_IdentifyReplyCommandBuilder) WithMandatoryFields() IdentifyReplyCommandBuilder {
-	return b
-}
-
-func (b *_IdentifyReplyCommandBuilder) WithArgNumBytes(numBytes uint8) IdentifyReplyCommandBuilder {
-	b.NumBytes = numBytes
 	return b
 }
 
@@ -419,26 +408,26 @@ func CastIdentifyReplyCommand(structType any) IdentifyReplyCommand {
 	return nil
 }
 
-func (m *_IdentifyReplyCommand) GetTypeName() string {
+func (m *_IdentifyReplyCommand) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommand"
 }
 
-func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandParse[T IdentifyReplyCommand](ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (T, error) {
-	return IdentifyReplyCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes)
 }
 
 func IdentifyReplyCommandParseWithBufferProducer[T IdentifyReplyCommand](attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -453,7 +442,7 @@ func IdentifyReplyCommandParseWithBufferProducer[T IdentifyReplyCommand](attribu
 }
 
 func IdentifyReplyCommandParseWithBuffer[T IdentifyReplyCommand](ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (T, error) {
-	v, err := (&_IdentifyReplyCommand{NumBytes: numBytes}).parse(ctx, readBuffer, attribute, numBytes)
+	v, err := (new(_IdentifyReplyCommand)).parse(ctx, readBuffer, attribute, numBytes)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -479,75 +468,75 @@ func (m *_IdentifyReplyCommand) parse(ctx context.Context, readBuffer utils.Read
 	var _child IdentifyReplyCommand
 	switch {
 	case attribute == Attribute_Manufacturer: // IdentifyReplyCommandManufacturer
-		if _child, err = new(_IdentifyReplyCommandManufacturer).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandManufacturer).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandManufacturer for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_Type: // IdentifyReplyCommandType
-		if _child, err = new(_IdentifyReplyCommandType).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandType).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandType for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_FirmwareVersion: // IdentifyReplyCommandFirmwareVersion
-		if _child, err = new(_IdentifyReplyCommandFirmwareVersion).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandFirmwareVersion).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandFirmwareVersion for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_Summary: // IdentifyReplyCommandSummary
-		if _child, err = new(_IdentifyReplyCommandSummary).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandSummary).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandSummary for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_ExtendedDiagnosticSummary: // IdentifyReplyCommandExtendedDiagnosticSummary
-		if _child, err = new(_IdentifyReplyCommandExtendedDiagnosticSummary).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandExtendedDiagnosticSummary).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandExtendedDiagnosticSummary for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_NetworkTerminalLevels: // IdentifyReplyCommandNetworkTerminalLevels
-		if _child, err = new(_IdentifyReplyCommandNetworkTerminalLevels).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandNetworkTerminalLevels).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandNetworkTerminalLevels for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_TerminalLevel: // IdentifyReplyCommandTerminalLevels
-		if _child, err = new(_IdentifyReplyCommandTerminalLevels).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandTerminalLevels).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandTerminalLevels for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_NetworkVoltage: // IdentifyReplyCommandNetworkVoltage
-		if _child, err = new(_IdentifyReplyCommandNetworkVoltage).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandNetworkVoltage).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandNetworkVoltage for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_GAVValuesCurrent: // IdentifyReplyCommandGAVValuesCurrent
-		if _child, err = new(_IdentifyReplyCommandGAVValuesCurrent).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandGAVValuesCurrent).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandGAVValuesCurrent for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_GAVValuesStored: // IdentifyReplyCommandGAVValuesStored
-		if _child, err = new(_IdentifyReplyCommandGAVValuesStored).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandGAVValuesStored).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandGAVValuesStored for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_GAVPhysicalAddresses: // IdentifyReplyCommandGAVPhysicalAddresses
-		if _child, err = new(_IdentifyReplyCommandGAVPhysicalAddresses).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandGAVPhysicalAddresses).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandGAVPhysicalAddresses for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_LogicalAssignment: // IdentifyReplyCommandLogicalAssignment
-		if _child, err = new(_IdentifyReplyCommandLogicalAssignment).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandLogicalAssignment).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandLogicalAssignment for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_Delays: // IdentifyReplyCommandDelays
-		if _child, err = new(_IdentifyReplyCommandDelays).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandDelays).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandDelays for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_MinimumLevels: // IdentifyReplyCommandMinimumLevels
-		if _child, err = new(_IdentifyReplyCommandMinimumLevels).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandMinimumLevels).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandMinimumLevels for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_MaximumLevels: // IdentifyReplyCommandMaximumLevels
-		if _child, err = new(_IdentifyReplyCommandMaximumLevels).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandMaximumLevels).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandMaximumLevels for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_CurrentSenseLevels: // IdentifyReplyCommandCurrentSenseLevels
-		if _child, err = new(_IdentifyReplyCommandCurrentSenseLevels).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandCurrentSenseLevels).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandCurrentSenseLevels for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_OutputUnitSummary: // IdentifyReplyCommandOutputUnitSummary
-		if _child, err = new(_IdentifyReplyCommandOutputUnitSummary).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandOutputUnitSummary).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandOutputUnitSummary for type-switch of IdentifyReplyCommand")
 		}
 	case attribute == Attribute_DSIStatus: // IdentifyReplyCommandDSIStatus
-		if _child, err = new(_IdentifyReplyCommandDSIStatus).parse(ctx, readBuffer, m, attribute, numBytes); err != nil {
+		if _child, err = new(_IdentifyReplyCommandDSIStatus).parse(ctx, readBuffer, m, attribute, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentifyReplyCommandDSIStatus for type-switch of IdentifyReplyCommand")
 		}
 	default:
@@ -584,16 +573,6 @@ func (pm *_IdentifyReplyCommand) serializeParent(ctx context.Context, writeBuffe
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_IdentifyReplyCommand) GetNumBytes() uint8 {
-	return m.NumBytes
-}
-
-//
-////
-
 func (m *_IdentifyReplyCommand) IsIdentifyReplyCommand() {}
 
 func (m *_IdentifyReplyCommand) DeepCopy() any {
@@ -606,7 +585,6 @@ func (m *_IdentifyReplyCommand) deepCopy() *_IdentifyReplyCommand {
 	}
 	_IdentifyReplyCommandCopy := &_IdentifyReplyCommand{
 		nil, // will be set by child
-		m.NumBytes,
 	}
 	return _IdentifyReplyCommandCopy
 }

@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastRepublishResponse(structType any) RepublishResponse {
 	return nil
 }
 
-func (m *_RepublishResponse) GetTypeName() string {
+func (m *_RepublishResponse) GetPlx4xTypeName() string {
 	return "RepublishResponse"
 }
 
-func (m *_RepublishResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_RepublishResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_RepublishResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RepublishResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RepublishResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_RepublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	notificationMessage, err := ReadSimpleField[NotificationMessage](ctx, "notificationMessage", ReadComplex[NotificationMessage](ExtensionObjectDefinitionParseWithBufferProducer[NotificationMessage]((int32)(int32(805))), readBuffer))
+	notificationMessage, err := ReadSimpleField[NotificationMessage](ctx, "notificationMessage", ReadComplex[NotificationMessage](ExtensionObjectDefinitionParseWithBufferProducer[NotificationMessage]((int32)(int32(805))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationMessage' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for RepublishResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		if err := WriteSimpleField[NotificationMessage](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[NotificationMessage](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NotificationMessage](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[NotificationMessage](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationMessage' field")
 		}
 

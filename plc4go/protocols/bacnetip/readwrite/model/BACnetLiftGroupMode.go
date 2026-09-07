@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -124,11 +124,11 @@ func CastBACnetLiftGroupMode(structType any) BACnetLiftGroupMode {
 	return castFunc(structType)
 }
 
-func (m BACnetLiftGroupMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLiftGroupMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetLiftGroupMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLiftGroupMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

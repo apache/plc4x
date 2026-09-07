@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTrigger = (*_BACnetConstructedDataTrigger)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrigger)(nil)
 
 // NewBACnetConstructedDataTrigger factory function for _BACnetConstructedDataTrigger
-func NewBACnetConstructedDataTrigger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trigger BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrigger {
+func NewBACnetConstructedDataTrigger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trigger BACnetApplicationTagBoolean) *_BACnetConstructedDataTrigger {
 	if trigger == nil {
 		panic("trigger of type BACnetApplicationTagBoolean for BACnetConstructedDataTrigger must not be nil")
 	}
 	_result := &_BACnetConstructedDataTrigger{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Trigger:                       trigger,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTrigger(structType any) BACnetConstructedDataTrigg
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrigger) GetTypeName() string {
+func (m *_BACnetConstructedDataTrigger) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrigger"
 }
 
-func (m *_BACnetConstructedDataTrigger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTrigger) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (trigger)
 	lengthInBits += m.Trigger.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTrigger) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrigger) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTrigger) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

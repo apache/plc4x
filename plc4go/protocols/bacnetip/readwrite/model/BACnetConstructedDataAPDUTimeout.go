@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAPDUTimeout = (*_BACnetConstructedDataAPDUTimeout)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDUTimeout)(nil)
 
 // NewBACnetConstructedDataAPDUTimeout factory function for _BACnetConstructedDataAPDUTimeout
-func NewBACnetConstructedDataAPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUTimeout {
+func NewBACnetConstructedDataAPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAPDUTimeout {
 	if apduTimeout == nil {
 		panic("apduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataAPDUTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ApduTimeout:                   apduTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAPDUTimeout(structType any) BACnetConstructedDataA
 	return nil
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataAPDUTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAPDUTimeout"
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (apduTimeout)
 	lengthInBits += m.ApduTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

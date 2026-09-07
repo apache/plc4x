@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -230,12 +230,12 @@ func CastModbusPDUWriteSingleRegisterResponse(structType any) ModbusPDUWriteSing
 	return nil
 }
 
-func (m *_ModbusPDUWriteSingleRegisterResponse) GetTypeName() string {
+func (m *_ModbusPDUWriteSingleRegisterResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteSingleRegisterResponse"
 }
 
-func (m *_ModbusPDUWriteSingleRegisterResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUWriteSingleRegisterResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -246,7 +246,7 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_ModbusPDUWriteSingleRegisterResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUWriteSingleRegisterResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

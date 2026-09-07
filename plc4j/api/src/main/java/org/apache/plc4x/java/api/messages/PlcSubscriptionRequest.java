@@ -67,7 +67,7 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * Adds a new tag to the to be constructed request which should be polled cyclically.
          *
          * @param name            alias of the tag.
-         * @param tag           tag instance for accessing the tag.
+         * @param tag             tag instance for accessing the tag.
          * @param pollingInterval interval, in which the tag should be polled.
          * @return builder.
          */
@@ -109,6 +109,29 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * Adds a new tag to the to be constructed request which should be updated as soon as
          * a value changes in the PLC.
          *
+         * @param name       alias of the tag.
+         * @param tagAddress tag address string for accessing the tag.
+         * @param minInterval min interval for updates (Limits the number of events for high frequency changes).
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration minInterval);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
+         * @param name        alias of the tag.
+         * @param tagAddress  tag address string for accessing the tag.
+         * @param consumer    consumer for receiving update events for a given tag only.
+         * @param minInterval min interval for updates (Limits the number of events for high frequency changes).
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
          * @param name alias of the tag.
          * @param tag  tag instance for accessing the tag.
          * @return builder.
@@ -125,6 +148,29 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * @return builder.
          */
         PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
+         * @param name        alias of the tag.
+         * @param tag         tag instance for accessing the tag.
+         * @param minInterval min interval for updates (Limits the number of events for high frequency changes).
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Duration minInterval);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
+         * @param name        alias of the tag.
+         * @param tag         tag instance for accessing the tag.
+         * @param consumer    consumer for receiving update events for a given tag only.
+         * @param minInterval min interval for updates (Limits the number of events for high frequency changes).
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval);
 
         /**
          * Adds a new subscription to the to be constructed request which should be updated

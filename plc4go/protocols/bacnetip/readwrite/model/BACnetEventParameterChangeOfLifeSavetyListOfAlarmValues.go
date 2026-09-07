@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,22 +57,19 @@ type _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues struct {
 	OpeningTag        BACnetOpeningTag
 	ListOfAlarmValues []BACnetLifeSafetyStateTagged
 	ClosingTag        BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues = (*_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues)(nil)
 
 // NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues factory function for _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues
-func NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
+func NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues must not be nil")
 	}
-	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{OpeningTag: openingTag, ListOfAlarmValues: listOfAlarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{OpeningTag: openingTag, ListOfAlarmValues: listOfAlarmValues, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
 	// Build builds the BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithCl
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -235,12 +225,12 @@ func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType any)
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues"
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -258,7 +248,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetLengthInBi
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +263,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBufferProdu
 }
 
 func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error) {
-	v, err := (&_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) SerializeWith
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) IsBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) deepCopy() *_
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.ListOfAlarmValues),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesCopy
 }

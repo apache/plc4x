@@ -26,21 +26,22 @@ import (
 	"fmt"
 	"os"
 	"runtime/debug"
+	"sort"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/subchen/go-xmldom"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
+	"github.com/apache/plc4x/plc4go/spi/testutils/xmldom"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -94,6 +95,7 @@ type TestTransportInstance interface {
 }
 
 func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager, testcase DriverTestcase) error {
+	ctx := t.Context()
 	var driverParameters []string
 	for key, value := range m.driverParameters {
 		driverParameters = append(driverParameters, fmt.Sprintf("%s=%s", key, value))
@@ -104,27 +106,12 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	}
 	// Get a connection
 	t.Log("getting a connection")
-	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
-	timer := time.NewTimer(DriverTestsuiteConnectTimeout)
-	var connectionResult plc4go.PlcConnectionConnectResult
-	select {
-	case connectionResult = <-connectionChan:
-	case <-timer.C:
-		t.Fatalf("timeout")
+	connection, err := driverManager.GetConnection(ctx, m.driverName+":test://hurz"+optionsString)
+	if err != nil {
+		return errors.Wrap(err, "error getting a connection")
 	}
-
-	if connectionResult.GetErr() != nil {
-		return errors.Wrap(connectionResult.GetErr(), "error getting a connection")
-	}
-	connection := connectionResult.GetConnection()
 	t.Cleanup(func() {
-		timeout := time.NewTimer(30 * time.Second)
-		select {
-		case result := <-connection.Close():
-			assert.NoError(t, result.GetErr())
-		case <-timeout.C:
-			t.Error("timeout closing connection")
-		}
+		t.Log("Close result", connection.Close())
 	})
 	utils.NewAsciiBoxWriter()
 	m.LogDelimiterSection(t, "=", "Executing testcase: %s", testcase.name)
@@ -180,6 +167,7 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 }
 
 func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnection, testcase *DriverTestcase, step DriverTestStep) error {
+	ctx := t.Context()
 	mc, ok := connection.(spi.TransportInstanceExposer)
 	if !ok {
 		return errors.New("couldn't access connections transport instance")
@@ -213,7 +201,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if testcase.readRequestResultChannel != nil {
 				return errors.New("testcase read-request result channel already occupied")
 			}
-			testcase.readRequestResultChannel = readRequest.Execute()
+			testcase.readRequestResultChannel = readRequest.Execute(ctx)
 			t.Log("request executed")
 		case "TestWriteRequest":
 			t.Log("Assemble write request")
@@ -236,6 +224,8 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 						tagValue = append(tagValue, valueChild.Text)
 					}
 					wrb.AddTagAddress(tagName, tagAddress, tagValue)
+				} else if structValue := convertApiRequestStructValue(tagNode.GetChild("value")); structValue != nil {
+					wrb.AddTagAddress(tagName, tagAddress, structValue)
 				} else {
 					tagValue := tagNode.GetChild("value").Text
 					wrb.AddTagAddress(tagName, tagAddress, tagValue)
@@ -249,7 +239,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if testcase.writeRequestResultChannel != nil {
 				return errors.New("testcase write-request result channel already occupied")
 			}
-			testcase.writeRequestResultChannel = writeRequest.Execute()
+			testcase.writeRequestResultChannel = writeRequest.Execute(ctx)
 			t.Log("request executed")
 		}
 	case StepTypeApiResponse:
@@ -267,15 +257,16 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
 			response := readRequestResult.GetResponse()
 			t.Logf("Got response (%T)\n%[1]s", response)
-			err := response.(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
+			err := response.(utils.Serializable).SerializeWithWriteBuffer(ctx, xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
 			actualResponse := xmlWriteBuffer.GetXmlString()
-			// Get the reference XML
-			referenceSerialized := step.payload.XMLPretty()
+			// Compare only the values sections: like on the Java side, the expected XML may
+			// contain a request element whose serialization is implementation-specific.
+			actualSection, referenceSerialized := extractResponseSection(actualResponse, step.payload, "values")
 			// Compare the results
-			err = CompareResults(t, []byte(actualResponse), []byte(referenceSerialized))
+			err = CompareResults(t, []byte(actualSection), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -294,15 +285,16 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
 			response := writeResponseResult.GetResponse()
 			t.Logf("Got response (%T)\n%[1]s", response)
-			err := response.(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
+			err := response.(utils.Serializable).SerializeWithWriteBuffer(ctx, xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
 			actualResponse := xmlWriteBuffer.GetXmlString()
-			// Get the reference XML
-			referenceSerialized := step.payload.XMLPretty()
+			// Compare only the response-code sections: like on the Java side, the expected XML
+			// may contain a request element whose serialization is implementation-specific.
+			actualSection, referenceSerialized := extractResponseSection(actualResponse, step.payload, "responseCodes")
 			// Compare the results
-			err = CompareResults(t, []byte(actualResponse), []byte(referenceSerialized))
+			err = CompareResults(t, []byte(actualSection), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -334,7 +326,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			t.Log("using little endian")
 			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.SerializeWithWriteBuffer(context.Background(), expectedWriteBuffer)
+		err = expectedSerializable.SerializeWithWriteBuffer(ctx, expectedWriteBuffer)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}
@@ -578,6 +570,68 @@ type ConnectionConnectAwaiter interface {
 	SetAwaitDisconnectComplete(awaitComplete bool)
 }
 
+// convertApiRequestStructValue converts a structured api-request value (a PlcStruct element
+// with one member element per property) into the member-name-to-value map form the driver
+// value handlers accept, recursing for nested structs. Plain text values return nil.
+func convertApiRequestStructValue(valueNode *xmldom.Node) any {
+	if valueNode == nil || len(valueNode.Children) != 1 || valueNode.Children[0].Name != "PlcStruct" {
+		return nil
+	}
+	return structValueNodeToMap(valueNode.Children[0])
+}
+
+func structValueNodeToMap(structNode *xmldom.Node) map[string]any {
+	members := map[string]any{}
+	for _, member := range structNode.Children {
+		switch {
+		case len(member.Children) == 1 && member.Children[0].Name == "PlcStruct":
+			members[member.Name] = structValueNodeToMap(member.Children[0])
+		case len(member.Children) == 1:
+			members[member.Name] = member.Children[0].Text
+		default:
+			members[member.Name] = member.Text
+		}
+	}
+	return members
+}
+
+// extractResponseSection narrows an api-response comparison to the named child element
+// (e.g. "values" of a PlcReadResponse), mirroring the Java driver testsuite runner: the
+// reference XML may contain sections (like the request) whose serialization is
+// implementation-specific. When either side lacks the section, both are returned unchanged.
+//
+// Within the section, sibling elements are sorted by name on both sides before comparing:
+// response values are keyed by tag/member name (maps in the API), so their order is not
+// part of the contract and differs between implementations.
+func extractResponseSection(actualResponse string, reference xmldom.Node, sectionName string) (string, string) {
+	referenceSection := reference.GetChild(sectionName)
+	if referenceSection == nil {
+		return actualResponse, reference.XMLPretty()
+	}
+	actualDocument, err := xmldom.Parse(strings.NewReader(actualResponse))
+	if err != nil {
+		return actualResponse, reference.XMLPretty()
+	}
+	actualSection := actualDocument.Root.GetChild(sectionName)
+	if actualSection == nil {
+		return actualResponse, reference.XMLPretty()
+	}
+	sortChildElementsByName(actualSection)
+	sortChildElementsByName(referenceSection)
+	return actualSection.XMLPretty(), referenceSection.XMLPretty()
+}
+
+// sortChildElementsByName recursively brings sibling elements into a canonical (name-sorted)
+// order. Only safe where sibling names are unique keys, as they are in api-response sections.
+func sortChildElementsByName(node *xmldom.Node) {
+	sort.SliceStable(node.Children, func(i, j int) bool {
+		return node.Children[i].Name < node.Children[j].Name
+	})
+	for _, child := range node.Children {
+		sortChildElementsByName(child)
+	}
+}
+
 func ParseDriverTestsuiteXml(t *testing.T, testPath string) *xmldom.Node {
 	// Get the current working directory
 	path, err := os.Getwd()
@@ -634,9 +688,9 @@ func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, root
 		switch child.Name {
 		case "name":
 			testsuiteName = child.Text
-		case "protocolName":
+		case "protocol-name":
 			protocolName = child.Text
-		case "outputFlavor":
+		case "output-flavor":
 			outputFlavor = child.Text
 		case "driver-name":
 			driverName = child.Text

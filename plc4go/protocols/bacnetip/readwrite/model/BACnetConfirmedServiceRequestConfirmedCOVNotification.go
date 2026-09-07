@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetConfirmedServiceRequestConfirmedCOVNotification = (*_BACnetConfirmed
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedCOVNotification)(nil)
 
 // NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for _BACnetConfirmedServiceRequestConfirmedCOVNotification
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(serviceRequestLength uint32, subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues) *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
 	if subscriberProcessIdentifier == nil {
 		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
 	}
@@ -357,12 +357,12 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType any) B
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedCOVNotification"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -382,7 +382,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

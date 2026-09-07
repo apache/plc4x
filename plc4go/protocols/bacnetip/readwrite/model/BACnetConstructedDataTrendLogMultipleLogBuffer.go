@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataTrendLogMultipleLogBuffer = (*_BACnetConstructedDataT
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleLogBuffer)(nil)
 
 // NewBACnetConstructedDataTrendLogMultipleLogBuffer factory function for _BACnetConstructedDataTrendLogMultipleLogBuffer
-func NewBACnetConstructedDataTrendLogMultipleLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, floorText []BACnetLogMultipleRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogBuffer {
+func NewBACnetConstructedDataTrendLogMultipleLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, floorText []BACnetLogMultipleRecord) *_BACnetConstructedDataTrendLogMultipleLogBuffer {
 	_result := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FloorText:                     floorText,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataTrendLogMultipleLogBuffer(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogMultipleLogBuffer"
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FloorText) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

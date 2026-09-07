@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastSignedSoftwareCertificate(structType any) SignedSoftwareCertificate {
 	return nil
 }
 
-func (m *_SignedSoftwareCertificate) GetTypeName() string {
+func (m *_SignedSoftwareCertificate) GetPlx4xTypeName() string {
 	return "SignedSoftwareCertificate"
 }
 
-func (m *_SignedSoftwareCertificate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SignedSoftwareCertificate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (certificateData)
 	lengthInBits += m.CertificateData.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_SignedSoftwareCertificate) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_SignedSoftwareCertificate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SignedSoftwareCertificate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_SignedSoftwareCertificate) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	certificateData, err := ReadSimpleField[PascalByteString](ctx, "certificateData", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	certificateData, err := ReadSimpleField[PascalByteString](ctx, "certificateData", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'certificateData' field"))
 	}
 	m.CertificateData = certificateData
 
-	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_SignedSoftwareCertificate) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for SignedSoftwareCertificate")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "certificateData", m.GetCertificateData(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "certificateData", m.GetCertificateData(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'certificateData' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 

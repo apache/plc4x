@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInProcess = (*_BACnetConstructedDataInProcess)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInProcess)(nil)
 
 // NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
-func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
+func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean) *_BACnetConstructedDataInProcess {
 	if inProcess == nil {
 		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
 	}
 	_result := &_BACnetConstructedDataInProcess{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InProcess:                     inProcess,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataInProcess(structType any) BACnetConstructedDataInP
 	return nil
 }
 
-func (m *_BACnetConstructedDataInProcess) GetTypeName() string {
+func (m *_BACnetConstructedDataInProcess) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInProcess"
 }
 
-func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (inProcess)
 	lengthInBits += m.InProcess.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataInProcess) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInProcess) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataInProcess) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,25 +207,25 @@ func CastAdsDiscoveryBlockVersion(structType any) AdsDiscoveryBlockVersion {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockVersion) GetTypeName() string {
+func (m *_AdsDiscoveryBlockVersion) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockVersion"
 }
 
-func (m *_AdsDiscoveryBlockVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+func (m *_AdsDiscoveryBlockVersion) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Implicit Field (versionDataLen)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.VersionData) > 0 {
-		lengthInBits += 8 * uint16(len(m.VersionData))
+		lengthInBits += 8 * uint64(len(m.VersionData))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockVersion) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlockVersion) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

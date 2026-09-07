@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,6 +41,7 @@ type HVACTemperature interface {
 	utils.Serializable
 	utils.Copyable
 	// GetTemperatureValue returns TemperatureValue (property field)
+	// TODO: check values from Air Conditioning Application 25.5.1
 	GetTemperatureValue() int16
 	// GetTemperatureInCelcius returns TemperatureInCelcius (virtual field)
 	GetTemperatureInCelcius() float32
@@ -178,12 +179,12 @@ func CastHVACTemperature(structType any) HVACTemperature {
 	return nil
 }
 
-func (m *_HVACTemperature) GetTypeName() string {
+func (m *_HVACTemperature) GetPlx4xTypeName() string {
 	return "HVACTemperature"
 }
 
-func (m *_HVACTemperature) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HVACTemperature) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (temperatureValue)
 	lengthInBits += 16
@@ -193,7 +194,7 @@ func (m *_HVACTemperature) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACTemperature) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HVACTemperature) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -208,7 +209,7 @@ func HVACTemperatureParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
-	v, err := (&_HVACTemperature{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACTemperature)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

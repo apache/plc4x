@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataExtFileStreamInfoReport = (*_ApduDataExtFileStreamInfoReport)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtFileStreamInfoReport)(nil)
 
 // NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
-func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
+func NewApduDataExtFileStreamInfoReport() *_ApduDataExtFileStreamInfoReport {
 	_result := &_ApduDataExtFileStreamInfoReport{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataExtFileStreamInfoReport(structType any) ApduDataExtFileStreamIn
 	return nil
 }
 
-func (m *_ApduDataExtFileStreamInfoReport) GetTypeName() string {
+func (m *_ApduDataExtFileStreamInfoReport) GetPlx4xTypeName() string {
 	return "ApduDataExtFileStreamInfoReport"
 }
 
-func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +61,9 @@ var _ IdentifyReplyCommandLogicalAssignment = (*_IdentifyReplyCommandLogicalAssi
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandLogicalAssignment)(nil)
 
 // NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
-func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
+func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment) *_IdentifyReplyCommandLogicalAssignment {
 	_result := &_IdentifyReplyCommandLogicalAssignment{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		LogicAssigment:               logicAssigment,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
@@ -207,12 +209,12 @@ func CastIdentifyReplyCommandLogicalAssignment(structType any) IdentifyReplyComm
 	return nil
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetTypeName() string {
+func (m *_IdentifyReplyCommandLogicalAssignment) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandLogicalAssignment"
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.LogicAssigment) > 0 {
@@ -225,7 +227,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -240,7 +242,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) parse(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	logicAssigment, err := ReadCountArrayField[LogicAssignment](ctx, "logicAssigment", ReadComplex[LogicAssignment](LogicAssignmentParseWithBuffer, readBuffer), uint64(numBytes))
+	logicAssigment, err := ReadCountArrayField[LogicAssignment](ctx, "logicAssigment", ReadComplex[LogicAssignment](LogicAssignmentParseWithBuffer, readBuffer), uint64(numBytes), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicAssigment' field"))
 	}
@@ -254,7 +256,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) parse(ctx context.Context, read
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -271,7 +273,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandLogicalAssignment")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "logicAssigment", m.GetLogicAssigment(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "logicAssigment", m.GetLogicAssigment(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'logicAssigment' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,16 +53,13 @@ type BACnetServiceAckAuthenticate interface {
 type _BACnetServiceAckAuthenticate struct {
 	BACnetServiceAckContract
 	BytesOfRemovedService []byte
-
-	// Arguments.
-	ServiceAckPayloadLength uint32
 }
 
 var _ BACnetServiceAckAuthenticate = (*_BACnetServiceAckAuthenticate)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAuthenticate)(nil)
 
 // NewBACnetServiceAckAuthenticate factory function for _BACnetServiceAckAuthenticate
-func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckAuthenticate {
+func NewBACnetServiceAckAuthenticate(serviceAckLength uint32, bytesOfRemovedService []byte) *_BACnetServiceAckAuthenticate {
 	_result := &_BACnetServiceAckAuthenticate{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		BytesOfRemovedService:    bytesOfRemovedService,
@@ -83,8 +80,6 @@ type BACnetServiceAckAuthenticateBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckAuthenticateBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetServiceAckAuthenticateBuilder
-	// WithArgServiceAckPayloadLength sets a parser argument
-	WithArgServiceAckPayloadLength(uint32) BACnetServiceAckAuthenticateBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckAuthenticate or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetServiceAckAuthenticateBuilder) WithMandatoryFields(bytesOfRemove
 
 func (b *_BACnetServiceAckAuthenticateBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckAuthenticateBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
-	return b
-}
-
-func (b *_BACnetServiceAckAuthenticateBuilder) WithArgServiceAckPayloadLength(serviceAckPayloadLength uint32) BACnetServiceAckAuthenticateBuilder {
-	b.ServiceAckPayloadLength = serviceAckPayloadLength
 	return b
 }
 
@@ -217,22 +207,22 @@ func CastBACnetServiceAckAuthenticate(structType any) BACnetServiceAckAuthentica
 	return nil
 }
 
-func (m *_BACnetServiceAckAuthenticate) GetTypeName() string {
+func (m *_BACnetServiceAckAuthenticate) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAuthenticate"
 }
 
-func (m *_BACnetServiceAckAuthenticate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckAuthenticate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
-		lengthInBits += 8 * uint16(len(m.BytesOfRemovedService))
+		lengthInBits += 8 * uint64(len(m.BytesOfRemovedService))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckAuthenticate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckAuthenticate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -290,16 +280,6 @@ func (m *_BACnetServiceAckAuthenticate) SerializeWithWriteBuffer(ctx context.Con
 	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetServiceAckAuthenticate) GetServiceAckPayloadLength() uint32 {
-	return m.ServiceAckPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetServiceAckAuthenticate) IsBACnetServiceAckAuthenticate() {}
 
 func (m *_BACnetServiceAckAuthenticate) DeepCopy() any {
@@ -313,7 +293,6 @@ func (m *_BACnetServiceAckAuthenticate) deepCopy() *_BACnetServiceAckAuthenticat
 	_BACnetServiceAckAuthenticateCopy := &_BACnetServiceAckAuthenticate{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
-		m.ServiceAckPayloadLength,
 	}
 	_BACnetServiceAckAuthenticateCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckAuthenticateCopy

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ ApduDataExtAuthorizeResponse = (*_ApduDataExtAuthorizeResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeResponse)(nil)
 
 // NewApduDataExtAuthorizeResponse factory function for _ApduDataExtAuthorizeResponse
-func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
+func NewApduDataExtAuthorizeResponse(level uint8) *_ApduDataExtAuthorizeResponse {
 	_result := &_ApduDataExtAuthorizeResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		Level:               level,
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
@@ -207,12 +207,12 @@ func CastApduDataExtAuthorizeResponse(structType any) ApduDataExtAuthorizeRespon
 	return nil
 }
 
-func (m *_ApduDataExtAuthorizeResponse) GetTypeName() string {
+func (m *_ApduDataExtAuthorizeResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtAuthorizeResponse"
 }
 
-func (m *_ApduDataExtAuthorizeResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtAuthorizeResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -220,7 +220,7 @@ func (m *_ApduDataExtAuthorizeResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_ApduDataExtAuthorizeResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtAuthorizeResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

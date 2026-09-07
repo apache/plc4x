@@ -22,8 +22,8 @@
 
   <name>Open-Protocol</name>
 
-  <protocolName>open-protocol</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>open-protocol</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>MID 0001 Application Communication start</name>

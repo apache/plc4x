@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetServiceAckVTData = (*_BACnetServiceAckVTData)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTData)(nil)
 
 // NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
+func NewBACnetServiceAckVTData(serviceAckLength uint32, vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) *_BACnetServiceAckVTData {
 	if vtSessionIdentifier == nil {
 		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
 	}
@@ -291,12 +291,12 @@ func CastBACnetServiceAckVTData(structType any) BACnetServiceAckVTData {
 	return nil
 }
 
-func (m *_BACnetServiceAckVTData) GetTypeName() string {
+func (m *_BACnetServiceAckVTData) GetPlx4xTypeName() string {
 	return "BACnetServiceAckVTData"
 }
 
-func (m *_BACnetServiceAckVTData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckVTData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (vtSessionIdentifier)
 	lengthInBits += m.VtSessionIdentifier.GetLengthInBits(ctx)
@@ -310,7 +310,7 @@ func (m *_BACnetServiceAckVTData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckVTData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckVTData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

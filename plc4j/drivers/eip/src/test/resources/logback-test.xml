@@ -29,6 +29,10 @@
     </encoder>
   </appender>
 
+  <logger name="org.apache.plc4x.java.eip" level="trace"/>
+  <logger name="org.apache.plc4x.java.utils.testutils" level="debug"/>
+  <logger name="org.apache.plc4x.java.spi.drivers" level="debug"/>
+
   <root level="warn">
     <appender-ref ref="STDOUT" />
   </root>

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,12 +64,12 @@ var _ APDUReject = (*_APDUReject)(nil)
 var _ APDURequirements = (*_APDUReject)(nil)
 
 // NewAPDUReject factory function for _APDUReject
-func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged, apduLength uint16) *_APDUReject {
+func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) *_APDUReject {
 	if rejectReason == nil {
 		panic("rejectReason of type BACnetRejectReasonTagged for APDUReject must not be nil")
 	}
 	_result := &_APDUReject{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
 	}
@@ -242,12 +242,12 @@ func CastAPDUReject(structType any) APDUReject {
 	return nil
 }
 
-func (m *_APDUReject) GetTypeName() string {
+func (m *_APDUReject) GetPlx4xTypeName() string {
 	return "APDUReject"
 }
 
-func (m *_APDUReject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUReject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -261,7 +261,7 @@ func (m *_APDUReject) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUReject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUReject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

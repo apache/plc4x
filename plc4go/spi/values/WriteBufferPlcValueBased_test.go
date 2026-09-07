@@ -87,7 +87,7 @@ func Test_writeBufferPlcValueBased_GetPos(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   uint16
+		want   uint32
 	}{
 		{
 			name: "get it",
@@ -729,7 +729,7 @@ func Test_writeBufferPlcValueBased_WriteSerializable(t *testing.T) {
 		{
 			name: "write it",
 			args: args{
-				ctx:          context.Background(),
+				ctx:          t.Context(),
 				serializable: NewPlcBOOL(true),
 			},
 			wantErr: assert.NoError,

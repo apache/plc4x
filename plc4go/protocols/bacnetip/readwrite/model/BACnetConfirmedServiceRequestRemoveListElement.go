@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetConfirmedServiceRequestRemoveListElement = (*_BACnetConfirmedService
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
 
 // NewBACnetConfirmedServiceRequestRemoveListElement factory function for _BACnetConfirmedServiceRequestRemoveListElement
-func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRemoveListElement {
+func NewBACnetConfirmedServiceRequestRemoveListElement(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData) *_BACnetConfirmedServiceRequestRemoveListElement {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestRemoveListElement must not be nil")
 	}
@@ -312,12 +312,12 @@ func CastBACnetConfirmedServiceRequestRemoveListElement(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestRemoveListElement"
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -338,7 +338,7 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -418,11 +418,11 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) SerializeWithWriteBuff
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "listOfElements", GetRef(m.GetListOfElements()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "listOfElements", new(m.GetListOfElements()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'listOfElements' field")
 		}
 

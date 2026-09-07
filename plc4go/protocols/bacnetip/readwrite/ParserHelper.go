@@ -22,9 +22,8 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -1193,8 +1192,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass, _ := TagClassByName(arguments[1])
 		return ErrorCodeTaggedParseWithBuffer(context.Background(), io, tagNumber, tagClass)
-	case "BacnetConstants":
-		return BacnetConstantsParseWithBuffer(context.Background(), io)
 	case "BACnetPolarityTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

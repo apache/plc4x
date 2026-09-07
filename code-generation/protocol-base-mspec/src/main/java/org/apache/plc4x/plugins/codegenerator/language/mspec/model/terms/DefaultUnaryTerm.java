@@ -49,9 +49,9 @@ public class DefaultUnaryTerm implements UnaryTerm {
     @Override
     public String toString() {
         return "DefaultUnaryTerm{" +
-                "a=" + a +
-                ", operation='" + operation + '\'' +
-                '}';
+            "a=" + a +
+            ", operation='" + operation + '\'' +
+            '}';
     }
 
     @Override

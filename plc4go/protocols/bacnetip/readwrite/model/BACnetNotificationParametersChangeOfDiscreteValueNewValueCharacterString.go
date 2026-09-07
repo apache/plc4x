@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString =
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString)(nil)
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterStringValue BACnetApplicationTagCharacterString, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString {
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterStringValue BACnetApplicationTagCharacterString) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString {
 	if characterStringValue == nil {
 		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag),
 		CharacterStringValue: characterStringValue,
 	}
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStrin
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
 	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStri
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

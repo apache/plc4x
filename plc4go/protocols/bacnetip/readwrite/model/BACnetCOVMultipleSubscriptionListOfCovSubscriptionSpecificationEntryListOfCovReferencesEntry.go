@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -237,12 +237,12 @@ func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLis
 	return nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetTypeName() string {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetPlx4xTypeName() string {
 	return "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (monitoredProperty)
 	lengthInBits += m.MonitoredProperty.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 	return lengthInBits
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +273,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 }
 
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
-	v, err := (&_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +339,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 		return errors.Wrap(err, "Error serializing 'monitoredProperty' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", new(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'covIncrement' field")
 	}
 

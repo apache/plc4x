@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAttemptedSamples = (*_BACnetConstructedDataAttemptedS
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAttemptedSamples)(nil)
 
 // NewBACnetConstructedDataAttemptedSamples factory function for _BACnetConstructedDataAttemptedSamples
-func NewBACnetConstructedDataAttemptedSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, attemptedSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAttemptedSamples {
+func NewBACnetConstructedDataAttemptedSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, attemptedSamples BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAttemptedSamples {
 	if attemptedSamples == nil {
 		panic("attemptedSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAttemptedSamples must not be nil")
 	}
 	_result := &_BACnetConstructedDataAttemptedSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AttemptedSamples:              attemptedSamples,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAttemptedSamples(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataAttemptedSamples) GetTypeName() string {
+func (m *_BACnetConstructedDataAttemptedSamples) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAttemptedSamples"
 }
 
-func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (attemptedSamples)
 	lengthInBits += m.AttemptedSamples.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

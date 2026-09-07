@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersSignedOutOfRange = (*_BACnetNotificationParame
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersSignedOutOfRange)(nil)
 
 // NewBACnetNotificationParametersSignedOutOfRange factory function for _BACnetNotificationParametersSignedOutOfRange
-func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagSignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagSignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersSignedOutOfRange {
+func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagSignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagSignedInteger, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersSignedOutOfRange {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
 	}
 	_result := &_BACnetNotificationParametersSignedOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ExceedingValue:                       exceedingValue,
 		StatusFlags:                          statusFlags,
@@ -386,12 +386,12 @@ func CastBACnetNotificationParametersSignedOutOfRange(structType any) BACnetNoti
 	return nil
 }
 
-func (m *_BACnetNotificationParametersSignedOutOfRange) GetTypeName() string {
+func (m *_BACnetNotificationParametersSignedOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersSignedOutOfRange"
 }
 
-func (m *_BACnetNotificationParametersSignedOutOfRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersSignedOutOfRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -414,7 +414,7 @@ func (m *_BACnetNotificationParametersSignedOutOfRange) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersSignedOutOfRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersSignedOutOfRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

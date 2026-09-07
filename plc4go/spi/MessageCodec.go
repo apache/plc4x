@@ -28,6 +28,7 @@ import (
 type Expectation interface {
 	fmt.Stringer
 	GetContext() context.Context
+	Cancel(cause error)
 	GetCreationTime() time.Time
 	GetExpiration() time.Time
 	GetAcceptsMessage() AcceptsMessage
@@ -46,23 +47,20 @@ type HandleError func(err error) error
 
 // MessageCodec handles sending and retrieving of messages
 type MessageCodec interface {
-	// Deprecated: use ConnectWithContext
-	// Connect connects this codec
-	Connect() error
-	// ConnectWithContext connects this codec with the supplied context
-	ConnectWithContext(ctx context.Context) error
+	// Connect connects this codec with the supplied context
+	Connect(ctx context.Context) error
 	// Disconnect disconnects this codec
 	Disconnect() error
 	// IsRunning returns true if the codec (workers are running)
 	IsRunning() bool
 
 	// Send is sending a given message
-	Send(message Message) error
-	// Expect Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
-	// and is then forwarded to the 'handleMessage' function
-	Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration)
+	Send(ctx context.Context, interactionInfo string, message Message) error
+	// Expect Wait for a given timespan (defined by ctx or defaulting to default receive timeout) for a message to come
+	// in, which returns 'true' for 'acceptMessage' and is then forwarded to the 'handleMessage' function
+	Expect(ctx context.Context, interactionInfo string, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)
 	// SendRequest A combination that sends a message first and then waits for a response. !!!Important note: the callbacks are blocking calls
-	SendRequest(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
+	SendRequest(ctx context.Context, interactionInfo string, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error
 
 	// GetDefaultIncomingMessageChannel gives back the chan where unexpected messages arrive
 	GetDefaultIncomingMessageChannel() chan Message

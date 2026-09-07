@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -175,12 +175,12 @@ func CastProjectInstallationIdentifier(structType any) ProjectInstallationIdenti
 	return nil
 }
 
-func (m *_ProjectInstallationIdentifier) GetTypeName() string {
+func (m *_ProjectInstallationIdentifier) GetPlx4xTypeName() string {
 	return "ProjectInstallationIdentifier"
 }
 
-func (m *_ProjectInstallationIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ProjectInstallationIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (projectNumber)
 	lengthInBits += 8
@@ -191,7 +191,7 @@ func (m *_ProjectInstallationIdentifier) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ProjectInstallationIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ProjectInstallationIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -206,7 +206,7 @@ func ProjectInstallationIdentifierParseWithBufferProducer() func(ctx context.Con
 }
 
 func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
-	v, err := (&_ProjectInstallationIdentifier{}).parse(ctx, readBuffer)
+	v, err := (new(_ProjectInstallationIdentifier)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

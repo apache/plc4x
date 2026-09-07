@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCarMovingDirection = (*_BACnetConstructedDataCarMovin
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarMovingDirection)(nil)
 
 // NewBACnetConstructedDataCarMovingDirection factory function for _BACnetConstructedDataCarMovingDirection
-func NewBACnetConstructedDataCarMovingDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMovingDirection BACnetLiftCarDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMovingDirection {
+func NewBACnetConstructedDataCarMovingDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMovingDirection BACnetLiftCarDirectionTagged) *_BACnetConstructedDataCarMovingDirection {
 	if carMovingDirection == nil {
 		panic("carMovingDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarMovingDirection must not be nil")
 	}
 	_result := &_BACnetConstructedDataCarMovingDirection{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CarMovingDirection:            carMovingDirection,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCarMovingDirection(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) GetTypeName() string {
+func (m *_BACnetConstructedDataCarMovingDirection) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarMovingDirection"
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (carMovingDirection)
 	lengthInBits += m.CarMovingDirection.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -45,16 +45,13 @@ func TestManualOpcuaRead(t *testing.T) {
 	})
 	driverManager.RegisterDriver(opcua.NewDriver(optionsForTesting...))
 	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
-	connectionResult := <-driverManager.GetConnection(connectionString)
-	if err := connectionResult.GetErr(); err != nil {
-		t.Fatal(err)
-	}
-	connection := connectionResult.GetConnection()
+	connection, err := driverManager.GetConnection(t.Context(), connectionString)
+	require.NoError(t, err)
 	defer connection.Close()
 	readRequest, err := connection.ReadRequestBuilder().
 		AddTagAddress("something", "ns=2;i=10846;BOOL").
 		Build()
 	require.NoError(t, err)
-	readRequestResult := <-readRequest.Execute()
+	readRequestResult := <-readRequest.Execute(t.Context())
 	fmt.Printf("%s", readRequestResult.GetResponse())
 }

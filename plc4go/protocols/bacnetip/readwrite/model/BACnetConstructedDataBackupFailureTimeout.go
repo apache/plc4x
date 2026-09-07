@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBackupFailureTimeout = (*_BACnetConstructedDataBackup
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
 
 // NewBACnetConstructedDataBackupFailureTimeout factory function for _BACnetConstructedDataBackupFailureTimeout
-func NewBACnetConstructedDataBackupFailureTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupFailureTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
+func NewBACnetConstructedDataBackupFailureTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupFailureTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
 	if backupFailureTimeout == nil {
 		panic("backupFailureTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupFailureTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataBackupFailureTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BackupFailureTimeout:          backupFailureTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBackupFailureTimeout(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataBackupFailureTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBackupFailureTimeout"
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (backupFailureTimeout)
 	lengthInBits += m.BackupFailureTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

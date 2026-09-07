@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 public class ManualDriverTest {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("ctrlx://192.168.42.100", new PlcUsernamePasswordAuthentication("my-username", "my-password"))) {
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("ctrlx://192.168.42.100", new PlcUsernamePasswordAuthentication("my-username", "my-password"))) {
             CompletableFuture<? extends PlcPingResponse> ping = connection.ping();
             PlcPingResponse plcPingResponse = ping.get();
             System.out.println(plcPingResponse);

@@ -193,6 +193,7 @@ plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_get_first_enum_f
     if (strcmp(value, "T") == 0) {
         return plc4c_s7_read_write_memory_area_TIMERS;
     }
+    return (plc4c_s7_read_write_memory_area) 0;
 }
 
 uint16_t plc4c_s7_read_write_memory_area_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_memory_area* _message) {

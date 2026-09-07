@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ MResetReq = (*_MResetReq)(nil)
 var _ CEMIRequirements = (*_MResetReq)(nil)
 
 // NewMResetReq factory function for _MResetReq
-func NewMResetReq(size uint16) *_MResetReq {
+func NewMResetReq() *_MResetReq {
 	_result := &_MResetReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastMResetReq(structType any) MResetReq {
 	return nil
 }
 
-func (m *_MResetReq) GetTypeName() string {
+func (m *_MResetReq) GetPlx4xTypeName() string {
 	return "MResetReq"
 }
 
-func (m *_MResetReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MResetReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MResetReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MResetReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

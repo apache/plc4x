@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -175,12 +175,12 @@ func CastSequenceHeader(structType any) SequenceHeader {
 	return nil
 }
 
-func (m *_SequenceHeader) GetTypeName() string {
+func (m *_SequenceHeader) GetPlx4xTypeName() string {
 	return "SequenceHeader"
 }
 
-func (m *_SequenceHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SequenceHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (sequenceNumber)
 	lengthInBits += 32
@@ -191,7 +191,7 @@ func (m *_SequenceHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SequenceHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SequenceHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -206,7 +206,7 @@ func SequenceHeaderParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
-	v, err := (&_SequenceHeader{}).parse(ctx, readBuffer)
+	v, err := (new(_SequenceHeader)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

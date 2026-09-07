@@ -16,22 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.profinet.config;
 
-import org.apache.plc4x.java.transport.rawsocket.DefaultRawSocketTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+import org.apache.plc4x.java.transport.rawsocket.config.RawSocketTransportConfiguration;
 
-public class ProfinetRawSocketTransportConfiguration extends DefaultRawSocketTransportConfiguration {
+public class ProfinetRawSocketTransportConfiguration extends RawSocketTransportConfiguration {
 
-    @Override
+    public static final int PROFINET_UDP_PORT = 34964;
+
+    /** UDP port that PROFINET uses for implicit communication. */
     public int getDefaultPort() {
-        return 34964;
-    }
-
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return null;
+        return PROFINET_UDP_PORT;
     }
 
 }

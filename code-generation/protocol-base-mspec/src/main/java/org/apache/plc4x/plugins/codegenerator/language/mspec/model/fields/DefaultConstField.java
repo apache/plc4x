@@ -22,14 +22,16 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class DefaultConstField extends DefaultTypedNamedField implements ConstField {
 
     private final Literal referenceValue;
 
-    public DefaultConstField(Map<String, Term> attributes, String name, Literal referenceValue) {
-        super(attributes, name);
+    public DefaultConstField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, Literal referenceValue, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.referenceValue = Objects.requireNonNull(referenceValue);
     }
 

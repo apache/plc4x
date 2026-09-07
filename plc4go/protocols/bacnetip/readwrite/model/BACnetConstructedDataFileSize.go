@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFileSize = (*_BACnetConstructedDataFileSize)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileSize)(nil)
 
 // NewBACnetConstructedDataFileSize factory function for _BACnetConstructedDataFileSize
-func NewBACnetConstructedDataFileSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileSize {
+func NewBACnetConstructedDataFileSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileSize BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataFileSize {
 	if fileSize == nil {
 		panic("fileSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileSize must not be nil")
 	}
 	_result := &_BACnetConstructedDataFileSize{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FileSize:                      fileSize,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataFileSize(structType any) BACnetConstructedDataFile
 	return nil
 }
 
-func (m *_BACnetConstructedDataFileSize) GetTypeName() string {
+func (m *_BACnetConstructedDataFileSize) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFileSize"
 }
 
-func (m *_BACnetConstructedDataFileSize) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFileSize) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fileSize)
 	lengthInBits += m.FileSize.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFileSize) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFileSize) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFileSize) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,9 +64,9 @@ var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(ni
 var _ FirmataCommandRequirements = (*_FirmataCommandSetDigitalPinValue)(nil)
 
 // NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *_FirmataCommandSetDigitalPinValue {
 	_result := &_FirmataCommandSetDigitalPinValue{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 		Pin:                    pin,
 		On:                     on,
 	}
@@ -224,12 +224,12 @@ func CastFirmataCommandSetDigitalPinValue(structType any) FirmataCommandSetDigit
 	return nil
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) GetTypeName() string {
+func (m *_FirmataCommandSetDigitalPinValue) GetPlx4xTypeName() string {
 	return "FirmataCommandSetDigitalPinValue"
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -243,7 +243,7 @@ func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

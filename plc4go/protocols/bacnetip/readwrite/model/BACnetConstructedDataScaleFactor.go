@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataScaleFactor = (*_BACnetConstructedDataScaleFactor)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScaleFactor)(nil)
 
 // NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
-func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
+func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal) *_BACnetConstructedDataScaleFactor {
 	if scaleFactor == nil {
 		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
 	}
 	_result := &_BACnetConstructedDataScaleFactor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ScaleFactor:                   scaleFactor,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataScaleFactor(structType any) BACnetConstructedDataS
 	return nil
 }
 
-func (m *_BACnetConstructedDataScaleFactor) GetTypeName() string {
+func (m *_BACnetConstructedDataScaleFactor) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScaleFactor"
 }
 
-func (m *_BACnetConstructedDataScaleFactor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataScaleFactor) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (scaleFactor)
 	lengthInBits += m.ScaleFactor.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataScaleFactor) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataScaleFactor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataScaleFactor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

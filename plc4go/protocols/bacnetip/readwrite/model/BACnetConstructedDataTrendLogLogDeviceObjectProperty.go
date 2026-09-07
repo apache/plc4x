@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTrendLogLogDeviceObjectProperty = (*_BACnetConstructe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogLogDeviceObjectProperty)(nil)
 
 // NewBACnetConstructedDataTrendLogLogDeviceObjectProperty factory function for _BACnetConstructedDataTrendLogLogDeviceObjectProperty
-func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logDeviceObjectProperty BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogLogDeviceObjectProperty {
+func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logDeviceObjectProperty BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataTrendLogLogDeviceObjectProperty {
 	if logDeviceObjectProperty == nil {
 		panic("logDeviceObjectProperty of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataTrendLogLogDeviceObjectProperty must not be nil")
 	}
 	_result := &_BACnetConstructedDataTrendLogLogDeviceObjectProperty{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LogDeviceObjectProperty:       logDeviceObjectProperty,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTrendLogLogDeviceObjectProperty(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogLogDeviceObjectProperty"
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (logDeviceObjectProperty)
 	lengthInBits += m.LogDeviceObjectProperty.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBits(
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

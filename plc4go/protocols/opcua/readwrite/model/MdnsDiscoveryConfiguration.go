@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastMdnsDiscoveryConfiguration(structType any) MdnsDiscoveryConfiguration {
 	return nil
 }
 
-func (m *_MdnsDiscoveryConfiguration) GetTypeName() string {
+func (m *_MdnsDiscoveryConfiguration) GetPlx4xTypeName() string {
 	return "MdnsDiscoveryConfiguration"
 }
 
-func (m *_MdnsDiscoveryConfiguration) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_MdnsDiscoveryConfiguration) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (mdnsServerName)
 	lengthInBits += m.MdnsServerName.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_MdnsDiscoveryConfiguration) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_MdnsDiscoveryConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MdnsDiscoveryConfiguration) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_MdnsDiscoveryConfiguration) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	mdnsServerName, err := ReadSimpleField[PascalString](ctx, "mdnsServerName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	mdnsServerName, err := ReadSimpleField[PascalString](ctx, "mdnsServerName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mdnsServerName' field"))
 	}
 	m.MdnsServerName = mdnsServerName
 
-	noOfServerCapabilities, err := ReadImplicitField[int32](ctx, "noOfServerCapabilities", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerCapabilities, err := ReadImplicitField[int32](ctx, "noOfServerCapabilities", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilities' field"))
 	}
 	_ = noOfServerCapabilities
 
-	serverCapabilities, err := ReadCountArrayField[PascalString](ctx, "serverCapabilities", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilities))
+	serverCapabilities, err := ReadCountArrayField[PascalString](ctx, "serverCapabilities", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilities), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCapabilities' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_MdnsDiscoveryConfiguration) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MdnsDiscoveryConfiguration")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "mdnsServerName", m.GetMdnsServerName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "mdnsServerName", m.GetMdnsServerName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'mdnsServerName' field")
 		}
 		noOfServerCapabilities := int32(utils.InlineIf(bool((m.GetServerCapabilities()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerCapabilities()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServerCapabilities", noOfServerCapabilities, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServerCapabilities", noOfServerCapabilities, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerCapabilities' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serverCapabilities", m.GetServerCapabilities(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serverCapabilities", m.GetServerCapabilities(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverCapabilities' field")
 		}
 

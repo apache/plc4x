@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataExtKeyResponse = (*_ApduDataExtKeyResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtKeyResponse)(nil)
 
 // NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
-func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
+func NewApduDataExtKeyResponse() *_ApduDataExtKeyResponse {
 	_result := &_ApduDataExtKeyResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataExtKeyResponse(structType any) ApduDataExtKeyResponse {
 	return nil
 }
 
-func (m *_ApduDataExtKeyResponse) GetTypeName() string {
+func (m *_ApduDataExtKeyResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtKeyResponse"
 }
 
-func (m *_ApduDataExtKeyResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtKeyResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtKeyResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtKeyResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -56,7 +56,7 @@ plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message_null() {
 
 // Constant values.
 static const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID_const = 0x32;
-uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
+const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
   return PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID_const;
 }
 
@@ -64,6 +64,15 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
 plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
+
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_message));
@@ -186,7 +195,7 @@ if( messageType == 0x07 ) { /* S7MessageUserData */
 
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_payload* payload = NULL;
-  if((payloadLength) > (0)) {
+  if(((payloadLength) > (0)) && ((parameter) != (NULL))) {
     _res = plc4c_s7_read_write_s7_payload_parse(ctx, readBuffer, messageType, parameter, &payload);
     if(_res != OK) {
       return _res;

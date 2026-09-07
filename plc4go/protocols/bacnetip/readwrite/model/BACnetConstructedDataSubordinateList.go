@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataSubordinateList interface {
 	// GetSubordinateList returns SubordinateList (property field)
 	GetSubordinateList() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateList()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataSubordinateList = (*_BACnetConstructedDataSubordinate
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateList)(nil)
 
 // NewBACnetConstructedDataSubordinateList factory function for _BACnetConstructedDataSubordinateList
-func NewBACnetConstructedDataSubordinateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateList []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateList {
+func NewBACnetConstructedDataSubordinateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateList []BACnetDeviceObjectReference) *_BACnetConstructedDataSubordinateList {
 	_result := &_BACnetConstructedDataSubordinateList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SubordinateList:               subordinateList,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataSubordinateList(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataSubordinateList) GetTypeName() string {
+func (m *_BACnetConstructedDataSubordinateList) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSubordinateList"
 }
 
-func (m *_BACnetConstructedDataSubordinateList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSubordinateList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataSubordinateList) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSubordinateList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSubordinateList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataSubordinateList) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

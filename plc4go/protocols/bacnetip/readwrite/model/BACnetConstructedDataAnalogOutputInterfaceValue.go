@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAnalogOutputInterfaceValue = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogOutputInterfaceValue)(nil)
 
 // NewBACnetConstructedDataAnalogOutputInterfaceValue factory function for _BACnetConstructedDataAnalogOutputInterfaceValue
-func NewBACnetConstructedDataAnalogOutputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalREAL, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputInterfaceValue {
+func NewBACnetConstructedDataAnalogOutputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalREAL) *_BACnetConstructedDataAnalogOutputInterfaceValue {
 	if interfaceValue == nil {
 		panic("interfaceValue of type BACnetOptionalREAL for BACnetConstructedDataAnalogOutputInterfaceValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAnalogOutputInterfaceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InterfaceValue:                interfaceValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAnalogOutputInterfaceValue(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogOutputInterfaceValue"
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (interfaceValue)
 	lengthInBits += m.InterfaceValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

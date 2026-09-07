@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -175,12 +175,12 @@ func CastDIBSuppSvcFamilies(structType any) DIBSuppSvcFamilies {
 	return nil
 }
 
-func (m *_DIBSuppSvcFamilies) GetTypeName() string {
+func (m *_DIBSuppSvcFamilies) GetPlx4xTypeName() string {
 	return "DIBSuppSvcFamilies"
 }
 
-func (m *_DIBSuppSvcFamilies) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DIBSuppSvcFamilies) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
@@ -198,7 +198,7 @@ func (m *_DIBSuppSvcFamilies) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DIBSuppSvcFamilies) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DIBSuppSvcFamilies) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -213,7 +213,7 @@ func DIBSuppSvcFamiliesParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
-	v, err := (&_DIBSuppSvcFamilies{}).parse(ctx, readBuffer)
+	v, err := (new(_DIBSuppSvcFamilies)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

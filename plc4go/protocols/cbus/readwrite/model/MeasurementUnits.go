@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -334,11 +334,11 @@ func CastMeasurementUnits(structType any) MeasurementUnits {
 	return castFunc(structType)
 }
 
-func (m MeasurementUnits) GetLengthInBits(ctx context.Context) uint16 {
+func (m MeasurementUnits) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m MeasurementUnits) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MeasurementUnits) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

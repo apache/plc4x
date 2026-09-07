@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -66,9 +68,9 @@ var _ IdentifyReplyCommandNetworkVoltage = (*_IdentifyReplyCommandNetworkVoltage
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkVoltage)(nil)
 
 // NewIdentifyReplyCommandNetworkVoltage factory function for _IdentifyReplyCommandNetworkVoltage
-func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string, numBytes uint8) *_IdentifyReplyCommandNetworkVoltage {
+func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string) *_IdentifyReplyCommandNetworkVoltage {
 	_result := &_IdentifyReplyCommandNetworkVoltage{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		Volts:                        volts,
 		VoltsDecimalPlace:            voltsDecimalPlace,
 	}
@@ -243,12 +245,12 @@ func CastIdentifyReplyCommandNetworkVoltage(structType any) IdentifyReplyCommand
 	return nil
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetTypeName() string {
+func (m *_IdentifyReplyCommandNetworkVoltage) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandNetworkVoltage"
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (volts)
 	lengthInBits += 16
@@ -265,7 +267,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -280,25 +282,25 @@ func (m *_IdentifyReplyCommandNetworkVoltage) parse(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	volts, err := ReadSimpleField(ctx, "volts", ReadString(readBuffer, uint32(16)))
+	volts, err := ReadSimpleField(ctx, "volts", ReadString(readBuffer, uint32(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'volts' field"))
 	}
 	m.Volts = volts
 
-	dot, err := ReadConstField[byte](ctx, "dot", ReadByte(readBuffer, 8), IdentifyReplyCommandNetworkVoltage_DOT)
+	dot, err := ReadConstField[byte](ctx, "dot", ReadByte(readBuffer, 8), IdentifyReplyCommandNetworkVoltage_DOT, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dot' field"))
 	}
 	_ = dot
 
-	voltsDecimalPlace, err := ReadSimpleField(ctx, "voltsDecimalPlace", ReadString(readBuffer, uint32(16)))
+	voltsDecimalPlace, err := ReadSimpleField(ctx, "voltsDecimalPlace", ReadString(readBuffer, uint32(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'voltsDecimalPlace' field"))
 	}
 	m.VoltsDecimalPlace = voltsDecimalPlace
 
-	v, err := ReadConstField[byte](ctx, "v", ReadByte(readBuffer, 8), IdentifyReplyCommandNetworkVoltage_V)
+	v, err := ReadConstField[byte](ctx, "v", ReadByte(readBuffer, 8), IdentifyReplyCommandNetworkVoltage_V, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'v' field"))
 	}
@@ -312,7 +314,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) parse(ctx context.Context, readBuf
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -329,19 +331,19 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandNetworkVoltage")
 		}
 
-		if err := WriteSimpleField[string](ctx, "volts", m.GetVolts(), WriteString(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[string](ctx, "volts", m.GetVolts(), WriteString(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'volts' field")
 		}
 
-		if err := WriteConstField(ctx, "dot", IdentifyReplyCommandNetworkVoltage_DOT, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "dot", IdentifyReplyCommandNetworkVoltage_DOT, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'dot' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "voltsDecimalPlace", m.GetVoltsDecimalPlace(), WriteString(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[string](ctx, "voltsDecimalPlace", m.GetVoltsDecimalPlace(), WriteString(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'voltsDecimalPlace' field")
 		}
 
-		if err := WriteConstField(ctx, "v", IdentifyReplyCommandNetworkVoltage_V, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "v", IdentifyReplyCommandNetworkVoltage_V, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'v' field")
 		}
 

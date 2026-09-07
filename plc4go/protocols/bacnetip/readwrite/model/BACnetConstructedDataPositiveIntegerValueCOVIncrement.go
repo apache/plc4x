@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPositiveIntegerValueCOVIncrement = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
 
 // NewBACnetConstructedDataPositiveIntegerValueCOVIncrement factory function for _BACnetConstructedDataPositiveIntegerValueCOVIncrement
-func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
 	if covIncrement == nil {
 		panic("covIncrement of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueCOVIncrement must not be nil")
 	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CovIncrement:                  covIncrement,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPositiveIntegerValueCOVIncrement(structType any) B
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueCOVIncrement"
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (covIncrement)
 	lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

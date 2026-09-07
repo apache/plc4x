@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLargeAnalogValueMinPresValue = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueMinPresValue)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueMinPresValue factory function for _BACnetConstructedDataLargeAnalogValueMinPresValue
-func NewBACnetConstructedDataLargeAnalogValueMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueMinPresValue {
+func NewBACnetConstructedDataLargeAnalogValueMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagDouble) *_BACnetConstructedDataLargeAnalogValueMinPresValue {
 	if minPresValue == nil {
 		panic("minPresValue of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueMinPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataLargeAnalogValueMinPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinPresValue:                  minPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLargeAnalogValueMinPresValue(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueMinPresValue"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minPresValue)
 	lengthInBits += m.MinPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

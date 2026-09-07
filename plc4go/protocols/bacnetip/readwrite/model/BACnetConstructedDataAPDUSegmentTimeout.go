@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAPDUSegmentTimeout = (*_BACnetConstructedDataAPDUSegm
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDUSegmentTimeout)(nil)
 
 // NewBACnetConstructedDataAPDUSegmentTimeout factory function for _BACnetConstructedDataAPDUSegmentTimeout
-func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
+func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
 	if apduSegmentTimeout == nil {
 		panic("apduSegmentTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUSegmentTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataAPDUSegmentTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ApduSegmentTimeout:            apduSegmentTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAPDUSegmentTimeout(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAPDUSegmentTimeout"
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (apduSegmentTimeout)
 	lengthInBits += m.ApduSegmentTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

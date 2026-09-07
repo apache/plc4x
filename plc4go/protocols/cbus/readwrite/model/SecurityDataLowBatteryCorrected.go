@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastSecurityDataLowBatteryCorrected(structType any) SecurityDataLowBatteryC
 	return nil
 }
 
-func (m *_SecurityDataLowBatteryCorrected) GetTypeName() string {
+func (m *_SecurityDataLowBatteryCorrected) GetPlx4xTypeName() string {
 	return "SecurityDataLowBatteryCorrected"
 }
 
-func (m *_SecurityDataLowBatteryCorrected) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataLowBatteryCorrected) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataLowBatteryCorrected) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataLowBatteryCorrected) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

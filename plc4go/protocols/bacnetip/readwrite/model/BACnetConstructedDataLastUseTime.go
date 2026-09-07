@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastUseTime = (*_BACnetConstructedDataLastUseTime)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastUseTime)(nil)
 
 // NewBACnetConstructedDataLastUseTime factory function for _BACnetConstructedDataLastUseTime
-func NewBACnetConstructedDataLastUseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastUseTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastUseTime {
+func NewBACnetConstructedDataLastUseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastUseTime BACnetDateTime) *_BACnetConstructedDataLastUseTime {
 	if lastUseTime == nil {
 		panic("lastUseTime of type BACnetDateTime for BACnetConstructedDataLastUseTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastUseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastUseTime:                   lastUseTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLastUseTime(structType any) BACnetConstructedDataL
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastUseTime) GetTypeName() string {
+func (m *_BACnetConstructedDataLastUseTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastUseTime"
 }
 
-func (m *_BACnetConstructedDataLastUseTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLastUseTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastUseTime)
 	lengthInBits += m.LastUseTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLastUseTime) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastUseTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLastUseTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

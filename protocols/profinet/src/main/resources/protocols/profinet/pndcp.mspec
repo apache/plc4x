@@ -26,7 +26,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Page 90
-[discriminatedType PnDcp_Pdu byteOrder='BIG_ENDIAN'
+[discriminatedType PnDcp_Pdu byteOrder='"BIG_ENDIAN"'
     [simple        uint 16           frameIdValue                      ]
     [virtual       PnDcp_FrameId     frameId       'STATIC_CALL("getFrameId", frameIdValue)']
     [typeSwitch frameId
@@ -134,7 +134,7 @@
     ]
 ]
 
-[discriminatedType PnDcp_Pdu_IdentifyRes_Payload byteOrder='BIG_ENDIAN'
+[discriminatedType PnDcp_Pdu_IdentifyRes_Payload byteOrder='"BIG_ENDIAN"'
     [discriminator PnDcp_ServiceId   serviceId                         ]
     [simple        PnDcp_ServiceType serviceType                       ]
     // 4.3.1.3.3 (Page 95)
@@ -183,7 +183,7 @@
     ]
 ]
 
-[discriminatedType PnDcp_Block byteOrder='BIG_ENDIAN'
+[discriminatedType PnDcp_Block byteOrder='"BIG_ENDIAN"'
     [discriminator PnDcp_BlockOptions option                   ]
     [discriminator uint 8       suboption                      ]
     [implicit      uint 16      blockLength 'lengthInBytes - 4']
@@ -341,7 +341,7 @@
    ]
 ]
 
-[type PnDcp_SupportedDeviceOption byteOrder='BIG_ENDIAN'
+[type PnDcp_SupportedDeviceOption byteOrder='"BIG_ENDIAN"'
     [simple   PnDcp_BlockOptions option]
     [simple   uint 8       suboption   ]
 ]
@@ -350,7 +350,7 @@
 // 4.3.1.3.2 (Page 94ff)
 // The spec lists meanings for request and response separately, but
 // they are actually mergeable, which we did in this construct.
-[type PnDcp_ServiceType byteOrder='BIG_ENDIAN'
+[type PnDcp_ServiceType byteOrder='"BIG_ENDIAN"'
     [reserved uint 5 '0x00'      ]
     [simple   bit    notSupported]
     [reserved uint 1 '0x00'      ]

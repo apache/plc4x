@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -205,12 +205,12 @@ func CastBACnetReadAccessResult(structType any) BACnetReadAccessResult {
 	return nil
 }
 
-func (m *_BACnetReadAccessResult) GetTypeName() string {
+func (m *_BACnetReadAccessResult) GetPlx4xTypeName() string {
 	return "BACnetReadAccessResult"
 }
 
-func (m *_BACnetReadAccessResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetReadAccessResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetReadAccessResult) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetReadAccessResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -238,7 +238,7 @@ func BACnetReadAccessResultParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
-	v, err := (&_BACnetReadAccessResult{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetReadAccessResult)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", GetRef(m.GetListOfResults()), WriteComplex[BACnetReadAccessResultListOfResults](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", new(m.GetListOfResults()), WriteComplex[BACnetReadAccessResultListOfResults](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'listOfResults' field")
 	}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
 var _ NLMRequirements = (*_NLMVendorProprietaryMessage)(nil)
 
 // NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
-func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
+func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte) *_NLMVendorProprietaryMessage {
 	_result := &_NLMVendorProprietaryMessage{
-		NLMContract:        NewNLM(apduLength),
+		NLMContract:        NewNLM(),
 		VendorId:           vendorId,
 		ProprietaryMessage: proprietaryMessage,
 	}
@@ -222,25 +222,25 @@ func CastNLMVendorProprietaryMessage(structType any) NLMVendorProprietaryMessage
 	return nil
 }
 
-func (m *_NLMVendorProprietaryMessage) GetTypeName() string {
+func (m *_NLMVendorProprietaryMessage) GetPlx4xTypeName() string {
 	return "NLMVendorProprietaryMessage"
 }
 
-func (m *_NLMVendorProprietaryMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMVendorProprietaryMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.ProprietaryMessage) > 0 {
-		lengthInBits += 8 * uint16(len(m.ProprietaryMessage))
+		lengthInBits += 8 * uint64(len(m.ProprietaryMessage))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMVendorProprietaryMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMVendorProprietaryMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

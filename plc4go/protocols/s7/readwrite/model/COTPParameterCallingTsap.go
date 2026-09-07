@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ COTPParameterCallingTsap = (*_COTPParameterCallingTsap)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterCallingTsap)(nil)
 
 // NewCOTPParameterCallingTsap factory function for _COTPParameterCallingTsap
-func NewCOTPParameterCallingTsap(tsapId uint16, rest uint8) *_COTPParameterCallingTsap {
+func NewCOTPParameterCallingTsap(tsapId uint16) *_COTPParameterCallingTsap {
 	_result := &_COTPParameterCallingTsap{
-		COTPParameterContract: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(),
 		TsapId:                tsapId,
 	}
 	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
@@ -207,12 +207,12 @@ func CastCOTPParameterCallingTsap(structType any) COTPParameterCallingTsap {
 	return nil
 }
 
-func (m *_COTPParameterCallingTsap) GetTypeName() string {
+func (m *_COTPParameterCallingTsap) GetPlx4xTypeName() string {
 	return "COTPParameterCallingTsap"
 }
 
-func (m *_COTPParameterCallingTsap) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+func (m *_COTPParameterCallingTsap) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -220,7 +220,7 @@ func (m *_COTPParameterCallingTsap) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_COTPParameterCallingTsap) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameterCallingTsap) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

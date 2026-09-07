@@ -34,7 +34,7 @@
 
 
 // Constant values.
-uint8_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_OBJECT_PUSH_TYPE_VARIABLE_SPEC();
+const uint8_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_OBJECT_PUSH_TYPE_VARIABLE_SPEC();
 
 struct plc4c_s7_read_write_alarm_message_object_push_type {
   /* Properties */

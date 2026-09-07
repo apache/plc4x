@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetConfirmedServiceRequestVTData = (*_BACnetConfirmedServiceRequestVTDa
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTData)(nil)
 
 // NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
-func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
+func NewBACnetConfirmedServiceRequestVTData(serviceRequestLength uint32, vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) *_BACnetConfirmedServiceRequestVTData {
 	if vtSessionIdentifier == nil {
 		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
 	}
@@ -291,12 +291,12 @@ func CastBACnetConfirmedServiceRequestVTData(structType any) BACnetConfirmedServ
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestVTData) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestVTData"
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (vtSessionIdentifier)
 	lengthInBits += m.VtSessionIdentifier.GetLengthInBits(ctx)
@@ -310,7 +310,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

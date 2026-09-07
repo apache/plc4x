@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastAddNodesResult(structType any) AddNodesResult {
 	return nil
 }
 
-func (m *_AddNodesResult) GetTypeName() string {
+func (m *_AddNodesResult) GetPlx4xTypeName() string {
 	return "AddNodesResult"
 }
 
-func (m *_AddNodesResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AddNodesResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_AddNodesResult) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AddNodesResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AddNodesResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_AddNodesResult) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 	m.StatusCode = statusCode
 
-	addedNodeId, err := ReadSimpleField[NodeId](ctx, "addedNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	addedNodeId, err := ReadSimpleField[NodeId](ctx, "addedNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addedNodeId' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_AddNodesResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for AddNodesResult")
 		}
 
-		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "addedNodeId", m.GetAddedNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "addedNodeId", m.GetAddedNodeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'addedNodeId' field")
 		}
 

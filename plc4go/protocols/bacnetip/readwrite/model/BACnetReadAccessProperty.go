@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,19 +57,16 @@ type _BACnetReadAccessProperty struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	ReadResult         BACnetReadAccessPropertyReadResult
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ BACnetReadAccessProperty = (*_BACnetReadAccessProperty)(nil)
 
 // NewBACnetReadAccessProperty factory function for _BACnetReadAccessProperty
-func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *_BACnetReadAccessProperty {
+func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult) *_BACnetReadAccessProperty {
 	if propertyIdentifier == nil {
 		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetReadAccessProperty must not be nil")
 	}
-	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
+	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +91,6 @@ type BACnetReadAccessPropertyBuilder interface {
 	WithOptionalReadResult(BACnetReadAccessPropertyReadResult) BACnetReadAccessPropertyBuilder
 	// WithOptionalReadResultBuilder adds ReadResult (property field) which is build by the builder
 	WithOptionalReadResultBuilder(func(BACnetReadAccessPropertyReadResultBuilder) BACnetReadAccessPropertyReadResultBuilder) BACnetReadAccessPropertyBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetReadAccessPropertyBuilder
 	// Build builds the BACnetReadAccessProperty or returns an error if something is wrong
 	Build() (BACnetReadAccessProperty, error)
 	// MustBuild does the same as Build but panics on error
@@ -161,11 +156,6 @@ func (b *_BACnetReadAccessPropertyBuilder) WithOptionalReadResultBuilder(builder
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetReadAccessPropertyReadResultBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetReadAccessPropertyBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetReadAccessPropertyBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -241,12 +231,12 @@ func CastBACnetReadAccessProperty(structType any) BACnetReadAccessProperty {
 	return nil
 }
 
-func (m *_BACnetReadAccessProperty) GetTypeName() string {
+func (m *_BACnetReadAccessProperty) GetPlx4xTypeName() string {
 	return "BACnetReadAccessProperty"
 }
 
-func (m *_BACnetReadAccessProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetReadAccessProperty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (propertyIdentifier)
 	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
@@ -264,7 +254,7 @@ func (m *_BACnetReadAccessProperty) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetReadAccessProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,7 +269,7 @@ func BACnetReadAccessPropertyParseWithBufferProducer(objectTypeArgument BACnetOb
 }
 
 func BACnetReadAccessPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
-	v, err := (&_BACnetReadAccessProperty{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := (new(_BACnetReadAccessProperty)).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -349,11 +339,11 @@ func (m *_BACnetReadAccessProperty) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
-	if err := WriteOptionalField[BACnetReadAccessPropertyReadResult](ctx, "readResult", GetRef(m.GetReadResult()), WriteComplex[BACnetReadAccessPropertyReadResult](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetReadAccessPropertyReadResult](ctx, "readResult", new(m.GetReadResult()), WriteComplex[BACnetReadAccessPropertyReadResult](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'readResult' field")
 	}
 
@@ -362,16 +352,6 @@ func (m *_BACnetReadAccessProperty) SerializeWithWriteBuffer(ctx context.Context
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetReadAccessProperty) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
 
 func (m *_BACnetReadAccessProperty) IsBACnetReadAccessProperty() {}
 
@@ -387,7 +367,6 @@ func (m *_BACnetReadAccessProperty) deepCopy() *_BACnetReadAccessProperty {
 		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
 		utils.DeepCopy[BACnetReadAccessPropertyReadResult](m.ReadResult),
-		m.ObjectTypeArgument,
 	}
 	return _BACnetReadAccessPropertyCopy
 }

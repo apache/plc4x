@@ -17,23 +17,23 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.1.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
-  <artifactId>plc4j-opm</artifactId>
+  <artifactId>plc4j-tools-opm</artifactId>
 
   <name>PLC4J: Tools: Object PLC Mapping</name>
   <description>Layer on top of Plc4X that enables mapping between Objects and PLCs.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
 
     <!-- Utils -->
@@ -61,29 +61,22 @@
     <!--Testing-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-mock</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-          </usedDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

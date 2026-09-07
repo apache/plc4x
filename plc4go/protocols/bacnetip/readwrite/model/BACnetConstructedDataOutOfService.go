@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOutOfService = (*_BACnetConstructedDataOutOfService)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutOfService)(nil)
 
 // NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
-func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
+func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean) *_BACnetConstructedDataOutOfService {
 	if outOfService == nil {
 		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
 	}
 	_result := &_BACnetConstructedDataOutOfService{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OutOfService:                  outOfService,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataOutOfService(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataOutOfService) GetTypeName() string {
+func (m *_BACnetConstructedDataOutOfService) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOutOfService"
 }
 
-func (m *_BACnetConstructedDataOutOfService) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOutOfService) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (outOfService)
 	lengthInBits += m.OutOfService.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOutOfService) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOutOfService) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOutOfService) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

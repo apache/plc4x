@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccumulatorLowLimit = (*_BACnetConstructedDataAccumul
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorLowLimit)(nil)
 
 // NewBACnetConstructedDataAccumulatorLowLimit factory function for _BACnetConstructedDataAccumulatorLowLimit
-func NewBACnetConstructedDataAccumulatorLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorLowLimit {
+func NewBACnetConstructedDataAccumulatorLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccumulatorLowLimit {
 	if lowLimit == nil {
 		panic("lowLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorLowLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccumulatorLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LowLimit:                      lowLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccumulatorLowLimit(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorLowLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorLowLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorLowLimit"
 }
 
-func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lowLimit)
 	lengthInBits += m.LowLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

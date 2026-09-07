@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetChannelValueCharacterString(structType any) BACnetChannelValueCha
 	return nil
 }
 
-func (m *_BACnetChannelValueCharacterString) GetTypeName() string {
+func (m *_BACnetChannelValueCharacterString) GetPlx4xTypeName() string {
 	return "BACnetChannelValueCharacterString"
 }
 
-func (m *_BACnetChannelValueCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
+func (m *_BACnetChannelValueCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
 	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetChannelValueCharacterString) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetChannelValueCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

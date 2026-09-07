@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataSubordinateNodeTypes interface {
 	// GetSubordinateNodeTypes returns SubordinateNodeTypes (property field)
 	GetSubordinateNodeTypes() []BACnetNodeTypeTagged
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateNodeTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateNodeTypes()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataSubordinateNodeTypes = (*_BACnetConstructedDataSubord
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateNodeTypes)(nil)
 
 // NewBACnetConstructedDataSubordinateNodeTypes factory function for _BACnetConstructedDataSubordinateNodeTypes
-func NewBACnetConstructedDataSubordinateNodeTypes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateNodeTypes []BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateNodeTypes {
+func NewBACnetConstructedDataSubordinateNodeTypes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateNodeTypes []BACnetNodeTypeTagged) *_BACnetConstructedDataSubordinateNodeTypes {
 	_result := &_BACnetConstructedDataSubordinateNodeTypes{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SubordinateNodeTypes:          subordinateNodeTypes,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataSubordinateNodeTypes(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypes) GetTypeName() string {
+func (m *_BACnetConstructedDataSubordinateNodeTypes) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSubordinateNodeTypes"
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSubordinateNodeTypes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataSubordinateNodeTypes) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSubordinateNodeTypes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataSubordinateNodeTypes) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaximumValueTimestamp = (*_BACnetConstructedDataMaxim
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumValueTimestamp)(nil)
 
 // NewBACnetConstructedDataMaximumValueTimestamp factory function for _BACnetConstructedDataMaximumValueTimestamp
-func NewBACnetConstructedDataMaximumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
+func NewBACnetConstructedDataMaximumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValueTimestamp BACnetDateTime) *_BACnetConstructedDataMaximumValueTimestamp {
 	if maximumValueTimestamp == nil {
 		panic("maximumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMaximumValueTimestamp must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaximumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaximumValueTimestamp:         maximumValueTimestamp,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMaximumValueTimestamp(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestamp) GetTypeName() string {
+func (m *_BACnetConstructedDataMaximumValueTimestamp) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaximumValueTimestamp"
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestamp) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMaximumValueTimestamp) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maximumValueTimestamp)
 	lengthInBits += m.MaximumValueTimestamp.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestamp) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMaximumValueTimestamp) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

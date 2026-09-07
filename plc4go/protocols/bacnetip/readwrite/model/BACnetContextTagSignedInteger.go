@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,7 +44,7 @@ type BACnetContextTagSignedInteger interface {
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
-	GetActualValue() uint64
+	GetActualValue() int64
 	// IsBACnetContextTagSignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagSignedInteger()
 	// CreateBuilder creates a BACnetContextTagSignedIntegerBuilder
@@ -61,12 +61,12 @@ var _ BACnetContextTagSignedInteger = (*_BACnetContextTagSignedInteger)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagSignedInteger)(nil)
 
 // NewBACnetContextTagSignedInteger factory function for _BACnetContextTagSignedInteger
-func NewBACnetContextTagSignedInteger(header BACnetTagHeader, payload BACnetTagPayloadSignedInteger, tagNumberArgument uint8) *_BACnetContextTagSignedInteger {
+func NewBACnetContextTagSignedInteger(header BACnetTagHeader, payload BACnetTagPayloadSignedInteger) *_BACnetContextTagSignedInteger {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadSignedInteger for BACnetContextTagSignedInteger must not be nil")
 	}
 	_result := &_BACnetContextTagSignedInteger{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
@@ -220,10 +220,10 @@ func (m *_BACnetContextTagSignedInteger) GetPayload() BACnetTagPayloadSignedInte
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetContextTagSignedInteger) GetActualValue() uint64 {
+func (m *_BACnetContextTagSignedInteger) GetActualValue() int64 {
 	ctx := context.Background()
 	_ = ctx
-	return uint64(m.GetPayload().GetActualValue())
+	return int64(m.GetPayload().GetActualValue())
 }
 
 ///////////////////////
@@ -242,12 +242,12 @@ func CastBACnetContextTagSignedInteger(structType any) BACnetContextTagSignedInt
 	return nil
 }
 
-func (m *_BACnetContextTagSignedInteger) GetTypeName() string {
+func (m *_BACnetContextTagSignedInteger) GetPlx4xTypeName() string {
 	return "BACnetContextTagSignedInteger"
 }
 
-func (m *_BACnetContextTagSignedInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagSignedInteger) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_BACnetContextTagSignedInteger) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagSignedInteger) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagSignedInteger) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -278,7 +278,7 @@ func (m *_BACnetContextTagSignedInteger) parse(ctx context.Context, readBuffer u
 	}
 	m.Payload = payload
 
-	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), payload.GetActualValue())
+	actualValue, err := ReadVirtualField[int64](ctx, "actualValue", (*int64)(nil), payload.GetActualValue())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}

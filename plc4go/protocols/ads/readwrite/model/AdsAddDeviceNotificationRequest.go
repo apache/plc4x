@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,16 +42,23 @@ type AdsAddDeviceNotificationRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
+	// 4 bytes	Index Group of the data, which should be sent per notification.
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
+	// 4 bytes	Index Offset of the data, which should be sent per notification.
 	GetIndexOffset() uint32
 	// GetLength returns Length (property field)
+	// 4 bytes	Index Offset of the data, which should be sent per notification.
+	// 4 bytes	Length of data in bytes, which should be sent per notification.
 	GetLength() uint32
 	// GetTransmissionMode returns TransmissionMode (property field)
+	// 4 bytes	The type of subscription.
 	GetTransmissionMode() AdsTransMode
 	// GetMaxDelayInMs returns MaxDelayInMs (property field)
+	// 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
 	GetMaxDelayInMs() uint32
 	// GetCycleTimeInMs returns CycleTimeInMs (property field)
+	// 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
 	GetCycleTimeInMs() uint32
 	// IsAdsAddDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsAddDeviceNotificationRequest()
@@ -77,7 +84,7 @@ var _ AdsAddDeviceNotificationRequest = (*_AdsAddDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationRequest)(nil)
 
 // NewAdsAddDeviceNotificationRequest factory function for _AdsAddDeviceNotificationRequest
-func NewAdsAddDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) *_AdsAddDeviceNotificationRequest {
+func NewAdsAddDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) *_AdsAddDeviceNotificationRequest {
 	_result := &_AdsAddDeviceNotificationRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		IndexGroup:        indexGroup,
@@ -289,12 +296,12 @@ func CastAdsAddDeviceNotificationRequest(structType any) AdsAddDeviceNotificatio
 	return nil
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetTypeName() string {
+func (m *_AdsAddDeviceNotificationRequest) GetPlx4xTypeName() string {
 	return "AdsAddDeviceNotificationRequest"
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsAddDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -323,7 +330,7 @@ func (m *_AdsAddDeviceNotificationRequest) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsAddDeviceNotificationRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

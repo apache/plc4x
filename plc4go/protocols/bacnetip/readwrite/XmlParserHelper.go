@@ -24,9 +24,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -1352,8 +1351,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return ErrorCodeTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "BacnetConstants":
-		return BacnetConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPolarityTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -100,11 +100,11 @@ func CastBACnetLiftCarDoorCommand(structType any) BACnetLiftCarDoorCommand {
 	return castFunc(structType)
 }
 
-func (m BACnetLiftCarDoorCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLiftCarDoorCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetLiftCarDoorCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLiftCarDoorCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataExecutionDelay interface {
 	// GetExecutionDelay returns ExecutionDelay (property field)
 	GetExecutionDelay() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataExecutionDelay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataExecutionDelay()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataExecutionDelay = (*_BACnetConstructedDataExecutionDel
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExecutionDelay)(nil)
 
 // NewBACnetConstructedDataExecutionDelay factory function for _BACnetConstructedDataExecutionDelay
-func NewBACnetConstructedDataExecutionDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, executionDelay []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExecutionDelay {
+func NewBACnetConstructedDataExecutionDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, executionDelay []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataExecutionDelay {
 	_result := &_BACnetConstructedDataExecutionDelay{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		ExecutionDelay:                executionDelay,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataExecutionDelay(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataExecutionDelay) GetTypeName() string {
+func (m *_BACnetConstructedDataExecutionDelay) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExecutionDelay"
 }
 
-func (m *_BACnetConstructedDataExecutionDelay) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataExecutionDelay) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataExecutionDelay) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataExecutionDelay) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataExecutionDelay) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataExecutionDelay) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

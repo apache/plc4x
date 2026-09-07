@@ -22,8 +22,8 @@
 
   <name>KNXNet/IP</name>
 
-  <protocolName>knxnetip</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>knxnetip</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <!--testcase>
     <name>Causes Failure 1</name>

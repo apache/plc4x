@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -224,19 +225,19 @@ func CastReadAtTimeDetails(structType any) ReadAtTimeDetails {
 	return nil
 }
 
-func (m *_ReadAtTimeDetails) GetTypeName() string {
+func (m *_ReadAtTimeDetails) GetPlx4xTypeName() string {
 	return "ReadAtTimeDetails"
 }
 
-func (m *_ReadAtTimeDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadAtTimeDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfReqTimes)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.ReqTimes) > 0 {
-		lengthInBits += 64 * uint16(len(m.ReqTimes))
+		lengthInBits += 64 * uint64(len(m.ReqTimes))
 	}
 
 	// Reserved Field (reserved)
@@ -248,7 +249,7 @@ func (m *_ReadAtTimeDetails) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReadAtTimeDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadAtTimeDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -263,25 +264,25 @@ func (m *_ReadAtTimeDetails) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfReqTimes, err := ReadImplicitField[int32](ctx, "noOfReqTimes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReqTimes, err := ReadImplicitField[int32](ctx, "noOfReqTimes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReqTimes' field"))
 	}
 	_ = noOfReqTimes
 
-	reqTimes, err := ReadCountArrayField[int64](ctx, "reqTimes", ReadSignedLong(readBuffer, uint8(64)), uint64(noOfReqTimes))
+	reqTimes, err := ReadCountArrayField[int64](ctx, "reqTimes", ReadSignedLong(readBuffer, uint8(64)), uint64(noOfReqTimes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reqTimes' field"))
 	}
 	m.ReqTimes = reqTimes
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	useSimpleBounds, err := ReadSimpleField(ctx, "useSimpleBounds", ReadBoolean(readBuffer))
+	useSimpleBounds, err := ReadSimpleField(ctx, "useSimpleBounds", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useSimpleBounds' field"))
 	}
@@ -312,19 +313,19 @@ func (m *_ReadAtTimeDetails) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ReadAtTimeDetails")
 		}
 		noOfReqTimes := int32(utils.InlineIf(bool((m.GetReqTimes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReqTimes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReqTimes", noOfReqTimes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReqTimes", noOfReqTimes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReqTimes' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "reqTimes", m.GetReqTimes(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "reqTimes", m.GetReqTimes(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reqTimes' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "useSimpleBounds", m.GetUseSimpleBounds(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "useSimpleBounds", m.GetUseSimpleBounds(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'useSimpleBounds' field")
 		}
 

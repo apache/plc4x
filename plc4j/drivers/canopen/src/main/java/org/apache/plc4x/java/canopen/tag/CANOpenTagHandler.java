@@ -19,14 +19,14 @@
 package org.apache.plc4x.java.canopen.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class CANOpenTagHandler implements PlcTagHandler {
 
     @Override
-    public PlcTag parseTag(String tagAddress) throws PlcInvalidTagException {
+    public PlcTag parseTag(String tagAddress) {
         return CANOpenTag.of(tagAddress);
     }
 

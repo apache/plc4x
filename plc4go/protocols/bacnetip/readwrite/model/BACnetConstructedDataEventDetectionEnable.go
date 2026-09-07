@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEventDetectionEnable = (*_BACnetConstructedDataEventD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventDetectionEnable)(nil)
 
 // NewBACnetConstructedDataEventDetectionEnable factory function for _BACnetConstructedDataEventDetectionEnable
-func NewBACnetConstructedDataEventDetectionEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventDetectionEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventDetectionEnable {
+func NewBACnetConstructedDataEventDetectionEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventDetectionEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataEventDetectionEnable {
 	if eventDetectionEnable == nil {
 		panic("eventDetectionEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataEventDetectionEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataEventDetectionEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EventDetectionEnable:          eventDetectionEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataEventDetectionEnable(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataEventDetectionEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventDetectionEnable"
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (eventDetectionEnable)
 	lengthInBits += m.EventDetectionEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

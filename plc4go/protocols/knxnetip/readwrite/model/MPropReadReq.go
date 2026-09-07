@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,9 +71,9 @@ var _ MPropReadReq = (*_MPropReadReq)(nil)
 var _ CEMIRequirements = (*_MPropReadReq)(nil)
 
 // NewMPropReadReq factory function for _MPropReadReq
-func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *_MPropReadReq {
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16) *_MPropReadReq {
 	_result := &_MPropReadReq{
-		CEMIContract:        NewCEMI(size),
+		CEMIContract:        NewCEMI(),
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
@@ -267,12 +267,12 @@ func CastMPropReadReq(structType any) MPropReadReq {
 	return nil
 }
 
-func (m *_MPropReadReq) GetTypeName() string {
+func (m *_MPropReadReq) GetPlx4xTypeName() string {
 	return "MPropReadReq"
 }
 
-func (m *_MPropReadReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MPropReadReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -292,7 +292,7 @@ func (m *_MPropReadReq) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MPropReadReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MPropReadReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

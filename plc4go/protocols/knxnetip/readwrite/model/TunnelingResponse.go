@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -227,12 +227,12 @@ func CastTunnelingResponse(structType any) TunnelingResponse {
 	return nil
 }
 
-func (m *_TunnelingResponse) GetTypeName() string {
+func (m *_TunnelingResponse) GetPlx4xTypeName() string {
 	return "TunnelingResponse"
 }
 
-func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (tunnelingResponseDataBlock)
 	lengthInBits += m.TunnelingResponseDataBlock.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_TunnelingResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_TunnelingResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TunnelingResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -255,7 +255,7 @@ func (m *_TunnelingResponse) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	tunnelingResponseDataBlock, err := ReadSimpleField[TunnelingResponseDataBlock](ctx, "tunnelingResponseDataBlock", ReadComplex[TunnelingResponseDataBlock](TunnelingResponseDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	tunnelingResponseDataBlock, err := ReadSimpleField[TunnelingResponseDataBlock](ctx, "tunnelingResponseDataBlock", ReadComplex[TunnelingResponseDataBlock](TunnelingResponseDataBlockParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tunnelingResponseDataBlock' field"))
 	}
@@ -286,7 +286,7 @@ func (m *_TunnelingResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for TunnelingResponse")
 		}
 
-		if err := WriteSimpleField[TunnelingResponseDataBlock](ctx, "tunnelingResponseDataBlock", m.GetTunnelingResponseDataBlock(), WriteComplex[TunnelingResponseDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[TunnelingResponseDataBlock](ctx, "tunnelingResponseDataBlock", m.GetTunnelingResponseDataBlock(), WriteComplex[TunnelingResponseDataBlock](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 

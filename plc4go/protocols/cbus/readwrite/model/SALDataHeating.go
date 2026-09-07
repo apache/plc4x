@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +44,7 @@ type SALDataHeating interface {
 	utils.Copyable
 	SALData
 	// GetHeatingData returns HeatingData (property field)
+	// Note: the documentation states that the data for heating uses LightingData
 	GetHeatingData() LightingData
 	// IsSALDataHeating is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataHeating()
@@ -225,12 +228,12 @@ func CastSALDataHeating(structType any) SALDataHeating {
 	return nil
 }
 
-func (m *_SALDataHeating) GetTypeName() string {
+func (m *_SALDataHeating) GetPlx4xTypeName() string {
 	return "SALDataHeating"
 }
 
-func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (heatingData)
 	lengthInBits += m.HeatingData.GetLengthInBits(ctx)
@@ -238,7 +241,7 @@ func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +256,7 @@ func (m *_SALDataHeating) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	heatingData, err := ReadSimpleField[LightingData](ctx, "heatingData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	heatingData, err := ReadSimpleField[LightingData](ctx, "heatingData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'heatingData' field"))
 	}
@@ -267,7 +270,7 @@ func (m *_SALDataHeating) parse(ctx context.Context, readBuffer utils.ReadBuffer
 }
 
 func (m *_SALDataHeating) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +287,7 @@ func (m *_SALDataHeating) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for SALDataHeating")
 		}
 
-		if err := WriteSimpleField[LightingData](ctx, "heatingData", m.GetHeatingData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LightingData](ctx, "heatingData", m.GetHeatingData(), WriteComplex[LightingData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'heatingData' field")
 		}
 

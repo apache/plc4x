@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLockoutRelinquishTime = (*_BACnetConstructedDataLocko
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockoutRelinquishTime)(nil)
 
 // NewBACnetConstructedDataLockoutRelinquishTime factory function for _BACnetConstructedDataLockoutRelinquishTime
-func NewBACnetConstructedDataLockoutRelinquishTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockoutRelinquishTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
+func NewBACnetConstructedDataLockoutRelinquishTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
 	if lockoutRelinquishTime == nil {
 		panic("lockoutRelinquishTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLockoutRelinquishTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataLockoutRelinquishTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LockoutRelinquishTime:         lockoutRelinquishTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLockoutRelinquishTime(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetTypeName() string {
+func (m *_BACnetConstructedDataLockoutRelinquishTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLockoutRelinquishTime"
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lockoutRelinquishTime)
 	lengthInBits += m.LockoutRelinquishTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

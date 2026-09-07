@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ ApduDataOther = (*_ApduDataOther)(nil)
 var _ ApduDataRequirements = (*_ApduDataOther)(nil)
 
 // NewApduDataOther factory function for _ApduDataOther
-func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
+func NewApduDataOther(extendedApdu ApduDataExt) *_ApduDataOther {
 	if extendedApdu == nil {
 		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
 	}
 	_result := &_ApduDataOther{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		ExtendedApdu:     extendedApdu,
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
@@ -225,12 +225,12 @@ func CastApduDataOther(structType any) ApduDataOther {
 	return nil
 }
 
-func (m *_ApduDataOther) GetTypeName() string {
+func (m *_ApduDataOther) GetPlx4xTypeName() string {
 	return "ApduDataOther"
 }
 
-func (m *_ApduDataOther) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataOther) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (extendedApdu)
 	lengthInBits += m.ExtendedApdu.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_ApduDataOther) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduDataOther) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataOther) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +225,12 @@ func CastAdsDiscoveryBlockRouteName(structType any) AdsDiscoveryBlockRouteName {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockRouteName) GetTypeName() string {
+func (m *_AdsDiscoveryBlockRouteName) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockRouteName"
 }
 
-func (m *_AdsDiscoveryBlockRouteName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+func (m *_AdsDiscoveryBlockRouteName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Simple field (routeName)
 	lengthInBits += m.RouteName.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_AdsDiscoveryBlockRouteName) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

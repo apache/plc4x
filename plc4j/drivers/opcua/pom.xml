@@ -17,14 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-driver-opcua</artifactId>
@@ -33,7 +31,7 @@
   <description>Implementation of a PLC4X driver able to speak with devices using the OPC UA protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -70,23 +68,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-milo-dependencies</id>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <phase>test-compile</phase>
-            <configuration>
-              <includeArtifactIds>server-examples</includeArtifactIds>
-              <outputDirectory>${project.build.directory}/milo-testcontainer</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -101,19 +82,56 @@
           </instructions>
         </configuration>
       </plugin>
-      <!--
-        When instrumenting the Eclipse Milo files for code coverage calculation
-        We're getting errors which don't hurt, but sort of make the build ugly.
-        So we're telling the plugin to exclude them from instrumentation.
-      -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>org/eclipse/**/*</exclude>
-          </excludes>
-        </configuration>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- I/O-heavy driver-shell classes; require integration tests rather than unit tests. -->
+                <exclude>org/apache/plc4x/java/opcua/OpcuaConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/OpcuaMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/OpcuaPlcDriver.class</exclude>
+                <!-- OPC UA secure-channel handshake + chunked-conversation orchestration; need a live server. -->
+                <exclude>org/apache/plc4x/java/opcua/context/SecureChannel*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/Conversation*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/CertificateGenerator*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/SecureChannelTransactionManager*.class</exclude>
+                <!-- Server-side subscription publish loop; needs a live OPC UA subscription. -->
+                <exclude>org/apache/plc4x/java/opcua/protocol/OpcuaSubscriptionHandle*.class</exclude>
+                <!-- Trust-store I/O; requires a real keystore. -->
+                <exclude>org/apache/plc4x/java/opcua/security/TrustStoreCertificateVerifier*.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- See report execution above for rationale. -->
+                <exclude>org/apache/plc4x/java/opcua/OpcuaConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/OpcuaMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/OpcuaPlcDriver.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/SecureChannel*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/Conversation*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/CertificateGenerator*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/context/SecureChannelTransactionManager*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/protocol/OpcuaSubscriptionHandle*.class</exclude>
+                <exclude>org/apache/plc4x/java/opcua/security/TrustStoreCertificateVerifier*.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -122,24 +140,53 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>1.0.0</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-tcp</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -148,116 +195,46 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>io.vavr</groupId>
-      <artifactId>vavr</artifactId>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk18on</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk18on</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.13.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.milo</groupId>
-      <artifactId>sdk-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.milo</groupId>
-      <artifactId>stack-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.milo</groupId>
-      <artifactId>stack-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.milo</groupId>
-      <artifactId>server-examples</artifactId>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-opcua</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.github.docker-java</groupId>
-      <artifactId>docker-java-api</artifactId>
-      <version>3.6.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.21.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>1.21.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud.tools</groupId>
-      <artifactId>jib-core</artifactId>
-      <version>0.27.3</version>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>sdk-client</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>stack-core</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>stack-client</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>server-examples</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <profiles>
     <profile>
@@ -290,7 +267,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -303,7 +280,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-opcua</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

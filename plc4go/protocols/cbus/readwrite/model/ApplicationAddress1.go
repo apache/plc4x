@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,8 +43,10 @@ type ApplicationAddress1 interface {
 	utils.Serializable
 	utils.Copyable
 	// GetAddress returns Address (property field)
+	// Note 1
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
+	// if wildcard is set address 2 should set to wildcard as well
 	GetIsWildcard() bool
 	// IsApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationAddress1()
@@ -178,12 +182,12 @@ func CastApplicationAddress1(structType any) ApplicationAddress1 {
 	return nil
 }
 
-func (m *_ApplicationAddress1) GetTypeName() string {
+func (m *_ApplicationAddress1) GetPlx4xTypeName() string {
 	return "ApplicationAddress1"
 }
 
-func (m *_ApplicationAddress1) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ApplicationAddress1) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (address)
 	lengthInBits += 8
@@ -193,12 +197,12 @@ func (m *_ApplicationAddress1) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApplicationAddress1) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApplicationAddress1) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApplicationAddress1Parse(ctx context.Context, theBytes []byte) (ApplicationAddress1, error) {
-	return ApplicationAddress1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return ApplicationAddress1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func ApplicationAddress1ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
@@ -208,7 +212,7 @@ func ApplicationAddress1ParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func ApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
-	v, err := (&_ApplicationAddress1{}).parse(ctx, readBuffer)
+	v, err := (new(_ApplicationAddress1)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -224,13 +228,13 @@ func (m *_ApplicationAddress1) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8))
+	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 	m.Address = address
 
-	isWildcard, err := ReadVirtualField[bool](ctx, "isWildcard", (*bool)(nil), bool((address) == (0xFF)))
+	isWildcard, err := ReadVirtualField[bool](ctx, "isWildcard", (*bool)(nil), bool((address) == (0xFF)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isWildcard' field"))
 	}
@@ -244,7 +248,7 @@ func (m *_ApplicationAddress1) parse(ctx context.Context, readBuffer utils.ReadB
 }
 
 func (m *_ApplicationAddress1) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -260,7 +264,7 @@ func (m *_ApplicationAddress1) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for ApplicationAddress1")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'address' field")
 	}
 	// Virtual field

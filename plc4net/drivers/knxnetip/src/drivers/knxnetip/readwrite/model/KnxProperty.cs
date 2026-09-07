@@ -182,7 +182,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = readBuffer.ReadDouble("", 64);
 
                 return new PlcLREAL(value);
-            } if( propertyType == KnxPropertyDataType.PDT_CHAR_BLOCK ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_CHAR_BLOCK ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 10);
 
@@ -209,7 +209,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 _map["groupAddress"] = new PlcRawByteArray(groupAddress);
 
                 return new PlcStruct(_map);
-            } if( propertyType == KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 5);
 
@@ -307,102 +307,102 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_01 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_01 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 1);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_02 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_02 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 2);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_03 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_03 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 3);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_04 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_04 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 4);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_05 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_05 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 5);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_06 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_06 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 6);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_07 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_07 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 7);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_08 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_08 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 8);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_09 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_09 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 9);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_10 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_10 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 10);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_11 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_11 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 11);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_12 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_12 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 12);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_13 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_13 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 13);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_14 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_14 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 14);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_15 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_15 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 15);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_16 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_16 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 16);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_17 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_17 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 17);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_18 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_18 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 18);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_19 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_19 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 19);
 
                 return new PlcRawByteArray(value);
-            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_20 ) { // RawByteArray
+            } if( propertyType == KnxPropertyDataType.PDT_GENERIC_20 ) { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", 20);
 
@@ -513,7 +513,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            }  { // RawByteArray
+            }  { // List
                 // Array field (value)
                 var value = readBuffer.ReadByteArray("", dataLengthInBytes);
 
@@ -646,7 +646,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = (double) _value.GetDouble();
                 writeBuffer.WriteDouble("", 64,(value));
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_CHAR_BLOCK ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_CHAR_BLOCK ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -676,7 +676,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var pollingSoftNr = (byte) _value.GetStruct()["pollingSoftNr"].GetByte();
                 writeBuffer.WriteByte("", 4, (byte) (pollingSoftNr));
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -749,7 +749,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 7, (byte) 0x00);
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_01 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_01 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -760,7 +760,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_02 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_02 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -771,7 +771,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_03 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_03 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -782,7 +782,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_04 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_04 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -793,7 +793,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_05 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_05 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -804,7 +804,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_06 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_06 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -815,7 +815,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_07 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_07 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -826,7 +826,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_08 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_08 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -837,7 +837,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_09 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_09 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -848,7 +848,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_10 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_10 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -859,7 +859,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_11 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_11 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -870,7 +870,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_12 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_12 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -881,7 +881,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_13 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_13 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -892,7 +892,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_14 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_14 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -903,7 +903,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_15 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_15 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -914,7 +914,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_16 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_16 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -925,7 +925,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_17 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_17 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -936,7 +936,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_18 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_18 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -947,7 +947,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_19 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_19 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -958,7 +958,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 }
 
             return writeBuffer;
-        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_20 ) { // RawByteArray
+        } if( propertyType == KnxPropertyDataType.PDT_GENERIC_20 ) { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;
@@ -1060,7 +1060,7 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        }  { // RawByteArray
+        }  { // List
                 var writeBuffer = new WriteBuffer();
 
                 PlcList values = (PlcList) _value;

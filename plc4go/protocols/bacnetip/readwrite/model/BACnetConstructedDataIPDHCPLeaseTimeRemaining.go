@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPDHCPLeaseTimeRemaining = (*_BACnetConstructedDataIP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPLeaseTimeRemaining)(nil)
 
 // NewBACnetConstructedDataIPDHCPLeaseTimeRemaining factory function for _BACnetConstructedDataIPDHCPLeaseTimeRemaining
-func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
 	if ipDhcpLeaseTimeRemaining == nil {
 		panic("ipDhcpLeaseTimeRemaining of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTimeRemaining must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpDhcpLeaseTimeRemaining:      ipDhcpLeaseTimeRemaining,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPDHCPLeaseTimeRemaining(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetTypeName() string {
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPDHCPLeaseTimeRemaining"
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipDhcpLeaseTimeRemaining)
 	lengthInBits += m.IpDhcpLeaseTimeRemaining.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

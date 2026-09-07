@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,8 @@ type CEMIAdditionalInformationContract interface {
 
 // CEMIAdditionalInformationRequirements provides a set of functions which need to be implemented by a sub struct
 type CEMIAdditionalInformationRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetAdditionalInformationType returns AdditionalInformationType (discriminator field)
 	GetAdditionalInformationType() uint8
 }
@@ -217,23 +217,23 @@ func CastCEMIAdditionalInformation(structType any) CEMIAdditionalInformation {
 	return nil
 }
 
-func (m *_CEMIAdditionalInformation) GetTypeName() string {
+func (m *_CEMIAdditionalInformation) GetPlx4xTypeName() string {
 	return "CEMIAdditionalInformation"
 }
 
-func (m *_CEMIAdditionalInformation) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CEMIAdditionalInformation) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_CEMIAdditionalInformation) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CEMIAdditionalInformation) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CEMIAdditionalInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CEMIAdditionalInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +253,7 @@ func CEMIAdditionalInformationParseWithBufferProducer[T CEMIAdditionalInformatio
 }
 
 func CEMIAdditionalInformationParseWithBuffer[T CEMIAdditionalInformation](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_CEMIAdditionalInformation{}).parse(ctx, readBuffer)
+	v, err := (new(_CEMIAdditionalInformation)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

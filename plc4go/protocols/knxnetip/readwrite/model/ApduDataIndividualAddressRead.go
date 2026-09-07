@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataIndividualAddressRead = (*_ApduDataIndividualAddressRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressRead)(nil)
 
 // NewApduDataIndividualAddressRead factory function for _ApduDataIndividualAddressRead
-func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddressRead {
+func NewApduDataIndividualAddressRead() *_ApduDataIndividualAddressRead {
 	_result := &_ApduDataIndividualAddressRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataIndividualAddressRead(structType any) ApduDataIndividualAddress
 	return nil
 }
 
-func (m *_ApduDataIndividualAddressRead) GetTypeName() string {
+func (m *_ApduDataIndividualAddressRead) GetPlx4xTypeName() string {
 	return "ApduDataIndividualAddressRead"
 }
 
-func (m *_ApduDataIndividualAddressRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataIndividualAddressRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataIndividualAddressRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataIndividualAddressRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -19,14 +19,15 @@
 package org.apache.plc4x.java.cbus;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
-import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper;
+import org.apache.plc4x.java.spi.buffers.api.Serializable;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Util {
     static void assertMessageMatches(byte[] expectedBytes, Serializable msg) throws Exception {
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(expectedBytes.length);
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[expectedBytes.length], StaticHelper.OPTIONS);
         msg.serialize(writeBuffer);
         byte[] actualBytes = writeBuffer.getBytes();
         assertThat(actualBytes).withFailMessage(() -> "Actual:\n" + StringEscapeUtils.escapeJava(new String(actualBytes)) + "\ndoes not match expected\n" + StringEscapeUtils.escapeJava(new String(expectedBytes))).isEqualTo(expectedBytes);

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,6 +48,7 @@ type NLMSecurityResponse interface {
 	// GetOriginalTimestamp returns OriginalTimestamp (property field)
 	GetOriginalTimestamp() uint32
 	// GetVariableParameters returns VariableParameters (property field)
+	// TODO: type out variable parameters
 	GetVariableParameters() []byte
 	// IsNLMSecurityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMSecurityResponse()
@@ -68,9 +69,9 @@ var _ NLMSecurityResponse = (*_NLMSecurityResponse)(nil)
 var _ NLMRequirements = (*_NLMSecurityResponse)(nil)
 
 // NewNLMSecurityResponse factory function for _NLMSecurityResponse
-func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
+func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) *_NLMSecurityResponse {
 	_result := &_NLMSecurityResponse{
-		NLMContract:        NewNLM(apduLength),
+		NLMContract:        NewNLM(),
 		ResponseCode:       responseCode,
 		OriginalMessageId:  originalMessageId,
 		OriginalTimestamp:  originalTimestamp,
@@ -252,12 +253,12 @@ func CastNLMSecurityResponse(structType any) NLMSecurityResponse {
 	return nil
 }
 
-func (m *_NLMSecurityResponse) GetTypeName() string {
+func (m *_NLMSecurityResponse) GetPlx4xTypeName() string {
 	return "NLMSecurityResponse"
 }
 
-func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (responseCode)
 	lengthInBits += 8
@@ -270,13 +271,13 @@ func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.VariableParameters) > 0 {
-		lengthInBits += 8 * uint16(len(m.VariableParameters))
+		lengthInBits += 8 * uint64(len(m.VariableParameters))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMSecurityResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMSecurityResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

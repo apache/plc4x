@@ -20,8 +20,8 @@
 <test:testsuite xmlns:test='https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd' byteOrder='BIG_ENDIAN'>
   <name>Profinet</name>
 
-  <protocolName>profinet</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>profinet</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>1	DelayReq         , Seq=9133, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>

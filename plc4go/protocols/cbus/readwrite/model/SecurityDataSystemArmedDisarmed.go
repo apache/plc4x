@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastSecurityDataSystemArmedDisarmed(structType any) SecurityDataSystemArmed
 	return nil
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetTypeName() string {
+func (m *_SecurityDataSystemArmedDisarmed) GetPlx4xTypeName() string {
 	return "SecurityDataSystemArmedDisarmed"
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (armCodeType)
 	lengthInBits += m.ArmCodeType.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -22,9 +22,11 @@ package test
 import (
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -105,22 +107,24 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 		options      map[string][]string
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    transports.TransportInstance
-		wantErr bool
+		name       string
+		fields     fields
+		args       args
+		wantAssert func(*testing.T, transports.TransportInstance) bool
+		wantErr    bool
 	}{
 		{
 			name: "create it",
 			fields: fields{
 				preregisteredInstances: map[url.URL]transports.TransportInstance{},
 			},
-			want: &TransportInstance{
-				readBuffer:  []byte{},
-				writeBuffer: []byte{},
-				transport:   NewTransport(),
-				log:         log.Logger,
+			wantAssert: func(t *testing.T, instance transports.TransportInstance) bool {
+				require.NotNil(t, instance)
+				assert.IsType(t, &TransportInstance{}, instance)
+				ti := instance.(*TransportInstance)
+				assert.NotNil(t, ti.transport)
+				assert.Equal(t, 10*time.Millisecond, ti.simulatedLatency)
+				return true
 			},
 		},
 		{
@@ -133,7 +137,9 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 			args: args{
 				transportUrl: url.URL{Host: "abcdefg"},
 			},
-			want: nil,
+			wantAssert: func(t *testing.T, instance transports.TransportInstance) bool {
+				return assert.Nil(t, instance)
+			},
 		},
 		{
 			name: "fail it on purpose",
@@ -141,6 +147,9 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				options: map[string][]string{
 					"failTestTransport": {"yes please"},
 				},
+			},
+			wantAssert: func(t *testing.T, instance transports.TransportInstance) bool {
+				return assert.Nil(t, instance)
 			},
 			wantErr: true,
 		},
@@ -156,8 +165,8 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !assert.Equal(t, tt.want, got) {
-				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
+			if !assert.True(t, tt.wantAssert(t, got)) {
+				t.Errorf("CreateTransportInstance() got = %v", got)
 			}
 		})
 	}

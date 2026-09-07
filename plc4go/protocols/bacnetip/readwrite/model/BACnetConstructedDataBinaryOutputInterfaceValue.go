@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBinaryOutputInterfaceValue = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputInterfaceValue)(nil)
 
 // NewBACnetConstructedDataBinaryOutputInterfaceValue factory function for _BACnetConstructedDataBinaryOutputInterfaceValue
-func NewBACnetConstructedDataBinaryOutputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputInterfaceValue {
+func NewBACnetConstructedDataBinaryOutputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV) *_BACnetConstructedDataBinaryOutputInterfaceValue {
 	if interfaceValue == nil {
 		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataBinaryOutputInterfaceValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataBinaryOutputInterfaceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InterfaceValue:                interfaceValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBinaryOutputInterfaceValue(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryOutputInterfaceValue"
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (interfaceValue)
 	lengthInBits += m.InterfaceValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

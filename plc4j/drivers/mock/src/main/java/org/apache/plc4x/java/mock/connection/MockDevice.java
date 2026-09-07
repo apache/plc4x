@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 
 import java.util.Collection;
 import java.util.function.Consumer;

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -276,12 +276,12 @@ func CastHVACZoneList(structType any) HVACZoneList {
 	return nil
 }
 
-func (m *_HVACZoneList) GetTypeName() string {
+func (m *_HVACZoneList) GetPlx4xTypeName() string {
 	return "HVACZoneList"
 }
 
-func (m *_HVACZoneList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HVACZoneList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (expansion)
 	lengthInBits += 1
@@ -312,7 +312,7 @@ func (m *_HVACZoneList) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACZoneList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HVACZoneList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -327,7 +327,7 @@ func HVACZoneListParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
-	v, err := (&_HVACZoneList{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACZoneList)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

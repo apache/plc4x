@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,7 +46,10 @@ type RequestCommand interface {
 	utils.Serializable
 	utils.Copyable
 	Request
+	// GetCBusOptions returns CBusOptions (property field)
+	GetCBusOptions() CBusOptions
 	// GetCbusCommand returns CbusCommand (property field)
+	// 0x5C == "\"
 	GetCbusCommand() CBusCommand
 	// GetChksum returns Chksum (property field)
 	GetChksum() Checksum
@@ -63,6 +68,7 @@ type RequestCommand interface {
 // _RequestCommand is the data-structure of this message
 type _RequestCommand struct {
 	RequestContract
+	CBusOptions CBusOptions
 	CbusCommand CBusCommand
 	Chksum      Checksum
 	Alpha       Alpha
@@ -72,9 +78,10 @@ var _ RequestCommand = (*_RequestCommand)(nil)
 var _ RequestRequirements = (*_RequestCommand)(nil)
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cbusCommand CBusCommand, chksum Checksum, alpha Alpha, cBusOptions CBusOptions) *_RequestCommand {
+func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, cbusCommand CBusCommand, chksum Checksum, alpha Alpha) *_RequestCommand {
 	_result := &_RequestCommand{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
+		CBusOptions:     cBusOptions,
 		CbusCommand:     cbusCommand,
 		Chksum:          chksum,
 		Alpha:           alpha,
@@ -92,7 +99,11 @@ func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMod
 type RequestCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder
+	WithMandatoryFields(cBusOptions CBusOptions, cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder
+	// WithCBusOptions adds CBusOptions (property field)
+	WithCBusOptions(CBusOptions) RequestCommandBuilder
+	// WithCBusOptionsBuilder adds CBusOptions (property field) which is build by the builder
+	WithCBusOptionsBuilder(func(CBusOptionsBuilder) CBusOptionsBuilder) RequestCommandBuilder
 	// WithCbusCommand adds CbusCommand (property field)
 	WithCbusCommand(CBusCommand) RequestCommandBuilder
 	// WithCbusCommandBuilder adds CbusCommand (property field) which is build by the builder
@@ -133,8 +144,23 @@ func (b *_RequestCommandBuilder) setParent(contract RequestContract) {
 	contract.(*_Request)._SubType = b._RequestCommand
 }
 
-func (b *_RequestCommandBuilder) WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
-	return b.WithCbusCommand(cbusCommand).WithChksum(chksum)
+func (b *_RequestCommandBuilder) WithMandatoryFields(cBusOptions CBusOptions, cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
+	return b.WithCBusOptions(cBusOptions).WithCbusCommand(cbusCommand).WithChksum(chksum)
+}
+
+func (b *_RequestCommandBuilder) WithCBusOptions(cBusOptions CBusOptions) RequestCommandBuilder {
+	b.CBusOptions = cBusOptions
+	return b
+}
+
+func (b *_RequestCommandBuilder) WithCBusOptionsBuilder(builderSupplier func(CBusOptionsBuilder) CBusOptionsBuilder) RequestCommandBuilder {
+	builder := builderSupplier(b.CBusOptions.CreateCBusOptionsBuilder())
+	var err error
+	b.CBusOptions, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CBusOptionsBuilder failed"))
+	}
+	return b
 }
 
 func (b *_RequestCommandBuilder) WithCbusCommand(cbusCommand CBusCommand) RequestCommandBuilder {
@@ -183,6 +209,9 @@ func (b *_RequestCommandBuilder) WithOptionalAlphaBuilder(builderSupplier func(A
 }
 
 func (b *_RequestCommandBuilder) Build() (RequestCommand, error) {
+	if b.CBusOptions == nil {
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'cBusOptions' not set"))
+	}
 	if b.CbusCommand == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'cbusCommand' not set"))
 	}
@@ -254,6 +283,10 @@ func (m *_RequestCommand) GetParent() RequestContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
+func (m *_RequestCommand) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
 func (m *_RequestCommand) GetCbusCommand() CBusCommand {
 	return m.CbusCommand
 }
@@ -320,23 +353,23 @@ func CastRequestCommand(structType any) RequestCommand {
 	return nil
 }
 
-func (m *_RequestCommand) GetTypeName() string {
+func (m *_RequestCommand) GetPlx4xTypeName() string {
 	return "RequestCommand"
 }
 
-func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Const Field (initiator)
 	lengthInBits += 8
 
 	// Manual Field (cbusCommand)
-	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint64(int32((int32(m.GetCbusCommand().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf((m.GetCBusOptions().GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf((m.GetCBusOptions().GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -348,7 +381,7 @@ func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -362,39 +395,40 @@ func (m *_RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.CBusOptions = cBusOptions
 
-	initiator, err := ReadConstField[byte](ctx, "initiator", ReadByte(readBuffer, 8), RequestCommand_INITIATOR)
+	initiator, err := ReadConstField[byte](ctx, "initiator", ReadByte(readBuffer, 8), RequestCommand_INITIATOR, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initiator' field"))
 	}
 	_ = initiator
 
-	cbusCommand, err := ReadManualField[CBusCommand](ctx, "cbusCommand", readBuffer, EnsureType[CBusCommand](ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())))
+	cbusCommand, err := ReadManualField[CBusCommand](ctx, "cbusCommand", readBuffer, EnsureType[CBusCommand](ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommand' field"))
 	}
 	m.CbusCommand = cbusCommand
 
-	cbusCommandDecoded, err := ReadVirtualField[CBusCommand](ctx, "cbusCommandDecoded", (*CBusCommand)(nil), cbusCommand)
+	cbusCommandDecoded, err := ReadVirtualField[CBusCommand](ctx, "cbusCommandDecoded", (*CBusCommand)(nil), cbusCommand, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommandDecoded' field"))
 	}
 	_ = cbusCommandDecoded
 
-	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())))
+	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}
 	m.Chksum = chksum
 
-	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum)
+	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksumDecoded' field"))
 	}
 	_ = chksumDecoded
 
 	var alpha Alpha
-	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
 	}
@@ -411,7 +445,7 @@ func (m *_RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 }
 
 func (m *_RequestCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -428,11 +462,11 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for RequestCommand")
 		}
 
-		if err := WriteConstField(ctx, "initiator", RequestCommand_INITIATOR, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "initiator", RequestCommand_INITIATOR, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'initiator' field")
 		}
 
-		if err := WriteManualField[CBusCommand](ctx, "cbusCommand", func(ctx context.Context) error { return WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand()) }, writeBuffer); err != nil {
+		if err := WriteManualField[CBusCommand](ctx, "cbusCommand", func(ctx context.Context) error { return WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand()) }, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'cbusCommand' field")
 		}
 		// Virtual field
@@ -444,7 +478,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		if err := WriteManualField[Checksum](ctx, "chksum", func(ctx context.Context) error {
 			return CalculateChecksum(ctx, writeBuffer, m.GetCbusCommand(), m.GetCBusOptions().GetSrchk())
-		}, writeBuffer); err != nil {
+		}, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'chksum' field")
 		}
 		// Virtual field
@@ -454,7 +488,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
-		if err := WriteOptionalField[Alpha](ctx, "alpha", GetRef(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 
@@ -478,6 +512,7 @@ func (m *_RequestCommand) deepCopy() *_RequestCommand {
 	}
 	_RequestCommandCopy := &_RequestCommand{
 		m.RequestContract.(*_Request).deepCopy(),
+		utils.DeepCopy[CBusOptions](m.CBusOptions),
 		utils.DeepCopy[CBusCommand](m.CbusCommand),
 		utils.DeepCopy[Checksum](m.Chksum),
 		utils.DeepCopy[Alpha](m.Alpha),

@@ -21,9 +21,8 @@ package org.apache.plc4x.test.generator
 import groovy.xml.MarkupBuilder
 import groovyjarjarpicocli.CommandLine
 import org.apache.commons.lang3.SystemUtils
-import org.apache.plc4x.java.spi.generation.ByteOrder
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased
-import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased
+import org.apache.plc4x.java.spi.buffers.xmlbased.WriteBufferXmlBased
 import org.pcap4j.core.PcapHandle
 import org.pcap4j.core.Pcaps
 import org.pcap4j.packet.EthernetPacket

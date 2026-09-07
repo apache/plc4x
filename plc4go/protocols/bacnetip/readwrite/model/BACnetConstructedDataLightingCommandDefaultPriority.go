@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLightingCommandDefaultPriority = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommandDefaultPriority)(nil)
 
 // NewBACnetConstructedDataLightingCommandDefaultPriority factory function for _BACnetConstructedDataLightingCommandDefaultPriority
-func NewBACnetConstructedDataLightingCommandDefaultPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
+func NewBACnetConstructedDataLightingCommandDefaultPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
 	if lightingCommandDefaultPriority == nil {
 		panic("lightingCommandDefaultPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLightingCommandDefaultPriority must not be nil")
 	}
 	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLightingCommandDefaultPriority(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingCommandDefaultPriority"
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lightingCommandDefaultPriority)
 	lengthInBits += m.LightingCommandDefaultPriority.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

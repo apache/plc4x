@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,8 +49,6 @@ type ParameterValue interface {
 
 // ParameterValueContract provides a set of functions which can be overwritten by a sub struct
 type ParameterValueContract interface {
-	// GetNumBytes() returns a parser argument
-	GetNumBytes() uint8
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValue()
 	// CreateBuilder creates a ParameterValueBuilder
@@ -58,8 +57,8 @@ type ParameterValueContract interface {
 
 // ParameterValueRequirements provides a set of functions which need to be implemented by a sub struct
 type ParameterValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() ParameterType
 }
@@ -70,16 +69,13 @@ type _ParameterValue struct {
 		ParameterValueContract
 		ParameterValueRequirements
 	}
-
-	// Arguments.
-	NumBytes uint8
 }
 
 var _ ParameterValueContract = (*_ParameterValue)(nil)
 
 // NewParameterValue factory function for _ParameterValue
-func NewParameterValue(numBytes uint8) *_ParameterValue {
-	return &_ParameterValue{NumBytes: numBytes}
+func NewParameterValue() *_ParameterValue {
+	return &_ParameterValue{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,8 +88,6 @@ type ParameterValueBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ParameterValueBuilder
-	// WithArgNumBytes sets a parser argument
-	WithArgNumBytes(uint8) ParameterValueBuilder
 	// AsParameterValueApplicationAddress1 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
 	AsParameterValueApplicationAddress1() ParameterValueApplicationAddress1Builder
 	// AsParameterValueApplicationAddress2 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
@@ -148,11 +142,6 @@ type _ParameterValueBuilder struct {
 var _ (ParameterValueBuilder) = (*_ParameterValueBuilder)(nil)
 
 func (b *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
-	return b
-}
-
-func (b *_ParameterValueBuilder) WithArgNumBytes(numBytes uint8) ParameterValueBuilder {
-	b.NumBytes = numBytes
 	return b
 }
 
@@ -335,26 +324,26 @@ func CastParameterValue(structType any) ParameterValue {
 	return nil
 }
 
-func (m *_ParameterValue) GetTypeName() string {
+func (m *_ParameterValue) GetPlx4xTypeName() string {
 	return "ParameterValue"
 }
 
-func (m *_ParameterValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ParameterValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ParameterValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ParameterValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ParameterValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueParse[T ParameterValue](ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (T, error) {
-	return ParameterValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes)
 }
 
 func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -369,7 +358,7 @@ func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType Param
 }
 
 func ParameterValueParseWithBuffer[T ParameterValue](ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (T, error) {
-	v, err := (&_ParameterValue{NumBytes: numBytes}).parse(ctx, readBuffer, parameterType, numBytes)
+	v, err := (new(_ParameterValue)).parse(ctx, readBuffer, parameterType, numBytes)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -395,47 +384,47 @@ func (m *_ParameterValue) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child ParameterValue
 	switch {
 	case parameterType == ParameterType_APPLICATION_ADDRESS_1: // ParameterValueApplicationAddress1
-		if _child, err = new(_ParameterValueApplicationAddress1).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueApplicationAddress1).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueApplicationAddress1 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_APPLICATION_ADDRESS_2: // ParameterValueApplicationAddress2
-		if _child, err = new(_ParameterValueApplicationAddress2).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueApplicationAddress2).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueApplicationAddress2 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1: // ParameterValueInterfaceOptions1
-		if _child, err = new(_ParameterValueInterfaceOptions1).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions1).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions1 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_BAUD_RATE_SELECTOR: // ParameterValueBaudRateSelector
-		if _child, err = new(_ParameterValueBaudRateSelector).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueBaudRateSelector).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueBaudRateSelector for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_2: // ParameterValueInterfaceOptions2
-		if _child, err = new(_ParameterValueInterfaceOptions2).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions2).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions2 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS: // ParameterValueInterfaceOptions1PowerUpSettings
-		if _child, err = new(_ParameterValueInterfaceOptions1PowerUpSettings).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions1PowerUpSettings).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions1PowerUpSettings for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_3: // ParameterValueInterfaceOptions3
-		if _child, err = new(_ParameterValueInterfaceOptions3).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions3).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions3 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_CUSTOM_MANUFACTURER: // ParameterValueCustomManufacturer
-		if _child, err = new(_ParameterValueCustomManufacturer).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueCustomManufacturer).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueCustomManufacturer for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_SERIAL_NUMBER: // ParameterValueSerialNumber
-		if _child, err = new(_ParameterValueSerialNumber).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueSerialNumber).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueSerialNumber for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_CUSTOM_TYPE: // ParameterValueCustomTypes
-		if _child, err = new(_ParameterValueCustomTypes).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueCustomTypes).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueCustomTypes for type-switch of ParameterValue")
 		}
 	case 0 == 0: // ParameterValueRaw
-		if _child, err = new(_ParameterValueRaw).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueRaw).parse(ctx, readBuffer, m, parameterType, uint8(numBytes)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueRaw for type-switch of ParameterValue")
 		}
 	default:
@@ -472,16 +461,6 @@ func (pm *_ParameterValue) serializeParent(ctx context.Context, writeBuffer util
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ParameterValue) GetNumBytes() uint8 {
-	return m.NumBytes
-}
-
-//
-////
-
 func (m *_ParameterValue) IsParameterValue() {}
 
 func (m *_ParameterValue) DeepCopy() any {
@@ -494,7 +473,6 @@ func (m *_ParameterValue) deepCopy() *_ParameterValue {
 	}
 	_ParameterValueCopy := &_ParameterValue{
 		nil, // will be set by child
-		m.NumBytes,
 	}
 	return _ParameterValueCopy
 }

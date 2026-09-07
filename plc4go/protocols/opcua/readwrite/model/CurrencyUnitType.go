@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -288,12 +289,12 @@ func CastCurrencyUnitType(structType any) CurrencyUnitType {
 	return nil
 }
 
-func (m *_CurrencyUnitType) GetTypeName() string {
+func (m *_CurrencyUnitType) GetPlx4xTypeName() string {
 	return "CurrencyUnitType"
 }
 
-func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numericCode)
 	lengthInBits += 16
@@ -310,7 +311,7 @@ func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -325,25 +326,25 @@ func (m *_CurrencyUnitType) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numericCode, err := ReadSimpleField(ctx, "numericCode", ReadSignedShort(readBuffer, uint8(16)))
+	numericCode, err := ReadSimpleField(ctx, "numericCode", ReadSignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numericCode' field"))
 	}
 	m.NumericCode = numericCode
 
-	exponent, err := ReadSimpleField(ctx, "exponent", ReadSignedByte(readBuffer, uint8(8)))
+	exponent, err := ReadSimpleField(ctx, "exponent", ReadSignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exponent' field"))
 	}
 	m.Exponent = exponent
 
-	alphabeticCode, err := ReadSimpleField[PascalString](ctx, "alphabeticCode", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	alphabeticCode, err := ReadSimpleField[PascalString](ctx, "alphabeticCode", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alphabeticCode' field"))
 	}
 	m.AlphabeticCode = alphabeticCode
 
-	currency, err := ReadSimpleField[LocalizedText](ctx, "currency", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	currency, err := ReadSimpleField[LocalizedText](ctx, "currency", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currency' field"))
 	}
@@ -374,19 +375,19 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CurrencyUnitType")
 		}
 
-		if err := WriteSimpleField[int16](ctx, "numericCode", m.GetNumericCode(), WriteSignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[int16](ctx, "numericCode", m.GetNumericCode(), WriteSignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'numericCode' field")
 		}
 
-		if err := WriteSimpleField[int8](ctx, "exponent", m.GetExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[int8](ctx, "exponent", m.GetExponent(), WriteSignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'exponent' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "alphabeticCode", m.GetAlphabeticCode(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "alphabeticCode", m.GetAlphabeticCode(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'alphabeticCode' field")
 		}
 
-		if err := WriteSimpleField[LocalizedText](ctx, "currency", m.GetCurrency(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LocalizedText](ctx, "currency", m.GetCurrency(), WriteComplex[LocalizedText](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currency' field")
 		}
 

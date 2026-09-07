@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ NLMReserved = (*_NLMReserved)(nil)
 var _ NLMRequirements = (*_NLMReserved)(nil)
 
 // NewNLMReserved factory function for _NLMReserved
-func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
+func NewNLMReserved(unknownBytes []byte) *_NLMReserved {
 	_result := &_NLMReserved{
-		NLMContract:  NewNLM(apduLength),
+		NLMContract:  NewNLM(),
 		UnknownBytes: unknownBytes,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result
@@ -207,22 +207,22 @@ func CastNLMReserved(structType any) NLMReserved {
 	return nil
 }
 
-func (m *_NLMReserved) GetTypeName() string {
+func (m *_NLMReserved) GetPlx4xTypeName() string {
 	return "NLMReserved"
 }
 
-func (m *_NLMReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMReserved) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
-		lengthInBits += 8 * uint16(len(m.UnknownBytes))
+		lengthInBits += 8 * uint64(len(m.UnknownBytes))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMReserved) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMReserved) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

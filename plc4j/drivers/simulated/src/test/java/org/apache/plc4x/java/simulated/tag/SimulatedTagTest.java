@@ -31,8 +31,8 @@ public class SimulatedTagTest {
 
     @Test
     public void constructor() {
-        assertThat(SimulatedTag.matches("RANDOM/test:DINT[2]"), equalTo(true));
-        SimulatedTag tag = SimulatedTag.of("RANDOM/test:DINT[2]");
+        assertThat(SimulatedTag.matches("RANDOM/test[0..1]:DINT"), equalTo(true));
+        SimulatedTag tag = SimulatedTag.of("RANDOM/test[0..1]:DINT");
         assertThat(tag.getType(), equalTo(SimulatedTagType.RANDOM));
         assertThat(tag.getName(), equalTo("test"));
         assertThat(tag.getPlcValueType().name(), equalTo("DINT"));
@@ -44,8 +44,8 @@ public class SimulatedTagTest {
     /*[TODO] Add support for Full Java Type Names back in after plc4go changes have merged
     @Test
     public void constructor() {
-        assertThat(SimulatedTag.matches("RANDOM/test:Int[2]"), equalTo(true));
-        SimulatedTag tag = SimulatedTag.of("RANDOM/test:Int[2]");
+        assertThat(SimulatedTag.matches("RANDOM/test[0..1]:Int"), equalTo(true));
+        SimulatedTag tag = SimulatedTag.of("RANDOM/test[0..1]:Int");
         assertThat(tag.getType(), equalTo(SimulatedTagType.RANDOM));
         assertThat(tag.getName(), equalTo("test"));
         assertThat(tag.getPlcDataType(), equalTo("Integer"));

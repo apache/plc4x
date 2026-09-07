@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAllowGroupDelayInhibit = (*_BACnetConstructedDataAllo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllowGroupDelayInhibit)(nil)
 
 // NewBACnetConstructedDataAllowGroupDelayInhibit factory function for _BACnetConstructedDataAllowGroupDelayInhibit
-func NewBACnetConstructedDataAllowGroupDelayInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allowGroupDelayInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllowGroupDelayInhibit {
+func NewBACnetConstructedDataAllowGroupDelayInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allowGroupDelayInhibit BACnetApplicationTagBoolean) *_BACnetConstructedDataAllowGroupDelayInhibit {
 	if allowGroupDelayInhibit == nil {
 		panic("allowGroupDelayInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataAllowGroupDelayInhibit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAllowGroupDelayInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AllowGroupDelayInhibit:        allowGroupDelayInhibit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAllowGroupDelayInhibit(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetTypeName() string {
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAllowGroupDelayInhibit"
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (allowGroupDelayInhibit)
 	lengthInBits += m.AllowGroupDelayInhibit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

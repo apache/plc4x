@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +55,9 @@ var _ RequestEmpty = (*_RequestEmpty)(nil)
 var _ RequestRequirements = (*_RequestEmpty)(nil)
 
 // NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
+func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) *_RequestEmpty {
 	_result := &_RequestEmpty{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
 	}
 	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
@@ -176,17 +177,17 @@ func CastRequestEmpty(structType any) RequestEmpty {
 	return nil
 }
 
-func (m *_RequestEmpty) GetTypeName() string {
+func (m *_RequestEmpty) GetPlx4xTypeName() string {
 	return "RequestEmpty"
 }
 
-func (m *_RequestEmpty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+func (m *_RequestEmpty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -209,7 +210,7 @@ func (m *_RequestEmpty) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_RequestEmpty) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

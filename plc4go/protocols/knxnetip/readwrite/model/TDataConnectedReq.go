@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ TDataConnectedReq = (*_TDataConnectedReq)(nil)
 var _ CEMIRequirements = (*_TDataConnectedReq)(nil)
 
 // NewTDataConnectedReq factory function for _TDataConnectedReq
-func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
+func NewTDataConnectedReq() *_TDataConnectedReq {
 	_result := &_TDataConnectedReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastTDataConnectedReq(structType any) TDataConnectedReq {
 	return nil
 }
 
-func (m *_TDataConnectedReq) GetTypeName() string {
+func (m *_TDataConnectedReq) GetPlx4xTypeName() string {
 	return "TDataConnectedReq"
 }
 
-func (m *_TDataConnectedReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_TDataConnectedReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TDataConnectedReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TDataConnectedReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

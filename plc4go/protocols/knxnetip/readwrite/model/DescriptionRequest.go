@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -227,12 +227,12 @@ func CastDescriptionRequest(structType any) DescriptionRequest {
 	return nil
 }
 
-func (m *_DescriptionRequest) GetTypeName() string {
+func (m *_DescriptionRequest) GetPlx4xTypeName() string {
 	return "DescriptionRequest"
 }
 
-func (m *_DescriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_DescriptionRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_DescriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DescriptionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DescriptionRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -255,7 +255,7 @@ func (m *_DescriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	hpaiControlEndpoint, err := ReadSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", ReadComplex[HPAIControlEndpoint](HPAIControlEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	hpaiControlEndpoint, err := ReadSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", ReadComplex[HPAIControlEndpoint](HPAIControlEndpointParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiControlEndpoint' field"))
 	}
@@ -286,7 +286,7 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DescriptionRequest")
 		}
 
-		if err := WriteSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", m.GetHpaiControlEndpoint(), WriteComplex[HPAIControlEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", m.GetHpaiControlEndpoint(), WriteComplex[HPAIControlEndpoint](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hpaiControlEndpoint' field")
 		}
 

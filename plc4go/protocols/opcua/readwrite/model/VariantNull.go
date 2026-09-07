@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,7 +54,7 @@ var _ VariantNull = (*_VariantNull)(nil)
 var _ VariantRequirements = (*_VariantNull)(nil)
 
 // NewVariantNull factory function for _VariantNull
-func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
+func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32) *_VariantNull {
 	_result := &_VariantNull{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 	}
@@ -180,17 +180,17 @@ func CastVariantNull(structType any) VariantNull {
 	return nil
 }
 
-func (m *_VariantNull) GetTypeName() string {
+func (m *_VariantNull) GetPlx4xTypeName() string {
 	return "VariantNull"
 }
 
-func (m *_VariantNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantNull) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_VariantNull) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantNull) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

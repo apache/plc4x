@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ NLMRequestMasterKey = (*_NLMRequestMasterKey)(nil)
 var _ NLMRequirements = (*_NLMRequestMasterKey)(nil)
 
 // NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
-func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
+func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) *_NLMRequestMasterKey {
 	_result := &_NLMRequestMasterKey{
-		NLMContract:                      NewNLM(apduLength),
+		NLMContract:                      NewNLM(),
 		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
 		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
 	}
@@ -222,25 +222,25 @@ func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {
 	return nil
 }
 
-func (m *_NLMRequestMasterKey) GetTypeName() string {
+func (m *_NLMRequestMasterKey) GetPlx4xTypeName() string {
 	return "NLMRequestMasterKey"
 }
 
-func (m *_NLMRequestMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRequestMasterKey) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfSupportedKeyAlgorithms)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.EncryptionAndSignatureAlgorithms) > 0 {
-		lengthInBits += 8 * uint16(len(m.EncryptionAndSignatureAlgorithms))
+		lengthInBits += 8 * uint64(len(m.EncryptionAndSignatureAlgorithms))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMRequestMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRequestMasterKey) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

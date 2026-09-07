@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -254,11 +254,11 @@ func CastMediaTransportControlCommandType(structType any) MediaTransportControlC
 	return castFunc(structType)
 }
 
-func (m MediaTransportControlCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m MediaTransportControlCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m MediaTransportControlCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MediaTransportControlCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

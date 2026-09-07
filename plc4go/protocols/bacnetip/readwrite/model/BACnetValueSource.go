@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,8 +62,8 @@ type BACnetValueSourceContract interface {
 
 // BACnetValueSourceRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetValueSourceRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -289,23 +289,23 @@ func CastBACnetValueSource(structType any) BACnetValueSource {
 	return nil
 }
 
-func (m *_BACnetValueSource) GetTypeName() string {
+func (m *_BACnetValueSource) GetPlx4xTypeName() string {
 	return "BACnetValueSource"
 }
 
-func (m *_BACnetValueSource) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetValueSource) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetValueSource) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetValueSource) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetValueSource) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetValueSource) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -325,7 +325,7 @@ func BACnetValueSourceParseWithBufferProducer[T BACnetValueSource]() func(ctx co
 }
 
 func BACnetValueSourceParseWithBuffer[T BACnetValueSource](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetValueSource{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetValueSource)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

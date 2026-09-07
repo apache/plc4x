@@ -1,6 +1,1185 @@
 # CHANGELOG
 
-## [rel/0.12](https://github.com/apache/plc4x/releases/tag/rel/0.12) - 2024-02-16 11:48:19
+## [relt/0.13](https://github.com/apache/plc4x/releases/tag/relt/0.13) - 2025-08-02 13:55:11+00:00
+
+## What's Changed
+* build(deps): bump github.com/gdamore/tcell/v2 from 2.7.0 to 2.7.1 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1413
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.8.0 to 1.8.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1409
+* build(deps): bump org.asciidoctor:asciidoctor-maven-plugin from 2.2.6 to 3.0.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1408
+* build(deps): bump netty.version from 4.1.106.Final to 4.1.107.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1405
+* build(deps): bump org.apache.maven:maven-artifact from 3.6.3 to 3.9.6 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1406
+* build(deps): bump logback.version from 1.4.14 to 1.5.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1418
+* build(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.1.1 to 3.2.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1415
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.24.1 to 2.25.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1416
+* build(deps): bump net.bytebuddy:byte-buddy from 1.14.11 to 1.14.12 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1417
+* build(deps-dev): bump org.apache.commons:commons-compress from 1.25.0 to 1.26.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1422
+* build(deps): bump org.springframework.boot:spring-boot-maven-plugin from 3.2.2 to 3.2.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1421
+* build(deps): bump org.springframework.boot:spring-boot-dependencies from 3.2.2 to 3.2.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1420
+* build(deps): bump github.com/schollz/progressbar/v3 from 3.14.1 to 3.14.2 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1428
+* build(deps): bump com.google.protobuf:protobuf-java from 3.25.2 to 3.25.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1427
+* build(deps): bump com.google.googlejavaformat:google-java-format from 1.19.2 to 1.20.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1426
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.15.6 to 3.15.7 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1425
+* build(deps): bump io.nats:jnats from 2.15.3 to 2.17.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1431
+* fix(plc4py): Documentation and Write Requests by @hutcheb in https://github.com/apache/plc4x/pull/1437
+* fix: added timeouts for reading data/getting connection by @geneross in https://github.com/apache/plc4x/pull/1361
+* build(deps): bump github.com/stretchr/testify from 1.8.4 to 1.9.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1439
+* build(deps): bump golang.org/x/tools from 0.18.0 to 0.19.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1440
+* build(deps): bump logback.version from 1.5.0 to 1.5.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1435
+* build(deps): bump github.com/gdamore/tcell/v2 from 2.7.1 to 2.7.4 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1438
+* build(deps): bump golang.org/x/net from 0.21.0 to 0.22.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1441
+* build(deps): bump jakarta.activation:jakarta.activation-api from 2.1.2 to 2.1.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1436
+* CANopen driver fixes by @splatch in https://github.com/apache/plc4x/pull/1446
+* Fix/s7async by @glcj in https://github.com/apache/plc4x/pull/1451
+* build(deps): bump com.google.googlejavaformat:google-java-format from 1.20.0 to 1.21.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1449
+* build(deps): bump logback.version from 1.5.1 to 1.5.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1448
+* build(deps): bump com.gradle:common-custom-user-data-maven-extension from 1.12.5 to 1.13 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1434
+* Update PlcRawByteArray.java by @mrwhy-orig in https://github.com/apache/plc4x/pull/1453
+* build(deps-dev): bump org.apache.commons:commons-compress from 1.26.0 to 1.26.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1456
+* build(deps): bump org.awaitility:awaitility from 4.2.0 to 4.2.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1455
+* build(deps): bump org.springframework.boot:spring-boot-maven-plugin from 3.2.3 to 3.2.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1460
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.25.0 to 2.26.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1461
+* build(deps): bump org.springframework.boot:spring-boot-dependencies from 3.2.3 to 3.2.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1462
+* Add support for unit-id option for modbus tags. by @splatch in https://github.com/apache/plc4x/pull/1464
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.15.7 to 3.16 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1467
+* build(deps): bump org.cyclonedx:cyclonedx-maven-plugin from 2.7.11 to 2.8.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1466
+* build(deps): bump org.apache.maven.plugins:maven-remote-resources-plugin from 3.1.0 to 3.2.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1465
+* build(deps): bump org.aspectj:aspectjweaver from 1.9.21.1 to 1.9.22 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1475
+* build(deps): bump jakarta.xml.bind:jakarta.xml.bind-api from 4.0.1 to 4.0.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1474
+* build(deps): bump com.google.guava:guava from 33.0.0-jre to 33.1.0-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/1473
+* build(deps): bump golang.org/x/net from 0.22.0 to 0.23.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1477
+* build(deps): bump mockito.version from 5.10.0 to 5.11.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1478
+* build(deps): bump io.swagger:swagger-annotations from 1.6.13 to 1.6.14 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1479
+* build(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 3.10.0.2594 to 3.11.0.3922 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1480
+* Update PlcCHAR.java add Character type check to of method by @mrwhy-orig in https://github.com/apache/plc4x/pull/1489
+* build(deps): bump golang.org/x/net from 0.23.0 to 0.24.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1488
+* build(deps): bump groovy.version from 4.0.18 to 4.0.20 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1486
+* build(deps): bump org.jacoco:jacoco-maven-plugin from 0.8.11 to 0.8.12 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1485
+* build(deps): bump org.apache.maven.plugins:maven-source-plugin from 3.3.0 to 3.3.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1484
+* build(deps): bump golang.org/x/tools from 0.19.0 to 0.20.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1487
+* refactor: Moved the examples, integrations and other extra stuff into the new plc4x-extras repository by @chrisdutz in https://github.com/apache/plc4x/pull/1483
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.16 to 3.16.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1490
+* build(deps): bump org.apache.maven.plugins:maven-assembly-plugin from 3.6.0 to 3.7.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1491
+* build(deps): bump jakarta.annotation:jakarta.annotation-api from 2.1.1 to 3.0.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1494
+* build(deps): bump io.netty:netty-bom from 4.1.107.Final to 4.1.108.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1493
+* build(deps): bump pytest-mock from 3.12.0 to 3.14.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1501
+* build(deps): bump identify from 2.5.33 to 2.5.35 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1500
+* build(deps): bump packaging from 23.2 to 24.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1499
+* build(deps): bump pytest-asyncio from 0.23.5 to 0.23.6 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1498
+* build(deps): bump build from 1.0.3 to 1.2.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1496
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.16.1 to 2.17.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1497
+* build(deps): bump com.gradle:common-custom-user-data-maven-extension from 1.13 to 2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1492
+* build(deps): bump mypy from 1.8.0 to 1.9.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1502
+* build(deps): bump black from 24.1.1 to 24.3.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1503
+* build(deps): bump filelock from 3.13.1 to 3.13.4 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1504
+* build(deps): bump virtualenv from 20.25.0 to 20.25.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1506
+* build(deps): bump typing-extensions from 4.9.0 to 4.11.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1505
+* build(deps): bump org.apache.maven.plugins:maven-invoker-plugin from 3.6.0 to 3.6.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1514
+* build(deps): bump org.asciidoctor:asciidoctorj from 2.5.11 to 2.5.12 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1515
+* build(deps): bump com.google.googlejavaformat:google-java-format from 1.21.0 to 1.22.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1516
+* build(deps): bump coverage from 7.4.1 to 7.4.4 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1511
+* build(deps): bump pytest from 8.0.0 to 8.1.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1510
+* build(deps): bump pre-commit from 3.6.0 to 3.7.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1512
+* build(deps): bump pip-tools from 7.3.0 to 7.4.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1513
+* fix(plc4j/ads): Fixed List serialization passing invalid datatype by @IsmoLeszczynski in https://github.com/apache/plc4x/pull/1517
+* Cleanup discovery connection resources. by @splatch in https://github.com/apache/plc4x/pull/1518
+* fix(plc4j/ads): Invalid size writing multiple tags by @IsmoLeszczynski in https://github.com/apache/plc4x/pull/1524
+* Make sure UA subscription acknowledges are retained over publish cycles by @splatch in https://github.com/apache/plc4x/pull/1447
+* build(deps): bump black from 24.3.0 to 24.4.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1528
+* build(deps): bump org.apache.maven.plugins:maven-compiler-plugin from 3.12.1 to 3.13.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1525
+* build(deps): bump org.codehaus.plexus:plexus-compiler-api from 2.14.2 to 2.15.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1526
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.23.0 to 2.26.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1527
+* build(deps): bump logback.version from 1.5.3 to 1.5.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1531
+* build(deps): bump io.netty:netty-bom from 4.1.108.Final to 4.1.109.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1532
+* build(deps): bump groovy.version from 4.0.20 to 4.0.21 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1533
+* fix(plc4j/ads): Fixed connection hang on exception by @IsmoLeszczynski in https://github.com/apache/plc4x/pull/1530
+* build(deps): bump virtualenv from 20.25.1 to 20.25.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1537
+* build(deps): bump slf4j.version from 2.0.12 to 2.0.13 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1536
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 1.9.22 to 1.9.23 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1534
+* build(deps): bump org.apache.commons:commons-configuration2 from 2.9.0 to 2.10.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1541
+* build(deps): bump org.apache.karaf.tooling:karaf-maven-plugin from 4.4.5 to 4.4.6 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1539
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.8.1 to 1.9.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1540
+* build(deps): bump virtualenv from 20.25.2 to 20.25.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1542
+* build(deps): bump net.bytebuddy:byte-buddy from 1.14.12 to 1.14.13 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1545
+* build(deps-dev): bump commons-io:commons-io from 2.15.1 to 2.16.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1544
+* build(deps): bump org.apache.commons:commons-text from 1.11.0 to 1.12.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1543
+* build(deps): bump org.codehaus.mojo:extra-enforcer-rules from 1.7.0 to 1.8.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1548
+* build(deps): bump logback.version from 1.5.5 to 1.5.6 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1549
+* build(deps): bump bouncycastle.version from 1.77 to 1.78.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1550
+* build(deps): bump identify from 2.5.35 to 2.5.36 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1546
+* build(deps): bump pluggy from 1.4.0 to 1.5.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1547
+* build(deps): bump com.fazecast:jSerialComm from 2.10.4 to 2.11.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1554
+* Convert the string address into a PlcTag by @qtvbwfn in https://github.com/apache/plc4x/pull/1468
+* build(deps): bump commons-logging:commons-logging from 1.3.0 to 1.3.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1553
+* build(deps-dev): bump org.json:json from 20240205 to 20240303 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1552
+* build(deps): bump org.apache.maven.plugins:maven-jar-plugin from 3.3.0 to 3.4.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1559
+* build(deps): bump virtualenv from 20.25.3 to 20.26.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1555
+* build(deps): bump platformdirs from 4.2.0 to 4.2.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1556
+* build(deps): bump coverage from 7.4.4 to 7.5.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1557
+* build(deps): bump net.bytebuddy:byte-buddy from 1.14.13 to 1.14.14 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1562
+* build(deps): bump commons-cli:commons-cli from 1.6.0 to 1.7.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1563
+* build(deps): bump org.apache:apache from 31 to 32 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1558
+* build(deps): bump black from 24.4.0 to 24.4.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1565
+* build(deps): bump mypy from 1.9.0 to 1.10.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1564
+* build(deps): bump black from 24.4.1 to 24.4.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1566
+* build(deps): bump xmlunit.version from 2.9.1 to 2.10.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1570
+* build(deps): bump org.apache:apache from 31 to 32 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1572
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.26.1 to 2.27.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1571
+* build(deps): bump pytest from 8.1.1 to 8.2.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1573
+* build(deps): bump commons-codec:commons-codec from 1.16.1 to 1.17.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1574
+* build(deps): bump pyproject-hooks from 1.0.0 to 1.1.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1575
+* build(deps): bump filelock from 3.13.4 to 3.14.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1576
+* build(deps): bump virtualenv from 20.26.0 to 20.26.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1577
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.27.0 to 2.27.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1578
+* build(deps): bump com.google.j2objc:j2objc-annotations from 2.8 to 3.0.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1560
+* build(deps): bump com.google.guava:guava from 33.1.0-jre to 33.2.0-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/1579
+* build(deps): bump org.apache.commons:commons-csv from 1.10.0 to 1.11.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1580
+* build(deps): bump golang.org/x/text from 0.14.0 to 0.15.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1584
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.17.0 to 2.17.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1586
+* build(deps): bump coverage from 7.5.0 to 7.5.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1587
+* fix(plc4py): Enable integration tests by @hutcheb in https://github.com/apache/plc4x/pull/1588
+* build(deps): bump golang.org/x/tools from 0.20.0 to 0.21.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1592
+* build(deps): bump golang.org/x/net from 0.24.0 to 0.25.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1591
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 1.9.23 to 1.9.24 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1594
+* build(deps): bump pre-commit from 3.7.0 to 3.7.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1596
+* build(deps): bump virtualenv from 20.26.1 to 20.26.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1598
+* build(deps): bump platformdirs from 4.2.1 to 4.2.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1599
+* Refactor / improve python modbus by @ottlukas in https://github.com/apache/plc4x/pull/1581
+* build(deps): bump pytest-asyncio from 0.23.6 to 0.23.7 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1605
+* build(deps): bump annotated-types from 0.6.0 to 0.7.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1608
+* build(deps): bump pytest from 8.2.0 to 8.2.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1606
+* Ensure the CMake build works on all platforms by @chrisdutz in https://github.com/apache/plc4x/pull/1612
+* build(deps): bump typing-extensions from 4.11.0 to 4.12.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1611
+* fix(plc4py/umas): Write Support by @hutcheb in https://github.com/apache/plc4x/pull/1463
+* build(deps): bump byte-buddy.version from 1.14.14 to 1.14.16 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1613
+* build(deps): bump github.com/rs/zerolog from 1.32.0 to 1.33.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1609
+* build(deps): bump commons-logging:commons-logging from 1.3.1 to 1.3.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1601
+* build(deps): bump mockito.version from 5.11.0 to 5.12.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1597
+* build(deps-dev): bump milo.version from 0.6.12 to 0.6.13 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1607
+* build(deps): bump coverage from 7.5.1 to 7.5.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1616
+* build(deps): bump coverage from 7.5.2 to 7.5.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1624
+* build(deps): bump nodeenv from 1.8.0 to 1.9.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1623
+* build(deps): bump org.codehaus.mojo:build-helper-maven-plugin from 3.5.0 to 3.6.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1621
+* build(deps): bump org.apache.maven:maven-artifact from 3.9.6 to 3.9.7 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1620
+* build(deps): bump org.asciidoctor:asciidoctorj from 2.5.12 to 2.5.13 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1619
+* build(deps): bump commons-cli:commons-cli from 1.7.0 to 1.8.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1618
+* build(deps): bump pytest from 8.2.1 to 8.2.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1638
+* build(deps): bump nodeenv from 1.9.0 to 1.9.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1637
+* build(deps): bump golang.org/x/text from 0.15.0 to 0.16.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1636
+* build(deps): bump typing-extensions from 4.12.0 to 4.12.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1631
+* build(deps): bump commons-net:commons-net from 3.10.0 to 3.11.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1628
+* build(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.2.0 to 3.3.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1629
+* build(deps): bump byte-buddy.version from 1.14.16 to 1.14.17 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1627
+* build(deps): bump golang.org/x/tools from 0.21.0 to 0.22.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1634
+* build(deps): bump io.netty:netty-bom from 4.1.109.Final to 4.1.110.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1641
+* build(deps): bump org.assertj:assertj-core from 3.25.3 to 3.26.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1640
+* build(deps): bump org.apache.maven.shared:maven-dependency-tree from 3.2.1 to 3.3.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1639
+* build(deps): bump org.apache.maven.plugins:maven-javadoc-plugin from 3.6.3 to 3.7.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1642
+* build(deps): bump org.apache.maven.plugins:maven-invoker-plugin from 3.6.1 to 3.7.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1645
+* build(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 3.11.0.3922 to 4.0.0.4121 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1643
+* build(deps): bump packaging from 24.0 to 24.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1647
+* build(deps): bump typing-extensions from 4.12.1 to 4.12.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1648
+* build(deps): bump tel.schich:javacan-core from 3.3.2 to 3.4.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1652
+* build(deps): bump com.google.guava:guava from 33.2.0-jre to 33.2.1-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/1651
+* build(deps): bump org.apache.maven:maven-core from 3.9.6 to 3.9.7 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1650
+* build(deps-dev): bump org.apache.commons:commons-compress from 1.26.1 to 1.26.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1649
+* build(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.4.1 to 3.5.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1656
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 1.9.24 to 2.0.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1655
+* build(deps): bump org.apache.commons:commons-configuration2 from 2.10.1 to 2.11.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1654
+* build(deps): bump filelock from 3.14.0 to 3.15.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1661
+* build(deps): bump commons-net:commons-net from 3.11.0 to 3.11.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1660
+* build(deps): bump io.netty:netty-bom from 4.1.110.Final to 4.1.111.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1659
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.27.1 to 2.28.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1658
+* Setting third parameter to emptyCollection in static of methods call to SymbolicAdsTag by @mrwhy-orig in https://github.com/apache/plc4x/pull/1633
+* add modbus support BIG_ENDIAN_WORD_SWAP and  LITTLE_ENDIAN_WORD_SWAP by @StrawberryBlue in https://github.com/apache/plc4x/pull/1632
+* build(deps): bump org.apache.maven.plugins:maven-surefire-plugin from 3.2.5 to 3.3.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1665
+* build(deps): bump org.apache.maven.plugins:maven-release-plugin from 3.0.1 to 3.1.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1664
+* build(deps): bump org.apache.maven.plugins:maven-failsafe-plugin from 3.2.5 to 3.3.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1663
+* build(deps): bump pycodestyle from 2.11.1 to 2.12.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1667
+* build(deps): bump flake8 from 7.0.0 to 7.1.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1666
+* build(deps): bump org.apache.maven:maven-artifact from 3.9.7 to 3.9.8 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1669
+* build(deps): bump org.apache.maven.plugins:maven-jar-plugin from 3.4.1 to 3.4.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1672
+* build(deps): bump filelock from 3.15.1 to 3.15.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1673
+* build(deps): bump coverage from 7.5.3 to 7.5.4 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1679
+* build(deps): bump virtualenv from 20.26.2 to 20.26.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1680
+* build(deps): bump filelock from 3.15.3 to 3.15.4 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1681
+* build(deps): bump mypy from 1.10.0 to 1.10.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1683
+* build(deps): bump org.skyscreamer:jsonassert from 1.5.1 to 1.5.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1685
+* build(deps): bump groovy.version from 4.0.21 to 4.0.22 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1686
+* build(deps): bump org.asciidoctor:asciidoctorj-diagram from 2.3.0 to 2.3.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1688
+* build(deps): bump tel.schich:javacan-core from 3.4.0 to 3.5.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1689
+* Implementation of session renewal functionality. by @splatch in https://github.com/apache/plc4x/pull/1684
+* build(deps): bump junit.jupiter.version from 5.10.2 to 5.10.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1690
+* build(deps): bump identify from 2.5.36 to 2.6.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1696
+* build(deps): bump golang.org/x/tools from 0.22.0 to 0.23.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1695
+* build(deps): bump commons-logging:commons-logging from 1.3.2 to 1.3.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1693
+* build(deps): bump coverage from 7.5.4 to 7.6.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1700
+* Odot by @glcj in https://github.com/apache/plc4x/pull/1704
+* add timeout for gracefully shutdown of event group by @BioComputerSience in https://github.com/apache/plc4x/pull/1701
+* build(deps): bump pytest-asyncio from 0.23.7 to 0.23.8 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1706
+* build(deps): bump pytest from 8.2.2 to 8.3.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1708
+* build(deps): bump mypy from 1.10.1 to 1.11.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1707
+* build(deps): bump pytest from 8.3.1 to 8.3.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1709
+* build(deps): bump pre-commit from 3.7.1 to 3.8.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1710
+* build(deps): bump mypy from 1.11.0 to 1.11.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1712
+* build(deps): bump coverage from 7.6.0 to 7.6.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1714
+* build(deps): bump flake8 from 7.1.0 to 7.1.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1715
+* build(deps): bump pycodestyle from 2.12.0 to 2.12.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1716
+* build(deps): bump black from 24.4.2 to 24.8.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1717
+* build(deps): bump pyyaml from 6.0.1 to 6.0.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1720
+* Switch opcua tests to test containers. by @splatch in https://github.com/apache/plc4x/pull/1719
+* Added fix for variables inside of function blocks / with two path seg… by @luedi128 in https://github.com/apache/plc4x/pull/1729
+* build(deps): bump pytest-asyncio from 0.23.8 to 0.24.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1736
+* Remove support for var-args in plc4j by @splatch in https://github.com/apache/plc4x/pull/1739
+* build(deps): bump mypy from 1.11.1 to 1.11.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1740
+* feat(plc4py): Parser Serializer Test Runner by @hutcheb in https://github.com/apache/plc4x/pull/1737
+* build(deps): bump github.com/gopacket/gopacket from 1.2.0 to 1.3.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1742
+* Improve error handling and propagate exceptions back to driver by @splatch in https://github.com/apache/plc4x/pull/1727
+* Feature/modbus optimizer by @chrisdutz in https://github.com/apache/plc4x/pull/1744
+* Feature/s7 discovery by @chrisdutz in https://github.com/apache/plc4x/pull/1743
+* chore(deps): bump golang.org/x/text from 0.17.0 to 0.18.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1746
+* chore(deps): bump golang.org/x/net from 0.28.0 to 0.29.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1747
+* Feat/plc4py/modbus write by @hutcheb in https://github.com/apache/plc4x/pull/1745
+* chore(deps): bump golang.org/x/tools from 0.24.0 to 0.25.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1755
+* chore(deps): bump build from 1.2.1 to 1.2.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1753
+* chore(deps): bump platformdirs from 4.2.2 to 4.3.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1752
+* chore(deps): bump virtualenv from 20.26.3 to 20.26.4 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1751
+* chore(deps): bump filelock from 3.15.4 to 3.16.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1750
+* chore(deps): bump pytest from 8.3.2 to 8.3.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1756
+* build(deps): bump org.apache:apache from 31 to 33 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1698
+* Feature/update parent pom by @chrisdutz in https://github.com/apache/plc4x/pull/1757
+* build(deps): bump platformdirs from 4.3.2 to 4.3.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1758
+* build(deps): bump identify from 2.6.0 to 2.6.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1759
+* build(deps): bump com.google.guava:guava from 33.2.1-jre to 33.3.0-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/1763
+* build(deps): bump org.yaml:snakeyaml from 2.2 to 2.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1761
+* build(deps): bump net.sf.saxon:Saxon-HE from 12.4 to 12.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1760
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.28.0 to 2.32.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1768
+* build(deps): bump commons-logging:commons-logging from 1.3.3 to 1.3.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1766
+* build(deps): bump platformdirs from 4.3.3 to 4.3.6 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1769
+* build(deps): bump virtualenv from 20.26.4 to 20.26.5 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1770
+* build(deps): bump filelock from 3.16.0 to 3.16.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1771
+* build(deps): bump joda-time:joda-time from 2.12.7 to 2.13.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1774
+* build(deps-dev): bump com.google.cloud.tools:jib-core from 0.22.0 to 0.27.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1773
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.20.0 to 1.20.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1772
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.17.1 to 2.17.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1777
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.20.0 to 1.20.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1778
+* build(deps): bump net.java.dev.jna:jna from 5.14.0 to 5.15.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1779
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 2.0.0 to 2.0.20 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1784
+* build(deps): bump org.jsoup:jsoup from 1.17.2 to 1.18.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1782
+* build(deps): bump org.cyclonedx:cyclonedx-maven-plugin from 2.8.0 to 2.8.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1788
+* build(deps): bump org.codehaus.mojo:extra-enforcer-rules from 1.8.0 to 1.9.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1787
+* build(deps): bump org.apache.commons:commons-csv from 1.11.0 to 1.12.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1790
+* build(deps): bump junit.jupiter.version from 5.11.0 to 5.11.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1789
+* build(deps): bump jackson.version from 2.17.2 to 2.18.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1792
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.17.2 to 2.18.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1791
+* build(deps): bump virtualenv from 20.26.5 to 20.26.6 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1795
+* build(deps): bump pyproject-hooks from 1.1.0 to 1.2.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1796
+* build(deps): bump net.bytebuddy:byte-buddy from 1.15.1 to 1.15.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1793
+* build(deps): bump com.gradle:common-custom-user-data-maven-extension from 2 to 2.0.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1794
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.16.2 to 3.17 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1799
+* build(deps): bump commons-io:commons-io from 2.16.1 to 2.17.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1798
+* refactor: Fine tuning of the API and SPI by @chrisdutz in https://github.com/apache/plc4x/pull/1786
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.32.0 to 2.33.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1801
+* build(deps): bump org.apache.maven.plugins:maven-invoker-plugin from 3.7.0 to 3.8.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1800
+* build(deps): bump build from 1.2.2 to 1.2.2.post1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1807
+* build(deps): bump pre-commit from 3.8.0 to 4.0.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1806
+* build(deps): bump golang.org/x/net from 0.29.0 to 0.30.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1810
+* build(deps): bump junit.jupiter.version from 5.11.1 to 5.11.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1805
+* build(deps): bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.0 to 3.10.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1804
+* build(deps): bump black from 24.8.0 to 24.10.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1813
+* build(deps): bump io.netty:netty-bom from 4.1.113.Final to 4.1.114.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1812
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.20.1 to 1.20.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1811
+* build(deps): bump golang.org/x/tools from 0.25.0 to 0.26.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1809
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.20.1 to 1.20.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1815
+* build(deps): bump logback.version from 1.5.8 to 1.5.9 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1814
+* fix: Updated the subscription API to match the changes of the others by @chrisdutz in https://github.com/apache/plc4x/pull/1803
+* build(deps): bump coverage from 7.6.1 to 7.6.2 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1820
+* build(deps): bump distlib from 0.3.8 to 0.3.9 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1819
+* build(deps): bump bitarray from 2.9.2 to 2.9.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1821
+* build(deps): bump pre-commit from 4.0.0 to 4.0.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1816
+* build(deps): bump coverage from 7.6.2 to 7.6.3 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1822
+* build(deps): bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.0 to 3.5.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1818
+* build(deps): bump mockito.version from 5.13.0 to 5.14.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1817
+* build(deps): bump mypy from 1.11.2 to 1.12.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1823
+* build(deps): bump com.google.guava:guava from 33.3.0-jre to 33.3.1-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/1825
+* build(deps): bump bitarray from 2.9.3 to 3.0.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1826
+* Feature/external types by @chrisdutz in https://github.com/apache/plc4x/pull/1827
+* fix(plc4j): Adjust encoding/decoding logic to support mixed key lengths. by @splatch in https://github.com/apache/plc4x/pull/1829
+* fix(plc4j): Adjust endpoint selection logic. by @splatch in https://github.com/apache/plc4x/pull/1830
+* Attempt to stabilize OPC UA unit tests by @splatch in https://github.com/apache/plc4x/pull/1797
+* Further attempt to stabilize OPC UA unit tests by @splatch in https://github.com/apache/plc4x/pull/1832
+* Disable opcua tests on Jenkins. by @splatch in https://github.com/apache/plc4x/pull/1834
+* build(deps): bump org.apache.maven.shared:maven-dependency-analyzer from 1.14.1 to 1.15.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1828
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.17 to 3.17.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1824
+* build(deps): bump mypy from 1.12.0 to 1.12.1 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1836
+* build(deps): bump coverage from 7.6.3 to 7.6.4 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1835
+* build(deps): bump virtualenv from 20.26.6 to 20.27.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1831
+* build(deps): bump junit.jupiter.version from 5.11.2 to 5.11.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1837
+* build(deps): bump com.google.googlejavaformat:google-java-format from 1.23.0 to 1.24.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1838
+* fix(plc4j): Use pre-provisioned security keys for OPC-UA tests. by @splatch in https://github.com/apache/plc4x/pull/1839
+* build(deps): bump mypy from 1.12.1 to 1.13.0 in /plc4py by @dependabot[bot] in https://github.com/apache/plc4x/pull/1840
+* build(deps): bump io.vavr:vavr from 0.10.4 to 0.10.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1843
+* build(deps-dev): bump com.google.cloud.tools:jib-core from 0.27.1 to 0.27.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1842
+* build(deps): bump github.com/fatih/color from 1.17.0 to 1.18.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1841
+* build(deps): bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.0 to 3.5.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1847
+* build(deps): bump mockito.version from 5.14.1 to 5.14.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1846
+* build(deps): bump org.cyclonedx:cyclonedx-maven-plugin from 2.8.1 to 2.9.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1849
+* build(deps): bump org.apache.maven.plugins:maven-dependency-plugin from 3.8.0 to 3.8.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1848
+* feat(plc4py): UMAS write support by @hutcheb in https://github.com/apache/plc4x/pull/1854
+* Basic tutorial explaining use of KeyStore Explorer. by @splatch in https://github.com/apache/plc4x/pull/1855
+* Reorganize page titles by 1 level by @splatch in https://github.com/apache/plc4x/pull/1857
+* build(deps): bump jackson.version from 2.18.0 to 2.18.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1851
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.20.2 to 1.20.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1852
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 2.0.20 to 2.0.21 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1861
+* build(deps): bump bouncycastle.version from 1.78.1 to 1.79 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1860
+* Adds COUNTER type for read/write. by @glcj in https://github.com/apache/plc4x/pull/1850
+* fix(plc4j/drivers/s7): fix NPE when Camel can not establish connection by @jmeierhofer in https://github.com/apache/plc4x/pull/1866
+* build(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.4.1 to 3.5.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1862
+* build(deps): bump org.apache.maven:maven-artifact from 3.9.8 to 3.9.9 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1767
+* build(deps): bump logback.version from 1.5.9 to 1.5.12 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1863
+* build(deps): bump net.bytebuddy:byte-buddy from 1.15.3 to 1.15.10 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1869
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.33.0 to 2.35.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1868
+* build(deps): bump org.apache.maven.shared:maven-dependency-analyzer from 1.15.0 to 1.15.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1867
+* Support for OPC-UA event subscriptions by @splatch in https://github.com/apache/plc4x/pull/1731
+* build(deps): bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.1 to 3.5.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1872
+* build(deps): bump org.apache.maven.plugins:maven-project-info-reports-plugin from 3.7.0 to 3.8.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1870
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.20.2 to 1.20.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1871
+* build(deps): bump golang.org/x/text from 0.19.0 to 0.20.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1877
+* build(deps): bump groovy.version from 4.0.23 to 4.0.24 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1876
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.18.0 to 2.18.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1875
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.9.0 to 1.11.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1874
+* fix(plc4j/drivers/s7): fix NoSuchElementException when watchdog ChannelHandler was not added yet & fix exception "MessageToMessageCodec$1 must produce at least one message." & fix some typos by @jmeierhofer in https://github.com/apache/plc4x/pull/1873
+* build(deps): bump golang.org/x/tools from 0.26.0 to 0.27.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1886
+* build(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 4.0.0.4121 to 5.0.0.4389 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1884
+* build(deps): bump org.apache.maven.plugins:maven-invoker-plugin from 3.8.0 to 3.8.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1883
+* build(deps): bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.1 to 3.5.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1882
+* fix(plc4j/drivers/s7): Delete 2 duplicate classes by @jmeierhofer in https://github.com/apache/plc4x/pull/1878
+* fix(plc4j/drivers/s7): fix Camel tries to reconnect immediately because of event order by @jmeierhofer in https://github.com/apache/plc4x/pull/1879
+* feat(site): Migrated the website to use Antora. by @hutcheb in https://github.com/apache/plc4x/pull/1880
+* build(deps): bump github.com/gopacket/gopacket from 1.3.0 to 1.3.1 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1890
+* build(deps): bump org.apache.maven.plugins:maven-site-plugin from 3.12.1 to 3.21.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1888
+* build(deps): bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.1 to 3.11.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1887
+* build(deps): bump org.codehaus.gmavenplus:gmavenplus-plugin from 3.0.2 to 4.0.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1889
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.11.2 to 1.11.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1891
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.17.1 to 3.17.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1892
+* build(deps): bump com.fasterxml.woodstox:woodstox-core from 7.0.0 to 7.1.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1893
+* build(deps): bump io.netty:netty-bom from 4.1.114.Final to 4.1.115.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1899
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.11.3 to 1.11.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1898
+* build(deps): bump commons-io:commons-io from 2.17.0 to 2.18.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1904
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.35.1 to 2.36.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1903
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.11.5 to 1.12.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1905
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.20.3 to 1.20.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1908
+* build(deps): bump com.googlecode.maven-download-plugin:download-maven-plugin from 1.12.1 to 1.13.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1907
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.20.3 to 1.20.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1906
+* build(deps): bump github.com/stretchr/testify from 1.9.0 to 1.10.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1909
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 2.0.21 to 2.1.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1914
+* build(deps): bump jackson.version from 2.18.1 to 2.18.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1913
+* build(deps): bump org.jsoup:jsoup from 1.18.1 to 1.18.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1911
+* build(deps): bump org.cyclonedx:cyclonedx-maven-plugin from 2.9.0 to 2.9.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1917
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.18.1 to 2.18.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1916
+* build(deps): bump org.jsoup:jsoup from 1.18.2 to 1.18.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1922
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.17.3 to 3.17.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1921
+* build(deps-dev): bump milo.version from 0.6.14 to 0.6.15 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1924
+* feat(plc4j/ads): Add STRING and WSTRING to getDataTypeTableEntry. by @fdupont-epsilia in https://github.com/apache/plc4x/pull/1902
+* build(deps): bump golang.org/x/tools from 0.27.0 to 0.28.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1926
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.17.4 to 3.17.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1930
+* build(deps): bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.1 to 3.11.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1929
+* build(deps): bump org.apache.maven.plugins:maven-invoker-plugin from 3.8.1 to 3.9.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1931
+* build(deps-dev): bump com.github.docker-java:docker-java-api from 3.4.0 to 3.4.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1934
+* build(deps): bump org.apache.commons:commons-text from 1.12.0 to 1.13.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1936
+* build(deps): bump net.bytebuddy:byte-buddy from 1.15.10 to 1.15.11 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1937
+* build(deps-dev): bump com.google.guava:guava from 33.3.1-jre to 33.4.0-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/1939
+* build(deps): bump junit.jupiter.version from 5.11.3 to 5.11.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1938
+* build(deps): bump io.netty:netty-bom from 4.1.115.Final to 4.1.116.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1941
+* build(deps): bump logback.version from 1.5.12 to 1.5.14 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1946
+* build(deps): bump golang.org/x/net from 0.32.0 to 0.33.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1943
+* build(deps): bump net.java.dev.jna:jna from 5.15.0 to 5.16.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1952
+* build(deps): bump logback.version from 1.5.14 to 1.5.15 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1951
+* fix: Update commercial support offerings reference by @emmanuel-ferdman in https://github.com/apache/plc4x/pull/1948
+* build(deps): bump org.freemarker:freemarker from 2.3.32 to 2.3.34 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1953
+* build(deps-dev): bump org.json:json from 20240303 to 20241224 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1955
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.17.5 to 3.18 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1954
+* build(deps): bump logback.version from 1.5.15 to 1.5.16 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1963
+* build(deps): bump org.apache.maven.plugins:maven-remote-resources-plugin from 3.2.0 to 3.3.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1962
+* build(deps): bump mockito.version from 5.14.2 to 5.15.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1961
+* build(deps): bump golang.org/x/net from 0.33.0 to 0.34.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1960
+* build(deps): bump golang.org/x/tools from 0.28.0 to 0.29.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/1959
+* build(deps): bump commons-codec:commons-codec from 1.17.1 to 1.17.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1967
+* build(deps-dev): bump org.json:json from 20241224 to 20250107 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1966
+* build(deps): bump org.codehaus.gmavenplus:gmavenplus-plugin from 4.0.1 to 4.1.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1965
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.18 to 3.18.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1970
+* build(deps): bump org.apache.commons:commons-csv from 1.12.0 to 1.13.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1973
+* Publish build scans to develocity.apache.org by @clayburn in https://github.com/apache/plc4x/pull/1975
+* build(deps): bump io.netty:netty-bom from 4.1.116.Final to 4.1.117.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/1977
+* build(deps): bump bouncycastle.version from 1.79 to 1.80 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1976
+* build(deps): bump com.gradle:develocity-maven-extension from 1.22.2 to 1.23 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1978
+* build(deps): bump org.assertj:assertj-core from 3.26.3 to 3.27.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1981
+* build(deps): bump net.bytebuddy:byte-buddy from 1.15.11 to 1.16.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1980
+* build(deps): bump com.gradle:develocity-maven-extension from 1.23 to 1.23.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1985
+* build(deps): bump org.apache.karaf.tooling:karaf-maven-plugin from 4.4.6 to 4.4.7 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1987
+* build(deps): bump groovy.version from 4.0.24 to 4.0.25 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1986
+* 2024 to 2025 by @Jitmisra in https://github.com/apache/plc4x/pull/1989
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 2.1.0 to 2.1.10 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1991
+* build(deps): bump commons-codec:commons-codec from 1.17.2 to 1.18.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1990
+* build(deps): bump net.bytebuddy:byte-buddy from 1.16.1 to 1.17.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1993
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.18.1 to 3.18.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1995
+* build(deps): bump io.vavr:vavr from 0.10.5 to 0.10.6 by @dependabot[bot] in https://github.com/apache/plc4x/pull/1998
+* build(deps): bump joda-time:joda-time from 2.13.0 to 2.13.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2000
+* build(deps): bump golang.org/x/text from 0.21.0 to 0.22.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2002
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.18.2 to 3.19 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2004
+* build(deps): bump commons-logging:commons-logging from 1.3.4 to 1.3.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2006
+* build(deps): bump golang.org/x/net from 0.34.0 to 0.35.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2007
+* build(deps): bump io.netty:netty-bom from 4.1.117.Final to 4.1.118.Final by @dependabot[bot] in https://github.com/apache/plc4x/pull/2009
+* build(deps): bump golang.org/x/tools from 0.29.0 to 0.30.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2008
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.20.4 to 1.20.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2018
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.20.4 to 1.20.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2017
+* build(deps): bump nl.jqno.equalsverifier:equalsverifier from 3.19 to 3.19.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2015
+* fix(plc4j/opcua): Fix null pointer exception in OPC UA Subscription Handle by @splatch in https://github.com/apache/plc4x/pull/2025
+* fix(plc4j/ab-eth): AB-Ethernet Driver is not connecting in PLC Allen-Bradley SLC 5/05 by @andvasp in https://github.com/apache/plc4x/pull/2016
+* build(deps): bump net.bytebuddy:byte-buddy from 1.17.0 to 1.17.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2029
+* build(deps): bump dorny/test-reporter from 1 to 2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2035
+* Fix/s7subs by @glcj in https://github.com/apache/plc4x/pull/2041
+* build(deps): bump github.com/rs/zerolog from 1.33.0 to 1.34.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2044
+* build(deps): bump golang.org/x/net from 0.37.0 to 0.38.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2047
+* feat(plc4j/ab-eth): Enable AB-Ethernet Driver reading by @andvasp in https://github.com/apache/plc4x/pull/2040
+* build(deps): bump golang.org/x/text from 0.23.0 to 0.24.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2051
+* build(deps): bump golang.org/x/net from 0.38.0 to 0.39.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2053
+* build(deps): bump golang.org/x/tools from 0.31.0 to 0.32.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2052
+* feat(plc4j/opcua): Remove additional hostname resolution within OPC-UA by @splatch in https://github.com/apache/plc4x/pull/2028
+* build(deps): bump org.yaml:snakeyaml from 2.3 to 2.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2011
+* feat(plc4j/modbus): ModbusOptimizer fixes for discrete-input and endianness by @IsmoLeszczynski in https://github.com/apache/plc4x/pull/2055
+* build(deps): bump mockito.version from 5.15.2 to 5.17.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2064
+* build(deps): bump net.sf.saxon:Saxon-HE from 12.5 to 12.6 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2063
+* build(deps): bump golang.org/x/text from 0.24.0 to 0.25.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2069
+* build(deps): bump com.google.guava:failureaccess from 1.0.2 to 1.0.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2066
+* build(deps-dev): bump com.google.guava:guava from 33.4.0-jre to 33.4.8-jre by @dependabot[bot] in https://github.com/apache/plc4x/pull/2065
+* build(deps): bump golang.org/x/net from 0.39.0 to 0.40.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2067
+* build(deps): bump golang.org/x/tools from 0.32.0 to 0.33.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2068
+* build(deps): bump com.gradle:common-custom-user-data-maven-extension from 2.0.1 to 2.0.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2071
+* build(deps): bump org.apache.maven.plugins:maven-compiler-plugin from 3.13.0 to 3.14.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2070
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.20.5 to 1.21.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2074
+* build(deps): bump logback.version from 1.5.16 to 1.5.18 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2076
+* build(deps): bump jackson.version from 2.18.2 to 2.19.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2075
+* build(deps): bump org.apache.commons:commons-csv from 1.13.0 to 1.14.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2078
+* build(deps): bump slf4j.version from 2.0.16 to 2.0.17 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2077
+* build(deps): bump com.googlecode.cmake-maven-project:cmake-maven-plugin from 3.30.2-b1 to 3.31.5-b1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2022
+* build(deps): bump com.igormaznitsa:gosdk-wrapper-maven-plugin from 1.0.2 to 1.0.4 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2081
+* build(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.0.0.4389 to 5.1.0.4751 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2079
+* build(deps-dev): bump milo.version from 0.6.15 to 0.6.16 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2084
+* build(deps-dev): bump com.google.cloud.tools:jib-core from 0.27.2 to 0.27.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2083
+* build(deps): bump net.bytebuddy:byte-buddy from 1.17.2 to 1.17.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2082
+* build(deps): bump net.java.dev.jna:jna from 5.16.0 to 5.17.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2087
+* build(deps): bump org.apache.commons:commons-collections4 from 4.4 to 4.5.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2086
+* build(deps): bump org.apache.maven.plugins:maven-project-info-reports-plugin from 3.8.0 to 3.9.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2085
+* build(deps): bump org.apache.maven.shared:maven-dependency-analyzer from 1.15.1 to 1.16.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2091
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.36.0 to 2.38.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2090
+* build(deps): bump xmlunit.version from 2.10.0 to 2.10.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2094
+* build(deps): bump net.sf.saxon:Saxon-HE from 12.6 to 12.7 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2093
+* build(deps): bump org.jsoup:jsoup from 1.18.3 to 1.20.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2092
+* build(deps-dev): bump com.github.docker-java:docker-java-api from 3.4.1 to 3.5.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2096
+* build(deps): bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.2 to 3.5.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2100
+* build(deps): bump org.apache.commons:commons-text from 1.13.0 to 1.13.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2099
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 2.1.10 to 2.1.21 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2098
+* build(deps-dev): bump org.json:json from 20250107 to 20250517 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2104
+* build(deps): bump com.gradle:develocity-maven-extension from 1.23.1 to 2.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2105
+* build(deps): bump mockito.version from 5.17.0 to 5.18.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2103
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.20.5 to 1.21.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2106
+* build(deps): bump joda-time:joda-time from 2.13.1 to 2.14.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2107
+* build(deps): bump commons-io:commons-io from 2.18.0 to 2.19.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2108
+* Fix/s7hmux by @glcj in https://github.com/apache/plc4x/pull/2109
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.18.2 to 2.19.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2110
+* build(deps): bump org.codehaus.mojo:extra-enforcer-rules from 1.9.0 to 1.10.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2111
+* build(deps): bump xmlunit.version from 2.10.1 to 2.10.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2112
+* build(deps): bump org.jacoco:jacoco-maven-plugin from 0.8.12 to 0.8.13 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2115
+* build(deps): bump org.apache.commons:commons-configuration2 from 2.11.0 to 2.12.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2114
+* build(deps): bump org.codehaus.gmavenplus:gmavenplus-plugin from 4.1.1 to 4.2.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2118
+* build(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.5.0 to 3.5.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2117
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.21.0 to 1.21.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2123
+* build(deps): bump com.gradle:develocity-maven-extension from 2.0 to 2.0.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2122
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.21.0 to 1.21.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2121
+* build(deps): bump com.fasterxml.woodstox:woodstox-core from 7.1.0 to 7.1.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2119
+* build(deps): bump org.awaitility:awaitility from 4.2.2 to 4.3.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2021
+* build(deps): bump bouncycastle.version from 1.80 to 1.81 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2129
+* build(deps): bump org.codehaus.mojo:build-helper-maven-plugin from 3.6.0 to 3.6.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2128
+* build(deps): bump golang.org/x/net from 0.40.0 to 0.41.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2133
+* build(deps): bump org.apache.maven:maven-artifact from 3.9.9 to 3.9.10 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2131
+* build(deps): bump golang.org/x/tools from 0.33.0 to 0.34.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2134
+* build(deps): bump com.gradle:common-custom-user-data-maven-extension from 2.0.2 to 2.0.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2138
+* build(deps): bump jackson.version from 2.19.0 to 2.19.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2144
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.19.0 to 2.19.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2142
+* build(deps): bump net.bytebuddy:byte-buddy from 1.17.5 to 1.17.6 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2145
+* build(deps): bump org.jsoup:jsoup from 1.20.1 to 1.21.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2149
+* build(deps): bump xmlunit.version from 2.10.2 to 2.10.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2148
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.21.1 to 1.21.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2147
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.21.1 to 1.21.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2146
+* build(deps): bump org.jetbrains.kotlin:kotlin-stdlib-jdk8 from 2.1.21 to 2.2.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2150
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.38.0 to 2.39.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2153
+* build(deps-dev): bump com.github.docker-java:docker-java-api from 3.5.1 to 3.5.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2155
+* build(deps-dev): bump org.testcontainers:junit-jupiter from 1.21.2 to 1.21.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2156
+* build(deps): bump org.apache.maven.plugins:maven-invoker-plugin from 3.9.0 to 3.9.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2157
+* build(deps): bump org.dom4j:dom4j from 2.1.4 to 2.2.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2158
+* build(deps): bump com.fazecast:jSerialComm from 2.11.0 to 2.11.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2161
+* build(deps): bump com.igormaznitsa:gosdk-wrapper-maven-plugin from 1.0.4 to 1.0.5 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2160
+* build(deps-dev): bump org.testcontainers:testcontainers from 1.21.2 to 1.21.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2159
+* build(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.5.0 to 3.6.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2162
+* build(deps): bump golang.org/x/net from 0.41.0 to 0.42.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2172
+* build(deps): bump org.codehaus.gmavenplus:gmavenplus-plugin from 4.2.0 to 4.2.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2168
+* build(deps): bump net.sf.saxon:Saxon-HE from 12.7 to 12.8 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2166
+* build(deps): bump org.apache:apache from 34 to 35 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2143
+* build(deps-dev): bump org.apache.commons:commons-lang3 from 3.17.0 to 3.18.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2178
+* build(deps): bump com.google.googlejavaformat:google-java-format from 1.24.0 to 1.28.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2177
+* build(deps-dev): bump com.github.docker-java:docker-java-api from 3.5.2 to 3.5.3 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2176
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.39.0 to 2.40.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2175
+* build(deps): bump golang.org/x/tools from 0.34.0 to 0.35.0 in /plc4go by @dependabot[bot] in https://github.com/apache/plc4x/pull/2174
+* build(deps): bump org.apache.maven:maven-artifact from 3.9.10 to 3.9.11 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2183
+* build(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.0 to 3.6.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2182
+* build(deps): bump com.gradle:develocity-maven-extension from 2.0.1 to 2.1 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2181
+* build(deps): bump io.vavr:vavr from 0.10.6 to 0.10.7 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2188
+* build(deps): bump jackson.version from 2.19.1 to 2.19.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2187
+* build(deps): bump commons-io:commons-io from 2.19.0 to 2.20.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2186
+* build(deps): bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.19.1 to 2.19.2 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2184
+* build(deps): bump commons-codec:commons-codec from 1.18.0 to 1.19.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2191
+* build(deps): bump com.google.errorprone:error_prone_annotations from 2.40.0 to 2.41.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2195
+* build(deps): bump org.apache.commons:commons-text from 1.13.1 to 1.14.0 by @dependabot[bot] in https://github.com/apache/plc4x/pull/2194
+
+## New Contributors
+* @geneross made their first contribution in https://github.com/apache/plc4x/pull/1361
+* @mrwhy-orig made their first contribution in https://github.com/apache/plc4x/pull/1453
+* @IsmoLeszczynski made their first contribution in https://github.com/apache/plc4x/pull/1517
+* @StrawberryBlue made their first contribution in https://github.com/apache/plc4x/pull/1632
+* @BioComputerSience made their first contribution in https://github.com/apache/plc4x/pull/1701
+* @luedi128 made their first contribution in https://github.com/apache/plc4x/pull/1729
+* @jmeierhofer made their first contribution in https://github.com/apache/plc4x/pull/1866
+* @fdupont-epsilia made their first contribution in https://github.com/apache/plc4x/pull/1902
+* @emmanuel-ferdman made their first contribution in https://github.com/apache/plc4x/pull/1948
+* @clayburn made their first contribution in https://github.com/apache/plc4x/pull/1975
+* @Jitmisra made their first contribution in https://github.com/apache/plc4x/pull/1989
+* @andvasp made their first contribution in https://github.com/apache/plc4x/pull/2016
+
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.12...relt/0.13
+
+### Feature
+
+- plc4go:
+  - remove faulty "discovery" implementation ([4ddd19f](https://github.com/apache/plc4x/commit/4ddd19f3d11e7e744f9f925136572c0398e501dd))
+  - add inProgressFor time key for progress warn logs ([515e119](https://github.com/apache/plc4x/commit/515e119c7c511e8777d3f6e15066eb6d22768d63))
+  - extra skip option for StopWarn ([96cb0ae](https://github.com/apache/plc4x/commit/96cb0ae5900ca97967f0bd5c1c792c81b5f92294))
+  - add StopWarn.go ([1266b0b](https://github.com/apache/plc4x/commit/1266b0be5e6649399c8f0c5197c017f2715717dd))
+  - more connection cache close tracing ([8b3977b](https://github.com/apache/plc4x/commit/8b3977bde61b927c572bf0ee73b8e8e683a85fc5))
+  - 1.24 migration ([83a4dde](https://github.com/apache/plc4x/commit/83a4dde89d3c1ce0738eedb2f2d63abe2dc3e257))
+  - enable pos/length printing in stringers ([e87a1dd](https://github.com/apache/plc4x/commit/e87a1dde5765f8ad822c2de56ddd4c0996707502))
+  - provide finer interfaces ([f8cdada](https://github.com/apache/plc4x/commit/f8cdadae69a1692b9b31edfaab06a33e5454e856))
+  - add field writers/reader ([06f37b7](https://github.com/apache/plc4x/commit/06f37b7fc6a2325adb91d5997ae1f7780aac3ecd))
+  - explicitly set Message key for Errors ([e2b6674](https://github.com/apache/plc4x/commit/e2b6674f119f2fcd0b10deba02d8840731980934))
+  - update string encoding in accordance to plc4j ([898c687](https://github.com/apache/plc4x/commit/898c687d491a057190965c24fc409db887d83803))
+  - optional should now work properly for simple and enums fields ([7201a31](https://github.com/apache/plc4x/commit/7201a315beb18ee39a5a23b21b66c7b5c9de7b4d))
+  - better stack rendering ([3371f09](https://github.com/apache/plc4x/commit/3371f09ee127edf9ca6d62f503cd8829f0596686))
+  - make register driver return the registered driver ([0f1b34f](https://github.com/apache/plc4x/commit/0f1b34fecae4c4fe9d05caa39f536852e7ced0b3))
+  - change to TestingLog interface for TestLogger ([482817e](https://github.com/apache/plc4x/commit/482817ec2976952fcb6aa5754c914ba2b3f1ea56))
+
+- general:
+  - Made the Modbus driver use the single-register request variant, if the tag fits into a single register. ([31fd33c](https://github.com/apache/plc4x/commit/31fd33c62200fad61dc1e524d7baa532d9348ab6))
+  - Added the official datatype id to the KnxDatapointType enum. ([a7ab2cf](https://github.com/apache/plc4x/commit/a7ab2cf08c8b06b44c0d1b7ff8b71813d6a4966b))
+  - Made KNX KnxDatapointType have information on the correlated PlcValueType ([2e768d9](https://github.com/apache/plc4x/commit/2e768d963b26c17132a25b175dedcf791184e158))
+  - Implemented the various types of encoding for unsignedBigIntegers (reading and writing) ([56c4a76](https://github.com/apache/plc4x/commit/56c4a76bc82391d6b2d2a91395cb10649175388e))
+  - Implement a stripped-down version of the S7 driver, called "s7-light" that doesn't need any multi-channel handling in order to possibly resolve the concurrency problems the current version was suffering. ([6d5173c](https://github.com/apache/plc4x/commit/6d5173ca2281f20ce058c9733e2231576be69626))
+  - Updated the template to correctly calculate the sizeInBits, if an array of dynamic length integers is being used. ([102f05f](https://github.com/apache/plc4x/commit/102f05f2a5ff2d089c45278e75237a616adb2dfe))
+  - Corrected how the signed var-length integer is being handled. ([fb062dc](https://github.com/apache/plc4x/commit/fb062dcb0734090961e45a46a6af53443017fef8))
+  - Implemented signed and unsigned big-endian var-length integers ([a15f7d1](https://github.com/apache/plc4x/commit/a15f7d1c20b623729deb4c918dcdf6039a52c51f))
+  - Add support for variable length unsigned integers in mspec. ([b392246](https://github.com/apache/plc4x/commit/b3922460c194775501b004c65a78c799eef61f21))
+  - Made the reserved field output also the logical name, if the values don't match. ([00a7904](https://github.com/apache/plc4x/commit/00a7904348ab3cbd03a3b31222d62334fd58a63c))
+  - Added time measurement output to the writing of ManualTests ([df7e8f9](https://github.com/apache/plc4x/commit/df7e8f91561d86164e18c5ba4b2a3f4464197f5d))
+  - Implemented a feature to automatically split large chunks into multiple requests and to merge them back together. ([06bdc37](https://github.com/apache/plc4x/commit/06bdc37020267d0cb82fbbe79dc5cc78f5ebb7ee))
+  - Implemented a new optimizer for S7 that reads tags in blocks of bytes instead of individually selecting them. ([85ec611](https://github.com/apache/plc4x/commit/85ec611778b53a812647c5d2b5ab94039cf781c4))
+  - Enabled the discovery for modbus-tcp devices (running on the default modbus-tcp port). ([6dbd707](https://github.com/apache/plc4x/commit/6dbd707fd443b168253c5fb0ff6f1a584be8c0f2))
+  - Made the S7 driver output a better warning, if there are issues loading libpcap ([74381b6](https://github.com/apache/plc4x/commit/74381b616e0bbdc36b7d94f1394d6ce2e68d7b8d))
+  - Made the S7 driver output a better warning, if there are issues loading libpcap ([6543af4](https://github.com/apache/plc4x/commit/6543af45ccf3a2fe2ad031ff037f57501961033b))
+  - Made the ManualTest able to handle raw byte arrays ([d6fa6f2](https://github.com/apache/plc4x/commit/d6fa6f2c356e634987f12af1246780a23c63c351))
+  - Enabled the EIP auto-discovery in Java ([9c2af3e](https://github.com/apache/plc4x/commit/9c2af3e399372bc20cd3b61727e741cbaf21524c))
+  - Ported the KNX Auto-Discovery from go to java ([0c6272a](https://github.com/apache/plc4x/commit/0c6272aa4081a9d431ff80d8d95fee4dd7b805f3))
+  - Implemented an extended optimizer for S7, that is able to automatically split large arrays and merge them back together. ([b6226d6](https://github.com/apache/plc4x/commit/b6226d6f96d902be3dace692156d187da1edb79e))
+  - Forwarded the event listener feature to the connection wrapped by the cache. ([d5c1b30](https://github.com/apache/plc4x/commit/d5c1b301715c9d8fe5e3acd3e56cddd0f22f74f8))
+  - Extended the browse item with array-information. ([4468010](https://github.com/apache/plc4x/commit/44680103c4970ff00dc9c377a0ea517caa68c5f8))
+  - Added a maxIdleTime parameter to the connection cache (Defaults to 5 minutes) ([bdb5b49](https://github.com/apache/plc4x/commit/bdb5b497824b6e28598b8da3ae5ff9d5546ea8ba))
+  - Added a maxIdleTime parameter to the connection cache (Defaults to 5 minutes) ([dc4f02c](https://github.com/apache/plc4x/commit/dc4f02ca48b172714a3115147ab8d7e249d0ca23))
+  - Made the cached connection manager closeable. ([e7fb527](https://github.com/apache/plc4x/commit/e7fb5274e0a014bbbf07507ebf1557b29440835e))
+  - Made the S7 driver handle subscription errors a bit better. ([ca7812d](https://github.com/apache/plc4x/commit/ca7812d7f97fcd22942d91b5f6eeb39e856d58d4))
+  - Made the S7 driver handle subscription errors a bit better. ([63525f6](https://github.com/apache/plc4x/commit/63525f6efc8e56ef9815cdfb150dc780cdf3e6cc))
+  - Added support for accessing a curItem property when parsing a count-array. ([4cd4ff1](https://github.com/apache/plc4x/commit/4cd4ff14565d549dbf9f3220394580666b68cb67))
+  - Added support for modbus encodings of "LITTLE_ENDIAN_BYTE_SWAP" and "BIG_ENDIAN_BYTE_SWAP" as well as support for overriding the byte-order on a per-tag basis. ([fecd23e](https://github.com/apache/plc4x/commit/fecd23ece9008b4f32e88e88a0ee56aa32b2ab45))
+  - Create a source bundle for PLC4C ([ade4131](https://github.com/apache/plc4x/commit/ade4131dda2de046c4a11a8febb2ea2e8c02dacd))
+  - Added a "Since" annotation that provides information on when a configuration-option was added. ([2d22b15](https://github.com/apache/plc4x/commit/2d22b1505fea970a157e3704e5533808cad04256))
+  - Added device-group options for local, remote and remote2 to the S7 config. ([8163b9e](https://github.com/apache/plc4x/commit/8163b9ed8fa481a1e3c5f59be7bb822ade4e0bf1))
+  - Added a default-payload-byte-order option to the modbus driver in order to support devices with little-endian encoding of payload. ([4938a46](https://github.com/apache/plc4x/commit/4938a4643e2a8095a3b0b06ae5ca60638dd79bdc))
+  - Changed the ManualTest to allow enabling read and write requests separately as well as disabling the single-item requests and also test multi-item writes. ([930cf67](https://github.com/apache/plc4x/commit/930cf6736812bfbfce9afdb1dcc619876f05b507))
+  - Added a new flag allowing to disable tests on Jenkins. Added this to the flaky OPC-UA tests and re-enabled them. ([b26b686](https://github.com/apache/plc4x/commit/b26b686eeec526d2ed528a27f0fc389215fa71f3))
+  - The S7 driver now returns supporting S7, if the connected device is an S7-300. ([210a348](https://github.com/apache/plc4x/commit/210a348b16d529e0a684d8f8b8842d6cc04b6a47))
+
+- plc4j/modbus:
+  - ModbusOptimizer fixes for discrete-input and endianness (#2055) ([896c088](https://github.com/apache/plc4x/commit/896c088fb9b8786bcba49fadc80825d244a47df4)) ([#2055](https://github.com/apache/plc4x/pull/2055))
+
+- plc4j/opcua:
+  - Remove additional hostname resolution within connect attempts. (#2028) ([45d01f6](https://github.com/apache/plc4x/commit/45d01f62e8ce9c6a3d3a19594bc61d7d36a29d8d)) ([#2028](https://github.com/apache/plc4x/pull/2028))
+  - Implementation of OPC-UA event subscriptions. ([b84a344](https://github.com/apache/plc4x/commit/b84a3448f0133e135589ad98c8b3a32974f64f95)) ([#1731](https://github.com/apache/plc4x/pull/1731))
+
+- plc4j/ab-eth:
+  - Enable AB-Ethernet Driver reading (#2040) ([bc10315](https://github.com/apache/plc4x/commit/bc10315ebc5cf20355ea1847a5f2fc165fddf9a1)) ([#2040](https://github.com/apache/plc4x/pull/2040))
+
+- plc4go/spi:
+  - stop warn can now be instructed to include stackInfo when printing the warning statement ([9a9dade](https://github.com/apache/plc4x/commit/9a9dadef7e3c710c901ac65814b4dfa1bdfed1bd))
+  - add color support to ascii box ([09439fb](https://github.com/apache/plc4x/commit/09439fb77335780f9bf9e8962432281bf4198cfa))
+  - add footers for serializable ([12ecb9e](https://github.com/apache/plc4x/commit/12ecb9ed97185000f1eb3dd97656fdb24121717d))
+  - add pos/length footer option to WriteBufferBoxBased ([4de3d55](https://github.com/apache/plc4x/commit/4de3d55fc7682c42e3c69b0ecde31e75b2af5dfe))
+  - add header and footer support to asciiBoxes ([d00ee0c](https://github.com/apache/plc4x/commit/d00ee0c9675d09c8647baac9d4cf4ed70e34af75))
+  - add mute log environment variable ([0efdadb](https://github.com/apache/plc4x/commit/0efdadb11066b572ccac2d4ee654396ecaf22623))
+  - improve testlogger output for multiline stringers ([3d853b1](https://github.com/apache/plc4x/commit/3d853b153a287d7b1f273d76bddfc19475a71f0a))
+
+- plc4j/ads:
+  - Add STRING and WSTRING to getDataTypeTableEntry. (#1902) ([3260c07](https://github.com/apache/plc4x/commit/3260c0795c15b31c6a1dc037274a2ab5213fb1e2)) ([#1902](https://github.com/apache/plc4x/pull/1902))
+
+- knx:
+  - update vendors ([f1b5949](https://github.com/apache/plc4x/commit/f1b59497c4bc144c024b3e370080540da8d8061f))
+
+- code-gen/go:
+  - add args to builder ([f60e895](https://github.com/apache/plc4x/commit/f60e89547e65bd658656ab30207bae9b750d981a))
+  - enable builder for discriminated types ([3852363](https://github.com/apache/plc4x/commit/385236358bef0cd7a4babad35da9385af9b98648))
+  - add new Builder pattern for easy creation of messages ([a36f407](https://github.com/apache/plc4x/commit/a36f40749eaa346eea3fe3770a9cc4ad68b91593))
+  - introduce Copyable to clone messages ([919eca8](https://github.com/apache/plc4x/commit/919eca8438a93d3b965a6b21f42492b801308e74))
+  - add nil checks to constructors for mandatory fields ([78908f9](https://github.com/apache/plc4x/commit/78908f941b385ee13798ef792932b57f854ab156))
+  - rewrite discriminated types ([f8d7229](https://github.com/apache/plc4x/commit/f8d72290a52e8bbaa1cbabb1a3ee3c9f344ac549))
+  - simple field writer ([76a7a8e](https://github.com/apache/plc4x/commit/76a7a8e757649d6739ece833314d264355e60022))
+  - reserved field writer ([c9f7b7c](https://github.com/apache/plc4x/commit/c9f7b7c900c1ae47b8688f2c5f523d20e79bae99))
+  - padding field writer ([efacfe6](https://github.com/apache/plc4x/commit/efacfe66ab6ca2b86b541977f978467bc32b074a))
+  - optional field writer ([5d73c44](https://github.com/apache/plc4x/commit/5d73c44beeb964703dc143411cda3327d3ade63a))
+  - manual field writer ([eefcc32](https://github.com/apache/plc4x/commit/eefcc32afdec6beb6cb1b3d1625c33236f137855))
+  - manual array field writer ([b330d96](https://github.com/apache/plc4x/commit/b330d96ce9fb9170a980ac2c0bd25f1482d82d5b))
+  - implicit field writer ([c1ec3d8](https://github.com/apache/plc4x/commit/c1ec3d80eccecf9cf06100976a5c1878380882f2))
+  - enum field writer ([853af52](https://github.com/apache/plc4x/commit/853af527d2b75078fe972eaa277d64dd904639d7))
+  - enum field writer ([383f598](https://github.com/apache/plc4x/commit/383f5987e172ef37987d360638bfb194e889cc57))
+  - const field writer ([eac3602](https://github.com/apache/plc4x/commit/eac360214e7b821d2296369b4542e821bcd91bd3))
+  - array field writer ([a2b2a18](https://github.com/apache/plc4x/commit/a2b2a184d9e7c8db71d9e84cc6f1d95c5b607d37))
+  - peek field reader ([d88e512](https://github.com/apache/plc4x/commit/d88e5125aa5b7185cbf168110615c20b0b3d1b4d))
+  - virtual field reader ([bf51ca4](https://github.com/apache/plc4x/commit/bf51ca4a6804b715b368d892e294b4f1fd57b5f4))
+  - virtual field reader ([f6a1d6d](https://github.com/apache/plc4x/commit/f6a1d6dfa6ca01b59276b559f10184456c87c6a8))
+  - virtual field reader ([b56e209](https://github.com/apache/plc4x/commit/b56e209779cd8ba94c7bfe075e54ad877357a4f1))
+  - unknown field reader ([00c2025](https://github.com/apache/plc4x/commit/00c20259cb5e4f8484a3abbd3607731c776b2362))
+  - simple field reader ([3fd7268](https://github.com/apache/plc4x/commit/3fd7268516ff3672f1a38ff25000c97084cd5e0f))
+  - padding/reserved field reader ([d42d011](https://github.com/apache/plc4x/commit/d42d01106de95da869c0e668a0d6ec745945594a))
+  - optional field reader ([8375077](https://github.com/apache/plc4x/commit/8375077c89b5dc0ed909327b3af243772308e3aa))
+  - manual field ([5af7489](https://github.com/apache/plc4x/commit/5af7489e221409772ed7b9e678a5f87ba6875285))
+  - implicit manual array field ([63ca5ed](https://github.com/apache/plc4x/commit/63ca5edc74fb866f1290df670fb40b66521814a0))
+  - implicit reader field ([5ae7d2b](https://github.com/apache/plc4x/commit/5ae7d2b298e3a3445e66ded66c1551cd23ac87ed))
+  - enum reader field ([bc14758](https://github.com/apache/plc4x/commit/bc14758e93f5f1454765a2b4ac1b27a9c296c24a))
+  - discriminator reader field ([1854b55](https://github.com/apache/plc4x/commit/1854b555c46239fb6a171521367b851c4a0848c0))
+  - migrate const field ([8a01788](https://github.com/apache/plc4x/commit/8a0178826bc86901a6a82fb3afcf0682529e646b))
+  - migrate const field ([f73f45f](https://github.com/apache/plc4x/commit/f73f45f3b26ac2379452daf7a056c764aa725999))
+  - migrate checksum field ([454c964](https://github.com/apache/plc4x/commit/454c96431c4379d94cc81aa4aaf5d5837a384db6))
+  - migrate assert field ([eaf3988](https://github.com/apache/plc4x/commit/eaf3988076af884878b0d27f38b31343086be6f7))
+  - migrate read array ([19fa0bb](https://github.com/apache/plc4x/commit/19fa0bb0b9590dcd9263e40dfbe8fbbb07483bfc))
+  - deprecate old writer/reader calls ([6e53cd3](https://github.com/apache/plc4x/commit/6e53cd37e002427c3e6d9ff3fcb9b61707511f08))
+
+- site:
+  - Migrated the website to use Antora. (#1880) ([a3266ed](https://github.com/apache/plc4x/commit/a3266edcf322fe81f39f35b7659b4c6f1ce3fb4a)) ([#1880](https://github.com/apache/plc4x/pull/1880))
+
+- plc4py:
+  - UMAS write support (#1854) ([faa2c68](https://github.com/apache/plc4x/commit/faa2c68c19dd985bc86a02522fbd6915cc27d380)) ([#1854](https://github.com/apache/plc4x/pull/1854))
+  - Add the skip tests maven config parameter to thes tests ([0edefe3](https://github.com/apache/plc4x/commit/0edefe3bee971c24fb66a4ce7a28676108bd21b9))
+  - Add base address when reading certain UDTs ([9cf49c4](https://github.com/apache/plc4x/commit/9cf49c4d841b153b189392d26547980b713d8ce1))
+  - Made the reading of the data types more robust ([e1741cd](https://github.com/apache/plc4x/commit/e1741cda8b4c2e437c226813d29d29844e5a3b83))
+  - Made the mistake of looking at mypy. ([033ee58](https://github.com/apache/plc4x/commit/033ee585c29b987a3d7bfce42471e68d2b1f7562))
+  - Add TODO for string serialization of generated classes ([e0bb452](https://github.com/apache/plc4x/commit/e0bb452a7c5c7d3ffc7e2f03413cc030ecd2f01d))
+  - Modbus write support (#1745) ([fe2ccdb](https://github.com/apache/plc4x/commit/fe2ccdb81730ebad1a14bf67ccbd1d6531ad8963)) ([#1745](https://github.com/apache/plc4x/pull/1745))
+  - Parser Serializer Test Runner (#1737) ([3a71145](https://github.com/apache/plc4x/commit/3a71145100369fbe61bd4cd4204be5db1f8b5f89)) ([#1737](https://github.com/apache/plc4x/pull/1737))
+
+- plc4py/umas:
+  - Remove lower case transform on variables ([4635f48](https://github.com/apache/plc4x/commit/4635f4855df349b0e986534a1667d6dc7f0ef447))
+
+- plc4go/tools:
+  - reduced verbosity of generators ([667ad1f](https://github.com/apache/plc4x/commit/667ad1fb3f3755b9148fe9b1ccfb2e7ee08b4a63))
+  - rename tools and improve documentation ([6ce5510](https://github.com/apache/plc4x/commit/6ce551000e65f3d8de32e1e4e3564c70dbbe07a0))
+
+- plc4go/bacnetip:
+  - partial working LocalDeviceObject ([ab677e8](https://github.com/apache/plc4x/commit/ab677e89d72d9ca00088f1498ad2b965cdb5d933))
+  - add debug printing for netservice ([19d07f9](https://github.com/apache/plc4x/commit/19d07f9c1bca4a32818b7a5ac5050ee586ad0d69))
+  - work on objects ([e0cb517](https://github.com/apache/plc4x/commit/e0cb5172efe4bbb8d8d8780449d81efbe394db5a))
+  - debugging improvements ([a210385](https://github.com/apache/plc4x/commit/a21038567328cee899f8e1d3c5aa33508a158771))
+  - improvements: ([9d19f01](https://github.com/apache/plc4x/commit/9d19f016e1e0a173cb8bc194957d16e9bb72e4bb))
+  - progression on APDU handling APDU ([fe2f1a3](https://github.com/apache/plc4x/commit/fe2f1a3d4d88abf44de929d39264dc5ef4be860c))
+  - bvll debug ([505acad](https://github.com/apache/plc4x/commit/505acad03c7385d0f25478a0f3fbdb5ab16de0e0))
+  - debug writer ([a40c056](https://github.com/apache/plc4x/commit/a40c056690e020ee60ba6bc7935bf8239d617a50))
+  - add base types ([8e36f75](https://github.com/apache/plc4x/commit/8e36f757a65ac3dc96fc2479d03bea894c3f446d))
+  - progressed implementation around test_net_3 ([285cb65](https://github.com/apache/plc4x/commit/285cb659cf50e491feb111f7bac0ffeb0e751593))
+  - update with improved debug output ([b871bc7](https://github.com/apache/plc4x/commit/b871bc7344cb30d2d32ae310b514c51f4f1c62cd))
+  - add IAmRequest support ([107db3b](https://github.com/apache/plc4x/commit/107db3bf09af6ee26903a8e2ad3747dd88c2a645))
+  - add wait groups to ensure async shutdowns ([3e0171b](https://github.com/apache/plc4x/commit/3e0171b7a31cec5c5dc649532f155e52ac107a4c))
+  - progressed implementation with a ton of bugfixes ([73aab1e](https://github.com/apache/plc4x/commit/73aab1ea86d662a53a39e44843b1677c8d50bfb7))
+  - progressed APDU ([34f29bb](https://github.com/apache/plc4x/commit/34f29bbbc90525e6e61f5cbd97eed69892d04982))
+  - add sequence support ([b076cf9](https://github.com/apache/plc4x/commit/b076cf9e8f6526ccaae6d05ad4e5ef8a1b2608c3))
+  - more control over npdu creation ([af95450](https://github.com/apache/plc4x/commit/af95450eb3e32cbb4f0b61b0333d796ab9f50658))
+  - improvements on logging ([2d4ba58](https://github.com/apache/plc4x/commit/2d4ba584e148c03e08d30f519161c93fb61cd292))
+  - improvements on BBMD and network ([21a18a4](https://github.com/apache/plc4x/commit/21a18a4060006456c39c7562bd4f2a9d9893b32e))
+  - ForwardedNPDU ([a86fe67](https://github.com/apache/plc4x/commit/a86fe67ed69b69c2a06819966d825a0bde7b4852))
+  - ReadBroadcastDistributionTableAck ([c5d0cbd](https://github.com/apache/plc4x/commit/c5d0cbdb6947fae13cde90c2506ce85ce04e7999))
+  - WriteBroadcastDistributionTable ([ecf4443](https://github.com/apache/plc4x/commit/ecf4443893badfa40362d32f4b5f4abcbddc7d57))
+  - add BVLCResult ([00b2c21](https://github.com/apache/plc4x/commit/00b2c219ea3627b7b237d1037e8251ce53170905))
+  - first bvlc draft ([dd1e22d](https://github.com/apache/plc4x/commit/dd1e22da3570c09ca0c7a7580c080507c4fd8e74))
+
+- bacnetip:
+  - readded stuff from revert ([c541e8c](https://github.com/apache/plc4x/commit/c541e8c29545369350cd5f47e58a292a8e0b5ed5))
+  - add generated object types ([e9cd53d](https://github.com/apache/plc4x/commit/e9cd53d9a9c48e2ed53e7d203dd7d72fd19ab1e0))
+  - avoid panic on garbage data ([46fa163](https://github.com/apache/plc4x/commit/46fa163f9defb989f39bd7602d9c6e586dd10bb7))
+  - update vendors ([b5ed1ac](https://github.com/apache/plc4x/commit/b5ed1acf02047309104155dfd7fc88b488c524ec))
+
+- knxnetip:
+  - update vendors ([c93d711](https://github.com/apache/plc4x/commit/c93d711c79f8ab2c577be6393c96f5abb6244915))
+
+- plc4go/plc4xGenerator:
+  - nil safe directSerialize ([5412078](https://github.com/apache/plc4x/commit/5412078660887a31ee6d8ab62bf13e75bfe323f7))
+  - add support for nil values and a direct serialize ([bf9415f](https://github.com/apache/plc4x/commit/bf9415feb938fc8803b72be045ff0643adbcd70c))
+  - add native support for time.Time and time.Duration ([0d99b07](https://github.com/apache/plc4x/commit/0d99b07b673e239cf4ce83820ecc20bd312ac60c))
+  - add a alternate Stringer implementation to overwrite strings outputs ([5d6fe16](https://github.com/apache/plc4x/commit/5d6fe164ea9ea062eedade1833fc3768f2807796))
+  - add asPtr to render fields just as pointer addresses ([6fdea75](https://github.com/apache/plc4x/commit/6fdea755c793ced449c1866d2afc45ac0875570c))
+  - add pointer support ([9ba4867](https://github.com/apache/plc4x/commit/9ba4867a031daca6e2c51fca6fc64f31859f21bf))
+  - ignore loggers by default + suffix support ([78cc240](https://github.com/apache/plc4x/commit/78cc2400e6cfc468234534c31a7007b99c16f501))
+  - add support for custom licences ([beb483e](https://github.com/apache/plc4x/commit/beb483e8f19bca74b169ea45aacf607e9f806e93))
+
+- plc4go/plc4xLicencer:
+  - use dedicated licence file ([69ccb80](https://github.com/apache/plc4x/commit/69ccb804b92802a5ad841ca3acc2012eeb69e60e))
+
+- plc4go/plx4xgenerator:
+  - add prefix support ([83f7524](https://github.com/apache/plc4x/commit/83f7524468b236cf5d8bf3969bf6a176e2334053))
+  - add support for non pointer/non interface elements ([2666383](https://github.com/apache/plc4x/commit/2666383804e3efef26c864aa01320d244fe93b08))
+  - add support for empty elements ([f98d0a7](https://github.com/apache/plc4x/commit/f98d0a7ddda74586608b55b6ae735e25849cdc31))
+  - add support for pointer types serializable ([3604991](https://github.com/apache/plc4x/commit/3604991e16ad0876ac14fcd2ce52ee483afa07c1))
+
+- plc4go/eip:
+  - disable EIP test temporary ([d159bfe](https://github.com/apache/plc4x/commit/d159bfe79e29624c9ddf1d8cefff6f4296ee9218))
+
+- code-gen/java:
+  - add bitPos for better debugging ([652e7b5](https://github.com/apache/plc4x/commit/652e7b5a486ab2e5a080e11f502f1171e1c96c4b))
+  - use writeEnum function ([ff893b8](https://github.com/apache/plc4x/commit/ff893b8c078ff968ae7d15a5c5b3eeaf0872efde))
+  - use readEnum function ([6255fb5](https://github.com/apache/plc4x/commit/6255fb5d3cb9dfe7e978d2cb1e1e9d3e56013c97))
+  - add ContextWriter ([0f6055e](https://github.com/apache/plc4x/commit/0f6055edb1379c009b38e7a2efa90016593d0cd7))
+  - add writeComplex ([4fdaaad](https://github.com/apache/plc4x/commit/4fdaaad7417597cdb1b4b89453ee8cd4294a3dd4))
+  - introduce new interfaces ([822101b](https://github.com/apache/plc4x/commit/822101b9ffd874c36fd9b187e321b6ac1a07378e))
+  - use new readComplex factory function ([ca49d7f](https://github.com/apache/plc4x/commit/ca49d7f9994d3705b3bc219c943ff3fcc1ae2ae1))
+
+- plc4j:
+  - feat(plc4j)!: Improve stability of code through stricter compiler checks of generated contents. ([5a2e560](https://github.com/apache/plc4x/commit/5a2e5607eec69c637b456f4befe3a521bc59e2a8)) ([#1739](https://github.com/apache/plc4x/pull/1739))
+
+- plc4go/bacnet:
+  - NetworkNumberIs ([b2d4a1c](https://github.com/apache/plc4x/commit/b2d4a1c93b049ad18f8484ff9e621972255b5278))
+  - WhatIsNetworkNumber ([c3c8f49](https://github.com/apache/plc4x/commit/c3c8f49cf26a550175fde36ddd327e57c6809b18))
+  - DisconnectConnectionToNetwork ([fe434f0](https://github.com/apache/plc4x/commit/fe434f05734250f82da3700221a05b62578f2e57))
+  - EstablishConnectionToNetwork ([345c5c7](https://github.com/apache/plc4x/commit/345c5c7c797dc891dff79a250515470d374dca64))
+  - InitializeRoutingTableAck ([4c27bf4](https://github.com/apache/plc4x/commit/4c27bf44652d1cd4068b5b027e932af90964730d))
+  - InitializeRoutingTable ([232b664](https://github.com/apache/plc4x/commit/232b6645e2c7dc3d5210ab29bb4c277a355196a4))
+  - RouterAvailableToNetwork ([23a545c](https://github.com/apache/plc4x/commit/23a545c417f482c338e0d4661294866d9ca4e95a))
+  - RouterBusyToNetwork ([fdb5c66](https://github.com/apache/plc4x/commit/fdb5c66d4b01270056634b3a56856bb0fdddf36c))
+  - RejectMessageToNetwork ([8680bfc](https://github.com/apache/plc4x/commit/8680bfc9395788c893a23f386947d51766eccaa5))
+  - npdu wrapper ([adc013a](https://github.com/apache/plc4x/commit/adc013aba230c6cdfa0cb030cf9396fbe886ed12))
+  - add primitive tag and taglist ([8ecdf2b](https://github.com/apache/plc4x/commit/8ecdf2bac4ae3c69e763190d74c8ba2c4688eb0a))
+  - added primitive time ([bbaa043](https://github.com/apache/plc4x/commit/bbaa04381b7646d9c8c6948760f6ffbb5c667d75))
+  - added primitive unsigned ([7911ac8](https://github.com/apache/plc4x/commit/7911ac8f076f8fa62ddde64fdd681c930a091bba))
+  - added primitive time ([f863c96](https://github.com/apache/plc4x/commit/f863c968ea20373dce82fe7ba79e43756397da3f))
+  - add primitive OctetString ([68fa1fa](https://github.com/apache/plc4x/commit/68fa1fad66334f292f690c3e8b9fedcf34fe055c))
+  - add primitive Real ([d28a557](https://github.com/apache/plc4x/commit/d28a5577e4d5bbc37ed521865998e00dbfa645ca))
+  - add primitive ObjectIdentifier and ObjectType ([f2d34c9](https://github.com/apache/plc4x/commit/f2d34c960bba2a64b6c797ad0f5b9fda1923eb9c))
+  - add primitive null ([d906c1f](https://github.com/apache/plc4x/commit/d906c1ffe090ecba015f7590f63b92f3e0428620))
+  - add primitive integer ([2118ba2](https://github.com/apache/plc4x/commit/2118ba2cd1b423d835beceb9dcb486c7bb95b6b6))
+  - add primitive enumerated ([57c0555](https://github.com/apache/plc4x/commit/57c0555720d14d359551703ab0ffed7e11654009))
+  - add primitive double ([1207c85](https://github.com/apache/plc4x/commit/1207c85a517377fc28471d95d94e6f07cacbf9b8))
+  - add primitive character string and date ([236e7c6](https://github.com/apache/plc4x/commit/236e7c6ff350eaf0ab2a8a1fb26337b227c14530))
+  - add primitive data boolean ([1164ecd](https://github.com/apache/plc4x/commit/1164ecdb660fbeacebd78a586eb1549875f4f96c))
+  - add primitive data bit string ([7f7a48e](https://github.com/apache/plc4x/commit/7f7a48e4900c561a1fa2daaaefaa32ed0a2d6fb2))
+  - several feature improvements ([f725ef4](https://github.com/apache/plc4x/commit/f725ef42a2a34ba699eb8296bbf9ea178081a2cf))
+
+- plc4j/api:
+  - Convert the string address into a PlcTag (#1468) ([eced38a](https://github.com/apache/plc4x/commit/eced38a06f40acf6f72b986e858bf60483826bce)) ([#1468](https://github.com/apache/plc4x/pull/1468))
+
+- plc4x/modbus:
+  - Add support for unit-id option for modbus tags. ([7ec9bdc](https://github.com/apache/plc4x/commit/7ec9bdc56aa06d0a4448b190b89b869ff8e853ad)) ([#1464](https://github.com/apache/plc4x/pull/1464))
+
+### Bug Fixes
+
+- general:
+  - Set the correct parent pom artifact ids for the language generation modules ([61bed6d](https://github.com/apache/plc4x/commit/61bed6d09364fdbb155e9529638eda84c1bf217d))
+  - Set the correct parent pom artifact ids for the language generation modules ([7efed5c](https://github.com/apache/plc4x/commit/7efed5c868c4fedd7034503bffed48e2a13a9773))
+  - Tried getting the build back to work. ([f5f0064](https://github.com/apache/plc4x/commit/f5f00644dfae9aeafcb91bc8c2c814dda9d749f2))
+  - Addressed some surefire and junit 5 releated isses, that only occured when validating the RC. ([4286a89](https://github.com/apache/plc4x/commit/4286a897970d530aac851f42dfef0029e627a685))
+  - Addressed some surefire and junit 5 releated isses, that only occured when validating the RC. ([a88fbfe](https://github.com/apache/plc4x/commit/a88fbfe7a0d4b7075e2d5de1213d4ef3be795e92))
+  - Fixed reading the max int and min int values as var length signed integer. ([f3a55f2](https://github.com/apache/plc4x/commit/f3a55f2abbc8c5a262936de193a93f69feae5cbb))
+  - Restricted the NioEventLoopGroup to one thread, instead of the default of double the CPU-cores. ([a35f415](https://github.com/apache/plc4x/commit/a35f41534e25905559bf3b86199ade57e33df967))
+  - Made the s7-light driver actually respect the read-timeout. ([1cbeb45](https://github.com/apache/plc4x/commit/1cbeb451581f07bbe960a74a1b79b36cbcd8559e))
+  - Prevent closing a closed connection to fire NPEs ([25e74f0](https://github.com/apache/plc4x/commit/25e74f0e3891eb16c470f848dae1045a95d3841c))
+  - Hopefully resolved the issue that caused the S7 driver to regularly timeout and disconnect under heavy load. ([25778ae](https://github.com/apache/plc4x/commit/25778aea96a241837af64e449356b1dd02588a8a))
+  - Made the connection detection a bit more solid ([016cc36](https://github.com/apache/plc4x/commit/016cc36c49633b124668310ccb1299c664952df7))
+  - Made it simpler to track down errors while sending.
+fix: Removed the hard-sync in the sendToWire, as that was regularly causing exceptions. ([9eced28](https://github.com/apache/plc4x/commit/9eced2882b76f158372b9bb035e7f014d956719f))
+  - [Bug]: Timer-Leak in ConnectionCache ([670623b](https://github.com/apache/plc4x/commit/670623bee0a48c0a0d8b401a685287747a3c0ca4))
+  - [Bug]: S7 device gets overwhelmed by large requests ([3af0c87](https://github.com/apache/plc4x/commit/3af0c87746ed2e3037259aab2d3641a3ce568674))
+  - AB-Ethernet connection request (#2016) ([cd43088](https://github.com/apache/plc4x/commit/cd43088734b3945a8f54e9f5e52a4165da98d5e4)) ([#2016](https://github.com/apache/plc4x/pull/2016))
+  - Fixed a typo in the example code. ([a095f2d](https://github.com/apache/plc4x/commit/a095f2d82e9dae823c20f882644c1c937588557f))
+  - Removed an unneeded import that was causing problems in the PLC4Go build ([6943669](https://github.com/apache/plc4x/commit/6943669b2dab4da041ba678a7d3708bc9070162d))
+  - Adjusted one of the tests to my commented out write operation. ([dca505c](https://github.com/apache/plc4x/commit/dca505cbe2786abc44b5de4f714236838fb11e12))
+  - Disabled one of the regularly failing go tests. ([8ea24c3](https://github.com/apache/plc4x/commit/8ea24c392d71e791285abb3c27e7ab88db214442))
+  - Made the required resources generation work again. ([58a3960](https://github.com/apache/plc4x/commit/58a39601cefd3d6fd8b42d49cd8fa22f6d01d515))
+  - Made the required resources generation work again. ([e14b163](https://github.com/apache/plc4x/commit/e14b163616a7cf32bfb9045bbb4ebe9d9df838d8))
+  - Hopefully fixed the build again. ([19216d2](https://github.com/apache/plc4x/commit/19216d2645e3d59d9090efb44788325f84e4ce85))
+  - Made the pcap detection work on mac arch64
+refactor: moved the groovy scripts around ([3ea9bc2](https://github.com/apache/plc4x/commit/3ea9bc27189db615c5b8e17604038e8a74fc33e7))
+  - Added a fix to not call the onTimeoutHandler, if there is none registered. ([ad92e32](https://github.com/apache/plc4x/commit/ad92e32cb75b0ecdbc092c35b2aefece580def93))
+  - Updated the actual directory to add with generated code ([6677ee9](https://github.com/apache/plc4x/commit/6677ee91341b87016448cd2a30a235c4ee32845e))
+  - Updated the trigger-directory for adding the src/main/generated to the source directories (Was accidentally changed during the site generation updates) ([9511939](https://github.com/apache/plc4x/commit/95119393593459c42a553df212a1b5560be865cd))
+  - Fixed a bug in handling arrays in S7comm ([369ecce](https://github.com/apache/plc4x/commit/369ecce4171ff5fbb1fedc9f5d35b8afba58becd))
+  - Updated the subscription API to match the changes of the others (#1803) ([d4f089f](https://github.com/apache/plc4x/commit/d4f089fcdbc850d6bfdffafb0a09b037b173b5d8)) ([#1803](https://github.com/apache/plc4x/pull/1803))
+  - Fixed the simulated driver by allowing to set the tag-handler without providing a "protocol" ([8572bb8](https://github.com/apache/plc4x/commit/8572bb8a488004eb46624c41cdd77d8cbf9f4b64))
+  - Implemented a layer, hiding the concept of invalid tags from the protocol logic. ([277183b](https://github.com/apache/plc4x/commit/277183b836f0a0354ffa22292d9d91cf97f302b7))
+  - Committed some updates I missed earlier. ([4429d3b](https://github.com/apache/plc4x/commit/4429d3bcef63df9f23038c45ff291f9a59413007))
+  - Fixed an issue with the Modbus driver, causing errors when reading invalid addresses. ([916e8bb](https://github.com/apache/plc4x/commit/916e8bb3007ac3f2deba69fc5874f16136f96bd7))
+  - Fixed an issue with the ADS driver, causing the entire request to fail if one item address was wrong. ([793f370](https://github.com/apache/plc4x/commit/793f370833036937178f30d4931efe258bc87719))
+  - Fixed an issue with calculating the endingAddress of a coil-response. ([96fc493](https://github.com/apache/plc4x/commit/96fc4933dc4467c319ebfc538f9eccdfaa5816af))
+  - Fixed problems with reading data with optimized modbus using LITTLE_ENDIAN_BYTE_SWAP encoding. ([d3f2cf8](https://github.com/apache/plc4x/commit/d3f2cf8ed369bb7d9804a976fadf36717078d247))
+  - Moved the exclusion to the right place. ([8250d5f](https://github.com/apache/plc4x/commit/8250d5fd401d479fb7c3763d27b50cdae8761233))
+  - Downgraded the maven-site-plugin to 3.12.1 as the newer version no longer produced any asciidoctor output. ([0eae20f](https://github.com/apache/plc4x/commit/0eae20f264e3d672885acd7624ad50f28d9b57a9))
+  - Hopefully fixed the site generation. ([07d35ee](https://github.com/apache/plc4x/commit/07d35ee00087d193ad9d1b850475236785884e85))
+  - Hopefully fixed the site generation. ([3de2079](https://github.com/apache/plc4x/commit/3de2079f8ce0d3655f0dd4a919e8a48a5c3a9235))
+  - Hopefully fixed the site generation. ([04e91f3](https://github.com/apache/plc4x/commit/04e91f3c6d54aa396fddffb7e5fd0b914dd9dd11))
+  - Hopefully fixed the site generation. ([25a4009](https://github.com/apache/plc4x/commit/25a40098195ad5b339a9b70fb443e47bfd35856a))
+  - Fixed another issue with the ModbusOptimizer (Added some log output to help diagnose future issues) ([1a1a063](https://github.com/apache/plc4x/commit/1a1a063aecc40f008ca1abc448384815e9fbde36))
+  - Fixed an issue in the modbus optimizer that caused the succeeding requests to get bigger and bigger. ([4cfd875](https://github.com/apache/plc4x/commit/4cfd875b47989d13728cc5b05757c5cbdf7d215a))
+  - Updated the handling of real values in EIP ([ba5fcde](https://github.com/apache/plc4x/commit/ba5fcded4b88224161868e5b6638daafd9e7fccd))
+  - Split up the datatype guessing function into one used for browse and one used for reading ([1d8c7e0](https://github.com/apache/plc4x/commit/1d8c7e064f28bc606a1690b1a8c2230396b3ccee))
+  - Fine-tuned the ads browse functionality especially when handling arrays of type struct ([bdd05c9](https://github.com/apache/plc4x/commit/bdd05c9e765bfca294b20b398f346b241a2e0aa3))
+  - Update documentation on generating an otp on the build vm ([7fc2b33](https://github.com/apache/plc4x/commit/7fc2b33e2caee2706b8e7ea5b6583e1c87cec7b4))
+  - [Bug]: Improve error handling in S7 large arrays #1741
+If one part of a multi-part message is broken, treat all parts as equally broken. ([5561f4d](https://github.com/apache/plc4x/commit/5561f4daa7dc56d4fb797f9192a459521c44a113))
+  - Made sure the ADS discovery fingerprint token is trimmed to not contain non UTF-8 charaters. ([735e779](https://github.com/apache/plc4x/commit/735e779aa3e03a95dc58da2db0fda713366461af))
+  - Made the EIP driver handle errors better. ([5d1a99f](https://github.com/apache/plc4x/commit/5d1a99f6c798cd63b608ea41140c15cb2db92b50))
+  - variables inside of function blocks / with two path segments (#1729) ([ed50242](https://github.com/apache/plc4x/commit/ed50242345feb1e65d94a5dd1bbbcaef260d5ed2)) ([#1729](https://github.com/apache/plc4x/pull/1729))
+  - Made sure the KNX driver emits the DisconnectedEvent ([77dfb25](https://github.com/apache/plc4x/commit/77dfb25ad11c508d2e6f6d5234196227afaa4dcc))
+  - Added a manual call to compaction, if parsing fails for an ArrayIndexOutOfBounds exception. ([9410635](https://github.com/apache/plc4x/commit/94106355a4558b10d91af706ec5dd82a6b4de869))
+  - Fixed the eip testsuite ([fdd99de](https://github.com/apache/plc4x/commit/fdd99de08cd1d4bfdec112fecb595a38671c040a))
+  - Accepted the patch provided in order to make working unconnected requests work.
+feat: Added a connection parameter to "force-unconnected-operation" that forces the use of unconnected operations. ([bcdb1e6](https://github.com/apache/plc4x/commit/bcdb1e662dde89c08daf35799de1c5929ac0a6cc))
+  - Disabled the closingConnectionCache test. ([52c71a1](https://github.com/apache/plc4x/commit/52c71a13c8422e6198d81ea251228e21f080fff9))
+  - Increased some of the delays in order to hopefully make the tests pass on slower machines. ([8d72598](https://github.com/apache/plc4x/commit/8d725986b76078f93b3589702e231c1d0418c4f0))
+  - Increased some of the delays in order to hopefully make the tests pass on slower machines. ([6a51166](https://github.com/apache/plc4x/commit/6a511665309755c49481824f0085796025fdb541))
+  - Increased some delays and changed the code to make diagnosing issues easier, if this is a timing issue. ([f39cc44](https://github.com/apache/plc4x/commit/f39cc44ecbe953c61be08e493323d93c80a690c9))
+  - Worked on adding unit tests for my hardware in order to be able to debug issues with the logix driver. #1646 ([f8664b0](https://github.com/apache/plc4x/commit/f8664b08d1ead2572c64e2e0020e6dbc9a30f5a6))
+  - Added the missing Apache header. ([df945d3](https://github.com/apache/plc4x/commit/df945d38b60c1771c4b855c675a6dd8bc44870b5))
+  - Fixed a bug that caused the ADS discoverer to generate an invalid connection-string. ([4226376](https://github.com/apache/plc4x/commit/4226376f9198ba1f963714487115613d76b71420))
+  - Implemented the ByteLengthEstimator for Modbus ASCII and RTU to try parsing the message in order to correctly operate. ([436d483](https://github.com/apache/plc4x/commit/436d483a7e98f3c39a87772caa79108d54951c00))
+  - Made the go testsuite skip PCAP related tests, if the library is not installed. ([ebbcedd](https://github.com/apache/plc4x/commit/ebbcedd59fa6295e4c1e137c40b4ce9a48c1e7ab))
+  - Multiple S7 related issues ([80b3384](https://github.com/apache/plc4x/commit/80b33841e5e70ce1411dab36bc88bfa280368696))
+  - Updated the boundaries where multi-item write-requests are split to make multi-item writes work reliably. ([e2561b2](https://github.com/apache/plc4x/commit/e2561b2a19eb1108dc34ce2eb968d8d5c80ad584))
+  - Get the PLC4C build working on linux aarch64 (#1582) ([0e1c8c5](https://github.com/apache/plc4x/commit/0e1c8c530f3e10594bebd26a470cc743fbbe5c0d))
+  - Get the PLC4C build working on windows aarch64 (#1582) ([b2cbfe0](https://github.com/apache/plc4x/commit/b2cbfe04ca9b01ac6089ee5788a1bc8c961a7457))
+  - fix some build issues on Ubuntu Linux VM ([ee6f13b](https://github.com/apache/plc4x/commit/ee6f13b9f87a04d5fcb761d7b80d67745a779f9a))
+  - Fixed the build AGAIN (The next one who blindly merges a dependabot pr to update it back to 32 gets no love from toddy for a year) ([66a8388](https://github.com/apache/plc4x/commit/66a83885b722299f65d3ac8dbdbf3cc788f908bb))
+  - Added back the AMD64 profiles ([7807254](https://github.com/apache/plc4x/commit/780725406cee0a634ee26a6fee022e571021b094))
+  - Added back the AMD64 profiles ([0c1e255](https://github.com/apache/plc4x/commit/0c1e25576ef1e27d1b96abcadbc76b5427cde8dd))
+  - Downgrade to apache parent pom 31 as with 32 the site-build started failing. ([c6f992e](https://github.com/apache/plc4x/commit/c6f992e3a457971339312d0887671bb2a1945322))
+  - fixing URLs ([66bddbb](https://github.com/apache/plc4x/commit/66bddbbc5ac984fe4c598741f5d2d4530facb505))
+  - Added the struct back to the manual ads test. ([16c6f89](https://github.com/apache/plc4x/commit/16c6f89f23dd518a32410108ebb209090973d22b))
+  - Disabling "Trivy Scan" workflow as it's randomy failing and I can't see from the output why. ([1b51fa9](https://github.com/apache/plc4x/commit/1b51fa91da9e591178fc08ed359a6629b83e3335))
+  - A compilation error. ([27700c2](https://github.com/apache/plc4x/commit/27700c2133d3c7baaf7d6a4e36b415b92c1cacf1))
+  - Fixed the dependency usage error. ([13fcae7](https://github.com/apache/plc4x/commit/13fcae7fded7a55efa6e3dbf2ddd7f85dfb10f9f))
+  - Fixed logging in the example. ([f9c2e8c](https://github.com/apache/plc4x/commit/f9c2e8ccb9e41490cc0d3c95b646d98d374e766f))
+  - added timeouts for reading data/getting connection (#1361) ([f5269b5](https://github.com/apache/plc4x/commit/f5269b5ef1689f5de8e79116c0f7a8914fc70437)) ([#1361](https://github.com/apache/plc4x/pull/1361))
+  - Reverted the asciidoctor update in order to make the site build again. ([101d327](https://github.com/apache/plc4x/commit/101d327ea1727556e3a66b347b0998df135617b8))
+  - Updated all plugins used in the Jenkinsfile to the most recent ones. ([239e3af](https://github.com/apache/plc4x/commit/239e3af9c1b8a2442e99f05c5259759e2d0d027d))
+  - Removed the "with-python" module again, as it doesn't seem to be available on Jenkins. ([3814333](https://github.com/apache/plc4x/commit/381433398f0426df2b5b247777ced338bdb4db1e))
+  - Removed the "with-dotnet" module again, as it doesn't seem to be available on Jenkins. ([02e8216](https://github.com/apache/plc4x/commit/02e82162b25cbf811269f7751a3e0209f74963f4))
+  - Added the "update-generated-code" profile to the build, so the artifacts are built also added all other "with-" profiles, that were missing. ([e1bec3f](https://github.com/apache/plc4x/commit/e1bec3f26c35823953c262ae2a4a603d6d44e962))
+
+- plc4j/opcua:
+  - should compile now again ([8ecba71](https://github.com/apache/plc4x/commit/8ecba71c75308d3a47be91df5d2d0c5d4fca40f9))
+  - Fix null pointer exception in OPC UA Subscription Handle. ([5c73dfe](https://github.com/apache/plc4x/commit/5c73dfe77d65a3f2f89c264e38407a22333fc057)) ([#2025](https://github.com/apache/plc4x/pull/2025))
+  - Make sure UA subscription acknowledges are retained over publish cycles.  ([f776129](https://github.com/apache/plc4x/commit/f776129b096a7bd29701cf7284ef83a527dd1861)) ([#1447](https://github.com/apache/plc4x/pull/1447))
+  - Cleanup discovery connection resources.  ([7f40bbb](https://github.com/apache/plc4x/commit/7f40bbbaea63a406897f2ba7d91f17db1d07fe0d)) ([#1518](https://github.com/apache/plc4x/pull/1518))
+
+- opcua:
+  - should compile now again ([91c8849](https://github.com/apache/plc4x/commit/91c8849edbc84802ad70516e61c30ddd4e18f4fe))
+  - new log record type breaks mspec ([d756ff5](https://github.com/apache/plc4x/commit/d756ff53b0e367f5bc03262a793ce12cca424007))
+
+- plc4go:
+  - context usage corrected ([82e9abc](https://github.com/apache/plc4x/commit/82e9abc8c7ccf075eb7fc8860f81689e2812c9cb))
+  - reverse order for send/expect ([3cebcc1](https://github.com/apache/plc4x/commit/3cebcc1f85392e3498ce0de6fdf990a79ee0975e))
+  - increase response grab timeout to avoid edge cases on slow machines ([085f068](https://github.com/apache/plc4x/commit/085f06832710f34a6a849b6ba0d336a24c014eda))
+  - ensure channel close is handled correctly ([72d7a92](https://github.com/apache/plc4x/commit/72d7a92052782e8071afe8b638fa0a32ded7c200))
+  - ensure stopWarn waits for its go func to terminate ([201f0bc](https://github.com/apache/plc4x/commit/201f0bc2471567320e76b1793a1c71c57f81e2f9))
+  - don't start dispatcher if ctx is canceled at start ([cebf13d](https://github.com/apache/plc4x/commit/cebf13d1ce46491e525a3eff150c1543ca7970f1))
+  - properly shut down discoverer ([3fc9f67](https://github.com/apache/plc4x/commit/3fc9f67243b1ff01ebfe60cf4272108b8221a412))
+  - remove clean timer (go fixed 1.23) ([0b1a56d](https://github.com/apache/plc4x/commit/0b1a56dc031df3d404d0603f3e0bccba52b67538))
+  - corrected typo in licencer ([a5e3dff](https://github.com/apache/plc4x/commit/a5e3dff4cdf58180f2f750d401b8232cdf789912))
+  - avoid error on empty error ([36fdd4e](https://github.com/apache/plc4x/commit/36fdd4e21ea6750464b6e6dab3bee913c5fcc00c))
+  - use SIGTERM hook to shutdown shared instance ([a25272c](https://github.com/apache/plc4x/commit/a25272c96f9f0ebe97e100058d0e27a8974ef69a))
+
+- website:
+  - Roll back the parent POM ([84f1971](https://github.com/apache/plc4x/commit/84f1971085b380defd29fe18bc30e9dc54319205))
+  - Patch wasn't being applied correctly ([496dff8](https://github.com/apache/plc4x/commit/496dff852a7706107ca928b2c251e2a0086e601a))
+  - Change Year on landing page from 2024 to 2025 (#1989) ([9df49b2](https://github.com/apache/plc4x/commit/9df49b25be598eeeef1ccea2e58d39a18b8ff8fd)) ([#1989](https://github.com/apache/plc4x/pull/1989))
+  - Update Python getting started link ([6544b5d](https://github.com/apache/plc4x/commit/6544b5d43617ccb3b6a92b1402ebcdf1131da2f2))
+  - Update latest to use v0.12 branch ([eb78e20](https://github.com/apache/plc4x/commit/eb78e20fa2777b875a014abf0e315582a20ac231))
+  - Some cleanup work ([f857062](https://github.com/apache/plc4x/commit/f857062392fcfff9a3aadc1da008ab7967ce3ce7))
+  - Add overwrite rule to resources plugin for supplemental partials ([8855ab9](https://github.com/apache/plc4x/commit/8855ab9bebf787a7345746c404bf13d97947e56f))
+  - Add cleanup steps for the website ([a5af4c5](https://github.com/apache/plc4x/commit/a5af4c5c8b98d6286c9b820eef9348ae79da015f))
+  - Downgrade the node.js version due to websites1 runner using ubuntu 18. (sigh) ([d09c49a](https://github.com/apache/plc4x/commit/d09c49af2639f9a8d3435e3f7e5d54f973f7e0ed))
+  - Downgrade the node.js version due to websites1 runner using ubuntu 18. (sigh) ([28822eb](https://github.com/apache/plc4x/commit/28822ebf72db4ec857c530129e8986a0bc68ce15))
+  - Switch to website runner to build site ([ac28874](https://github.com/apache/plc4x/commit/ac2887408cb7cfbfa9f0375e583a75d617bb7af4))
+  - Test using a specific node for a build ([f545c08](https://github.com/apache/plc4x/commit/f545c08e8b9e9599f8e131353b4bee2cded2ec04))
+  - Test using a specific node for a build ([850fe22](https://github.com/apache/plc4x/commit/850fe226d7c88558fff36ab3d449217b0bd8561c))
+  - Test using a specific node for a build ([7124af3](https://github.com/apache/plc4x/commit/7124af3e87624de370b698fbc42b2e7e806bce96))
+  - Revert the dependabot maven-site-plugin upgrade and use the apache parent pom version parameter. ([36f09f4](https://github.com/apache/plc4x/commit/36f09f45be05d9abc02b1abd8fe8b7c79ee2f6a7))
+  - replace backslashes in patch file ([b8fc416](https://github.com/apache/plc4x/commit/b8fc4160d177e86271395beb1320493e2eb3a29d))
+  - Fix start page link and patches ([571268c](https://github.com/apache/plc4x/commit/571268cb18ddb9f6e5d726fab5b816d2c6fd10ea))
+  - Attempt to fix the edit button, and carousel issue. ([3df9c5b](https://github.com/apache/plc4x/commit/3df9c5b766f00e9d6451796bf41e4d99705f2d1c))
+  - Add back the event banner ([729860e](https://github.com/apache/plc4x/commit/729860ef9294c2871cb49a72ca73eb17eb71ba78))
+  - Fixed Edit Button, Page Attributes and Apache Links ([f2372e1](https://github.com/apache/plc4x/commit/f2372e12ce0d01bdd77f19382c9c54658dfafd53))
+
+- bacnetip:
+  - support for empty organization names ([e0fd7cb](https://github.com/apache/plc4x/commit/e0fd7cb08e34c88102d308369b5acaa60d136bbc))
+  - fixed error in mspec ([409ab60](https://github.com/apache/plc4x/commit/409ab60eac0968f5acc3f13c06906306bfb22e52))
+  - fix validation logic on NPDU header ([8d201d0](https://github.com/apache/plc4x/commit/8d201d0242bbe633e826905d6d0d36c6b5fc4dfd))
+
+- plc4go/spi:
+  - fix broken processInfo option ([4fba9de](https://github.com/apache/plc4x/commit/4fba9ded653487543c61a5caa379caa29dafd204))
+  - multiple potential fixes in Net ([2630bd1](https://github.com/apache/plc4x/commit/2630bd10d401fd4bb2e4c518cd45c9701f94eb13))
+  - avoid npe on nested structs ([9077b8b](https://github.com/apache/plc4x/commit/9077b8b03b8e3b59df466a8ce01de8960c097788))
+  - fix footer being lost on name change ([7aea3ab](https://github.com/apache/plc4x/commit/7aea3ab444327cb6523d55f21ff371463ecbfef8))
+  - fix change name throwing away header ([dfead19](https://github.com/apache/plc4x/commit/dfead198ac12571a2db4e6de821cadf340328382))
+  - asciibox <cr> distortion ([3715c36](https://github.com/apache/plc4x/commit/3715c36fd237074b4378757a0079bc3362050f46))
+  - asciibox tab distortion ([2d93142](https://github.com/apache/plc4x/commit/2d93142fc6ef6b0eaebad72e285be9932de4607c))
+  - FieldReaderOptional nil fix ([d92d1f3](https://github.com/apache/plc4x/commit/d92d1f31fc4a6d735c773f84de8f237403ad486f))
+  - FieldReaderOptional EOF fix ([10f421a](https://github.com/apache/plc4x/commit/10f421ac9460793ad48712509a6bf570cc5e75e2))
+  - FieldReaderVirtual uses a conversion lib ([aa5b24e](https://github.com/apache/plc4x/commit/aa5b24ea1fcc18decc9dedb9a4f8878547122e26))
+  - fixed signed byte reader ([b25f11d](https://github.com/apache/plc4x/commit/b25f11d1b5d77c4718114d420c66a5a16ae7a685))
+  - reserved field reader simplification ([bf9f8f2](https://github.com/apache/plc4x/commit/bf9f8f29646fc2eb5d037e7c0e9873e62057fffb))
+  - reserved field reader logic inversion fix ([88eaecf](https://github.com/apache/plc4x/commit/88eaecfa5839d0049411f38e345543b93272452f))
+
+- plc4go/cbus:
+  - device scan mess-up ([327def0](https://github.com/apache/plc4x/commit/327def0c3db09416d9c4ff93346487be4c156283))
+  - context fixes ([41e04e0](https://github.com/apache/plc4x/commit/41e04e09ec8badf1fa5ebf2a8cbb936740478db4))
+
+- code-gen/bacnet:
+  - avoid offset collisions by names already in use ([f87edeb](https://github.com/apache/plc4x/commit/f87edeb14cb3c344c8256fc90b34bb66d0f25718))
+
+- plc4py/umas:
+  - Add some documentation ([af8dc4c](https://github.com/apache/plc4x/commit/af8dc4ccbc3e8fc54e9670b6b334c72967b8b6fd))
+  - Write Support (#1463) ([9dde144](https://github.com/apache/plc4x/commit/9dde1448a316866018d47b5cd4466776610ae635)) ([#1463](https://github.com/apache/plc4x/pull/1463))
+  - Fixed a few issues I introduced on the last commit ([be513fb](https://github.com/apache/plc4x/commit/be513fb75e9136b1c326112803270ca0471344fc))
+
+- code-gen/go:
+  - fix issues with deepCopy ([74871e2](https://github.com/apache/plc4x/commit/74871e205aacb5ec4105c4c7f8986fb83d68f82e))
+  - fix issues with builders ([2d571ad](https://github.com/apache/plc4x/commit/2d571ad39babbaaf69c28893c03d73a7d8e3daa0))
+  - fix issues with builders ([4117153](https://github.com/apache/plc4x/commit/4117153f85c5d160fc415a44a5f7135b77d83781))
+  - fix NPE on builder clone ([03b52a3](https://github.com/apache/plc4x/commit/03b52a3eb67e8ab9b283b4ad7b3fe3063c9e1d18))
+  - compile issue fix for +2 tree ([fc4c27a](https://github.com/apache/plc4x/commit/fc4c27aa76248a54259f903bea46604a6646cc59))
+  - sub types should now be assignable ([61f95d7](https://github.com/apache/plc4x/commit/61f95d7366ac131ea95dbb86427f166ba8624e2e))
+  - disable builder temporary for discriminated types ([6cc035d](https://github.com/apache/plc4x/commit/6cc035da17ff94e258004d370b342259f0ce853b))
+  - fix issues with parameter with a multi inheritance constructor order ([fecd3c8](https://github.com/apache/plc4x/commit/fecd3c8af83b3fa278ca9fc3f2df79721038f9cc))
+  - fix issues on combined parent-child ommitting discriminator field... ([8e4ae93](https://github.com/apache/plc4x/commit/8e4ae93427830686f596f86a6fb5ceb8a2da68e2))
+  - fix issues on combined parent-child calling wrong parent ([1b622c3](https://github.com/apache/plc4x/commit/1b622c34cac71fc2ab38e768a2f67a51d70940b0))
+  - fix issues on combined parent-child assignment too early ([25239da](https://github.com/apache/plc4x/commit/25239daeee96f68197f134cf07ad6fbf4549dc3c))
+  - fix issues on combined parent-child constructor ([e99779d](https://github.com/apache/plc4x/commit/e99779d6b5667125ff311b49285f3051c5921f0b))
+  - fix issues on combined parent-child ([fffa126](https://github.com/apache/plc4x/commit/fffa1268b561f194b744abc4a3430763379ee04f))
+  - fix issues on combined parent-child ([1fc6afa](https://github.com/apache/plc4x/commit/1fc6afaffb313ddfd9ea90cce54819c7f71d919b))
+  - fix parsing panic on unexpected child type ([52f355f](https://github.com/apache/plc4x/commit/52f355fdefdc533de794e1db6495ea884b806561))
+  - add identity methods to contract ([f6320a4](https://github.com/apache/plc4x/commit/f6320a4fcf40d855e9a19bad155da6c2fa96909d))
+  - remove Exactly interfaces ([aee1f09](https://github.com/apache/plc4x/commit/aee1f09827720564f5335a8def7b06605ae3497e))
+  - use partial instance ([03b9fcf](https://github.com/apache/plc4x/commit/03b9fcf374795cb78da9ed3c5ed8d41348ee1ee6))
+  - added missing args ([44c6a0e](https://github.com/apache/plc4x/commit/44c6a0ee15fe209c20c268a4e01212a3ebe8e69b))
+  - set sub type in constructor ([031aa2e](https://github.com/apache/plc4x/commit/031aa2e58f82d0a7184abbdb771f6059cb741133))
+  - discriminated types sub types ([888288f](https://github.com/apache/plc4x/commit/888288f2ea40caf13fc6a61a23513dccf9bdc4c2))
+  - rewrite discriminated types ([b489808](https://github.com/apache/plc4x/commit/b489808b58cbcd1e45ca32b839b5b97056b85c49))
+  - add missing factory method for dataio ([8d33a34](https://github.com/apache/plc4x/commit/8d33a3474e7aa43d70003ac22ddebabfefb08a80))
+  - peek field reader ([c47bb96](https://github.com/apache/plc4x/commit/c47bb964c0815f72cdbe34449fd85e1444bcbfc4))
+  - manual field ([10e1569](https://github.com/apache/plc4x/commit/10e15692908c84c0779c31a9b230faecb65b9562))
+  - bit reading ([3bce061](https://github.com/apache/plc4x/commit/3bce0610507d9608ef58311318a1bd1255c440d4))
+  - checksum field ([e587f9c](https://github.com/apache/plc4x/commit/e587f9cf0d0c333b2f1c352f849c68cf411eb149))
+  - optional should not read a zero value on fail ([895f367](https://github.com/apache/plc4x/commit/895f367e03a45cce107a03cc3f2a2a9ad7379f15))
+  - add support for typeswitch in typeswitch ([fdeb863](https://github.com/apache/plc4x/commit/fdeb8639ad8b6184b17d6aaaf1396d18dc77b3c5))
+
+- plc4j/drivers/s7:
+  - fix Camel is immediately trying to reconnect because the IS_CONNECTED attribute is set 1ms from a child thread (after the S7HPlcConnection assumes the connection is fully established) (#1879) ([0ad7a7b](https://github.com/apache/plc4x/commit/0ad7a7b4d48050411447610af25146f66acc131f)) ([#1879](https://github.com/apache/plc4x/pull/1879))
+  - delete 2 duplicate classes, the used ones are located in org.apache.plc4x.java.s7.readwrite.protocol (#1878) ([609b930](https://github.com/apache/plc4x/commit/609b93030f24c81c627779fb55ade25d4a678928)) ([#1878](https://github.com/apache/plc4x/pull/1878))
+  - fix NoSuchElementException when watchdog ChannelHandler was not added yet & fix exception "MessageToMessageCodec$1 must produce at least one message." & fix some typos (#1873) ([9856bb7](https://github.com/apache/plc4x/commit/9856bb75c7a60a85a847b10707b0fab3f4b29e46)) ([#1873](https://github.com/apache/plc4x/pull/1873))
+  - fix NPE in S7HMuxImpl ([3e089e4](https://github.com/apache/plc4x/commit/3e089e424e8cda9f640b7c17a891b1fe3a7d831b)) ([#1866](https://github.com/apache/plc4x/pull/1866))
+
+- plc4go/opcua:
+  - OPC-UA driver updates and checkin of generated code. ([40a3bc8](https://github.com/apache/plc4x/commit/40a3bc851ac340b2bc45f31c935e8af303d96623)) ([#1731](https://github.com/apache/plc4x/pull/1731))
+  - OPC-UA driver updates and checkin of generated code. ([9d2b947](https://github.com/apache/plc4x/commit/9d2b947f63f17c21c2dab889686520348e6263b1)) ([#1731](https://github.com/apache/plc4x/pull/1731))
+
+- plc4py:
+  - Fix up documentation and more Modbus testing ([b8e23a7](https://github.com/apache/plc4x/commit/b8e23a788056ef43521688940f5a5f814d0545c0))
+  - set gh build to use every even python release ([b14932a](https://github.com/apache/plc4x/commit/b14932a675bddb92476a11d6471378bd7c28682a))
+  - add 3.8 to github action ([07627b8](https://github.com/apache/plc4x/commit/07627b8f4edbb50b9f4cc8d94637abde84499b99))
+  - Add to Jenkins build ([ccc9e94](https://github.com/apache/plc4x/commit/ccc9e94d851c244d815dd1a7fe1f11ddea06d7a8))
+  - Add in default reader/writer/browser ([abdd3f9](https://github.com/apache/plc4x/commit/abdd3f9e9f4ea55957bcfb57c0a3dc48ab236fbe))
+  - Move a lot of functions to interfaces ([0977349](https://github.com/apache/plc4x/commit/0977349bba7adfaa2bf55369ee1b6aaf457f4fa4))
+  - Make all read and write functions the same. No more dangling threads. ([6f7fea8](https://github.com/apache/plc4x/commit/6f7fea80f0bdb840c914e593c7d1809af9697325))
+  - Remove duplicate code ([f0f6181](https://github.com/apache/plc4x/commit/f0f6181318ee57655023c60a6f9fd7b4f1b61dab))
+  - Enable integration tests (#1588) ([24668c8](https://github.com/apache/plc4x/commit/24668c8419a0aad5a22c0d0920b7fb75de7cfc8f)) ([#1588](https://github.com/apache/plc4x/pull/1588))
+  - Remove it again ([0c4b6b9](https://github.com/apache/plc4x/commit/0c4b6b96f6c7ba909afd67b38755b9d749bfca3c))
+  - Add github action to run on latest macos hardware ([8d0cf71](https://github.com/apache/plc4x/commit/8d0cf71f26b0bb4e2c0a67fda0587115a888f7a9))
+  - Use packet length estimator to be able to handle multiple packets in a queue ([7196f34](https://github.com/apache/plc4x/commit/7196f34dd6769d2bdc21fe4748a47a19a0559ec4))
+  - Add to dependabot ([d63179e](https://github.com/apache/plc4x/commit/d63179e6917623aa203cdaffd1dabadc50c7bffd))
+  - Got rid of returning future, starting to understand it a bit more now ;) ([9eb7106](https://github.com/apache/plc4x/commit/9eb7106e08dc2f4bc5e4e46bee03b75ddf4050bb))
+  - set test to manual ([fc1a077](https://github.com/apache/plc4x/commit/fc1a077c0f3a65fd7c21323b80734a56529ac695))
+  - Fix connection lost exception being raised ([3b5b755](https://github.com/apache/plc4x/commit/3b5b75566dbcaa57e98b480f9340fb8489aedbbd))
+  - Fix exception on closing the connection ([74e94bd](https://github.com/apache/plc4x/commit/74e94bdfd3146c8ab839ef51fc81a6f83497db9a))
+  - Move out of sandbox ([5ce7d69](https://github.com/apache/plc4x/commit/5ce7d69a000a60a02aea3b3c584f6975d06caad1))
+  - type extensions module added to setup.py ([610ff5a](https://github.com/apache/plc4x/commit/610ff5a2f2d6dceaf83adc669b16cf94e8d65aa2))
+  - Add more to fix documentation ([3038923](https://github.com/apache/plc4x/commit/303892317c8db967b0b4dbe0d53f84c8ab6bad18))
+  - Documentation and Write Requests (#1437) ([bbd7f1e](https://github.com/apache/plc4x/commit/bbd7f1e1e9b8fddebb4b1cbbc081443af28751d4)) ([#1437](https://github.com/apache/plc4x/pull/1437))
+
+- plc4j:
+  - Use pre-provisioned security keys for OPC-UA tests. ([431cf24](https://github.com/apache/plc4x/commit/431cf2460d79cc2988203137aa95af9cbd733f65)) ([#1839](https://github.com/apache/plc4x/pull/1839))
+  - Use pre-provisioned security keys for OPC-UA tests. ([886c1e7](https://github.com/apache/plc4x/commit/886c1e72ce7987621811c2d558fef7998797d82e))
+  - Disable opcua tests on Jenkins. ([112261a](https://github.com/apache/plc4x/commit/112261adf551ebff38dacf707ca70bd56e7fb950)) ([#1834](https://github.com/apache/plc4x/pull/1834))
+  - Make sure failed ChunkFactory tests produce more information. ([ded381b](https://github.com/apache/plc4x/commit/ded381b9954e142aa977e7a180609b2697e78f6a)) ([#1832](https://github.com/apache/plc4x/pull/1832))
+  - Stabilization of OPC UA driver tests. ([896d869](https://github.com/apache/plc4x/commit/896d869768c8c03859fa55c92ccbc595de2618ab)) ([#1797](https://github.com/apache/plc4x/pull/1797))
+  - Adjust endpoint selection logic. ([a159e7e](https://github.com/apache/plc4x/commit/a159e7ed16de3013ca17bbd9de1032da4d9defe7)) ([#1830](https://github.com/apache/plc4x/pull/1830))
+  - Adjust encoding/decoding logic to support mixed key lengths. ([cb8153a](https://github.com/apache/plc4x/commit/cb8153a930b0418e111089ea77055911259fa823)) ([#1829](https://github.com/apache/plc4x/pull/1829))
+
+- plc4go/tools:
+  - fix infinite loop when reaching root ([e763903](https://github.com/apache/plc4x/commit/e7639038560f100550fee5f874a71785a947c595))
+  - fixed issue on plc4xGenerator ([fb2fb4d](https://github.com/apache/plc4x/commit/fb2fb4d55834563ac0f648f95408420532e04926))
+
+- plc4go/bacnetip:
+  - object related fixes ([501f1a6](https://github.com/apache/plc4x/commit/501f1a6d15504531c796fd684d0b303729867b72))
+  - fixed several smaller issues ([8208f44](https://github.com/apache/plc4x/commit/8208f4463c2984921fca7c336e45b548fad361d1))
+  - progress on objects ([a3eb7df](https://github.com/apache/plc4x/commit/a3eb7df74fb528c84428e9e2aa66699b65c95ed8))
+  - APDU encoding ([7eb1d7f](https://github.com/apache/plc4x/commit/7eb1d7fcffc49b9f3c8c328e018716e55c0917c5))
+  - fix trapped state machine ([0846b04](https://github.com/apache/plc4x/commit/0846b04ed2a7edb4dd0981815f422e68e1bc0cac))
+  - fix most of the broken implementation ([9ba4d7f](https://github.com/apache/plc4x/commit/9ba4d7f48d1921ed57748475e24d7b116efe2e36))
+  - add comm_PDU ([7346df7](https://github.com/apache/plc4x/commit/7346df748967c5a5913c242467ce351917ec3d91))
+  - several fixes with broken implementation ([e6859e6](https://github.com/apache/plc4x/commit/e6859e64ab182f1604e33e7380ab0f921d4082d2))
+  - several issues resolved ([5f09ead](https://github.com/apache/plc4x/commit/5f09ead777d75bd6b80e0d5e65c44e75029e9d94))
+  - npdu handling is no more consistent ([e2237e4](https://github.com/apache/plc4x/commit/e2237e400c49a2b17178c51abb43a1ad97a85bd2))
+  - fixed several issues ([2628f7a](https://github.com/apache/plc4x/commit/2628f7a6d3fb7bfa9ff9dd2885a07b0278d7a60d))
+  - binding errors ([3c848ad](https://github.com/apache/plc4x/commit/3c848ad61d28df6e2614c23ded82a001c06930b5))
+  - task time calculation ([4ba82d6](https://github.com/apache/plc4x/commit/4ba82d6cc7d45fb9bb164de4b484267d17160ecb))
+  - fix task manager handling ([46ba264](https://github.com/apache/plc4x/commit/46ba26465497152575acb82c568693c8cd775967))
+  - fix task manager handling ([a212159](https://github.com/apache/plc4x/commit/a2121595a927c4eb79ba8e324dc81ff75fb6e443))
+  - fix BBMP issues ([c3f2155](https://github.com/apache/plc4x/commit/c3f2155320eb14b863c14be7367fde4dd9e66b5b))
+  - fixed several issues ([4d178af](https://github.com/apache/plc4x/commit/4d178af29dd18111435bebfffd8952649457e0eb))
+  - fixed bvll types ([cfc07c7](https://github.com/apache/plc4x/commit/cfc07c7ad940efe424ae20bd7088943fd36512f1))
+  - fixed usage of pduData ([d122577](https://github.com/apache/plc4x/commit/d1225772aa7c93320f971f617403cc88483bfc42))
+  - added more BVLCs ([cd13df2](https://github.com/apache/plc4x/commit/cd13df2cbdc7a29c49b7914c796f336ff198f9b6))
+  - nasty bug in match pdu fixed ([3cceea4](https://github.com/apache/plc4x/commit/3cceea4053e1e9ccea07744eac15dfa26893241f))
+  - WriteBroadcastDistributionTable ([6e237f2](https://github.com/apache/plc4x/commit/6e237f2e3acbc23d65c774889f3b41e5ac644e06))
+
+- plc4j/spi:
+  - ascii box writer tab and cr fixes ([14696d7](https://github.com/apache/plc4x/commit/14696d778ccb56463b4ca36c7f424c91da287ff4))
+
+- plc4go/plc4xGenerator:
+  - fix broken fallback rendering ([d183e52](https://github.com/apache/plc4x/commit/d183e52822e10e05b6dc9d6829acac9526e11ae0))
+  - time types should be rendered as string ([1a3eb92](https://github.com/apache/plc4x/commit/1a3eb9231341470a1344b1d3d3f61fe110039350))
+  - support edge case for delegates ([bf0ed03](https://github.com/apache/plc4x/commit/bf0ed03a40cc091b706300af4c6dd84d5c5175ac))
+
+- code-gen/java:
+  - fix wrong check ([28b5816](https://github.com/apache/plc4x/commit/28b5816d8552fb698d2a120a51cafb1007c132d8))
+  - fix interface name collision ([d3eff01](https://github.com/apache/plc4x/commit/d3eff010ba0df1e2de9be1c5bb2538d85c6aabfb))
+
+- plc4go/bacnet:
+  - add missing import ([d4aca36](https://github.com/apache/plc4x/commit/d4aca3651f662b98481136432f25cdbca5240ebd))
+  - ICouldBeRouterToNetwork ([8bb9121](https://github.com/apache/plc4x/commit/8bb9121f37fd463086e7a509b91cfaf36aad125d))
+  - IAmRouterToNetwork ([6eaf6fa](https://github.com/apache/plc4x/commit/6eaf6faa15307f3b910a143acaa030670fedf15b))
+  - tag related issues ([fcd5173](https://github.com/apache/plc4x/commit/fcd517359fb4b14efd91927f463c3bbae0f8df35))
+  - fix primitive bitstring ([32485d0](https://github.com/apache/plc4x/commit/32485d0345e961a3eb43f1fc5235769a9de15ed7))
+  - several smaller bugfixes ([11166dd](https://github.com/apache/plc4x/commit/11166dd2d2db88f1e45d9cc7957c1d6d6ca2308d))
+  - fix issues with address parsing and vlan ([1f00503](https://github.com/apache/plc4x/commit/1f00503593f79f4d4965ec1aef22a27dbefa4573))
+  - several bugfixes ([19f5db7](https://github.com/apache/plc4x/commit/19f5db7918209e75ff6226e5bfadb67806962b0f))
+  - several bugfixes ([90dd906](https://github.com/apache/plc4x/commit/90dd906ff0891f58d88329e9b796c57039a236a7))
+  - use args,kwargs to fill gaps ([f117e8b](https://github.com/apache/plc4x/commit/f117e8b8ace324004d426a3fb44a5b7f6e24457d))
+  - plc4x_gen should ignore loggers ([7b77496](https://github.com/apache/plc4x/commit/7b7749629d49f2be2abe76a1df54180c37c4ad90))
+
+- bacnet:
+  - typo in RejectMessage ([ad51475](https://github.com/apache/plc4x/commit/ad51475bc2ca801fd5af861b6d6e925ccff88fa4))
+  - typo in NLM ([c43562b](https://github.com/apache/plc4x/commit/c43562ba101c3314ab20025023f4bd08e16c3d70))
+
+- plc4j/ads:
+  - Fixed connection hang on exception (#1530) ([a3d9cfe](https://github.com/apache/plc4x/commit/a3d9cfe59d553a51b9e50d4eaf7dd7b40af850b3)) ([#1530](https://github.com/apache/plc4x/pull/1530))
+  - Invalid size writing multiple tags (#1524) ([b1ae242](https://github.com/apache/plc4x/commit/b1ae242dacafdbf1cedfb5b82deb0fe2c1ca7dfa)) ([#1524](https://github.com/apache/plc4x/pull/1524))
+  - Fixed List serialization passing invalid datatype for child elements (#1517) ([8dc24d2](https://github.com/apache/plc4x/commit/8dc24d2218d76d87cea99ed57f0613ba25fbbdc9)) ([#1517](https://github.com/apache/plc4x/pull/1517))
+
+- plc4j/genericcan:
+  - fix(plc4j/genericcan) Fix of generic CAN driver and CAN transports after recent releases. ([eaa0fe1](https://github.com/apache/plc4x/commit/eaa0fe155eeb92b196374c6619d927c1feb88ed1)) ([#1446](https://github.com/apache/plc4x/pull/1446))
+
+### Documentation
+
+- general:
+  - Fixed the broken links on how to add entries to the list of commercial support offerings. ([a3f3d6d](https://github.com/apache/plc4x/commit/a3f3d6d1b527fa3a2e26fc6ce3a580e2fb057561))
+  - Added Accso to the commercial support page and changed the responsible contact person for Timecho ([3648c73](https://github.com/apache/plc4x/commit/3648c737d3c75a3247b729b2d66714fe687a9767))
+  - Updated one of the two broken links (The foundation is working on fixing the other) ([6fdde32](https://github.com/apache/plc4x/commit/6fdde3254764aa662c3ab984da86bbeadd1590f6))
+  - Added a page for the S7-light driver to the website. ([2f31fe5](https://github.com/apache/plc4x/commit/2f31fe50c4d8b1f15043285376f86254e7915066))
+  - Removed a duplicate entry in the RELEASE_NOTES ([eb85483](https://github.com/apache/plc4x/commit/eb854839c61767cf2135c19eb9abfe08b54cea4d))
+  - Added the driver decription of the new s7-light driver. ([3a41906](https://github.com/apache/plc4x/commit/3a419067498d027b67afdfd23df682eea5e57502))
+  - Removed Timecho from the team and support page. ([7bb8690](https://github.com/apache/plc4x/commit/7bb8690f19e5d31b8c9663ded30c43e46c2f23fd))
+  - Updated the annotations for generating the S7 configuration adoc ([794156a](https://github.com/apache/plc4x/commit/794156a7f64e8f665d6507c9ac15230e71d4ab13))
+  - Added some documentation to the PlcResponseCode values ([daee93f](https://github.com/apache/plc4x/commit/daee93fb745e64386f5499ed62b5ba6c8b3f6ac8))
+  - Updated the modbus documentation. ([8562b91](https://github.com/apache/plc4x/commit/8562b912d42ba5d60f19508dafe8ac80fb99c811))
+  - Updated the setup guides to recent reality. ([7e7b997](https://github.com/apache/plc4x/commit/7e7b997b0f439140e6468f246a48a042613ed6ca))
+  - Added some more comments on which profiles usually are used on which types of system. ([721070c](https://github.com/apache/plc4x/commit/721070cb12ed349a1b74b624aca98bc5c5eea51e))
+  - Updated some documentation on the code-generation. ([099ca20](https://github.com/apache/plc4x/commit/099ca20d0998974559bbc2a75bef3458cb7e56b5))
+  - Added "slave-id" to the description of the unit-identifier. ([ee0259e](https://github.com/apache/plc4x/commit/ee0259e10ecdfe76bc5a85f8ba1e98f18d1e1251))
+  - Added some information on the site plugin and the asciidoctor plugin. ([0cc4997](https://github.com/apache/plc4x/commit/0cc4997e54faaf4e54d7f717f60f1ab43dffc2f1))
+  - Updated the url for the opie tool ([d61da27](https://github.com/apache/plc4x/commit/d61da275058b68cb44ebac93cc5b87cd177c1990))
+  - Updated the "Developers" part of the website. ([f9546c0](https://github.com/apache/plc4x/commit/f9546c0757c8de57434104da1d4b56cbed68cee5))
+  - Updated the "Users" part of the website. ([6fe2829](https://github.com/apache/plc4x/commit/6fe2829d5ae5bae01d8e6877758a7864f753de78))
+
+### Refactor
+
+- general:
+  - Refactored the build to always include the parts of code-generation that are always needed. ([c3d5265](https://github.com/apache/plc4x/commit/c3d5265c3f0fa3ee29fb64ab312887b040fb8991))
+  - Split up the configuration of the two s7 variants, so the s7-light can work with different defaults without interfering with the functionality of the full driver. ([43ad6aa](https://github.com/apache/plc4x/commit/43ad6aa99da0e8494f6ccdbe44293209bb9667e5))
+  - Cleaned up the OPM code a bit and disabled the "write-back" when using a method not called get{something} or is{somethingBoolean}. ([2cd0a03](https://github.com/apache/plc4x/commit/2cd0a03bdd166044997a8016385c88bb2d34cb89))
+  - Make the <release> compiler setting overridable ([2c4ee0d](https://github.com/apache/plc4x/commit/2c4ee0d441b5bfd00429f58dfc1f217d366ad865))
+  - Introduced a getDataTypeTableEntry method that is able to deal with TC2 devices omitting the primitive data-types in it's dataTypeTables. ([3acd301](https://github.com/apache/plc4x/commit/3acd3013f0a20669525473c250f9085ab9457339))
+  - Cleaned up the array handling in browse-items. ([ccf6ebe](https://github.com/apache/plc4x/commit/ccf6ebebab36e1bf8d0bd568aa26ffab33a1546b))
+  - Fine tuning of the API and SPI (#1786) ([69b8bc1](https://github.com/apache/plc4x/commit/69b8bc1aad5f2c6466618b8b825e923d4ab4fada)) ([#1786](https://github.com/apache/plc4x/pull/1786))
+  - Refactored the way var-length strings are handled to reduce the number of requests sent to the PLC. ([74f4fb9](https://github.com/apache/plc4x/commit/74f4fb956ca4f9b7ac83da8c8a758b00a7c2ed10))
+  - Streamlined the pom names of the drivers and protocols ([fe5a3ed](https://github.com/apache/plc4x/commit/fe5a3ed330fef9c37f1da19b190e3a925a063d4f))
+  - Fine-tuned the structure of the PlcBrowseItem produced by the ADS driver. ([9627121](https://github.com/apache/plc4x/commit/962712195e6590ef55a119c7425cb4cda6b4e0b5))
+  - Removed the new types for the modbus protocol. ([6235554](https://github.com/apache/plc4x/commit/62355546826f0a7158ea8c09a11c1bdb76fb158d))
+  - Updated all except python to generate the updated mspecs for the optimized Modbus driver. ([1d0f176](https://github.com/apache/plc4x/commit/1d0f1764eb4f19e8c2db91726bb084e30bbef692))
+  - Rearranged some of the code. ([ff661ca](https://github.com/apache/plc4x/commit/ff661caee40a1dfd89f078ea55ac503dc32c8e8d))
+  - Refactored the S7 driver to use the PlcRawByteArray type for arrays of type BYTE ([450b67d](https://github.com/apache/plc4x/commit/450b67dc8ed55fbb65ffacc85d4847731bc5ffee))
+  - Removed some odd and sort of obsolete code. ([894b16a](https://github.com/apache/plc4x/commit/894b16a3b40ca9d4e2e5f12e17b3dbd6a75f9fb4))
+  - Moved the examples, integrations and other extra stuff into the new plc4x-extras repository (#1483) ([4ff3d20](https://github.com/apache/plc4x/commit/4ff3d20cea85f89b2b6867613a0ef3d9edc213b6)) ([#1483](https://github.com/apache/plc4x/pull/1483))
+  - Renamed the paddingField paddingCondition to timesPadding ([d05711a](https://github.com/apache/plc4x/commit/d05711ab383c4d7af5cd72bd12fd4ef779f99cf9))
+  - Added S7-400 to the list of supported devices. ([ad92e6a](https://github.com/apache/plc4x/commit/ad92e6a801f6e2c9221905770e0b3bad0e25ee62))
+  - Made the "protocol" accessible in the AbstractPlcConnection ([7203ad8](https://github.com/apache/plc4x/commit/7203ad81217187bfbf8b47e55a4bd96f425987c5))
+  - Moved the code generation of the UI tool into the update-generated-code profile. ([195ff6a](https://github.com/apache/plc4x/commit/195ff6acb85b334b6162a8b9d0ea03f82e5d8394))
+
+- plc4go/spi:
+  - get rid of old WBBB constructor ([17d8ed7](https://github.com/apache/plc4x/commit/17d8ed70f958e99c64b1fdd2e8feb34127632c7b))
+  - make use of options for BoxerWriter ([f7666a5](https://github.com/apache/plc4x/commit/f7666a5de4bafdac8acb6bc80c08d30e428d5e89))
+  - make use of options for Boxer ([3dce03e](https://github.com/apache/plc4x/commit/3dce03e85897da8588c437d45eb8645275294138))
+
+- code-gen/go:
+  - simplify deepCopy on parents ([7d2fab1](https://github.com/apache/plc4x/commit/7d2fab1978c7af2b036a05eede15d8125c29c3c9))
+  - fix length underflow issue ([7f211a8](https://github.com/apache/plc4x/commit/7f211a88d3ffadf70bd161dc5f2e8142836b3012))
+  - fix childs not declaring discriminators in contract ([cc14b9c](https://github.com/apache/plc4x/commit/cc14b9c6d97f28b3f7cef3f08327c368be1d8f40))
+  - cleanup child creation ([5fa00f1](https://github.com/apache/plc4x/commit/5fa00f1f5ba3a7353ce3d35d53e3cfc0d697471c))
+
+- plc4go/bacnetip:
+  - multiple improvements helping with debugging ([7029d2b](https://github.com/apache/plc4x/commit/7029d2b03c9bd21b3a38a3fe56b1dfad7226b2a2))
+  - reworked protocol logic ([6e7a7d3](https://github.com/apache/plc4x/commit/6e7a7d386dfc717f3bcf405181223e406ad4a761))
+  - split basetypes ([04d14d7](https://github.com/apache/plc4x/commit/04d14d746bd97ac5021242eaa41a67d666cf137a))
+  - move bacgopes part into sub directory ([8c7f35c](https://github.com/apache/plc4x/commit/8c7f35caae6253bec09efd0b47252969eeb2d859))
+
+- plc4go/bacnet:
+  - changes on date ([d0d84ad](https://github.com/apache/plc4x/commit/d0d84ada58edfbee0bc9b58221ba99aba4d6bf5a))
+  - changes on bit string ([1d292b1](https://github.com/apache/plc4x/commit/1d292b15c4481e59149877c38760adb0f582b508))
+  - use local loggers ([dd84dd2](https://github.com/apache/plc4x/commit/dd84dd2e5a92f3c4746531187b83d6141afec0bd))
+
+- plc4go:
+  - remove trivial dependency ([4965afa](https://github.com/apache/plc4x/commit/4965afae8fa6420dbeee462d664831342004fdc2))
+  - replace utils.Min/Max with builtins ([bebe9e3](https://github.com/apache/plc4x/commit/bebe9e3754f4f0e7e30816a6a8607baa04766652))
+
+## [relt/0.12](https://github.com/apache/plc4x/releases/tag/relt/0.12) - 2024-02-16 11:48:19
 
 ## What's Changed
 * build(deps): bump com.google.googlejavaformat:google-java-format from 1.17.0 to 1.18.0 by @dependabot in https://github.com/apache/plc4x/pull/1126
@@ -225,7 +1404,7 @@
 * @qtvbwfn made their first contribution in https://github.com/apache/plc4x/pull/1157
 * @schaebo made their first contribution in https://github.com/apache/plc4x/pull/1374
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.11...rel/0.12
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.11...relt/0.12
 
 ### Feature
 
@@ -393,7 +1572,7 @@
 - plc4x-server:
     - Cleanup, add tests, and add option to specify port number (#1162) ([8091bfd](https://github.com/apache/plc4x/commit/8091bfd69218eb87665b3d291b12d46c0e5d0782)) ([#1162](https://github.com/apache/plc4x/pull/1162))
 
-## [rel/0.11](https://github.com/apache/plc4x/releases/tag/rel/0.11) - 2023-10-02 07:23:01
+## [relt/0.11](https://github.com/apache/plc4x/releases/tag/relt/0.11) - 2023-10-02 07:23:01
 
 ## What's Changed
 * build(deps): bump actions/github-script from 6.3.0 to 6.3.1 by @dependabot in https://github.com/apache/plc4x/pull/530
@@ -821,7 +2000,7 @@
 * @takraj made their first contribution in https://github.com/apache/plc4x/pull/1099
 * @DmitriiMukhin made their first contribution in https://github.com/apache/plc4x/pull/888
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.10...rel/0.11
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.10...relt/0.11
 
 ### Feature
 
@@ -1699,7 +2878,7 @@ failure ([35bf97a](https://github.com/apache/plc4x/commit/35bf97a71c3d9c7865ba78
 - plc4xanalyzer:
   - moved override logic out of commands ([9de6d03](https://github.com/apache/plc4x/commit/9de6d0365f3cd6abb21486d1951bf358a2e7d45e))
 
-## [rel/0.10](https://github.com/apache/plc4x/releases/tag/rel/0.10) - 2022-09-29 15:56:37
+## [relt/0.10](https://github.com/apache/plc4x/releases/tag/relt/0.10) - 2022-09-29 15:56:37
 
 ## What's Changed
 * update readme to jdk 11 by @ottobackwards in https://github.com/apache/plc4x/pull/283
@@ -1917,7 +3096,7 @@ failure ([35bf97a](https://github.com/apache/plc4x/commit/35bf97a71c3d9c7865ba78
 * @tvormweg made their first contribution in https://github.com/apache/plc4x/pull/416
 * @inigoao made their first contribution in https://github.com/apache/plc4x/pull/439
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.9...rel/0.10
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.9...relt/0.10
 
 ### Feature
 
@@ -3496,7 +4675,7 @@ new feature: Now the DataIo generation is almost finished. ([2775ec9](https://gi
 - code-gen:
   - cleanup interfaces ([8499434](https://github.com/apache/plc4x/commit/84994340c026bb865a980004ba0ffe0d28c1add4))
 
-## [rel/0.9](https://github.com/apache/plc4x/releases/tag/rel/0.9) - 2021-09-17 09:25:12
+## [relt/0.9](https://github.com/apache/plc4x/releases/tag/relt/0.9) - 2021-09-17 09:25:12
 
 ## What's Changed
 * Added Pool2 (now called Connection Cache) to develop Branch by @JulianFeinauer in https://github.com/apache/plc4x/pull/217
@@ -3538,7 +4717,7 @@ new feature: Now the DataIo generation is almost finished. ([2775ec9](https://gi
 * @shaunco made their first contribution in https://github.com/apache/plc4x/pull/267
 * @glcj made their first contribution in https://github.com/apache/plc4x/pull/264
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.8...rel/0.9
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.8...relt/0.9
 
 ### Bug Fixes
 
@@ -3565,7 +4744,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
   - fix download link 0.7 ([fd4a8e4](https://github.com/apache/plc4x/commit/fd4a8e42ecbfc08f47ed9c550e54320e37a5429e))
   - fix logback dependency ([7cbd42b](https://github.com/apache/plc4x/commit/7cbd42b494ca83a120788b848d7ee017b05519c8)) ([#217](https://github.com/apache/plc4x/pull/217))
 
-## [rel/0.8](https://github.com/apache/plc4x/releases/tag/rel/0.8) - 2021-01-25 11:31:05
+## [relt/0.8](https://github.com/apache/plc4x/releases/tag/relt/0.8) - 2021-01-25 11:31:05
 
 ## What's Changed
 * Feature/plc simulator by @JulianFeinauer in https://github.com/apache/plc4x/pull/157
@@ -3624,9 +4803,9 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * @markope made their first contribution in https://github.com/apache/plc4x/pull/199
 * @JohannaMillet made their first contribution in https://github.com/apache/plc4x/pull/178
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.7...rel/0.8
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.7...relt/0.8
 
-## [rel/0.7](https://github.com/apache/plc4x/releases/tag/rel/0.7) - 2020-05-15 10:51:06
+## [relt/0.7](https://github.com/apache/plc4x/releases/tag/relt/0.7) - 2020-05-15 10:51:06
 
 ## What's Changed
 * PLC4X-146 - Problem when using examples/hello-integration-edgent with… by @chrisdutz in https://github.com/apache/plc4x/pull/93
@@ -3656,7 +4835,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * Use existing base image in Dockerfile by @turbaszek in https://github.com/apache/plc4x/pull/123
 * Change (P)PMC to PMC on team page by @NiklasMerz in https://github.com/apache/plc4x/pull/122
 * [WIP] Refactor PlcDriverManager as context manager by @turbaszek in https://github.com/apache/plc4x/pull/124
-* [fix] Transfer bug fixes from rel/0.6 to 0.7+ which includes correct … by @nalim2 in https://github.com/apache/plc4x/pull/131
+* [fix] Transfer bug fixes from relt/0.6 to 0.7+ which includes correct … by @nalim2 in https://github.com/apache/plc4x/pull/131
 * Change repo URLs from incubator-plc4x to plc4x by @NiklasMerz in https://github.com/apache/plc4x/pull/139
 * remove Bnd-LastModified header that is not reproducible by @hboutemy in https://github.com/apache/plc4x/pull/137
 * move structure defs into private header by @ottobackwards in https://github.com/apache/plc4x/pull/142
@@ -3680,9 +4859,9 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * @hboutemy made their first contribution in https://github.com/apache/plc4x/pull/137
 * @etiennerobinet made their first contribution in https://github.com/apache/plc4x/pull/154
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.5...rel/0.7
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.5...relt/0.7
 
-## [rel/0.6](https://github.com/apache/plc4x/releases/tag/rel/0.6) - 2020-01-13 14:49:38
+## [relt/0.6](https://github.com/apache/plc4x/releases/tag/relt/0.6) - 2020-01-13 14:49:38
 
 ## What's Changed
 * PLC4X-146 - Problem when using examples/hello-integration-edgent with… by @chrisdutz in https://github.com/apache/plc4x/pull/93
@@ -3717,7 +4896,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * @tenthe made their first contribution in https://github.com/apache/plc4x/pull/101
 * @amrod- made their first contribution in https://github.com/apache/plc4x/pull/110
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.5...rel/0.6
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.5...relt/0.6
 
 ### Bug Fixes
 
@@ -3735,7 +4914,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 - general:
   - refactored ads mspec to use proper names ([329b639](https://github.com/apache/plc4x/commit/329b63996b0e2484b7c6081534f8905fd0a6bb37))
 
-## [rel/0.5](https://github.com/apache/plc4x/releases/tag/rel/0.5) - 2019-10-21 15:00:13
+## [relt/0.5](https://github.com/apache/plc4x/releases/tag/relt/0.5) - 2019-10-21 15:00:13
 
 ## What's Changed
 * PLC4X-129 Improve version detection macro. by @splatch in https://github.com/apache/plc4x/pull/71
@@ -3769,7 +4948,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * @till1993 made their first contribution in https://github.com/apache/plc4x/pull/82
 * @cschneider made their first contribution in https://github.com/apache/plc4x/pull/87
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.4...rel/0.5
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.4...relt/0.5
 
 ### Bug Fixes
 
@@ -3778,7 +4957,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
   - fix bug in opc ua driver response handling when fields are not found ([da0b74e](https://github.com/apache/plc4x/commit/da0b74e662062aea63d77357efaedfc9e323c0a1)) ([#75](https://github.com/apache/plc4x/pull/75))
   - fixed a typo on the plc4py/README.md ([efec1a9](https://github.com/apache/plc4x/commit/efec1a91dd0e7b8599e9a5154bd8ee2a48e2a251)) ([#74](https://github.com/apache/plc4x/pull/74))
 
-## [rel/0.4](https://github.com/apache/plc4x/releases/tag/rel/0.4) - 2019-05-20 21:09:32
+## [relt/0.4](https://github.com/apache/plc4x/releases/tag/relt/0.4) - 2019-05-20 21:09:32
 
 ## What's Changed
 * Minor changes on getting-involved.adoc by @cptblaubaer in https://github.com/apache/plc4x/pull/45
@@ -3807,7 +4986,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * @clambertus made their first contribution in https://github.com/apache/plc4x/pull/49
 * @bjoernhoeper made their first contribution in https://github.com/apache/plc4x/pull/61
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.3...rel/0.4
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.3...relt/0.4
 
 ### Bug Fixes
 
@@ -3817,7 +4996,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
   - fixed one more sonar-bug ([c95f302](https://github.com/apache/plc4x/commit/c95f302a385a007986d63443d309639c13d5831b))
   - fixed sonar bugs ([de8877f](https://github.com/apache/plc4x/commit/de8877fa37378e5a7b406a69859efc76506fbb91))
 
-## [rel/0.3](https://github.com/apache/plc4x/releases/tag/rel/0.3) - 2019-01-16 15:32:56
+## [relt/0.3](https://github.com/apache/plc4x/releases/tag/relt/0.3) - 2019-01-16 15:32:56
 
 ## What's Changed
 * [PLC4X-75] - Fixing dependency to the wrap url-handler by @ANierbeck in https://github.com/apache/plc4x/pull/42
@@ -3827,9 +5006,9 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 ## New Contributors
 * @ANierbeck made their first contribution in https://github.com/apache/plc4x/pull/42
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.2...rel/0.3
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.2...relt/0.3
 
-## [rel/0.2](https://github.com/apache/plc4x/releases/tag/rel/0.2) - 2018-11-14 15:20:37
+## [relt/0.2](https://github.com/apache/plc4x/releases/tag/relt/0.2) - 2018-11-14 15:20:37
 
 ## What's Changed
 * Added note for Service Loader. by @JulianFeinauer in https://github.com/apache/plc4x/pull/23
@@ -3842,7 +5021,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * Add simple mock driver by @JulianFeinauer in https://github.com/apache/plc4x/pull/38
 
 
-**Full Changelog**: https://github.com/apache/plc4x/compare/rel/0.1...rel/0.2
+**Full Changelog**: https://github.com/apache/plc4x/compare/relt/0.1...relt/0.2
 
 ### Bug Fixes
 
@@ -3853,7 +5032,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
   - fixed examples to use the new api ([7375d04](https://github.com/apache/plc4x/commit/7375d040917b2de0391611d3aef8c4316b625950))
   - fixed integrations to use the new api ([361432c](https://github.com/apache/plc4x/commit/361432c63b4d94701ea52ddd4a1cf8632a28c4db))
 
-## [rel/0.1](https://github.com/apache/plc4x/releases/tag/rel/0.1) - 2018-09-17 16:31:32
+## [relt/0.1](https://github.com/apache/plc4x/releases/tag/relt/0.1) - 2018-09-17 16:31:32
 
 ## What's Changed
 * Warning cleanup by @dlaboss in https://github.com/apache/plc4x/pull/1
@@ -3879,7 +5058,7 @@ fix: Cleaned up in the pom structures ([868ef40](https://github.com/apache/plc4x
 * @DerDackel made their first contribution in https://github.com/apache/plc4x/pull/11
 * @pisquaredover6 made their first contribution in https://github.com/apache/plc4x/pull/13
 
-**Full Changelog**: https://github.com/apache/plc4x/commits/rel/0.1
+**Full Changelog**: https://github.com/apache/plc4x/commits/relt/0.1
 
 ### Bug Fixes
 

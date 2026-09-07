@@ -29,7 +29,5 @@ import (
 // PlcDiscoverer defines an interface to discover PLCs
 type PlcDiscoverer interface {
 	// Discover discovers PLCs according to discoveryOptions and calls callback on every discovery
-	Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
-	// DiscoverWithContext discovers PLCs according to discoveryOptions and calls callback on every discovery
-	DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
+	Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }

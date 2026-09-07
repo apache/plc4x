@@ -26,8 +26,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
@@ -39,17 +39,23 @@ func TestNewRequestTransactionManager(t *testing.T) {
 		requestTransactionManagerOptions []options.WithOption
 	}
 	tests := []struct {
-		name  string
-		args  args
-		setup func(t *testing.T, args *args)
-		want  RequestTransactionManager
+		name       string
+		args       args
+		setup      func(t *testing.T, args *args)
+		wantAssert func(*testing.T, RequestTransactionManager) bool
 	}{
 		{
 			name: "just create one",
-			want: &requestTransactionManager{
-				workLog:  *list.New(),
-				executor: sharedExecutorInstance,
-				log:      log.Logger,
+			wantAssert: func(t *testing.T, rtm RequestTransactionManager) bool {
+				require.IsType(t, &requestTransactionManager{}, rtm)
+				rtmi := rtm.(*requestTransactionManager)
+				assert.NotNil(t, rtm)
+				assert.NotNil(t, rtmi.executor)
+				assert.Same(t, rtmi.executor, sharedExecutorInstance)
+				assert.NotNil(t, rtmi.workLog)
+				assert.NotNil(t, rtmi.ctx)
+				assert.NotNil(t, rtmi.cancelCtx)
+				return true
 			},
 		},
 		{
@@ -60,11 +66,17 @@ func TestNewRequestTransactionManager(t *testing.T) {
 					WithCustomExecutor(sharedExecutorInstance),
 				},
 			},
-			want: &requestTransactionManager{
-				numberOfConcurrentRequests: 2,
-				workLog:                    *list.New(),
-				executor:                   sharedExecutorInstance,
-				log:                        log.Logger,
+			wantAssert: func(t *testing.T, rtm RequestTransactionManager) bool {
+				require.IsType(t, &requestTransactionManager{}, rtm)
+				rtmi := rtm.(*requestTransactionManager)
+				assert.NotNil(t, rtm)
+				assert.NotNil(t, rtmi.executor)
+				assert.Same(t, rtmi.executor, sharedExecutorInstance)
+				assert.NotNil(t, rtmi.workLog)
+				assert.NotNil(t, rtmi.ctx)
+				assert.NotNil(t, rtmi.cancelCtx)
+				assert.Equal(t, 2, rtmi.numberOfConcurrentRequests)
+				return true
 			},
 		},
 	}
@@ -73,8 +85,9 @@ func TestNewRequestTransactionManager(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			if got := NewRequestTransactionManager(tt.args.numberOfConcurrentRequests, tt.args.requestTransactionManagerOptions...); !assert.Equal(t, tt.want, got) {
-				t.Errorf("NewRequestTransactionManager() = %v, want %v", got, tt.want)
+			got := NewRequestTransactionManager(tt.args.numberOfConcurrentRequests, tt.args.requestTransactionManagerOptions...)
+			if !assert.True(t, tt.wantAssert(t, got)) {
+				t.Errorf("NewRequestTransactionManager() = %v", got)
 			}
 		})
 	}
@@ -183,7 +196,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.True(t, requestTransaction.IsCompleted())
-				assert.Error(t, requestTransaction.AwaitCompletion(context.Background()))
+				assert.Error(t, requestTransaction.AwaitCompletion(t.Context()))
 				return true
 			},
 		},
@@ -205,7 +218,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, r)
 			}
-			if got := r.StartTransaction(); !assert.True(t, tt.wantAssert(t, got)) {
+			if got := r.StartTransaction("defaultTransation"); !assert.True(t, tt.wantAssert(t, got)) {
 				t.Errorf("StartTransaction() = %v", got)
 			}
 		})
@@ -458,7 +471,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 			name: "submit it",
 			args: args{
 				handle: &requestTransaction{
-					operation: func() {
+					operation: func(context.Context) {
 						// doesn't matter
 					},
 				},
@@ -492,6 +505,8 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
+		ctx                                 context.Context
+		cancelCtx                           context.CancelFunc
 		traceTransactionManagerTransactions bool
 	}
 	tests := []struct {
@@ -503,6 +518,7 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 		{
 			name: "close it",
 			setup: func(t *testing.T, fields *fields) {
+				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
 				executor := NewMockExecutor(t)
 				executor.EXPECT().Close().Return(nil)
 				fields.executor = executor
@@ -522,6 +538,8 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
+				ctx:                                 tt.fields.ctx,
+				cancelCtx:                           tt.fields.cancelCtx,
 				log:                                 produceTestingLogger(t),
 			}
 			tt.wantErr(t, r.Close(), fmt.Sprintf("Close()"))
@@ -536,6 +554,8 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
+		ctx                                 context.Context
+		cancelCtx                           context.CancelFunc
 		traceTransactionManagerTransactions bool
 	}
 	type args struct {
@@ -551,6 +571,7 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 		{
 			name: "close it",
 			setup: func(t *testing.T, fields *fields) {
+				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
 				executor := NewMockExecutor(t)
 				executor.EXPECT().Close().Return(nil)
 				fields.executor = executor
@@ -563,6 +584,7 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 				timeout: 20 * time.Millisecond,
 			},
 			setup: func(t *testing.T, fields *fields) {
+				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
 				executor := NewMockExecutor(t)
 				executor.EXPECT().Close().Return(nil)
 				fields.executor = executor
@@ -580,6 +602,7 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 				timeout: 20 * time.Millisecond,
 			},
 			setup: func(t *testing.T, fields *fields) {
+				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
 				executor := NewMockExecutor(t)
 				executor.EXPECT().Close().Return(nil)
 				fields.executor = executor
@@ -599,6 +622,8 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
+				ctx:                                 tt.fields.ctx,
+				cancelCtx:                           tt.fields.cancelCtx,
 				log:                                 produceTestingLogger(t),
 			}
 			tt.wantErr(t, r.CloseGraceful(tt.args.timeout), fmt.Sprintf("CloseGraceful(%v)", tt.args.timeout))
@@ -635,33 +660,36 @@ func Test_requestTransactionManager_String(t *testing.T) {
 					v.PushBack(nil)
 					return v
 				}(),
-				executor:                            pool.NewFixedSizeExecutor(1, 1),
+				executor:                            pool.NewFixedSizeExecutor(1, 1, options.WithExecutorOptionName(t.Name())),
 				traceTransactionManagerTransactions: true,
 			},
 			want: `
-╔═requestTransactionManager═══════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═runningRequests/value/requestTransaction╗╔═numberOfConcurrentRequests╗╔═currentTransactionId╗                      ║
-║║      ╔═transactionId╗╔═completed╗       ║║   0x0000000000000003 3    ║║    0x00000004 4     ║                      ║
-║║      ║ 0x00000002 2 ║║ b0 false ║       ║╚═══════════════════════════╝╚═════════════════════╝                      ║
-║║      ╚══════════════╝╚══════════╝       ║                                                                          ║
-║╚═════════════════════════════════════════╝                                                                          ║
-║╔═executor/executor══════════════════════════════════════════════════════════════════════════════════════╗╔═shutdown╗║
-║║╔═running╗╔═shutdown╗                                                                                   ║║b0 false ║║
-║║║b0 false║║b0 false ║                                                                                   ║╚═════════╝║
-║║╚════════╝╚═════════╝                                                                                   ║           ║
-║║╔═worker/value/worker══════════════════════════════════════════════════════════════════════════════════╗║           ║
-║║║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║║           ║
-║║║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║║           ║
-║║║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║║           ║
-║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║           ║
-║║╔═workItems══╗╔═traceWorkers╗                                                                           ║           ║
-║║║0 element(s)║║  b0 false   ║                                                                           ║           ║
-║║╚════════════╝╚═════════════╝                                                                           ║           ║
-║╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝           ║
-║╔═traceTransactionManagerTransactions╗                                                                               ║
-║║              b1 true               ║                                                                               ║
-║╚════════════════════════════════════╝                                                                               ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═requestTransactionManager═════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═runningRequests/value/requestTransaction╗╔═numberOfConcurrentRequests╗╔═currentTransactionId╗                    ║
+║║      ╔═transactionId╗╔═completed╗       ║║   0x0000000000000003 3    ║║    0x00000004 4     ║                    ║
+║║      ║ 0x00000002 2 ║║ b0 false ║       ║╚═══════════════════════════╝╚═════════════════════╝                    ║
+║║      ╚══════════════╝╚══════════╝       ║                                                                        ║
+║╚═════════════════════════════════════════╝                                                                        ║
+║╔═executor/executor════════════════════════════════════════════════════════════════════════════════════╗╔═shutdown╗║
+║║╔═name════════════════════════════════╗╔═running╗╔═shutdown╗                                          ║║b0 false ║║
+║║║Test_requestTransactionManager_String║║b0 false║║b0 false ║                                          ║╚═════════╝║
+║║╚═════════════════════════════════════╝╚════════╝╚═════════╝                                          ║           ║
+║║╔═worker/value/worker════════════════════════════════════════════════════════════════════════════════╗║           ║
+║║║╔═id═══════════════════════════════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗║║           ║
+║║║║Test_requestTransactionManager_String-worker-0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║║           ║
+║║║╚══════════════════════════════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝║║           ║
+║║║╔═interrupted╗╔═interrupter╗                                                                        ║║           ║
+║║║║  b0 false  ║║0 element(s)║                                                                        ║║           ║
+║║║╚════════════╝╚════════════╝                                                                        ║║           ║
+║║╚════════════════════════════════════════════════════════════════════════════════════════════════════╝║           ║
+║║╔═workerNumber╗╔═workItems══╗╔═traceWorkers╗╔═ctx═════════════════════════╗                           ║           ║
+║║║0x00000000 0 ║║0 element(s)║║  b0 false   ║║context.Background.WithCancel║                           ║           ║
+║║╚═════════════╝╚════════════╝╚═════════════╝╚═════════════════════════════╝                           ║           ║
+║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝           ║
+║╔═traceTransactionManagerTransactions╗                                                                             ║
+║║              b1 true               ║                                                                             ║
+║╚════════════════════════════════════╝                                                                             ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

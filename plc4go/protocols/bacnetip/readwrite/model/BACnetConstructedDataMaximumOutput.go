@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaximumOutput = (*_BACnetConstructedDataMaximumOutput
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumOutput)(nil)
 
 // NewBACnetConstructedDataMaximumOutput factory function for _BACnetConstructedDataMaximumOutput
-func NewBACnetConstructedDataMaximumOutput(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumOutput BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumOutput {
+func NewBACnetConstructedDataMaximumOutput(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumOutput BACnetApplicationTagReal) *_BACnetConstructedDataMaximumOutput {
 	if maximumOutput == nil {
 		panic("maximumOutput of type BACnetApplicationTagReal for BACnetConstructedDataMaximumOutput must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaximumOutput{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaximumOutput:                 maximumOutput,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMaximumOutput(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) GetTypeName() string {
+func (m *_BACnetConstructedDataMaximumOutput) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaximumOutput"
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maximumOutput)
 	lengthInBits += m.MaximumOutput.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

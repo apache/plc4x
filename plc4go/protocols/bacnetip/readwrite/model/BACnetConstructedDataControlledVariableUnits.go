@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataControlledVariableUnits = (*_BACnetConstructedDataCon
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableUnits)(nil)
 
 // NewBACnetConstructedDataControlledVariableUnits factory function for _BACnetConstructedDataControlledVariableUnits
-func NewBACnetConstructedDataControlledVariableUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableUnits {
+func NewBACnetConstructedDataControlledVariableUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged) *_BACnetConstructedDataControlledVariableUnits {
 	if units == nil {
 		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataControlledVariableUnits must not be nil")
 	}
 	_result := &_BACnetConstructedDataControlledVariableUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Units:                         units,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataControlledVariableUnits(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableUnits) GetTypeName() string {
+func (m *_BACnetConstructedDataControlledVariableUnits) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataControlledVariableUnits"
 }
 
-func (m *_BACnetConstructedDataControlledVariableUnits) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataControlledVariableUnits) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (units)
 	lengthInBits += m.Units.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataControlledVariableUnits) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataControlledVariableUnits) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataControlledVariableUnits) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

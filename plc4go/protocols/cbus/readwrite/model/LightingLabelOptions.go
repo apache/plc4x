@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,8 +41,10 @@ type LightingLabelOptions interface {
 	utils.Serializable
 	utils.Copyable
 	// GetLabelFlavour returns LabelFlavour (property field)
+	// only for dynamic icon loading can switch to 1
 	GetLabelFlavour() LightingLabelFlavour
 	// GetLabelType returns LabelType (property field)
+	// For Lighting, this bit must be 0
 	GetLabelType() LightingLabelType
 	// IsLightingLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingLabelOptions()
@@ -180,12 +182,12 @@ func CastLightingLabelOptions(structType any) LightingLabelOptions {
 	return nil
 }
 
-func (m *_LightingLabelOptions) GetTypeName() string {
+func (m *_LightingLabelOptions) GetPlx4xTypeName() string {
 	return "LightingLabelOptions"
 }
 
-func (m *_LightingLabelOptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LightingLabelOptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 1
@@ -208,7 +210,7 @@ func (m *_LightingLabelOptions) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LightingLabelOptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LightingLabelOptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -223,7 +225,7 @@ func LightingLabelOptionsParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
-	v, err := (&_LightingLabelOptions{}).parse(ctx, readBuffer)
+	v, err := (new(_LightingLabelOptions)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,20 +59,16 @@ type _BACnetAccessCredentialDisableReasonTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetAccessCredentialDisableReason
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccessCredentialDisableReasonTagged = (*_BACnetAccessCredentialDisableReasonTagged)(nil)
 
 // NewBACnetAccessCredentialDisableReasonTagged factory function for _BACnetAccessCredentialDisableReasonTagged
-func NewBACnetAccessCredentialDisableReasonTagged(header BACnetTagHeader, value BACnetAccessCredentialDisableReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableReasonTagged {
+func NewBACnetAccessCredentialDisableReasonTagged(header BACnetTagHeader, value BACnetAccessCredentialDisableReason, proprietaryValue uint32) *_BACnetAccessCredentialDisableReasonTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableReasonTagged must not be nil")
 	}
-	return &_BACnetAccessCredentialDisableReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccessCredentialDisableReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetAccessCredentialDisableReasonTaggedBuilder interface {
 	WithValue(BACnetAccessCredentialDisableReason) BACnetAccessCredentialDisableReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessCredentialDisableReasonTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccessCredentialDisableReasonTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccessCredentialDisableReasonTaggedBuilder
 	// Build builds the BACnetAccessCredentialDisableReasonTagged or returns an error if something is wrong
 	Build() (BACnetAccessCredentialDisableReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithValue(value BACn
 
 func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessCredentialDisableReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessCredentialDisableReasonTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessCredentialDisableReasonTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,28 +224,28 @@ func CastBACnetAccessCredentialDisableReasonTagged(structType any) BACnetAccessC
 	return nil
 }
 
-func (m *_BACnetAccessCredentialDisableReasonTagged) GetTypeName() string {
+func (m *_BACnetAccessCredentialDisableReasonTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessCredentialDisableReasonTagged"
 }
 
-func (m *_BACnetAccessCredentialDisableReasonTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAccessCredentialDisableReasonTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
 
-func (m *_BACnetAccessCredentialDisableReasonTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAccessCredentialDisableReasonTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +260,7 @@ func BACnetAccessCredentialDisableReasonTaggedParseWithBufferProducer(tagNumber 
 }
 
 func BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableReasonTagged, error) {
-	v, err := (&_BACnetAccessCredentialDisableReasonTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccessCredentialDisableReasonTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetAccessCredentialDisableReasonTagged) SerializeWithWriteBuffer(ct
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccessCredentialDisableReasonTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccessCredentialDisableReasonTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccessCredentialDisableReasonTagged) IsBACnetAccessCredentialDisableReasonTagged() {}
 
 func (m *_BACnetAccessCredentialDisableReasonTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetAccessCredentialDisableReasonTagged) deepCopy() *_BACnetAccessCr
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccessCredentialDisableReasonTaggedCopy
 }

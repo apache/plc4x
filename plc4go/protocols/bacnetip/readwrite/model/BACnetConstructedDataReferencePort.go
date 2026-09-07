@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReferencePort = (*_BACnetConstructedDataReferencePort
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReferencePort)(nil)
 
 // NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
-func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
+func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataReferencePort {
 	if referencePort == nil {
 		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
 	}
 	_result := &_BACnetConstructedDataReferencePort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReferencePort:                 referencePort,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataReferencePort(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataReferencePort) GetTypeName() string {
+func (m *_BACnetConstructedDataReferencePort) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReferencePort"
 }
 
-func (m *_BACnetConstructedDataReferencePort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataReferencePort) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (referencePort)
 	lengthInBits += m.ReferencePort.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataReferencePort) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReferencePort) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataReferencePort) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

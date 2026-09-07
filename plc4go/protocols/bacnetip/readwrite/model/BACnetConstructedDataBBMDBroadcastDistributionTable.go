@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataBBMDBroadcastDistributionTable = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
 
 // NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for _BACnetConstructedDataBBMDBroadcastDistributionTable
-func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
+func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
 	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetTypeName() string {
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBBMDBroadcastDistributionTable"
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BbmdBroadcastDistributionTable) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

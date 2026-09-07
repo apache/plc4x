@@ -50,7 +50,7 @@ typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_
 plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_discriminator(plc4c_s7_read_write_s7_message_type type);
 
 // Constant values.
-uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID();
+const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID();
 
 struct plc4c_s7_read_write_s7_message {
   /* This is an abstract type so this property saves the type of this typed union */

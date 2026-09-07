@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,16 +51,13 @@ type BACnetTagPayloadOctetString interface {
 // _BACnetTagPayloadOctetString is the data-structure of this message
 type _BACnetTagPayloadOctetString struct {
 	Octets []byte
-
-	// Arguments.
-	ActualLength uint32
 }
 
 var _ BACnetTagPayloadOctetString = (*_BACnetTagPayloadOctetString)(nil)
 
 // NewBACnetTagPayloadOctetString factory function for _BACnetTagPayloadOctetString
-func NewBACnetTagPayloadOctetString(octets []byte, actualLength uint32) *_BACnetTagPayloadOctetString {
-	return &_BACnetTagPayloadOctetString{Octets: octets, ActualLength: actualLength}
+func NewBACnetTagPayloadOctetString(octets []byte) *_BACnetTagPayloadOctetString {
+	return &_BACnetTagPayloadOctetString{Octets: octets}
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,8 +72,6 @@ type BACnetTagPayloadOctetStringBuilder interface {
 	WithMandatoryFields(octets []byte) BACnetTagPayloadOctetStringBuilder
 	// WithOctets adds Octets (property field)
 	WithOctets(...byte) BACnetTagPayloadOctetStringBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetTagPayloadOctetStringBuilder
 	// Build builds the BACnetTagPayloadOctetString or returns an error if something is wrong
 	Build() (BACnetTagPayloadOctetString, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,11 +97,6 @@ func (b *_BACnetTagPayloadOctetStringBuilder) WithMandatoryFields(octets []byte)
 
 func (b *_BACnetTagPayloadOctetStringBuilder) WithOctets(octets ...byte) BACnetTagPayloadOctetStringBuilder {
 	b.Octets = octets
-	return b
-}
-
-func (b *_BACnetTagPayloadOctetStringBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadOctetStringBuilder {
-	b.ActualLength = actualLength
 	return b
 }
 
@@ -171,22 +161,22 @@ func CastBACnetTagPayloadOctetString(structType any) BACnetTagPayloadOctetString
 	return nil
 }
 
-func (m *_BACnetTagPayloadOctetString) GetTypeName() string {
+func (m *_BACnetTagPayloadOctetString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadOctetString"
 }
 
-func (m *_BACnetTagPayloadOctetString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadOctetString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Array field
 	if len(m.Octets) > 0 {
-		lengthInBits += 8 * uint16(len(m.Octets))
+		lengthInBits += 8 * uint64(len(m.Octets))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadOctetString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadOctetString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -201,7 +191,7 @@ func BACnetTagPayloadOctetStringParseWithBufferProducer(actualLength uint32) fun
 }
 
 func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadOctetString, error) {
-	v, err := (&_BACnetTagPayloadOctetString{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetTagPayloadOctetString)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -257,16 +247,6 @@ func (m *_BACnetTagPayloadOctetString) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetTagPayloadOctetString) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetTagPayloadOctetString) IsBACnetTagPayloadOctetString() {}
 
 func (m *_BACnetTagPayloadOctetString) DeepCopy() any {
@@ -279,7 +259,6 @@ func (m *_BACnetTagPayloadOctetString) deepCopy() *_BACnetTagPayloadOctetString 
 	}
 	_BACnetTagPayloadOctetStringCopy := &_BACnetTagPayloadOctetString{
 		utils.DeepCopySlice[byte, byte](m.Octets),
-		m.ActualLength,
 	}
 	return _BACnetTagPayloadOctetStringCopy
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValueFaultHighLimit = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueFaultHighLimit)(nil)
 
 // NewBACnetConstructedDataIntegerValueFaultHighLimit factory function for _BACnetConstructedDataIntegerValueFaultHighLimit
-func NewBACnetConstructedDataIntegerValueFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueFaultHighLimit {
+func NewBACnetConstructedDataIntegerValueFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValueFaultHighLimit {
 	if faultHighLimit == nil {
 		panic("faultHighLimit of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueFaultHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValueFaultHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultHighLimit:                faultHighLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIntegerValueFaultHighLimit(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegerValueFaultHighLimit"
 }
 
-func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (faultHighLimit)
 	lengthInBits += m.FaultHighLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

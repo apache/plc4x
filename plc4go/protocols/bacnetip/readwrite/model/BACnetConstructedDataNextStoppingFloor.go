@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNextStoppingFloor = (*_BACnetConstructedDataNextStopp
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNextStoppingFloor)(nil)
 
 // NewBACnetConstructedDataNextStoppingFloor factory function for _BACnetConstructedDataNextStoppingFloor
-func NewBACnetConstructedDataNextStoppingFloor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nextStoppingFloor BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
+func NewBACnetConstructedDataNextStoppingFloor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nextStoppingFloor BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
 	if nextStoppingFloor == nil {
 		panic("nextStoppingFloor of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNextStoppingFloor must not be nil")
 	}
 	_result := &_BACnetConstructedDataNextStoppingFloor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NextStoppingFloor:             nextStoppingFloor,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNextStoppingFloor(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) GetTypeName() string {
+func (m *_BACnetConstructedDataNextStoppingFloor) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNextStoppingFloor"
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (nextStoppingFloor)
 	lengthInBits += m.NextStoppingFloor.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

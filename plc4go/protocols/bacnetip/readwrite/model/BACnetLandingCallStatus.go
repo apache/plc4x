@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -237,12 +237,12 @@ func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {
 	return nil
 }
 
-func (m *_BACnetLandingCallStatus) GetTypeName() string {
+func (m *_BACnetLandingCallStatus) GetPlx4xTypeName() string {
 	return "BACnetLandingCallStatus"
 }
 
-func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (floorNumber)
 	lengthInBits += m.FloorNumber.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLandingCallStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLandingCallStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +273,7 @@ func BACnetLandingCallStatusParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
-	v, err := (&_BACnetLandingCallStatus{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetLandingCallStatus)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -343,7 +343,7 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(err, "Error serializing 'command' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", GetRef(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", new(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'floorText' field")
 	}
 

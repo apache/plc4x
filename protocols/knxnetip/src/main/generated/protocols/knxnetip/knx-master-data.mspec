@@ -378,70 +378,74 @@
     ['285' DPT_AddInfoTypes ['DPST-20-1001', '1001', 'DPT_1_BYTE', '"additional information type"', 'USINT']]
     ['286' DPT_RF_ModeSelect ['DPST-20-1002', '1002', 'DPT_1_BYTE', '"RF mode selection"', 'USINT']]
     ['287' DPT_RF_FilterSelect ['DPST-20-1003', '1003', 'DPT_1_BYTE', '"RF filter mode selection"', 'USINT']]
-    ['288' DPT_StatusGen ['DPST-21-1', '1', 'DPT_8_BIT_SET', '"general status"', 'Struct']]
-    ['289' DPT_Device_Control ['DPST-21-2', '2', 'DPT_8_BIT_SET', '"device control"', 'Struct']]
-    ['290' DPT_ForceSign ['DPST-21-100', '100', 'DPT_8_BIT_SET', '"forcing signal"', 'Struct']]
-    ['291' DPT_ForceSignCool ['DPST-21-101', '101', 'DPT_8_BIT_SET', '"forcing signal cool"', 'BOOL']]
-    ['292' DPT_StatusRHC ['DPST-21-102', '102', 'DPT_8_BIT_SET', '"room heating controller status"', 'Struct']]
-    ['293' DPT_StatusSDHWC ['DPST-21-103', '103', 'DPT_8_BIT_SET', '"solar DHW controller status"', 'Struct']]
-    ['294' DPT_FuelTypeSet ['DPST-21-104', '104', 'DPT_8_BIT_SET', '"fuel type set"', 'Struct']]
-    ['295' DPT_StatusRCC ['DPST-21-105', '105', 'DPT_8_BIT_SET', '"room cooling controller status"', 'BOOL']]
-    ['296' DPT_StatusAHU ['DPST-21-106', '106', 'DPT_8_BIT_SET', '"ventilation controller status"', 'Struct']]
-    ['297' DPT_CombinedStatus_RTSM ['DPST-21-107', '107', 'DPT_8_BIT_SET', '"combined status RTSM"', 'Struct']]
-    ['298' DPT_LightActuatorErrorInfo ['DPST-21-601', '601', 'DPT_8_BIT_SET', '"lighting actuator error information"', 'Struct']]
-    ['299' DPT_RF_ModeInfo ['DPST-21-1000', '1000', 'DPT_8_BIT_SET', '"RF communication mode info"', 'Struct']]
-    ['300' DPT_RF_FilterInfo ['DPST-21-1001', '1001', 'DPT_8_BIT_SET', '"cEMI server supported RF filtering modes"', 'Struct']]
-    ['301' DPT_Channel_Activation_8 ['DPST-21-1010', '1010', 'DPT_8_BIT_SET', '"channel activation for 8 channels"', 'Struct']]
-    ['302' DPT_StatusDHWC ['DPST-22-100', '100', 'DPT_16_BIT_SET', '"DHW controller status"', 'Struct']]
-    ['303' DPT_StatusRHCC ['DPST-22-101', '101', 'DPT_16_BIT_SET', '"RHCC status"', 'Struct']]
-    ['304' DPT_CombinedStatus_HVA ['DPST-22-102', '102', 'DPT_16_BIT_SET', '"combined status HVA"', 'Struct']]
-    ['305' DPT_CombinedStatus_RTC ['DPST-22-103', '103', 'DPT_16_BIT_SET', '"combined status RTC"', 'Struct']]
-    ['306' DPT_Media ['DPST-22-1000', '1000', 'DPT_16_BIT_SET', '"media"', 'Struct']]
-    ['307' DPT_Channel_Activation_16 ['DPST-22-1010', '1010', 'DPT_16_BIT_SET', '"channel activation for 16 channels"', 'Struct']]
-    ['308' DPT_OnOffAction ['DPST-23-1', '1', 'DPT_2_BIT_SET', '"on/off action"', 'USINT']]
-    ['309' DPT_Alarm_Reaction ['DPST-23-2', '2', 'DPT_2_BIT_SET', '"alarm reaction"', 'USINT']]
-    ['310' DPT_UpDown_Action ['DPST-23-3', '3', 'DPT_2_BIT_SET', '"up/down action"', 'USINT']]
-    ['311' DPT_HVAC_PB_Action ['DPST-23-102', '102', 'DPT_2_BIT_SET', '"HVAC push button action"', 'USINT']]
-    ['312' DPT_DoubleNibble ['DPST-25-1000', '1000', 'DPT_2_NIBBLE_SET', '"busy/nak repetitions"', 'Struct']]
-    ['313' DPT_SceneInfo ['DPST-26-1', '1', 'DPT_8_BIT_SET_2', '"scene information"', 'Struct']]
-    ['314' DPT_CombinedInfoOnOff ['DPST-27-1', '1', 'DPT_32_BIT_SET', '"bit-combined info on/off"', 'Struct']]
-    ['315' DPT_ActiveEnergy_V64 ['DPST-29-10', '10', 'DPT_ELECTRICAL_ENERGY', '"active energy (Wh)"', 'LINT']]
-    ['316' DPT_ApparentEnergy_V64 ['DPST-29-11', '11', 'DPT_ELECTRICAL_ENERGY', '"apparent energy (VAh)"', 'LINT']]
-    ['317' DPT_ReactiveEnergy_V64 ['DPST-29-12', '12', 'DPT_ELECTRICAL_ENERGY', '"reactive energy (VARh)"', 'LINT']]
-    ['318' DPT_Channel_Activation_24 ['DPST-30-1010', '1010', 'DPT_24_TIMES_CHANNEL_ACTIVATION', '"activation state 0..23"', 'Struct']]
-    ['319' DPT_HVACModeNext ['DPST-206-100', '100', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & HVAC mode"', 'Struct']]
-    ['320' DPT_DHWModeNext ['DPST-206-102', '102', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & DHW mode"', 'Struct']]
-    ['321' DPT_OccModeNext ['DPST-206-104', '104', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & occupancy mode"', 'Struct']]
-    ['322' DPT_BuildingModeNext ['DPST-206-105', '105', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & building mode"', 'Struct']]
-    ['323' DPT_StatusLightingActuator ['DPST-207-600', '600', 'DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"Status Lighting Actuator"', 'Struct']]
-    ['324' DPT_Version ['DPST-217-1', '1', 'DPT_DATAPOINT_TYPE_VERSION', '"DPT version"', 'Struct']]
-    ['325' DPT_AlarmInfo ['DPST-219-1', '1', 'DPT_ALARM_INFO', '"alarm info"', 'Struct']]
-    ['326' DPT_TempRoomSetpSetF16_3 ['DPST-222-100', '100', 'DPT_3X_2_BYTE_FLOAT_VALUE', '"room temperature setpoint"', 'Struct']]
-    ['327' DPT_TempRoomSetpSetShiftF16_3 ['DPST-222-101', '101', 'DPT_3X_2_BYTE_FLOAT_VALUE', '"room temperature setpoint shift"', 'Struct']]
-    ['328' DPT_Scaling_Speed ['DPST-225-1', '1', 'DPT_SCALING_SPEED', '"scaling speed"', 'Struct']]
-    ['329' DPT_Scaling_Step_Time ['DPST-225-2', '2', 'DPT_SCALING_SPEED', '"scaling step time"', 'Struct']]
-    ['330' DPT_MeteringValue ['DPST-229-1', '1', 'DPT_4_1_1_BYTE_COMBINED_INFORMATION', '"metering value (value,encoding,cmd)"', 'Struct']]
-    ['331' DPT_MBus_Address ['DPST-230-1000', '1000', 'DPT_MBUS_ADDRESS', '"MBus address"', 'Struct']]
-    ['332' DPT_Colour_RGB ['DPST-232-600', '600', 'DPT_3_BYTE_COLOUR_RGB', '"RGB value 3x(0..255)"', 'Struct']]
-    ['333' DPT_LanguageCodeAlpha2_ASCII ['DPST-234-1', '1', 'DPT_LANGUAGE_CODE_ISO_639_1', '"language code (ASCII)"', 'STRING']]
-    ['334' DPT_Tariff_ActiveEnergy ['DPST-235-1', '1', 'DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY', '"electrical energy with tariff"', 'Struct']]
-    ['335' DPT_Prioritised_Mode_Control ['DPST-236-1', '1', 'DPT_PRIORITISED_MODE_CONTROL', '"priority control"', 'Struct']]
-    ['336' DPT_DALI_Control_Gear_Diagnostic ['DPST-237-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_16_BIT', '"diagnostic value"', 'Struct']]
-    ['337' DPT_DALI_Diagnostics ['DPST-238-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_8_BIT', '"diagnostic value"', 'Struct']]
-    ['338' DPT_CombinedPosition ['DPST-240-800', '800', 'DPT_POSITIONS', '"combined position"', 'Struct']]
-    ['339' DPT_StatusSAB ['DPST-241-800', '800', 'DPT_STATUS_32_BIT', '"status sunblind & shutter actuator"', 'Struct']]
-    ['340' DPT_Colour_xyY ['DPST-242-600', '600', 'DPT_STATUS_48_BIT', '"colour xyY"', 'Struct']]
-    ['341' DPT_Converter_Status ['DPST-244-600', '600', 'DPT_CONVERTER_STATUS', '"DALI converter status"', 'Struct']]
-    ['342' DPT_Converter_Test_Result ['DPST-245-600', '600', 'DPT_CONVERTER_TEST_RESULT', '"DALI converter test result"', 'Struct']]
-    ['343' DPT_Battery_Info ['DPST-246-600', '600', 'DPT_BATTERY_INFORMATION', '"Battery Information"', 'Struct']]
-    ['344' DPT_Brightness_Colour_Temperature_Transition ['DPST-249-600', '600', 'DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION', '"brightness colour temperature transition"', 'Struct']]
-    ['345' DPT_Brightness_Colour_Temperature_Control ['DPST-250-600', '600', 'DPT_STATUS_24_BIT', '"brightness colour temperature control"', 'Struct']]
-    ['346' DPT_Colour_RGBW ['DPST-251-600', '600', 'DPT_COLOUR_RGBW', '"RGBW value 4x(0..100%)"', 'Struct']]
-    ['347' DPT_Relative_Control_RGBW ['DPST-252-600', '600', 'DPT_RELATIVE_CONTROL_RGBW', '"RGBW relative control"', 'Struct']]
-    ['348' DPT_Relative_Control_RGB ['DPST-254-600', '600', 'DPT_RELATIVE_CONTROL_RGB', '"RGB relative control"', 'Struct']]
-    ['349' DPT_GeographicalLocation ['DPST-255-1', '1', 'DPT_F32F32', '"geographical location (longitude and latitude) expressed in degrees"', 'Struct']]
-    ['350' DPT_TempRoomSetpSetF16_4 ['DPST-275-100', '100', 'DPT_F16F16F16F16', '"Temperature setpoint setting for 4 HVAC Modes"', 'Struct']]
-    ['351' DPT_TempRoomSetpSetShiftF16_4 ['DPST-275-101', '101', 'DPT_F16F16F16F16', '"Temperature setpoint shift setting for 4 HVAC Modes"', 'Struct']]
+    ['288' DPT_EVSEMode_1 ['DPST-20-1219', '1219', 'DPT_1_BYTE', '"Control Pilot State"', 'USINT']]
+    ['289' DPT_EVSEMode_2 ['DPST-20-1220', '1220', 'DPT_1_BYTE', '"OCPP State"', 'USINT']]
+    ['290' DPT_EVSEMode_3 ['DPST-20-1221', '1221', 'DPT_1_BYTE', '"EVSEErrorCode"', 'USINT']]
+    ['291' DPT_StatusGen ['DPST-21-1', '1', 'DPT_8_BIT_SET', '"general status"', 'Struct']]
+    ['292' DPT_Device_Control ['DPST-21-2', '2', 'DPT_8_BIT_SET', '"device control"', 'Struct']]
+    ['293' DPT_ForceSign ['DPST-21-100', '100', 'DPT_8_BIT_SET', '"forcing signal"', 'Struct']]
+    ['294' DPT_ForceSignCool ['DPST-21-101', '101', 'DPT_8_BIT_SET', '"forcing signal cool"', 'BOOL']]
+    ['295' DPT_StatusRHC ['DPST-21-102', '102', 'DPT_8_BIT_SET', '"room heating controller status"', 'Struct']]
+    ['296' DPT_StatusSDHWC ['DPST-21-103', '103', 'DPT_8_BIT_SET', '"solar DHW controller status"', 'Struct']]
+    ['297' DPT_FuelTypeSet ['DPST-21-104', '104', 'DPT_8_BIT_SET', '"fuel type set"', 'Struct']]
+    ['298' DPT_StatusRCC ['DPST-21-105', '105', 'DPT_8_BIT_SET', '"room cooling controller status"', 'BOOL']]
+    ['299' DPT_StatusAHU ['DPST-21-106', '106', 'DPT_8_BIT_SET', '"ventilation controller status"', 'Struct']]
+    ['300' DPT_CombinedStatus_RTSM ['DPST-21-107', '107', 'DPT_8_BIT_SET', '"combined status RTSM"', 'Struct']]
+    ['301' DPT_LightActuatorErrorInfo ['DPST-21-601', '601', 'DPT_8_BIT_SET', '"lighting actuator error information"', 'Struct']]
+    ['302' DPT_RF_ModeInfo ['DPST-21-1000', '1000', 'DPT_8_BIT_SET', '"RF communication mode info"', 'Struct']]
+    ['303' DPT_RF_FilterInfo ['DPST-21-1001', '1001', 'DPT_8_BIT_SET', '"cEMI server supported RF filtering modes"', 'Struct']]
+    ['304' DPT_Channel_Activation_8 ['DPST-21-1010', '1010', 'DPT_8_BIT_SET', '"channel activation for 8 channels"', 'Struct']]
+    ['305' DPT_StatusDHWC ['DPST-22-100', '100', 'DPT_16_BIT_SET', '"DHW controller status"', 'Struct']]
+    ['306' DPT_StatusRHCC ['DPST-22-101', '101', 'DPT_16_BIT_SET', '"RHCC status"', 'Struct']]
+    ['307' DPT_CombinedStatus_HVA ['DPST-22-102', '102', 'DPT_16_BIT_SET', '"combined status HVA"', 'Struct']]
+    ['308' DPT_CombinedStatus_RTC ['DPST-22-103', '103', 'DPT_16_BIT_SET', '"combined status RTC"', 'Struct']]
+    ['309' DPT_Media ['DPST-22-1000', '1000', 'DPT_16_BIT_SET', '"media"', 'Struct']]
+    ['310' DPT_Channel_Activation_16 ['DPST-22-1010', '1010', 'DPT_16_BIT_SET', '"channel activation for 16 channels"', 'Struct']]
+    ['311' DPT_OnOffAction ['DPST-23-1', '1', 'DPT_2_BIT_SET', '"on/off action"', 'USINT']]
+    ['312' DPT_Alarm_Reaction ['DPST-23-2', '2', 'DPT_2_BIT_SET', '"alarm reaction"', 'USINT']]
+    ['313' DPT_UpDown_Action ['DPST-23-3', '3', 'DPT_2_BIT_SET', '"up/down action"', 'USINT']]
+    ['314' DPT_HVAC_PB_Action ['DPST-23-102', '102', 'DPT_2_BIT_SET', '"HVAC push button action"', 'USINT']]
+    ['315' DPT_DoubleNibble ['DPST-25-1000', '1000', 'DPT_2_NIBBLE_SET', '"busy/nak repetitions"', 'Struct']]
+    ['316' DPT_SceneInfo ['DPST-26-1', '1', 'DPT_8_BIT_SET_2', '"scene information"', 'Struct']]
+    ['317' DPT_CombinedInfoOnOff ['DPST-27-1', '1', 'DPT_32_BIT_SET', '"bit-combined info on/off"', 'Struct']]
+    ['318' DPT_ActiveEnergy_V64 ['DPST-29-10', '10', 'DPT_ELECTRICAL_ENERGY', '"active energy (Wh)"', 'LINT']]
+    ['319' DPT_ApparentEnergy_V64 ['DPST-29-11', '11', 'DPT_ELECTRICAL_ENERGY', '"apparent energy (VAh)"', 'LINT']]
+    ['320' DPT_ReactiveEnergy_V64 ['DPST-29-12', '12', 'DPT_ELECTRICAL_ENERGY', '"reactive energy (VARh)"', 'LINT']]
+    ['321' DPT_Channel_Activation_24 ['DPST-30-1010', '1010', 'DPT_24_TIMES_CHANNEL_ACTIVATION', '"activation state 0..23"', 'Struct']]
+    ['322' DPT_HVACModeNext ['DPST-206-100', '100', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & HVAC mode"', 'Struct']]
+    ['323' DPT_DHWModeNext ['DPST-206-102', '102', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & DHW mode"', 'Struct']]
+    ['324' DPT_OccModeNext ['DPST-206-104', '104', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & occupancy mode"', 'Struct']]
+    ['325' DPT_BuildingModeNext ['DPST-206-105', '105', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & building mode"', 'Struct']]
+    ['326' DPT_StatusLightingActuator ['DPST-207-600', '600', 'DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"Status Lighting Actuator"', 'Struct']]
+    ['327' DPT_Version ['DPST-217-1', '1', 'DPT_DATAPOINT_TYPE_VERSION', '"DPT version"', 'Struct']]
+    ['328' DPT_AlarmInfo ['DPST-219-1', '1', 'DPT_ALARM_INFO', '"alarm info"', 'Struct']]
+    ['329' DPT_TempRoomSetpSetF16_3 ['DPST-222-100', '100', 'DPT_3X_2_BYTE_FLOAT_VALUE', '"room temperature setpoint"', 'Struct']]
+    ['330' DPT_TempRoomSetpSetShiftF16_3 ['DPST-222-101', '101', 'DPT_3X_2_BYTE_FLOAT_VALUE', '"room temperature setpoint shift"', 'Struct']]
+    ['331' DPT_Scaling_Speed ['DPST-225-1', '1', 'DPT_SCALING_SPEED', '"scaling speed"', 'Struct']]
+    ['332' DPT_Scaling_Step_Time ['DPST-225-2', '2', 'DPT_SCALING_SPEED', '"scaling step time"', 'Struct']]
+    ['333' DPT_MeteringValue ['DPST-229-1', '1', 'DPT_4_1_1_BYTE_COMBINED_INFORMATION', '"metering value (value,encoding,cmd)"', 'Struct']]
+    ['334' DPT_MBus_Address ['DPST-230-1000', '1000', 'DPT_MBUS_ADDRESS', '"MBus address"', 'Struct']]
+    ['335' DPT_Colour_RGB ['DPST-232-600', '600', 'DPT_3_BYTE_COLOUR_RGB', '"RGB value 3x(0..255)"', 'Struct']]
+    ['336' DPT_Colour_HSV ['DPST-232-601', '601', 'DPT_3_BYTE_COLOUR_RGB', '"Colour HSV"', 'Struct']]
+    ['337' DPT_LanguageCodeAlpha2_ASCII ['DPST-234-1', '1', 'DPT_LANGUAGE_CODE_ISO_639_1', '"language code (ASCII)"', 'STRING']]
+    ['338' DPT_Tariff_ActiveEnergy ['DPST-235-1', '1', 'DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY', '"electrical energy with tariff"', 'Struct']]
+    ['339' DPT_Prioritised_Mode_Control ['DPST-236-1', '1', 'DPT_PRIORITISED_MODE_CONTROL', '"priority control"', 'Struct']]
+    ['340' DPT_DALI_Control_Gear_Diagnostic ['DPST-237-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_16_BIT', '"diagnostic value"', 'Struct']]
+    ['341' DPT_DALI_Diagnostics ['DPST-238-600', '600', 'DPT_CONFIGURATION_DIAGNOSTICS_8_BIT', '"diagnostic value"', 'Struct']]
+    ['342' DPT_CombinedPosition ['DPST-240-800', '800', 'DPT_POSITIONS', '"combined position"', 'Struct']]
+    ['343' DPT_StatusSAB ['DPST-241-800', '800', 'DPT_STATUS_32_BIT', '"status sunblind & shutter actuator"', 'Struct']]
+    ['344' DPT_Colour_xyY ['DPST-242-600', '600', 'DPT_STATUS_48_BIT', '"colour xyY"', 'Struct']]
+    ['345' DPT_Converter_Status ['DPST-244-600', '600', 'DPT_CONVERTER_STATUS', '"DALI converter status"', 'Struct']]
+    ['346' DPT_Converter_Test_Result ['DPST-245-600', '600', 'DPT_CONVERTER_TEST_RESULT', '"DALI converter test result"', 'Struct']]
+    ['347' DPT_Battery_Info ['DPST-246-600', '600', 'DPT_BATTERY_INFORMATION', '"Battery Information"', 'Struct']]
+    ['348' DPT_Brightness_Colour_Temperature_Transition ['DPST-249-600', '600', 'DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION', '"brightness colour temperature transition"', 'Struct']]
+    ['349' DPT_Brightness_Colour_Temperature_Control ['DPST-250-600', '600', 'DPT_STATUS_24_BIT', '"brightness colour temperature control"', 'Struct']]
+    ['350' DPT_Colour_RGBW ['DPST-251-600', '600', 'DPT_COLOUR_RGBW', '"RGBW value 4x(0..100%)"', 'Struct']]
+    ['351' DPT_Relative_Control_RGBW ['DPST-252-600', '600', 'DPT_RELATIVE_CONTROL_RGBW', '"RGBW relative control"', 'Struct']]
+    ['352' DPT_Relative_Control_RGB ['DPST-254-600', '600', 'DPT_RELATIVE_CONTROL_RGB', '"RGB relative control"', 'Struct']]
+    ['353' DPT_GeographicalLocation ['DPST-255-1', '1', 'DPT_F32F32', '"geographical location (longitude and latitude) expressed in degrees"', 'Struct']]
+    ['354' DPT_TempRoomSetpSetF16_4 ['DPST-275-100', '100', 'DPT_F16F16F16F16', '"Temperature setpoint setting for 4 HVAC Modes"', 'Struct']]
+    ['355' DPT_TempRoomSetpSetShiftF16_4 ['DPST-275-101', '101', 'DPT_F16F16F16F16', '"Temperature setpoint shift setting for 4 HVAC Modes"', 'Struct']]
     
 ]
 
@@ -751,11 +755,11 @@
 [enum uint 16 KnxManufacturer(uint 16 number, string 8 name)
     ['0' M_UNKNOWN ['0', '"Unknown Manufacturer"']]
     ['1' M_SIEMENS ['1', '"Siemens"']]
-    ['2' M_ABB ['2', '"ABB"']]
+    ['2' M_ABB_AG___STOTZ_KONTAKT ['2', '"ABB AG - STOTZ-KONTAKT"']]
     ['3' M_ALBRECHT_JUNG ['4', '"Albrecht Jung"']]
     ['4' M_BTICINO ['5', '"Bticino"']]
     ['5' M_BERKER ['6', '"Berker"']]
-    ['6' M_BUSCH_JAEGER_ELEKTRO ['7', '"Busch-Jaeger Elektro"']]
+    ['6' M_ABB_AG___BUSCH_JAEGER ['7', '"ABB AG - BUSCH-JAEGER"']]
     ['7' M_GIRA_GIERSIEPEN ['8', '"GIRA Giersiepen"']]
     ['8' M_HAGER_ELECTRO ['9', '"Hager Electro"']]
     ['9' M_INSTA_GMBH ['10', '"Insta GmbH"']]
@@ -1070,7 +1074,7 @@
     ['318' M_EVN_LICHTTECHNIK ['369', '"EVN-Lichttechnik"']]
     ['319' M_RUTEC ['370', '"rutec"']]
     ['320' M_FINDER ['371', '"Finder"']]
-    ['321' M_FUJITSU_GENERAL_LIMITED ['372', '"Fujitsu General Limited"']]
+    ['321' M_GENERAL_INC_ ['372', '"GENERAL Inc."']]
     ['322' M_ZF_FRIEDRICHSHAFEN_AG ['373', '"ZF Friedrichshafen AG"']]
     ['323' M_CREALED ['374', '"Crealed"']]
     ['324' M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED ['375', '"Miles Magic Automation Private Limited"']]
@@ -1100,7 +1104,7 @@
     ['348' M_PEAKNX_A_DOGAWIST_COMPANY ['399', '"PEAKnx a DOGAWIST company"']]
     ['349' M_ACEMATIC ['400', '"ACEMATIC"']]
     ['350' M_ELAUSYS ['401', '"ELAUSYS"']]
-    ['351' M_ITK_ENGINEERING_AG ['402', '"ITK Engineering AG"']]
+    ['351' M_ITK_ENGINEERING_GMBH ['402', '"ITK Engineering GmbH"']]
     ['352' M_INTEGRA_METERING_AG ['403', '"INTEGRA METERING AG"']]
     ['353' M_FMS_HOSPITALITY_PTE_LTD ['404', '"FMS Hospitality Pte Ltd"']]
     ['354' M_NUVO ['405', '"Nuvo"']]
@@ -1131,7 +1135,7 @@
     ['379' M_TDE_GMBH ['430', '"TDE GmbH"']]
     ['380' M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_ ['431', '"Nanjing Shufan Information technology Co.,Ltd."']]
     ['381' M_EWTECH ['432', '"EWTech"']]
-    ['382' M_KLUGER_AUTOMATION_GMBH ['433', '"Kluger Automation GmbH"']]
+    ['382' M_KLUGER_AUTOMATION ['433', '"Kluger Automation"']]
     ['383' M_JOONGANG_CONTROL ['434', '"JoongAng Control"']]
     ['384' M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_ ['435', '"GreenControls Technology Sdn. Bhd."']]
     ['385' M_IME_S_P_A_ ['436', '"IME S.p.a."']]
@@ -1285,7 +1289,7 @@
     ['533' M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_ ['588', '"WUERTH ELEKTRONIK STELVIO KONTEK S.p.A."']]
     ['534' M_NANOTECO_CORPORATION ['589', '"NANOTECO corporation"']]
     ['535' M_NIETIAN ['590', '"Nietian"']]
-    ['536' M_SUMSIR ['591', '"Sumsir"']]
+    ['536' M_GUANGZHOU_SUMSIR_INTELLIGENT_TECHNOLOGY_CO___LTD ['591', '"Guangzhou Sumsir Intelligent Technology Co., Ltd"']]
     ['537' M_ORBIS_TECNOLOGIA_ELECTRICA_SA ['592', '"ORBIS TECNOLOGIA ELECTRICA SA"']]
     ['538' M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_ ['593', '"Nanjing Zhongyi IoT Technology Co., Ltd."']]
     ['539' M_ANLIPS ['594', '"Anlips"']]
@@ -1339,7 +1343,7 @@
     ['587' M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD ['643', '"Hefei Chuang Yue Intelligent Technology Co.,LTD"']]
     ['588' M_LARFE ['644', '"Larfe"']]
     ['589' M_DONGGUAN_MUHCCI_ELECTRICAL ['645', '"Dongguan Muhcci Electrical"']]
-    ['590' M_STEC ['646', '"STEC"']]
+    ['590' M_SDEKE ['646', '"Sdeke"']]
     ['591' M_ARIGO_SOFTWARE_GMBH ['647', '"ARIGO Software GmbH"']]
     ['592' M_FEISHELEC ['648', '"Feishelec"']]
     ['593' M_GORDIC ['649', '"GORDIC"']]
@@ -1413,7 +1417,7 @@
     ['661' M_ARKLYFE ['719', '"Arklyfe"']]
     ['662' M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_ ['720', '"Foshan Haydn Technology Lighting Co.,Ltd."']]
     ['663' M_KNXES_COMPANY_LIMITED ['721', '"KNXES COMPANY LIMITED"']]
-    ['664' M_AKUVOX ['722', '"Akuvox"']]
+    ['664' M_AKUBELA ['722', '"akubela"']]
     ['665' M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_ ['723', '"NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."']]
     ['666' M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD ['724', '"Shenzhen Haizhichuang Technology Co., Ltd"']]
     ['667' M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD ['725', '"Shenzhen easydetek technology Co.Ltd"']]
@@ -1464,7 +1468,7 @@
     ['712' M_LAPP ['773', '"LAPP"']]
     ['713' M_ZEROBIT_DYNAMIC ['774', '"ZEROBIT DYNAMIC"']]
     ['714' M_HAVELLS ['775', '"havells"']]
-    ['715' M_MULLER_INTUITIV ['776', '"Muller Intuitiv"']]
+    ['715' M_INTUIS_ELEC ['776', '"intuis-Elec"']]
     ['716' M_TASKIT_GMBH ['777', '"taskit GmbH"']]
     ['717' M_COSTER_GROUP ['778', '"Coster Group"']]
     ['718' M_NXP_SEMICONDUCTOR ['779', '"NXP Semiconductor"']]
@@ -1490,7 +1494,7 @@
     ['738' M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD ['799', '"Zhongshan Illus LIghting Co.,Ltd"']]
     ['739' M_HANGZHOU_KONKE_INFORMATION_TECHNOLOGY_CO___LTD_ ['800', '"Hangzhou Konke Information Technology Co., Ltd."']]
     ['740' M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD ['801', '"Shanghai Fante Digital Technology Co., Ltd"']]
-    ['741' M_CONFIO ['802', '"CONFIO"']]
+    ['741' M_CONFIO_TECHNOLOGIES_PVT__LTD ['802', '"Confio Technologies Pvt. Ltd"']]
     ['742' M_SONIC_TECHNOLOGIES ['803', '"Sonic Technologies"']]
     ['743' M_SHANGHAI_INNOVATECH_INFORMATION_TECHNOLOGY_CO___LT ['804', '"Shanghai Innovatech Information Technology Co., Lt"']]
     ['744' M_ABI_SICHERHEITSSYSTEME_GMBH ['805', '"ABI Sicherheitssysteme GmbH"']]
@@ -1502,8 +1506,85 @@
     ['750' M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_ ['811', '"Shanghai YUKON Automation Technologies Co., Ltd."']]
     ['751' M_TECCO_PTY_LTD ['812', '"Tecco Pty Ltd"']]
     ['752' M_A_LAN_TECHNOLOGIE ['813', '"A-LAN Technologie"']]
-    ['753' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['754' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['753' M_VOLTAN_TECHNOLOGY ['814', '"Voltan Technology"']]
+    ['754' M_BAERWINKEL_AND_STRASSER_GMBH ['815', '"Baerwinkel & Strasser GmbH"']]
+    ['755' M_CATERLUX ['816', '"Caterlux"']]
+    ['756' M_EVOTEC_SOLUTION_LTD ['817', '"evotec solution ltd"']]
+    ['757' M_NANTONG_JINGXI ['818', '"NanTong JingXi"']]
+    ['758' M_ENERVON_TECHNOLOGY ['819', '"Enervon Technology"']]
+    ['759' M_STRUCTURED_CABLE_PRODUCTS ['820', '"structured cable products"']]
+    ['760' M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ ['821', '"Jiwu (Fuzhou) Technology Co., Ltd."']]
+    ['761' M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ ['822', '"Foshan Brisdom Technology Co., Ltd."']]
+    ['762' M_YUEQING_ZHONGYI_ELECTRIC_CO___LTD_ ['823', '"YUEQING ZHONGYI ELECTRIC CO., LTD."']]
+    ['763' M_HYUNDAI ['824', '"HYUNDAI"']]
+    ['764' M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_ ['825', '"Qingdao Hisense TransTech Co.,Ltd."']]
+    ['765' M_SPECIALCAVI_BALDASSARI_SRL ['826', '"SPECIALCAVI BALDASSARI SRL"']]
+    ['766' M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG ['827', '"Ospa Apparatebau Pauser GmbH & Co. KG"']]
+    ['767' M_PLH ['828', '"PLH"']]
+    ['768' M_HANGZHOU_ZION_COMMUNICATION_CO__LTD ['829', '"HANGZHOU ZION COMMUNICATION CO.,LTD"']]
+    ['769' M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD ['830', '"Weiyi Technology (Zhejiang) Co., Ltd"']]
+    ['770' M_AUTERAS ['831', '"AUTERAS"']]
+    ['771' M_OSUM_SMART ['832', '"OSUM Smart"']]
+    ['772' M_TEKNOLINE ['833', '"TEKNOLINE"']]
+    ['773' M_HIMEL_HONG_KONG_LIMITED ['834', '"HIMEL HONG KONG LIMITED"']]
+    ['774' M_MICRONIC_KOREA_CO___LTD_ ['835', '"Micronic Korea Co., Ltd."']]
+    ['775' M_ROBUSTEL_LIMITED ['836', '"Robustel Limited"']]
+    ['776' M_LEXA_LIFESTYLE ['837', '"Lexa LIFESTYLE"']]
+    ['777' M_CASAMBI_TECHNOLOGIES_OY ['838', '"Casambi Technologies Oy"']]
+    ['778' M_BELCAB_UK_LTD ['839', '"BELCAB UK LTD"']]
+    ['779' M_CHANNEL_SMART_BUILDINGS ['840', '"Channel Smart Buildings"']]
+    ['780' M_NANJING_KLEVEN_ELECTRONIC_TECHNOLOGY_CO___LTD ['841', '"Nanjing Kleven Electronic Technology Co., Ltd"']]
+    ['781' M_ZHEJIANG_CHATNOW_NEW_MATERIAL_TECHNOLOGY_CO___LTD ['842', '"Zhejiang Chatnow New Material Technology Co., Ltd"']]
+    ['782' M_OCCHIO_GMBH ['843', '"Occhio GmbH"']]
+    ['783' M_INSTELL ['844', '"Instell"']]
+    ['784' M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH ['845', '"VOKA Vogtländisches Kabelwerk GmbH"']]
+    ['785' M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD ['846', '"Qingdao Maisi Intelligent Technology Co.,Ltd"']]
+    ['786' M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__ ['847', '"Chongqing Mexin Messon Doors Industry Co., Ltd.,"']]
+    ['787' M_HOLFMANN_CULTURE_ART_CO__LTD ['848', '"Holfmann Culture Art Co.,LTD"']]
+    ['788' M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD ['849', '"Guangzhou Baite IoT Technology Co., Ltd"']]
+    ['789' M_OWL_AUTOMATA ['850', '"OWL Automata"']]
+    ['790' M_AUTOMATED_PTY_LTD ['851', '"Automated Pty Ltd"']]
+    ['791' M_HIKVISION ['852', '"HIKVISION"']]
+    ['792' M_WIREN_BOARD ['853', '"Wiren Board"']]
+    ['793' M_DEGSON_TECHNOLOGY_CO_LTD_ ['854', '"DEGSON TECHNOLOGY CO LTD."']]
+    ['794' M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_ ['855', '"Shenzhen Hongshengxu Intelligent Tech Co., Ltd."']]
+    ['795' M_ITQAN_SMART ['856', '"ITQAN SMART"']]
+    ['796' M_YUNCH ['857', '"YUNCH"']]
+    ['797' M_LUMI_VIETNAM ['858', '"Lumi Vietnam"']]
+    ['798' M_ARCOLA_AI_LIMITED ['859', '"Arcola AI Limited"']]
+    ['799' M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_ ['860', '"Zhejiang Dooya Intelligent Technology Co., Ltd."']]
+    ['800' M_HUARUI ['861', '"HUARUI"']]
+    ['801' M_CAMCOM_CABLES_NETHERLANDS ['862', '"CAMCOM Cables NETHERLANDS"']]
+    ['802' M_BI_TECH_ELECTRONICS ['863', '"BI-TECH Electronics"']]
+    ['803' M_BELFAST_CABLES_UK_SOLUTIONS_LTD ['864', '"BELFAST CABLES UK SOLUTIONS LTD"']]
+    ['804' M_KAYBE_NETWORKING_LLP ['865', '"KAYBE NETWORKING LLP"']]
+    ['805' M_GUANGZHOU_EASYCTRL_INTELLIGENT_TECHNOLOGY_CO__LTD_ ['866', '"Guangzhou Easyctrl Intelligent Technology Co.,Ltd."']]
+    ['806' M_HORIZENTIS ['867', '"Horizentis"']]
+    ['807' M_HOM_CONTROLS ['868', '"Hom Controls"']]
+    ['808' M_SHENZHEN_GOLDEN_SECURITY_TECHNOLOGY_CO__LTD ['869', '"Shenzhen Golden Security Technology Co.,Ltd"']]
+    ['809' M_KEMCOM_GMBH ['870', '"KemCom GmbH"']]
+    ['810' M_NANJING_PUIETEL_I_O_T_TECHNOLOGY_CO___LTD ['871', '"Nanjing puietel I.O.T Technology Co., Ltd"']]
+    ['811' M_DOMUSFLOW ['872', '"DomusFlow"']]
+    ['812' M_BEIJING_YANGRUI_TECHNOLOGY_CO__LTD_ ['873', '"Beijing Yangrui Technology Co.,Ltd."']]
+    ['813' M_SMARTOMATIC_GMBH ['874', '"Smartomatic GmbH"']]
+    ['814' M_T_MAC_TECHNOLOGIES_LTD ['875', '"t-mac Technologies Ltd"']]
+    ['815' M_SYNCPRO ['876', '"SYNCPRO"']]
+    ['816' M_HAAR_INFORMATIK ['877', '"Haar-Informatik"']]
+    ['817' M_DIE_BILDUNGSMANUFAKTUR_GMBH ['878', '"DIE-Bildungsmanufaktur GmbH"']]
+    ['818' M_READYKNX ['879', '"readyKNX"']]
+    ['819' M_SMARTVOS ['880', '"smartVOS"']]
+    ['820' M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH ['881', '"ISG Industrielle Steuerungstechnik GmbH"']]
+    ['821' M_CHINT ['883', '"CHINT"']]
+    ['822' M_BEEKER_TECH_GMBH_AND_CO__KG ['884', '"Beeker Tech GmbH & Co. KG"']]
+    ['823' M_CARBON_INTEGRATION ['885', '"Carbon Integration"']]
+    ['824' M_ALLSMART ['886', '"AllSmart"']]
+    ['825' M_BUTTONPlus ['887', '"Button+"']]
+    ['826' M_GUANGZHOU_YINGLIGHT_TECHNOLOGY_CO__LTD_ ['888', '"Guangzhou YingLight technology Co.,Ltd."']]
+    ['827' M_RUEDIGER_WOLF_AB ['889', '"Rüdiger Wolf AB"']]
+    ['828' M_KOLORS_INDIA_PRIVATE_LIMITED ['890', '"KOLORS INDIA PRIVATE LIMITED"']]
+    ['829' M_GERALD_DOCENKO ['891', '"Gerald Docenko"']]
+    ['830' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['831' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
@@ -1571,11 +1652,11 @@
         ]
         ['CHAR' CHAR
             [reserved uint 8    '0x00']
-            [simple   string 8  value  encoding='"UTF-8"']
+            [simple   string 8  value  stringEncoding='"UTF8"']
         ]
         ['WCHAR' WCHAR
             [reserved uint 8    '0x00']
-            [simple   string 16 value  encoding='"UTF-16"']
+            [simple   string 16 value  stringEncoding='"UTF16"']
         ]
         //['STRING' STRING
         //]
@@ -1615,7 +1696,7 @@
             [simple   uint 8  hour       ]
             [simple   uint 8  minutes    ]
             [simple   uint 8  seconds    ]
-            [simple   uint 32 nanoseconds]
+            [simple   uint 32 nanosecondsOfSecond]
         ]
         ['DT' DATE_AND_TIME
             [reserved uint 8  '0x00'     ]
@@ -1626,7 +1707,7 @@
             [simple   uint 8  hour       ]
             [simple   uint 8  minutes    ]
             [simple   uint 8  seconds    ]
-            [simple   uint 32 nanoseconds]
+            [simple   uint 32 nanosecondsOfSecond]
         ]
 
     
@@ -2179,161 +2260,161 @@
         ['DPT_Value_Temp' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Tempd' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Tempa' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Lux' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Wsp' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Pres' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Humidity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_AirQuality' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_AirFlow' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Time1' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Time2' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Volt' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Curr' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_PowerDensity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_KelvinPerPercent' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Power' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Volume_Flow' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Rain_Amount' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Temp_F' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Wsp_kmh' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Absolute_Humidity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Concentration_ygm3' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Coefficient' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
@@ -3071,14 +3152,14 @@
         ['DPT_Volume_Flux_Meter' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Volume_Flux_ls' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
@@ -3585,6 +3666,27 @@
         ]
     
         ['DPT_RF_FilterSelect' USINT
+            [reserved uint 8 '0x00']
+                    
+            [simple   uint 8 value]
+            
+        ]
+    
+        ['DPT_EVSEMode_1' USINT
+            [reserved uint 8 '0x00']
+                    
+            [simple   uint 8 value]
+            
+        ]
+    
+        ['DPT_EVSEMode_2' USINT
+            [reserved uint 8 '0x00']
+                    
+            [simple   uint 8 value]
+            
+        ]
+    
+        ['DPT_EVSEMode_3' USINT
             [reserved uint 8 '0x00']
                     
             [simple   uint 8 value]
@@ -4322,11 +4424,11 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 tempsetpcomf encoding='"KNXFloat"']
+                    [simple float 16 tempsetpcomf floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpstdby encoding='"KNXFloat"']
+                    [simple float 16 tempsetpstdby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpeco encoding='"KNXFloat"']
+                    [simple float 16 tempsetpeco floatEncoding='"KNXFloat"']
                 
         ]
     
@@ -4335,11 +4437,11 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 tempsetpshiftcomf encoding='"KNXFloat"']
+                    [simple float 16 tempsetpshiftcomf floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpshiftstdby encoding='"KNXFloat"']
+                    [simple float 16 tempsetpshiftstdby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpshifteco encoding='"KNXFloat"']
+                    [simple float 16 tempsetpshifteco floatEncoding='"KNXFloat"']
                 
         ]
     
@@ -4413,6 +4515,19 @@
                     [simple uint 8 g]
                 
                     [simple uint 8 b]
+                
+        ]
+    
+        ['DPT_Colour_HSV' Struct
+           // Field Size 24
+           [reserved uint 8 '0x00']
+
+                    
+                    [simple uint 8 h]
+                
+                    [simple uint 8 s]
+                
+                    [simple uint 8 v]
                 
         ]
     
@@ -4783,13 +4898,13 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 roomTemperatureSetpointComfort encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointComfort floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointStandby encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointStandby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointEconomy encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointEconomy floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointBuildingProtection encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointBuildingProtection floatEncoding='"KNXFloat"']
                 
         ]
     
@@ -4798,13 +4913,13 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 roomTemperatureSetpointShiftComfort encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftComfort floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointShiftStandby encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftStandby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointShiftEconomy encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftEconomy floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointShiftBuildingProtection encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftBuildingProtection floatEncoding='"KNXFloat"']
                 
         ]
     

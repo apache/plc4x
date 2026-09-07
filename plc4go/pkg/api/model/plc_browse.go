@@ -28,20 +28,18 @@ import (
 
 type PlcBrowseRequestBuilder interface {
 	fmt.Stringer
+
 	AddQuery(name string, query string) PlcBrowseRequestBuilder
 	Build() (PlcBrowseRequest, error)
 }
 
 type PlcBrowseRequest interface {
 	PlcRequest
+
 	// Execute Will not return until a potential scan is finished and will return all results in one block
-	Execute() <-chan PlcBrowseRequestResult
-	// ExecuteWithContext is the same as Execute but handles the Context if implemented for Driver
-	ExecuteWithContext(ctx context.Context) <-chan PlcBrowseRequestResult
+	Execute(ctx context.Context) <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptor Will call the given callback for every found resource
-	ExecuteWithInterceptor(interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult
-	// ExecuteWithInterceptorWithContext Will call the given callback for every found resource
-	ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult
+	ExecuteWithInterceptor(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult
 
 	GetQueryNames() []string
 	GetQuery(queryName string) PlcQuery
@@ -49,6 +47,7 @@ type PlcBrowseRequest interface {
 
 type PlcBrowseResponse interface {
 	PlcResponse
+
 	GetRequest() PlcBrowseRequest
 	GetQueryNames() []string
 	GetResponseCode(name string) PlcResponseCode
@@ -57,6 +56,7 @@ type PlcBrowseResponse interface {
 
 type PlcBrowseRequestResult interface {
 	fmt.Stringer
+
 	GetRequest() PlcBrowseRequest
 	GetResponse() PlcBrowseResponse
 	GetErr() error
@@ -64,6 +64,7 @@ type PlcBrowseRequestResult interface {
 
 type PlcBrowseItem interface {
 	fmt.Stringer
+
 	GetTag() PlcTag
 
 	GetName() string

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataReasonForDisable = (*_BACnetConstructedDataReasonForD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForDisable)(nil)
 
 // NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
-func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
+func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged) *_BACnetConstructedDataReasonForDisable {
 	_result := &_BACnetConstructedDataReasonForDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReasonForDisable:              reasonForDisable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataReasonForDisable) GetTypeName() string {
+func (m *_BACnetConstructedDataReasonForDisable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReasonForDisable"
 }
 
-func (m *_BACnetConstructedDataReasonForDisable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataReasonForDisable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ReasonForDisable) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataReasonForDisable) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReasonForDisable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataReasonForDisable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

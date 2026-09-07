@@ -23,9 +23,10 @@ import adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 
 func (m *Connection) NewAdsReadDeviceInfoRequest() adsModel.AmsTCPPacket {
 	return adsModel.NewAmsTCPPacket(
-		adsModel.NewAdsReadDeviceInfoRequest(m.configuration.TargetAmsNetId, uint16(adsModel.DefaultAmsPorts_RUNTIME_SYSTEM_01),
-			// TODO: Replace 800 with constant.
-			m.configuration.SourceAmsNetId, 800, 0, m.driverContext.getInvokeId()))
+		adsModel.NewAdsReadDeviceInfoRequest(
+			m.configuration.TargetAmsNetId, m.configuration.TargetAmsPort,
+			m.configuration.SourceAmsNetId, m.configuration.SourceAmsPort,
+			0, m.driverContext.getInvokeId()))
 }
 
 func (m *Connection) NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) adsModel.AmsTCPPacket {

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,8 @@ type BACnetErrorContract interface {
 
 // BACnetErrorRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetErrorRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetErrorChoice returns ErrorChoice (discriminator field)
 	GetErrorChoice() BACnetConfirmedServiceChoice
 }
@@ -287,21 +287,21 @@ func CastBACnetError(structType any) BACnetError {
 	return nil
 }
 
-func (m *_BACnetError) GetTypeName() string {
+func (m *_BACnetError) GetPlx4xTypeName() string {
 	return "BACnetError"
 }
 
-func (m *_BACnetError) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetError) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_BACnetError) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetError) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -321,7 +321,7 @@ func BACnetErrorParseWithBufferProducer[T BACnetError](errorChoice BACnetConfirm
 }
 
 func BACnetErrorParseWithBuffer[T BACnetError](ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (T, error) {
-	v, err := (&_BACnetError{}).parse(ctx, readBuffer, errorChoice)
+	v, err := (new(_BACnetError)).parse(ctx, readBuffer, errorChoice)
 	if err != nil {
 		var zero T
 		return zero, err

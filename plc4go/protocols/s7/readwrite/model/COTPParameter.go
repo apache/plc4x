@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -50,8 +50,6 @@ type COTPParameter interface {
 
 // COTPParameterContract provides a set of functions which can be overwritten by a sub struct
 type COTPParameterContract interface {
-	// GetRest() returns a parser argument
-	GetRest() uint8
 	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPParameter()
 	// CreateBuilder creates a COTPParameterBuilder
@@ -60,8 +58,8 @@ type COTPParameterContract interface {
 
 // COTPParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type COTPParameterRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() uint8
 }
@@ -72,16 +70,13 @@ type _COTPParameter struct {
 		COTPParameterContract
 		COTPParameterRequirements
 	}
-
-	// Arguments.
-	Rest uint8
 }
 
 var _ COTPParameterContract = (*_COTPParameter)(nil)
 
 // NewCOTPParameter factory function for _COTPParameter
-func NewCOTPParameter(rest uint8) *_COTPParameter {
-	return &_COTPParameter{Rest: rest}
+func NewCOTPParameter() *_COTPParameter {
+	return &_COTPParameter{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type COTPParameterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() COTPParameterBuilder
-	// WithArgRest sets a parser argument
-	WithArgRest(uint8) COTPParameterBuilder
 	// AsCOTPParameterTpduSize converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
 	AsCOTPParameterTpduSize() COTPParameterTpduSizeBuilder
 	// AsCOTPParameterCallingTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
@@ -138,11 +131,6 @@ type _COTPParameterBuilder struct {
 var _ (COTPParameterBuilder) = (*_COTPParameterBuilder)(nil)
 
 func (b *_COTPParameterBuilder) WithMandatoryFields() COTPParameterBuilder {
-	return b
-}
-
-func (b *_COTPParameterBuilder) WithArgRest(rest uint8) COTPParameterBuilder {
-	b.Rest = rest
 	return b
 }
 
@@ -265,12 +253,12 @@ func CastCOTPParameter(structType any) COTPParameter {
 	return nil
 }
 
-func (m *_COTPParameter) GetTypeName() string {
+func (m *_COTPParameter) GetPlx4xTypeName() string {
 	return "COTPParameter"
 }
 
-func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
@@ -280,11 +268,11 @@ func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPParameter) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPParameter) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -304,7 +292,7 @@ func COTPParameterParseWithBufferProducer[T COTPParameter](rest uint8) func(ctx 
 }
 
 func COTPParameterParseWithBuffer[T COTPParameter](ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (T, error) {
-	v, err := (&_COTPParameter{Rest: rest}).parse(ctx, readBuffer, rest)
+	v, err := (new(_COTPParameter)).parse(ctx, readBuffer, rest)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -341,23 +329,23 @@ func (m *_COTPParameter) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child COTPParameter
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
-		if _child, err = new(_COTPParameterTpduSize).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterTpduSize).parse(ctx, readBuffer, m, uint8(rest)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterTpduSize for type-switch of COTPParameter")
 		}
 	case parameterType == 0xC1: // COTPParameterCallingTsap
-		if _child, err = new(_COTPParameterCallingTsap).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterCallingTsap).parse(ctx, readBuffer, m, uint8(rest)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterCallingTsap for type-switch of COTPParameter")
 		}
 	case parameterType == 0xC2: // COTPParameterCalledTsap
-		if _child, err = new(_COTPParameterCalledTsap).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterCalledTsap).parse(ctx, readBuffer, m, uint8(rest)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterCalledTsap for type-switch of COTPParameter")
 		}
 	case parameterType == 0xC3: // COTPParameterChecksum
-		if _child, err = new(_COTPParameterChecksum).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterChecksum).parse(ctx, readBuffer, m, uint8(rest)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterChecksum for type-switch of COTPParameter")
 		}
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
-		if _child, err = new(_COTPParameterDisconnectAdditionalInformation).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterDisconnectAdditionalInformation).parse(ctx, readBuffer, m, uint8(rest)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterDisconnectAdditionalInformation for type-switch of COTPParameter")
 		}
 	default:
@@ -402,16 +390,6 @@ func (pm *_COTPParameter) serializeParent(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_COTPParameter) GetRest() uint8 {
-	return m.Rest
-}
-
-//
-////
-
 func (m *_COTPParameter) IsCOTPParameter() {}
 
 func (m *_COTPParameter) DeepCopy() any {
@@ -424,7 +402,6 @@ func (m *_COTPParameter) deepCopy() *_COTPParameter {
 	}
 	_COTPParameterCopy := &_COTPParameter{
 		nil, // will be set by child
-		m.Rest,
 	}
 	return _COTPParameterCopy
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -283,12 +283,12 @@ func CastAlarmMessageAckObjectPushType(structType any) AlarmMessageAckObjectPush
 	return nil
 }
 
-func (m *_AlarmMessageAckObjectPushType) GetTypeName() string {
+func (m *_AlarmMessageAckObjectPushType) GetPlx4xTypeName() string {
 	return "AlarmMessageAckObjectPushType"
 }
 
-func (m *_AlarmMessageAckObjectPushType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AlarmMessageAckObjectPushType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (variableSpec)
 	lengthInBits += 8
@@ -314,7 +314,7 @@ func (m *_AlarmMessageAckObjectPushType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_AlarmMessageAckObjectPushType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AlarmMessageAckObjectPushType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -329,7 +329,7 @@ func AlarmMessageAckObjectPushTypeParseWithBufferProducer() func(ctx context.Con
 }
 
 func AlarmMessageAckObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
-	v, err := (&_AlarmMessageAckObjectPushType{}).parse(ctx, readBuffer)
+	v, err := (new(_AlarmMessageAckObjectPushType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

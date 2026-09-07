@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastTriggerControlDataIndicatorKill(structType any) TriggerControlDataIndic
 	return nil
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetTypeName() string {
+func (m *_TriggerControlDataIndicatorKill) GetPlx4xTypeName() string {
 	return "TriggerControlDataIndicatorKill"
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
+func (m *_TriggerControlDataIndicatorKill) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

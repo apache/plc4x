@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6DefaultGateway = (*_BACnetConstructedDataIPv6Defa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DefaultGateway)(nil)
 
 // NewBACnetConstructedDataIPv6DefaultGateway factory function for _BACnetConstructedDataIPv6DefaultGateway
-func NewBACnetConstructedDataIPv6DefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6DefaultGateway BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DefaultGateway {
+func NewBACnetConstructedDataIPv6DefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6DefaultGateway BACnetApplicationTagOctetString) *_BACnetConstructedDataIPv6DefaultGateway {
 	if ipv6DefaultGateway == nil {
 		panic("ipv6DefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DefaultGateway must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6DefaultGateway{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Ipv6DefaultGateway:            ipv6DefaultGateway,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPv6DefaultGateway(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGateway) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6DefaultGateway) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6DefaultGateway"
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipv6DefaultGateway)
 	lengthInBits += m.Ipv6DefaultGateway.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

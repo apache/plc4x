@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPMulticastAddress = (*_BACnetConstructedDataBA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPMulticastAddress)(nil)
 
 // NewBACnetConstructedDataBACnetIPMulticastAddress factory function for _BACnetConstructedDataBACnetIPMulticastAddress
-func NewBACnetConstructedDataBACnetIPMulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipMulticastAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMulticastAddress {
+func NewBACnetConstructedDataBACnetIPMulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipMulticastAddress BACnetApplicationTagOctetString) *_BACnetConstructedDataBACnetIPMulticastAddress {
 	if ipMulticastAddress == nil {
 		panic("ipMulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPMulticastAddress must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPMulticastAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpMulticastAddress:            ipMulticastAddress,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBACnetIPMulticastAddress(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetTypeName() string {
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBACnetIPMulticastAddress"
 }
 
-func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipMulticastAddress)
 	lengthInBits += m.IpMulticastAddress.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

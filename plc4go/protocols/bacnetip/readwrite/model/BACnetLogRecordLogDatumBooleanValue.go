@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumBooleanValue = (*_BACnetLogRecordLogDatumBooleanVal
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumBooleanValue)(nil)
 
 // NewBACnetLogRecordLogDatumBooleanValue factory function for _BACnetLogRecordLogDatumBooleanValue
-func NewBACnetLogRecordLogDatumBooleanValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, booleanValue BACnetContextTagBoolean, tagNumber uint8) *_BACnetLogRecordLogDatumBooleanValue {
+func NewBACnetLogRecordLogDatumBooleanValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, booleanValue BACnetContextTagBoolean) *_BACnetLogRecordLogDatumBooleanValue {
 	if booleanValue == nil {
 		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogRecordLogDatumBooleanValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumBooleanValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		BooleanValue:                    booleanValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetLogRecordLogDatumBooleanValue(structType any) BACnetLogRecordLogD
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValue) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumBooleanValue) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumBooleanValue"
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (booleanValue)
 	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumBooleanValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -243,12 +243,12 @@ func CastBACnetAuthenticationFactor(structType any) BACnetAuthenticationFactor {
 	return nil
 }
 
-func (m *_BACnetAuthenticationFactor) GetTypeName() string {
+func (m *_BACnetAuthenticationFactor) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationFactor"
 }
 
-func (m *_BACnetAuthenticationFactor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAuthenticationFactor) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (formatType)
 	lengthInBits += m.FormatType.GetLengthInBits(ctx)
@@ -262,7 +262,7 @@ func (m *_BACnetAuthenticationFactor) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +277,7 @@ func BACnetAuthenticationFactorParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
-	v, err := (&_BACnetAuthenticationFactor{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAuthenticationFactor)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

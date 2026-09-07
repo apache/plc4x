@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProtocolLevel = (*_BACnetConstructedDataProtocolLevel
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolLevel)(nil)
 
 // NewBACnetConstructedDataProtocolLevel factory function for _BACnetConstructedDataProtocolLevel
-func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolLevel BACnetProtocolLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolLevel {
+func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolLevel BACnetProtocolLevelTagged) *_BACnetConstructedDataProtocolLevel {
 	if protocolLevel == nil {
 		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetConstructedDataProtocolLevel must not be nil")
 	}
 	_result := &_BACnetConstructedDataProtocolLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProtocolLevel:                 protocolLevel,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataProtocolLevel(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataProtocolLevel) GetTypeName() string {
+func (m *_BACnetConstructedDataProtocolLevel) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProtocolLevel"
 }
 
-func (m *_BACnetConstructedDataProtocolLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataProtocolLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (protocolLevel)
 	lengthInBits += m.ProtocolLevel.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataProtocolLevel) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProtocolLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataProtocolLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

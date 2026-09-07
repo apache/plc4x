@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -269,12 +269,12 @@ func CastBACnetEventNotificationSubscription(structType any) BACnetEventNotifica
 	return nil
 }
 
-func (m *_BACnetEventNotificationSubscription) GetTypeName() string {
+func (m *_BACnetEventNotificationSubscription) GetPlx4xTypeName() string {
 	return "BACnetEventNotificationSubscription"
 }
 
-func (m *_BACnetEventNotificationSubscription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventNotificationSubscription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (recipient)
 	lengthInBits += m.Recipient.GetLengthInBits(ctx)
@@ -293,7 +293,7 @@ func (m *_BACnetEventNotificationSubscription) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetEventNotificationSubscription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventNotificationSubscription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -308,7 +308,7 @@ func BACnetEventNotificationSubscriptionParseWithBufferProducer() func(ctx conte
 }
 
 func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
-	v, err := (&_BACnetEventNotificationSubscription{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetEventNotificationSubscription)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +384,7 @@ func (m *_BACnetEventNotificationSubscription) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", new(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 	}
 

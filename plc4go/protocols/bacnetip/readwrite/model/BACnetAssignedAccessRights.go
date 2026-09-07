@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetAssignedAccessRights(structType any) BACnetAssignedAccessRights {
 	return nil
 }
 
-func (m *_BACnetAssignedAccessRights) GetTypeName() string {
+func (m *_BACnetAssignedAccessRights) GetPlx4xTypeName() string {
 	return "BACnetAssignedAccessRights"
 }
 
-func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (assignedAccessRights)
 	lengthInBits += m.AssignedAccessRights.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetAssignedAccessRights) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetAssignedAccessRights) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAssignedAccessRights) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetAssignedAccessRightsParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
-	v, err := (&_BACnetAssignedAccessRights{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAssignedAccessRights)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

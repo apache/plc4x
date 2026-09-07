@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMusterPoint = (*_BACnetConstructedDataMusterPoint)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMusterPoint)(nil)
 
 // NewBACnetConstructedDataMusterPoint factory function for _BACnetConstructedDataMusterPoint
-func NewBACnetConstructedDataMusterPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, musterPoint BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMusterPoint {
+func NewBACnetConstructedDataMusterPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, musterPoint BACnetApplicationTagBoolean) *_BACnetConstructedDataMusterPoint {
 	if musterPoint == nil {
 		panic("musterPoint of type BACnetApplicationTagBoolean for BACnetConstructedDataMusterPoint must not be nil")
 	}
 	_result := &_BACnetConstructedDataMusterPoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MusterPoint:                   musterPoint,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMusterPoint(structType any) BACnetConstructedDataM
 	return nil
 }
 
-func (m *_BACnetConstructedDataMusterPoint) GetTypeName() string {
+func (m *_BACnetConstructedDataMusterPoint) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMusterPoint"
 }
 
-func (m *_BACnetConstructedDataMusterPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMusterPoint) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (musterPoint)
 	lengthInBits += m.MusterPoint.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMusterPoint) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMusterPoint) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMusterPoint) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

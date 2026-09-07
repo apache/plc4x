@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPositiveIntegerValueMaxPresValue = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueMaxPresValue)(nil)
 
 // NewBACnetConstructedDataPositiveIntegerValueMaxPresValue factory function for _BACnetConstructedDataPositiveIntegerValueMaxPresValue
-func NewBACnetConstructedDataPositiveIntegerValueMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMaxPresValue {
+func NewBACnetConstructedDataPositiveIntegerValueMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMaxPresValue {
 	if maxPresValue == nil {
 		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueMaxPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxPresValue:                  maxPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPositiveIntegerValueMaxPresValue(structType any) B
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueMaxPresValue"
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

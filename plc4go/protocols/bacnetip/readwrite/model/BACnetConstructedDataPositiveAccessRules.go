@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataPositiveAccessRules interface {
 	// GetPositiveAccessRules returns PositiveAccessRules (property field)
 	GetPositiveAccessRules() []BACnetAccessRule
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataPositiveAccessRules is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPositiveAccessRules()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataPositiveAccessRules = (*_BACnetConstructedDataPositiv
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveAccessRules)(nil)
 
 // NewBACnetConstructedDataPositiveAccessRules factory function for _BACnetConstructedDataPositiveAccessRules
-func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveAccessRules {
+func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule) *_BACnetConstructedDataPositiveAccessRules {
 	_result := &_BACnetConstructedDataPositiveAccessRules{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		PositiveAccessRules:           positiveAccessRules,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataPositiveAccessRules(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveAccessRules) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveAccessRules) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveAccessRules"
 }
 
-func (m *_BACnetConstructedDataPositiveAccessRules) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPositiveAccessRules) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataPositiveAccessRules) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveAccessRules) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPositiveAccessRules) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataPositiveAccessRules) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

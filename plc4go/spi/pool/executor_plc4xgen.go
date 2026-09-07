@@ -49,6 +49,10 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 
+	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name, utils.WithEncoding("UTF-8")); err != nil {
+		return err
+	}
+
 	if err := writeBuffer.WriteBit("running", d.running); err != nil {
 		return err
 	}
@@ -75,13 +79,17 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}
 		}
 	}
 	if err := writeBuffer.PopContext("worker", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteUint32("workerNumber", 32, d.workerNumber.Load()); err != nil {
 		return err
 	}
 
@@ -92,6 +100,25 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 	if err := writeBuffer.WriteBit("traceWorkers", d.traceWorkers); err != nil {
 		return err
+	}
+
+	if d.ctx != nil {
+		if serializableField, ok := any(d.ctx).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("ctx"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ctx"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.ctx)
+			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
+				return err
+			}
+		}
 	}
 	if err := writeBuffer.PopContext("executor"); err != nil {
 		return err

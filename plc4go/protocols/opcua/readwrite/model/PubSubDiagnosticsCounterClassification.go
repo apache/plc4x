@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -94,11 +94,11 @@ func CastPubSubDiagnosticsCounterClassification(structType any) PubSubDiagnostic
 	return castFunc(structType)
 }
 
-func (m PubSubDiagnosticsCounterClassification) GetLengthInBits(ctx context.Context) uint16 {
+func (m PubSubDiagnosticsCounterClassification) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PubSubDiagnosticsCounterClassification) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PubSubDiagnosticsCounterClassification) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

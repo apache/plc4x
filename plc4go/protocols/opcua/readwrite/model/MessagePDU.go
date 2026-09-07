@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,8 +53,6 @@ type MessagePDU interface {
 type MessagePDUContract interface {
 	// GetChunk returns Chunk (property field)
 	GetChunk() ChunkType
-	// GetBinary() returns a parser argument
-	GetBinary() bool
 	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMessagePDU()
 	// CreateBuilder creates a MessagePDUBuilder
@@ -62,8 +61,8 @@ type MessagePDUContract interface {
 
 // MessagePDURequirements provides a set of functions which need to be implemented by a sub struct
 type MessagePDURequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() string
 	// GetResponse returns Response (discriminator field)
@@ -77,16 +76,13 @@ type _MessagePDU struct {
 		MessagePDURequirements
 	}
 	Chunk ChunkType
-
-	// Arguments.
-	Binary bool
 }
 
 var _ MessagePDUContract = (*_MessagePDU)(nil)
 
 // NewMessagePDU factory function for _MessagePDU
-func NewMessagePDU(chunk ChunkType, binary bool) *_MessagePDU {
-	return &_MessagePDU{Chunk: chunk, Binary: binary}
+func NewMessagePDU(chunk ChunkType) *_MessagePDU {
+	return &_MessagePDU{Chunk: chunk}
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,8 +97,6 @@ type MessagePDUBuilder interface {
 	WithMandatoryFields(chunk ChunkType) MessagePDUBuilder
 	// WithChunk adds Chunk (property field)
 	WithChunk(ChunkType) MessagePDUBuilder
-	// WithArgBinary sets a parser argument
-	WithArgBinary(bool) MessagePDUBuilder
 	// AsOpcuaHelloRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
 	AsOpcuaHelloRequest() OpcuaHelloRequestBuilder
 	// AsOpcuaAcknowledgeResponse converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
@@ -156,11 +150,6 @@ func (b *_MessagePDUBuilder) WithMandatoryFields(chunk ChunkType) MessagePDUBuil
 
 func (b *_MessagePDUBuilder) WithChunk(chunk ChunkType) MessagePDUBuilder {
 	b.Chunk = chunk
-	return b
-}
-
-func (b *_MessagePDUBuilder) WithArgBinary(binary bool) MessagePDUBuilder {
-	b.Binary = binary
 	return b
 }
 
@@ -327,12 +316,12 @@ func CastMessagePDU(structType any) MessagePDU {
 	return nil
 }
 
-func (m *_MessagePDU) GetTypeName() string {
+func (m *_MessagePDU) GetPlx4xTypeName() string {
 	return "MessagePDU"
 }
 
-func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 24
 
@@ -345,11 +334,11 @@ func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MessagePDU) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_MessagePDU) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -369,7 +358,7 @@ func MessagePDUParseWithBufferProducer[T MessagePDU](response bool, binary bool)
 }
 
 func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool, binary bool) (T, error) {
-	v, err := (&_MessagePDU{Binary: binary}).parse(ctx, readBuffer, response, binary)
+	v, err := (new(_MessagePDU)).parse(ctx, readBuffer, response, binary)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -391,7 +380,7 @@ func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageType, err := ReadDiscriminatorField[string](ctx, "messageType", ReadString(readBuffer, uint32(24)))
+	messageType, err := ReadDiscriminatorField[string](ctx, "messageType", ReadString(readBuffer, uint32(24)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
@@ -420,11 +409,11 @@ func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, re
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaAcknowledgeResponse for type-switch of MessagePDU")
 		}
 	case messageType == "OPN" && response == bool(false): // OpcuaOpenRequest
-		if _child, err = new(_OpcuaOpenRequest).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaOpenRequest).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenRequest for type-switch of MessagePDU")
 		}
 	case messageType == "OPN" && response == bool(true): // OpcuaOpenResponse
-		if _child, err = new(_OpcuaOpenResponse).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaOpenResponse).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenResponse for type-switch of MessagePDU")
 		}
 	case messageType == "CLO" && response == bool(false): // OpcuaCloseRequest
@@ -432,11 +421,11 @@ func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, re
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaCloseRequest for type-switch of MessagePDU")
 		}
 	case messageType == "MSG" && response == bool(false): // OpcuaMessageRequest
-		if _child, err = new(_OpcuaMessageRequest).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaMessageRequest).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageRequest for type-switch of MessagePDU")
 		}
 	case messageType == "MSG" && response == bool(true): // OpcuaMessageResponse
-		if _child, err = new(_OpcuaMessageResponse).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaMessageResponse).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageResponse for type-switch of MessagePDU")
 		}
 	case messageType == "ERR" && response == bool(true): // OpcuaMessageError
@@ -466,7 +455,7 @@ func (pm *_MessagePDU) serializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(pushErr, "Error pushing for MessagePDU")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteString(writeBuffer, 24)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteString(writeBuffer, 24), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 
@@ -489,16 +478,6 @@ func (pm *_MessagePDU) serializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_MessagePDU) GetBinary() bool {
-	return m.Binary
-}
-
-//
-////
-
 func (m *_MessagePDU) IsMessagePDU() {}
 
 func (m *_MessagePDU) DeepCopy() any {
@@ -512,7 +491,6 @@ func (m *_MessagePDU) deepCopy() *_MessagePDU {
 	_MessagePDUCopy := &_MessagePDU{
 		nil, // will be set by child
 		m.Chunk,
-		m.Binary,
 	}
 	return _MessagePDUCopy
 }

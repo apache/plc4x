@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastTriggerControlDataTriggerMax(structType any) TriggerControlDataTriggerM
 	return nil
 }
 
-func (m *_TriggerControlDataTriggerMax) GetTypeName() string {
+func (m *_TriggerControlDataTriggerMax) GetPlx4xTypeName() string {
 	return "TriggerControlDataTriggerMax"
 }
 
-func (m *_TriggerControlDataTriggerMax) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
+func (m *_TriggerControlDataTriggerMax) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TriggerControlDataTriggerMax) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TriggerControlDataTriggerMax) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

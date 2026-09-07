@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,10 +49,6 @@ type CBusMessage interface {
 
 // CBusMessageContract provides a set of functions which can be overwritten by a sub struct
 type CBusMessageContract interface {
-	// GetRequestContext() returns a parser argument
-	GetRequestContext() RequestContext
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsCBusMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessage()
 	// CreateBuilder creates a CBusMessageBuilder
@@ -60,8 +57,8 @@ type CBusMessageContract interface {
 
 // CBusMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIsResponse returns IsResponse (discriminator field)
 	GetIsResponse() bool
 }
@@ -72,17 +69,13 @@ type _CBusMessage struct {
 		CBusMessageContract
 		CBusMessageRequirements
 	}
-
-	// Arguments.
-	RequestContext RequestContext
-	CBusOptions    CBusOptions
 }
 
 var _ CBusMessageContract = (*_CBusMessage)(nil)
 
 // NewCBusMessage factory function for _CBusMessage
-func NewCBusMessage(requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessage {
-	return &_CBusMessage{RequestContext: requestContext, CBusOptions: cBusOptions}
+func NewCBusMessage() *_CBusMessage {
+	return &_CBusMessage{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +88,6 @@ type CBusMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CBusMessageBuilder
-	// WithArgRequestContext sets a parser argument
-	WithArgRequestContext(RequestContext) CBusMessageBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CBusMessageBuilder
 	// AsCBusMessageToServer converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
 	AsCBusMessageToServer() CBusMessageToServerBuilder
 	// AsCBusMessageToClient converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
@@ -135,15 +124,6 @@ type _CBusMessageBuilder struct {
 var _ (CBusMessageBuilder) = (*_CBusMessageBuilder)(nil)
 
 func (b *_CBusMessageBuilder) WithMandatoryFields() CBusMessageBuilder {
-	return b
-}
-
-func (b *_CBusMessageBuilder) WithArgRequestContext(requestContext RequestContext) CBusMessageBuilder {
-	b.RequestContext = requestContext
-	return b
-}
-func (b *_CBusMessageBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusMessageBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -236,26 +216,26 @@ func CastCBusMessage(structType any) CBusMessage {
 	return nil
 }
 
-func (m *_CBusMessage) GetTypeName() string {
+func (m *_CBusMessage) GetPlx4xTypeName() string {
 	return "CBusMessage"
 }
 
-func (m *_CBusMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_CBusMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusMessageParse[T CBusMessage](ctx context.Context, theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (T, error) {
-	return CBusMessageParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
+	return CBusMessageParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), isResponse, requestContext, cBusOptions)
 }
 
 func CBusMessageParseWithBufferProducer[T CBusMessage](isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -270,7 +250,7 @@ func CBusMessageParseWithBufferProducer[T CBusMessage](isResponse bool, requestC
 }
 
 func CBusMessageParseWithBuffer[T CBusMessage](ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusMessage{RequestContext: requestContext, CBusOptions: cBusOptions}).parse(ctx, readBuffer, isResponse, requestContext, cBusOptions)
+	v, err := (new(_CBusMessage)).parse(ctx, readBuffer, isResponse, requestContext, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -347,19 +327,6 @@ func (pm *_CBusMessage) serializeParent(ctx context.Context, writeBuffer utils.W
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CBusMessage) GetRequestContext() RequestContext {
-	return m.RequestContext
-}
-func (m *_CBusMessage) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
-
 func (m *_CBusMessage) IsCBusMessage() {}
 
 func (m *_CBusMessage) DeepCopy() any {
@@ -372,8 +339,6 @@ func (m *_CBusMessage) deepCopy() *_CBusMessage {
 	}
 	_CBusMessageCopy := &_CBusMessage{
 		nil, // will be set by child
-		m.RequestContext,
-		m.CBusOptions,
 	}
 	return _CBusMessageCopy
 }

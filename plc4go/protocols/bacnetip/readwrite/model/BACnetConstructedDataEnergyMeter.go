@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEnergyMeter = (*_BACnetConstructedDataEnergyMeter)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnergyMeter)(nil)
 
 // NewBACnetConstructedDataEnergyMeter factory function for _BACnetConstructedDataEnergyMeter
-func NewBACnetConstructedDataEnergyMeter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, energyMeter BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeter {
+func NewBACnetConstructedDataEnergyMeter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, energyMeter BACnetApplicationTagReal) *_BACnetConstructedDataEnergyMeter {
 	if energyMeter == nil {
 		panic("energyMeter of type BACnetApplicationTagReal for BACnetConstructedDataEnergyMeter must not be nil")
 	}
 	_result := &_BACnetConstructedDataEnergyMeter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EnergyMeter:                   energyMeter,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataEnergyMeter(structType any) BACnetConstructedDataE
 	return nil
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) GetTypeName() string {
+func (m *_BACnetConstructedDataEnergyMeter) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEnergyMeter"
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (energyMeter)
 	lengthInBits += m.EnergyMeter.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

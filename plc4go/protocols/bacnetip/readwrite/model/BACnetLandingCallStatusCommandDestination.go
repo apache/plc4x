@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetLandingCallStatusCommandDestination(structType any) BACnetLanding
 	return nil
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) GetTypeName() string {
+func (m *_BACnetLandingCallStatusCommandDestination) GetPlx4xTypeName() string {
 	return "BACnetLandingCallStatusCommandDestination"
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).getLengthInBits(ctx))
+func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).getLengthInBits(ctx))
 
 	// Simple field (destination)
 	lengthInBits += m.Destination.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

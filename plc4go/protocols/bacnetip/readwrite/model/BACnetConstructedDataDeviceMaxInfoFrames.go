@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDeviceMaxInfoFrames = (*_BACnetConstructedDataDeviceM
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceMaxInfoFrames)(nil)
 
 // NewBACnetConstructedDataDeviceMaxInfoFrames factory function for _BACnetConstructedDataDeviceMaxInfoFrames
-func NewBACnetConstructedDataDeviceMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxInfoFrames {
+func NewBACnetConstructedDataDeviceMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDeviceMaxInfoFrames {
 	if maxInfoFrames == nil {
 		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxInfoFrames must not be nil")
 	}
 	_result := &_BACnetConstructedDataDeviceMaxInfoFrames{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxInfoFrames:                 maxInfoFrames,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDeviceMaxInfoFrames(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceMaxInfoFrames"
 }
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxInfoFrames)
 	lengthInBits += m.MaxInfoFrames.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

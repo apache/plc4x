@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPSubnetMask = (*_BACnetConstructedDataIPSubnetMask)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPSubnetMask)(nil)
 
 // NewBACnetConstructedDataIPSubnetMask factory function for _BACnetConstructedDataIPSubnetMask
-func NewBACnetConstructedDataIPSubnetMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipSubnetMask BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
+func NewBACnetConstructedDataIPSubnetMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipSubnetMask BACnetApplicationTagOctetString) *_BACnetConstructedDataIPSubnetMask {
 	if ipSubnetMask == nil {
 		panic("ipSubnetMask of type BACnetApplicationTagOctetString for BACnetConstructedDataIPSubnetMask must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPSubnetMask{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpSubnetMask:                  ipSubnetMask,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPSubnetMask(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPSubnetMask) GetTypeName() string {
+func (m *_BACnetConstructedDataIPSubnetMask) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPSubnetMask"
 }
 
-func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipSubnetMask)
 	lengthInBits += m.IpSubnetMask.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

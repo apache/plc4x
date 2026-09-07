@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataChangesPending = (*_BACnetConstructedDataChangesPendi
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangesPending)(nil)
 
 // NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
-func NewBACnetConstructedDataChangesPending(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changesPending BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
+func NewBACnetConstructedDataChangesPending(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changesPending BACnetApplicationTagBoolean) *_BACnetConstructedDataChangesPending {
 	if changesPending == nil {
 		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
 	}
 	_result := &_BACnetConstructedDataChangesPending{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ChangesPending:                changesPending,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetTypeName() string {
+func (m *_BACnetConstructedDataChangesPending) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChangesPending"
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataChangesPending) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (changesPending)
 	lengthInBits += m.ChangesPending.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataChangesPending) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataChangesPending) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

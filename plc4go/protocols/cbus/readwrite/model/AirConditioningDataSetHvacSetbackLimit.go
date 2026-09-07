@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -302,12 +302,12 @@ func CastAirConditioningDataSetHvacSetbackLimit(structType any) AirConditioningD
 	return nil
 }
 
-func (m *_AirConditioningDataSetHvacSetbackLimit) GetTypeName() string {
+func (m *_AirConditioningDataSetHvacSetbackLimit) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetHvacSetbackLimit"
 }
 
-func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
+func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -324,7 +324,7 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

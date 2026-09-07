@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ COTPParameterChecksum = (*_COTPParameterChecksum)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterChecksum)(nil)
 
 // NewCOTPParameterChecksum factory function for _COTPParameterChecksum
-func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
+func NewCOTPParameterChecksum(crc uint8) *_COTPParameterChecksum {
 	_result := &_COTPParameterChecksum{
-		COTPParameterContract: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(),
 		Crc:                   crc,
 	}
 	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
@@ -207,12 +207,12 @@ func CastCOTPParameterChecksum(structType any) COTPParameterChecksum {
 	return nil
 }
 
-func (m *_COTPParameterChecksum) GetTypeName() string {
+func (m *_COTPParameterChecksum) GetPlx4xTypeName() string {
 	return "COTPParameterChecksum"
 }
 
-func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -220,7 +220,7 @@ func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

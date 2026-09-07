@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,20 +59,16 @@ type _BACnetLiftCarModeTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLiftCarMode
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLiftCarModeTagged = (*_BACnetLiftCarModeTagged)(nil)
 
 // NewBACnetLiftCarModeTagged factory function for _BACnetLiftCarModeTagged
-func NewBACnetLiftCarModeTagged(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarModeTagged {
+func NewBACnetLiftCarModeTagged(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32) *_BACnetLiftCarModeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLiftCarModeTagged must not be nil")
 	}
-	return &_BACnetLiftCarModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLiftCarModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLiftCarModeTaggedBuilder interface {
 	WithValue(BACnetLiftCarMode) BACnetLiftCarModeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLiftCarModeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLiftCarModeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLiftCarModeTaggedBuilder
 	// Build builds the BACnetLiftCarModeTagged or returns an error if something is wrong
 	Build() (BACnetLiftCarModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLiftCarModeTaggedBuilder) WithValue(value BACnetLiftCarMode) BAC
 
 func (b *_BACnetLiftCarModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarModeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLiftCarModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftCarModeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLiftCarModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLiftCarModeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,28 +224,28 @@ func CastBACnetLiftCarModeTagged(structType any) BACnetLiftCarModeTagged {
 	return nil
 }
 
-func (m *_BACnetLiftCarModeTagged) GetTypeName() string {
+func (m *_BACnetLiftCarModeTagged) GetPlx4xTypeName() string {
 	return "BACnetLiftCarModeTagged"
 }
 
-func (m *_BACnetLiftCarModeTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLiftCarModeTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
 
-func (m *_BACnetLiftCarModeTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLiftCarModeTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +260,7 @@ func BACnetLiftCarModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetLiftCarModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarModeTagged, error) {
-	v, err := (&_BACnetLiftCarModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLiftCarModeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLiftCarModeTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLiftCarModeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLiftCarModeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLiftCarModeTagged) IsBACnetLiftCarModeTagged() {}
 
 func (m *_BACnetLiftCarModeTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLiftCarModeTagged) deepCopy() *_BACnetLiftCarModeTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLiftCarModeTaggedCopy
 }

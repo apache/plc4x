@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,17 +181,17 @@ func CastSALDataFreeUsage(structType any) SALDataFreeUsage {
 	return nil
 }
 
-func (m *_SALDataFreeUsage) GetTypeName() string {
+func (m *_SALDataFreeUsage) GetPlx4xTypeName() string {
 	return "SALDataFreeUsage"
 }
 
-func (m *_SALDataFreeUsage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataFreeUsage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SALDataFreeUsage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataFreeUsage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -218,7 +219,7 @@ func (m *_SALDataFreeUsage) parse(ctx context.Context, readBuffer utils.ReadBuff
 }
 
 func (m *_SALDataFreeUsage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

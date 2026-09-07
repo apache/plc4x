@@ -26,11 +26,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // RequestTransaction represents a transaction
@@ -41,7 +42,7 @@ type RequestTransaction interface {
 	// EndRequest signals that this transaction is done
 	EndRequest() error
 	// Submit submits a RequestTransactionRunnable to the RequestTransactionManager
-	Submit(operation RequestTransactionRunnable)
+	Submit(operationInfo string, operation RequestTransactionRunnable)
 	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
 	AwaitCompletion(ctx context.Context) error
 	// IsCompleted indicates that the that this RequestTransaction is completed
@@ -56,8 +57,9 @@ type RequestTransaction interface {
 
 //go:generate go tool plc4xGenerator -type=requestTransaction
 type requestTransaction struct {
-	parent        *requestTransactionManager `ignore:"true"`
-	transactionId int32
+	parent          *requestTransactionManager `ignore:"true"`
+	transactionId   int32
+	transactionInfo string
 
 	/** The initial operation to perform to kick off the request */
 	operation        pool.Runnable `ignore:"true"` // TODO: maybe we can treat this as a function some day if we are able to check the definition in gen
@@ -69,11 +71,12 @@ type requestTransaction struct {
 	log zerolog.Logger
 }
 
-func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32) *requestTransaction {
+func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32, transactionInfo string) *requestTransaction {
 	return &requestTransaction{
-		parent:        parent,
-		transactionId: transactionId,
-		log:           localLog.With().Int32("transactionId", transactionId).Logger(),
+		parent:          parent,
+		transactionId:   transactionId,
+		transactionInfo: transactionInfo,
+		log:             localLog.With().Int32("transactionId", transactionId).Str("transactionInfo", transactionInfo).Logger(),
 	}
 }
 
@@ -118,7 +121,7 @@ func (t *requestTransaction) EndRequest() error {
 	return t.parent.endRequest(t)
 }
 
-func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
+func (t *requestTransaction) Submit(operationInfo string, operation RequestTransactionRunnable) {
 	t.stateChangeMutex.Lock()
 	defer t.stateChangeMutex.Unlock()
 	if t.completed {
@@ -128,18 +131,18 @@ func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 	if t.operation != nil {
 		t.log.Warn().Msg("Operation already set")
 	}
-	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Submission")
-	t.operation = func() {
-		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Start operation")
-		operation(t)
-		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed operation")
+	t.log.Trace().Msg("Submission")
+	t.operation = func(ctx context.Context) {
+		t.log.Trace().Str("operationInfo", operationInfo).Msg("Start operation")
+		operation(ctx, t)
+		t.log.Trace().Str("operationInfo", operationInfo).Msg("Completed operation")
 	}
 	t.parent.submitTransaction(t)
 }
 
 func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
-	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Awaiting completion")
-	timeout, cancelFunc := context.WithTimeout(ctx, time.Minute*30) // This is intentionally set very high
+	t.log.Trace().Msg("Awaiting completion")
+	timeout, cancelFunc := utils.WithNamedTimeout(ctx, "transaction completion timeout", time.Minute*30) // This is intentionally set very high
 	defer cancelFunc()
 	for t.getCompletionFuture() == nil {
 		time.Sleep(time.Millisecond * 10)
@@ -149,7 +152,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 	}
 	if err := t.getCompletionFuture().AwaitCompletion(ctx); err != nil {
-		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Errored")
+		t.log.Trace().Msg("Errored")
 		return err
 	}
 	stillActive := true
@@ -164,7 +167,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 		t.parent.runningRequestMutex.RUnlock()
 	}
-	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed")
+	t.log.Trace().Msg("Completed")
 	return nil
 }
 

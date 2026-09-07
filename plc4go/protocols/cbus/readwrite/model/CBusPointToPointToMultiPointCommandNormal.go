@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,12 +64,12 @@ var _ CBusPointToPointToMultiPointCommandNormal = (*_CBusPointToPointToMultiPoin
 var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
 
 // NewCBusPointToPointToMultiPointCommandNormal factory function for _CBusPointToPointToMultiPointCommandNormal
-func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
+func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, application ApplicationIdContainer, salData SALData) *_CBusPointToPointToMultiPointCommandNormal {
 	if salData == nil {
 		panic("salData of type SALData for CBusPointToPointToMultiPointCommandNormal must not be nil")
 	}
 	_result := &_CBusPointToPointToMultiPointCommandNormal{
-		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication),
 		Application: application,
 		SalData:     salData,
 	}
@@ -236,12 +238,12 @@ func CastCBusPointToPointToMultiPointCommandNormal(structType any) CBusPointToPo
 	return nil
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetTypeName() string {
+func (m *_CBusPointToPointToMultiPointCommandNormal) GetPlx4xTypeName() string {
 	return "CBusPointToPointToMultiPointCommandNormal"
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
+func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
 
 	// Simple field (application)
 	lengthInBits += 8
@@ -252,7 +254,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -267,13 +269,13 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) parse(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 	m.Application = application
 
-	salData, err := ReadSimpleField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer))
+	salData, err := ReadSimpleField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}
@@ -287,7 +289,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) parse(ctx context.Context, 
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -304,11 +306,11 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultiPointCommandNormal")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		if err := WriteSimpleField[SALData](ctx, "salData", m.GetSalData(), WriteComplex[SALData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SALData](ctx, "salData", m.GetSalData(), WriteComplex[SALData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 

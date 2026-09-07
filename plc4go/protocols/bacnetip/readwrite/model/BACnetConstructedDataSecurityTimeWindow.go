@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSecurityTimeWindow = (*_BACnetConstructedDataSecurity
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
 
 // NewBACnetConstructedDataSecurityTimeWindow factory function for _BACnetConstructedDataSecurityTimeWindow
-func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityTimeWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
+func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityTimeWindow BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
 	if securityTimeWindow == nil {
 		panic("securityTimeWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityTimeWindow must not be nil")
 	}
 	_result := &_BACnetConstructedDataSecurityTimeWindow{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SecurityTimeWindow:            securityTimeWindow,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSecurityTimeWindow(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetTypeName() string {
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSecurityTimeWindow"
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (securityTimeWindow)
 	lengthInBits += m.SecurityTimeWindow.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

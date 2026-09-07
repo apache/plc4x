@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetAuthenticationPolicyListEntry(structType any) BACnetAuthenticatio
 	return nil
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) GetTypeName() string {
+func (m *_BACnetAuthenticationPolicyListEntry) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationPolicyListEntry"
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (credentialDataInput)
 	lengthInBits += m.CredentialDataInput.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetAuthenticationPolicyListEntryParseWithBufferProducer() func(ctx conte
 }
 
 func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
-	v, err := (&_BACnetAuthenticationPolicyListEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAuthenticationPolicyListEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

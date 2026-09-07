@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastUtcTime(structType any) UtcTime {
 	return nil
 }
 
-func (m *_UtcTime) GetTypeName() string {
+func (m *_UtcTime) GetPlx4xTypeName() string {
 	return "UtcTime"
 }
 
-func (m *_UtcTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_UtcTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_UtcTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UtcTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func UtcTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 }
 
 func UtcTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UtcTime, error) {
-	v, err := (&_UtcTime{}).parse(ctx, readBuffer)
+	v, err := (new(_UtcTime)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,8 @@ type KnxGroupAddressContract interface {
 
 // KnxGroupAddressRequirements provides a set of functions which need to be implemented by a sub struct
 type KnxGroupAddressRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetNumLevels returns NumLevels (discriminator field)
 	GetNumLevels() uint8
 }
@@ -227,21 +227,21 @@ func CastKnxGroupAddress(structType any) KnxGroupAddress {
 	return nil
 }
 
-func (m *_KnxGroupAddress) GetTypeName() string {
+func (m *_KnxGroupAddress) GetPlx4xTypeName() string {
 	return "KnxGroupAddress"
 }
 
-func (m *_KnxGroupAddress) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_KnxGroupAddress) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_KnxGroupAddress) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_KnxGroupAddress) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_KnxGroupAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxGroupAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -261,7 +261,7 @@ func KnxGroupAddressParseWithBufferProducer[T KnxGroupAddress](numLevels uint8) 
 }
 
 func KnxGroupAddressParseWithBuffer[T KnxGroupAddress](ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (T, error) {
-	v, err := (&_KnxGroupAddress{}).parse(ctx, readBuffer, numLevels)
+	v, err := (new(_KnxGroupAddress)).parse(ctx, readBuffer, numLevels)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -287,15 +287,15 @@ func (m *_KnxGroupAddress) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child KnxGroupAddress
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		if _child, err = new(_KnxGroupAddressFreeLevel).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddressFreeLevel).parse(ctx, readBuffer, m, uint8(numLevels)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddressFreeLevel for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		if _child, err = new(_KnxGroupAddress2Level).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress2Level).parse(ctx, readBuffer, m, uint8(numLevels)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress2Level for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		if _child, err = new(_KnxGroupAddress3Level).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress3Level).parse(ctx, readBuffer, m, uint8(numLevels)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress3Level for type-switch of KnxGroupAddress")
 		}
 	default:

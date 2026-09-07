@@ -173,7 +173,7 @@ func (m PlcULINT) Serialize() ([]byte, error) {
 }
 
 func (m PlcULINT) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint64("PlcUINT", 64, m.value)
+	return writeBuffer.WriteUint64("PlcULINT", 64, m.value)
 }
 
 func (m PlcULINT) String() string {

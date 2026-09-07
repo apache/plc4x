@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -222,12 +223,12 @@ func CastContentFilterElement(structType any) ContentFilterElement {
 	return nil
 }
 
-func (m *_ContentFilterElement) GetTypeName() string {
+func (m *_ContentFilterElement) GetPlx4xTypeName() string {
 	return "ContentFilterElement"
 }
 
-func (m *_ContentFilterElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ContentFilterElement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (filterOperator)
 	lengthInBits += 32
@@ -246,7 +247,7 @@ func (m *_ContentFilterElement) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ContentFilterElement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ContentFilterElement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -261,19 +262,19 @@ func (m *_ContentFilterElement) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	filterOperator, err := ReadEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", ReadEnum(FilterOperatorByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	filterOperator, err := ReadEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", ReadEnum(FilterOperatorByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperator' field"))
 	}
 	m.FilterOperator = filterOperator
 
-	noOfFilterOperands, err := ReadImplicitField[int32](ctx, "noOfFilterOperands", ReadSignedInt(readBuffer, uint8(32)))
+	noOfFilterOperands, err := ReadImplicitField[int32](ctx, "noOfFilterOperands", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfFilterOperands' field"))
 	}
 	_ = noOfFilterOperands
 
-	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfFilterOperands))
+	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfFilterOperands), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperands' field"))
 	}
@@ -304,15 +305,15 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterElement")
 		}
 
-		if err := WriteSimpleEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", m.GetFilterOperator(), WriteEnum[FilterOperator, uint32](FilterOperator.GetValue, FilterOperator.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", m.GetFilterOperator(), WriteEnum[FilterOperator, uint32](FilterOperator.GetValue, FilterOperator.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'filterOperator' field")
 		}
 		noOfFilterOperands := int32(utils.InlineIf(bool((m.GetFilterOperands()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetFilterOperands()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfFilterOperands", noOfFilterOperands, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfFilterOperands", noOfFilterOperands, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfFilterOperands' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "filterOperands", m.GetFilterOperands(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "filterOperands", m.GetFilterOperands(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'filterOperands' field")
 		}
 

@@ -27,11 +27,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -75,8 +75,8 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 }
 
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
-	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
-	if err := connectionResult.GetErr(); err != nil {
+	connection, err := m.DriverManager.GetConnection(m.t.Context(), m.ConnectionString)
+	if err != nil {
 		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
 		if ok {
 			stackTrace := tracer.StackTrace()
@@ -88,9 +88,8 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 		m.t.Error(err)
 		m.t.FailNow()
 	}
-	connection := connectionResult.GetConnection()
 	m.t.Cleanup(func() {
-		connection.Close()
+		m.t.Log("connection close", connection.Close())
 	})
 	m.t.Log("Reading all types in separate requests")
 	// Run all entries separately:
@@ -117,7 +116,7 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	}
 
 	// Execute the read request
-	readResponseResult := <-readRequest.Execute()
+	readResponseResult := <-readRequest.Execute(m.t.Context())
 	if readResponseResult.GetErr() != nil {
 		t.Fatalf("Error getting response %v", readResponseResult.GetErr())
 		return
@@ -156,7 +155,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 	// Read all items in one big request.
 	// Shuffle the list of test cases and run the test 10 times.
 	t.Log("Reading all items together in random order")
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		t.Logf(" - run number %d of %d", i, 100)
 		shuffledTestcases := append(make([]ManualTestCase, 0), m.TestCases...)
 		rand.Seed(time.Now().UnixNano())
@@ -183,7 +182,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		}
 
 		// Execute the read request
-		readResponseResult := <-readRequest.Execute()
+		readResponseResult := <-readRequest.Execute(m.t.Context())
 		if readResponseResult.GetErr() != nil {
 			t.Errorf("Error getting response %v", err)
 			return

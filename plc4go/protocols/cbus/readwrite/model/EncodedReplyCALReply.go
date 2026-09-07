@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +61,12 @@ var _ EncodedReplyCALReply = (*_EncodedReplyCALReply)(nil)
 var _ EncodedReplyRequirements = (*_EncodedReplyCALReply)(nil)
 
 // NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
-func NewEncodedReplyCALReply(peekedByte byte, calReply CALReply, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
+func NewEncodedReplyCALReply(requestContext RequestContext, peekedByte byte, calReply CALReply) *_EncodedReplyCALReply {
 	if calReply == nil {
 		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
 	}
 	_result := &_EncodedReplyCALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		EncodedReplyContract: NewEncodedReply(requestContext, peekedByte),
 		CalReply:             calReply,
 	}
 	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
@@ -221,12 +223,12 @@ func CastEncodedReplyCALReply(structType any) EncodedReplyCALReply {
 	return nil
 }
 
-func (m *_EncodedReplyCALReply) GetTypeName() string {
+func (m *_EncodedReplyCALReply) GetPlx4xTypeName() string {
 	return "EncodedReplyCALReply"
 }
 
-func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
+func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
 
 	// Simple field (calReply)
 	lengthInBits += m.CalReply.GetLengthInBits(ctx)
@@ -234,7 +236,7 @@ func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -249,7 +251,7 @@ func (m *_EncodedReplyCALReply) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	calReply, err := ReadSimpleField[CALReply](ctx, "calReply", ReadComplex[CALReply](CALReplyParseWithBufferProducer[CALReply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	calReply, err := ReadSimpleField[CALReply](ctx, "calReply", ReadComplex[CALReply](CALReplyParseWithBufferProducer[CALReply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calReply' field"))
 	}
@@ -263,7 +265,7 @@ func (m *_EncodedReplyCALReply) parse(ctx context.Context, readBuffer utils.Read
 }
 
 func (m *_EncodedReplyCALReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -280,7 +282,7 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for EncodedReplyCALReply")
 		}
 
-		if err := WriteSimpleField[CALReply](ctx, "calReply", m.GetCalReply(), WriteComplex[CALReply](writeBuffer)); err != nil {
+		if err := WriteSimpleField[CALReply](ctx, "calReply", m.GetCalReply(), WriteComplex[CALReply](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'calReply' field")
 		}
 

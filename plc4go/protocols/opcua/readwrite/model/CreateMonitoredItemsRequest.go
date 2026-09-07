@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -270,12 +271,12 @@ func CastCreateMonitoredItemsRequest(structType any) CreateMonitoredItemsRequest
 	return nil
 }
 
-func (m *_CreateMonitoredItemsRequest) GetTypeName() string {
+func (m *_CreateMonitoredItemsRequest) GetPlx4xTypeName() string {
 	return "CreateMonitoredItemsRequest"
 }
 
-func (m *_CreateMonitoredItemsRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CreateMonitoredItemsRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -300,7 +301,7 @@ func (m *_CreateMonitoredItemsRequest) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_CreateMonitoredItemsRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CreateMonitoredItemsRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -315,31 +316,31 @@ func (m *_CreateMonitoredItemsRequest) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
 	m.SubscriptionId = subscriptionId
 
-	timestampsToReturn, err := ReadEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", ReadEnum(TimestampsToReturnByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	timestampsToReturn, err := ReadEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", ReadEnum(TimestampsToReturnByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestampsToReturn' field"))
 	}
 	m.TimestampsToReturn = timestampsToReturn
 
-	noOfItemsToCreate, err := ReadImplicitField[int32](ctx, "noOfItemsToCreate", ReadSignedInt(readBuffer, uint8(32)))
+	noOfItemsToCreate, err := ReadImplicitField[int32](ctx, "noOfItemsToCreate", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfItemsToCreate' field"))
 	}
 	_ = noOfItemsToCreate
 
-	itemsToCreate, err := ReadCountArrayField[MonitoredItemCreateRequest](ctx, "itemsToCreate", ReadComplex[MonitoredItemCreateRequest](ExtensionObjectDefinitionParseWithBufferProducer[MonitoredItemCreateRequest]((int32)(int32(745))), readBuffer), uint64(noOfItemsToCreate))
+	itemsToCreate, err := ReadCountArrayField[MonitoredItemCreateRequest](ctx, "itemsToCreate", ReadComplex[MonitoredItemCreateRequest](ExtensionObjectDefinitionParseWithBufferProducer[MonitoredItemCreateRequest]((int32)(int32(745))), readBuffer), uint64(noOfItemsToCreate), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemsToCreate' field"))
 	}
@@ -370,23 +371,23 @@ func (m *_CreateMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for CreateMonitoredItemsRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		if err := WriteSimpleEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", m.GetTimestampsToReturn(), WriteEnum[TimestampsToReturn, uint32](TimestampsToReturn.GetValue, TimestampsToReturn.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", m.GetTimestampsToReturn(), WriteEnum[TimestampsToReturn, uint32](TimestampsToReturn.GetValue, TimestampsToReturn.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestampsToReturn' field")
 		}
 		noOfItemsToCreate := int32(utils.InlineIf(bool((m.GetItemsToCreate()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetItemsToCreate()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfItemsToCreate", noOfItemsToCreate, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfItemsToCreate", noOfItemsToCreate, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfItemsToCreate' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "itemsToCreate", m.GetItemsToCreate(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "itemsToCreate", m.GetItemsToCreate(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'itemsToCreate' field")
 		}
 

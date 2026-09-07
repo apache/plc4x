@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEscalatorMode = (*_BACnetConstructedDataEscalatorMode
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorMode)(nil)
 
 // NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
-func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
+func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged) *_BACnetConstructedDataEscalatorMode {
 	if escalatorMode == nil {
 		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataEscalatorMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EscalatorMode:                 escalatorMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataEscalatorMode(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataEscalatorMode) GetTypeName() string {
+func (m *_BACnetConstructedDataEscalatorMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEscalatorMode"
 }
 
-func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (escalatorMode)
 	lengthInBits += m.EscalatorMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

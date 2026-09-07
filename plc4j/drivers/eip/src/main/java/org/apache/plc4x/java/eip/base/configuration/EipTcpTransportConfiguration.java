@@ -19,14 +19,14 @@
 
 package org.apache.plc4x.java.eip.base.configuration;
 
-import org.apache.plc4x.java.eip.base.EIPDriver;
-import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
+import org.apache.plc4x.java.eip.readwrite.Constants;
+import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 
-public class EipTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
+public class EipTcpTransportConfiguration extends TcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return EIPDriver.PORT;
+        return Constants.EIPTCPDEFAULTPORT;
     }
 
 }

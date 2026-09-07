@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastUnregisterNodesRequest(structType any) UnregisterNodesRequest {
 	return nil
 }
 
-func (m *_UnregisterNodesRequest) GetTypeName() string {
+func (m *_UnregisterNodesRequest) GetPlx4xTypeName() string {
 	return "UnregisterNodesRequest"
 }
 
-func (m *_UnregisterNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_UnregisterNodesRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_UnregisterNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_UnregisterNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UnregisterNodesRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_UnregisterNodesRequest) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToUnregister, err := ReadImplicitField[int32](ctx, "noOfNodesToUnregister", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToUnregister, err := ReadImplicitField[int32](ctx, "noOfNodesToUnregister", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToUnregister' field"))
 	}
 	_ = noOfNodesToUnregister
 
-	nodesToUnregister, err := ReadCountArrayField[NodeId](ctx, "nodesToUnregister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToUnregister))
+	nodesToUnregister, err := ReadCountArrayField[NodeId](ctx, "nodesToUnregister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToUnregister), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToUnregister' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnregisterNodesRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfNodesToUnregister := int32(utils.InlineIf(bool((m.GetNodesToUnregister()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToUnregister()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNodesToUnregister", noOfNodesToUnregister, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNodesToUnregister", noOfNodesToUnregister, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToUnregister' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "nodesToUnregister", m.GetNodesToUnregister(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "nodesToUnregister", m.GetNodesToUnregister(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodesToUnregister' field")
 		}
 

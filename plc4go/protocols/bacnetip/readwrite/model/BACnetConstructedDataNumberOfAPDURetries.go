@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNumberOfAPDURetries = (*_BACnetConstructedDataNumberO
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
 
 // NewBACnetConstructedDataNumberOfAPDURetries factory function for _BACnetConstructedDataNumberOfAPDURetries
-func NewBACnetConstructedDataNumberOfAPDURetries(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfApduRetries BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
+func NewBACnetConstructedDataNumberOfAPDURetries(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfApduRetries BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
 	if numberOfApduRetries == nil {
 		panic("numberOfApduRetries of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAPDURetries must not be nil")
 	}
 	_result := &_BACnetConstructedDataNumberOfAPDURetries{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfApduRetries:           numberOfApduRetries,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNumberOfAPDURetries(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetTypeName() string {
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNumberOfAPDURetries"
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (numberOfApduRetries)
 	lengthInBits += m.NumberOfApduRetries.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

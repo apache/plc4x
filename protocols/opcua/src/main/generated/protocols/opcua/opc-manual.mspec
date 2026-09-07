@@ -26,7 +26,7 @@
     [const          uint 8     protocolVersion 0]
 ]
 
-[type OpcuaAPU(bit response, bit binaryEncoding) byteOrder='LITTLE_ENDIAN'
+[type OpcuaAPU(bit response, bit binaryEncoding) byteOrder='"LITTLE_ENDIAN"'
     [simple MessagePDU('response', 'binaryEncoding') message]
 ]
 
@@ -146,7 +146,7 @@
     [array  byte    data5 count '6']
 ]
 
-[type ExpandedNodeId
+[type ExpandedNodeId unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple bit namespaceURISpecified]
     [simple bit serverIndexSpecified]
     [simple NodeIdTypeDefinition nodeId]
@@ -156,29 +156,44 @@
 
 
 
-[type ExtensionObjectEncodingMask
+[type ExtensionObjectEncodingMask unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [reserved int 5 '0x00']
     [simple bit typeIdSpecified]
     [simple bit xmlBody]
     [simple bit binaryBody]
 ]
 
-[discriminatedType ExtensionObject(bit includeEncodingMask)
+[discriminatedType ExtensionObject(bit includeEncodingMask) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [abstract ExtensionObjectDefinition body]
     [simple ExpandedNodeId typeId]
     [virtual int 32 extensionId 'typeId == null ? 0 : STATIC_CALL("extensionId", typeId)']
+    // Whether the encoding node refers to a well-known standard type (namespace 0). Computed here
+    // where typeId is in scope and threaded down like extensionId, so the masked-body dispatch can
+    // tell a decodable standard type from a custom one.
+    [virtual bit standardEncoding 'STATIC_CALL("isStandardEncoding", typeId)']
     [typeSwitch includeEncodingMask
         ['false' RootExtensionObject (int 32 extensionId)
             [simple ExtensionObjectDefinition('extensionId') body]
         ]
-        ['true' ExtensionObjectWithMask (int 32 extensionId)
+        ['true' ExtensionObjectWithMask (int 32 extensionId, bit standardEncoding)
             [simple ExtensionObjectEncodingMask encodingMask]
-            [typeSwitch encodingMask.xmlBody, encodingMask.binaryBody
-                ['false', 'true' BinaryExtensionObjectWithMask
+            // Body kind: 0 = no binary body (null); 1 = binary body of a well-known standard type
+            // (encoding node in namespace 0) which the generated dispatch can decode; 2 = binary
+            // body of a custom / user-defined type (encoding node in namespace >= 1) which the
+            // dispatch cannot decode, so the raw bytes are captured for the driver to decode against
+            // the type's StructureDefinition.
+            [virtual int 8 bodyKind 'encodingMask.binaryBody ? (standardEncoding ? 1 : 2) : 0']
+            [typeSwitch bodyKind
+                ['1' BinaryExtensionObjectWithMask
                     [implicit int 32 bodyLength 'body == null ? 0 : body.lengthInBytes']
                     [simple ExtensionObjectDefinition('extensionId') body]
                 ]
-                ['false', 'false' NullExtensionObjectWithMask
+                ['2' RawBinaryExtensionObjectWithMask
+                    [implicit int 32 bodyLength 'COUNT(rawBody)']
+                    [array byte rawBody count 'bodyLength']
+                    [virtual ExtensionObjectDefinition('0') body 'null']
+                ]
+                ['0' NullExtensionObjectWithMask
                     [virtual ExtensionObjectDefinition('0') body 'null']
                 ]
             ]
@@ -186,7 +201,7 @@
     ]
 ]
 
-[discriminatedType ExtensionObjectDefinition(int 32 extensionId)
+[discriminatedType ExtensionObjectDefinition(int 32 extensionId) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch extensionId
         ['0' NullExtension
         ]
@@ -245,6 +260,10 @@
             [simple int 8 exponent]
             [simple PascalString alphabeticCode]
             [simple LocalizedText currency]
+        ]
+        ['23905' NumberRange
+            [simple Variant low]
+            [simple Variant high]
         ]
         ['32436' AnnotationDataType
             [simple PascalString annotation]
@@ -309,7 +328,7 @@
             [simple StatusCode error]
             [simple LocalizedText message]
         ]
-        ['15551' ApplicationConfigurationDataType
+        ['23745' ApplicationConfigurationDataType
             [simple uint 32 configurationVersion]
             [implicit int 32 noOfConfigurationProperties 'configurationProperties == null ? -1 : COUNT(configurationProperties)']
             [array KeyValuePair('14535') configurationProperties count 'noOfConfigurationProperties']
@@ -325,7 +344,7 @@
             [implicit int 32 noOfUserTokenSettings 'userTokenSettings == null ? -1 : COUNT(userTokenSettings)']
             [array UserTokenSettingsDataType('15562') userTokenSettings count 'noOfUserTokenSettings']
             [implicit int 32 noOfAuthorizationServices 'authorizationServices == null ? -1 : COUNT(authorizationServices)']
-            [array AuthorizationServiceConfigurationDataType('19447') authorizationServices count 'noOfAuthorizationServices']
+            [array AuthorizationServiceConfigurationDataType('23746') authorizationServices count 'noOfAuthorizationServices']
         ]
         ['15558' ApplicationIdentityDataType
             [simple PascalString name]
@@ -385,13 +404,20 @@
             [simple PascalString certificateGroupName]
             [simple PascalString authorizationServiceName]
         ]
-        ['19447' AuthorizationServiceConfigurationDataType
+        ['23726' ServiceCertificateDataType
+            [simple PascalByteString certificate]
+            [implicit int 32 noOfIssuers 'issuers == null ? -1 : COUNT(issuers)']
+            [array PascalByteString issuers count 'noOfIssuers']
+            [simple int 64 validFrom]
+            [simple int 64 validTo]
+        ]
+        ['23746' AuthorizationServiceConfigurationDataType
             [simple PascalString name]
             [implicit int 32 noOfRecordProperties 'recordProperties == null ? -1 : COUNT(recordProperties)']
             [array KeyValuePair('14535') recordProperties count 'noOfRecordProperties']
             [simple PascalString serviceUri]
-            [implicit int 32 noOfServiceCertificate 'serviceCertificate == null ? -1 : COUNT(serviceCertificate)']
-            [array PascalByteString serviceCertificate count 'noOfServiceCertificate']
+            [implicit int 32 noOfServiceCertificates 'serviceCertificates == null ? -1 : COUNT(serviceCertificates)']
+            [array ServiceCertificateDataType('23726') serviceCertificates count 'noOfServiceCertificates']
             [simple PascalString issuerEndpointSettings]
         ]
         ['15536' DataTypeSchemaHeader
@@ -1028,6 +1054,23 @@
             [simple QualifiedName aliasName]
             [implicit int 32 noOfReferencedNodes 'referencedNodes == null ? -1 : COUNT(referencedNodes)']
             [array ExpandedNodeId referencedNodes count 'noOfReferencedNodes']
+        ]
+        ['24053' AliasNameVerboseDataType
+            [simple QualifiedName aliasName]
+            [implicit int 32 noOfReferencedNodes 'referencedNodes == null ? -1 : COUNT(referencedNodes)']
+            [array ExpandedNodeId referencedNodes count 'noOfReferencedNodes']
+            [implicit int 32 noOfServerUris 'serverUris == null ? -1 : COUNT(serverUris)']
+            [array PascalString serverUris count 'noOfServerUris']
+            [simple NodeId aliasNameCategoryId]
+        ]
+        ['24054' AliasCategoryUpdateDataType
+            [simple PortableNodeId('24108') category]
+            [simple uint 32 lastChange]
+        ]
+        ['24055' AliasUpdateDataType
+            [simple PascalString applicationUri]
+            [implicit int 32 noOfCategories 'categories == null ? -1 : COUNT(categories)']
+            [array AliasCategoryUpdateDataType('24054') categories count 'noOfCategories']
         ]
         ['24283' UserManagementDataType
             [simple PascalString userName]
@@ -2728,8 +2771,8 @@
             [array DiagnosticInfo value count 'arrayLength == null ? 1 : arrayLength']
         ]
     ]
-    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified']
-    [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
+    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified'                                                        ]
+    [array    int 32 arrayDimensions     count                      'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
 // node type, with two leading reserved bytes

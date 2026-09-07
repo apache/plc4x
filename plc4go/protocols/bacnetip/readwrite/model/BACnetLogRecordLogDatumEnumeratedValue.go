@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumEnumeratedValue = (*_BACnetLogRecordLogDatumEnumera
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
 
 // NewBACnetLogRecordLogDatumEnumeratedValue factory function for _BACnetLogRecordLogDatumEnumeratedValue
-func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
+func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogRecordLogDatumEnumeratedValue {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogRecordLogDatumEnumeratedValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		EnumeratedValue:                 enumeratedValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetLogRecordLogDatumEnumeratedValue(structType any) BACnetLogRecordL
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumEnumeratedValue"
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

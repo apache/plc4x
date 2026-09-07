@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -341,12 +341,12 @@ func CastDataValue(structType any) DataValue {
 	return nil
 }
 
-func (m *_DataValue) GetTypeName() string {
+func (m *_DataValue) GetPlx4xTypeName() string {
 	return "DataValue"
 }
 
-func (m *_DataValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DataValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -402,7 +402,7 @@ func (m *_DataValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DataValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DataValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -417,7 +417,7 @@ func DataValueParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataValue, error) {
-	v, err := (&_DataValue{}).parse(ctx, readBuffer)
+	v, err := (new(_DataValue)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -575,11 +575,11 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'valueSpecified' field")
 	}
 
-	if err := WriteOptionalField[Variant](ctx, "value", GetRef(m.GetValue()), WriteComplex[Variant](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[Variant](ctx, "value", new(m.GetValue()), WriteComplex[Variant](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
-	if err := WriteOptionalField[StatusCode](ctx, "statusCode", GetRef(m.GetStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[StatusCode](ctx, "statusCode", new(m.GetStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'statusCode' field")
 	}
 

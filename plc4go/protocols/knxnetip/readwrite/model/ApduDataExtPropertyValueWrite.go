@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,9 +71,9 @@ var _ ApduDataExtPropertyValueWrite = (*_ApduDataExtPropertyValueWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueWrite)(nil)
 
 // NewApduDataExtPropertyValueWrite factory function for _ApduDataExtPropertyValueWrite
-func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueWrite {
+func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) *_ApduDataExtPropertyValueWrite {
 	_result := &_ApduDataExtPropertyValueWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		ObjectIndex:         objectIndex,
 		PropertyId:          propertyId,
 		Count:               count,
@@ -267,12 +267,12 @@ func CastApduDataExtPropertyValueWrite(structType any) ApduDataExtPropertyValueW
 	return nil
 }
 
-func (m *_ApduDataExtPropertyValueWrite) GetTypeName() string {
+func (m *_ApduDataExtPropertyValueWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtPropertyValueWrite"
 }
 
-func (m *_ApduDataExtPropertyValueWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtPropertyValueWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -288,13 +288,13 @@ func (m *_ApduDataExtPropertyValueWrite) GetLengthInBits(ctx context.Context) ui
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtPropertyValueWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtPropertyValueWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

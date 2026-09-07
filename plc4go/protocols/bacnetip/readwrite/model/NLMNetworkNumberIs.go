@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,9 +64,9 @@ var _ NLMNetworkNumberIs = (*_NLMNetworkNumberIs)(nil)
 var _ NLMRequirements = (*_NLMNetworkNumberIs)(nil)
 
 // NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
-func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
+func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool) *_NLMNetworkNumberIs {
 	_result := &_NLMNetworkNumberIs{
-		NLMContract:             NewNLM(apduLength),
+		NLMContract:             NewNLM(),
 		NetworkNumber:           networkNumber,
 		NetworkNumberConfigured: networkNumberConfigured,
 	}
@@ -224,12 +224,12 @@ func CastNLMNetworkNumberIs(structType any) NLMNetworkNumberIs {
 	return nil
 }
 
-func (m *_NLMNetworkNumberIs) GetTypeName() string {
+func (m *_NLMNetworkNumberIs) GetPlx4xTypeName() string {
 	return "NLMNetworkNumberIs"
 }
 
-func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (networkNumber)
 	lengthInBits += 16
@@ -243,7 +243,7 @@ func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

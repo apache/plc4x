@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -193,12 +195,12 @@ func CastNetworkRoute(structType any) NetworkRoute {
 	return nil
 }
 
-func (m *_NetworkRoute) GetTypeName() string {
+func (m *_NetworkRoute) GetPlx4xTypeName() string {
 	return "NetworkRoute"
 }
 
-func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (networkPCI)
 	lengthInBits += m.NetworkPCI.GetLengthInBits(ctx)
@@ -214,12 +216,12 @@ func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NetworkRoute) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkRoute) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
 func NetworkRouteParse(ctx context.Context, theBytes []byte) (NetworkRoute, error) {
-	return NetworkRouteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return NetworkRouteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func NetworkRouteParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
@@ -229,7 +231,7 @@ func NetworkRouteParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
-	v, err := (&_NetworkRoute{}).parse(ctx, readBuffer)
+	v, err := (new(_NetworkRoute)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -245,13 +247,13 @@ func (m *_NetworkRoute) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkPCI, err := ReadSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", ReadComplex[NetworkProtocolControlInformation](NetworkProtocolControlInformationParseWithBuffer, readBuffer))
+	networkPCI, err := ReadSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", ReadComplex[NetworkProtocolControlInformation](NetworkProtocolControlInformationParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPCI' field"))
 	}
 	m.NetworkPCI = networkPCI
 
-	additionalBridgeAddresses, err := ReadCountArrayField[BridgeAddress](ctx, "additionalBridgeAddresses", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), uint64(int32(networkPCI.GetStackDepth())-int32(int32(1))))
+	additionalBridgeAddresses, err := ReadCountArrayField[BridgeAddress](ctx, "additionalBridgeAddresses", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), uint64(int32(networkPCI.GetStackDepth())-int32(int32(1))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalBridgeAddresses' field"))
 	}
@@ -265,7 +267,7 @@ func (m *_NetworkRoute) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 }
 
 func (m *_NetworkRoute) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -281,11 +283,11 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for NetworkRoute")
 	}
 
-	if err := WriteSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", m.GetNetworkPCI(), WriteComplex[NetworkProtocolControlInformation](writeBuffer)); err != nil {
+	if err := WriteSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", m.GetNetworkPCI(), WriteComplex[NetworkProtocolControlInformation](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'networkPCI' field")
 	}
 
-	if err := WriteComplexTypeArrayField(ctx, "additionalBridgeAddresses", m.GetAdditionalBridgeAddresses(), writeBuffer); err != nil {
+	if err := WriteComplexTypeArrayField(ctx, "additionalBridgeAddresses", m.GetAdditionalBridgeAddresses(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'additionalBridgeAddresses' field")
 	}
 

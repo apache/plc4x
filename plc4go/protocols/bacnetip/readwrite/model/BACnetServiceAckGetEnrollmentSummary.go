@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetServiceAckGetEnrollmentSummary = (*_BACnetServiceAckGetEnrollmentSum
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEnrollmentSummary)(nil)
 
 // NewBACnetServiceAckGetEnrollmentSummary factory function for _BACnetServiceAckGetEnrollmentSummary
-func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckGetEnrollmentSummary {
+func NewBACnetServiceAckGetEnrollmentSummary(serviceAckLength uint32, objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger) *_BACnetServiceAckGetEnrollmentSummary {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetEnrollmentSummary must not be nil")
 	}
@@ -351,12 +351,12 @@ func CastBACnetServiceAckGetEnrollmentSummary(structType any) BACnetServiceAckGe
 	return nil
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {
+func (m *_BACnetServiceAckGetEnrollmentSummary) GetPlx4xTypeName() string {
 	return "BACnetServiceAckGetEnrollmentSummary"
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -468,7 +468,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", GetRef(m.GetNotificationClass()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", new(m.GetNotificationClass()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationClass' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataChannelListOfObjectPropertyReferences interface {
 	// GetReferences returns References (property field)
 	GetReferences() []BACnetDeviceObjectPropertyReference
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataChannelListOfObjectPropertyReferences is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataChannelListOfObjectPropertyReferences()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataChannelListOfObjectPropertyReferences = (*_BACnetCons
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChannelListOfObjectPropertyReferences)(nil)
 
 // NewBACnetConstructedDataChannelListOfObjectPropertyReferences factory function for _BACnetConstructedDataChannelListOfObjectPropertyReferences
-func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelListOfObjectPropertyReferences {
+func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, references []BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataChannelListOfObjectPropertyReferences {
 	_result := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		References:                    references,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataChannelListOfObjectPropertyReferences(structType a
 	return nil
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetTypeName() string {
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChannelListOfObjectPropertyReferences"
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthI
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) SerializeW
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

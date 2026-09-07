@@ -27,7 +27,17 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+/**
+ * Password handling for ETS6.x project files (schema 21+). Derives the ZIP
+ * password via PBKDF2-SHA256 with a fixed salt — schema versions 21, 22, 23,
+ * ... all use the same derivation; the schema number changing does not
+ * change the salt.
+ */
 public class Ets6FileHandler implements EtsFileHandler {
+
+    private static final String SALT = "21.project.ets.knx.org";
+    private static final int ITERATIONS = 65536;
+    private static final int KEY_LENGTH_BITS = 256;
 
     @Override
     public ZipFile getProjectFiles(File archive, String password) {
@@ -36,8 +46,9 @@ public class Ets6FileHandler implements EtsFileHandler {
 
     protected String getProcessedPassword(String originalPassword) {
         PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA256Digest());
-        gen.init(originalPassword.getBytes(StandardCharsets.UTF_16LE), "21.project.ets.knx.org".getBytes(StandardCharsets.UTF_8), 65536);
-        byte[] hashedPassword = ((KeyParameter) gen.generateDerivedParameters(256)).getKey();
+        gen.init(originalPassword.getBytes(StandardCharsets.UTF_16LE),
+            SALT.getBytes(StandardCharsets.UTF_8), ITERATIONS);
+        byte[] hashedPassword = ((KeyParameter) gen.generateDerivedParameters(KEY_LENGTH_BITS)).getKey();
         return Base64.getEncoder().encodeToString(hashedPassword);
     }
 

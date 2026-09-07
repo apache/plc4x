@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ VariantXmlElement = (*_VariantXmlElement)(nil)
 var _ VariantRequirements = (*_VariantXmlElement)(nil)
 
 // NewVariantXmlElement factory function for _VariantXmlElement
-func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantXmlElement {
+func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []PascalString) *_VariantXmlElement {
 	_result := &_VariantXmlElement{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -222,12 +222,12 @@ func CastVariantXmlElement(structType any) VariantXmlElement {
 	return nil
 }
 
-func (m *_VariantXmlElement) GetTypeName() string {
+func (m *_VariantXmlElement) GetPlx4xTypeName() string {
 	return "VariantXmlElement"
 }
 
-func (m *_VariantXmlElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantXmlElement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -245,7 +245,7 @@ func (m *_VariantXmlElement) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_VariantXmlElement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantXmlElement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

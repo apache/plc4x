@@ -21,15 +21,33 @@ import org.apache.plc4x.java.DefaultPlcDriverManager
 import org.apache.maven.artifact.Artifact
 import org.apache.plc4x.java.api.metadata.Option
 
+/**
+ * Configuration descriptions and default values are plain text coming from the
+ * "@ConfigurationParameter" annotations - they are not asciidoc. Two characters in them would
+ * otherwise be interpreted by asciidoctor and silently corrupt the generated table:
+ *   "{" starts an attribute reference, so a description mentioning an address syntax such as
+ *       "{IndexGroup}/{IndexOffset}" is reported as a missing attribute and left unresolved,
+ *   "|" starts a new table cell, so a description containing one would push the remaining cells
+ *       out of the row and asciidoctor would drop them.
+ * Escaping both here keeps every description safe, whatever an annotation happens to contain.
+ * Backslashes are deliberately left alone: asciidoctor only treats one as an escape when it
+ * precedes a construct it would otherwise substitute, and doubling them would corrupt the
+ * Windows device paths that appear in some descriptions.
+ */
+def static escapeAsciidoc(String text) {
+    text.replace('{', '\\{').replace('|', '\\|')
+}
+
 def static outputOptions(List<Option> options, String prefix, PrintStream printStream) {
     options.each {option->
         def name = prefix?"$prefix.$option.key":option.key
         // Convert java line-breaks into asciidoctor line-breaks.
-        def description = option.description.replaceAll('\n', " +\n")
+        def description = escapeAsciidoc(option.description).replaceAll('\n', " +\n")
         option.since.ifPresent {
             description += " +\n*Since: " + option.since.get() + "*"
         }
-        printStream.println "|`$name` |$option.type |${option.defaultValue.orElse(' ')}|${option.required?'required':''} |$description"
+        def defaultValue = option.defaultValue.map { escapeAsciidoc(it as String) }.orElse(' ')
+        printStream.println "|`$name` |$option.type |${defaultValue}|${option.required?'required':''} |$description"
     }
 }
 
@@ -44,7 +62,7 @@ try {
     for (Artifact artifact : artifacts) {
         classpathElements.add(artifact.getFile().toURI().toURL())
     }
-    moduleClassloader = new URLClassLoader(classpathElements.toArray(new URL[0]), this.class.getClassLoader())
+    moduleClassloader = new URLClassLoader(classpathElements.toArray(new URL[0]) as URL[], this.class.getClassLoader())
 } catch (MalformedURLException e) {
     throw new Exception(
         "Error creating classloader for loading message format schema from module dependencies", e);
@@ -108,24 +126,26 @@ for (final def protocolCode in plcDriverManager.getProtocolCodes()) {
     if(driver.metadata.defaultTransportCode.isPresent()) {
         printStream.println "|Default Transport 4+|`" + driver.metadata.defaultTransportCode.get() + "`"
     }
+    // Filter out the "test" transport - that one is only intended for unit-tests.
+    def supportedTransportCodes = driver.metadata.supportedTransportCodes.findAll { it != "test" }
     printStream.println "|Supported Transports 4+|"
-    for (final def transportCode in driver.metadata.supportedTransportCodes) {
+    for (final def transportCode in supportedTransportCodes) {
         // TODO: Make it output stuff like the "default port" for UDP and TCP
         printStream.println " - `" + transportCode + "`"
     }
     printStream.println "5+|Config options:"
 
     // Output the configuration options of the driver itself.
-   driver.metadata.protocolConfigurationOptionMetadata.map {outputOptions(it.options, null, printStream)}
+    driver.metadata.protocolConfigurationOptionMetadata.ifPresent { outputOptions(it.options, null, printStream) }
 
     // Output the configuration options of the transports the driver supports.
-    if(!driver.metadata.supportedTransportCodes.empty) {
+    if(!supportedTransportCodes.empty) {
         printStream.println "5+|Transport config options:"
-        for (final def transportCode in driver.metadata.supportedTransportCodes) {
+        for (final def transportCode in supportedTransportCodes) {
             printStream.println "5+|\n+++\n" +
                 "<h4>$transportCode</h4>\n" +
                 "+++"
-            driver.metadata.getTransportConfigurationOptionMetadata(transportCode).map {
+            driver.metadata.getTransportConfigurationOptionMetadata(transportCode).ifPresent {
                 outputOptions(it.options, transportCode, printStream)
             }
         }

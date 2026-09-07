@@ -24,12 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -164,18 +164,18 @@ func CastAmsString(structType any) AmsString {
 	return nil
 }
 
-func (m *_AmsString) GetTypeName() string {
+func (m *_AmsString) GetPlx4xTypeName() string {
 	return "AmsString"
 }
 
-func (m *_AmsString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AmsString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (strLen)
 	lengthInBits += 16
 
 	// Simple field (text)
-	lengthInBits += uint16(int32(int32(8)) * int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1))) - int32(int32(1)))))
+	lengthInBits += uint64(int32(int32(8)) * int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1))) - int32(int32(1)))))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -183,7 +183,7 @@ func (m *_AmsString) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AmsString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -198,7 +198,7 @@ func AmsStringParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsString, error) {
-	v, err := (&_AmsString{}).parse(ctx, readBuffer)
+	v, err := (new(_AmsString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,12 @@ func (m *_AmsString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	}
 	_ = strLen
 
-	text, err := ReadSimpleField(ctx, "text", ReadString(readBuffer, uint32(int32(int32(8))*int32((int32(strLen)-int32(int32(1)))))), codegen.WithEncoding("UTF-8"))
+	// Validation
+	if !(bool((strLen) >= (1))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "AmsString length must be at least 1"})
+	}
+
+	text, err := ReadSimpleField(ctx, "text", ReadString(readBuffer, uint32(int32(int32(8))*int32((int32(strLen)-int32(int32(1)))))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'text' field"))
 	}
@@ -260,7 +265,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'strLen' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "text", m.GetText(), WriteString(writeBuffer, int32(int32(int32(8))*int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-int32(int32(1)))))), codegen.WithEncoding("UTF-8")); err != nil {
+	if err := WriteSimpleField[string](ctx, "text", m.GetText(), WriteString(writeBuffer, int32(int32(int32(8))*int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-int32(int32(1)))))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 

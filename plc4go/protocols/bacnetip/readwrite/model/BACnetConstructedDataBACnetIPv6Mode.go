@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPv6Mode = (*_BACnetConstructedDataBACnetIPv6Mo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6Mode)(nil)
 
 // NewBACnetConstructedDataBACnetIPv6Mode factory function for _BACnetConstructedDataBACnetIPv6Mode
-func NewBACnetConstructedDataBACnetIPv6Mode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpv6Mode BACnetIPModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6Mode {
+func NewBACnetConstructedDataBACnetIPv6Mode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpv6Mode BACnetIPModeTagged) *_BACnetConstructedDataBACnetIPv6Mode {
 	if bacnetIpv6Mode == nil {
 		panic("bacnetIpv6Mode of type BACnetIPModeTagged for BACnetConstructedDataBACnetIPv6Mode must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPv6Mode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BacnetIpv6Mode:                bacnetIpv6Mode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBACnetIPv6Mode(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6Mode) GetTypeName() string {
+func (m *_BACnetConstructedDataBACnetIPv6Mode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBACnetIPv6Mode"
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (bacnetIpv6Mode)
 	lengthInBits += m.BacnetIpv6Mode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

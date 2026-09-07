@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -292,12 +292,12 @@ func CastHVACModeAndFlags(structType any) HVACModeAndFlags {
 	return nil
 }
 
-func (m *_HVACModeAndFlags) GetTypeName() string {
+func (m *_HVACModeAndFlags) GetPlx4xTypeName() string {
 	return "HVACModeAndFlags"
 }
 
-func (m *_HVACModeAndFlags) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HVACModeAndFlags) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 1
@@ -336,7 +336,7 @@ func (m *_HVACModeAndFlags) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACModeAndFlags) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HVACModeAndFlags) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -351,7 +351,7 @@ func HVACModeAndFlagsParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACModeAndFlags, error) {
-	v, err := (&_HVACModeAndFlags{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACModeAndFlags)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

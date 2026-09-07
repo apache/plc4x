@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,12 +62,12 @@ var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
 
 // NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString, binary bool) *_OpcuaMessageError {
+func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
 	if reason == nil {
 		panic("reason of type PascalString for OpcuaMessageError must not be nil")
 	}
 	_result := &_OpcuaMessageError{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		Error:              error,
 		Reason:             reason,
 	}
@@ -244,12 +244,12 @@ func CastOpcuaMessageError(structType any) OpcuaMessageError {
 	return nil
 }
 
-func (m *_OpcuaMessageError) GetTypeName() string {
+func (m *_OpcuaMessageError) GetPlx4xTypeName() string {
 	return "OpcuaMessageError"
 }
 
-func (m *_OpcuaMessageError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaMessageError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (error)
 	lengthInBits += 32
@@ -260,7 +260,7 @@ func (m *_OpcuaMessageError) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaMessageError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaMessageError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

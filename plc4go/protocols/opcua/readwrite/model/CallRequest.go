@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastCallRequest(structType any) CallRequest {
 	return nil
 }
 
-func (m *_CallRequest) GetTypeName() string {
+func (m *_CallRequest) GetPlx4xTypeName() string {
 	return "CallRequest"
 }
 
-func (m *_CallRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CallRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_CallRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CallRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CallRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_CallRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfMethodsToCall, err := ReadImplicitField[int32](ctx, "noOfMethodsToCall", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMethodsToCall, err := ReadImplicitField[int32](ctx, "noOfMethodsToCall", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMethodsToCall' field"))
 	}
 	_ = noOfMethodsToCall
 
-	methodsToCall, err := ReadCountArrayField[CallMethodRequest](ctx, "methodsToCall", ReadComplex[CallMethodRequest](ExtensionObjectDefinitionParseWithBufferProducer[CallMethodRequest]((int32)(int32(706))), readBuffer), uint64(noOfMethodsToCall))
+	methodsToCall, err := ReadCountArrayField[CallMethodRequest](ctx, "methodsToCall", ReadComplex[CallMethodRequest](ExtensionObjectDefinitionParseWithBufferProducer[CallMethodRequest]((int32)(int32(706))), readBuffer), uint64(noOfMethodsToCall), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodsToCall' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for CallRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfMethodsToCall := int32(utils.InlineIf(bool((m.GetMethodsToCall()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMethodsToCall()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfMethodsToCall", noOfMethodsToCall, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfMethodsToCall", noOfMethodsToCall, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMethodsToCall' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "methodsToCall", m.GetMethodsToCall(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "methodsToCall", m.GetMethodsToCall(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'methodsToCall' field")
 		}
 

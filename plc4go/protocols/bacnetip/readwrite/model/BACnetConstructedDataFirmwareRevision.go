@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFirmwareRevision = (*_BACnetConstructedDataFirmwareRe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFirmwareRevision)(nil)
 
 // NewBACnetConstructedDataFirmwareRevision factory function for _BACnetConstructedDataFirmwareRevision
-func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, firmwareRevision BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFirmwareRevision {
+func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, firmwareRevision BACnetApplicationTagCharacterString) *_BACnetConstructedDataFirmwareRevision {
 	if firmwareRevision == nil {
 		panic("firmwareRevision of type BACnetApplicationTagCharacterString for BACnetConstructedDataFirmwareRevision must not be nil")
 	}
 	_result := &_BACnetConstructedDataFirmwareRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FirmwareRevision:              firmwareRevision,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataFirmwareRevision(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataFirmwareRevision) GetTypeName() string {
+func (m *_BACnetConstructedDataFirmwareRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFirmwareRevision"
 }
 
-func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (firmwareRevision)
 	lengthInBits += m.FirmwareRevision.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataLandingCalls = (*_BACnetConstructedDataLandingCalls)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCalls)(nil)
 
 // NewBACnetConstructedDataLandingCalls factory function for _BACnetConstructedDataLandingCalls
-func NewBACnetConstructedDataLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallStatus []BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCalls {
+func NewBACnetConstructedDataLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallStatus []BACnetLandingCallStatus) *_BACnetConstructedDataLandingCalls {
 	_result := &_BACnetConstructedDataLandingCalls{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LandingCallStatus:             landingCallStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataLandingCalls(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataLandingCalls) GetTypeName() string {
+func (m *_BACnetConstructedDataLandingCalls) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLandingCalls"
 }
 
-func (m *_BACnetConstructedDataLandingCalls) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLandingCalls) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.LandingCallStatus) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLandingCalls) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLandingCalls) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLandingCalls) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

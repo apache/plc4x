@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -339,12 +340,12 @@ func CastUserTokenPolicy(structType any) UserTokenPolicy {
 	return nil
 }
 
-func (m *_UserTokenPolicy) GetTypeName() string {
+func (m *_UserTokenPolicy) GetPlx4xTypeName() string {
 	return "UserTokenPolicy"
 }
 
-func (m *_UserTokenPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_UserTokenPolicy) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (policyId)
 	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
@@ -364,7 +365,7 @@ func (m *_UserTokenPolicy) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_UserTokenPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UserTokenPolicy) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -379,31 +380,31 @@ func (m *_UserTokenPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
 	}
 	m.PolicyId = policyId
 
-	tokenType, err := ReadEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", ReadEnum(UserTokenTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	tokenType, err := ReadEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", ReadEnum(UserTokenTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tokenType' field"))
 	}
 	m.TokenType = tokenType
 
-	issuedTokenType, err := ReadSimpleField[PascalString](ctx, "issuedTokenType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	issuedTokenType, err := ReadSimpleField[PascalString](ctx, "issuedTokenType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuedTokenType' field"))
 	}
 	m.IssuedTokenType = issuedTokenType
 
-	issuerEndpointUrl, err := ReadSimpleField[PascalString](ctx, "issuerEndpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	issuerEndpointUrl, err := ReadSimpleField[PascalString](ctx, "issuerEndpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerEndpointUrl' field"))
 	}
 	m.IssuerEndpointUrl = issuerEndpointUrl
 
-	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
@@ -434,23 +435,23 @@ func (m *_UserTokenPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for UserTokenPolicy")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'policyId' field")
 		}
 
-		if err := WriteSimpleEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", m.GetTokenType(), WriteEnum[UserTokenType, uint32](UserTokenType.GetValue, UserTokenType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", m.GetTokenType(), WriteEnum[UserTokenType, uint32](UserTokenType.GetValue, UserTokenType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'tokenType' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "issuedTokenType", m.GetIssuedTokenType(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "issuedTokenType", m.GetIssuedTokenType(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'issuedTokenType' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointUrl", m.GetIssuerEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointUrl", m.GetIssuerEndpointUrl(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'issuerEndpointUrl' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 

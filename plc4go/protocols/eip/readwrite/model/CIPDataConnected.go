@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -175,12 +175,12 @@ func CastCIPDataConnected(structType any) CIPDataConnected {
 	return nil
 }
 
-func (m *_CIPDataConnected) GetTypeName() string {
+func (m *_CIPDataConnected) GetPlx4xTypeName() string {
 	return "CIPDataConnected"
 }
 
-func (m *_CIPDataConnected) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CIPDataConnected) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (value)
 	lengthInBits += 32
@@ -191,7 +191,7 @@ func (m *_CIPDataConnected) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CIPDataConnected) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CIPDataConnected) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -206,7 +206,7 @@ func CIPDataConnectedParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataConnected, error) {
-	v, err := (&_CIPDataConnected{}).parse(ctx, readBuffer)
+	v, err := (new(_CIPDataConnected)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

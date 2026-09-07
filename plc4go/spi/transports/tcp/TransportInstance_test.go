@@ -23,7 +23,9 @@ import (
 	"bufio"
 	"context"
 	"net"
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
@@ -102,9 +104,11 @@ func TestTransportInstance_Close(t *testing.T) {
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						_, _ = listener.Accept()
-					}()
+					})
 					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
 					require.NoError(t, err)
 					t.Cleanup(func() {
@@ -150,44 +154,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 		tcpConn                          net.Conn
 		reader                           *bufio.Reader
 	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
-	}{
-		{
-			name:    "connect it (failing)",
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &TransportInstance{
-				DefaultBufferedTransportInstance: tt.fields.DefaultBufferedTransportInstance,
-				RemoteAddress:                    tt.fields.RemoteAddress,
-				LocalAddress:                     tt.fields.LocalAddress,
-				ConnectTimeout:                   tt.fields.ConnectTimeout,
-				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
-			}
-			if err := m.Connect(); (err != nil) != tt.wantErr {
-				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestTransportInstance_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
-		RemoteAddress                    *net.TCPAddr
-		LocalAddress                     *net.TCPAddr
-		ConnectTimeout                   uint32
-		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -206,20 +172,22 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						_, _ = listener.Accept()
-					}()
+					})
 					return listener.Addr().(*net.TCPAddr)
 				}(),
 			},
-			args: args{ctx: context.Background()},
+			args: args{ctx: t.Context()},
 		},
 		{
 			name: "connect it (non existing address)",
 			fields: fields{
 				RemoteAddress: &net.TCPAddr{},
 			},
-			args:    args{ctx: context.Background()},
+			args:    args{ctx: t.Context()},
 			wantErr: true,
 		},
 	}
@@ -234,8 +202,8 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 				tcpConn:                          tt.fields.tcpConn,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.ConnectWithContext(tt.args.ctx); (err != nil) != tt.wantErr {
-				t.Errorf("ConnectWithContext() error = %v, wantErr %v", err, tt.wantErr)
+			if err := m.Connect(tt.args.ctx); (err != nil) != tt.wantErr {
+				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -372,7 +340,8 @@ func TestTransportInstance_Write(t *testing.T) {
 		reader                           *bufio.Reader
 	}
 	type args struct {
-		data []byte
+		data    []byte
+		timeout time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -395,15 +364,21 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it",
+			args: args{
+				data:    []byte("test"),
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				listener, err := nettest.NewLocalListener("tcp")
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, listener.Close())
 				})
-				go func() {
+				var wg sync.WaitGroup
+				t.Cleanup(wg.Wait)
+				wg.Go(func() {
 					_, _ = listener.Accept()
-				}()
+				})
 				tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
 				require.NoError(t, err)
 				t.Cleanup(func() {
@@ -433,7 +408,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

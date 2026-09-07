@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -267,12 +268,12 @@ func CastUadpWriterGroupMessageDataType(structType any) UadpWriterGroupMessageDa
 	return nil
 }
 
-func (m *_UadpWriterGroupMessageDataType) GetTypeName() string {
+func (m *_UadpWriterGroupMessageDataType) GetPlx4xTypeName() string {
 	return "UadpWriterGroupMessageDataType"
 }
 
-func (m *_UadpWriterGroupMessageDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_UadpWriterGroupMessageDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (groupVersion)
 	lengthInBits += 32
@@ -291,13 +292,13 @@ func (m *_UadpWriterGroupMessageDataType) GetLengthInBits(ctx context.Context) u
 
 	// Array field
 	if len(m.PublishingOffset) > 0 {
-		lengthInBits += 64 * uint16(len(m.PublishingOffset))
+		lengthInBits += 64 * uint64(len(m.PublishingOffset))
 	}
 
 	return lengthInBits
 }
 
-func (m *_UadpWriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UadpWriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -312,37 +313,37 @@ func (m *_UadpWriterGroupMessageDataType) parse(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	groupVersion, err := ReadSimpleField(ctx, "groupVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	groupVersion, err := ReadSimpleField(ctx, "groupVersion", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupVersion' field"))
 	}
 	m.GroupVersion = groupVersion
 
-	dataSetOrdering, err := ReadEnumField[DataSetOrderingType](ctx, "dataSetOrdering", "DataSetOrderingType", ReadEnum(DataSetOrderingTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	dataSetOrdering, err := ReadEnumField[DataSetOrderingType](ctx, "dataSetOrdering", "DataSetOrderingType", ReadEnum(DataSetOrderingTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetOrdering' field"))
 	}
 	m.DataSetOrdering = dataSetOrdering
 
-	networkMessageContentMask, err := ReadEnumField[UadpNetworkMessageContentMask](ctx, "networkMessageContentMask", "UadpNetworkMessageContentMask", ReadEnum(UadpNetworkMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	networkMessageContentMask, err := ReadEnumField[UadpNetworkMessageContentMask](ctx, "networkMessageContentMask", "UadpNetworkMessageContentMask", ReadEnum(UadpNetworkMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkMessageContentMask' field"))
 	}
 	m.NetworkMessageContentMask = networkMessageContentMask
 
-	samplingOffset, err := ReadSimpleField(ctx, "samplingOffset", ReadDouble(readBuffer, uint8(64)))
+	samplingOffset, err := ReadSimpleField(ctx, "samplingOffset", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingOffset' field"))
 	}
 	m.SamplingOffset = samplingOffset
 
-	noOfPublishingOffset, err := ReadImplicitField[int32](ctx, "noOfPublishingOffset", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPublishingOffset, err := ReadImplicitField[int32](ctx, "noOfPublishingOffset", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPublishingOffset' field"))
 	}
 	_ = noOfPublishingOffset
 
-	publishingOffset, err := ReadCountArrayField[float64](ctx, "publishingOffset", ReadDouble(readBuffer, uint8(64)), uint64(noOfPublishingOffset))
+	publishingOffset, err := ReadCountArrayField[float64](ctx, "publishingOffset", ReadDouble(readBuffer, uint8(64)), uint64(noOfPublishingOffset), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingOffset' field"))
 	}
@@ -373,27 +374,27 @@ func (m *_UadpWriterGroupMessageDataType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for UadpWriterGroupMessageDataType")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "groupVersion", m.GetGroupVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "groupVersion", m.GetGroupVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'groupVersion' field")
 		}
 
-		if err := WriteSimpleEnumField[DataSetOrderingType](ctx, "dataSetOrdering", "DataSetOrderingType", m.GetDataSetOrdering(), WriteEnum[DataSetOrderingType, uint32](DataSetOrderingType.GetValue, DataSetOrderingType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[DataSetOrderingType](ctx, "dataSetOrdering", "DataSetOrderingType", m.GetDataSetOrdering(), WriteEnum[DataSetOrderingType, uint32](DataSetOrderingType.GetValue, DataSetOrderingType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetOrdering' field")
 		}
 
-		if err := WriteSimpleEnumField[UadpNetworkMessageContentMask](ctx, "networkMessageContentMask", "UadpNetworkMessageContentMask", m.GetNetworkMessageContentMask(), WriteEnum[UadpNetworkMessageContentMask, uint32](UadpNetworkMessageContentMask.GetValue, UadpNetworkMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[UadpNetworkMessageContentMask](ctx, "networkMessageContentMask", "UadpNetworkMessageContentMask", m.GetNetworkMessageContentMask(), WriteEnum[UadpNetworkMessageContentMask, uint32](UadpNetworkMessageContentMask.GetValue, UadpNetworkMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkMessageContentMask' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "samplingOffset", m.GetSamplingOffset(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "samplingOffset", m.GetSamplingOffset(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'samplingOffset' field")
 		}
 		noOfPublishingOffset := int32(utils.InlineIf(bool((m.GetPublishingOffset()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPublishingOffset()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfPublishingOffset", noOfPublishingOffset, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfPublishingOffset", noOfPublishingOffset, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPublishingOffset' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "publishingOffset", m.GetPublishingOffset(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "publishingOffset", m.GetPublishingOffset(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishingOffset' field")
 		}
 

@@ -22,8 +22,11 @@ package utils
 import "context"
 
 type LengthAware interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes(ctx context.Context) uint16
+	// GetLengthInBytes returns the length in bytes.
+	// A 64-bit width is used so the internal length accumulation cannot wrap on
+	// large messages (ADS/OPC UA carry uint32 lengths); the value written to a
+	// narrower wire field is still cast down at the serialization site.
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetLengthInBits returns the length in bits
-	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
 }

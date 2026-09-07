@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -363,12 +363,12 @@ func CastDIBDeviceInfo(structType any) DIBDeviceInfo {
 	return nil
 }
 
-func (m *_DIBDeviceInfo) GetTypeName() string {
+func (m *_DIBDeviceInfo) GetPlx4xTypeName() string {
 	return "DIBDeviceInfo"
 }
 
-func (m *_DIBDeviceInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DIBDeviceInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
@@ -390,7 +390,7 @@ func (m *_DIBDeviceInfo) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.KnxNetIpDeviceSerialNumber) > 0 {
-		lengthInBits += 8 * uint16(len(m.KnxNetIpDeviceSerialNumber))
+		lengthInBits += 8 * uint64(len(m.KnxNetIpDeviceSerialNumber))
 	}
 
 	// Simple field (knxNetIpDeviceMulticastAddress)
@@ -401,13 +401,13 @@ func (m *_DIBDeviceInfo) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.DeviceFriendlyName) > 0 {
-		lengthInBits += 8 * uint16(len(m.DeviceFriendlyName))
+		lengthInBits += 8 * uint64(len(m.DeviceFriendlyName))
 	}
 
 	return lengthInBits
 }
 
-func (m *_DIBDeviceInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DIBDeviceInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -422,7 +422,7 @@ func DIBDeviceInfoParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
-	v, err := (&_DIBDeviceInfo{}).parse(ctx, readBuffer)
+	v, err := (new(_DIBDeviceInfo)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

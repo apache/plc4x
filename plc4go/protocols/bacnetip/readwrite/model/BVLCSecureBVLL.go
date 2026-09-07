@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,16 +55,13 @@ type BVLCSecureBVLL interface {
 type _BVLCSecureBVLL struct {
 	BVLCContract
 	SecurityWrapper []byte
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCSecureBVLL = (*_BVLCSecureBVLL)(nil)
 var _ BVLCRequirements = (*_BVLCSecureBVLL)(nil)
 
 // NewBVLCSecureBVLL factory function for _BVLCSecureBVLL
-func NewBVLCSecureBVLL(securityWrapper []byte, bvlcPayloadLength uint16) *_BVLCSecureBVLL {
+func NewBVLCSecureBVLL(securityWrapper []byte) *_BVLCSecureBVLL {
 	_result := &_BVLCSecureBVLL{
 		BVLCContract:    NewBVLC(),
 		SecurityWrapper: securityWrapper,
@@ -85,8 +82,6 @@ type BVLCSecureBVLLBuilder interface {
 	WithMandatoryFields(securityWrapper []byte) BVLCSecureBVLLBuilder
 	// WithSecurityWrapper adds SecurityWrapper (property field)
 	WithSecurityWrapper(...byte) BVLCSecureBVLLBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCSecureBVLLBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCSecureBVLL or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_BVLCSecureBVLLBuilder) WithMandatoryFields(securityWrapper []byte) BVL
 
 func (b *_BVLCSecureBVLLBuilder) WithSecurityWrapper(securityWrapper ...byte) BVLCSecureBVLLBuilder {
 	b.SecurityWrapper = securityWrapper
-	return b
-}
-
-func (b *_BVLCSecureBVLLBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCSecureBVLLBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -219,22 +209,22 @@ func CastBVLCSecureBVLL(structType any) BVLCSecureBVLL {
 	return nil
 }
 
-func (m *_BVLCSecureBVLL) GetTypeName() string {
+func (m *_BVLCSecureBVLL) GetPlx4xTypeName() string {
 	return "BVLCSecureBVLL"
 }
 
-func (m *_BVLCSecureBVLL) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCSecureBVLL) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.SecurityWrapper) > 0 {
-		lengthInBits += 8 * uint16(len(m.SecurityWrapper))
+		lengthInBits += 8 * uint64(len(m.SecurityWrapper))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BVLCSecureBVLL) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCSecureBVLL) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -249,7 +239,7 @@ func (m *_BVLCSecureBVLL) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	securityWrapper, err := readBuffer.ReadByteArray("securityWrapper", int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	securityWrapper, err := readBuffer.ReadByteArray("securityWrapper", int(bvlcPayloadLength), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityWrapper' field"))
 	}
@@ -280,7 +270,7 @@ func (m *_BVLCSecureBVLL) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for BVLCSecureBVLL")
 		}
 
-		if err := WriteByteArrayField(ctx, "securityWrapper", m.GetSecurityWrapper(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteByteArrayField(ctx, "securityWrapper", m.GetSecurityWrapper(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityWrapper' field")
 		}
 
@@ -291,16 +281,6 @@ func (m *_BVLCSecureBVLL) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	}
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
-
-////
-// Arguments Getter
-
-func (m *_BVLCSecureBVLL) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
 
 func (m *_BVLCSecureBVLL) IsBVLCSecureBVLL() {}
 
@@ -315,7 +295,6 @@ func (m *_BVLCSecureBVLL) deepCopy() *_BVLCSecureBVLL {
 	_BVLCSecureBVLLCopy := &_BVLCSecureBVLL{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.SecurityWrapper),
-		m.BvlcPayloadLength,
 	}
 	_BVLCSecureBVLLCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCSecureBVLLCopy

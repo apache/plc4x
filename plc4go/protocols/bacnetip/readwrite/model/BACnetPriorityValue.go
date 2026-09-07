@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,6 @@ type BACnetPriorityValueContract interface {
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
-	// GetObjectTypeArgument() returns a parser argument
-	GetObjectTypeArgument() BACnetObjectType
 	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
 	// CreateBuilder creates a BACnetPriorityValueBuilder
@@ -66,8 +64,8 @@ type BACnetPriorityValueContract interface {
 
 // BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetPriorityValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
 	GetPeekedIsContextTag() bool
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
@@ -81,19 +79,16 @@ type _BACnetPriorityValue struct {
 		BACnetPriorityValueRequirements
 	}
 	PeekedTagHeader BACnetTagHeader
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ BACnetPriorityValueContract = (*_BACnetPriorityValue)(nil)
 
 // NewBACnetPriorityValue factory function for _BACnetPriorityValue
-func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValue {
+func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader) *_BACnetPriorityValue {
 	if peekedTagHeader == nil {
 		panic("peekedTagHeader of type BACnetTagHeader for BACnetPriorityValue must not be nil")
 	}
-	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
+	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader}
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,8 +105,6 @@ type BACnetPriorityValueBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetPriorityValueBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPriorityValueBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetPriorityValueBuilder
 	// AsBACnetPriorityValueNull converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
 	AsBACnetPriorityValueNull() BACnetPriorityValueNullBuilder
 	// AsBACnetPriorityValueReal converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
@@ -189,11 +182,6 @@ func (b *_BACnetPriorityValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetPriorityValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPriorityValueBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -456,12 +444,12 @@ func CastBACnetPriorityValue(structType any) BACnetPriorityValue {
 	return nil
 }
 
-func (m *_BACnetPriorityValue) GetTypeName() string {
+func (m *_BACnetPriorityValue) GetPlx4xTypeName() string {
 	return "BACnetPriorityValue"
 }
 
-func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -470,11 +458,11 @@ func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -494,7 +482,7 @@ func BACnetPriorityValueParseWithBufferProducer[T BACnetPriorityValue](objectTyp
 }
 
 func BACnetPriorityValueParseWithBuffer[T BACnetPriorityValue](ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (T, error) {
-	v, err := (&_BACnetPriorityValue{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := (new(_BACnetPriorityValue)).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -648,16 +636,6 @@ func (pm *_BACnetPriorityValue) serializeParent(ctx context.Context, writeBuffer
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetPriorityValue) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
-
 func (m *_BACnetPriorityValue) IsBACnetPriorityValue() {}
 
 func (m *_BACnetPriorityValue) DeepCopy() any {
@@ -671,7 +649,6 @@ func (m *_BACnetPriorityValue) deepCopy() *_BACnetPriorityValue {
 	_BACnetPriorityValueCopy := &_BACnetPriorityValue{
 		nil, // will be set by child
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
-		m.ObjectTypeArgument,
 	}
 	return _BACnetPriorityValueCopy
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,12 +68,12 @@ var _ LBusmonInd = (*_LBusmonInd)(nil)
 var _ CEMIRequirements = (*_LBusmonInd)(nil)
 
 // NewLBusmonInd factory function for _LBusmonInd
-func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8, size uint16) *_LBusmonInd {
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8) *_LBusmonInd {
 	if dataFrame == nil {
 		panic("dataFrame of type LDataFrame for LBusmonInd must not be nil")
 	}
 	_result := &_LBusmonInd{
-		CEMIContract:                NewCEMI(size),
+		CEMIContract:                NewCEMI(),
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
@@ -270,12 +270,12 @@ func CastLBusmonInd(structType any) LBusmonInd {
 	return nil
 }
 
-func (m *_LBusmonInd) GetTypeName() string {
+func (m *_LBusmonInd) GetPlx4xTypeName() string {
 	return "LBusmonInd"
 }
 
-func (m *_LBusmonInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_LBusmonInd) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -298,7 +298,7 @@ func (m *_LBusmonInd) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LBusmonInd) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LBusmonInd) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

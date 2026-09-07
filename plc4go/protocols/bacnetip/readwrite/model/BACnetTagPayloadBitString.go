@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,16 +57,13 @@ type _BACnetTagPayloadBitString struct {
 	UnusedBits uint8
 	Data       []bool
 	Unused     []bool
-
-	// Arguments.
-	ActualLength uint32
 }
 
 var _ BACnetTagPayloadBitString = (*_BACnetTagPayloadBitString)(nil)
 
 // NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
-func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
-	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
+func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool) *_BACnetTagPayloadBitString {
+	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused}
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,8 +82,6 @@ type BACnetTagPayloadBitStringBuilder interface {
 	WithData(...bool) BACnetTagPayloadBitStringBuilder
 	// WithUnused adds Unused (property field)
 	WithUnused(...bool) BACnetTagPayloadBitStringBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetTagPayloadBitStringBuilder
 	// Build builds the BACnetTagPayloadBitString or returns an error if something is wrong
 	Build() (BACnetTagPayloadBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -122,11 +117,6 @@ func (b *_BACnetTagPayloadBitStringBuilder) WithData(data ...bool) BACnetTagPayl
 
 func (b *_BACnetTagPayloadBitStringBuilder) WithUnused(unused ...bool) BACnetTagPayloadBitStringBuilder {
 	b.Unused = unused
-	return b
-}
-
-func (b *_BACnetTagPayloadBitStringBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadBitStringBuilder {
-	b.ActualLength = actualLength
 	return b
 }
 
@@ -199,30 +189,30 @@ func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
 	return nil
 }
 
-func (m *_BACnetTagPayloadBitString) GetTypeName() string {
+func (m *_BACnetTagPayloadBitString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadBitString"
 }
 
-func (m *_BACnetTagPayloadBitString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadBitString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (unusedBits)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 1 * uint16(len(m.Data))
+		lengthInBits += 1 * uint64(len(m.Data))
 	}
 
 	// Array field
 	if len(m.Unused) > 0 {
-		lengthInBits += 1 * uint16(len(m.Unused))
+		lengthInBits += 1 * uint64(len(m.Unused))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadBitString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadBitString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -237,7 +227,7 @@ func BACnetTagPayloadBitStringParseWithBufferProducer(actualLength uint32) func(
 }
 
 func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBitString, error) {
-	v, err := (&_BACnetTagPayloadBitString{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetTagPayloadBitString)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -313,16 +303,6 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetTagPayloadBitString) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetTagPayloadBitString) IsBACnetTagPayloadBitString() {}
 
 func (m *_BACnetTagPayloadBitString) DeepCopy() any {
@@ -337,7 +317,6 @@ func (m *_BACnetTagPayloadBitString) deepCopy() *_BACnetTagPayloadBitString {
 		m.UnusedBits,
 		utils.DeepCopySlice[bool, bool](m.Data),
 		utils.DeepCopySlice[bool, bool](m.Unused),
-		m.ActualLength,
 	}
 	return _BACnetTagPayloadBitStringCopy
 }

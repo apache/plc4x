@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOperationDirection = (*_BACnetConstructedDataOperatio
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationDirection)(nil)
 
 // NewBACnetConstructedDataOperationDirection factory function for _BACnetConstructedDataOperationDirection
-func NewBACnetConstructedDataOperationDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, operationDirection BACnetEscalatorOperationDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
+func NewBACnetConstructedDataOperationDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, operationDirection BACnetEscalatorOperationDirectionTagged) *_BACnetConstructedDataOperationDirection {
 	if operationDirection == nil {
 		panic("operationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetConstructedDataOperationDirection must not be nil")
 	}
 	_result := &_BACnetConstructedDataOperationDirection{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OperationDirection:            operationDirection,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataOperationDirection(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataOperationDirection) GetTypeName() string {
+func (m *_BACnetConstructedDataOperationDirection) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOperationDirection"
 }
 
-func (m *_BACnetConstructedDataOperationDirection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOperationDirection) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (operationDirection)
 	lengthInBits += m.OperationDirection.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOperationDirection) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOperationDirection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOperationDirection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

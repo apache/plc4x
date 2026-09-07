@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataActiveCOVSubscriptions = (*_BACnetConstructedDataActi
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVSubscriptions)(nil)
 
 // NewBACnetConstructedDataActiveCOVSubscriptions factory function for _BACnetConstructedDataActiveCOVSubscriptions
-func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVSubscriptions []BACnetCOVSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
+func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVSubscriptions []BACnetCOVSubscription) *_BACnetConstructedDataActiveCOVSubscriptions {
 	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ActiveCOVSubscriptions:        activeCOVSubscriptions,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataActiveCOVSubscriptions(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveCOVSubscriptions"
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ActiveCOVSubscriptions) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

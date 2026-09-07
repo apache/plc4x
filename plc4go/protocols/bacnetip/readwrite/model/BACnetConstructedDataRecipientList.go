@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataRecipientList = (*_BACnetConstructedDataRecipientList
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecipientList)(nil)
 
 // NewBACnetConstructedDataRecipientList factory function for _BACnetConstructedDataRecipientList
-func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recipientList []BACnetDestination, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
+func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recipientList []BACnetDestination) *_BACnetConstructedDataRecipientList {
 	_result := &_BACnetConstructedDataRecipientList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RecipientList:                 recipientList,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataRecipientList(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataRecipientList) GetTypeName() string {
+func (m *_BACnetConstructedDataRecipientList) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRecipientList"
 }
 
-func (m *_BACnetConstructedDataRecipientList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRecipientList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.RecipientList) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataRecipientList) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRecipientList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRecipientList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

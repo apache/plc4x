@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCOVIncrement = (*_BACnetConstructedDataCOVIncrement)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVIncrement)(nil)
 
 // NewBACnetConstructedDataCOVIncrement factory function for _BACnetConstructedDataCOVIncrement
-func NewBACnetConstructedDataCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
+func NewBACnetConstructedDataCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagReal) *_BACnetConstructedDataCOVIncrement {
 	if covIncrement == nil {
 		panic("covIncrement of type BACnetApplicationTagReal for BACnetConstructedDataCOVIncrement must not be nil")
 	}
 	_result := &_BACnetConstructedDataCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CovIncrement:                  covIncrement,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCOVIncrement(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) GetTypeName() string {
+func (m *_BACnetConstructedDataCOVIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCOVIncrement"
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (covIncrement)
 	lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

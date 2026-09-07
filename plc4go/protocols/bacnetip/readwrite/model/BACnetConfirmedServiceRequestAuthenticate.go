@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,16 +53,13 @@ type BACnetConfirmedServiceRequestAuthenticate interface {
 type _BACnetConfirmedServiceRequestAuthenticate struct {
 	BACnetConfirmedServiceRequestContract
 	BytesOfRemovedService []byte
-
-	// Arguments.
-	ServiceRequestPayloadLength uint32
 }
 
 var _ BACnetConfirmedServiceRequestAuthenticate = (*_BACnetConfirmedServiceRequestAuthenticate)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAuthenticate)(nil)
 
 // NewBACnetConfirmedServiceRequestAuthenticate factory function for _BACnetConfirmedServiceRequestAuthenticate
-func NewBACnetConfirmedServiceRequestAuthenticate(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAuthenticate {
+func NewBACnetConfirmedServiceRequestAuthenticate(serviceRequestLength uint32, bytesOfRemovedService []byte) *_BACnetConfirmedServiceRequestAuthenticate {
 	_result := &_BACnetConfirmedServiceRequestAuthenticate{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		BytesOfRemovedService:                 bytesOfRemovedService,
@@ -83,8 +80,6 @@ type BACnetConfirmedServiceRequestAuthenticateBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestAuthenticateBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestAuthenticateBuilder
-	// WithArgServiceRequestPayloadLength sets a parser argument
-	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestAuthenticateBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestAuthenticate or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) WithMandatoryFields(
 
 func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestAuthenticateBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestAuthenticateBuilder {
-	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 
@@ -217,22 +207,22 @@ func CastBACnetConfirmedServiceRequestAuthenticate(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAuthenticate) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAuthenticate) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAuthenticate"
 }
 
-func (m *_BACnetConfirmedServiceRequestAuthenticate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAuthenticate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
-		lengthInBits += 8 * uint16(len(m.BytesOfRemovedService))
+		lengthInBits += 8 * uint64(len(m.BytesOfRemovedService))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAuthenticate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAuthenticate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -290,16 +280,6 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) SerializeWithWriteBuffer(ct
 	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestAuthenticate) GetServiceRequestPayloadLength() uint32 {
-	return m.ServiceRequestPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestAuthenticate) IsBACnetConfirmedServiceRequestAuthenticate() {}
 
 func (m *_BACnetConfirmedServiceRequestAuthenticate) DeepCopy() any {
@@ -313,7 +293,6 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) deepCopy() *_BACnetConfirme
 	_BACnetConfirmedServiceRequestAuthenticateCopy := &_BACnetConfirmedServiceRequestAuthenticate{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
-		m.ServiceRequestPayloadLength,
 	}
 	_BACnetConfirmedServiceRequestAuthenticateCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestAuthenticateCopy

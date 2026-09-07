@@ -22,8 +22,8 @@
 
   <name>Modbus-ASCII</name>
 
-  <protocolName>modbus</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>modbus</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>Read Holding Registers Request</name>

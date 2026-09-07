@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataSupportedFormatClasses interface {
 	// GetSupportedFormats returns SupportedFormats (property field)
 	GetSupportedFormats() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataSupportedFormatClasses is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSupportedFormatClasses()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataSupportedFormatClasses = (*_BACnetConstructedDataSupp
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSupportedFormatClasses)(nil)
 
 // NewBACnetConstructedDataSupportedFormatClasses factory function for _BACnetConstructedDataSupportedFormatClasses
-func NewBACnetConstructedDataSupportedFormatClasses(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedFormatClasses {
+func NewBACnetConstructedDataSupportedFormatClasses(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSupportedFormatClasses {
 	_result := &_BACnetConstructedDataSupportedFormatClasses{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SupportedFormats:              supportedFormats,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataSupportedFormatClasses(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataSupportedFormatClasses) GetTypeName() string {
+func (m *_BACnetConstructedDataSupportedFormatClasses) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSupportedFormatClasses"
 }
 
-func (m *_BACnetConstructedDataSupportedFormatClasses) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSupportedFormatClasses) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataSupportedFormatClasses) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSupportedFormatClasses) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSupportedFormatClasses) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataSupportedFormatClasses) SerializeWithWriteBuffer(
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

@@ -47,8 +47,9 @@ const _TagType_name = "STATUSCAL_RESETCAL_RECALLCAL_IDENTIFYCAL_GETSTATUSCAL_WRI
 var _TagType_index = [...]uint8{0, 6, 15, 25, 37, 50, 59, 77, 87, 106, 109, 120, 138, 147}
 
 func (i TagType) String() string {
-	if i >= TagType(len(_TagType_index)-1) {
+	idx := int(i) - 0
+	if i < 0 || idx >= len(_TagType_index)-1 {
 		return "TagType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _TagType_name[_TagType_index[i]:_TagType_index[i+1]]
+	return _TagType_name[_TagType_index[idx]:_TagType_index[idx+1]]
 }

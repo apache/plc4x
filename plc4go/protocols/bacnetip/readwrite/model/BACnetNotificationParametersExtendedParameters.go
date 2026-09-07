@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -105,15 +105,12 @@ type _BACnetNotificationParametersExtendedParameters struct {
 	ObjectIdentifier     BACnetApplicationTagObjectIdentifier
 	Reference            BACnetDeviceObjectPropertyReferenceEnclosed
 	ClosingTag           BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetNotificationParametersExtendedParameters = (*_BACnetNotificationParametersExtendedParameters)(nil)
 
 // NewBACnetNotificationParametersExtendedParameters factory function for _BACnetNotificationParametersExtendedParameters
-func NewBACnetNotificationParametersExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersExtendedParameters {
+func NewBACnetNotificationParametersExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetNotificationParametersExtendedParameters {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParametersExtendedParameters must not be nil")
 	}
@@ -123,7 +120,7 @@ func NewBACnetNotificationParametersExtendedParameters(openingTag BACnetOpeningT
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetNotificationParametersExtendedParameters must not be nil")
 	}
-	return &_BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -204,8 +201,6 @@ type BACnetNotificationParametersExtendedParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersExtendedParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedParametersBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetNotificationParametersExtendedParametersBuilder
 	// Build builds the BACnetNotificationParametersExtendedParameters or returns an error if something is wrong
 	Build() (BACnetNotificationParametersExtendedParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -484,11 +479,6 @@ func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithClosingTagB
 	return b
 }
 
-func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithArgTagNumber(tagNumber uint8) BACnetNotificationParametersExtendedParametersBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-
 func (b *_BACnetNotificationParametersExtendedParametersBuilder) Build() (BACnetNotificationParametersExtendedParameters, error) {
 	if b.OpeningTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
@@ -734,12 +724,12 @@ func CastBACnetNotificationParametersExtendedParameters(structType any) BACnetNo
 	return nil
 }
 
-func (m *_BACnetNotificationParametersExtendedParameters) GetTypeName() string {
+func (m *_BACnetNotificationParametersExtendedParameters) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersExtendedParameters"
 }
 
-func (m *_BACnetNotificationParametersExtendedParameters) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetNotificationParametersExtendedParameters) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -826,7 +816,7 @@ func (m *_BACnetNotificationParametersExtendedParameters) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersExtendedParameters) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersExtendedParameters) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -841,7 +831,7 @@ func BACnetNotificationParametersExtendedParametersParseWithBufferProducer(tagNu
 }
 
 func BACnetNotificationParametersExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersExtendedParameters, error) {
-	v, err := (&_BACnetNotificationParametersExtendedParameters{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetNotificationParametersExtendedParameters)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -1079,59 +1069,59 @@ func (m *_BACnetNotificationParametersExtendedParameters) SerializeWithWriteBuff
 		return errors.Wrap(_isClosingTagErr, "Error serializing 'isClosingTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagNull](ctx, "nullValue", GetRef(m.GetNullValue()), WriteComplex[BACnetApplicationTagNull](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagNull](ctx, "nullValue", new(m.GetNullValue()), WriteComplex[BACnetApplicationTagNull](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'nullValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagReal](ctx, "realValue", GetRef(m.GetRealValue()), WriteComplex[BACnetApplicationTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagReal](ctx, "realValue", new(m.GetRealValue()), WriteComplex[BACnetApplicationTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'realValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", GetRef(m.GetUnsignedValue()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", new(m.GetUnsignedValue()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", GetRef(m.GetBooleanValue()), WriteComplex[BACnetApplicationTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", new(m.GetBooleanValue()), WriteComplex[BACnetApplicationTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'booleanValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", GetRef(m.GetIntegerValue()), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", new(m.GetIntegerValue()), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'integerValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", GetRef(m.GetDoubleValue()), WriteComplex[BACnetApplicationTagDouble](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", new(m.GetDoubleValue()), WriteComplex[BACnetApplicationTagDouble](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'doubleValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", GetRef(m.GetOctetStringValue()), WriteComplex[BACnetApplicationTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", new(m.GetOctetStringValue()), WriteComplex[BACnetApplicationTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'octetStringValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", GetRef(m.GetCharacterStringValue()), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", new(m.GetCharacterStringValue()), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", GetRef(m.GetBitStringValue()), WriteComplex[BACnetApplicationTagBitString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", new(m.GetBitStringValue()), WriteComplex[BACnetApplicationTagBitString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'bitStringValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", GetRef(m.GetEnumeratedValue()), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", new(m.GetEnumeratedValue()), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagDate](ctx, "dateValue", GetRef(m.GetDateValue()), WriteComplex[BACnetApplicationTagDate](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagDate](ctx, "dateValue", new(m.GetDateValue()), WriteComplex[BACnetApplicationTagDate](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'dateValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagTime](ctx, "timeValue", GetRef(m.GetTimeValue()), WriteComplex[BACnetApplicationTagTime](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagTime](ctx, "timeValue", new(m.GetTimeValue()), WriteComplex[BACnetApplicationTagTime](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", new(m.GetObjectIdentifier()), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", GetRef(m.GetReference()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", new(m.GetReference()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'reference' field")
 	}
 
@@ -1144,16 +1134,6 @@ func (m *_BACnetNotificationParametersExtendedParameters) SerializeWithWriteBuff
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetNotificationParametersExtendedParameters) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
 
 func (m *_BACnetNotificationParametersExtendedParameters) IsBACnetNotificationParametersExtendedParameters() {
 }
@@ -1184,7 +1164,6 @@ func (m *_BACnetNotificationParametersExtendedParameters) deepCopy() *_BACnetNot
 		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
 		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.Reference),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetNotificationParametersExtendedParametersCopy
 }

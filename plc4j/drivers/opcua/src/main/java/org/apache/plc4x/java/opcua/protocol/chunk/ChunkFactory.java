@@ -19,12 +19,11 @@
 
 package org.apache.plc4x.java.opcua.protocol.chunk;
 
-import io.vavr.control.Try;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.plc4x.java.opcua.context.Conversation;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 
@@ -33,19 +32,21 @@ public class ChunkFactory {
     public static final int ASYMMETRIC_SECURITY_HEADER_SIZE = 59;
     public static final int SYMMETRIC_SECURITY_HEADER_SIZE = 4;
 
-    public Chunk create(boolean asymmetric, Conversation conversation) {
-        return create(asymmetric,
-            conversation.isSymmetricEncryptionEnabled(),
-            conversation.isSymmetricSigningEnabled(),
-            conversation.getSecurityPolicy(),
-            conversation.getLimits(),
-            conversation.getLocalCertificate(),
-            conversation.getRemoteCertificate()
-        );
-    }
-
     public Chunk create(boolean asymmetric, boolean encrypted, boolean signed, SecurityPolicy securityPolicy,
         OpcuaProtocolLimits limits, X509Certificate localCertificate, X509Certificate remoteCertificate) {
+        return create(asymmetric, encrypted, signed, securityPolicy, limits, localCertificate, remoteCertificate,
+            certificateBytes(localCertificate).length);
+    }
+
+    /**
+     * @param sentCertificateSize number of bytes the {@code SenderCertificate} field occupies. That
+     *                            is the local certificate on its own, unless a CA-signed
+     *                            certificate travels together with the certificates that signed it,
+     *                            in which case the header grows accordingly.
+     */
+    public Chunk create(boolean asymmetric, boolean encrypted, boolean signed, SecurityPolicy securityPolicy,
+        OpcuaProtocolLimits limits, X509Certificate localCertificate, X509Certificate remoteCertificate,
+        int sentCertificateSize) {
 
         if (securityPolicy == SecurityPolicy.NONE) {
             return new Chunk(
@@ -68,7 +69,15 @@ public class ChunkFactory {
 
         int localAsymmetricKeyLength = asymmetric ? keySize(localCertificate) : 0;
         int remoteAsymmetricKeyLength = asymmetric ? keySize(remoteCertificate) : 0;
-        int localCertificateSize = asymmetric ? certificateBytes(localCertificate).length : 0;
+        // An asymmetric (OpenSecureChannel) chunk is encrypted with the server's RSA public
+        // key. Without a valid server certificate its key length is 0, which would later divide
+        // by zero when computing the cipher-text block count. Fail fast with a clear message.
+        if (asymmetric && remoteAsymmetricKeyLength == 0) {
+            throw new PlcRuntimeException("Cannot open an encrypted OPC UA secure channel: no valid server (remote) "
+                + "RSA certificate is available to encrypt the OpenSecureChannel request. Provide the server "
+                + "certificate via 'server-certificate-file', or use security-policy=NONE.");
+        }
+        int localCertificateSize = asymmetric ? sentCertificateSize : 0;
         int serverCertificateThumbprint = asymmetric ? certificateThumbprint(remoteCertificate).length : 0;
 
         int asymmetricSecurityHeaderSize = (12 + securityPolicy.getSecurityPolicyUri().length() + localCertificateSize + serverCertificateThumbprint);
@@ -150,7 +159,11 @@ public class ChunkFactory {
     }
 
     private static byte[] certificateBytes(X509Certificate certificate) {
-        return Try.of(() -> certificate.getEncoded()).getOrElse(new byte[0]);
+        try {
+            return certificate.getEncoded();
+        } catch (Exception e) {
+            return new byte[0];
+        }
     }
 
 

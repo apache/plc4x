@@ -209,10 +209,10 @@ func (b BoxSet) contributeToCompressedBoxSet(box AsciiBox) string {
 
 func combineCompressedBoxSets(box1, box2 AsciiBox) string {
 	allSets := make(map[string]any)
-	for _, s := range strings.Split(box1.compressedBoxSet, ",") {
+	for s := range strings.SplitSeq(box1.compressedBoxSet, ",") {
 		allSets[s] = true
 	}
-	for _, s := range strings.Split(box2.compressedBoxSet, ",") {
+	for s := range strings.SplitSeq(box2.compressedBoxSet, ",") {
 		allSets[s] = true
 	}
 	var foundSets []string
@@ -488,10 +488,14 @@ func countChars(s string) int {
 	return len([]rune(ANSI_PATTERN.ReplaceAllString(s, "")))
 }
 
+var controlStripRegex = regexp.MustCompile(`\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])`)
+
 // cleanString returns the strings minus the control sequences
 func cleanString(s string) string {
-	regex, _ := regexp.Compile(`\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])`)
-	return regex.ReplaceAllString(s, "")
+	if s == "" {
+		return s
+	}
+	return controlStripRegex.ReplaceAllString(s, "")
 }
 
 //
@@ -620,7 +624,7 @@ func (a *asciiBoxWriter) BoxSideBySide(box1, box2 AsciiBox, options ...func(*Box
 	box2Lines := box2.Lines()
 	maxRows := int(math.Max(float64(len(box1Lines)), float64(len(box2Lines))))
 	aggregateBox.Grow((box1Width + box2Width + newLineCharWidth) * maxRows)
-	for row := 0; row < maxRows; row++ {
+	for row := range maxRows {
 		ranOutOfLines := false
 		if row >= len(box1Lines) {
 			ranOutOfLines = true

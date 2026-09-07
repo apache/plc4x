@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLightingOutputTrackingValue = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
 
 // NewBACnetConstructedDataLightingOutputTrackingValue factory function for _BACnetConstructedDataLightingOutputTrackingValue
-func NewBACnetConstructedDataLightingOutputTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
+func NewBACnetConstructedDataLightingOutputTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetApplicationTagReal) *_BACnetConstructedDataLightingOutputTrackingValue {
 	if trackingValue == nil {
 		panic("trackingValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputTrackingValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TrackingValue:                 trackingValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLightingOutputTrackingValue(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingOutputTrackingValue"
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (trackingValue)
 	lengthInBits += m.TrackingValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

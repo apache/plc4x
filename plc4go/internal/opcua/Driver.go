@@ -25,11 +25,11 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -61,9 +61,9 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	d.log.Debug().
-		Stringer("transportUrl", &transportUrl).
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
+	connectionLog.Debug().
 		Int("numberTransports", len(transports)).
 		Int("numberDriverOptions", len(driverOptions)).
 		Msg("Get connection for transport url")
@@ -71,11 +71,11 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
-		return d.reportError(errors.Errorf("couldn't find transport for given transport url %v", transportUrl))
+		return nil, errors.Errorf("couldn't find transport for given transport url %v", transportUrl)
 	}
 
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -84,14 +84,14 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	if err != nil {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
 			Msg("We couldn't create a transport instance for port")
-		return d.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
+		return nil, errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String())
 	}
 
 	// Split up the connection string into its individual segments.
@@ -111,19 +111,19 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		paramString = match["paramString"]
 		_ = paramString // TODO: not sure if we need that
 	} else {
-		return d.reportError(errors.Errorf("Connection string %s doesn't match the format %s", &transportUrl, d.uriPattern))
+		return nil, errors.Errorf("Connection string %s doesn't match the format %s", &transportUrl, d.uriPattern)
 	}
 
 	// Check if the protocol code matches this driver.
 	if protocolCode != d.GetProtocolCode() {
 		// Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
-		return d.reportError(errors.New("This driver is not suited to handle this connection string"))
+		return nil, errors.New("This driver is not suited to handle this connection string")
 	}
 
 	// Create the configuration object.
-	configuration, err := ParseFromOptions(d.log, driverOptions)
+	configuration, err := ParseFromOptions(connectionLog, driverOptions)
 	if err != nil {
-		return d.reportError(errors.Wrap(err, "can't parse options"))
+		return nil, errors.Wrap(err, "can't parse options")
 	}
 	configuration.Host = transportHost
 	configuration.Port = transportPort
@@ -133,15 +133,15 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		portAddition += ":" + transportPort
 	}
 	configuration.Endpoint = "opc." + transportCode + "://" + transportHost + portAddition + "" + transportEndpoint
-	d.log.Debug().Stringer("configuration", &configuration).Msg("working with configuration")
+	connectionLog.Debug().Interface("configuration", &configuration).Msg("working with configuration")
 
 	if securityPolicy := configuration.SecurityPolicy; securityPolicy != "" && securityPolicy != "None" {
-		d.log.Trace().Str("securityPolicy", securityPolicy).Msg("working with security policy")
+		connectionLog.Trace().Str("securityPolicy", securityPolicy).Msg("working with security policy")
 		if err := configuration.openKeyStore(); err != nil {
-			return d.reportError(errors.Wrap(err, "error opening key store"))
+			return nil, errors.Wrap(err, "error opening key store")
 		}
 	} else {
-		d.log.Trace().Msg("no security policy")
+		connectionLog.Trace().Msg("no security policy")
 	}
 
 	driverContext := NewDriverContext(configuration)
@@ -150,9 +150,9 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	codec := NewMessageCodec(
 		transportInstance,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
 
 	// Create the new connection
 	connection := NewConnection(
@@ -161,10 +161,13 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		driverContext,
 		d.GetPlcTagHandler(),
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Msg("created connection, connecting now")
-	return connection.ConnectWithContext(ctx)
+	connectionLog.Debug().Msg("created connection, connecting now")
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	return connection, nil
 }
 
 func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
@@ -173,10 +176,4 @@ func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
 
 func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 	d.awaitDisconnectComplete = awaitComplete
-}
-
-func (d *Driver) reportError(err error) <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	ch <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
-	return ch
 }

@@ -69,12 +69,17 @@ def reservedIds = ["555", "666", "777", "888", "911", "999", "1111"]
 def doc = Jsoup.parse(targetFile.text)
 
 def table = doc.select("table").first();
-def iterator = table.select("td").iterator();
+def rows = table.select("tr")
 def vendors = []
 def foundOrganization = [:]
-while (iterator.hasNext()) {
-    def vendorId = iterator.next().text()
-    def organization = iterator.next().text()
+for (row in rows) {
+    def cells = row.select("td")
+    // Skip header rows or rows without enough columns
+    if (cells.size() < 2) {
+        continue
+    }
+    def vendorId = cells.get(0).text()
+    def organization = cells.size() > 1 ? cells.get(1).text() : ""
     if (!organization.trim()) {
         println "Found vendorId:$vendorId has empty organistation. Defaulting to Blank..."
         organization = "BLANK"
@@ -93,10 +98,21 @@ while (iterator.hasNext()) {
         .replaceAll(/-/, '')
     // Prefix digits with n
         .replaceAll(/^(\d)/, /N_$1/)
+
+    // Drop entries whose sanitised organisation name is empty or doesn't form a valid
+    // enum identifier. Happens when the organisation field is blank, contains only
+    // non-ASCII characters (e.g. "–", em/en-dashes, CJK text), or otherwise collapses
+    // to nothing after sanitisation. Keeping them would produce malformed mspec lines
+    // like `['1618' the ['1618', '"–"']]` that break code generation.
+    if (!organizationSanitized || !(organizationSanitized ==~ /^[A-Z][A-Z0-9_]*$/)) {
+        println "Skipping vendorId:$vendorId organization:'$organization' — sanitised name '$organizationSanitized' is not a valid enum identifier"
+        continue
+    }
+
     def exitingOrganizationCount = foundOrganization[organizationSanitized]
     if (exitingOrganizationCount) {
-        println "$organization found ${exitingOrganizationCount+1} times"
-        while (foundOrganization[organizationSanitized+"${exitingOrganizationCount}"]) {
+        println "$organization found ${exitingOrganizationCount + 1} times"
+        while (foundOrganization[organizationSanitized + "${exitingOrganizationCount}"]) {
             println "${organizationSanitized}${exitingOrganizationCount} already existing. Skipping one more (current count == ${exitingOrganizationCount})"
             exitingOrganizationCount++
         }
@@ -105,8 +121,8 @@ while (iterator.hasNext()) {
     } else {
         foundOrganization[organizationSanitized] = 1
     }
-    def contactPerson = iterator.next().text()
-    def address = iterator.next().text()
+    def contactPerson = cells.size() > 2 ? cells.get(2).text() : ""
+    def address = cells.size() > 3 ? cells.get(3).text() : ""
     println "Found vendorId:$vendorId organization:$organization contactPerson:$contactPerson address:$address"
     vendors << [vendorId: vendorId, organization: organization, organizationSanitized: organizationSanitized, contactPerson: contactPerson, address: address]
 }
@@ -167,7 +183,7 @@ if (!mspecTargetDir.exists()) {
     mspecTargetDir.mkdirs()
 }
 def vendorIdMspec = new File(mspecTargetDir, "bacnet-vendorids.mspec")
-if(vendorIdMspec.exists()) {
+if (vendorIdMspec.exists()) {
     vendorIdMspec.delete()
 }
 

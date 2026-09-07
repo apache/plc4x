@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,10 +42,13 @@ type AdsReadStateResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number
 	GetResult() ReturnCode
 	// GetAdsState returns AdsState (property field)
+	// 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
+	// 2 bytes	New device status.
 	GetDeviceState() uint16
 	// IsAdsReadStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadStateResponse()
@@ -65,7 +68,7 @@ var _ AdsReadStateResponse = (*_AdsReadStateResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadStateResponse)(nil)
 
 // NewAdsReadStateResponse factory function for _AdsReadStateResponse
-func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, adsState uint16, deviceState uint16) *_AdsReadStateResponse {
+func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode, adsState uint16, deviceState uint16) *_AdsReadStateResponse {
 	_result := &_AdsReadStateResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -241,12 +244,12 @@ func CastAdsReadStateResponse(structType any) AdsReadStateResponse {
 	return nil
 }
 
-func (m *_AdsReadStateResponse) GetTypeName() string {
+func (m *_AdsReadStateResponse) GetPlx4xTypeName() string {
 	return "AdsReadStateResponse"
 }
 
-func (m *_AdsReadStateResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsReadStateResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -260,7 +263,7 @@ func (m *_AdsReadStateResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsReadStateResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsReadStateResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataScheduleAll = (*_BACnetConstructedDataScheduleAll)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleAll)(nil)
 
 // NewBACnetConstructedDataScheduleAll factory function for _BACnetConstructedDataScheduleAll
-func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleAll {
+func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataScheduleAll {
 	_result := &_BACnetConstructedDataScheduleAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataScheduleAll(structType any) BACnetConstructedDataS
 	return nil
 }
 
-func (m *_BACnetConstructedDataScheduleAll) GetTypeName() string {
+func (m *_BACnetConstructedDataScheduleAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScheduleAll"
 }
 
-func (m *_BACnetConstructedDataScheduleAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataScheduleAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataScheduleAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataScheduleAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

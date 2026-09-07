@@ -22,11 +22,10 @@ package s7
 import (
 	"context"
 	"fmt"
-	"runtime/debug"
-	"strings"
+	"strconv"
 	"sync"
+	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -34,6 +33,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
@@ -60,11 +60,17 @@ func (t *TpduGenerator) getAndIncrement() uint16 {
 
 type Connection struct {
 	_default.DefaultConnection
+
 	tpduGenerator TpduGenerator
 	messageCodec  spi.MessageCodec
 	configuration Configuration
 	driverContext DriverContext
 	tm            transactions.RequestTransactionManager
+
+	// subscriber is created lazily and shared: the alarm subscription and cyclic jobs are
+	// PLC-side state bound to this connection.
+	subscriber      *Subscriber
+	subscriberMutex sync.Mutex
 
 	connectionId string
 	tracer       tracer.Tracer
@@ -74,6 +80,10 @@ type Connection struct {
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
 }
+
+var (
+	_ spi.TransportInstanceExposer = (*Connection)(nil)
+)
 
 func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -118,54 +128,56 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) error {
 	c.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+	err := c.messageCodec.Connect(ctx)
+	if err != nil {
+		return errors.Wrap(err, "Error during message codec setup")
+	}
+
+	// Route unsolicited UserData pushes (cyclic data, alarm indications) to the subscriber.
+	// The channel is closed when the codec disconnects, which ends this goroutine.
+	if codec, ok := c.messageCodec.(*MessageCodec); ok {
+		c.wg.Go(func() {
+			c.dispatchUnsolicitedUserData(codec.GetUnsolicitedUserData())
+		})
+	}
+
+	// Only on active connections we do a connection
+	if c.driverContext.PassiveMode {
+		c.log.Info().Msg("S7 Driver running in PASSIVE mode.")
+		return nil
+	}
+
+	// For testing purposes we can skip the waiting for a complete connection
+	if !c.driverContext.awaitSetupComplete {
+		c.wg.Go(func() {
+			if err := c.setupConnection(ctx); err != nil {
+				c.log.Error().Err(err).Msg("Error during connection setup")
 			}
-		}()
-		err := c.messageCodec.ConnectWithContext(ctx)
-		if err != nil {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(c, err)
-		}
+		})
+		c.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
+		// Here we write directly and don't wait till the connection is "really" connected
+		// Note: we can't use fireConnected here as it's guarded against c.driverContext.awaitSetupComplete
+		c.SetConnected(true)
+		return nil
+	}
 
-		// Only on active connections we do a connection
-		if c.driverContext.PassiveMode {
-			c.log.Info().Msg("S7 Driver running in PASSIVE mode.")
-			ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
-			return
-		}
+	// Only the TCP transport supports login.
+	c.log.Info().Msg("S7 Driver running in ACTIVE mode.")
 
-		// For testing purposes we can skip the waiting for a complete connection
-		if !c.driverContext.awaitSetupComplete {
-			go c.setupConnection(ctx, ch)
-			c.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
-			// Here we write directly and don't wait till the connection is "really" connected
-			// Note: we can't use fireConnected here as it's guarded against c.driverContext.awaitSetupComplete
-			ch <- _default.NewDefaultPlcConnectionConnectResult(c, err)
-			c.SetConnected(true)
-			return
-		}
-
-		// Only the TCP transport supports login.
-		c.log.Info().Msg("S7 Driver running in ACTIVE mode.")
-
-		c.setupConnection(ctx, ch)
-	}()
-	return ch
+	if err := c.setupConnection(ctx); err != nil {
+		return errors.Wrap(err, "Error during connection setup")
+	}
+	return nil
 }
 
-func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+func (c *Connection) setupConnection(ctx context.Context) error {
 	c.log.Debug().Msg("Sending COTP Connection Request")
 	// Open the session on ISO Transport Protocol first.
 	cotpConnectionResult := make(chan readWriteModel.COTPPacketConnectionResponse, 1)
 	cotpConnectionErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewTPKTPacket(c.createCOTPConnectionRequest()), func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "setup_connection", readWriteModel.NewTPKTPacket(c.createCOTPConnectionRequest()), func(message spi.Message) bool {
 		tpktPacket := message.(readWriteModel.TPKTPacket)
 		if tpktPacket == nil {
 			return false
@@ -186,8 +198,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		}
 		cotpConnectionErrorChan <- errors.Wrap(err, "got error processing request")
 		return nil
-	}, c.GetTtl()); err != nil {
-		c.fireConnectionError(errors.Wrap(err, "Error during sending of COTP Connection Request"), ch)
+	}); err != nil {
+		return errors.Wrap(err, "Error during sending of COTP Connection Request")
 	}
 	select {
 	case cotpPacketConnectionResponse := <-cotpConnectionResult:
@@ -197,7 +209,7 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		// Send an S7 login message.
 		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication, 1)
 		s7ConnectionErrorChan := make(chan error, 1)
-		if err := c.messageCodec.SendRequest(ctx, c.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
+		if err := c.messageCodec.SendRequest(ctx, "setup_connection_connection_request", c.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
 			tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 			if !ok {
 				return false
@@ -224,12 +236,14 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			var timeoutError utils.TimeoutError
 			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				c.Close()
+				if err := c.Close(); err != nil {
+					c.log.Error().Err(err).Msg("Error during closing of connection")
+				}
 			}
 			s7ConnectionErrorChan <- errors.Wrap(err, "got error processing request")
 			return nil
-		}, c.GetTtl()); err != nil {
-			c.fireConnectionError(errors.Wrap(err, "Error during sending of S7 Connection Request"), ch)
+		}); err != nil {
+			return errors.Wrap(err, "Error during sending of S7 Connection Request")
 		}
 		select {
 		case setupCommunication := <-s7ConnectionResult:
@@ -246,165 +260,104 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			// requests.
 			c.tm.SetNumberOfConcurrentRequests(int(c.driverContext.MaxAmqCallee))
 
-			// If the controller type is explicitly set, were finished with the login
-			// process. If it's set to ANY, we have to query the serial number information
-			// in order to detect the type of PLC.
-			if c.driverContext.ControllerType != ControllerType_ANY {
-				// Send an event that connection setup is complete.
-				c.fireConnected(ch)
-				return
-			}
+			// Detect the controller type (unless it was pinned by the user) and derive
+			// whether the device supports the S7Comm UserData services. Probe failures are
+			// not connection failures - plain read/write stays usable (e.g. LOGO devices).
+			c.identifyRemote(ctx)
 
-			// Prepare a message to request the remote to identify itself.
-			c.log.Debug().Msg("Sending S7 Identification Request")
-			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData, 1)
-			s7IdentificationErrorChan := make(chan error, 1)
-			if err := c.messageCodec.SendRequest(ctx, c.createIdentifyRemoteMessage(), func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
-				if !ok {
-					return false
-				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				if !ok {
-					return false
-				}
-				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
-				if !ok {
-					return false
-				}
-				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
-				return ok
-			}, func(message spi.Message) error {
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				messageUserData := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
-				s7IdentificationResult <- messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
-				return nil
-			}, func(err error) error {
-				// If this is a timeout, do a check if the connection requires a reconnection
-				var timeoutError utils.TimeoutError
-				if errors.As(err, &timeoutError) {
-					c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-					c.Close()
-				}
-				s7IdentificationErrorChan <- errors.Wrap(err, "got error processing request")
-				return nil
-			}, c.GetTtl()); err != nil {
-				c.fireConnectionError(errors.Wrap(err, "Error during sending of identify remote Request"), ch)
-			}
-			select {
-			case payloadUserData := <-s7IdentificationResult:
-				c.log.Debug().Msg("Got S7 Identification Response")
-				c.extractControllerTypeAndFireConnected(payloadUserData, ch)
-			case err := <-s7IdentificationErrorChan:
-				c.fireConnectionError(errors.Wrap(err, "Error receiving identify remote Request"), ch)
-			}
+			// Send an event that connection setup is complete.
+			c.SetConnected(true)
+			return nil
 		case err := <-s7ConnectionErrorChan:
-			c.fireConnectionError(errors.Wrap(err, "Error receiving S7 Connection Request"), ch)
+			return errors.Wrap(err, "Error receiving S7 Connection Request")
 		}
 	case err := <-cotpConnectionErrorChan:
-		c.fireConnectionError(errors.Wrap(err, "Error receiving of COTP Connection Request"), ch)
+		return errors.Wrap(err, "Error receiving of COTP Connection Request")
 	}
 }
 
-func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
-	if c.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
-	} else {
-		c.log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
+// identifyRemote determines the controller type and UserData-service capability. If the user
+// pinned the controller type it is trusted and no SZL probe runs; otherwise the modern
+// COMPONENT_IDENTIFICATION SZL is tried first with the legacy MODULE_IDENTIFICATION as
+// fallback. Failure of both just disables the UserData services (browse/alarms/cyclic).
+func (c *Connection) identifyRemote(ctx context.Context) {
+	if c.driverContext.ControllerType != readWriteModel.ControllerType_ANY {
+		c.driverContext.UserDataServicesSupported = supportsUserDataServices(c.driverContext.ControllerType)
+		c.log.Info().
+			Stringer("controllerType", c.driverContext.ControllerType).
+			Bool("userDataServices", c.driverContext.UserDataServicesSupported).
+			Msg("Controller type pinned, skipping SZL probe")
+		return
 	}
+	c.log.Debug().Msg("Sending S7 Identification Request")
+	articleNumber, controllerType, err := c.trySzlProbe(ctx, szlIdComponentIdentification(), 0x0001)
+	if err != nil {
+		c.log.Debug().Err(err).Msg("COMPONENT_IDENTIFICATION SZL probe failed, trying MODULE_IDENTIFICATION")
+		articleNumber, controllerType, err = c.trySzlProbe(ctx, szlIdModuleIdentification(), 0x0000)
+	}
+	if err != nil {
+		// Common on LOGO and other non-SZL devices.
+		c.log.Info().Err(err).Msg("SZL probe yielded no usable identification; " +
+			"S7Comm UserData services disabled for this device")
+		c.driverContext.UserDataServicesSupported = false
+		return
+	}
+	c.driverContext.ArticleNumber = articleNumber
+	c.driverContext.ControllerType = controllerType
+	c.driverContext.UserDataServicesSupported = true
+	c.log.Info().
+		Str("articleNumber", articleNumber).
+		Stringer("controllerType", controllerType).
+		Msg("SZL probe ok")
 }
 
-func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
-	if c.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
-	} else {
-		c.log.Info().Msg("Successfully connected")
+func (c *Connection) trySzlProbe(ctx context.Context, szlId readWriteModel.SzlId, szlIndex uint16) (string, readWriteModel.ControllerType, error) {
+	tpduId := c.tpduGenerator.getAndIncrement()
+	message, err := c.sendUserData(ctx, tpduId, buildSzlRequest(tpduId, szlId, szlIndex), "setup_connection_identify_remote_message")
+	if err != nil {
+		return "", 0, err
 	}
-	c.SetConnected(true)
+	return parseSzlProbeResponse(message)
 }
 
-func (c *Connection) extractControllerTypeAndFireConnected(payloadUserData readWriteModel.S7PayloadUserData, ch chan<- plc4go.PlcConnectionConnectResult) {
-	// TODO: how do we handle the case if there no items at all? Should we assume it a successful or failure...
-	// TODO ... opposed to the java implementation we treat it as a failure
-	for _, item := range payloadUserData.GetItems() {
-		switch readSzlResponseItem := item.(type) {
-		case readWriteModel.S7PayloadUserDataItemCpuFunctionReadSzlResponse:
-			for _, readSzlResponseItemItem := range readSzlResponseItem.GetItems() {
-				_ = readSzlResponseItemItem
-				/* TODO: broken by mspec changes from carcia
-				if readSzlResponseItemItem.GetItemIndex() != 0x0001 {
-					continue
-				}
-				articleNumber := string(readSzlResponseItemItem.GetMlfb())
-				*/
-				articleNumber := "broken at the moment"
-				var controllerType ControllerType
-				if !strings.HasPrefix(articleNumber, "6ES7 ") {
-					controllerType = ControllerType_ANY
-				}
-				blankIndex := strings.Index(articleNumber, " ")
-				model := articleNumber[blankIndex+1 : blankIndex+2]
-				switch model {
-				case "2":
-					controllerType = ControllerType_S7_1200
-				case "5":
-					controllerType = ControllerType_S7_1500
-				case "3":
-					controllerType = ControllerType_S7_300
-				case "4":
-					controllerType = ControllerType_S7_400
-				default:
-					c.log.Info().Str("articleNumber", articleNumber).Msg("Looking up unknown article number")
-					controllerType = ControllerType_ANY
-				}
-				c.driverContext.ControllerType = controllerType
-
-				// Send an event that connection setup is complete.
-				c.fireConnected(ch)
-				return
-			}
+// sendUserData sends a single S7 UserData request and waits (blocking) for the response
+// with the matching tpdu reference.
+func (c *Connection) sendUserData(ctx context.Context, tpduId uint16, request readWriteModel.TPKTPacket, interactionInfo string) (readWriteModel.S7Message, error) {
+	resultChan := make(chan readWriteModel.S7Message, 1)
+	errChan := make(chan error, 1)
+	if err := c.messageCodec.SendRequest(ctx, interactionInfo, request, func(message spi.Message) bool {
+		tpktPacket, ok := message.(readWriteModel.TPKTPacket)
+		if !ok {
+			return false
 		}
+		cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+		if !ok {
+			return false
+		}
+		messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
+		if !ok {
+			return false
+		}
+		return messageUserData.GetTpduReference() == tpduId
+	}, func(message spi.Message) error {
+		tpktPacket := message.(readWriteModel.TPKTPacket)
+		cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+		resultChan <- cotpPacketData.GetPayload()
+		return nil
+	}, func(err error) error {
+		errChan <- err
+		return nil
+	}); err != nil {
+		return nil, errors.Wrapf(err, "error sending %s request", interactionInfo)
 	}
-	c.fireConnectionError(errors.New("Coudln't find the required information"), ch)
-}
-
-func (c *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
-	identifyRemoteMessage := readWriteModel.NewS7MessageUserData(
-		1,
-		readWriteModel.NewS7ParameterUserData(
-			[]readWriteModel.S7ParameterUserDataItem{
-				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
-					0x11,
-					0x4,
-					0x4,
-					0x01,
-					0x00,
-					nil,
-					nil,
-					nil,
-				),
-			},
-		),
-		readWriteModel.NewS7PayloadUserData(
-			[]readWriteModel.S7PayloadUserDataItem{
-				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
-					readWriteModel.DataTransportErrorCode_OK,
-					readWriteModel.DataTransportSize_OCTET_STRING,
-					4,
-					readWriteModel.NewSzlId(
-						readWriteModel.SzlModuleTypeClass_CPU,
-						0x00,
-						readWriteModel.SzlSublist_MODULE_IDENTIFICATION,
-					),
-					0x0000,
-				),
-			},
-			nil,
-		),
-	)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, identifyRemoteMessage, true, 2, 0)
-	return readWriteModel.NewTPKTPacket(cotpPacketData)
+	select {
+	case message := <-resultChan:
+		return message, nil
+	case err := <-errChan:
+		return nil, err
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
 }
 
 func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse readWriteModel.COTPPacketConnectionResponse) readWriteModel.TPKTPacket {
@@ -428,30 +381,147 @@ func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse read
 		c.driverContext.MaxAmqCaller, c.driverContext.MaxAmqCallee, c.driverContext.PduSize,
 	)
 	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, s7Message, true, 1, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, s7Message, true, 1)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
 func (c *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 	return readWriteModel.NewCOTPPacketConnectionRequest(
 		[]readWriteModel.COTPParameter{
-			readWriteModel.NewCOTPParameterCallingTsap(c.driverContext.CallingTsapId, 0),
-			readWriteModel.NewCOTPParameterCalledTsap(c.driverContext.CalledTsapId, 0),
-			readWriteModel.NewCOTPParameterTpduSize(c.driverContext.CotpTpduSize, 0),
+			readWriteModel.NewCOTPParameterCallingTsap(c.driverContext.CallingTsapId),
+			readWriteModel.NewCOTPParameterCalledTsap(c.driverContext.CalledTsapId),
+			readWriteModel.NewCOTPParameterTpduSize(c.driverContext.CotpTpduSize),
 		},
 		nil,
 		0x0000,
 		0x000F,
 		readWriteModel.COTPProtocolClass_CLASS_0,
-		0,
 	)
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return &_default.DefaultConnectionMetadata{
-		ProvidesReading: true,
-		ProvidesWriting: true,
+		ConnectionAttributes: map[string]string{
+			"article-number":  c.driverContext.ArticleNumber,
+			"controller-type": c.driverContext.ControllerType.String(),
+			"pdu-size":        strconv.Itoa(int(c.driverContext.PduSize)),
+			"max-amq-caller":  strconv.Itoa(int(c.driverContext.MaxAmqCaller)),
+			"max-amq-callee":  strconv.Itoa(int(c.driverContext.MaxAmqCallee)),
+		},
+		ProvidesReading:     true,
+		ProvidesWriting:     true,
+		ProvidesSubscribing: c.driverContext.UserDataServicesSupported,
+		ProvidesBrowsing:    c.driverContext.UserDataServicesSupported,
 	}
+}
+
+// Ping does a real round trip: S7 has no dedicated ping, so a one-byte read of %M0 is
+// issued and any S7 answer (including a PLC error) counts as alive - only transport
+// failures and timeouts report an error.
+func (c *Connection) Ping(ctx context.Context) error {
+	if !c.IsConnected() {
+		return errors.New("not connected")
+	}
+	tpduId := c.tpduGenerator.getAndIncrement()
+	pingRequest := readWriteModel.NewTPKTPacket(readWriteModel.NewCOTPPacketData(
+		nil,
+		readWriteModel.NewS7MessageRequest(
+			tpduId,
+			readWriteModel.NewS7ParameterReadVarRequest([]readWriteModel.S7VarRequestParameterItem{
+				readWriteModel.NewS7VarRequestParameterItemAddress(
+					readWriteModel.NewS7AddressAny(readWriteModel.TransportSize_BYTE, 1, 0, readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0),
+				),
+			}),
+			nil,
+		),
+		true,
+		uint8(tpduId),
+	))
+	successChan := make(chan struct{}, 1)
+	errChan := make(chan error, 1)
+	if err := c.messageCodec.SendRequest(ctx, "ping", pingRequest, func(message spi.Message) bool {
+		tpktPacket, ok := message.(readWriteModel.TPKTPacket)
+		if !ok {
+			return false
+		}
+		cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+		if !ok {
+			return false
+		}
+		payload := cotpPacketData.GetPayload()
+		return payload != nil && payload.GetTpduReference() == tpduId
+	}, func(message spi.Message) error {
+		select {
+		case successChan <- struct{}{}:
+		default:
+		}
+		return nil
+	}, func(err error) error {
+		select {
+		case errChan <- err:
+		default:
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "error sending ping request")
+	}
+	select {
+	case <-successChan:
+		return nil
+	case err := <-errChan:
+		return errors.Wrap(err, "got error while waiting for ping response")
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
+func (c *Connection) dispatchUnsolicitedUserData(channel <-chan readWriteModel.S7MessageUserData) {
+	for message := range channel {
+		c.subscriberMutex.Lock()
+		subscriber := c.subscriber
+		c.subscriberMutex.Unlock()
+		if subscriber == nil || !subscriber.handleUserDataPush(message) {
+			c.log.Debug().Stringer("message", message).Msg("Unsolicited user data message not handled by any subscription")
+		}
+	}
+}
+
+func (c *Connection) getSubscriber() *Subscriber {
+	c.subscriberMutex.Lock()
+	defer c.subscriberMutex.Unlock()
+	if c.subscriber == nil {
+		c.subscriber = NewSubscriber(c, append(c._options, options.WithCustomLogger(c.log))...)
+	}
+	return c.subscriber
+}
+
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
+		c.GetPlcTagHandler(), c.GetPlcValueHandler(), c.getSubscriber())
+}
+
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
+}
+
+func (c *Connection) Close() error {
+	// Cancel PLC-side subscription state before tearing the connection down (bounded).
+	c.subscriberMutex.Lock()
+	subscriber := c.subscriber
+	c.subscriberMutex.Unlock()
+	if subscriber != nil {
+		drainCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		subscriber.drain(drainCtx)
+		cancel()
+	}
+	return c.DefaultConnection.Close()
+}
+
+func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewBrowser(c, append(c._options, options.WithCustomLogger(c.log))...),
+	)
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
@@ -461,6 +531,7 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			&c.tpduGenerator,
 			c.messageCodec,
 			c.tm,
+			&c.driverContext,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
@@ -468,7 +539,13 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilder(
-		c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(&c.tpduGenerator, c.messageCodec, c.tm))
+		c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(
+			&c.tpduGenerator,
+			c.messageCodec,
+			c.tm,
+			&c.driverContext,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		))
 }
 
 func (c *Connection) String() string {

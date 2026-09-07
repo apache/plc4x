@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetLogDataLogDataTimeChange = (*_BACnetLogDataLogDataTimeChange)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogDataTimeChange)(nil)
 
 // NewBACnetLogDataLogDataTimeChange factory function for _BACnetLogDataLogDataTimeChange
-func NewBACnetLogDataLogDataTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogDataLogDataTimeChange {
+func NewBACnetLogDataLogDataTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal) *_BACnetLogDataLogDataTimeChange {
 	if timeChange == nil {
 		panic("timeChange of type BACnetContextTagReal for BACnetLogDataLogDataTimeChange must not be nil")
 	}
 	_result := &_BACnetLogDataLogDataTimeChange{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag),
 		TimeChange:            timeChange,
 	}
 	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetLogDataLogDataTimeChange(structType any) BACnetLogDataLogDataTime
 	return nil
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) GetTypeName() string {
+func (m *_BACnetLogDataLogDataTimeChange) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogDataTimeChange"
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
+func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
 
 	// Simple field (timeChange)
 	lengthInBits += m.TimeChange.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

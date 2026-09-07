@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -60,6 +60,7 @@ type APDUConfirmedRequest interface {
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetConfirmedServiceRequest
 	// GetSegmentServiceChoice returns SegmentServiceChoice (property field)
+	// When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
 	GetSegmentServiceChoice() *BACnetConfirmedServiceChoice
 	// GetSegment returns Segment (property field)
 	GetSegment() []byte
@@ -95,9 +96,9 @@ var _ APDUConfirmedRequest = (*_APDUConfirmedRequest)(nil)
 var _ APDURequirements = (*_APDUConfirmedRequest)(nil)
 
 // NewAPDUConfirmedRequest factory function for _APDUConfirmedRequest
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest BACnetConfirmedServiceRequest, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUConfirmedRequest {
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest BACnetConfirmedServiceRequest, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte) *_APDUConfirmedRequest {
 	_result := &_APDUConfirmedRequest{
-		APDUContract:              NewAPDU(apduLength),
+		APDUContract:              NewAPDU(),
 		SegmentedMessage:          segmentedMessage,
 		MoreFollows:               moreFollows,
 		SegmentedResponseAccepted: segmentedResponseAccepted,
@@ -412,12 +413,12 @@ func CastAPDUConfirmedRequest(structType any) APDUConfirmedRequest {
 	return nil
 }
 
-func (m *_APDUConfirmedRequest) GetTypeName() string {
+func (m *_APDUConfirmedRequest) GetPlx4xTypeName() string {
 	return "APDUConfirmedRequest"
 }
 
-func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -466,13 +467,13 @@ func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Segment) > 0 {
-		lengthInBits += 8 * uint16(len(m.Segment))
+		lengthInBits += 8 * uint64(len(m.Segment))
 	}
 
 	return lengthInBits
 }
 
-func (m *_APDUConfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUConfirmedRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -560,7 +561,7 @@ func (m *_APDUConfirmedRequest) parse(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Validation
-	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool(segmentedMessage)) {
+	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool((bool(bool(segmentedMessage) && bool(bool((sequenceNumber) != (nil)))) && bool(bool((proposedWindowSize) != (nil)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service request should be set"})
 	}
 
@@ -652,7 +653,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", GetRef(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", new(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceRequest' field")
 		}
 

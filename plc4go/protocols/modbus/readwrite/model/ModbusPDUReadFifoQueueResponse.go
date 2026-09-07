@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,12 +215,12 @@ func CastModbusPDUReadFifoQueueResponse(structType any) ModbusPDUReadFifoQueueRe
 	return nil
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) GetTypeName() string {
+func (m *_ModbusPDUReadFifoQueueResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFifoQueueResponse"
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16
@@ -230,13 +230,13 @@ func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBits(ctx context.Context) u
 
 	// Array field
 	if len(m.FifoValue) > 0 {
-		lengthInBits += 16 * uint16(len(m.FifoValue))
+		lengthInBits += 16 * uint64(len(m.FifoValue))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

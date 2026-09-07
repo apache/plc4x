@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +226,12 @@ func CastCloseSecureChannelResponse(structType any) CloseSecureChannelResponse {
 	return nil
 }
 
-func (m *_CloseSecureChannelResponse) GetTypeName() string {
+func (m *_CloseSecureChannelResponse) GetPlx4xTypeName() string {
 	return "CloseSecureChannelResponse"
 }
 
-func (m *_CloseSecureChannelResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CloseSecureChannelResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -238,7 +239,7 @@ func (m *_CloseSecureChannelResponse) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_CloseSecureChannelResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CloseSecureChannelResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +254,7 @@ func (m *_CloseSecureChannelResponse) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +285,7 @@ func (m *_CloseSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for CloseSecureChannelResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -318,12 +318,12 @@ func CastConfirmedPrivateTransferError(structType any) ConfirmedPrivateTransferE
 	return nil
 }
 
-func (m *_ConfirmedPrivateTransferError) GetTypeName() string {
+func (m *_ConfirmedPrivateTransferError) GetPlx4xTypeName() string {
 	return "ConfirmedPrivateTransferError"
 }
 
-func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
+func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -422,7 +422,7 @@ func (m *_ConfirmedPrivateTransferError) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(err, "Error serializing 'serviceNumber' field")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "errorParameters", GetRef(m.GetErrorParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "errorParameters", new(m.GetErrorParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'errorParameters' field")
 		}
 

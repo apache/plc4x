@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -50,10 +50,11 @@ type BACnetServiceAck interface {
 
 // BACnetServiceAckContract provides a set of functions which can be overwritten by a sub struct
 type BACnetServiceAckContract interface {
-	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
-	GetServiceAckPayloadLength() uint32
-	// GetServiceAckLength() returns a parser argument
+	// GetServiceAckLength returns ServiceAckLength (property field)
 	GetServiceAckLength() uint32
+	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
+	// we subtract serviceChoice from our payload
+	GetServiceAckPayloadLength() uint32
 	// IsBACnetServiceAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAck()
 	// CreateBuilder creates a BACnetServiceAckBuilder
@@ -62,8 +63,8 @@ type BACnetServiceAckContract interface {
 
 // BACnetServiceAckRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetServiceAckRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 }
@@ -74,8 +75,6 @@ type _BACnetServiceAck struct {
 		BACnetServiceAckContract
 		BACnetServiceAckRequirements
 	}
-
-	// Arguments.
 	ServiceAckLength uint32
 }
 
@@ -95,9 +94,9 @@ func NewBACnetServiceAck(serviceAckLength uint32) *_BACnetServiceAck {
 type BACnetServiceAckBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() BACnetServiceAckBuilder
-	// WithArgServiceAckLength sets a parser argument
-	WithArgServiceAckLength(uint32) BACnetServiceAckBuilder
+	WithMandatoryFields(serviceAckLength uint32) BACnetServiceAckBuilder
+	// WithServiceAckLength adds ServiceAckLength (property field)
+	WithServiceAckLength(uint32) BACnetServiceAckBuilder
 	// AsBACnetServiceAckGetAlarmSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
 	AsBACnetServiceAckGetAlarmSummary() BACnetServiceAckGetAlarmSummaryBuilder
 	// AsBACnetServiceAckGetEnrollmentSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
@@ -159,11 +158,11 @@ type _BACnetServiceAckBuilder struct {
 
 var _ (BACnetServiceAckBuilder) = (*_BACnetServiceAckBuilder)(nil)
 
-func (b *_BACnetServiceAckBuilder) WithMandatoryFields() BACnetServiceAckBuilder {
-	return b
+func (b *_BACnetServiceAckBuilder) WithMandatoryFields(serviceAckLength uint32) BACnetServiceAckBuilder {
+	return b.WithServiceAckLength(serviceAckLength)
 }
 
-func (b *_BACnetServiceAckBuilder) WithArgServiceAckLength(serviceAckLength uint32) BACnetServiceAckBuilder {
+func (b *_BACnetServiceAckBuilder) WithServiceAckLength(serviceAckLength uint32) BACnetServiceAckBuilder {
 	b.ServiceAckLength = serviceAckLength
 	return b
 }
@@ -378,6 +377,19 @@ func (b *_BACnetServiceAck) CreateBACnetServiceAckBuilder() BACnetServiceAckBuil
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_BACnetServiceAck) GetServiceAckLength() uint32 {
+	return m.ServiceAckLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
@@ -404,12 +416,12 @@ func CastBACnetServiceAck(structType any) BACnetServiceAck {
 	return nil
 }
 
-func (m *_BACnetServiceAck) GetTypeName() string {
+func (m *_BACnetServiceAck) GetPlx4xTypeName() string {
 	return "BACnetServiceAck"
 }
 
-func (m *_BACnetServiceAck) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetServiceAck) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
@@ -418,11 +430,11 @@ func (m *_BACnetServiceAck) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAck) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetServiceAck) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetServiceAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -442,7 +454,7 @@ func BACnetServiceAckParseWithBufferProducer[T BACnetServiceAck](serviceAckLengt
 }
 
 func BACnetServiceAckParseWithBuffer[T BACnetServiceAck](ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (T, error) {
-	v, err := (&_BACnetServiceAck{ServiceAckLength: serviceAckLength}).parse(ctx, readBuffer, serviceAckLength)
+	v, err := (new(_BACnetServiceAck)).parse(ctx, readBuffer, serviceAckLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -463,6 +475,7 @@ func (m *_BACnetServiceAck) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ServiceAckLength = serviceAckLength
 
 	serviceChoice, err := ReadDiscriminatorEnumField[BACnetConfirmedServiceChoice](ctx, "serviceChoice", "BACnetConfirmedServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))))
 	if err != nil {
@@ -479,63 +492,63 @@ func (m *_BACnetServiceAck) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child BACnetServiceAck
 	switch {
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY: // BACnetServiceAckGetAlarmSummary
-		if _child, err = new(_BACnetServiceAckGetAlarmSummary).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckGetAlarmSummary).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckGetAlarmSummary for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY: // BACnetServiceAckGetEnrollmentSummary
-		if _child, err = new(_BACnetServiceAckGetEnrollmentSummary).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckGetEnrollmentSummary).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckGetEnrollmentSummary for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION: // BACnetServiceAckGetEventInformation
-		if _child, err = new(_BACnetServiceAckGetEventInformation).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckGetEventInformation).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckGetEventInformation for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_READ_FILE: // BACnetServiceAckAtomicReadFile
-		if _child, err = new(_BACnetServiceAckAtomicReadFile).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicReadFile).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicReadFile for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE: // BACnetServiceAckAtomicWriteFile
-		if _child, err = new(_BACnetServiceAckAtomicWriteFile).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicWriteFile).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicWriteFile for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // BACnetServiceAckCreateObject
-		if _child, err = new(_BACnetServiceAckCreateObject).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckCreateObject).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckCreateObject for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY: // BACnetServiceAckReadProperty
-		if _child, err = new(_BACnetServiceAckReadProperty).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadProperty).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadProperty for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: // BACnetServiceAckReadPropertyMultiple
-		if _child, err = new(_BACnetServiceAckReadPropertyMultiple).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadPropertyMultiple).parse(ctx, readBuffer, m, uint32(serviceAckPayloadLength), uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadPropertyMultiple for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetServiceAckReadRange
-		if _child, err = new(_BACnetServiceAckReadRange).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadRange).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadRange for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetServiceAckConfirmedPrivateTransfer
-		if _child, err = new(_BACnetServiceAckConfirmedPrivateTransfer).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckConfirmedPrivateTransfer).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckConfirmedPrivateTransfer for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetServiceAckVTOpen
-		if _child, err = new(_BACnetServiceAckVTOpen).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckVTOpen).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckVTOpen for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetServiceAckVTData
-		if _child, err = new(_BACnetServiceAckVTData).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckVTData).parse(ctx, readBuffer, m, uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckVTData for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetServiceAckAuthenticate
-		if _child, err = new(_BACnetServiceAckAuthenticate).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckAuthenticate).parse(ctx, readBuffer, m, uint32(serviceAckPayloadLength), uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAuthenticate for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_REQUEST_KEY: // BACnetServiceAckRequestKey
-		if _child, err = new(_BACnetServiceAckRequestKey).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckRequestKey).parse(ctx, readBuffer, m, uint32(serviceAckPayloadLength), uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckRequestKey for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetServiceAckReadPropertyConditional
-		if _child, err = new(_BACnetServiceAckReadPropertyConditional).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadPropertyConditional).parse(ctx, readBuffer, m, uint32(serviceAckPayloadLength), uint32(serviceAckLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadPropertyConditional for type-switch of BACnetServiceAck")
 		}
 	default:
@@ -581,16 +594,6 @@ func (pm *_BACnetServiceAck) serializeParent(ctx context.Context, writeBuffer ut
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetServiceAck) GetServiceAckLength() uint32 {
-	return m.ServiceAckLength
-}
-
-//
-////
 
 func (m *_BACnetServiceAck) IsBACnetServiceAck() {}
 

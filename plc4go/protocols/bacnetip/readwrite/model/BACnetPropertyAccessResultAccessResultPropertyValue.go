@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetPropertyAccessResultAccessResultPropertyValue = (*_BACnetPropertyAcc
 var _ BACnetPropertyAccessResultAccessResultRequirements = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
 
 // NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
-func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
+func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData) *_BACnetPropertyAccessResultAccessResultPropertyValue {
 	if propertyValue == nil {
 		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
 	}
 	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
-		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
+		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader),
 		PropertyValue: propertyValue,
 	}
 	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetPropertyAccessResultAccessResultPropertyValue(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetTypeName() string {
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetPlx4xTypeName() string {
 	return "BACnetPropertyAccessResultAccessResultPropertyValue"
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).getLengthInBits(ctx))
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).getLengthInBits(ctx))
 
 	// Simple field (propertyValue)
 	lengthInBits += m.PropertyValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

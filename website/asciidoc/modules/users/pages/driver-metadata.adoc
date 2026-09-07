@@ -1,0 +1,326 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:icons: font
+
+= Discovering Drivers and their Configuration
+
+This page is for people *integrating PLC4X into another tool*: a connection dialog, a config
+form, a validation step in a pipeline, a node in a flow-based editor.
+
+You do not have to hard-code any of it. Every driver ships a description of itself, and PLC4X
+can hand you that description at runtime: which drivers are on the classpath, which transports
+each one speaks, and every configuration parameter each combination accepts - with its type,
+whether it is mandatory, and its default.
+
+This is the same metadata the xref:protocols/index.adoc[protocol pages] on this site are
+generated from, so what your tool shows and what the documentation says can never drift apart.
+
+NOTE: This API is part of *PLC4J* (Java). PLC4Go, PLC4Py and PLC4C do not expose an equivalent
+yet - PLC4Go's `GetMetadata()` describes a *connection*, not a driver.
+
+== Where it starts
+
+Everything hangs off `PlcDriverManager`:
+
+[source,java]
+----
+import org.apache.plc4x.java.api.PlcDriverManager;
+
+PlcDriverManager driverManager = PlcDriverManager.getDefault();
+----
+
+Drivers are found with Java's `ServiceLoader`, so "which drivers do I have" literally means
+"which driver jars are on the classpath". If your tool loads plugins into their own classloader,
+hand it over explicitly:
+
+[source,java]
+----
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+
+PlcDriverManager driverManager = new DefaultPlcDriverManager(myPluginClassLoader);
+----
+
+== Which drivers do I have?
+
+[source,java]
+----
+Set<String> protocolCodes = driverManager.getProtocolCodes();      // <1>
+PlcDriver driver = driverManager.getDriver("s7");                  // <2>
+String humanReadable = driver.getProtocolName();                   // <3>
+----
+<1> The short codes - the `s7` in `s7://10.0.0.1`.
+<2> Throws `PlcConnectionException` if no driver with that code is on the classpath.
+<3> A display name, e.g. `Siemens S7 (Basic)`. Use the code for wiring, the name for humans.
+
+CAUTION: `getProtocolCodes()` returns an unordered `Set`. Sort it before showing it to anyone,
+or your dropdown will shuffle itself between runs.
+
+If you already have a connection string and just want the driver behind it, use
+`driverManager.getDriverForUrl(url)` instead of parsing the scheme yourself.
+
+With the `plc4j-driver-all` dependency, the above yields 18 drivers:
+
+[cols="1,1,1"]
+|===
+|`ab-eth` |`ads` |`canopen`
+|`eip` |`firmata` |`genericcan`
+|`iec-60870-5-104` |`knxnet-ip` |`logix`
+|`modbus-ascii` |`modbus-rtu` |`modbus-tcp`
+|`opcua` |`plc4x` |`s7`
+|`simulated` |`slmp` |`umas`
+|===
+
+== Which transports does a driver support?
+
+Everything else lives on `PlcDriverMetadata`:
+
+[source,java]
+----
+import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+
+PlcDriverMetadata metadata = driver.getMetadata();
+
+List<String> transports = metadata.getSupportedTransportCodes();   // <1>
+Optional<String> preferred = metadata.getDefaultTransportCode();   // <2>
+boolean canDiscover = metadata.isDiscoverySupported();             // <3>
+----
+<1> e.g. `[tcp, tls, tls-psk, udp, test]` for `modbus-tcp`.
+<2> What the driver uses when the connection string names no transport. Pre-select this.
+<3> Whether the driver can search the network for devices - use it to enable a "Scan" button.
+
+Two things to handle:
+
+* **Filter out `test`.** It is an in-memory transport used by PLC4X's own unit tests. It shows up
+  in the list, but it is not something a user can pick. The protocol pages on this site filter it
+  out for exactly this reason.
+* **The list can be empty.** `simulated` reports no transports at all, because it never talks to
+  anything. Do not assume at least one.
+
+[source,java]
+----
+List<String> selectable = metadata.getSupportedTransportCodes().stream()
+    .filter(code -> !"test".equals(code))
+    .toList();
+----
+
+== What is the configuration for a driver?
+
+[source,java]
+----
+import org.apache.plc4x.java.api.metadata.OptionMetadata;
+
+Optional<OptionMetadata> protocolOptions =
+    metadata.getProtocolConfigurationOptionMetadata();
+----
+
+It is an `Optional` because a driver may declare no options of its own - `simulated` has none.
+
+== What is the configuration for a transport of that driver?
+
+Ask for the *pair*, never for the transport alone:
+
+[source,java]
+----
+Optional<OptionMetadata> transportOptions =
+    metadata.getTransportConfigurationOptionMetadata("tcp");
+----
+
+A driver's transport configuration is exposed per driver-and-transport combination, so always
+query it through the driver you are configuring rather than caching one table per transport code.
+
+== What parameters does a configuration define?
+
+`OptionMetadata` gives you the list, and `Option` describes each entry:
+
+[source,java]
+----
+import org.apache.plc4x.java.api.metadata.Option;
+
+List<Option> all = protocolOptions.get().getOptions();
+List<Option> mandatory = protocolOptions.get().getRequiredOptions();   // convenience filter
+----
+
+[cols="2,2,5"]
+|===
+|Method |Returns |What to do with it
+
+|`getKey()` |`String` |The parameter name as it appears in a connection string.
+|`getType()` |`OptionType` |Pick the right widget and validate input. See below.
+|`isRequired()` |`boolean` |Mark the field mandatory and block submission while it is empty.
+|`getDefaultValue()` |`Optional<Object>` |Pre-fill the field. Empty means there is no default.
+|`getDescription()` |`String` |Tooltip or help text.
+|`isSecret()` |`boolean` |Render as a password field and keep it out of logs.
+|`getSince()` |`Optional<String>` |PLC4X version that introduced the option, e.g. `0.13.0`. Only some options carry it.
+|===
+
+`OptionType` is a small enum - `BOOLEAN`, `INT`, `LONG`, `FLOAT`, `DOUBLE`, `STRING`, `FILE`,
+`STRUCT`:
+
+* `FILE` is a path - offer a file picker (used for keystores and certificates).
+* `STRUCT` is a composite value the driver parses from its string form, such as the ADS
+  `target-ams-net-id`. Treat it as free text and let the driver validate it; the syntax is
+  documented on the driver's own protocol page.
+
+Most options are optional and defaulted. `ads` is the one driver in the default set that really
+demands input - four mandatory parameters, two of them `STRUCT`:
+
+[source]
+----
+target-ams-net-id    STRUCT   required
+target-ams-port      INT      required
+source-ams-net-id    STRUCT   required
+source-ams-port      INT      required
+----
+
+== Turning options back into a connection string
+
+The keys are used verbatim as query parameters, with one rule: *transport options are namespaced
+with their transport code, protocol options are not*.
+
+[source]
+----
+s7://10.0.0.1?pdu-size=2048&cotp.local-rack=1&cotp.remote-slot=2
+     ^                      ^                 ^
+     |                      |                 └── transport option, prefixed with "cotp."
+     |                      └── transport option
+     └── protocol option, no prefix
+----
+
+So when you build the string, prefix exactly the values that came from
+`getTransportConfigurationOptionMetadata(...)`:
+
+[source,java]
+----
+String key = (transportCode == null) ? option.getKey()
+                                     : transportCode + "." + option.getKey();
+----
+
+TIP: Anything marked `isSecret()` ends up in that same string. PLC4X redacts those parameters in
+its own log output - do the same before you log, display or persist a connection string.
+
+== A complete example
+
+This program prints the full catalogue - every driver, its transports, and every option with its
+type, whether it is mandatory, and its default:
+
+[source,java]
+----
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.metadata.Option;
+import org.apache.plc4x.java.api.metadata.OptionMetadata;
+import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+
+import java.util.List;
+import java.util.TreeSet;
+
+public class DriverCatalog {
+
+    public static void main(String[] args) throws Exception {
+        PlcDriverManager driverManager = PlcDriverManager.getDefault();
+
+        for (String protocolCode : new TreeSet<>(driverManager.getProtocolCodes())) {
+            PlcDriver driver = driverManager.getDriver(protocolCode);
+            PlcDriverMetadata metadata = driver.getMetadata();
+
+            System.out.println("== " + protocolCode + " (" + driver.getProtocolName() + ")");
+            System.out.println("   discovery supported : " + metadata.isDiscoverySupported());
+            System.out.println("   default transport   : "
+                + metadata.getDefaultTransportCode().orElse("<none>"));
+
+            // "test" is an in-memory transport used by PLC4X's own unit tests.
+            List<String> transports = metadata.getSupportedTransportCodes().stream()
+                .filter(code -> !"test".equals(code))
+                .toList();
+            System.out.println("   transports          : " + transports);
+
+            metadata.getProtocolConfigurationOptionMetadata()
+                .ifPresent(options -> print("   protocol options", options, null));
+
+            for (String transportCode : transports) {
+                metadata.getTransportConfigurationOptionMetadata(transportCode)
+                    .ifPresent(options ->
+                        print("   transport options (" + transportCode + ")", options, transportCode));
+            }
+            System.out.println();
+        }
+    }
+
+    private static void print(String heading, OptionMetadata metadata, String prefix) {
+        System.out.println(heading + ":");
+        for (Option option : metadata.getOptions()) {
+            // In a connection string, transport options are namespaced with the transport code.
+            String key = (prefix == null) ? option.getKey() : prefix + "." + option.getKey();
+            System.out.printf("     %-34s %-8s %-9s %-7s %s%n",
+                key,
+                option.getType(),
+                option.isRequired() ? "required" : "optional",
+                option.isSecret() ? "secret" : "",
+                option.getDefaultValue().map(v -> "default=" + v).orElse(""));
+        }
+    }
+}
+----
+
+Its output for the ADS driver:
+
+[source]
+----
+== ads (Beckhoff TwinCat ADS)
+   discovery supported : true
+   default transport   : tcp
+   transports          : [tcp]
+   protocol options:
+     target-ams-net-id                  STRUCT   required
+     target-ams-port                    INT      required
+     source-ams-net-id                  STRUCT   required
+     source-ams-port                    INT      required
+     request-timeout-ms                 INT      optional          default=4000
+     max-data-type-table-depth          INT      optional          default=20
+     load-symbol-and-data-type-tables   BOOLEAN  optional          default=true
+   transport options (tcp):
+     tcp.connect-timeout-ms             INT      optional          default=5000
+     tcp.read-timeout-ms                INT      optional          default=0
+     tcp.write-timeout-ms               INT      optional          default=0
+     tcp.no-delay                       BOOLEAN  optional          default=true
+     tcp.keep-alive                     BOOLEAN  optional          default=false
+     tcp.send-buffer-size               INT      optional          default=81920
+     tcp.receive-buffer-size            INT      optional          default=81920
+     tcp.local-address                  STRING   optional
+     tcp.local-port                     INT      optional          default=0
+----
+
+To run it, you need a driver on the classpath. `plc4j-driver-all` gives you every one of them:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-all</artifactId>
+  <version>{page-component-version}</version>
+</dependency>
+----
+
+== Things to watch out for
+
+* `getProtocolCodes()` is an unordered `Set` - sort before displaying.
+* Filter the `test` transport out of anything a user sees.
+* A driver may report no transports (`simulated`) and no options (`simulated` again). Every
+  metadata accessor that can be absent returns an `Optional` or an empty list - none of them
+  return `null`, but none of them promise content either.
+* Ask for transport options per driver-and-transport pair, not per transport code.
+* Treat `isSecret()` options as credentials everywhere: masked in the UI, redacted in logs.

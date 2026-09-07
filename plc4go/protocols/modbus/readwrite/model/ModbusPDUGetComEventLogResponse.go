@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -260,12 +260,12 @@ func CastModbusPDUGetComEventLogResponse(structType any) ModbusPDUGetComEventLog
 	return nil
 }
 
-func (m *_ModbusPDUGetComEventLogResponse) GetTypeName() string {
+func (m *_ModbusPDUGetComEventLogResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUGetComEventLogResponse"
 }
 
-func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -281,13 +281,13 @@ func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBits(ctx context.Context) 
 
 	// Array field
 	if len(m.Events) > 0 {
-		lengthInBits += 8 * uint16(len(m.Events))
+		lengthInBits += 8 * uint64(len(m.Events))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

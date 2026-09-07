@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,6 +45,7 @@ type NetworkProtocolControlInformation interface {
 	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
+	// Number of bridges required to transmit information from source to destination
 	GetStackDepth() uint8
 	// IsNetworkProtocolControlInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNetworkProtocolControlInformation()
@@ -177,12 +180,12 @@ func CastNetworkProtocolControlInformation(structType any) NetworkProtocolContro
 	return nil
 }
 
-func (m *_NetworkProtocolControlInformation) GetTypeName() string {
+func (m *_NetworkProtocolControlInformation) GetPlx4xTypeName() string {
 	return "NetworkProtocolControlInformation"
 }
 
-func (m *_NetworkProtocolControlInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NetworkProtocolControlInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -196,12 +199,12 @@ func (m *_NetworkProtocolControlInformation) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_NetworkProtocolControlInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkProtocolControlInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
 func NetworkProtocolControlInformationParse(ctx context.Context, theBytes []byte) (NetworkProtocolControlInformation, error) {
-	return NetworkProtocolControlInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return NetworkProtocolControlInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func NetworkProtocolControlInformationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
@@ -211,7 +214,7 @@ func NetworkProtocolControlInformationParseWithBufferProducer() func(ctx context
 }
 
 func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
-	v, err := (&_NetworkProtocolControlInformation{}).parse(ctx, readBuffer)
+	v, err := (new(_NetworkProtocolControlInformation)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -227,19 +230,19 @@ func (m *_NetworkProtocolControlInformation) parse(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	stackCounter, err := ReadSimpleField(ctx, "stackCounter", ReadUnsignedByte(readBuffer, uint8(3)))
+	stackCounter, err := ReadSimpleField(ctx, "stackCounter", ReadUnsignedByte(readBuffer, uint8(3)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stackCounter' field"))
 	}
 	m.StackCounter = stackCounter
 
-	stackDepth, err := ReadSimpleField(ctx, "stackDepth", ReadUnsignedByte(readBuffer, uint8(3)))
+	stackDepth, err := ReadSimpleField(ctx, "stackDepth", ReadUnsignedByte(readBuffer, uint8(3)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stackDepth' field"))
 	}
@@ -253,7 +256,7 @@ func (m *_NetworkProtocolControlInformation) parse(ctx context.Context, readBuff
 }
 
 func (m *_NetworkProtocolControlInformation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -269,15 +272,15 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 		return errors.Wrap(pushErr, "Error pushing for NetworkProtocolControlInformation")
 	}
 
-	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 2), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	if err := WriteSimpleField[uint8](ctx, "stackCounter", m.GetStackCounter(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+	if err := WriteSimpleField[uint8](ctx, "stackCounter", m.GetStackCounter(), WriteUnsignedByte(writeBuffer, 3), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'stackCounter' field")
 	}
 
-	if err := WriteSimpleField[uint8](ctx, "stackDepth", m.GetStackDepth(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+	if err := WriteSimpleField[uint8](ctx, "stackDepth", m.GetStackDepth(), WriteUnsignedByte(writeBuffer, 3), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'stackDepth' field")
 	}
 

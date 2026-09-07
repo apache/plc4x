@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +208,12 @@ func CastEnumDefinition(structType any) EnumDefinition {
 	return nil
 }
 
-func (m *_EnumDefinition) GetTypeName() string {
+func (m *_EnumDefinition) GetPlx4xTypeName() string {
 	return "EnumDefinition"
 }
 
-func (m *_EnumDefinition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_EnumDefinition) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfFields)
 	lengthInBits += 32
@@ -228,7 +229,7 @@ func (m *_EnumDefinition) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EnumDefinition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EnumDefinition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -243,13 +244,13 @@ func (m *_EnumDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfFields, err := ReadImplicitField[int32](ctx, "noOfFields", ReadSignedInt(readBuffer, uint8(32)))
+	noOfFields, err := ReadImplicitField[int32](ctx, "noOfFields", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfFields' field"))
 	}
 	_ = noOfFields
 
-	fields, err := ReadCountArrayField[EnumField](ctx, "fields", ReadComplex[EnumField](ExtensionObjectDefinitionParseWithBufferProducer[EnumField]((int32)(int32(104))), readBuffer), uint64(noOfFields))
+	fields, err := ReadCountArrayField[EnumField](ctx, "fields", ReadComplex[EnumField](ExtensionObjectDefinitionParseWithBufferProducer[EnumField]((int32)(int32(104))), readBuffer), uint64(noOfFields), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fields' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_EnumDefinition) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for EnumDefinition")
 		}
 		noOfFields := int32(utils.InlineIf(bool((m.GetFields()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetFields()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfFields", noOfFields, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfFields", noOfFields, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfFields' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "fields", m.GetFields(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "fields", m.GetFields(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'fields' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,22 +57,19 @@ type _BACnetEventParameterChangeOfCharacterStringListOfAlarmValues struct {
 	OpeningTag        BACnetOpeningTag
 	ListOfAlarmValues []BACnetApplicationTagCharacterString
 	ClosingTag        BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventParameterChangeOfCharacterStringListOfAlarmValues = (*_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues)(nil)
 
 // NewBACnetEventParameterChangeOfCharacterStringListOfAlarmValues factory function for _BACnetEventParameterChangeOfCharacterStringListOfAlarmValues
-func NewBACnetEventParameterChangeOfCharacterStringListOfAlarmValues(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetApplicationTagCharacterString, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues {
+func NewBACnetEventParameterChangeOfCharacterStringListOfAlarmValues(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetApplicationTagCharacterString, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfCharacterStringListOfAlarmValues must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfCharacterStringListOfAlarmValues must not be nil")
 	}
-	return &_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues{OpeningTag: openingTag, ListOfAlarmValues: listOfAlarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues{OpeningTag: openingTag, ListOfAlarmValues: listOfAlarmValues, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder interfa
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder
 	// Build builds the BACnetEventParameterChangeOfCharacterStringListOfAlarmValues or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder) W
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -235,12 +225,12 @@ func CastBACnetEventParameterChangeOfCharacterStringListOfAlarmValues(structType
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfCharacterStringListOfAlarmValues"
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -258,7 +248,7 @@ func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetLengt
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +263,7 @@ func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer
 }
 
 func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, error) {
-	v, err := (&_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) Serializ
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) IsBACnetEventParameterChangeOfCharacterStringListOfAlarmValues() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) deepCopy
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.ListOfAlarmValues),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesCopy
 }

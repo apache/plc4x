@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -63,15 +63,12 @@ type _BACnetEventPriorities struct {
 	ToFault     BACnetApplicationTagUnsignedInteger
 	ToNormal    BACnetApplicationTagUnsignedInteger
 	ClosingTag  BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventPriorities = (*_BACnetEventPriorities)(nil)
 
 // NewBACnetEventPriorities factory function for _BACnetEventPriorities
-func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventPriorities {
+func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventPriorities {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventPriorities must not be nil")
 	}
@@ -87,7 +84,7 @@ func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApp
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventPriorities must not be nil")
 	}
-	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,8 +117,6 @@ type BACnetEventPrioritiesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventPrioritiesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventPrioritiesBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventPrioritiesBuilder
 	// Build builds the BACnetEventPriorities or returns an error if something is wrong
 	Build() (BACnetEventPriorities, error)
 	// MustBuild does the same as Build but panics on error
@@ -220,11 +215,6 @@ func (b *_BACnetEventPrioritiesBuilder) WithClosingTagBuilder(builderSupplier fu
 	return b
 }
 
-func (b *_BACnetEventPrioritiesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventPrioritiesBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-
 func (b *_BACnetEventPrioritiesBuilder) Build() (BACnetEventPriorities, error) {
 	if b.OpeningTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
@@ -317,12 +307,12 @@ func CastBACnetEventPriorities(structType any) BACnetEventPriorities {
 	return nil
 }
 
-func (m *_BACnetEventPriorities) GetTypeName() string {
+func (m *_BACnetEventPriorities) GetPlx4xTypeName() string {
 	return "BACnetEventPriorities"
 }
 
-func (m *_BACnetEventPriorities) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventPriorities) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -342,7 +332,7 @@ func (m *_BACnetEventPriorities) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetEventPriorities) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventPriorities) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -357,7 +347,7 @@ func BACnetEventPrioritiesParseWithBufferProducer(tagNumber uint8) func(ctx cont
 }
 
 func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
-	v, err := (&_BACnetEventPriorities{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventPriorities)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -453,16 +443,6 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventPriorities) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventPriorities) IsBACnetEventPriorities() {}
 
 func (m *_BACnetEventPriorities) DeepCopy() any {
@@ -479,7 +459,6 @@ func (m *_BACnetEventPriorities) deepCopy() *_BACnetEventPriorities {
 		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ToFault),
 		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ToNormal),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventPrioritiesCopy
 }

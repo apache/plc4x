@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -67,12 +67,12 @@ var _ APDUAbort = (*_APDUAbort)(nil)
 var _ APDURequirements = (*_APDUAbort)(nil)
 
 // NewAPDUAbort factory function for _APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) *_APDUAbort {
 	if abortReason == nil {
 		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
 	}
 	_result := &_APDUAbort{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
@@ -257,12 +257,12 @@ func CastAPDUAbort(structType any) APDUAbort {
 	return nil
 }
 
-func (m *_APDUAbort) GetTypeName() string {
+func (m *_APDUAbort) GetPlx4xTypeName() string {
 	return "APDUAbort"
 }
 
-func (m *_APDUAbort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUAbort) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -279,7 +279,7 @@ func (m *_APDUAbort) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUAbort) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUAbort) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

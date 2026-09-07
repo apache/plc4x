@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBBMDAcceptFDRegistrations = (*_BACnetConstructedDataB
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
 
 // NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
-func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
 	if bbmdAcceptFDRegistrations == nil {
 		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
 	}
 	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBBMDAcceptFDRegistrations(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetTypeName() string {
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBBMDAcceptFDRegistrations"
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (bbmdAcceptFDRegistrations)
 	lengthInBits += m.BbmdAcceptFDRegistrations.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,9 +24,8 @@ import (
 	"encoding/binary"
 	"math/big"
 
-	"github.com/pkg/errors"
-
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -87,8 +86,8 @@ func (p *writeBufferPlcValueBased) PushContext(logicalName string, writerArgs ..
 	return nil
 }
 
-func (p *writeBufferPlcValueBased) GetPos() uint16 {
-	return uint16(p.pos / 8)
+func (p *writeBufferPlcValueBased) GetPos() uint32 {
+	return uint32(p.pos / 8)
 }
 
 func (p *writeBufferPlcValueBased) WriteBit(logicalName string, value bool, _ ...utils.WithWriterArgs) error {

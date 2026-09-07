@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -295,12 +295,12 @@ func CastBACnetAccessRule(structType any) BACnetAccessRule {
 	return nil
 }
 
-func (m *_BACnetAccessRule) GetTypeName() string {
+func (m *_BACnetAccessRule) GetPlx4xTypeName() string {
 	return "BACnetAccessRule"
 }
 
-func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timeRangeSpecifier)
 	lengthInBits += m.TimeRangeSpecifier.GetLengthInBits(ctx)
@@ -324,7 +324,7 @@ func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetAccessRule) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAccessRule) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -339,7 +339,7 @@ func BACnetAccessRuleParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
-	v, err := (&_BACnetAccessRule{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAccessRule)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -421,7 +421,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(err, "Error serializing 'timeRangeSpecifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", GetRef(m.GetTimeRange()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", new(m.GetTimeRange()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeRange' field")
 	}
 
@@ -429,7 +429,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(err, "Error serializing 'locationSpecifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", GetRef(m.GetLocation()), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", new(m.GetLocation()), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'location' field")
 	}
 

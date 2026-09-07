@@ -21,18 +21,17 @@ package simulated
 
 import (
 	"context"
-	"runtime/debug"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
@@ -47,6 +46,7 @@ type Connection struct {
 	connected    bool
 	connectionId string
 	tracer       tracer.Tracer
+	invalidated  atomic.Bool
 
 	wg sync.WaitGroup // use to track spawned go routines
 
@@ -55,15 +55,16 @@ type Connection struct {
 
 func NewConnection(device *Device, tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	connectionId := utils.GenerateId(4)
 	connection := &Connection{
 		device:       device,
 		tagHandler:   tagHandler,
 		valueHandler: valueHandler,
 		options:      connectionOptions,
 		connected:    false,
-		connectionId: utils.GenerateId(customLogger, 4),
+		connectionId: connectionId,
 
-		log: customLogger,
+		log: customLogger.With().Str("connectionId", connectionId).Logger(),
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -85,165 +86,134 @@ func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	return c.ConnectWithContext(context.Background())
+func (c *Connection) Connect(_ context.Context) error {
+	// Check if the connection was already connected
+	if c.connected {
+		if c.tracer != nil {
+			c.tracer.AddTrace("connect", "error: already connected")
+		}
+		// Return an error to the user.
+		return errors.New("already connected")
+	}
+	var txId string
+	if c.tracer != nil {
+		txId = c.tracer.AddTransactionalStartTrace("connect", "started")
+	}
+	if delayString, ok := c.options["connectionDelay"]; ok {
+		// This is the length of the array, not the string
+		if len(delayString) == 1 {
+			delay, err := strconv.Atoi(delayString[0])
+			if err == nil {
+				time.Sleep(time.Duration(delay) * time.Millisecond)
+			}
+		}
+	}
+	// If we want the connection to fail, do so, otherwise return the connection.
+	if errorString, ok := c.options["connectionError"]; ok {
+		// If the ping operation should fail with an error, do so.
+		if len(errorString) == 1 {
+			return errors.New(errorString[0])
+		}
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "connect", "error: "+errorString[0])
+		}
+	} else {
+		// Mark the connection as "connected"
+		c.connected = true
+		c.invalidated.Store(false)
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "connect", "success")
+		}
+	}
+	return nil
 }
 
-func (c *Connection) ConnectWithContext(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Check if the connection was already connected
-		if c.connected {
-			if c.tracer != nil {
-				c.tracer.AddTrace("connect", "error: already connected")
-			}
-			// Return an error to the user.
-			ch <- _default.NewDefaultPlcConnectionConnectResult(c, errors.New("already connected"))
-			return
-		}
-		var txId string
-		if c.tracer != nil {
-			txId = c.tracer.AddTransactionalStartTrace("connect", "started")
-		}
-		if delayString, ok := c.options["connectionDelay"]; ok {
-			// This is the length of the array, not the string
-			if len(delayString) == 1 {
-				delay, err := strconv.Atoi(delayString[0])
-				if err == nil {
-					time.Sleep(time.Duration(delay) * time.Millisecond)
-				}
-			}
-		}
-		// If we want the connection to fail, do so, otherwise return the connection.
-		if errorString, ok := c.options["connectionError"]; ok {
-			// If the ping operation should fail with an error, do so.
-			if len(errorString) == 1 {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(c, errors.New(errorString[0]))
-			}
-			if c.tracer != nil {
-				c.tracer.AddTransactionalTrace(txId, "connect", "error: "+errorString[0])
-			}
-		} else {
-			// Mark the connection as "connected"
-			c.connected = true
-			if c.tracer != nil {
-				c.tracer.AddTransactionalTrace(txId, "connect", "success")
-			}
-			// Return the connection in a connected state to the user.
-			ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
-		}
-	}()
-	return ch
-}
+func (c *Connection) Close() error {
+	ctx := context.TODO()
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
+	defer cancelFunc()
 
-func (c *Connection) BlockingClose() {
-	<-c.Close()
-}
-
-func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Check if the connection is connected.
-		if !c.connected {
-			if c.tracer != nil {
-				c.tracer.AddTrace("close", "error: not connected")
-			}
-			// Return an error to the user.
-			ch <- _default.NewDefaultPlcConnectionCloseResult(c, errors.New("not connected"))
-			return
+	// Check if the connection is connected.
+	if !c.connected {
+		if c.invalidated.Load() {
+			return nil
 		}
-		var txId string
 		if c.tracer != nil {
-			txId = c.tracer.AddTransactionalStartTrace("close", "started")
+			c.tracer.AddTrace("close", "error: not connected")
 		}
-		// If a delay was configured, wait for the pre-configured time.
-		if delayString, ok := c.options["closingDelay"]; ok {
-			// This is the length of the array, not the string
-			if len(delayString) == 1 {
-				delay, err := strconv.Atoi(delayString[0])
-				if err == nil {
-					time.Sleep(time.Duration(delay) * time.Millisecond)
-				}
+		// Return an error to the user.
+		return errors.New("not connected")
+	}
+	var txId string
+	if c.tracer != nil {
+		txId = c.tracer.AddTransactionalStartTrace("close", "started")
+	}
+	// If a delay was configured, wait for the pre-configured time.
+	if delayString, ok := c.options["closingDelay"]; ok {
+		// This is the length of the array, not the string
+		if len(delayString) == 1 {
+			delay, err := strconv.Atoi(delayString[0])
+			if err == nil {
+				time.Sleep(time.Duration(delay) * time.Millisecond)
 			}
 		}
-		// Mark the connection as "disconnected".
-		c.connected = false
-		if c.tracer != nil {
-			c.tracer.AddTransactionalTrace(txId, "close", "success")
-		}
-		// Return a new connection to the user.
-		ch <- _default.NewDefaultPlcConnectionCloseResult(c, nil)
-	}()
-	return ch
+	}
+	// Mark the connection as "disconnected".
+	c.connected = false
+	if c.tracer != nil {
+		c.tracer.AddTransactionalTrace(txId, "close", "success")
+	}
+	return nil
 }
 
 func (c *Connection) IsConnected() bool {
-	return c.connected
+	return c.connected && !c.IsInvalidated()
 }
 
-func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Check if the connection is connected
-		if !c.connected {
-			if c.tracer != nil {
-				c.tracer.AddTrace("ping", "error: not connected")
-			}
-			// Return an error to the user.
-			ch <- _default.NewDefaultPlcConnectionPingResult(errors.New("not connected"))
-			return
-		}
-		var txId string
+func (c *Connection) Ping(ctx context.Context) error {
+	if c.IsInvalidated() {
+		return errors.New("connection has been invalidated")
+	}
+	// Check if the connection is connected
+	if !c.connected {
 		if c.tracer != nil {
-			txId = c.tracer.AddTransactionalStartTrace("ping", "started")
+			c.tracer.AddTrace("ping", "error: not connected")
 		}
-		if delayString, ok := c.options["pingDelay"]; ok {
-			// This is the length of the array, not the string
-			if len(delayString) == 1 {
-				delay, err := strconv.Atoi(delayString[0])
-				if err == nil {
-					time.Sleep(time.Duration(delay) * time.Millisecond)
-				}
+		return errors.New("not connected")
+	}
+	var txId string
+	if c.tracer != nil {
+		txId = c.tracer.AddTransactionalStartTrace("ping", "started")
+	}
+	if delayString, ok := c.options["pingDelay"]; ok {
+		// This is the length of the array, not the string
+		if len(delayString) == 1 {
+			delay, err := strconv.Atoi(delayString[0])
+			if err != nil {
+				return errors.Wrapf(err, "invalid delay '%s'", delayString[0])
+			}
+			timer := time.NewTimer(time.Duration(delay) * time.Millisecond)
+			c.log.Info().Msgf("Ping delay of %d ms", delay)
+			select {
+			case <-timer.C:
+			case <-ctx.Done():
+				return ctx.Err()
 			}
 		}
-		if errorString, ok := c.options["pingError"]; ok {
-			// If the ping operation should fail with an error, do so.
-			if len(errorString) == 1 {
-				ch <- _default.NewDefaultPlcConnectionPingResult(errors.New(errorString[0]))
-			}
-			if c.tracer != nil {
-				c.tracer.AddTransactionalTrace(txId, "ping", "error: "+errorString[0])
-			}
-		} else {
-			// Otherwise, give a positive response.
-			if c.tracer != nil {
-				c.tracer.AddTransactionalTrace(txId, "ping", "success")
-			}
-			ch <- _default.NewDefaultPlcConnectionPingResult(nil)
+	}
+	if errorString, ok := c.options["pingError"]; ok {
+		// If the ping operation should fail with an error, do so.
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "ping", "error: "+errorString[0])
 		}
-	}()
-	return ch
+		return errors.New(errorString[0])
+	} else {
+		// Otherwise, give a positive response.
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "ping", "success")
+		}
+		return nil
+	}
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
@@ -255,8 +225,12 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 			"readDelay":       "Delay applied when executing a read operation",
 			"writeDelay":      "Delay applied when executing a write operation",
 		},
-		ProvidesReading:     true,
-		ProvidesWriting:     true,
+		ProvidesReading: true,
+		ProvidesWriting: true,
+		// SubscriptionRequestBuilder below does hand out a builder, but the Subscriber behind it
+		// is a stub whose Subscribe/Unsubscribe always answer "Not Implemented", so advertising
+		// the capability would be a lie. Flip this to true only together with a Subscriber that
+		// actually delivers events. Browsing has no implementation at all.
 		ProvidesSubscribing: false,
 		ProvidesBrowsing:    false,
 	}
@@ -284,4 +258,18 @@ func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 
 func (c *Connection) String() string {
 	return "simulatedConnection"
+}
+
+func (c *Connection) Invalidate() {
+	if c.invalidated.Swap(true) {
+		return
+	}
+	c.log.Debug().Msg("invalidating connection")
+	if err := c.Close(); err != nil {
+		c.log.Warn().Err(err).Msg("error closing invalidated connection")
+	}
+}
+
+func (c *Connection) IsInvalidated() bool {
+	return c.invalidated.Load()
 }

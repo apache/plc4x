@@ -18,50 +18,61 @@
  */
 package org.apache.plc4x.java.knxnetip.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Secret;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.config.exceptions.ConfigurationException;
 
-public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
+import java.io.File;
+
+public class KnxNetIpConfiguration implements Configuration {
 
     @ConfigurationParameter("knxproj-file-path")
     @Description("Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages.")
-    public String knxprojFilePath;
+    public File knxprojFile;
 
+    @Secret
     @ConfigurationParameter("knxproj-password")
     @Description("Optional password needed to read the knxproj file.")
     public String knxprojPassword;
 
     @ConfigurationParameter("group-address-num-levels")
     @IntDefaultValue(3)
-    @Description("KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:\n" +
-        "\n" +
-        "- 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)}\n" +
-        "- 2 Levels: {main-group (5 bit)}/{sub-group (11 bit)}\n" +
-        "- 1 Level: {sub-group (16 bit)}\n" +
-        "\n" +
-        "The default is 3 levels. If the `knxproj-file-path` this information is provided by the file.")
+    @Description("""
+        KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:
+        
+        - 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)}
+        - 2 Levels: {main-group (5 bit)}/{sub-group (11 bit)}
+        - 1 Level: {sub-group (16 bit)}
+        
+        The default is 3 levels. If the `knxproj-file-path` this information is provided by the file.""")
     public int groupAddressNumLevels = 3;
 
     @ConfigurationParameter("connection-type")
     @StringDefaultValue("LINK_LAYER")
-    @Description("Type of connection used to communicate. Possible values are:\n" +
-        "\n" +
-        "- 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address.\n" +
-        "- 'RAW': The client gets unmanaged access to the bus (be careful with this)\n" +
-        "- 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.")
+    @Description("""
+        Type of connection used to communicate. Possible values are:
+        
+        - 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address.
+        - 'RAW': The client gets unmanaged access to the bus (be careful with this)
+        - 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.""")
     public String connectionType = "LINK_LAYER";
 
-    public String getKnxprojFilePath() {
-        return knxprojFilePath;
+    @ConfigurationParameter("request-timeout-ms")
+    @IntDefaultValue(10_000)
+    @Description("Maximum time (in milliseconds) to wait for a reply during the KNXnet/IP search, connect and tunnelling exchanges.")
+    public int requestTimeout = 10_000;
+
+    public File getKnxprojFile() {
+        return knxprojFile;
     }
 
-    public void setKnxprojFilePath(String knxprojFilePath) {
-        this.knxprojFilePath = knxprojFilePath;
+    public void setKnxprojFile(File knxprojFile) {
+        this.knxprojFile = knxprojFile;
     }
 
     public String getKnxprojPassword() {
@@ -85,8 +96,6 @@ public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
     }
 
     public void setConnectionType(String connectionType) {
-        // Try to parse the provided value, if it doesn't match any of the constants,
-        // throw an error.
         try {
             KnxLayer.valueOf("TUNNEL_" + connectionType.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -95,11 +104,20 @@ public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
         this.connectionType = connectionType.toUpperCase();
     }
 
+    public int getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
+
     @Override
     public String toString() {
-        return "Configuration{" +
-            "knxprojFilePath=" + knxprojFilePath + ", " +
-            "groupAddressNumLevels=" + groupAddressNumLevels +
+        return "KnxNetIpConfiguration{" +
+            "knxprojFile=" + knxprojFile +
+            ", groupAddressNumLevels=" + groupAddressNumLevels +
+            ", connectionType='" + connectionType + '\'' +
             '}';
     }
 

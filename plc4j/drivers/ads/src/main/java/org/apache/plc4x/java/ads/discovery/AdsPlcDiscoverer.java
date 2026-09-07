@@ -19,17 +19,20 @@
 package org.apache.plc4x.java.ads.discovery;
 
 import org.apache.plc4x.java.ads.discovery.readwrite.*;
-import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
-import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +53,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
         return discoverWithHandler(discoveryRequest, null);
     }
 
+    @Override
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
         CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
         Queue<PlcDiscoveryItem> values = new ConcurrentLinkedQueue<>();
@@ -60,10 +64,9 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
             for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
                 if (!networkInterface.isLoopback()) {
                     for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                        if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address)) {
-                            Inet4Address inet4Address = (Inet4Address) interfaceAddress.getAddress();
+                        if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address inet4Address)) {
                             // Open a listening socket on the AMS discovery default port for taking in responses.
-                            DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT, inet4Address);
+                            DatagramSocket adsDiscoverySocket = new DatagramSocket(Constants.ADSDISCOVERYUDPDEFAULTPORT, inet4Address);
                             adsDiscoverySocket.setBroadcast(true);
 
                             openSockets.add(adsDiscoverySocket);
@@ -77,8 +80,9 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                                         adsDiscoverySocket.receive(packet);
 
+                                        try {
                                         InetAddress plcAddress = packet.getAddress();
-                                        ReadBuffer readBuffer = new ReadBufferByteBased(packet.getData(), ByteOrder.LITTLE_ENDIAN);
+                                        ReadBuffer readBuffer = new ReadBufferByteBased(packet.getData(), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
                                         AdsDiscovery adsDiscoveryResponse = AdsDiscovery.staticParse(readBuffer);
 
                                         // Check if this is actually a discovery response.
@@ -122,8 +126,16 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                 attributes.put("host-name", new PlcSTRING(hostNameBlock.getHostName().getText()));
                                                 if (versionBlock != null) {
                                                     byte[] versionData = versionBlock.getVersionData();
-                                                    int patchVersion = ((int) versionData[3] & 0xFF) << 8 | ((int) versionData[2] & 0xFF);
-                                                    attributes.put("twin-cat-version", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
+                                                    // The responder says how long this block is, so it
+                                                    // can say two bytes and be believed. Read a version
+                                                    // out of it only if there is one there.
+                                                    if (versionData != null && versionData.length >= 4) {
+                                                        int patchVersion = ((int) versionData[3] & 0xFF) << 8 | ((int) versionData[2] & 0xFF);
+                                                        attributes.put("twin-cat-version", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
+                                                    } else {
+                                                        logger.debug("Ignoring a version block of {} bytes from {}",
+                                                            versionData == null ? 0 : versionData.length, plcAddress);
+                                                    }
                                                 }
                                                 if (fingerprintBlock != null) {
                                                     attributes.put("fingerprint", new PlcSTRING(new String(fingerprintBlock.getData()).trim()));
@@ -133,7 +145,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                 // Add an entry to the results.
                                                 PlcDiscoveryItem plcDiscoveryItem = new DefaultPlcDiscoveryItem(
                                                     "ads", "tcp",
-                                                    plcAddress.getHostAddress() + ":" + AdsConstants.ADSTCPDEFAULTPORT,
+                                                    plcAddress.getHostAddress() + ":" + org.apache.plc4x.java.ads.readwrite.Constants.ADSTCPDEFAULTPORT,
                                                     options, hostNameBlock.getHostName().getText(), attributes);
 
                                                 // If we've got an explicit handler, pass the new item to that.
@@ -145,6 +157,14 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                 values.add(plcDiscoveryItem);
                                             }
                                         }
+                                        } catch (BufferException | RuntimeException e) {
+                                            // Any host can send a datagram to a discovery port, so one
+                                            // we cannot read costs us that datagram. Ending the loop
+                                            // would end discovery on this interface for every device
+                                            // that had not answered yet.
+                                            logger.warn("Ignoring an unreadable ADS discovery response from {}",
+                                                packet.getAddress(), e);
+                                        }
                                     }
                                 } catch (SocketException e) {
                                     // If we're closing the socket at the end, a "Socket closed"
@@ -154,29 +174,34 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                     }
                                 } catch (IOException e) {
                                     logger.error("Error reading ADS discovery response", e);
-                                } catch (ParseException e) {
-                                    logger.error("Error parsing ADS discovery response", e);
                                 }
+                                // A parse failure no longer reaches here: it belongs to the datagram
+                                // it came from, and is handled beside the one that read it.
                             });
                             thread.start();
 
                             // Send the discovery request.
                             try {
                                 // Create the discovery request message for this device.
-                                AmsNetId amsNetId = new AmsNetId(inet4Address.getAddress()[0], inet4Address.getAddress()[1], inet4Address.getAddress()[2], inet4Address.getAddress()[3], (byte) 1, (byte) 1);
-                                AdsDiscovery discoveryRequestMessage = new AdsDiscovery(0, Operation.DISCOVERY_REQUEST, amsNetId, AdsPortNumbers.SYSTEM_SERVICE, Collections.emptyList());
+                                AmsNetId amsNetId = new AmsNetId(
+                                    (short) (inet4Address.getAddress()[0] & 0xFF),
+                                    (short) (inet4Address.getAddress()[1] & 0xFF),
+                                    (short) (inet4Address.getAddress()[2] & 0xFF),
+                                    (short) (inet4Address.getAddress()[3] & 0xFF),
+                                    (short) 1, (short) 1);
+                                AdsDiscovery discoveryRequestMessage = new AdsDiscovery(0L, Operation.DISCOVERY_REQUEST, amsNetId, AdsPortNumbers.SYSTEM_SERVICE, Collections.emptyList());
 
                                 // Serialize the message.
-                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(discoveryRequestMessage.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
+                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[discoveryRequestMessage.getLengthInBytes()], WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
                                 discoveryRequestMessage.serialize(writeBuffer);
 
                                 // Get the broadcast address for this interface.
                                 InetAddress broadcastAddress = interfaceAddress.getBroadcast();
 
                                 // Create the UDP packet to the broadcast address.
-                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT);
+                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, Constants.ADSDISCOVERYUDPDEFAULTPORT);
                                 adsDiscoverySocket.send(discoveryRequestPacket);
-                            } catch (SerializationException e) {
+                            } catch (BufferException e) {
                                 logger.error("Error serializing ADS discovery request", e);
                             } catch (IOException e) {
                                 logger.error("Error sending ADS discover request", e);
@@ -192,17 +217,22 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                 }
             }
         } catch (SocketException e) {
-            throw new RuntimeException(e);
-        } finally {
+            // Close any sockets we managed to open before failing.
             for (DatagramSocket openSocket : openSockets) {
                 openSocket.close();
             }
+            throw new RuntimeException(e);
         }
 
-        // Create a timer that completes the future after a given time with all the responses it found till then.
+        // Sockets stay open during the discovery window so the receiver threads keep
+        // collecting responses. They get closed when the timer fires, which also breaks
+        // the threads out of their blocking receive() calls.
         Timer timer = new Timer("Discovery Timeout");
         timer.schedule(new TimerTask() {
             public void run() {
+                for (DatagramSocket openSocket : openSockets) {
+                    openSocket.close();
+                }
                 PlcDiscoveryResponse response =
                     new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values));
                 timer.cancel();

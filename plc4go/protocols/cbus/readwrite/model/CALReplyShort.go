@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +55,9 @@ var _ CALReplyShort = (*_CALReplyShort)(nil)
 var _ CALReplyRequirements = (*_CALReplyShort)(nil)
 
 // NewCALReplyShort factory function for _CALReplyShort
-func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
+func NewCALReplyShort(calType byte, calData CALData) *_CALReplyShort {
 	_result := &_CALReplyShort{
-		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
+		CALReplyContract: NewCALReply(calType, calData),
 	}
 	_result.CALReplyContract.(*_CALReply)._SubType = _result
 	return _result
@@ -176,17 +177,17 @@ func CastCALReplyShort(structType any) CALReplyShort {
 	return nil
 }
 
-func (m *_CALReplyShort) GetTypeName() string {
+func (m *_CALReplyShort) GetPlx4xTypeName() string {
 	return "CALReplyShort"
 }
 
-func (m *_CALReplyShort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALReplyContract.(*_CALReply).getLengthInBits(ctx))
+func (m *_CALReplyShort) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALReplyContract.(*_CALReply).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_CALReplyShort) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALReplyShort) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -209,7 +210,7 @@ func (m *_CALReplyShort) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 }
 
 func (m *_CALReplyShort) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

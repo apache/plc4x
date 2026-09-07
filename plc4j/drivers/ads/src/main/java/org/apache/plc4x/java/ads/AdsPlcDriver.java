@@ -18,32 +18,34 @@
  */
 package org.apache.plc4x.java.ads;
 
-import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.configuration.AdsTcpTransportConfiguration;
 import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
-import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
-import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.ads.readwrite.Constants;
+import org.apache.plc4x.java.ads.tag.AdsTag;
+import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
 /**
- * Implementation of the ADS protocol, based on:
- * - ADS Protocol
- * - TCP
- * - Serial
+ * Implementation of the ADS protocol over TCP.
  */
-public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
+public class AdsPlcDriver extends DriverBase implements PlcDiscoverer {
+
+    private final AdsPlcDiscoverer discoverer = new AdsPlcDiscoverer();
 
     @Override
     public String getProtocolCode() {
@@ -56,8 +58,49 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected Class<? extends Configuration> getConfigurationClass() {
+        return AdsConfiguration.class;
+    }
+
+    @Override
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return AdsTcpTransportConfiguration.class;
+        }
+        return super.getTransportConfigurationClass(transport);
+    }
+
+    @Override
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.ADSTCPDEFAULTPORT);
+        }
+        return Collections.emptySet();
+    }
+
+    @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
-        return new DefaultPlcDiscoveryRequest.Builder(new AdsPlcDiscoverer());
+        return new DefaultPlcDiscoveryRequest.Builder(discoverer);
+    }
+
+    @Override
+    public java.util.concurrent.CompletableFuture<org.apache.plc4x.java.api.messages.PlcDiscoveryResponse> discover(org.apache.plc4x.java.api.messages.PlcDiscoveryRequest discoveryRequest) {
+        return discoverer.discover(discoveryRequest);
+    }
+
+    @Override
+    protected boolean canDiscover() {
+        return true;
     }
 
     @Override
@@ -86,61 +129,12 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
-    protected boolean canDiscover() {
-        return true;
+    protected ConnectionBase<AdsConfiguration> getConnection(Configuration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
+        return new AdsTcpConnection((AdsConfiguration) configuration, transportInstance, auditLog);
     }
 
-    @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
-        return AdsConfiguration.class;
-    }
-
-    @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(AdsTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    protected Optional<String> getDefaultTransportCode() {
-        return Optional.of("tcp");
-    }
-
-    @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
-    @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
-    }
-
-    @Override
-    protected ProtocolStackConfigurer<AmsTCPPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(AmsTCPPacket.class, AmsTCPPacket::staticParse)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withProtocol(AdsProtocolLogic.class)
-            .littleEndian()
-            .build();
-    }
-
-    /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return (int) byteBuf.getUnsignedIntLE(byteBuf.readerIndex() + 2) + 6;
-            }
-            return -1;
-        }
+    public AdsTag prepareTag(String tagAddress) {
+        return (AdsTag) new AdsTagHandler().parseTag(tagAddress);
     }
 
 }

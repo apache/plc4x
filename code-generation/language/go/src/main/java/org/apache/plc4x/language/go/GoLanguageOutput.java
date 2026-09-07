@@ -54,6 +54,11 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
+    protected List<Template> getConstantsTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return List.of(freemarkerConfiguration.getTemplate("templates/go/constants-template.go.ftlh"));
+    }
+
+    @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
             freemarkerConfiguration.getTemplate("templates/go/complex-type-template.go.ftlh"));

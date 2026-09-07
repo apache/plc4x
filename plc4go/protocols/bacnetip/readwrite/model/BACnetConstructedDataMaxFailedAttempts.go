@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaxFailedAttempts = (*_BACnetConstructedDataMaxFailed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxFailedAttempts)(nil)
 
 // NewBACnetConstructedDataMaxFailedAttempts factory function for _BACnetConstructedDataMaxFailedAttempts
-func NewBACnetConstructedDataMaxFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxFailedAttempts BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
+func NewBACnetConstructedDataMaxFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxFailedAttempts BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
 	if maxFailedAttempts == nil {
 		panic("maxFailedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxFailedAttempts must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaxFailedAttempts{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxFailedAttempts:             maxFailedAttempts,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetTypeName() string {
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxFailedAttempts"
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxFailedAttempts)
 	lengthInBits += m.MaxFailedAttempts.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

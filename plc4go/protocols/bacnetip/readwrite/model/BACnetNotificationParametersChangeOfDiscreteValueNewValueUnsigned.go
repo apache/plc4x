@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned = (*_BAC
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned)(nil)
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetApplicationTagUnsignedInteger, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {
 	if unsignedValue == nil {
 		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag),
 		UnsignedValue: unsignedValue,
 	}
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(struc
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) Get
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

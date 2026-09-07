@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -124,11 +124,11 @@ func CastNLMRejectMessageToNetworkRejectReason(structType any) NLMRejectMessageT
 	return castFunc(structType)
 }
 
-func (m NLMRejectMessageToNetworkRejectReason) GetLengthInBits(ctx context.Context) uint16 {
+func (m NLMRejectMessageToNetworkRejectReason) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m NLMRejectMessageToNetworkRejectReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m NLMRejectMessageToNetworkRejectReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

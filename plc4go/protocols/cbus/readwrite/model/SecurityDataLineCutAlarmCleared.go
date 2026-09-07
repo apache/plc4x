@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastSecurityDataLineCutAlarmCleared(structType any) SecurityDataLineCutAlar
 	return nil
 }
 
-func (m *_SecurityDataLineCutAlarmCleared) GetTypeName() string {
+func (m *_SecurityDataLineCutAlarmCleared) GetPlx4xTypeName() string {
 	return "SecurityDataLineCutAlarmCleared"
 }
 
-func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

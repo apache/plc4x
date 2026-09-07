@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataTimeSynchronizationRecipients = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationRecipients)(nil)
 
 // NewBACnetConstructedDataTimeSynchronizationRecipients factory function for _BACnetConstructedDataTimeSynchronizationRecipients
-func NewBACnetConstructedDataTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronizationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationRecipients {
+func NewBACnetConstructedDataTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronizationRecipients []BACnetRecipient) *_BACnetConstructedDataTimeSynchronizationRecipients {
 	_result := &_BACnetConstructedDataTimeSynchronizationRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeSynchronizationRecipients: timeSynchronizationRecipients,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataTimeSynchronizationRecipients(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeSynchronizationRecipients"
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.TimeSynchronizationRecipients) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

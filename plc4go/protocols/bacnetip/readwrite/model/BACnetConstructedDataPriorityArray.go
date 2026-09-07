@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPriorityArray = (*_BACnetConstructedDataPriorityArray
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriorityArray)(nil)
 
 // NewBACnetConstructedDataPriorityArray factory function for _BACnetConstructedDataPriorityArray
-func NewBACnetConstructedDataPriorityArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, priorityArray BACnetPriorityArray, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityArray {
+func NewBACnetConstructedDataPriorityArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, priorityArray BACnetPriorityArray) *_BACnetConstructedDataPriorityArray {
 	if priorityArray == nil {
 		panic("priorityArray of type BACnetPriorityArray for BACnetConstructedDataPriorityArray must not be nil")
 	}
 	_result := &_BACnetConstructedDataPriorityArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PriorityArray:                 priorityArray,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPriorityArray(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataPriorityArray) GetTypeName() string {
+func (m *_BACnetConstructedDataPriorityArray) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPriorityArray"
 }
 
-func (m *_BACnetConstructedDataPriorityArray) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPriorityArray) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (priorityArray)
 	lengthInBits += m.PriorityArray.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPriorityArray) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPriorityArray) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPriorityArray) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,8 +54,6 @@ type MonitoredSAL interface {
 type MonitoredSALContract interface {
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
 	// CreateBuilder creates a MonitoredSALBuilder
@@ -62,8 +62,8 @@ type MonitoredSALContract interface {
 
 // MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
 type MonitoredSALRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetSalType returns SalType (discriminator field)
 	GetSalType() byte
 }
@@ -75,16 +75,13 @@ type _MonitoredSAL struct {
 		MonitoredSALRequirements
 	}
 	SalType byte
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 
 // NewMonitoredSAL factory function for _MonitoredSAL
-func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
-	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
+func NewMonitoredSAL(salType byte) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType}
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,8 +96,6 @@ type MonitoredSALBuilder interface {
 	WithMandatoryFields(salType byte) MonitoredSALBuilder
 	// WithSalType adds SalType (property field)
 	WithSalType(byte) MonitoredSALBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) MonitoredSALBuilder
 	// AsMonitoredSALLongFormSmartMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
 	AsMonitoredSALLongFormSmartMode() MonitoredSALLongFormSmartModeBuilder
 	// AsMonitoredSALShortFormBasicMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
@@ -142,11 +137,6 @@ func (b *_MonitoredSALBuilder) WithMandatoryFields(salType byte) MonitoredSALBui
 
 func (b *_MonitoredSALBuilder) WithSalType(salType byte) MonitoredSALBuilder {
 	b.SalType = salType
-	return b
-}
-
-func (b *_MonitoredSALBuilder) WithArgCBusOptions(cBusOptions CBusOptions) MonitoredSALBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -253,26 +243,26 @@ func CastMonitoredSAL(structType any) MonitoredSAL {
 	return nil
 }
 
-func (m *_MonitoredSAL) GetTypeName() string {
+func (m *_MonitoredSAL) GetPlx4xTypeName() string {
 	return "MonitoredSAL"
 }
 
-func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_MonitoredSAL) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_MonitoredSAL) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func MonitoredSALParse[T MonitoredSAL](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return MonitoredSALParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return MonitoredSALParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -287,7 +277,7 @@ func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions
 }
 
 func MonitoredSALParseWithBuffer[T MonitoredSAL](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_MonitoredSAL{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_MonitoredSAL)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -309,7 +299,7 @@ func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0)
+	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salType' field"))
 	}
@@ -360,16 +350,6 @@ func (pm *_MonitoredSAL) serializeParent(ctx context.Context, writeBuffer utils.
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_MonitoredSAL) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
-
 func (m *_MonitoredSAL) IsMonitoredSAL() {}
 
 func (m *_MonitoredSAL) DeepCopy() any {
@@ -383,7 +363,6 @@ func (m *_MonitoredSAL) deepCopy() *_MonitoredSAL {
 	_MonitoredSALCopy := &_MonitoredSAL{
 		nil, // will be set by child
 		m.SalType,
-		m.CBusOptions,
 	}
 	return _MonitoredSALCopy
 }

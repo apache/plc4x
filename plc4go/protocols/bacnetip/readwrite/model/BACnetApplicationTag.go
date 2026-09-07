@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,8 +64,8 @@ type BACnetApplicationTagContract interface {
 
 // BACnetApplicationTagRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetApplicationTagRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetActualTagNumber returns ActualTagNumber (discriminator field)
 	GetActualTagNumber() uint8
 }
@@ -418,12 +418,12 @@ func CastBACnetApplicationTag(structType any) BACnetApplicationTag {
 	return nil
 }
 
-func (m *_BACnetApplicationTag) GetTypeName() string {
+func (m *_BACnetApplicationTag) GetPlx4xTypeName() string {
 	return "BACnetApplicationTag"
 }
 
-func (m *_BACnetApplicationTag) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetApplicationTag) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -435,11 +435,11 @@ func (m *_BACnetApplicationTag) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetApplicationTag) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetApplicationTag) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetApplicationTag) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetApplicationTag) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -459,7 +459,7 @@ func BACnetApplicationTagParseWithBufferProducer[T BACnetApplicationTag]() func(
 }
 
 func BACnetApplicationTagParseWithBuffer[T BACnetApplicationTag](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetApplicationTag{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetApplicationTag)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

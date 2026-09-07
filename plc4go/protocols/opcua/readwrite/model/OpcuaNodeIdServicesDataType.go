@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -357,15 +357,9 @@ const (
 	OpcuaNodeIdServicesDataType_UABinaryFileDataType                      OpcuaNodeIdServicesDataType = 15006
 	OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType         OpcuaNodeIdServicesDataType = 15007
 	OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService           OpcuaNodeIdServicesDataType = 15008
-	OpcuaNodeIdServicesDataType_TestScalarStructure                       OpcuaNodeIdServicesDataType = 15015
-	OpcuaNodeIdServicesDataType_TestArrayStructure                        OpcuaNodeIdServicesDataType = 15016
-	OpcuaNodeIdServicesDataType_TestStructure                             OpcuaNodeIdServicesDataType = 15017
 	OpcuaNodeIdServicesDataType_AccessLevelType                           OpcuaNodeIdServicesDataType = 15031
 	OpcuaNodeIdServicesDataType_EventNotifierType                         OpcuaNodeIdServicesDataType = 15033
-	OpcuaNodeIdServicesDataType_TestAbstractStructure                     OpcuaNodeIdServicesDataType = 15399
-	OpcuaNodeIdServicesDataType_TestConcreteStructure                     OpcuaNodeIdServicesDataType = 15400
 	OpcuaNodeIdServicesDataType_AccessLevelExType                         OpcuaNodeIdServicesDataType = 15406
-	OpcuaNodeIdServicesDataType_TestEnumeration                           OpcuaNodeIdServicesDataType = 15432
 	OpcuaNodeIdServicesDataType_BaseConfigurationDataType                 OpcuaNodeIdServicesDataType = 15434
 	OpcuaNodeIdServicesDataType_BaseConfigurationRecordDataType           OpcuaNodeIdServicesDataType = 15435
 	OpcuaNodeIdServicesDataType_CertificateGroupDataType                  OpcuaNodeIdServicesDataType = 15436
@@ -381,7 +375,6 @@ const (
 	OpcuaNodeIdServicesDataType_DataTypeSchemaHeader                      OpcuaNodeIdServicesDataType = 15534
 	OpcuaNodeIdServicesDataType_ConfigurationUpdateTargetType             OpcuaNodeIdServicesDataType = 15538
 	OpcuaNodeIdServicesDataType_ConfigurationUpdateType                   OpcuaNodeIdServicesDataType = 15539
-	OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType          OpcuaNodeIdServicesDataType = 15549
 	OpcuaNodeIdServicesDataType_ApplicationIdentityDataType               OpcuaNodeIdServicesDataType = 15556
 	OpcuaNodeIdServicesDataType_EndpointDataType                          OpcuaNodeIdServicesDataType = 15557
 	OpcuaNodeIdServicesDataType_ServerEndpointDataType                    OpcuaNodeIdServicesDataType = 15558
@@ -474,10 +467,6 @@ const (
 	OpcuaNodeIdServicesDataType_JsonActionRequestMessage                  OpcuaNodeIdServicesDataType = 19321
 	OpcuaNodeIdServicesDataType_JsonActionResponseMessage                 OpcuaNodeIdServicesDataType = 19322
 	OpcuaNodeIdServicesDataType_LogRecord                                 OpcuaNodeIdServicesDataType = 19361
-	OpcuaNodeIdServicesDataType_TestUnion                                 OpcuaNodeIdServicesDataType = 19431
-	OpcuaNodeIdServicesDataType_TestOptionalFields                        OpcuaNodeIdServicesDataType = 19432
-	OpcuaNodeIdServicesDataType_TestOptionSet                             OpcuaNodeIdServicesDataType = 19433
-	OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType OpcuaNodeIdServicesDataType = 19445
 	OpcuaNodeIdServicesDataType_DiagnosticsLevel                          OpcuaNodeIdServicesDataType = 19723
 	OpcuaNodeIdServicesDataType_PubSubDiagnosticsCounterClassification    OpcuaNodeIdServicesDataType = 19730
 	OpcuaNodeIdServicesDataType_LogRecordsDataType                        OpcuaNodeIdServicesDataType = 19745
@@ -504,8 +493,15 @@ const (
 	OpcuaNodeIdServicesDataType_DatagramConnectionTransport2DataType      OpcuaNodeIdServicesDataType = 23612
 	OpcuaNodeIdServicesDataType_DatagramWriterGroupTransport2DataType     OpcuaNodeIdServicesDataType = 23613
 	OpcuaNodeIdServicesDataType_DatagramDataSetReaderTransportDataType    OpcuaNodeIdServicesDataType = 23614
+	OpcuaNodeIdServicesDataType_ServiceCertificateDataType                OpcuaNodeIdServicesDataType = 23724
+	OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType          OpcuaNodeIdServicesDataType = 23743
+	OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType OpcuaNodeIdServicesDataType = 23744
 	OpcuaNodeIdServicesDataType_UriString                                 OpcuaNodeIdServicesDataType = 23751
+	OpcuaNodeIdServicesDataType_NumberRange                               OpcuaNodeIdServicesDataType = 23903
 	OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType                OpcuaNodeIdServicesDataType = 24033
+	OpcuaNodeIdServicesDataType_AliasNameVerboseDataType                  OpcuaNodeIdServicesDataType = 24051
+	OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType               OpcuaNodeIdServicesDataType = 24052
+	OpcuaNodeIdServicesDataType_AliasUpdateDataType                       OpcuaNodeIdServicesDataType = 24053
 	OpcuaNodeIdServicesDataType_PortableQualifiedName                     OpcuaNodeIdServicesDataType = 24105
 	OpcuaNodeIdServicesDataType_PortableNodeId                            OpcuaNodeIdServicesDataType = 24106
 	OpcuaNodeIdServicesDataType_UnsignedRationalNumber                    OpcuaNodeIdServicesDataType = 24107
@@ -865,15 +861,9 @@ func init() {
 		OpcuaNodeIdServicesDataType_UABinaryFileDataType,
 		OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType,
 		OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService,
-		OpcuaNodeIdServicesDataType_TestScalarStructure,
-		OpcuaNodeIdServicesDataType_TestArrayStructure,
-		OpcuaNodeIdServicesDataType_TestStructure,
 		OpcuaNodeIdServicesDataType_AccessLevelType,
 		OpcuaNodeIdServicesDataType_EventNotifierType,
-		OpcuaNodeIdServicesDataType_TestAbstractStructure,
-		OpcuaNodeIdServicesDataType_TestConcreteStructure,
 		OpcuaNodeIdServicesDataType_AccessLevelExType,
-		OpcuaNodeIdServicesDataType_TestEnumeration,
 		OpcuaNodeIdServicesDataType_BaseConfigurationDataType,
 		OpcuaNodeIdServicesDataType_BaseConfigurationRecordDataType,
 		OpcuaNodeIdServicesDataType_CertificateGroupDataType,
@@ -889,7 +879,6 @@ func init() {
 		OpcuaNodeIdServicesDataType_DataTypeSchemaHeader,
 		OpcuaNodeIdServicesDataType_ConfigurationUpdateTargetType,
 		OpcuaNodeIdServicesDataType_ConfigurationUpdateType,
-		OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType,
 		OpcuaNodeIdServicesDataType_ApplicationIdentityDataType,
 		OpcuaNodeIdServicesDataType_EndpointDataType,
 		OpcuaNodeIdServicesDataType_ServerEndpointDataType,
@@ -982,10 +971,6 @@ func init() {
 		OpcuaNodeIdServicesDataType_JsonActionRequestMessage,
 		OpcuaNodeIdServicesDataType_JsonActionResponseMessage,
 		OpcuaNodeIdServicesDataType_LogRecord,
-		OpcuaNodeIdServicesDataType_TestUnion,
-		OpcuaNodeIdServicesDataType_TestOptionalFields,
-		OpcuaNodeIdServicesDataType_TestOptionSet,
-		OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType,
 		OpcuaNodeIdServicesDataType_DiagnosticsLevel,
 		OpcuaNodeIdServicesDataType_PubSubDiagnosticsCounterClassification,
 		OpcuaNodeIdServicesDataType_LogRecordsDataType,
@@ -1012,8 +997,15 @@ func init() {
 		OpcuaNodeIdServicesDataType_DatagramConnectionTransport2DataType,
 		OpcuaNodeIdServicesDataType_DatagramWriterGroupTransport2DataType,
 		OpcuaNodeIdServicesDataType_DatagramDataSetReaderTransportDataType,
+		OpcuaNodeIdServicesDataType_ServiceCertificateDataType,
+		OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType,
+		OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType,
 		OpcuaNodeIdServicesDataType_UriString,
+		OpcuaNodeIdServicesDataType_NumberRange,
 		OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType,
+		OpcuaNodeIdServicesDataType_AliasNameVerboseDataType,
+		OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType,
+		OpcuaNodeIdServicesDataType_AliasUpdateDataType,
 		OpcuaNodeIdServicesDataType_PortableQualifiedName,
 		OpcuaNodeIdServicesDataType_PortableNodeId,
 		OpcuaNodeIdServicesDataType_UnsignedRationalNumber,
@@ -1167,24 +1159,12 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType, true
 	case 15008:
 		return OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService, true
-	case 15015:
-		return OpcuaNodeIdServicesDataType_TestScalarStructure, true
-	case 15016:
-		return OpcuaNodeIdServicesDataType_TestArrayStructure, true
-	case 15017:
-		return OpcuaNodeIdServicesDataType_TestStructure, true
 	case 15031:
 		return OpcuaNodeIdServicesDataType_AccessLevelType, true
 	case 15033:
 		return OpcuaNodeIdServicesDataType_EventNotifierType, true
-	case 15399:
-		return OpcuaNodeIdServicesDataType_TestAbstractStructure, true
-	case 15400:
-		return OpcuaNodeIdServicesDataType_TestConcreteStructure, true
 	case 15406:
 		return OpcuaNodeIdServicesDataType_AccessLevelExType, true
-	case 15432:
-		return OpcuaNodeIdServicesDataType_TestEnumeration, true
 	case 15434:
 		return OpcuaNodeIdServicesDataType_BaseConfigurationDataType, true
 	case 15435:
@@ -1215,8 +1195,6 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_ConfigurationUpdateTargetType, true
 	case 15539:
 		return OpcuaNodeIdServicesDataType_ConfigurationUpdateType, true
-	case 15549:
-		return OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType, true
 	case 15556:
 		return OpcuaNodeIdServicesDataType_ApplicationIdentityDataType, true
 	case 15557:
@@ -1409,14 +1387,6 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_JsonActionResponseMessage, true
 	case 19361:
 		return OpcuaNodeIdServicesDataType_LogRecord, true
-	case 19431:
-		return OpcuaNodeIdServicesDataType_TestUnion, true
-	case 19432:
-		return OpcuaNodeIdServicesDataType_TestOptionalFields, true
-	case 19433:
-		return OpcuaNodeIdServicesDataType_TestOptionSet, true
-	case 19445:
-		return OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType, true
 	case 19723:
 		return OpcuaNodeIdServicesDataType_DiagnosticsLevel, true
 	case 19730:
@@ -1487,12 +1457,26 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_DatagramWriterGroupTransport2DataType, true
 	case 23614:
 		return OpcuaNodeIdServicesDataType_DatagramDataSetReaderTransportDataType, true
+	case 23724:
+		return OpcuaNodeIdServicesDataType_ServiceCertificateDataType, true
+	case 23743:
+		return OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType, true
+	case 23744:
+		return OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType, true
 	case 23751:
 		return OpcuaNodeIdServicesDataType_UriString, true
+	case 23903:
+		return OpcuaNodeIdServicesDataType_NumberRange, true
 	case 24:
 		return OpcuaNodeIdServicesDataType_BaseDataType, true
 	case 24033:
 		return OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType, true
+	case 24051:
+		return OpcuaNodeIdServicesDataType_AliasNameVerboseDataType, true
+	case 24052:
+		return OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType, true
+	case 24053:
+		return OpcuaNodeIdServicesDataType_AliasUpdateDataType, true
 	case 24105:
 		return OpcuaNodeIdServicesDataType_PortableQualifiedName, true
 	case 24106:
@@ -2175,24 +2159,12 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType, true
 	case "BrokerTransportQualityOfService":
 		return OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService, true
-	case "TestScalarStructure":
-		return OpcuaNodeIdServicesDataType_TestScalarStructure, true
-	case "TestArrayStructure":
-		return OpcuaNodeIdServicesDataType_TestArrayStructure, true
-	case "TestStructure":
-		return OpcuaNodeIdServicesDataType_TestStructure, true
 	case "AccessLevelType":
 		return OpcuaNodeIdServicesDataType_AccessLevelType, true
 	case "EventNotifierType":
 		return OpcuaNodeIdServicesDataType_EventNotifierType, true
-	case "TestAbstractStructure":
-		return OpcuaNodeIdServicesDataType_TestAbstractStructure, true
-	case "TestConcreteStructure":
-		return OpcuaNodeIdServicesDataType_TestConcreteStructure, true
 	case "AccessLevelExType":
 		return OpcuaNodeIdServicesDataType_AccessLevelExType, true
-	case "TestEnumeration":
-		return OpcuaNodeIdServicesDataType_TestEnumeration, true
 	case "BaseConfigurationDataType":
 		return OpcuaNodeIdServicesDataType_BaseConfigurationDataType, true
 	case "BaseConfigurationRecordDataType":
@@ -2223,8 +2195,6 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_ConfigurationUpdateTargetType, true
 	case "ConfigurationUpdateType":
 		return OpcuaNodeIdServicesDataType_ConfigurationUpdateType, true
-	case "ApplicationConfigurationDataType":
-		return OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType, true
 	case "ApplicationIdentityDataType":
 		return OpcuaNodeIdServicesDataType_ApplicationIdentityDataType, true
 	case "EndpointDataType":
@@ -2417,14 +2387,6 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_JsonActionResponseMessage, true
 	case "LogRecord":
 		return OpcuaNodeIdServicesDataType_LogRecord, true
-	case "TestUnion":
-		return OpcuaNodeIdServicesDataType_TestUnion, true
-	case "TestOptionalFields":
-		return OpcuaNodeIdServicesDataType_TestOptionalFields, true
-	case "TestOptionSet":
-		return OpcuaNodeIdServicesDataType_TestOptionSet, true
-	case "AuthorizationServiceConfigurationDataType":
-		return OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType, true
 	case "DiagnosticsLevel":
 		return OpcuaNodeIdServicesDataType_DiagnosticsLevel, true
 	case "PubSubDiagnosticsCounterClassification":
@@ -2495,12 +2457,26 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_DatagramWriterGroupTransport2DataType, true
 	case "DatagramDataSetReaderTransportDataType":
 		return OpcuaNodeIdServicesDataType_DatagramDataSetReaderTransportDataType, true
+	case "ServiceCertificateDataType":
+		return OpcuaNodeIdServicesDataType_ServiceCertificateDataType, true
+	case "ApplicationConfigurationDataType":
+		return OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType, true
+	case "AuthorizationServiceConfigurationDataType":
+		return OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType, true
 	case "UriString":
 		return OpcuaNodeIdServicesDataType_UriString, true
+	case "NumberRange":
+		return OpcuaNodeIdServicesDataType_NumberRange, true
 	case "BaseDataType":
 		return OpcuaNodeIdServicesDataType_BaseDataType, true
 	case "ProgramDiagnostic2DataType":
 		return OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType, true
+	case "AliasNameVerboseDataType":
+		return OpcuaNodeIdServicesDataType_AliasNameVerboseDataType, true
+	case "AliasCategoryUpdateDataType":
+		return OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType, true
+	case "AliasUpdateDataType":
+		return OpcuaNodeIdServicesDataType_AliasUpdateDataType, true
 	case "PortableQualifiedName":
 		return OpcuaNodeIdServicesDataType_PortableQualifiedName, true
 	case "PortableNodeId":
@@ -3088,11 +3064,11 @@ func CastOpcuaNodeIdServicesDataType(structType any) OpcuaNodeIdServicesDataType
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesDataType) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesDataType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -3248,24 +3224,12 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "BrokerConnectionTransportDataType"
 	case OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService:
 		return "BrokerTransportQualityOfService"
-	case OpcuaNodeIdServicesDataType_TestScalarStructure:
-		return "TestScalarStructure"
-	case OpcuaNodeIdServicesDataType_TestArrayStructure:
-		return "TestArrayStructure"
-	case OpcuaNodeIdServicesDataType_TestStructure:
-		return "TestStructure"
 	case OpcuaNodeIdServicesDataType_AccessLevelType:
 		return "AccessLevelType"
 	case OpcuaNodeIdServicesDataType_EventNotifierType:
 		return "EventNotifierType"
-	case OpcuaNodeIdServicesDataType_TestAbstractStructure:
-		return "TestAbstractStructure"
-	case OpcuaNodeIdServicesDataType_TestConcreteStructure:
-		return "TestConcreteStructure"
 	case OpcuaNodeIdServicesDataType_AccessLevelExType:
 		return "AccessLevelExType"
-	case OpcuaNodeIdServicesDataType_TestEnumeration:
-		return "TestEnumeration"
 	case OpcuaNodeIdServicesDataType_BaseConfigurationDataType:
 		return "BaseConfigurationDataType"
 	case OpcuaNodeIdServicesDataType_BaseConfigurationRecordDataType:
@@ -3296,8 +3260,6 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "ConfigurationUpdateTargetType"
 	case OpcuaNodeIdServicesDataType_ConfigurationUpdateType:
 		return "ConfigurationUpdateType"
-	case OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType:
-		return "ApplicationConfigurationDataType"
 	case OpcuaNodeIdServicesDataType_ApplicationIdentityDataType:
 		return "ApplicationIdentityDataType"
 	case OpcuaNodeIdServicesDataType_EndpointDataType:
@@ -3490,14 +3452,6 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "JsonActionResponseMessage"
 	case OpcuaNodeIdServicesDataType_LogRecord:
 		return "LogRecord"
-	case OpcuaNodeIdServicesDataType_TestUnion:
-		return "TestUnion"
-	case OpcuaNodeIdServicesDataType_TestOptionalFields:
-		return "TestOptionalFields"
-	case OpcuaNodeIdServicesDataType_TestOptionSet:
-		return "TestOptionSet"
-	case OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType:
-		return "AuthorizationServiceConfigurationDataType"
 	case OpcuaNodeIdServicesDataType_DiagnosticsLevel:
 		return "DiagnosticsLevel"
 	case OpcuaNodeIdServicesDataType_PubSubDiagnosticsCounterClassification:
@@ -3568,12 +3522,26 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "DatagramWriterGroupTransport2DataType"
 	case OpcuaNodeIdServicesDataType_DatagramDataSetReaderTransportDataType:
 		return "DatagramDataSetReaderTransportDataType"
+	case OpcuaNodeIdServicesDataType_ServiceCertificateDataType:
+		return "ServiceCertificateDataType"
+	case OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType:
+		return "ApplicationConfigurationDataType"
+	case OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType:
+		return "AuthorizationServiceConfigurationDataType"
 	case OpcuaNodeIdServicesDataType_UriString:
 		return "UriString"
+	case OpcuaNodeIdServicesDataType_NumberRange:
+		return "NumberRange"
 	case OpcuaNodeIdServicesDataType_BaseDataType:
 		return "BaseDataType"
 	case OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType:
 		return "ProgramDiagnostic2DataType"
+	case OpcuaNodeIdServicesDataType_AliasNameVerboseDataType:
+		return "AliasNameVerboseDataType"
+	case OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType:
+		return "AliasCategoryUpdateDataType"
+	case OpcuaNodeIdServicesDataType_AliasUpdateDataType:
+		return "AliasUpdateDataType"
 	case OpcuaNodeIdServicesDataType_PortableQualifiedName:
 		return "PortableQualifiedName"
 	case OpcuaNodeIdServicesDataType_PortableNodeId:

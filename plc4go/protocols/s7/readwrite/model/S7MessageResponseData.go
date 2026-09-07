@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -222,12 +222,12 @@ func CastS7MessageResponseData(structType any) S7MessageResponseData {
 	return nil
 }
 
-func (m *_S7MessageResponseData) GetTypeName() string {
+func (m *_S7MessageResponseData) GetPlx4xTypeName() string {
 	return "S7MessageResponseData"
 }
 
-func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7MessageContract.(*_S7Message).getLengthInBits(ctx))
+func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7MessageContract.(*_S7Message).getLengthInBits(ctx))
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_S7MessageResponseData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7MessageResponseData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7MessageResponseData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

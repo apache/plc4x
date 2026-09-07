@@ -28,7 +28,7 @@ namespace org.apache.plc4net.messages
     public interface IPlcSubscriptionEventArgs
     {
         /// <summary>
-        /// Timestamp of the event that occured
+        /// Timestamp of the event that occurred
         /// </summary>
         DateTime Timestamp { get; }
     }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,8 @@ type S7AddressContract interface {
 
 // S7AddressRequirements provides a set of functions which need to be implemented by a sub struct
 type S7AddressRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetAddressType returns AddressType (discriminator field)
 	GetAddressType() uint8
 }
@@ -205,23 +205,23 @@ func CastS7Address(structType any) S7Address {
 	return nil
 }
 
-func (m *_S7Address) GetTypeName() string {
+func (m *_S7Address) GetPlx4xTypeName() string {
 	return "S7Address"
 }
 
-func (m *_S7Address) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7Address) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_S7Address) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Address) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7Address) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7Address) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -241,7 +241,7 @@ func S7AddressParseWithBufferProducer[T S7Address]() func(ctx context.Context, r
 }
 
 func S7AddressParseWithBuffer[T S7Address](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_S7Address{}).parse(ctx, readBuffer)
+	v, err := (new(_S7Address)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

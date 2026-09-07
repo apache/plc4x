@@ -22,12 +22,12 @@ package fields
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	"github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,7 +58,7 @@ func (f *FieldWriterArray[T, _]) WriteSimpleTypeArrayField(ctx context.Context, 
 			if err := dataWriter.PushContext(logicalName, utils.WithRenderAsList(true)); err != nil {
 				return errors.Wrap(err, "error pushing context for "+logicalName)
 			}
-			for curItem := 0; curItem < len(values); curItem++ {
+			for curItem := range values {
 				value := values[curItem]
 				ctx := codegen.NewContextLastItem(ctx, curItem == len(values)-1)
 				ctx = utils.CreateArrayContext(ctx, len(values), curItem)
@@ -81,7 +81,7 @@ func (f *FieldWriterArray[_, C]) WriteComplexTypeArrayField(ctx context.Context,
 			if err := writeBuffer.PushContext(logicalName, utils.WithRenderAsList(true)); err != nil {
 				return errors.Wrap(err, "error pushing context for "+logicalName)
 			}
-			for curItem := 0; curItem < len(values); curItem++ {
+			for curItem := range values {
 				value := values[curItem]
 				ctx := codegen.NewContextLastItem(ctx, curItem == len(values)-1)
 				ctx = utils.CreateArrayContext(ctx, len(values), curItem)

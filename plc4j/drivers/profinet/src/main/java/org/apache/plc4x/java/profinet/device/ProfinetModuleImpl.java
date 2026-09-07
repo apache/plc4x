@@ -25,11 +25,11 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
-import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseItem;
+import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 
 import java.util.*;
@@ -85,7 +85,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
 
         if (module.getSystemDefinedSubmoduleList() != null) {
             for (ProfinetInterfaceSubmoduleItem interfaceItem : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
-                Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
+                Long identNumber = Long.decode(interfaceItem.getSubmoduleIdentNumber());
                 Integer subSlotNumber = interfaceItem.getSubslotNumber();
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     slot,
@@ -107,7 +107,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
             }
             for (
                 ProfinetPortSubmoduleItem portItem : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
-                Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
+                Long identNumber = Long.decode(portItem.getSubmoduleIdentNumber());
                 Integer subSlotNumber = portItem.getSubslotNumber();
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     0,
@@ -264,19 +264,19 @@ public class ProfinetModuleImpl implements ProfinetModule {
                     }
 
                     String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + virtual.getId() + ".Status";
-                    browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, false, Collections.emptyList(), new HashMap<>(), options));
+                    browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, java.util.EnumSet.of(org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC), false, Collections.emptyList(), new HashMap<>(), options));
                     if (virtual.getIoData() != null && virtual.getIoData().getInput() != null) {
                         for (ProfinetIoDataInput input : virtual.getIoData().getInput()) {
                             for (ProfinetDataItem item : input.getDataItemList()) {
                                 if (item.isUseAsBits()) {
                                     for (int i = 0; i < ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).getDataTypeSize() * 8; i++) {
                                         String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + i;
-                                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":BOOL"), tagName, false, false, true, false, Collections.emptyList(), new HashMap<>(), options));
+                                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":BOOL"), tagName, false, false, java.util.EnumSet.of(org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC), false, Collections.emptyList(), new HashMap<>(), options));
                                     }
                                 } else {
                                     String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId();
                                     String datatype = ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).toString();
-                                    browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":" + datatype), tagName, false, false, true, false, Collections.emptyList(), new HashMap<>(), options));
+                                    browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(tagName + ":" + datatype), tagName, false, false, java.util.EnumSet.of(org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC), false, Collections.emptyList(), new HashMap<>(), options));
                                 }
                             }
                         }
@@ -287,13 +287,13 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 for (ProfinetInterfaceSubmoduleItem systemInterface : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
                     if (identNumber == systemInterface.getSubslotNumber()) {
                         String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemInterface.getId() + ".Status";
-                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, false, Collections.emptyList(), new HashMap<>(), options));
+                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, java.util.EnumSet.of(org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC), false, Collections.emptyList(), new HashMap<>(), options));
                     }
                 }
                 for (ProfinetPortSubmoduleItem systemPort : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
                     if (identNumber == systemPort.getSubslotNumber()) {
                         String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemPort.getId() + ".Status";
-                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, false, Collections.emptyList(), new HashMap<>(), options));
+                        browseItems.add(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, java.util.EnumSet.of(org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC), false, Collections.emptyList(), new HashMap<>(), options));
                     }
                 }
             }
@@ -303,7 +303,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
     }
 
     @Override
-    public Map<String, PlcResponseItem<PlcValue>> parseTags(Map<String, PlcResponseItem<PlcValue>> tags, String addressSpace, ReadBuffer buffer) throws ParseException {
+    public Map<String, PlcResponseItem<PlcValue>> parseTags(Map<String, PlcResponseItem<PlcValue>> tags, String addressSpace, ReadBuffer buffer) throws BufferException {
         for (PnIoCm_IoDataObject block : inputIoPsApiBlocks) {
             int identNumber = block.getSubSlotNumber();
             for (ProfinetVirtualSubmoduleItem virtual : module.getVirtualSubmoduleList()) {

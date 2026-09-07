@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastNetworkConnectionParameters(structType any) NetworkConnectionParameters
 	return nil
 }
 
-func (m *_NetworkConnectionParameters) GetTypeName() string {
+func (m *_NetworkConnectionParameters) GetPlx4xTypeName() string {
 	return "NetworkConnectionParameters"
 }
 
-func (m *_NetworkConnectionParameters) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NetworkConnectionParameters) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (connectionSize)
 	lengthInBits += 16
@@ -255,7 +255,7 @@ func (m *_NetworkConnectionParameters) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_NetworkConnectionParameters) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkConnectionParameters) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -270,7 +270,7 @@ func NetworkConnectionParametersParseWithBufferProducer() func(ctx context.Conte
 }
 
 func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkConnectionParameters, error) {
-	v, err := (&_NetworkConnectionParameters{}).parse(ctx, readBuffer)
+	v, err := (new(_NetworkConnectionParameters)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

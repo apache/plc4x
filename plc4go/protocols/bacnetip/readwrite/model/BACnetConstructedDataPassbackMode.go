@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPassbackMode = (*_BACnetConstructedDataPassbackMode)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackMode)(nil)
 
 // NewBACnetConstructedDataPassbackMode factory function for _BACnetConstructedDataPassbackMode
-func NewBACnetConstructedDataPassbackMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackMode BACnetAccessPassbackModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackMode {
+func NewBACnetConstructedDataPassbackMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackMode BACnetAccessPassbackModeTagged) *_BACnetConstructedDataPassbackMode {
 	if passbackMode == nil {
 		panic("passbackMode of type BACnetAccessPassbackModeTagged for BACnetConstructedDataPassbackMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataPassbackMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PassbackMode:                  passbackMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPassbackMode(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataPassbackMode) GetTypeName() string {
+func (m *_BACnetConstructedDataPassbackMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPassbackMode"
 }
 
-func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (passbackMode)
 	lengthInBits += m.PassbackMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPassbackMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPassbackMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -17,73 +17,137 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transports</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
-  <artifactId>plc4j-transport-pcap-replay</artifactId>
+  <artifactId>plc4j-transports-pcap-replay</artifactId>
   <name>PLC4J: Transports: PCAP Replay</name>
   <description>Transport using libpcap to replay pcapng files to simulate a raw socket.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-pcap-shared</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-pcap-replay</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <!--
-       Generate an OSGI compatible MANIFEST file.
-     -->
+        Override coverage threshold: PCAP transport requires native libraries for pcap
+        operations. Especially on the CI/CD servers this is not available and tests are skipped
+        Which drops below the coverage threshold, which however is met on systems with installed
+        libs.
+      -->
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check-coverage</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit implementation="org.jacoco.report.check.Limit">
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.57</minimum>
+                    </limit>
+                    <limit implementation="org.jacoco.report.check.Limit">
+                      <counter>CLASS</counter>
+                      <value>MISSEDCOUNT</value>
+                      <maximum>0</maximum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.spi.transport.Transport,org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransport</Export-Service>
-          </instructions>
+          <usedDependencies>
+            <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
+          </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- Pcap4J for reading pcap files -->
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-packetfactory-static</artifactId>
+    </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
 </project>

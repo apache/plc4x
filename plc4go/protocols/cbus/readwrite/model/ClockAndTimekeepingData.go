@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,8 +64,8 @@ type ClockAndTimekeepingDataContract interface {
 
 // ClockAndTimekeepingDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ClockAndTimekeepingDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetArgument returns Argument (discriminator field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (discriminator field)
@@ -287,12 +287,12 @@ func CastClockAndTimekeepingData(structType any) ClockAndTimekeepingData {
 	return nil
 }
 
-func (m *_ClockAndTimekeepingData) GetTypeName() string {
+func (m *_ClockAndTimekeepingData) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingData"
 }
 
-func (m *_ClockAndTimekeepingData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ClockAndTimekeepingData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -305,11 +305,11 @@ func (m *_ClockAndTimekeepingData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ClockAndTimekeepingData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ClockAndTimekeepingData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ClockAndTimekeepingData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ClockAndTimekeepingData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -329,7 +329,7 @@ func ClockAndTimekeepingDataParseWithBufferProducer[T ClockAndTimekeepingData]()
 }
 
 func ClockAndTimekeepingDataParseWithBuffer[T ClockAndTimekeepingData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_ClockAndTimekeepingData{}).parse(ctx, readBuffer)
+	v, err := (new(_ClockAndTimekeepingData)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

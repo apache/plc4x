@@ -21,20 +21,19 @@ package bacnetip
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"net"
 	"net/url"
 	"strconv"
-	"sync"
+	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -46,144 +45,150 @@ type Driver struct {
 	_default.DefaultDriver
 
 	discoverer              *Discoverer
-	applicationManager      ApplicationManager
 	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 
-	log zerolog.Logger
+	_options []options.WithOption
+	log      zerolog.Logger
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
-		discoverer: NewDiscoverer(_options...),
-		applicationManager: ApplicationManager{
-			applications: map[string]*ApplicationLayerMessageCodec{},
-			log:          customLogger,
-		},
-		tm:                      transactions.NewRequestTransactionManager(math.MaxInt),
+		discoverer:              NewDiscoverer(_options...),
+		tm:                      transactions.NewRequestTransactionManager(math.MaxInt, options.WithCustomLogger(customLogger)),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
-		log: customLogger,
+		_options: _options,
+		log:      customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "bacnet-ip", "BACnet/IP", "udp", NewTagHandler())
 	return driver
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	d.log.Debug().
-		Stringer("transportUrl", &transportUrl).
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
+	connectionLog.Debug().
 		Int("nTransports", len(transports)).
 		Int("nDriverOptions", len(driverOptions)).
 		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		return ch
+		return nil, errors.Errorf("couldn't find transport for given transport url %v", transportUrl)
 	}
-	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	driverOptions["defaultUdpPort"] = []string{strconv.Itoa(int(model.BacnetConstants_BACNETUDPDEFAULTPORT))}
-	// Set so_reuse by default
+	// Provide a default-port to the transport, used if the user doesn't provide one in the connection string.
+	driverOptions["defaultUdpPort"] = []string{strconv.FormatUint(uint64(model.Constant_BACNETUDPDEFAULTPORT), 10)}
+	// Set so_reuse by default so multiple BACnet processes can share the BACnet/IP UDP port.
 	if _, ok := driverOptions["so-reuse"]; !ok {
 		driverOptions["so-reuse"] = []string{"true"}
 	}
-	var udpTransport *udp.Transport
-	switch transport := transport.(type) {
-	case *udp.Transport:
-		udpTransport = transport
-	default:
-		d.log.Error().Stringer("transportUrl", &transportUrl).Msg("Only udp supported at the moment")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		return ch
+	// BACnet/IP uses port 47808 on both sides of a conversation; spec-conformant
+	// peers (bacpypes3, EcoStruxure, Niagara, ...) send unsolicited messages
+	// and responses back to the well-known port regardless of the request's
+	// source port. The generic transport.CreateTransportInstance dials with
+	// LocalAddress=nil, which gives us an ephemeral source — fine for protocols
+	// that reply to the source port, but for BACnet that means responses get
+	// dropped by the kernel.
+	//
+	// Use CreateTransportInstanceForLocalAddress with a fixed 0.0.0.0:47808
+	// bind. Callers that need to co-locate multiple BACnet connections in one
+	// process can override via the "local-port" driver option (uint), or 0
+	// for explicit ephemeral.
+	localPort := int(model.Constant_BACNETUDPDEFAULTPORT)
+	if val, ok := driverOptions["local-port"]; ok && len(val) > 0 {
+		if parsed, parseErr := strconv.Atoi(val[0]); parseErr != nil {
+			connectionLog.Warn().Err(parseErr).Str("local-port", val[0]).Msg("ignoring invalid local-port option")
+		} else {
+			localPort = parsed
+		}
+	}
+	localAddress := &net.UDPAddr{IP: net.IPv4zero, Port: localPort}
+	connectionLog.Info().Stringer("localAddress", localAddress).Msg("BACnet driver binding local UDP")
+
+	udpTransport, ok := transport.(*udp.Transport)
+	if !ok {
+		return nil, errors.Errorf("BACnet/IP requires the udp transport; got %T", transport)
+	}
+	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(
+		transportUrl,
+		driverOptions,
+		localAddress,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
+	)
+	if err != nil {
+		connectionLog.Error().
+			Stringer("transportUrl", &transportUrl).
+			Strs("defaultUdpPort", driverOptions["defaultUdpPort"]).
+			Int("localPort", localPort).
+			Msg("We couldn't create a transport instance for port")
+		return nil, errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String())
 	}
 
-	codec, err := d.applicationManager.getApplicationLayerMessageCodec(udpTransport, transportUrl, driverOptions)
-	if err != nil {
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting application layer message codec"))
-		return ch
+	// Parse Configuration early so we can propagate the discovery timeout to
+	// the Discoverer for the lifetime of this Driver instance. (Discovery is a
+	// driver-level call, but the timeout is naturally part of Configuration.)
+	if cfg, cfgErr := ParseFromOptionsQuietly(connectionLog, driverOptions); cfgErr == nil {
+		d.discoverer.SetDiscoveryTimeout(time.Duration(cfg.DiscoveryTimeoutSeconds) * time.Second)
 	}
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+
+	codec := NewMessageCodec(
+		transportInstance,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
+	)
+	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
 
 	// Create the new connection
-	connection := NewConnection(codec, d.GetPlcTagHandler(), d.tm, driverOptions)
-	d.log.Debug().Msg("created connection, connecting now")
-	return connection.ConnectWithContext(ctx)
+	connection := NewConnection(
+		codec,
+		d.GetPlcTagHandler(),
+		d.tm,
+		driverOptions,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
+	)
+	connectionLog.Debug().Msg("created connection, connecting now")
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	return connection, nil
 }
 
 func (d *Driver) SupportsDiscovery() bool {
 	return true
 }
 
-func (d *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Driver) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	return d.discoverer.Discover(ctx, callback, discoveryOptions...)
+}
+
+func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
+	d.awaitSetupComplete = awaitComplete
+}
+
+func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
+	d.awaitDisconnectComplete = awaitComplete
 }
 
 func (d *Driver) Close() error {
 	defer utils.StopWarn(d.log)()
 	d.log.Trace().Msg("Closing driver")
-	finalErr := new(utils.MultiError)
+	var collectedErrors []error
 	d.log.Trace().Msg("Closing discoverer")
 	if err := d.discoverer.Close(); err != nil {
-		finalErr.Append(errors.Wrap(err, "failed to close discoverer"))
+		collectedErrors = append(collectedErrors, errors.Wrap(err, "failed to close discoverer"))
 	}
 	d.log.Trace().Msg("Closing transaction manager")
 	if err := d.tm.Close(); err != nil {
-		finalErr.Append(errors.Wrap(err, "error closing transaction manager"))
+		collectedErrors = append(collectedErrors, errors.Wrap(err, "error closing transaction manager"))
 	}
-	return finalErr.ToErrorIfAny()
-}
-
-type ApplicationManager struct {
-	sync.Mutex
-	applications map[string]*ApplicationLayerMessageCodec
-
-	log zerolog.Logger
-}
-
-func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
-	var localAddress *net.UDPAddr
-	var remoteAddr *net.UDPAddr
-	// Find out the remote and the local ip address by opening an UPD port (which is instantly closed)
-	{
-		host := transportUrl.Host
-		port := transportUrl.Port()
-		if transportUrl.Port() == "" {
-			port = options["defaultUdpPort"][0]
-		}
-		if resolvedRemoteAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%s", host, port)); err != nil {
-			panic(err)
-		} else {
-			remoteAddr = resolvedRemoteAddr
-		}
-		// TODO: Possibly do with with ip-address matching similar to the raw-socket impl in Java.
-		if dial, err := net.DialUDP("udp", nil, remoteAddr); err != nil {
-			return nil, errors.Errorf("couldn't dial to host %#v", transportUrl.Host)
-		} else {
-			localAddress = dial.LocalAddr().(*net.UDPAddr)
-			localAddress.Port, _ = strconv.Atoi(port)
-			_ = dial.Close()
-		}
+	if err := errors.Join(collectedErrors...); err != nil {
+		return errors.Wrap(err, "error closing driver")
 	}
-	a.Lock()
-	defer a.Unlock()
-	messageCodec, ok := a.applications[localAddress.String()]
-	if !ok {
-		newMessageCodec, err := NewApplicationLayerMessageCodec(a.log, transport, transportUrl, options, localAddress, remoteAddr)
-		if err != nil {
-			return nil, errors.Wrap(err, "error creating application layer code")
-		}
-		a.applications[localAddress.String()] = newMessageCodec
-		return newMessageCodec, nil
-	}
-	return messageCodec, nil
+	return nil
 }

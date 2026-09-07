@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCountBeforeChange = (*_BACnetConstructedDataCountBefo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCountBeforeChange)(nil)
 
 // NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
-func NewBACnetConstructedDataCountBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
+func NewBACnetConstructedDataCountBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countBeforeChange BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
 	if countBeforeChange == nil {
 		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
 	}
 	_result := &_BACnetConstructedDataCountBeforeChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CountBeforeChange:             countBeforeChange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCountBeforeChange(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataCountBeforeChange) GetTypeName() string {
+func (m *_BACnetConstructedDataCountBeforeChange) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCountBeforeChange"
 }
 
-func (m *_BACnetConstructedDataCountBeforeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCountBeforeChange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (countBeforeChange)
 	lengthInBits += m.CountBeforeChange.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCountBeforeChange) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCountBeforeChange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCountBeforeChange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

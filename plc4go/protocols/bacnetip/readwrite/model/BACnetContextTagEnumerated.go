@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetContextTagEnumerated = (*_BACnetContextTagEnumerated)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagEnumerated)(nil)
 
 // NewBACnetContextTagEnumerated factory function for _BACnetContextTagEnumerated
-func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
+func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated) *_BACnetContextTagEnumerated {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadEnumerated for BACnetContextTagEnumerated must not be nil")
 	}
 	_result := &_BACnetContextTagEnumerated{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
@@ -242,12 +242,12 @@ func CastBACnetContextTagEnumerated(structType any) BACnetContextTagEnumerated {
 	return nil
 }
 
-func (m *_BACnetContextTagEnumerated) GetTypeName() string {
+func (m *_BACnetContextTagEnumerated) GetPlx4xTypeName() string {
 	return "BACnetContextTagEnumerated"
 }
 
-func (m *_BACnetContextTagEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagEnumerated) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_BACnetContextTagEnumerated) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagEnumerated) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagEnumerated) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -237,12 +237,12 @@ func CastBACnetObjectPropertyReference(structType any) BACnetObjectPropertyRefer
 	return nil
 }
 
-func (m *_BACnetObjectPropertyReference) GetTypeName() string {
+func (m *_BACnetObjectPropertyReference) GetPlx4xTypeName() string {
 	return "BACnetObjectPropertyReference"
 }
 
-func (m *_BACnetObjectPropertyReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetObjectPropertyReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetObjectPropertyReference) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +273,7 @@ func BACnetObjectPropertyReferenceParseWithBufferProducer() func(ctx context.Con
 }
 
 func BACnetObjectPropertyReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetObjectPropertyReference, error) {
-	v, err := (&_BACnetObjectPropertyReference{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetObjectPropertyReference)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -343,7 +343,7 @@ func (m *_BACnetObjectPropertyReference) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 

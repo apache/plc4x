@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataAccessTransactionEvents = (*_BACnetConstructedDataAcc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
 
 // NewBACnetConstructedDataAccessTransactionEvents factory function for _BACnetConstructedDataAccessTransactionEvents
-func NewBACnetConstructedDataAccessTransactionEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessTransactionEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessTransactionEvents {
+func NewBACnetConstructedDataAccessTransactionEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessTransactionEvents []BACnetAccessEventTagged) *_BACnetConstructedDataAccessTransactionEvents {
 	_result := &_BACnetConstructedDataAccessTransactionEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AccessTransactionEvents:       accessTransactionEvents,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataAccessTransactionEvents(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEvents) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessTransactionEvents) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessTransactionEvents"
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AccessTransactionEvents) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

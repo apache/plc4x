@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ NLMRouterAvailableToNetwork = (*_NLMRouterAvailableToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterAvailableToNetwork)(nil)
 
 // NewNLMRouterAvailableToNetwork factory function for _NLMRouterAvailableToNetwork
-func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterAvailableToNetwork {
+func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16) *_NLMRouterAvailableToNetwork {
 	_result := &_NLMRouterAvailableToNetwork{
-		NLMContract:                 NewNLM(apduLength),
+		NLMContract:                 NewNLM(),
 		DestinationNetworkAddresses: destinationNetworkAddresses,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result
@@ -207,22 +207,22 @@ func CastNLMRouterAvailableToNetwork(structType any) NLMRouterAvailableToNetwork
 	return nil
 }
 
-func (m *_NLMRouterAvailableToNetwork) GetTypeName() string {
+func (m *_NLMRouterAvailableToNetwork) GetPlx4xTypeName() string {
 	return "NLMRouterAvailableToNetwork"
 }
 
-func (m *_NLMRouterAvailableToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRouterAvailableToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.DestinationNetworkAddresses) > 0 {
-		lengthInBits += 16 * uint16(len(m.DestinationNetworkAddresses))
+		lengthInBits += 16 * uint64(len(m.DestinationNetworkAddresses))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMRouterAvailableToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRouterAvailableToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ NLMICouldBeRouterToNetwork = (*_NLMICouldBeRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMICouldBeRouterToNetwork)(nil)
 
 // NewNLMICouldBeRouterToNetwork factory function for _NLMICouldBeRouterToNetwork
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, apduLength uint16) *_NLMICouldBeRouterToNetwork {
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8) *_NLMICouldBeRouterToNetwork {
 	_result := &_NLMICouldBeRouterToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
 	}
@@ -222,12 +222,12 @@ func CastNLMICouldBeRouterToNetwork(structType any) NLMICouldBeRouterToNetwork {
 	return nil
 }
 
-func (m *_NLMICouldBeRouterToNetwork) GetTypeName() string {
+func (m *_NLMICouldBeRouterToNetwork) GetPlx4xTypeName() string {
 	return "NLMICouldBeRouterToNetwork"
 }
 
-func (m *_NLMICouldBeRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMICouldBeRouterToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -238,7 +238,7 @@ func (m *_NLMICouldBeRouterToNetwork) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

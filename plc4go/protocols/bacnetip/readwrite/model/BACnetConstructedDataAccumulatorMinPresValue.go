@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccumulatorMinPresValue = (*_BACnetConstructedDataAcc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorMinPresValue)(nil)
 
 // NewBACnetConstructedDataAccumulatorMinPresValue factory function for _BACnetConstructedDataAccumulatorMinPresValue
-func NewBACnetConstructedDataAccumulatorMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorMinPresValue {
+func NewBACnetConstructedDataAccumulatorMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccumulatorMinPresValue {
 	if minPresValue == nil {
 		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorMinPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccumulatorMinPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinPresValue:                  minPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccumulatorMinPresValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorMinPresValue"
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minPresValue)
 	lengthInBits += m.MinPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

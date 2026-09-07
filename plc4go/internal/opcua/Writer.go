@@ -24,12 +24,12 @@ import (
 	"encoding/binary"
 	"runtime/debug"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -61,7 +61,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
 	defer func() {
 		if err := recover(); err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 		}
 	}()
 
@@ -80,13 +80,13 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 
 		nodeId, err := generateNodeId(tag)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error generating node id from tag %s", tag))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error generating node id from tag %s", tag)))
 			return
 		}
 
 		plcValue, err := m.fromPlcValue(tagName, tag, writeRequest)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error getting plcValue"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error getting plcValue")))
 			return
 		}
 		writeValueArray[i] = readWriteModel.NewWriteValue(nodeId,
@@ -126,43 +126,41 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		readWriteModel.NewRootExtensionObject(
 			expandedNodeId,
 			opcuaWriteRequest,
-			identifier,
 		),
-		0,
 	)
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")))
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
 		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply")))
 			return
 		}
 		if writeResponse, ok := reply.(readWriteModel.WriteResponse); ok {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(m.writeResponse(writeRequest, writeResponse.GetResults())), nil)
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(m.writeResponse(writeRequest, writeResponse.GetResults())), nil))
 			return
 		} else {
 			if serviceFault, ok := reply.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
-				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
+				m.log.Error().Interface("header", header).Msg("Read request ended up with ServiceFault")
 			} else {
-				m.log.Error().Stringer("reply", reply).Msg("Remote party returned an error")
+				m.log.Error().Interface("reply", reply).Msg("Remote party returned an error")
 			}
 
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			for _, tagName := range writeRequest.GetTagNames() {
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil))
 		}
 	}
 
 	errorDispatcher := func(err error) {
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err)
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err))
 	}
 
 	m.connection.channel.submit(ctx, m.connection.messageCodec, errorDispatcher, consumer, buffer)
@@ -203,7 +201,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// Simple boolean values
 	case apiValues.BOOL:
 		tmpBOOL := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpBOOL[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -216,7 +214,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 8-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.BYTE:
 		tmpBYTE := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpBYTE[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -229,7 +227,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 16-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.WORD:
 		tmpWORD := make([]uint16, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpWORD[i] = valueObject.GetIndex(i).GetUint16()
 		}
 		var arrayLength *int32
@@ -242,7 +240,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.DWORD:
 		tmpDWORD := make([]uint32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpDWORD[i] = valueObject.GetIndex(i).GetUint32()
 		}
 		var arrayLength *int32
@@ -255,7 +253,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.LWORD:
 		tmpLWORD := make([]uint64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpLWORD[i] = valueObject.GetIndex(i).GetUint64()
 		}
 		var arrayLength *int32
@@ -268,7 +266,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 8-Bit Unsigned Integers
 	case apiValues.USINT:
 		tmpUSINT := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUSINT[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -281,7 +279,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 8-Bit Signed Integers
 	case apiValues.SINT:
 		tmpSINT := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpSINT[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -294,7 +292,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 16-Bit Unsigned Integers
 	case apiValues.UINT:
 		tmpUINT := make([]uint16, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUINT[i] = valueObject.GetIndex(i).GetUint16()
 		}
 		var arrayLength *int32
@@ -307,7 +305,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 16-Bit Signed Integers
 	case apiValues.INT:
 		tmpINT := make([]int16, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpINT[i] = valueObject.GetIndex(i).GetInt16()
 		}
 		var arrayLength *int32
@@ -320,7 +318,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Unsigned Integers
 	case apiValues.UDINT:
 		tmpUDINT := make([]uint32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUDINT[i] = valueObject.GetIndex(i).GetUint32()
 		}
 		var arrayLength *int32
@@ -333,7 +331,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Signed Integers
 	case apiValues.DINT:
 		tmpDINT := make([]int32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpDINT[i] = valueObject.GetIndex(i).GetInt32()
 		}
 		var arrayLength *int32
@@ -346,7 +344,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Unsigned Integers
 	case apiValues.ULINT:
 		tmpULINT := make([]uint64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpULINT[i] = valueObject.GetIndex(i).GetUint64()
 		}
 		var arrayLength *int32
@@ -359,7 +357,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Signed Integers
 	case apiValues.LINT:
 		tmpUINT := make([]int64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUINT[i] = valueObject.GetIndex(i).GetInt64()
 		}
 		var arrayLength *int32
@@ -372,7 +370,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Floating Point Values
 	case apiValues.REAL:
 		tmpREAL := make([]float32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpREAL[i] = valueObject.GetIndex(i).GetFloat32()
 		}
 		var arrayLength *int32
@@ -385,7 +383,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Floating Point Values
 	case apiValues.LREAL:
 		tmpLREAL := make([]float64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpLREAL[i] = valueObject.GetIndex(i).GetFloat64()
 		}
 		var arrayLength *int32
@@ -405,8 +403,8 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 		fallthrough
 	case apiValues.WSTRING:
 		tmpString := make([]readWriteModel.PascalString, length)
-		for i := uint32(0); i < length; i++ {
-			tmpString[i] = readWriteModel.NewPascalString(utils.ToPtr(valueObject.GetIndex(i).GetString()))
+		for i := range length {
+			tmpString[i] = readWriteModel.NewPascalString(new(valueObject.GetIndex(i).GetString()))
 		}
 		var arrayLength *int32
 		if length != 1 {
@@ -417,7 +415,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 
 	case apiValues.DATE_AND_TIME:
 		tmpDateTime := make([]int64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpDateTime[i] = valueObject.GetIndex(i).GetDateTime().UnixMilli() / 1000
 		}
 		var arrayLength *int32

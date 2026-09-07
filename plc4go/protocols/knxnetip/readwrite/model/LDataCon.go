@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,12 +65,12 @@ var _ LDataCon = (*_LDataCon)(nil)
 var _ CEMIRequirements = (*_LDataCon)(nil)
 
 // NewLDataCon factory function for _LDataCon
-func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataCon {
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) *_LDataCon {
 	if dataFrame == nil {
 		panic("dataFrame of type LDataFrame for LDataCon must not be nil")
 	}
 	_result := &_LDataCon{
-		CEMIContract:                NewCEMI(size),
+		CEMIContract:                NewCEMI(),
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
@@ -255,12 +255,12 @@ func CastLDataCon(structType any) LDataCon {
 	return nil
 }
 
-func (m *_LDataCon) GetTypeName() string {
+func (m *_LDataCon) GetPlx4xTypeName() string {
 	return "LDataCon"
 }
 
-func (m *_LDataCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_LDataCon) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -278,7 +278,7 @@ func (m *_LDataCon) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LDataCon) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LDataCon) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

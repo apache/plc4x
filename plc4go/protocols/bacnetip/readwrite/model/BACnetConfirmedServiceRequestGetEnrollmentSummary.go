@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -74,7 +74,7 @@ var _ BACnetConfirmedServiceRequestGetEnrollmentSummary = (*_BACnetConfirmedServ
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEnrollmentSummary)(nil)
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummary factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummary
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, enrollmentFilter BACnetRecipientProcessEnclosed, eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, eventTypeFilter BACnetEventTypeTagged, priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, notificationClassFilter BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEnrollmentSummary {
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(serviceRequestLength uint32, acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, enrollmentFilter BACnetRecipientProcessEnclosed, eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, eventTypeFilter BACnetEventTypeTagged, priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, notificationClassFilter BACnetContextTagUnsignedInteger) *_BACnetConfirmedServiceRequestGetEnrollmentSummary {
 	if acknowledgmentFilter == nil {
 		panic("acknowledgmentFilter of type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged for BACnetConfirmedServiceRequestGetEnrollmentSummary must not be nil")
 	}
@@ -360,12 +360,12 @@ func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEnrollmentSummary"
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (acknowledgmentFilter)
 	lengthInBits += m.AcknowledgmentFilter.GetLengthInBits(ctx)
@@ -398,7 +398,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -498,23 +498,23 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'acknowledgmentFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", GetRef(m.GetEnrollmentFilter()), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", new(m.GetEnrollmentFilter()), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'enrollmentFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", GetRef(m.GetEventStateFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", new(m.GetEventStateFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventStateFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", GetRef(m.GetEventTypeFilter()), WriteComplex[BACnetEventTypeTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", new(m.GetEventTypeFilter()), WriteComplex[BACnetEventTypeTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventTypeFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", GetRef(m.GetPriorityFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", new(m.GetPriorityFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'priorityFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", GetRef(m.GetNotificationClassFilter()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", new(m.GetNotificationClassFilter()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationClassFilter' field")
 		}
 

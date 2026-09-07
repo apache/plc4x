@@ -26,10 +26,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
@@ -58,9 +58,7 @@ func NewWriter(device *Device, writerOptions map[string][]string, tracer tracer.
 
 func (w *Writer) Write(_ context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	ch := make(chan apiModel.PlcWriteRequestResult, 1)
-	w.wg.Add(1)
-	go func() {
-		defer w.wg.Done()
+	w.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -99,6 +97,6 @@ func (w *Writer) Write(_ context.Context, writeRequest apiModel.PlcWriteRequest)
 		}
 		// Emit the response
 		ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
-	}()
+	})
 	return ch
 }

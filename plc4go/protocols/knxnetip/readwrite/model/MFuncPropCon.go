@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ MFuncPropCon = (*_MFuncPropCon)(nil)
 var _ CEMIRequirements = (*_MFuncPropCon)(nil)
 
 // NewMFuncPropCon factory function for _MFuncPropCon
-func NewMFuncPropCon(size uint16) *_MFuncPropCon {
+func NewMFuncPropCon() *_MFuncPropCon {
 	_result := &_MFuncPropCon{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastMFuncPropCon(structType any) MFuncPropCon {
 	return nil
 }
 
-func (m *_MFuncPropCon) GetTypeName() string {
+func (m *_MFuncPropCon) GetPlx4xTypeName() string {
 	return "MFuncPropCon"
 }
 
-func (m *_MFuncPropCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MFuncPropCon) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MFuncPropCon) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MFuncPropCon) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

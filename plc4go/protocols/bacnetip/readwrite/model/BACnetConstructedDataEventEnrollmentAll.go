@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataEventEnrollmentAll = (*_BACnetConstructedDataEventEnr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventEnrollmentAll)(nil)
 
 // NewBACnetConstructedDataEventEnrollmentAll factory function for _BACnetConstructedDataEventEnrollmentAll
-func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnrollmentAll {
+func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataEventEnrollmentAll {
 	_result := &_BACnetConstructedDataEventEnrollmentAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataEventEnrollmentAll(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAll) GetTypeName() string {
+func (m *_BACnetConstructedDataEventEnrollmentAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventEnrollmentAll"
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEventEnrollmentAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEventEnrollmentAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

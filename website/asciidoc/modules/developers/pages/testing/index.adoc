@@ -1,0 +1,497 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= Setup for testing
+
+As we have multiple scenarios regarding, variables, arrays, mutli-dimensional arrays, user-defined types etc. it's some times challenging to come up with a data-structure that can be used to test the various types of access.
+
+Therefore, we have started to develop a data-structure, that should cover most main and edge cases and should be a pretty good starting point for testing new drivers on new systems:
+
+This setup consists of seveal user-defined types and a main variable block alongside pre-defined reference values.
+
+== TSimpleStruct
+
+Contains a number of all supported PLC4X datatypes.
+
+----
+TYPE "TSimpleStruct"
+VERSION : 0.1
+STRUCT
+s8 : SInt;
+u8 : USInt;
+s16 : Int;
+u16 : UInt;
+s32 : DInt;
+u32 : UDInt;
+s64 : LInt;
+u64 : ULInt;
+b1 : Bool;
+b8 : Byte;
+b16 : Word;
+b32 : DWord;
+b64 : LWord;
+r32 : Real;
+r64 : LReal;
+tim : Time;
+ltim : LTime;
+dat : Date;
+timoday : Time_Of_Day;
+dattim {InstructionName := 'DTL'; LibVersion := '1.0'} : DTL;
+str : String[32];
+wstr : WString[32];
+END_STRUCT;
+
+END_TYPE
+----
+
+== TSignalPack
+
+----
+TYPE "TSignalPack"
+VERSION : 0.1
+STRUCT
+flags : Array[0..7] of Bool;
+words : Array[0..3] of Word;
+payload : Array[0..15] of Byte;
+END_STRUCT;
+
+END_TYPE
+----
+
+== TMatrixI16
+
+----
+#TYPE "TMatrixI16"
+VERSION : 0.1
+STRUCT
+m : Array[1..2, 1..3] of Int;
+END_STRUCT;
+
+END_TYPE
+----
+
+== TChannel
+
+----
+TYPE "TChannel"
+VERSION : 0.1
+STRUCT
+id : UDInt;
+"name" : String[20];
+enabled : Bool;
+setpoints : Array[1..4] of Real;
+lut : Array[1..2, 1..2, 1..2] of Int;
+END_STRUCT;
+
+END_TYPE
+----
+
+== TPlantSnapshot
+
+----
+TYPE "TPlantSnapshot"
+VERSION : 0.1
+STRUCT
+meta { S7_SetPoint := 'False'} : "TSimpleStruct";
+gridI16 : "TMatrixI16";
+signals : "TSignalPack";
+channels : Array[1..2] of "TChannel";
+stamps {InstructionName := 'DTL'; LibVersion := '1.0'; S7_SetPoint := 'True'} : Array[1..2] of DTL;
+tags : Array[1..3] of String[24];
+wtags : Array[1..2] of WString[24];
+END_STRUCT;
+
+END_TYPE
+----
+
+== DataBlock
+
+----
+DATA_BLOCK "TestData"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+NON_RETAIN
+STRUCT
+g_b1 : Bool;
+g_b8 : Byte;
+g_s8 : SInt;
+g_u8 : USInt;
+g_b16 : Word;
+g_s16 : Int;
+g_u16 : UInt;
+g_b32 : DWord;
+g_s32 : DInt;
+g_u32 : UDInt;
+g_b64 : LWord;
+g_s64 : LInt;
+g_u64 : ULInt;
+g_r32 : Real;
+g_r64 : LReal;
+g_tim : Time;
+g_dat : Date;
+g_timoday : Time_Of_Day;
+g_dattim {InstructionName := 'DTL'; LibVersion := '1.0'} : DTL;
+g_str : String[40];
+g_wstr : WString[40];
+g_arrBool : Array[1..8] of Bool;
+g_arrByte : Array[0..7] of Byte;
+g_arrInt : Array[1..5] of Int;
+g_arrUInt : Array[1..5] of UInt;
+g_arrDInt : Array[1..4] of DInt;
+g_arrUDInt : Array[1..4] of UDInt;
+g_arrLReal : Array[1..3] of LReal;
+g_arrTime : Array[1..3] of Time;
+g_arrString : Array[1..3] of String[16];
+g_arrWString : Array[1..2] of WString[16];
+g_matI16_2x3 : Array[1..2, 1..3] of Int;
+g_matR32_3x2 : Array[1..3, 1..2] of Real;
+g_cubeU16_2x2x2 : Array[1..2, 1..2, 1..2] of UInt;
+g_simple { S7_SetPoint := 'False'} : "TSimpleStruct";
+g_matrixI16 : "TMatrixI16";
+g_signals : "TSignalPack";
+g_plant : "TPlantSnapshot";
+g_chanGrid : Array[1..2, 1..2] of "TChannel";
+END_STRUCT;
+
+
+BEGIN
+g_b1 := true;
+g_b8 := 16#AB;
+g_s8 := -12;
+g_u8 := 250;
+g_b16 := 16#BEEF;
+g_s16 := -1234;
+g_u16 := 54321;
+g_b32 := 16#DEADBEEF;
+g_s32 := -12345678;
+g_u32 := 305419896;
+g_b64 := 16#0123_4567_89AB_CDEF;
+g_s64 := -9223372036854770000;
+g_u64 := 18446744073709551000;
+g_r32 := 3.14159;
+g_r64 := 2.71828182845905;
+g_tim := T#2S500MS;
+g_dat := D#2025-11-12;
+g_timoday := TOD#14:33:21.250;
+g_dattim.YEAR := 2025;
+g_dattim.MONTH := 11;
+g_dattim.DAY := 12;
+g_dattim.WEEKDAY := 4;
+g_dattim.HOUR := 14;
+g_dattim.MINUTE := 33;
+g_dattim.SECOND := 21;
+g_dattim.NANOSECOND := 500000000;
+g_dattim := DTL#2025-11-12-14:33:21.500;
+g_str := 'Hello PLC4X';
+g_wstr := WSTRING#'Grüße von PLC4X';
+g_arrBool[1] := true;
+g_arrBool[2] := false;
+g_arrBool[3] := true;
+g_arrBool[4] := true;
+g_arrBool[5] := false;
+g_arrBool[6] := false;
+g_arrBool[7] := true;
+g_arrBool[8] := false;
+g_arrByte[0] := 16#DE;
+g_arrByte[1] := 16#AD;
+g_arrByte[2] := 16#BE;
+g_arrByte[3] := 16#EF;
+g_arrByte[4] := 16#12;
+g_arrByte[5] := 16#34;
+g_arrByte[6] := 16#56;
+g_arrByte[7] := 16#78;
+g_arrInt[1] := -3;
+g_arrInt[2] := -1;
+g_arrInt[3] := 0;
+g_arrInt[4] := 1;
+g_arrInt[5] := 3;
+g_arrUInt[1] := 1;
+g_arrUInt[2] := 10;
+g_arrUInt[3] := 100;
+g_arrUInt[4] := 1000;
+g_arrUInt[5] := 10000;
+g_arrDInt[1] := -1000;
+g_arrDInt[2] := 0;
+g_arrDInt[3] := 1000;
+g_arrDInt[4] := 2000000;
+g_arrUDInt[1] := 0;
+g_arrUDInt[2] := 1;
+g_arrUDInt[3] := 16#FFFF;
+g_arrUDInt[4] := 16#12345678;
+g_arrLReal[1] := 1.5;
+g_arrLReal[2] := -2.0;
+g_arrLReal[3] := 0.125;
+g_arrTime[1] := T#10MS;
+g_arrTime[2] := T#1S;
+g_arrTime[3] := T#10S;
+g_arrString[1] := 'alpha';
+g_arrString[2] := 'beta';
+g_arrString[3] := 'gamma';
+g_arrWString[1] := WSTRING#'Äpfel';
+g_arrWString[2] := WSTRING#'Öl';
+g_matI16_2x3[1,1] := 10;
+g_matI16_2x3[1,2] := 11;
+g_matI16_2x3[1,3] := 12;
+g_matI16_2x3[2,1] := -10;
+g_matI16_2x3[2,2] := -11;
+g_matI16_2x3[2,3] := -12;
+g_matR32_3x2[1,1] := 1.0;
+g_matR32_3x2[1,2] := 1.5;
+g_matR32_3x2[2,1] := 2.0;
+g_matR32_3x2[2,2] := 2.5;
+g_matR32_3x2[3,1] := 3.0;
+g_matR32_3x2[3,2] := 3.5;
+g_cubeU16_2x2x2[1,1,1] := 1;
+g_cubeU16_2x2x2[1,1,2] := 2;
+g_cubeU16_2x2x2[1,2,1] := 3;
+g_cubeU16_2x2x2[1,2,2] := 4;
+g_cubeU16_2x2x2[2,1,1] := 5;
+g_cubeU16_2x2x2[2,1,2] := 6;
+g_cubeU16_2x2x2[2,2,1] := 7;
+g_cubeU16_2x2x2[2,2,2] := 8;
+g_simple.s8 := -8;
+g_simple.u8 := 200;
+g_simple.s16 := -1600;
+g_simple.u16 := 1600;
+g_simple.s32 := -32000;
+g_simple.u32 := 32000;
+g_simple.s64 := -64000;
+g_simple.u64 := 64000;
+g_simple.b1 := true;
+g_simple.b8 := 16#5A;
+g_simple.b16 := 16#CAFE;
+g_simple.b32 := 16#C0FFEE00;
+g_simple.b64 := 16#DEAD_BEEF_F00D_CAFE;
+g_simple.r32 := 0.5;
+g_simple.r64 := -0.125;
+g_simple.tim := T#123ms;
+g_simple.ltim := LTIME#1S2MS3US;
+g_simple.dat := D#2025-11-12;
+g_simple.timoday := TOD#06:07:08.009;
+g_simple.dattim.YEAR := 2025;
+g_simple.dattim.MONTH := 11;
+g_simple.dattim.DAY := 12;
+g_simple.dattim.WEEKDAY := 4;
+g_simple.dattim.HOUR := 6;
+g_simple.dattim.MINUTE := 7;
+g_simple.dattim.SECOND := 8;
+g_simple.dattim.NANOSECOND := 9000000;
+g_simple.dattim := DTL#2025-11-12-06:07:08.009;
+g_simple.str := 'struct-string';
+g_simple.wstr := WSTRING#'Struktur-WSTRING';
+g_matrixI16.m[1,1] := 100;
+g_matrixI16.m[1,2] := 101;
+g_matrixI16.m[1,3] := 102;
+g_matrixI16.m[2,1] := 200;
+g_matrixI16.m[2,2] := 201;
+g_matrixI16.m[2,3] := 202;
+g_signals.flags[0] := true;
+g_signals.flags[1] := false;
+g_signals.flags[2] := true;
+g_signals.flags[3] := false;
+g_signals.flags[4] := true;
+g_signals.flags[5] := false;
+g_signals.flags[6] := true;
+g_signals.flags[7] := false;
+g_signals.words[0] := 16#1111;
+g_signals.words[1] := 16#2222;
+g_signals.words[2] := 16#3333;
+g_signals.words[3] := 16#4444;
+g_signals.payload[0] := 16#00;
+g_signals.payload[1] := 16#11;
+g_signals.payload[2] := 16#22;
+g_signals.payload[3] := 16#33;
+g_signals.payload[4] := 16#44;
+g_signals.payload[5] := 16#55;
+g_signals.payload[6] := 16#66;
+g_signals.payload[7] := 16#77;
+g_signals.payload[8] := 16#88;
+g_signals.payload[9] := 16#99;
+g_signals.payload[10] := 16#AA;
+g_signals.payload[11] := 16#BB;
+g_signals.payload[12] := 16#CC;
+g_signals.payload[13] := 16#DD;
+g_signals.payload[14] := 16#EE;
+g_signals.payload[15] := 16#FF;
+g_plant.meta.s8 := -1;
+g_plant.meta.u8 := 255;
+g_plant.meta.s16 := -2;
+g_plant.meta.u16 := 2;
+g_plant.meta.s32 := -3;
+g_plant.meta.u32 := 3;
+g_plant.meta.s64 := -4;
+g_plant.meta.u64 := 4;
+g_plant.meta.b1 := true;
+g_plant.meta.b8 := 16#AA;
+g_plant.meta.b16 := 16#ABCD;
+g_plant.meta.b32 := 16#0102_0304;
+g_plant.meta.b64 := 16#0A0B_0C0D_0E0F_1011;
+g_plant.meta.r32 := 12.5;
+g_plant.meta.r64 := -98.765;
+g_plant.meta.tim := T#2S;
+g_plant.meta.ltim := LTIME#2S100MS;
+g_plant.meta.dat := D#2025-01-01;
+g_plant.meta.timoday := TOD#12:34:56.789;
+g_plant.meta.dattim.YEAR := 2025;
+g_plant.meta.dattim.MONTH := 2;
+g_plant.meta.dattim.DAY := 3;
+g_plant.meta.dattim.WEEKDAY := 2;
+g_plant.meta.dattim.HOUR := 4;
+g_plant.meta.dattim.MINUTE := 5;
+g_plant.meta.dattim.SECOND := 6;
+g_plant.meta.dattim.NANOSECOND := 7000000;
+g_plant.meta.dattim := DTL#2025-02-03-04:05:06.007;
+g_plant.meta.str := 'meta-ok';
+g_plant.meta.wstr := WSTRING#'Meta-OK';
+g_plant.gridI16.m[1,1] := 10;
+g_plant.gridI16.m[1,2] := 11;
+g_plant.gridI16.m[1,3] := 12;
+g_plant.gridI16.m[2,1] := -10;
+g_plant.gridI16.m[2,2] := -11;
+g_plant.gridI16.m[2,3] := -12;
+g_plant.signals.flags[0] := false;
+g_plant.signals.flags[1] := false;
+g_plant.signals.flags[2] := true;
+g_plant.signals.flags[3] := true;
+g_plant.signals.flags[4] := false;
+g_plant.signals.flags[5] := true;
+g_plant.signals.flags[6] := false;
+g_plant.signals.flags[7] := true;
+g_plant.signals.words[0] := 16#DEAD;
+g_plant.signals.words[1] := 16#BEEF;
+g_plant.signals.words[2] := 16#FEED;
+g_plant.signals.words[3] := 16#C0DE;
+g_plant.signals.payload[0] := 16#10;
+g_plant.signals.payload[1] := 16#20;
+g_plant.signals.payload[2] := 16#30;
+g_plant.signals.payload[3] := 16#40;
+g_plant.signals.payload[4] := 16#50;
+g_plant.signals.payload[5] := 16#60;
+g_plant.signals.payload[6] := 16#70;
+g_plant.signals.payload[7] := 16#80;
+g_plant.signals.payload[8] := 16#90;
+g_plant.signals.payload[9] := 16#A0;
+g_plant.signals.payload[10] := 16#B0;
+g_plant.signals.payload[11] := 16#C0;
+g_plant.signals.payload[12] := 16#D0;
+g_plant.signals.payload[13] := 16#E0;
+g_plant.signals.payload[14] := 16#F0;
+g_plant.signals.payload[15] := 16#00;
+g_plant.channels[1].id := 1;
+g_plant.channels[1]."name" := 'CH-A';
+g_plant.channels[1].enabled := true;
+g_plant.channels[1].setpoints[1] := 0.0;
+g_plant.channels[1].setpoints[2] := 10.0;
+g_plant.channels[1].setpoints[3] := 20.0;
+g_plant.channels[1].setpoints[4] := 30.0;
+g_plant.channels[1].lut[1,1,1] := 1;
+g_plant.channels[1].lut[1,1,2] := 2;
+g_plant.channels[1].lut[1,2,1] := 3;
+g_plant.channels[1].lut[1,2,2] := 4;
+g_plant.channels[1].lut[2,1,1] := -1;
+g_plant.channels[1].lut[2,1,2] := -2;
+g_plant.channels[1].lut[2,2,1] := -3;
+g_plant.channels[1].lut[2,2,2] := -4;
+g_plant.channels[2].id := 2;
+g_plant.channels[2]."name" := 'CH-B';
+g_plant.channels[2].enabled := false;
+g_plant.channels[2].setpoints[1] := 5.5;
+g_plant.channels[2].setpoints[2] := 6.5;
+g_plant.channels[2].setpoints[3] := 7.5;
+g_plant.channels[2].setpoints[4] := 8.5;
+g_plant.channels[2].lut[1,1,1] := 100;
+g_plant.channels[2].lut[1,1,2] := 101;
+g_plant.channels[2].lut[1,2,1] := 102;
+g_plant.channels[2].lut[1,2,2] := 103;
+g_plant.channels[2].lut[2,1,1] := 200;
+g_plant.channels[2].lut[2,1,2] := 201;
+g_plant.channels[2].lut[2,2,1] := 202;
+g_plant.channels[2].lut[2,2,2] := 203;
+g_plant.stamps[1] := DTL#2025-06-01-00:00:00;
+g_plant.stamps[2] := DTL#2025-06-01-12:00:00;
+g_plant.tags[1] := 'MAIN.speed';
+g_plant.tags[2] := 'MAIN.temp';
+g_plant.tags[3] := 'MAIN.pressure';
+g_plant.wtags[1] := WSTRING#'Δv';
+g_plant.wtags[2] := WSTRING#'Ölstand';
+g_chanGrid[1,1].id := 10;
+g_chanGrid[1,1]."name" := 'A1';
+g_chanGrid[1,1].enabled := true;
+g_chanGrid[1,1].setpoints[1] := 11.1;
+g_chanGrid[1,1].setpoints[2] := 11.2;
+g_chanGrid[1,1].setpoints[3] := 11.3;
+g_chanGrid[1,1].setpoints[4] := 11.4;
+g_chanGrid[1,1].lut[1,1,1] := 1;
+g_chanGrid[1,1].lut[1,1,2] := 2;
+g_chanGrid[1,1].lut[1,2,1] := 3;
+g_chanGrid[1,1].lut[1,2,2] := 4;
+g_chanGrid[1,1].lut[2,1,1] := 5;
+g_chanGrid[1,1].lut[2,1,2] := 6;
+g_chanGrid[1,1].lut[2,2,1] := 7;
+g_chanGrid[1,1].lut[2,2,2] := 8;
+g_chanGrid[1,2].id := 11;
+g_chanGrid[1,2]."name" := 'A2';
+g_chanGrid[1,2].enabled := false;
+g_chanGrid[1,2].setpoints[1] := 12.1;
+g_chanGrid[1,2].setpoints[2] := 12.2;
+g_chanGrid[1,2].setpoints[3] := 12.3;
+g_chanGrid[1,2].setpoints[4] := 12.4;
+g_chanGrid[1,2].lut[1,1,1] := 10;
+g_chanGrid[1,2].lut[1,1,2] := 11;
+g_chanGrid[1,2].lut[1,2,1] := 12;
+g_chanGrid[1,2].lut[1,2,2] := 13;
+g_chanGrid[1,2].lut[2,1,1] := 14;
+g_chanGrid[1,2].lut[2,1,2] := 15;
+g_chanGrid[1,2].lut[2,2,1] := 16;
+g_chanGrid[1,2].lut[2,2,2] := 17;
+g_chanGrid[2,1].id := 20;
+g_chanGrid[2,1]."name" := 'B1';
+g_chanGrid[2,1].enabled := true;
+g_chanGrid[2,1].setpoints[1] := 21.1;
+g_chanGrid[2,1].setpoints[2] := 21.2;
+g_chanGrid[2,1].setpoints[3] := 21.3;
+g_chanGrid[2,1].setpoints[4] := 21.4;
+g_chanGrid[2,1].lut[1,1,1] := 21;
+g_chanGrid[2,1].lut[1,1,2] := 22;
+g_chanGrid[2,1].lut[1,2,1] := 23;
+g_chanGrid[2,1].lut[1,2,2] := 24;
+g_chanGrid[2,1].lut[2,1,1] := 25;
+g_chanGrid[2,1].lut[2,1,2] := 26;
+g_chanGrid[2,1].lut[2,2,1] := 27;
+g_chanGrid[2,1].lut[2,2,2] := 28;
+g_chanGrid[2,2].id := 21;
+g_chanGrid[2,2]."name" := 'B2';
+g_chanGrid[2,2].enabled := true;
+g_chanGrid[2,2].setpoints[1] := 22.1;
+g_chanGrid[2,2].setpoints[2] := 22.2;
+g_chanGrid[2,2].setpoints[3] := 22.3;
+g_chanGrid[2,2].setpoints[4] := 22.4;
+g_chanGrid[2,2].lut[1,1,1] := 31;
+g_chanGrid[2,2].lut[1,1,2] := 32;
+g_chanGrid[2,2].lut[1,2,1] := 33;
+g_chanGrid[2,2].lut[1,2,2] := 34;
+g_chanGrid[2,2].lut[2,1,1] := 35;
+g_chanGrid[2,2].lut[2,1,2] := 36;
+g_chanGrid[2,2].lut[2,2,1] := 37;
+g_chanGrid[2,2].lut[2,2,2] := 38;
+
+END_DATA_BLOCK
+----
+
+

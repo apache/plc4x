@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLocalTime = (*_BACnetConstructedDataLocalTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalTime)(nil)
 
 // NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
-func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
+func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime) *_BACnetConstructedDataLocalTime {
 	if localTime == nil {
 		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataLocalTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LocalTime:                     localTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLocalTime(structType any) BACnetConstructedDataLoc
 	return nil
 }
 
-func (m *_BACnetConstructedDataLocalTime) GetTypeName() string {
+func (m *_BACnetConstructedDataLocalTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLocalTime"
 }
 
-func (m *_BACnetConstructedDataLocalTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLocalTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (localTime)
 	lengthInBits += m.LocalTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLocalTime) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLocalTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLocalTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

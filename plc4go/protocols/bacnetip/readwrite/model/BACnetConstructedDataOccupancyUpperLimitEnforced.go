@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOccupancyUpperLimitEnforced = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyUpperLimitEnforced)(nil)
 
 // NewBACnetConstructedDataOccupancyUpperLimitEnforced factory function for _BACnetConstructedDataOccupancyUpperLimitEnforced
-func NewBACnetConstructedDataOccupancyUpperLimitEnforced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyUpperLimitEnforced BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyUpperLimitEnforced {
+func NewBACnetConstructedDataOccupancyUpperLimitEnforced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyUpperLimitEnforced BACnetApplicationTagBoolean) *_BACnetConstructedDataOccupancyUpperLimitEnforced {
 	if occupancyUpperLimitEnforced == nil {
 		panic("occupancyUpperLimitEnforced of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyUpperLimitEnforced must not be nil")
 	}
 	_result := &_BACnetConstructedDataOccupancyUpperLimitEnforced{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OccupancyUpperLimitEnforced:   occupancyUpperLimitEnforced,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataOccupancyUpperLimitEnforced(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyUpperLimitEnforced"
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (occupancyUpperLimitEnforced)
 	lengthInBits += m.OccupancyUpperLimitEnforced.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

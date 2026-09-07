@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -205,12 +205,12 @@ func CastBACnetBDTEntry(structType any) BACnetBDTEntry {
 	return nil
 }
 
-func (m *_BACnetBDTEntry) GetTypeName() string {
+func (m *_BACnetBDTEntry) GetPlx4xTypeName() string {
 	return "BACnetBDTEntry"
 }
 
-func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (bbmdAddress)
 	lengthInBits += m.BbmdAddress.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetBDTEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetBDTEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -238,7 +238,7 @@ func BACnetBDTEntryParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
-	v, err := (&_BACnetBDTEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetBDTEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'bbmdAddress' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", GetRef(m.GetBroadcastMask()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", new(m.GetBroadcastMask()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'broadcastMask' field")
 	}
 

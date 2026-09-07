@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +225,12 @@ func CastS7VarRequestParameterItemAddress(structType any) S7VarRequestParameterI
 	return nil
 }
 
-func (m *_S7VarRequestParameterItemAddress) GetTypeName() string {
+func (m *_S7VarRequestParameterItemAddress) GetPlx4xTypeName() string {
 	return "S7VarRequestParameterItemAddress"
 }
 
-func (m *_S7VarRequestParameterItemAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).getLengthInBits(ctx))
+func (m *_S7VarRequestParameterItemAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).getLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -241,7 +241,7 @@ func (m *_S7VarRequestParameterItemAddress) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

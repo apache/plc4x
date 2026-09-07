@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataBinaryOutputAll = (*_BACnetConstructedDataBinaryOutpu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputAll)(nil)
 
 // NewBACnetConstructedDataBinaryOutputAll factory function for _BACnetConstructedDataBinaryOutputAll
-func NewBACnetConstructedDataBinaryOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputAll {
+func NewBACnetConstructedDataBinaryOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataBinaryOutputAll {
 	_result := &_BACnetConstructedDataBinaryOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataBinaryOutputAll(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryOutputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryOutputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryOutputAll"
 }
 
-func (m *_BACnetConstructedDataBinaryOutputAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBinaryOutputAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryOutputAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBinaryOutputAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +44,7 @@ type PowerUpReply interface {
 	utils.Copyable
 	Reply
 	// GetPowerUpIndicator returns PowerUpIndicator (property field)
+	// is a +
 	GetPowerUpIndicator() PowerUp
 	// IsPowerUpReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPowerUpReply()
@@ -59,12 +62,12 @@ var _ PowerUpReply = (*_PowerUpReply)(nil)
 var _ ReplyRequirements = (*_PowerUpReply)(nil)
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
+func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp) *_PowerUpReply {
 	if powerUpIndicator == nil {
 		panic("powerUpIndicator of type PowerUp for PowerUpReply must not be nil")
 	}
 	_result := &_PowerUpReply{
-		ReplyContract:    NewReply(peekedByte, cBusOptions, requestContext),
+		ReplyContract:    NewReply(peekedByte),
 		PowerUpIndicator: powerUpIndicator,
 	}
 	_result.ReplyContract.(*_Reply)._SubType = _result
@@ -221,12 +224,12 @@ func CastPowerUpReply(structType any) PowerUpReply {
 	return nil
 }
 
-func (m *_PowerUpReply) GetTypeName() string {
+func (m *_PowerUpReply) GetPlx4xTypeName() string {
 	return "PowerUpReply"
 }
 
-func (m *_PowerUpReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
+func (m *_PowerUpReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
 
 	// Simple field (powerUpIndicator)
 	lengthInBits += m.PowerUpIndicator.GetLengthInBits(ctx)
@@ -234,7 +237,7 @@ func (m *_PowerUpReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PowerUpReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PowerUpReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -249,7 +252,7 @@ func (m *_PowerUpReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	powerUpIndicator, err := ReadSimpleField[PowerUp](ctx, "powerUpIndicator", ReadComplex[PowerUp](PowerUpParseWithBuffer, readBuffer))
+	powerUpIndicator, err := ReadSimpleField[PowerUp](ctx, "powerUpIndicator", ReadComplex[PowerUp](PowerUpParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerUpIndicator' field"))
 	}
@@ -263,7 +266,7 @@ func (m *_PowerUpReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_PowerUpReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -280,7 +283,7 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for PowerUpReply")
 		}
 
-		if err := WriteSimpleField[PowerUp](ctx, "powerUpIndicator", m.GetPowerUpIndicator(), WriteComplex[PowerUp](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PowerUp](ctx, "powerUpIndicator", m.GetPowerUpIndicator(), WriteComplex[PowerUp](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'powerUpIndicator' field")
 		}
 

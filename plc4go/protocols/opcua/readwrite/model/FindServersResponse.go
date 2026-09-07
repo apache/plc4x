@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastFindServersResponse(structType any) FindServersResponse {
 	return nil
 }
 
-func (m *_FindServersResponse) GetTypeName() string {
+func (m *_FindServersResponse) GetPlx4xTypeName() string {
 	return "FindServersResponse"
 }
 
-func (m *_FindServersResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_FindServersResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_FindServersResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_FindServersResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FindServersResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_FindServersResponse) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfServers, err := ReadImplicitField[int32](ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServers, err := ReadImplicitField[int32](ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServers' field"))
 	}
 	_ = noOfServers
 
-	servers, err := ReadCountArrayField[ApplicationDescription](ctx, "servers", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer), uint64(noOfServers))
+	servers, err := ReadCountArrayField[ApplicationDescription](ctx, "servers", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer), uint64(noOfServers), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servers' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_FindServersResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for FindServersResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 		noOfServers := int32(utils.InlineIf(bool((m.GetServers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServers()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServers", noOfServers, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServers", noOfServers, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServers' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "servers", m.GetServers(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "servers", m.GetServers(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'servers' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCurrentCommandPriority = (*_BACnetConstructedDataCurr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
 
 // NewBACnetConstructedDataCurrentCommandPriority factory function for _BACnetConstructedDataCurrentCommandPriority
-func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
+func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned) *_BACnetConstructedDataCurrentCommandPriority {
 	if currentCommandPriority == nil {
 		panic("currentCommandPriority of type BACnetOptionalUnsigned for BACnetConstructedDataCurrentCommandPriority must not be nil")
 	}
 	_result := &_BACnetConstructedDataCurrentCommandPriority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CurrentCommandPriority:        currentCommandPriority,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCurrentCommandPriority(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetTypeName() string {
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCurrentCommandPriority"
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (currentCommandPriority)
 	lengthInBits += m.CurrentCommandPriority.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

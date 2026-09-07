@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetContextTagReal = (*_BACnetContextTagReal)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagReal)(nil)
 
 // NewBACnetContextTagReal factory function for _BACnetContextTagReal
-func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal, tagNumberArgument uint8) *_BACnetContextTagReal {
+func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal) *_BACnetContextTagReal {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
 	}
 	_result := &_BACnetContextTagReal{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
@@ -242,12 +242,12 @@ func CastBACnetContextTagReal(structType any) BACnetContextTagReal {
 	return nil
 }
 
-func (m *_BACnetContextTagReal) GetTypeName() string {
+func (m *_BACnetContextTagReal) GetPlx4xTypeName() string {
 	return "BACnetContextTagReal"
 }
 
-func (m *_BACnetContextTagReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagReal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_BACnetContextTagReal) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagReal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagReal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

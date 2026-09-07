@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -67,12 +67,12 @@ var _ APDUError = (*_APDUError)(nil)
 var _ APDURequirements = (*_APDUError)(nil)
 
 // NewAPDUError factory function for _APDUError
-func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
+func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError) *_APDUError {
 	if error == nil {
 		panic("error of type BACnetError for APDUError must not be nil")
 	}
 	_result := &_APDUError{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		OriginalInvokeId: originalInvokeId,
 		ErrorChoice:      errorChoice,
 		Error:            error,
@@ -257,12 +257,12 @@ func CastAPDUError(structType any) APDUError {
 	return nil
 }
 
-func (m *_APDUError) GetTypeName() string {
+func (m *_APDUError) GetPlx4xTypeName() string {
 	return "APDUError"
 }
 
-func (m *_APDUError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -279,7 +279,7 @@ func (m *_APDUError) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

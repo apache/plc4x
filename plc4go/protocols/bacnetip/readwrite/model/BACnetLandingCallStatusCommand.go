@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,8 +62,8 @@ type BACnetLandingCallStatusCommandContract interface {
 
 // BACnetLandingCallStatusCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetLandingCallStatusCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -277,23 +277,23 @@ func CastBACnetLandingCallStatusCommand(structType any) BACnetLandingCallStatusC
 	return nil
 }
 
-func (m *_BACnetLandingCallStatusCommand) GetTypeName() string {
+func (m *_BACnetLandingCallStatusCommand) GetPlx4xTypeName() string {
 	return "BACnetLandingCallStatusCommand"
 }
 
-func (m *_BACnetLandingCallStatusCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLandingCallStatusCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetLandingCallStatusCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetLandingCallStatusCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetLandingCallStatusCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLandingCallStatusCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -313,7 +313,7 @@ func BACnetLandingCallStatusCommandParseWithBufferProducer[T BACnetLandingCallSt
 }
 
 func BACnetLandingCallStatusCommandParseWithBuffer[T BACnetLandingCallStatusCommand](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetLandingCallStatusCommand{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetLandingCallStatusCommand)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

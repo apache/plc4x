@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,6 +45,7 @@ type BACnetAddress interface {
 	// GetMacAddress returns MacAddress (property field)
 	GetMacAddress() BACnetApplicationTagOctetString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// GetIsLocalNetwork returns IsLocalNetwork (virtual field)
 	GetIsLocalNetwork() bool
@@ -244,12 +245,12 @@ func CastBACnetAddress(structType any) BACnetAddress {
 	return nil
 }
 
-func (m *_BACnetAddress) GetTypeName() string {
+func (m *_BACnetAddress) GetPlx4xTypeName() string {
 	return "BACnetAddress"
 }
 
-func (m *_BACnetAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (networkNumber)
 	lengthInBits += m.NetworkNumber.GetLengthInBits(ctx)
@@ -266,7 +267,7 @@ func (m *_BACnetAddress) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -281,7 +282,7 @@ func BACnetAddressParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
-	v, err := (&_BACnetAddress{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAddress)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

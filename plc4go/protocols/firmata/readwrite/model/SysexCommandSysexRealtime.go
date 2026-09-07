@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -184,17 +184,17 @@ func CastSysexCommandSysexRealtime(structType any) SysexCommandSysexRealtime {
 	return nil
 }
 
-func (m *_SysexCommandSysexRealtime) GetTypeName() string {
+func (m *_SysexCommandSysexRealtime) GetPlx4xTypeName() string {
 	return "SysexCommandSysexRealtime"
 }
 
-func (m *_SysexCommandSysexRealtime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandSysexRealtime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SysexCommandSysexRealtime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandSysexRealtime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

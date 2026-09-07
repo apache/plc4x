@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -89,12 +89,12 @@ var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMUpdateKeyUpdate)(nil)
 
 // NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
-func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
+func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry) *_NLMUpdateKeyUpdate {
 	if controlFlags == nil {
 		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
 	}
 	_result := &_NLMUpdateKeyUpdate{
-		NLMContract:        NewNLM(apduLength),
+		NLMContract:        NewNLM(),
 		ControlFlags:       controlFlags,
 		Set1KeyRevision:    set1KeyRevision,
 		Set1ActivationTime: set1ActivationTime,
@@ -375,12 +375,12 @@ func CastNLMUpdateKeyUpdate(structType any) NLMUpdateKeyUpdate {
 	return nil
 }
 
-func (m *_NLMUpdateKeyUpdate) GetTypeName() string {
+func (m *_NLMUpdateKeyUpdate) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdate"
 }
 
-func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (controlFlags)
 	lengthInBits += m.ControlFlags.GetLengthInBits(ctx)
@@ -444,7 +444,7 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

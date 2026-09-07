@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetLandingDoorStatusLandingDoorsListEntry(structType any) BACnetLand
 	return nil
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetTypeName() string {
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetPlx4xTypeName() string {
 	return "BACnetLandingDoorStatusLandingDoorsListEntry"
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (floorNumber)
 	lengthInBits += m.FloorNumber.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBufferProducer() func(
 }
 
 func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
-	v, err := (&_BACnetLandingDoorStatusLandingDoorsListEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetLandingDoorStatusLandingDoorsListEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

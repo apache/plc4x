@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataChangeOfStateCount = (*_BACnetConstructedDataChangeOf
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangeOfStateCount)(nil)
 
 // NewBACnetConstructedDataChangeOfStateCount factory function for _BACnetConstructedDataChangeOfStateCount
-func NewBACnetConstructedDataChangeOfStateCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeIfStateCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateCount {
+func NewBACnetConstructedDataChangeOfStateCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeIfStateCount BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataChangeOfStateCount {
 	if changeIfStateCount == nil {
 		panic("changeIfStateCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataChangeOfStateCount must not be nil")
 	}
 	_result := &_BACnetConstructedDataChangeOfStateCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ChangeIfStateCount:            changeIfStateCount,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataChangeOfStateCount(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) GetTypeName() string {
+func (m *_BACnetConstructedDataChangeOfStateCount) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChangeOfStateCount"
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (changeIfStateCount)
 	lengthInBits += m.ChangeIfStateCount.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

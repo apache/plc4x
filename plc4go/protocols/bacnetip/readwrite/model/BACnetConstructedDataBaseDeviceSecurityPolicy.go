@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBaseDeviceSecurityPolicy = (*_BACnetConstructedDataBa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
 
 // NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
-func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
+func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
 	if baseDeviceSecurityPolicy == nil {
 		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
 	}
 	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBaseDeviceSecurityPolicy(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetTypeName() string {
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBaseDeviceSecurityPolicy"
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (baseDeviceSecurityPolicy)
 	lengthInBits += m.BaseDeviceSecurityPolicy.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

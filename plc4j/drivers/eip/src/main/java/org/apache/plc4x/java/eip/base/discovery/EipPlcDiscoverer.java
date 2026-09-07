@@ -24,10 +24,14 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.eip.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
-import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +61,9 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
             for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
                 if (!networkInterface.isLoopback()) {
                     for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                        if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address)) {
-                            Inet4Address inet4Address = (Inet4Address) interfaceAddress.getAddress();
+                        if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address inet4Address)) {
                             // Open a listening socket on the AMS discovery default port for taking in responses.
-                            DatagramSocket discoverySocket = new DatagramSocket(EipConstants.EIPUDPDISCOVERYDEFAULTPORT, inet4Address);
+                            DatagramSocket discoverySocket = new DatagramSocket(Constants.EIPUDPDISCOVERYDEFAULTPORT, inet4Address);
                             discoverySocket.setBroadcast(true);
 
                             openSockets.add(discoverySocket);
@@ -75,7 +78,12 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                                         discoverySocket.receive(packet);
 
                                         InetAddress plcAddress = packet.getAddress();
-                                        ReadBuffer readBuffer = new ReadBufferByteBased(packet.getData(), ByteOrder.LITTLE_ENDIAN);
+                                        ReadBufferByteBased readBuffer = new ReadBufferByteBased(packet.getData(),
+                                            WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"),
+                                            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+                                            WithOption.WithSignedIntegerEncoding("twos-complement"),
+                                            WithOption.WithFloatEncoding("IEEE754"),
+                                            WithOption.WithStringEncoding("UTF8"));
                                         try {
                                             EipPacket eipPacket = EipPacket.staticParse(readBuffer, true);
 
@@ -83,13 +91,12 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                                             if ((eipPacket.getCommand() == 0x0063) && (eipPacket.getResponse())){
                                                 EipListIdentityResponse listIdentityResponse = (EipListIdentityResponse) eipPacket;
                                                 for (CommandSpecificDataItem commandSpecificDataItem : listIdentityResponse.getItems()) {
-                                                    if(commandSpecificDataItem instanceof CipIdentity) {
-                                                        CipIdentity identityItem = (CipIdentity) commandSpecificDataItem;
+                                                    if(commandSpecificDataItem instanceof CipIdentity identityItem) {
 
                                                         // Add an entry to the results.
                                                         PlcDiscoveryItem plcDiscoveryItem = new DefaultPlcDiscoveryItem(
                                                             "eip", "tcp",
-                                                            plcAddress.getHostAddress() + ":" + EipConstants.EIPTCPDEFAULTPORT,
+                                                            plcAddress.getHostAddress() + ":" + Constants.EIPTCPDEFAULTPORT,
                                                             Collections.emptyMap(), identityItem.getProductName(), Collections.emptyMap());
 
                                                         // If we've got an explicit handler, pass the new item to that.
@@ -102,8 +109,14 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                                                     }
                                                 }
                                             }
-                                        } catch (ParseException e) {
-                                            logger.error("Error parsing EIP discovery response", e);
+                                        } catch (BufferException | RuntimeException e) {
+                                            // RuntimeException too: a response that parses but is
+                                            // not the type the command claims fails the cast, and
+                                            // any host can send a datagram to a discovery port.
+                                            // One we cannot read costs that datagram, not discovery
+                                            // on this interface.
+                                            logger.warn("Ignoring an unreadable EIP discovery response from {}",
+                                                packet.getAddress(), e);
                                         }
                                     }
                                 } catch (SocketException e) {
@@ -121,19 +134,24 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                             // Send the discovery request.
                             try {
                                 // Create the discovery request message for this device.
-                                EipPacket discoveryPacket = new EipListIdentityRequest(0, 0, new byte[] {0,0,0,0,0,0,0,0}, 0);
+                                EipPacket discoveryPacket = new EipListIdentityRequest(0L, 0L, new byte[] {0,0,0,0,0,0,0,0}, 0L);
 
                                 // Serialize the message.
-                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(discoveryPacket.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
+                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[discoveryPacket.getLengthInBytes()],
+                                    WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"),
+                                    WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+                                    WithOption.WithSignedIntegerEncoding("twos-complement"),
+                                    WithOption.WithFloatEncoding("IEEE754"),
+                                    WithOption.WithStringEncoding("UTF8"));
                                 discoveryPacket.serialize(writeBuffer);
 
                                 // Get the broadcast address for this interface.
                                 InetAddress broadcastAddress = interfaceAddress.getBroadcast();
 
                                 // Create the UDP packet to the broadcast address.
-                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, EipConstants.EIPUDPDISCOVERYDEFAULTPORT);
+                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, Constants.EIPUDPDISCOVERYDEFAULTPORT);
                                 discoverySocket.send(discoveryRequestPacket);
-                            } catch (SerializationException e) {
+                            } catch (BufferException e) {
                                 logger.error("Error serializing EIP discovery request", e);
                             } catch (IOException e) {
                                 logger.error("Error sending EIP discover request", e);

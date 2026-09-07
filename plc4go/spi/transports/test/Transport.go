@@ -21,10 +21,11 @@ package test
 
 import (
 	"net/url"
+	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -34,6 +35,8 @@ type Transport struct {
 
 	log zerolog.Logger
 }
+
+var _ transports.Transport = (*Transport)(nil)
 
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -59,8 +62,16 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[st
 		m.log.Trace().Stringer("transportUrl", &transportUrl).Msg("Returning pre registered instance")
 		return preregisteredInstance, nil
 	}
+	simulatedLatency := 10 * time.Millisecond
+	if latency, ok := options["simulatedLatency"]; ok {
+		parsedLatency, err := time.ParseDuration(latency[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "error parsing simulatedLatency")
+		}
+		simulatedLatency = parsedLatency
+	}
 	m.log.Trace().Msg("create transport instance")
-	return NewTransportInstance(m, _options...), nil
+	return NewTransportInstance(m, append(_options, WithSimulatedLatency(simulatedLatency))...), nil
 }
 
 func (m *Transport) AddPreregisteredInstances(transportUrl url.URL, preregisteredInstance transports.TransportInstance) error {

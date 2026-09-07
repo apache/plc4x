@@ -35,12 +35,12 @@ import (
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/fatih/color"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
@@ -86,16 +86,22 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 				continue
 			}
 		}
-		if delta.Operation == xdiff.Update &&
-			string(delta.Subject.Parent.FirstChild.Name) == "dataType" &&
-			string(delta.Subject.Parent.FirstChild.Value) == "string" &&
-			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
-			string(delta.Object.Parent.FirstChild.Value) == "string" {
-			if diff, err := xdiff.Compare(delta.Subject, delta.Object); diff == nil && err == nil {
-				localLog.Info().Interface("delta", delta).Msg("We ignore newline diffs")
-				continue
-			}
-		}
+		// NOTE: There used to be a "We ignore newline diffs" carve-out here for
+		// dataType="string" leaf Updates, added in 8828c6815e alongside a change to
+		// WriteBufferXmlBased.WriteString that stopped CDATA-wrapping multiline
+		// strings. Its guard called xdiff.Compare(delta.Subject, delta.Object)
+		// directly on the two differing leaf value nodes to decide whether the
+		// diff was "just" an escaping artifact. That guard is a no-op: for two
+		// leaf nodes (FirstChild == nil on both sides), xdiff's editScript never
+		// emits an Update delta for the *root* pair passed to Compare - Updates
+		// are only produced while iterating a parent's children - so the inner
+		// Compare always returned (nil, nil) regardless of whether the string
+		// values actually differed. That made the carve-out a blanket ignore of
+		// every dataType="string" leaf diff (see GH-2611 EIP parity follow-up).
+		// The original motivating case (CDATA vs entity-escaped newlines) no
+		// longer applies since WriteString stopped emitting CDATA, so the
+		// carve-out is removed rather than replaced: string-leaf diffs now fail
+		// the comparison like any other leaf diff.
 		cleanDiff = append(cleanDiff, delta)
 	}
 
@@ -119,7 +125,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 
 // TestContext produces a context which is getting cleaned up by testing.T
 func TestContext(t *testing.T) context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	t.Cleanup(cancel)
 	ctx = ProduceTestingLogger(t).WithContext(ctx)
 	return ctx
@@ -144,7 +150,7 @@ func init() {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
 	}
 	getOrLeaveBool("PLC4X_TEST_PASS_LOGGER_TO_MODEL", &passLoggerToModel)
-	receiveTimeout = 3 * time.Second
+	receiveTimeout = 60 * time.Second
 	getOrLeaveDuration("PLC4X_TEST_RECEIVE_TIMEOUT_MS", &receiveTimeout)
 	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_WORKERS", &traceTransactionManagerWorkers)
 	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS", &traceTransactionManagerTransactions)
@@ -161,38 +167,51 @@ func getOrLeaveBool(key string, setting *bool) {
 
 func getOrLeaveDuration(key string, setting *time.Duration) {
 	if env, ok := os.LookupEnv(key); ok && env != "" {
-		parsedDuration, err := strconv.ParseInt(env, 10, 64)
+		parsedDuration, err := time.ParseDuration(env)
 		if err != nil {
 			panic(err)
 		}
-		*setting = time.Duration(parsedDuration) * time.Millisecond
+		*setting = parsedDuration
 	}
 }
 
+// shouldNoColor's result only depends on the environment, but it WRITES the
+// global color.NoColor - and it is called from ProduceTestingLogger for every
+// (potentially parallel) test, which the race detector flags as concurrent
+// unsynchronized writes. Compute it exactly once.
+var (
+	noColorOnce   sync.Once
+	noColorResult bool
+)
+
 func shouldNoColor() bool {
-	if _, forceColorEnv := os.LookupEnv("FORCE_COLOR"); forceColorEnv {
-		color.NoColor = false // Apparently the color.NoColor is a bit to eager
-		return false
-	}
-	noColor := false
-	{
-		_, noColorEnv := os.LookupEnv("NO_COLOR")
-		onJenkins := os.Getenv("JENKINS_URL") != ""
-		onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
-		onCI := os.Getenv("CI") != ""
-		if noColorEnv || onJenkins || onGithubAction || onCI {
-			noColor = true
+	noColorOnce.Do(func() {
+		if _, forceColorEnv := os.LookupEnv("FORCE_COLOR"); forceColorEnv {
+			color.NoColor = false // Apparently the color.NoColor is a bit to eager
+			noColorResult = false
+			return
 		}
-	}
-	if !noColor {
-		color.NoColor = false // Apparently the color.NoColor is a bit to eager
-	}
-	return noColor
+		noColor := false
+		{
+			_, noColorEnv := os.LookupEnv("NO_COLOR")
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if noColorEnv || onJenkins || onGithubAction || onCI {
+				noColor = true
+			}
+		}
+		if !noColor {
+			color.NoColor = false // Apparently the color.NoColor is a bit to eager
+		}
+		noColorResult = noColor
+	})
+	return noColorResult
 }
 
 type TestingLog interface {
-	Log(args ...interface{})
-	Logf(format string, args ...interface{})
+	Log(args ...any)
+	Logf(format string, args ...any)
 	Helper()
 }
 
@@ -213,7 +232,7 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 			}
 		},
 		func(w *zerolog.ConsoleWriter) {
-			w.FormatFieldValue = func(i interface{}) string {
+			w.FormatFieldValue = func(i any) string {
 				switch i := i.(type) {
 				case string:
 					if strings.Contains(i, "\\n") {
@@ -234,7 +253,7 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 				}
 				return fmt.Sprintf("%s", i)
 			}
-			w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+			w.FormatExtra = func(m map[string]any, buffer *bytes.Buffer) error {
 				for key, i := range m {
 					switch i := i.(type) {
 					case string:
@@ -289,30 +308,37 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 		logger = logger.With().Timestamp().Logger()
 	}
 	stackSetter.Do(func() {
-		zerolog.ErrorStackMarshaler = func(err error) interface{} {
+		zerolog.ErrorStackMarshaler = func(err error) any {
 			if err == nil {
 				return nil
 			}
 			var r strings.Builder
-			stack := pkgerrors.MarshalStack(err)
+			stack := errors.MarshalStack(err)
 			if stack == nil {
 				return nil
 			}
 			stackMap := stack.([]map[string]string)
 			for _, entry := range stackMap {
-				stackSourceFileName := entry[pkgerrors.StackSourceFileName]
-				stackSourceLineName := entry[pkgerrors.StackSourceLineName]
-				stackSourceFunctionName := entry[pkgerrors.StackSourceFunctionName]
+				stackSourceFileName := entry[errors.StackSourceFileName]
+				stackSourceLineName := entry[errors.StackSourceLineName]
+				stackSourceFunctionName := entry[errors.StackSourceFunctionName]
 				r.WriteString(fmt.Sprintf("\tat %v (%v:%v)\n", stackSourceFunctionName, stackSourceFileName, stackSourceLineName))
 			}
 			return r.String()
 		}
 	})
+	interfaceMarshallerSetter.Do(func() {
+		logging.ZerologInterfacePLCMessageFormat = logging.PLCMessageAsString
+		zerolog.InterfaceMarshalFunc = logging.ZerologMessageInterfaceMarshalFunc
+	})
 	logger = logger.With().Stack().Logger()
 	return logger
 }
 
-var stackSetter sync.Once
+var (
+	stackSetter               sync.Once
+	interfaceMarshallerSetter sync.Once
+)
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {

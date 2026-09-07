@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -289,12 +289,12 @@ func CastClockAndTimekeepingDataUpdateTime(structType any) ClockAndTimekeepingDa
 	return nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTime) GetTypeName() string {
+func (m *_ClockAndTimekeepingDataUpdateTime) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingDataUpdateTime"
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).getLengthInBits(ctx))
+func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).getLengthInBits(ctx))
 
 	// Simple field (hours)
 	lengthInBits += 8
@@ -319,7 +319,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

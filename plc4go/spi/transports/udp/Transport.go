@@ -25,9 +25,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -36,6 +36,8 @@ import (
 type Transport struct {
 	log zerolog.Logger
 }
+
+var _ transports.Transport = (*Transport)(nil)
 
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -85,17 +87,9 @@ func (m *Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL,
 			return nil, errors.New("error setting port. No explicit or default port provided")
 		}
 	}
-	var connectTimeout uint32 = 1000
-	if val, ok := options["connect-timeout"]; ok {
-		if parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32); err != nil {
-			return nil, errors.Wrap(err, "error setting connect-timeout")
-		} else {
-			connectTimeout = uint32(parsedConnectTimeout)
-		}
-	}
 
 	var soReUse bool
-	if val, ok := options["so-reuse"]; ok {
+	if val, ok := options["udp.so-reuse"]; ok {
 		if parseBool, err := strconv.ParseBool(val[0]); err != nil {
 			return nil, errors.Wrap(err, "error setting so-reuse")
 		} else {
@@ -109,7 +103,7 @@ func (m *Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL,
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, soReUse, m, _options...), nil
+	return NewTransportInstance(localAddress, remoteAddress, soReUse, m, _options...), nil
 }
 
 func (m *Transport) Close() error {

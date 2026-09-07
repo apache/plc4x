@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetLogRecordLogDatumAnyValue = (*_BACnetLogRecordLogDatumAnyValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumAnyValue)(nil)
 
 // NewBACnetLogRecordLogDatumAnyValue factory function for _BACnetLogRecordLogDatumAnyValue
-func NewBACnetLogRecordLogDatumAnyValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, anyValue BACnetConstructedData, tagNumber uint8) *_BACnetLogRecordLogDatumAnyValue {
+func NewBACnetLogRecordLogDatumAnyValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, anyValue BACnetConstructedData) *_BACnetLogRecordLogDatumAnyValue {
 	_result := &_BACnetLogRecordLogDatumAnyValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		AnyValue:                        anyValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
@@ -215,12 +215,12 @@ func CastBACnetLogRecordLogDatumAnyValue(structType any) BACnetLogRecordLogDatum
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumAnyValue) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumAnyValue"
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Optional Field (anyValue)
 	if m.AnyValue != nil {
@@ -230,7 +230,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -280,7 +280,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumAnyValue")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", GetRef(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", new(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'anyValue' field")
 		}
 

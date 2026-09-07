@@ -30,7 +30,7 @@ public interface ValidatableTypeContext extends TypeContext {
      */
     default void validate() throws GenerationException {
         // TODO: check that we have at least of parsed type
-        if (getUnresolvedTypeReferences().size() > 0) {
+        if (!getUnresolvedTypeReferences().isEmpty()) {
             throw new GenerationException("Unresolved types left: " + getUnresolvedTypeReferences());
         }
     }

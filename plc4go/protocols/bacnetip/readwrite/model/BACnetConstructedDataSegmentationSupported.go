@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSegmentationSupported = (*_BACnetConstructedDataSegme
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSegmentationSupported)(nil)
 
 // NewBACnetConstructedDataSegmentationSupported factory function for _BACnetConstructedDataSegmentationSupported
-func NewBACnetConstructedDataSegmentationSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, segmentationSupported BACnetSegmentationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSegmentationSupported {
+func NewBACnetConstructedDataSegmentationSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, segmentationSupported BACnetSegmentationTagged) *_BACnetConstructedDataSegmentationSupported {
 	if segmentationSupported == nil {
 		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetConstructedDataSegmentationSupported must not be nil")
 	}
 	_result := &_BACnetConstructedDataSegmentationSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SegmentationSupported:         segmentationSupported,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSegmentationSupported(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataSegmentationSupported) GetTypeName() string {
+func (m *_BACnetConstructedDataSegmentationSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSegmentationSupported"
 }
 
-func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (segmentationSupported)
 	lengthInBits += m.SegmentationSupported.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

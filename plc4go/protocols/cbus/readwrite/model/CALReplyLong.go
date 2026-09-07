@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,6 +56,7 @@ type CALReplyLong interface {
 	// GetReplyNetwork returns ReplyNetwork (property field)
 	GetReplyNetwork() ReplyNetwork
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
+	// TODO: this should be subSub type but mspec doesn't support that yet directly
 	GetIsUnitAddress() bool
 	// IsCALReplyLong is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReplyLong()
@@ -78,12 +81,12 @@ var _ CALReplyLong = (*_CALReplyLong)(nil)
 var _ CALReplyRequirements = (*_CALReplyLong)(nil)
 
 // NewCALReplyLong factory function for _CALReplyLong
-func NewCALReplyLong(calType byte, calData CALData, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
+func NewCALReplyLong(calType byte, calData CALData, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork) *_CALReplyLong {
 	if serialInterfaceAddress == nil {
 		panic("serialInterfaceAddress of type SerialInterfaceAddress for CALReplyLong must not be nil")
 	}
 	_result := &_CALReplyLong{
-		CALReplyContract:       NewCALReply(calType, calData, cBusOptions, requestContext),
+		CALReplyContract:       NewCALReply(calType, calData),
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
 		BridgeAddress:          bridgeAddress,
@@ -359,12 +362,12 @@ func CastCALReplyLong(structType any) CALReplyLong {
 	return nil
 }
 
-func (m *_CALReplyLong) GetTypeName() string {
+func (m *_CALReplyLong) GetPlx4xTypeName() string {
 	return "CALReplyLong"
 }
 
-func (m *_CALReplyLong) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALReplyContract.(*_CALReply).getLengthInBits(ctx))
+func (m *_CALReplyLong) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALReplyContract.(*_CALReply).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -397,7 +400,7 @@ func (m *_CALReplyLong) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALReplyLong) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALReplyLong) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -412,26 +415,26 @@ func (m *_CALReplyLong) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x86))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x86), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	terminatingByte, err := ReadPeekField[uint32](ctx, "terminatingByte", ReadUnsignedInt(readBuffer, uint8(24)), 0)
+	terminatingByte, err := ReadPeekField[uint32](ctx, "terminatingByte", ReadUnsignedInt(readBuffer, uint8(24)), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminatingByte' field"))
 	}
 	m.TerminatingByte = terminatingByte
 
-	isUnitAddress, err := ReadVirtualField[bool](ctx, "isUnitAddress", (*bool)(nil), bool((terminatingByte&0xff) == (0x00)))
+	isUnitAddress, err := ReadVirtualField[bool](ctx, "isUnitAddress", (*bool)(nil), bool((terminatingByte&0xff) == (0x00)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnitAddress' field"))
 	}
 	_ = isUnitAddress
 
 	var unitAddress UnitAddress
-	_unitAddress, err := ReadOptionalField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer), isUnitAddress)
+	_unitAddress, err := ReadOptionalField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer), isUnitAddress, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
 	}
@@ -441,7 +444,7 @@ func (m *_CALReplyLong) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 
 	var bridgeAddress BridgeAddress
-	_bridgeAddress, err := ReadOptionalField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), !(isUnitAddress))
+	_bridgeAddress, err := ReadOptionalField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), !(isUnitAddress), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddress' field"))
 	}
@@ -450,14 +453,14 @@ func (m *_CALReplyLong) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 		m.BridgeAddress = bridgeAddress
 	}
 
-	serialInterfaceAddress, err := ReadSimpleField[SerialInterfaceAddress](ctx, "serialInterfaceAddress", ReadComplex[SerialInterfaceAddress](SerialInterfaceAddressParseWithBuffer, readBuffer))
+	serialInterfaceAddress, err := ReadSimpleField[SerialInterfaceAddress](ctx, "serialInterfaceAddress", ReadComplex[SerialInterfaceAddress](SerialInterfaceAddressParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialInterfaceAddress' field"))
 	}
 	m.SerialInterfaceAddress = serialInterfaceAddress
 
 	var reservedByte *byte
-	reservedByte, err = ReadOptionalField[byte](ctx, "reservedByte", ReadByte(readBuffer, 8), isUnitAddress)
+	reservedByte, err = ReadOptionalField[byte](ctx, "reservedByte", ReadByte(readBuffer, 8), isUnitAddress, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reservedByte' field"))
 	}
@@ -469,7 +472,7 @@ func (m *_CALReplyLong) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 
 	var replyNetwork ReplyNetwork
-	_replyNetwork, err := ReadOptionalField[ReplyNetwork](ctx, "replyNetwork", ReadComplex[ReplyNetwork](ReplyNetworkParseWithBuffer, readBuffer), !(isUnitAddress))
+	_replyNetwork, err := ReadOptionalField[ReplyNetwork](ctx, "replyNetwork", ReadComplex[ReplyNetwork](ReplyNetworkParseWithBuffer, readBuffer), !(isUnitAddress), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'replyNetwork' field"))
 	}
@@ -486,7 +489,7 @@ func (m *_CALReplyLong) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_CALReplyLong) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -503,7 +506,7 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for CALReplyLong")
 		}
 
-		if err := WriteReservedField[byte](ctx, "reserved", byte(0x86), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x86), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 		// Virtual field
@@ -513,23 +516,23 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_isUnitAddressErr, "Error serializing 'isUnitAddress' field")
 		}
 
-		if err := WriteOptionalField[UnitAddress](ctx, "unitAddress", GetRef(m.GetUnitAddress()), WriteComplex[UnitAddress](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[UnitAddress](ctx, "unitAddress", new(m.GetUnitAddress()), WriteComplex[UnitAddress](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
-		if err := WriteOptionalField[BridgeAddress](ctx, "bridgeAddress", GetRef(m.GetBridgeAddress()), WriteComplex[BridgeAddress](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BridgeAddress](ctx, "bridgeAddress", new(m.GetBridgeAddress()), WriteComplex[BridgeAddress](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
-		if err := WriteSimpleField[SerialInterfaceAddress](ctx, "serialInterfaceAddress", m.GetSerialInterfaceAddress(), WriteComplex[SerialInterfaceAddress](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SerialInterfaceAddress](ctx, "serialInterfaceAddress", m.GetSerialInterfaceAddress(), WriteComplex[SerialInterfaceAddress](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'serialInterfaceAddress' field")
 		}
 
-		if err := WriteOptionalField[byte](ctx, "reservedByte", m.GetReservedByte(), WriteByte(writeBuffer, 8), true); err != nil {
+		if err := WriteOptionalField[byte](ctx, "reservedByte", m.GetReservedByte(), WriteByte(writeBuffer, 8), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reservedByte' field")
 		}
 
-		if err := WriteOptionalField[ReplyNetwork](ctx, "replyNetwork", GetRef(m.GetReplyNetwork()), WriteComplex[ReplyNetwork](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[ReplyNetwork](ctx, "replyNetwork", new(m.GetReplyNetwork()), WriteComplex[ReplyNetwork](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'replyNetwork' field")
 		}
 

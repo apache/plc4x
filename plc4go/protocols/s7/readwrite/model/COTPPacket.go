@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,8 +54,6 @@ type COTPPacketContract interface {
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Message
-	// GetCotpLen() returns a parser argument
-	GetCotpLen() uint16
 	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
 	// CreateBuilder creates a COTPPacketBuilder
@@ -64,8 +62,8 @@ type COTPPacketContract interface {
 
 // COTPPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type COTPPacketRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetTpduCode returns TpduCode (discriminator field)
 	GetTpduCode() uint8
 }
@@ -78,16 +76,13 @@ type _COTPPacket struct {
 	}
 	Parameters []COTPParameter
 	Payload    S7Message
-
-	// Arguments.
-	CotpLen uint16
 }
 
 var _ COTPPacketContract = (*_COTPPacket)(nil)
 
 // NewCOTPPacket factory function for _COTPPacket
-func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
-	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
+func NewCOTPPacket(parameters []COTPParameter, payload S7Message) *_COTPPacket {
+	return &_COTPPacket{Parameters: parameters, Payload: payload}
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,8 +101,6 @@ type COTPPacketBuilder interface {
 	WithOptionalPayload(S7Message) COTPPacketBuilder
 	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
 	WithOptionalPayloadBuilder(func(S7MessageBuilder) S7MessageBuilder) COTPPacketBuilder
-	// WithArgCotpLen sets a parser argument
-	WithArgCotpLen(uint16) COTPPacketBuilder
 	// AsCOTPPacketData converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
 	AsCOTPPacketData() COTPPacketDataBuilder
 	// AsCOTPPacketConnectionRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
@@ -172,11 +165,6 @@ func (b *_COTPPacketBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7M
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "S7MessageBuilder failed"))
 	}
-	return b
-}
-
-func (b *_COTPPacketBuilder) WithArgCotpLen(cotpLen uint16) COTPPacketBuilder {
-	b.CotpLen = cotpLen
 	return b
 }
 
@@ -327,12 +315,12 @@ func CastCOTPPacket(structType any) COTPPacket {
 	return nil
 }
 
-func (m *_COTPPacket) GetTypeName() string {
+func (m *_COTPPacket) GetPlx4xTypeName() string {
 	return "COTPPacket"
 }
 
-func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
@@ -354,19 +342,19 @@ func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPPacket) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPPacket) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func COTPPacketParse[T COTPPacket](ctx context.Context, theBytes []byte, cotpLen uint16) (T, error) {
+func COTPPacketParse[T COTPPacket](ctx context.Context, theBytes []byte, cotpLen uint32) (T, error) {
 	return COTPPacketParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
-func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 		v, err := COTPPacketParseWithBuffer[T](ctx, readBuffer, cotpLen)
 		if err != nil {
@@ -377,8 +365,8 @@ func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx co
 	}
 }
 
-func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (T, error) {
-	v, err := (&_COTPPacket{CotpLen: cotpLen}).parse(ctx, readBuffer, cotpLen)
+func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint32) (T, error) {
+	v, err := (new(_COTPPacket)).parse(ctx, readBuffer, cotpLen)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -391,7 +379,7 @@ func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer uti
 	return vc, nil
 }
 
-func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (__cOTPPacket COTPPacket, err error) {
+func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint32) (__cOTPPacket COTPPacket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
@@ -417,27 +405,27 @@ func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, co
 	var _child COTPPacket
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		if _child, err = new(_COTPPacketData).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketData).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketData for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		if _child, err = new(_COTPPacketConnectionRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionRequest).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		if _child, err = new(_COTPPacketConnectionResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionResponse).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		if _child, err = new(_COTPPacketDisconnectRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectRequest).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		if _child, err = new(_COTPPacketDisconnectResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectResponse).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x70: // COTPPacketTpduError
-		if _child, err = new(_COTPPacketTpduError).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketTpduError).parse(ctx, readBuffer, m, uint32(cotpLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketTpduError for type-switch of COTPPacket")
 		}
 	default:
@@ -496,7 +484,7 @@ func (pm *_COTPPacket) serializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(err, "Error serializing 'parameters' field")
 	}
 
-	if err := WriteOptionalField[S7Message](ctx, "payload", GetRef(m.GetPayload()), WriteComplex[S7Message](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[S7Message](ctx, "payload", new(m.GetPayload()), WriteComplex[S7Message](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 
@@ -505,16 +493,6 @@ func (pm *_COTPPacket) serializeParent(ctx context.Context, writeBuffer utils.Wr
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_COTPPacket) GetCotpLen() uint16 {
-	return m.CotpLen
-}
-
-//
-////
 
 func (m *_COTPPacket) IsCOTPPacket() {}
 
@@ -530,7 +508,6 @@ func (m *_COTPPacket) deepCopy() *_COTPPacket {
 		nil, // will be set by child
 		utils.DeepCopySlice[COTPParameter, COTPParameter](m.Parameters),
 		utils.DeepCopy[S7Message](m.Payload),
-		m.CotpLen,
 	}
 	return _COTPPacketCopy
 }

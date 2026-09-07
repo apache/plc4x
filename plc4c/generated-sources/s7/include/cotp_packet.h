@@ -93,7 +93,7 @@ typedef struct plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet;
 // Create an empty NULL-struct
 plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null();
 
-plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** message);
+plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint32_t cotpLen, plc4c_s7_read_write_cotp_packet** message);
 
 plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_packet* message);
 

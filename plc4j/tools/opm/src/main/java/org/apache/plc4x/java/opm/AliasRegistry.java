@@ -25,7 +25,7 @@ package org.apache.plc4x.java.opm;
 public interface AliasRegistry {
 
     /**
-     * Checks if this registry can resolve this alias
+     * Checks if this registry can resolve this alias.
      */
     boolean canResolve(String alias);
 
@@ -35,7 +35,7 @@ public interface AliasRegistry {
     boolean canResolve(String connection, String alias);
 
     /**
-     * Resolves an alias to a valid PLC Tag Address
+     * Resolves an alias to a valid PLC Tag Address.
      */
     String resolve(String alias);
 
@@ -44,5 +44,4 @@ public interface AliasRegistry {
      * This means that the same alias could be resolved to different Addresses for different connections.
      */
     String resolve(String connection, String alias);
-
 }

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +60,8 @@ type DF1RequestCommandContract interface {
 
 // DF1RequestCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1RequestCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetFunctionCode returns FunctionCode (discriminator field)
 	GetFunctionCode() uint8
 }
@@ -205,28 +207,28 @@ func CastDF1RequestCommand(structType any) DF1RequestCommand {
 	return nil
 }
 
-func (m *_DF1RequestCommand) GetTypeName() string {
+func (m *_DF1RequestCommand) GetPlx4xTypeName() string {
 	return "DF1RequestCommand"
 }
 
-func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (functionCode)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_DF1RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1RequestCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_DF1RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1RequestCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func DF1RequestCommandParse[T DF1RequestCommand](ctx context.Context, theBytes []byte) (T, error) {
-	return DF1RequestCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
+	return DF1RequestCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DF1RequestCommandParseWithBufferProducer[T DF1RequestCommand]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -241,7 +243,7 @@ func DF1RequestCommandParseWithBufferProducer[T DF1RequestCommand]() func(ctx co
 }
 
 func DF1RequestCommandParseWithBuffer[T DF1RequestCommand](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_DF1RequestCommand{}).parse(ctx, readBuffer)
+	v, err := (new(_DF1RequestCommand)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -263,7 +265,7 @@ func (m *_DF1RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	functionCode, err := ReadDiscriminatorField[uint8](ctx, "functionCode", ReadUnsignedByte(readBuffer, uint8(8)))
+	functionCode, err := ReadDiscriminatorField[uint8](ctx, "functionCode", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionCode' field"))
 	}
@@ -298,7 +300,7 @@ func (pm *_DF1RequestCommand) serializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for DF1RequestCommand")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "functionCode", m.GetFunctionCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "functionCode", m.GetFunctionCode(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'functionCode' field")
 	}
 

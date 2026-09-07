@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,16 +54,13 @@ type RootExtensionObject interface {
 type _RootExtensionObject struct {
 	ExtensionObjectContract
 	Body ExtensionObjectDefinition
-
-	// Arguments.
-	ExtensionId int32
 }
 
 var _ RootExtensionObject = (*_RootExtensionObject)(nil)
 var _ ExtensionObjectRequirements = (*_RootExtensionObject)(nil)
 
 // NewRootExtensionObject factory function for _RootExtensionObject
-func NewRootExtensionObject(typeId ExpandedNodeId, body ExtensionObjectDefinition, extensionId int32) *_RootExtensionObject {
+func NewRootExtensionObject(typeId ExpandedNodeId, body ExtensionObjectDefinition) *_RootExtensionObject {
 	if body == nil {
 		panic("body of type ExtensionObjectDefinition for RootExtensionObject must not be nil")
 	}
@@ -88,8 +86,6 @@ type RootExtensionObjectBuilder interface {
 	WithBody(ExtensionObjectDefinition) RootExtensionObjectBuilder
 	// WithBodyBuilder adds Body (property field) which is build by the builder
 	WithBodyBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RootExtensionObjectBuilder
-	// WithArgExtensionId sets a parser argument
-	WithArgExtensionId(int32) RootExtensionObjectBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() ExtensionObjectBuilder
 	// Build builds the RootExtensionObject or returns an error if something is wrong
@@ -134,11 +130,6 @@ func (b *_RootExtensionObjectBuilder) WithBodyBuilder(builderSupplier func(Exten
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RootExtensionObjectBuilder) WithArgExtensionId(extensionId int32) RootExtensionObjectBuilder {
-	b.ExtensionId = extensionId
 	return b
 }
 
@@ -235,12 +226,12 @@ func CastRootExtensionObject(structType any) RootExtensionObject {
 	return nil
 }
 
-func (m *_RootExtensionObject) GetTypeName() string {
+func (m *_RootExtensionObject) GetPlx4xTypeName() string {
 	return "RootExtensionObject"
 }
 
-func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
+func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
 
 	// Simple field (body)
 	lengthInBits += m.Body.GetLengthInBits(ctx)
@@ -248,7 +239,7 @@ func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RootExtensionObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RootExtensionObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -263,7 +254,7 @@ func (m *_RootExtensionObject) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	body, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "body", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((int32)(extensionId)), readBuffer))
+	body, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "body", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((int32)(extensionId)), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'body' field"))
 	}
@@ -294,7 +285,7 @@ func (m *_RootExtensionObject) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for RootExtensionObject")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "body", m.GetBody(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "body", m.GetBody(), WriteComplex[ExtensionObjectDefinition](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'body' field")
 		}
 
@@ -305,16 +296,6 @@ func (m *_RootExtensionObject) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	return m.ExtensionObjectContract.(*_ExtensionObject).serializeParent(ctx, writeBuffer, m, ser)
 }
-
-////
-// Arguments Getter
-
-func (m *_RootExtensionObject) GetExtensionId() int32 {
-	return m.ExtensionId
-}
-
-//
-////
 
 func (m *_RootExtensionObject) IsRootExtensionObject() {}
 
@@ -329,7 +310,6 @@ func (m *_RootExtensionObject) deepCopy() *_RootExtensionObject {
 	_RootExtensionObjectCopy := &_RootExtensionObject{
 		m.ExtensionObjectContract.(*_ExtensionObject).deepCopy(),
 		utils.DeepCopy[ExtensionObjectDefinition](m.Body),
-		m.ExtensionId,
 	}
 	_RootExtensionObjectCopy.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
 	return _RootExtensionObjectCopy

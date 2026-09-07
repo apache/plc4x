@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,6 +48,7 @@ type BACnetConfirmedServiceRequestReadRange interface {
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
 	GetPropertyArrayIndex() BACnetContextTagUnsignedInteger
 	// GetReadRange returns ReadRange (property field)
+	// TODO: this attribute should be named range but this is a keyword in golang (so at this point we should build a language translator which makes keywords safe)
 	GetReadRange() BACnetConfirmedServiceRequestReadRangeRange
 	// IsBACnetConfirmedServiceRequestReadRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRange()
@@ -68,7 +69,7 @@ var _ BACnetConfirmedServiceRequestReadRange = (*_BACnetConfirmedServiceRequestR
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadRange)(nil)
 
 // NewBACnetConfirmedServiceRequestReadRange factory function for _BACnetConfirmedServiceRequestReadRange
-func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, readRange BACnetConfirmedServiceRequestReadRangeRange, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadRange {
+func NewBACnetConfirmedServiceRequestReadRange(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, readRange BACnetConfirmedServiceRequestReadRangeRange) *_BACnetConfirmedServiceRequestReadRange {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestReadRange must not be nil")
 	}
@@ -312,12 +313,12 @@ func CastBACnetConfirmedServiceRequestReadRange(structType any) BACnetConfirmedS
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRange) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadRange) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadRange"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -338,7 +339,7 @@ func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -418,11 +419,11 @@ func (m *_BACnetConfirmedServiceRequestReadRange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", new(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", GetRef(m.GetReadRange()), WriteComplex[BACnetConfirmedServiceRequestReadRangeRange](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", new(m.GetReadRange()), WriteComplex[BACnetConfirmedServiceRequestReadRangeRange](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'readRange' field")
 		}
 

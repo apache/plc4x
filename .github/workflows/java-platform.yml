@@ -46,8 +46,7 @@ jobs:
   test:
     strategy:
       matrix:
-        # 8 not anymore supported for building
-        java: [ 11, 17, 21, 24 ]
+        java: [ 21, 24 ]
         os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -61,17 +60,17 @@ jobs:
         run: brew install libpcap
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-package: jdk
           java-version: ${{ matrix.java }}
 
       - name: Cache local Maven repository
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -80,7 +79,7 @@ jobs:
 
       - name: Set Platform options
         id: platform_opts
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9.0.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -98,7 +97,7 @@ jobs:
 
       - name: Calculate platform suffix
         id: platform_suffix
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9.0.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -112,7 +111,7 @@ jobs:
 
       - name: Set extra options
         id: extra_options
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9.0.0
         env:
           FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
         with:
@@ -130,7 +129,7 @@ jobs:
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-java,enable-all-checks,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report (first failure)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: "java-test-report-first-failure-${{ matrix.os }}-java-${{ matrix.java }}"
@@ -138,12 +137,8 @@ jobs:
             **/surefire-reports/TEST-*.xml
             **/failsafe-reports/TEST-*.xml
 
-      - name: Run mvnv without BacNet regression tests
-        if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-java,skip-bacnet-regression-test,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
-
       - name: Upload Test Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: success() || failure()
         with:
           name: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"

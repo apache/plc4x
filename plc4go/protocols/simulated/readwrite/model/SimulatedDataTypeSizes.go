@@ -21,11 +21,12 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -370,16 +371,16 @@ func CastSimulatedDataTypeSizes(structType any) SimulatedDataTypeSizes {
 	return castFunc(structType)
 }
 
-func (m SimulatedDataTypeSizes) GetLengthInBits(ctx context.Context) uint16 {
+func (m SimulatedDataTypeSizes) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m SimulatedDataTypeSizes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SimulatedDataTypeSizes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
 func SimulatedDataTypeSizesParse(ctx context.Context, theBytes []byte) (SimulatedDataTypeSizes, error) {
-	return SimulatedDataTypeSizesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return SimulatedDataTypeSizesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func SimulatedDataTypeSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
@@ -398,7 +399,7 @@ func SimulatedDataTypeSizesParseWithBuffer(ctx context.Context, readBuffer utils
 }
 
 func (e SimulatedDataTypeSizes) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased()
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

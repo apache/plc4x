@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDerivativeConstant = (*_BACnetConstructedDataDerivati
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDerivativeConstant)(nil)
 
 // NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
-func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
+func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal) *_BACnetConstructedDataDerivativeConstant {
 	if derivativeConstant == nil {
 		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
 	}
 	_result := &_BACnetConstructedDataDerivativeConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DerivativeConstant:            derivativeConstant,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDerivativeConstant(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataDerivativeConstant) GetTypeName() string {
+func (m *_BACnetConstructedDataDerivativeConstant) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDerivativeConstant"
 }
 
-func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (derivativeConstant)
 	lengthInBits += m.DerivativeConstant.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

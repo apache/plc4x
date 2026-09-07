@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -50,8 +50,6 @@ type FirmataCommand interface {
 
 // FirmataCommandContract provides a set of functions which can be overwritten by a sub struct
 type FirmataCommandContract interface {
-	// GetResponse() returns a parser argument
-	GetResponse() bool
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommand()
 	// CreateBuilder creates a FirmataCommandBuilder
@@ -60,8 +58,8 @@ type FirmataCommandContract interface {
 
 // FirmataCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type FirmataCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -72,16 +70,13 @@ type _FirmataCommand struct {
 		FirmataCommandContract
 		FirmataCommandRequirements
 	}
-
-	// Arguments.
-	Response bool
 }
 
 var _ FirmataCommandContract = (*_FirmataCommand)(nil)
 
 // NewFirmataCommand factory function for _FirmataCommand
-func NewFirmataCommand(response bool) *_FirmataCommand {
-	return &_FirmataCommand{Response: response}
+func NewFirmataCommand() *_FirmataCommand {
+	return &_FirmataCommand{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type FirmataCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataCommandBuilder
-	// WithArgResponse sets a parser argument
-	WithArgResponse(bool) FirmataCommandBuilder
 	// AsFirmataCommandSysex converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
 	AsFirmataCommandSysex() FirmataCommandSysexBuilder
 	// AsFirmataCommandSetPinMode converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
@@ -138,11 +131,6 @@ type _FirmataCommandBuilder struct {
 var _ (FirmataCommandBuilder) = (*_FirmataCommandBuilder)(nil)
 
 func (b *_FirmataCommandBuilder) WithMandatoryFields() FirmataCommandBuilder {
-	return b
-}
-
-func (b *_FirmataCommandBuilder) WithArgResponse(response bool) FirmataCommandBuilder {
-	b.Response = response
 	return b
 }
 
@@ -265,23 +253,23 @@ func CastFirmataCommand(structType any) FirmataCommand {
 	return nil
 }
 
-func (m *_FirmataCommand) GetTypeName() string {
+func (m *_FirmataCommand) GetPlx4xTypeName() string {
 	return "FirmataCommand"
 }
 
-func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (commandCode)
 	lengthInBits += 4
 
 	return lengthInBits
 }
 
-func (m *_FirmataCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_FirmataCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -301,7 +289,7 @@ func FirmataCommandParseWithBufferProducer[T FirmataCommand](response bool) func
 }
 
 func FirmataCommandParseWithBuffer[T FirmataCommand](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_FirmataCommand{Response: response}).parse(ctx, readBuffer, response)
+	v, err := (new(_FirmataCommand)).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -389,16 +377,6 @@ func (pm *_FirmataCommand) serializeParent(ctx context.Context, writeBuffer util
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_FirmataCommand) GetResponse() bool {
-	return m.Response
-}
-
-//
-////
-
 func (m *_FirmataCommand) IsFirmataCommand() {}
 
 func (m *_FirmataCommand) DeepCopy() any {
@@ -411,7 +389,6 @@ func (m *_FirmataCommand) deepCopy() *_FirmataCommand {
 	}
 	_FirmataCommandCopy := &_FirmataCommand{
 		nil, // will be set by child
-		m.Response,
 	}
 	return _FirmataCommandCopy
 }

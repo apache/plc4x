@@ -21,13 +21,15 @@ package eip
 
 import (
 	"context"
+	"encoding/binary"
 	"net/url"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -37,8 +39,10 @@ import (
 type Driver struct {
 	_default.DefaultDriver
 	tm                      transactions.RequestTransactionManager
+	discoverer              *Discoverer
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
+	forceLittleEndian       bool
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -48,6 +52,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
 		tm:                      transactions.NewRequestTransactionManager(1, _options...),
+		discoverer:              NewDiscoverer(_options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
@@ -58,22 +63,40 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	d.log.Debug().
-		Stringer("transportUrl", &transportUrl).
+// NewLogixDriver is a thin alias over the EIP driver that registers the
+// "logix" protocol code and forces little-endian wire encoding - the Logix
+// family always speaks LE on CIP, whereas generic EIP devices may go either
+// way (mirror of plc4j's LogixDriver).
+func NewLogixDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	driver := &Driver{
+		tm:                      transactions.NewRequestTransactionManager(1, _options...),
+		discoverer:              NewDiscoverer(_options...),
+		awaitSetupComplete:      true,
+		awaitDisconnectComplete: true,
+		forceLittleEndian:       true,
+
+		log:      customLogger,
+		_options: _options,
+	}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "logix", "Logix CIP", "tcp", NewTagHandler())
+	return driver
+}
+
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
+	connectionLog.Debug().
 		Int("nTransports", len(transports)).
 		Int("nDriverOptions", len(driverOptions)).
 		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		return ch
+		return nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl)
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{"44818"}
@@ -81,38 +104,41 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	if err != nil {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
 			Msg("We couldn't create a transport instance for port")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
-		return ch
+		return nil, errors.New("couldn't initialize transport configuration for given transport url " + transportUrl.String())
 	}
 
+	configuration, err := ParseFromOptions(connectionLog, driverOptions)
+	if err != nil {
+		connectionLog.Error().Err(err).Msg("Invalid driverOptions")
+		return nil, errors.Wrap(err, "Invalid driverOptions")
+	}
+
+	if d.forceLittleEndian {
+		configuration.bigEndian = false
+	}
+
+	byteOrder := binary.ByteOrder(binary.BigEndian)
+	if !configuration.bigEndian {
+		byteOrder = binary.LittleEndian
+	}
 	codec := NewMessageCodec(
 		transportInstance,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		byteOrder,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
-
-	configuration, err := ParseFromOptions(d.log, driverOptions)
-	if err != nil {
-		d.log.Error().Err(err).Msg("Invalid driverOptions")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid driverOptions"))
-		return ch
-	}
+	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
 
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
-		d.log.Error().Err(err).Msg("Invalid driverOptions")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid driverOptions"))
-		return ch
+		connectionLog.Error().Err(err).Msg("Invalid driverOptions")
+		return nil, errors.Wrap(err, "Invalid driverOptions")
 	}
 	driverContext.awaitSetupComplete = d.awaitSetupComplete
 	driverContext.awaitDisconnectComplete = d.awaitDisconnectComplete
@@ -125,10 +151,21 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		d.GetPlcTagHandler(),
 		d.tm,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Msg("created connection, connecting now")
-	return connection.ConnectWithContext(ctx)
+	connectionLog.Debug().Msg("created connection, connecting now")
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	return connection, nil
+}
+
+func (d *Driver) SupportsDiscovery() bool {
+	return true
+}
+
+func (d *Driver) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return d.discoverer.Discover(ctx, callback, discoveryOptions...)
 }
 
 func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
@@ -141,5 +178,12 @@ func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 
 func (d *Driver) Close() error {
 	defer utils.StopWarn(d.log)()
-	return d.tm.Close()
+	var collectedErrors []error
+	if err := d.discoverer.Close(); err != nil {
+		collectedErrors = append(collectedErrors, errors.Wrap(err, "error closing discoverer"))
+	}
+	if err := d.tm.Close(); err != nil {
+		collectedErrors = append(collectedErrors, errors.Wrap(err, "error closing transaction manager"))
+	}
+	return errors.Join(collectedErrors...)
 }

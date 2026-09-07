@@ -25,10 +25,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 )
 
@@ -118,11 +117,7 @@ func (d *DefaultPlcReadRequest) GetReader() spi.PlcReader {
 func (d *DefaultPlcReadRequest) GetReadRequestInterceptor() interceptors.ReadRequestInterceptor {
 	return d.readRequestInterceptor
 }
-func (d *DefaultPlcReadRequest) Execute() <-chan apiModel.PlcReadRequestResult {
-	return d.ExecuteWithContext(context.TODO())
-}
-
-func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcReadRequestResult {
+func (d *DefaultPlcReadRequest) Execute(ctx context.Context) <-chan apiModel.PlcReadRequestResult {
 	if d.readRequestInterceptor != nil {
 		return d.ExecuteWithContextAndInterceptor(ctx)
 	}
@@ -150,9 +145,7 @@ func (d *DefaultPlcReadRequest) ExecuteWithContextAndInterceptor(ctx context.Con
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	resultChannel := make(chan apiModel.PlcReadRequestResult, 1)
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -173,6 +166,6 @@ func (d *DefaultPlcReadRequest) ExecuteWithContextAndInterceptor(ctx context.Con
 		result := d.readRequestInterceptor.ProcessReadResponses(ctx, d, subResults)
 		// Return the final result
 		resultChannel <- result
-	}()
+	})
 	return resultChannel
 }

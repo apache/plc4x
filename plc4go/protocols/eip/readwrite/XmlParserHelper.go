@@ -24,9 +24,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,8 +46,6 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	switch typeName {
 	case "PathSegment":
 		return PathSegmentParseWithBuffer[PathSegment](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "EipConstants":
-		return EipConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TransportType":
 		return TransportTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PortSegmentType":

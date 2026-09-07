@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -209,12 +210,12 @@ func CastPublishedDataSetCustomSourceDataType(structType any) PublishedDataSetCu
 	return nil
 }
 
-func (m *_PublishedDataSetCustomSourceDataType) GetTypeName() string {
+func (m *_PublishedDataSetCustomSourceDataType) GetPlx4xTypeName() string {
 	return "PublishedDataSetCustomSourceDataType"
 }
 
-func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 7
@@ -225,7 +226,7 @@ func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PublishedDataSetCustomSourceDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -240,13 +241,13 @@ func (m *_PublishedDataSetCustomSourceDataType) parse(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	cyclicDataSet, err := ReadSimpleField(ctx, "cyclicDataSet", ReadBoolean(readBuffer))
+	cyclicDataSet, err := ReadSimpleField(ctx, "cyclicDataSet", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cyclicDataSet' field"))
 	}
@@ -277,11 +278,11 @@ func (m *_PublishedDataSetCustomSourceDataType) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for PublishedDataSetCustomSourceDataType")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "cyclicDataSet", m.GetCyclicDataSet(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "cyclicDataSet", m.GetCyclicDataSet(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'cyclicDataSet' field")
 		}
 

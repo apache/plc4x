@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -227,12 +227,12 @@ func CastSearchRequest(structType any) SearchRequest {
 	return nil
 }
 
-func (m *_SearchRequest) GetTypeName() string {
+func (m *_SearchRequest) GetPlx4xTypeName() string {
 	return "SearchRequest"
 }
 
-func (m *_SearchRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_SearchRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (hpaiIDiscoveryEndpoint)
 	lengthInBits += m.HpaiIDiscoveryEndpoint.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_SearchRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SearchRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SearchRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -255,7 +255,7 @@ func (m *_SearchRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	hpaiIDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	hpaiIDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiIDiscoveryEndpoint' field"))
 	}
@@ -286,7 +286,7 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for SearchRequest")
 		}
 
-		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", m.GetHpaiIDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", m.GetHpaiIDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 

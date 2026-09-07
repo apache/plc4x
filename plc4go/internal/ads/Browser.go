@@ -24,12 +24,12 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
@@ -44,12 +44,10 @@ func (m *Connection) Browse(ctx context.Context, browseRequest apiModel.PlcBrows
 
 func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -59,8 +57,8 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
 		browseResponse := spiModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil)
-	}()
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil))
+	})
 	return result
 }
 
@@ -117,17 +115,21 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 			arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),
 				UpperBound: ai.GetUpperBound(),
+				// The device declared this an array, which is what Range records; without it the shape
+				// rule reads the dimension as a bare index and reports the array as a scalar. The
+				// declared lower bound is also the base, so an address using the PLC's own indices
+				// lines up with it.
+				Base:  ai.GetLowerBound(),
+				Range: true,
 			})
 		}
 		foundTag := spiModel.NewDefaultPlcBrowseItem(
 			model.SymbolicPlcTag{
-				PlcTag: model.PlcTag{
-					ArrayInfo: arrayInfo,
-				},
+				ArrayInfo:       arrayInfo,
 				SymbolicAddress: parentName,
 			},
 			parentName,
-			currentType.GetDataTypeName(),
+			currentType.GetSecondaryName(),
 			false,
 			false,
 			false,
@@ -140,13 +142,13 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 	currentAddressSegment := remainingAddressSegments[0]
 	remainingAddressSegments = remainingAddressSegments[1:]
 	for _, child := range currentType.GetChildren() {
-		if child.GetPropertyName() == currentAddressSegment {
-			childTypeName := child.GetDataTypeName()
+		if child.GetMainName() == currentAddressSegment {
+			childTypeName := child.GetSecondaryName()
 			if symbolDataType, ok := m.driverContext.dataTypeTable[childTypeName]; !ok {
 				// TODO: Couldn't find data type with the name defined in the protperty.
 				return nil
 			} else {
-				return m.filterDataTypes(parentName+"."+child.GetPropertyName(), symbolDataType,
+				return m.filterDataTypes(parentName+"."+child.GetMainName(), symbolDataType,
 					currentPath+"."+currentAddressSegment, remainingAddressSegments)
 			}
 		}

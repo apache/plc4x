@@ -20,14 +20,13 @@ package org.apache.plc4x.java.canopen.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.regex.Pattern;
 
 /**
  * Generic tag type which defines node address and address pattern (index/subindex).
  */
-public abstract class CANOpenTag implements PlcTag, Serializable {
+public abstract class CANOpenTag implements PlcTag {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?:(0[xX](?<indexHex>[0-9a-fA-F]+))|(?<index>\\d+))/(?:(0[xX](?<subIndexHex>[0-9a-fA-F]+))|(?<subIndex>\\d+)):(?<canDataType>\\w+)(\\[(?<numberOfElements>\\d)])?");
     public static final Pattern NODE_PATTERN = Pattern.compile("(?<nodeId>\\d+)");

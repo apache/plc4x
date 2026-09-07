@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +63,12 @@ var _ CBusPointToPointToMultiPointCommandStatus = (*_CBusPointToPointToMultiPoin
 var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandStatus)(nil)
 
 // NewCBusPointToPointToMultiPointCommandStatus factory function for _CBusPointToPointToMultiPointCommandStatus
-func NewCBusPointToPointToMultiPointCommandStatus(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, statusRequest StatusRequest, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandStatus {
+func NewCBusPointToPointToMultiPointCommandStatus(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, statusRequest StatusRequest) *_CBusPointToPointToMultiPointCommandStatus {
 	if statusRequest == nil {
 		panic("statusRequest of type StatusRequest for CBusPointToPointToMultiPointCommandStatus must not be nil")
 	}
 	_result := &_CBusPointToPointToMultiPointCommandStatus{
-		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication),
 		StatusRequest: statusRequest,
 	}
 	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
@@ -223,12 +225,12 @@ func CastCBusPointToPointToMultiPointCommandStatus(structType any) CBusPointToPo
 	return nil
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) GetTypeName() string {
+func (m *_CBusPointToPointToMultiPointCommandStatus) GetPlx4xTypeName() string {
 	return "CBusPointToPointToMultiPointCommandStatus"
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
+func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -239,7 +241,7 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -254,13 +256,13 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) parse(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0xFF))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0xFF), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	statusRequest, err := ReadSimpleField[StatusRequest](ctx, "statusRequest", ReadComplex[StatusRequest](StatusRequestParseWithBuffer, readBuffer))
+	statusRequest, err := ReadSimpleField[StatusRequest](ctx, "statusRequest", ReadComplex[StatusRequest](StatusRequestParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusRequest' field"))
 	}
@@ -274,7 +276,7 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) parse(ctx context.Context, 
 }
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -291,11 +293,11 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultiPointCommandStatus")
 		}
 
-		if err := WriteReservedField[byte](ctx, "reserved", byte(0xFF), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0xFF), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[StatusRequest](ctx, "statusRequest", m.GetStatusRequest(), WriteComplex[StatusRequest](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StatusRequest](ctx, "statusRequest", m.GetStatusRequest(), WriteComplex[StatusRequest](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusRequest' field")
 		}
 

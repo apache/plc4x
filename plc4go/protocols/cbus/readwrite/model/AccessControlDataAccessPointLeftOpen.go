@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastAccessControlDataAccessPointLeftOpen(structType any) AccessControlDataA
 	return nil
 }
 
-func (m *_AccessControlDataAccessPointLeftOpen) GetTypeName() string {
+func (m *_AccessControlDataAccessPointLeftOpen) GetPlx4xTypeName() string {
 	return "AccessControlDataAccessPointLeftOpen"
 }
 
-func (m *_AccessControlDataAccessPointLeftOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
+func (m *_AccessControlDataAccessPointLeftOpen) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AccessControlDataAccessPointLeftOpen) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AccessControlDataAccessPointLeftOpen) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

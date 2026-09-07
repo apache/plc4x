@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,12 +161,12 @@ func CastBACnetTagPayloadReal(structType any) BACnetTagPayloadReal {
 	return nil
 }
 
-func (m *_BACnetTagPayloadReal) GetTypeName() string {
+func (m *_BACnetTagPayloadReal) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadReal"
 }
 
-func (m *_BACnetTagPayloadReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTagPayloadReal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (value)
 	lengthInBits += 32
@@ -174,7 +174,7 @@ func (m *_BACnetTagPayloadReal) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetTagPayloadReal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTagPayloadReal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -189,7 +189,7 @@ func BACnetTagPayloadRealParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetTagPayloadRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadReal, error) {
-	v, err := (&_BACnetTagPayloadReal{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetTagPayloadReal)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

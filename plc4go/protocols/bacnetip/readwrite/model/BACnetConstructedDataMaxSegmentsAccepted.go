@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaxSegmentsAccepted = (*_BACnetConstructedDataMaxSegm
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxSegmentsAccepted)(nil)
 
 // NewBACnetConstructedDataMaxSegmentsAccepted factory function for _BACnetConstructedDataMaxSegmentsAccepted
-func NewBACnetConstructedDataMaxSegmentsAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxSegmentsAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxSegmentsAccepted {
+func NewBACnetConstructedDataMaxSegmentsAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMaxSegmentsAccepted {
 	if maxSegmentsAccepted == nil {
 		panic("maxSegmentsAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxSegmentsAccepted must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaxSegmentsAccepted{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxSegmentsAccepted:           maxSegmentsAccepted,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMaxSegmentsAccepted(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetTypeName() string {
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxSegmentsAccepted"
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxSegmentsAccepted)
 	lengthInBits += m.MaxSegmentsAccepted.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAnalogInputMaxPresValue = (*_BACnetConstructedDataAna
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogInputMaxPresValue)(nil)
 
 // NewBACnetConstructedDataAnalogInputMaxPresValue factory function for _BACnetConstructedDataAnalogInputMaxPresValue
-func NewBACnetConstructedDataAnalogInputMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputMaxPresValue {
+func NewBACnetConstructedDataAnalogInputMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagReal) *_BACnetConstructedDataAnalogInputMaxPresValue {
 	if maxPresValue == nil {
 		panic("maxPresValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogInputMaxPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAnalogInputMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxPresValue:                  maxPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAnalogInputMaxPresValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogInputMaxPresValue"
 }
 
-func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

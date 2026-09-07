@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -205,12 +205,12 @@ func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
 	return nil
 }
 
-func (m *_BACnetRecipientProcess) GetTypeName() string {
+func (m *_BACnetRecipientProcess) GetPlx4xTypeName() string {
 	return "BACnetRecipientProcess"
 }
 
-func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (recipient)
 	lengthInBits += m.Recipient.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetRecipientProcess) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetRecipientProcess) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -238,7 +238,7 @@ func BACnetRecipientProcessParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func BACnetRecipientProcessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
-	v, err := (&_BACnetRecipientProcess{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetRecipientProcess)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(err, "Error serializing 'recipient' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", GetRef(m.GetProcessIdentifier()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", new(m.GetProcessIdentifier()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 

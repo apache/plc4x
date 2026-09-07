@@ -22,14 +22,14 @@
     [simple        TagClass tagClass                                                                                    ]
     [simple        uint 3   lengthValueType                                                                             ]
     [optional      uint 8   extTagNumber    'tagNumber == 15'                                                           ]
-    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                                 ]
+    [virtual       uint 8   actualTagNumber 'tagNumber < 15 || extTagNumber == null ? tagNumber : extTagNumber'         ]
     [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                   ]
     [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'        ]
     [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                     ]
     [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                          ]
-    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'      ]
-    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'      ]
-    [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
+    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 254'    ]
+    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 255'    ]
+    [virtual       uint 32  actualLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 255 && extExtExtLength != null ? extExtExtLength : (isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null && extLength == 254 && extExtLength != null ? extExtLength : (isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength != null ? extLength : lengthValueType))']
 ]
 
 [discriminatedType BACnetApplicationTag
@@ -55,7 +55,7 @@
         ['0x3' *SignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            [virtual    uint 64    actualValue   'payload.actualValue'                                                  ]
+            [virtual    int 64  actualValue   'payload.actualValue'                                                     ]
         ]
         ['0x4' *Real
             [simple BACnetTagPayloadReal
@@ -134,7 +134,7 @@
         ['SIGNED_INTEGER' *SignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            [virtual    uint 64     actualValue 'payload.actualValue'                                                   ]
+            [virtual    int 64  actualValue 'payload.actualValue'                                                       ]
         ]
         ['REAL' *Real
             [simple BACnetTagPayloadReal
@@ -202,12 +202,14 @@
 ]
 
 [type BACnetTagPayloadBoolean(uint 32 actualLength)
-    [virtual bit value   'actualLength == 1'    ]
-    [virtual bit isTrue  'value'                ]
-    [virtual bit isFalse '!value'               ]
+    [state       actualLength                       ]
+    [virtual bit value          'actualLength == 1' ]
+    [virtual bit isTrue         'value'             ]
+    [virtual bit isFalse        '!value'            ]
 ]
 
 [type BACnetTagPayloadUnsignedInteger(uint 32 actualLength)
+    [state                  actualLength                         ]
     [virtual    bit         isUint8         'actualLength == 1'  ]
     [optional   uint  8     valueUint8      'isUint8'            ]
     [virtual    bit         isUint16        'actualLength == 2'  ]
@@ -224,11 +226,14 @@
     [optional   uint 56     valueUint56     'isUint56'           ]
     [virtual    bit         isUint64        'actualLength == 8'  ]
     [optional   uint 64     valueUint64     'isUint64'           ]
-    [validation 'isUint8 || isUint16 || isUint24 || isUint32 || isUint40 || isUint48 || isUint56 || isUint64' "unmapped integer length"]
+    [validation '(isUint8 && valueUint8 != null) || (isUint16 && valueUint16 != null) || (isUint24 && valueUint24 != null)
+              || (isUint32 && valueUint32 != null) || (isUint40 && valueUint40 != null) || (isUint48 && valueUint48 != null)
+              || (isUint56 && valueUint56 != null) || (isUint64 && valueUint64 != null)' "unmapped or truncated integer length"]
     [virtual    uint 64     actualValue     'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:(isUint40?valueUint40:(isUint48?valueUint48:(isUint56?valueUint56:valueUint64))))))']
 ]
 
 [type BACnetTagPayloadSignedInteger(uint 32 actualLength)
+    [state                  actualLength                         ]
     [virtual    bit         isInt8          'actualLength == 1'  ]
     [optional   int 8       valueInt8       'isInt8'             ]
     [virtual    bit         isInt16         'actualLength == 2'  ]
@@ -245,8 +250,10 @@
     [optional   int 56      valueInt56      'isInt56'            ]
     [virtual    bit         isInt64         'actualLength == 8'  ]
     [optional   int 64      valueInt64      'isInt64'            ]
-    [validation 'isInt8 || isInt16 || isInt24 || isInt32 || isInt40 || isInt48 || isInt56 || isInt64' "unmapped integer length"]
-    [virtual    uint 64     actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
+    [validation '(isInt8 && valueInt8 != null) || (isInt16 && valueInt16 != null) || (isInt24 && valueInt24 != null)
+              || (isInt32 && valueInt32 != null) || (isInt40 && valueInt40 != null) || (isInt48 && valueInt48 != null)
+              || (isInt56 && valueInt56 != null) || (isInt64 && valueInt64 != null)' "unmapped or truncated integer length"]
+    [virtual    int 64      actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
 ]
 
 [type BACnetTagPayloadReal
@@ -262,11 +269,12 @@
 ]
 
 [type BACnetTagPayloadCharacterString(uint 32 actualLength)
-    [simple     BACnetCharacterEncoding      encoding]
+    [state                                   actualLength                            ]
+    [simple     BACnetCharacterEncoding      encoding                                ]
     // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
     [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
     // TODO: call to string on encoding or add type conversion so we can use the enum above
-    [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
+    [simple     vstring 'actualLengthInBit'  value                 stringEncoding='"UTF8"']
 ]
 
 [type BACnetTagPayloadBitString(uint 32 actualLength)

@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -175,7 +175,7 @@ func (m *_AdsDataTypeArrayInfo) GetNumElements() uint32 {
 func (m *_AdsDataTypeArrayInfo) GetUpperBound() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	return uint32(uint32(m.GetLowerBound()) + uint32(m.GetNumElements()))
+	return uint32(uint32(m.GetLowerBound()) + uint32((uint32(m.GetNumElements()) - uint32(uint32(1)))))
 }
 
 ///////////////////////
@@ -194,12 +194,12 @@ func CastAdsDataTypeArrayInfo(structType any) AdsDataTypeArrayInfo {
 	return nil
 }
 
-func (m *_AdsDataTypeArrayInfo) GetTypeName() string {
+func (m *_AdsDataTypeArrayInfo) GetPlx4xTypeName() string {
 	return "AdsDataTypeArrayInfo"
 }
 
-func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (lowerBound)
 	lengthInBits += 32
@@ -212,7 +212,7 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsDataTypeArrayInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDataTypeArrayInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -227,7 +227,7 @@ func AdsDataTypeArrayInfoParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
-	v, err := (&_AdsDataTypeArrayInfo{}).parse(ctx, readBuffer)
+	v, err := (new(_AdsDataTypeArrayInfo)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -255,7 +255,7 @@ func (m *_AdsDataTypeArrayInfo) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.NumElements = numElements
 
-	upperBound, err := ReadVirtualField[uint32](ctx, "upperBound", (*uint32)(nil), uint32(lowerBound)+uint32(numElements), codegen.WithByteOrder(binary.LittleEndian))
+	upperBound, err := ReadVirtualField[uint32](ctx, "upperBound", (*uint32)(nil), uint32(lowerBound)+uint32((uint32(numElements)-uint32(uint32(1)))), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'upperBound' field"))
 	}

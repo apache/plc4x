@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataRestart = (*_ApduDataRestart)(nil)
 var _ ApduDataRequirements = (*_ApduDataRestart)(nil)
 
 // NewApduDataRestart factory function for _ApduDataRestart
-func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
+func NewApduDataRestart() *_ApduDataRestart {
 	_result := &_ApduDataRestart{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataRestart(structType any) ApduDataRestart {
 	return nil
 }
 
-func (m *_ApduDataRestart) GetTypeName() string {
+func (m *_ApduDataRestart) GetPlx4xTypeName() string {
 	return "ApduDataRestart"
 }
 
-func (m *_ApduDataRestart) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataRestart) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataRestart) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataRestart) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -148,11 +148,13 @@ bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_writ
 }
 
 plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_get_first_enum_for_field_size_in_bits(bool value) {
-        if (!value) {
-            return plc4c_s7_read_write_data_transport_size_NULL;
-        } else {
-            return plc4c_s7_read_write_data_transport_size_BIT;
-        }
+    if (value == false) {
+      return plc4c_s7_read_write_data_transport_size_NULL;
+    }
+    if (value == true) {
+      return plc4c_s7_read_write_data_transport_size_BIT;
+    }
+    return -1;
 }
 
 uint16_t plc4c_s7_read_write_data_transport_size_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_data_transport_size* _message) {

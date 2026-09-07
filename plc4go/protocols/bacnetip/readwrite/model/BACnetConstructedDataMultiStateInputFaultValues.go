@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataMultiStateInputFaultValues = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateInputFaultValues)(nil)
 
 // NewBACnetConstructedDataMultiStateInputFaultValues factory function for _BACnetConstructedDataMultiStateInputFaultValues
-func NewBACnetConstructedDataMultiStateInputFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputFaultValues {
+func NewBACnetConstructedDataMultiStateInputFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMultiStateInputFaultValues {
 	_result := &_BACnetConstructedDataMultiStateInputFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultValues:                   faultValues,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataMultiStateInputFaultValues(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateInputFaultValues"
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FaultValues) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataUserExternalIdentifier = (*_BACnetConstructedDataUser
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
 
 // NewBACnetConstructedDataUserExternalIdentifier factory function for _BACnetConstructedDataUserExternalIdentifier
-func NewBACnetConstructedDataUserExternalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userExternalIdentifier BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
+func NewBACnetConstructedDataUserExternalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userExternalIdentifier BACnetApplicationTagCharacterString) *_BACnetConstructedDataUserExternalIdentifier {
 	if userExternalIdentifier == nil {
 		panic("userExternalIdentifier of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserExternalIdentifier must not be nil")
 	}
 	_result := &_BACnetConstructedDataUserExternalIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UserExternalIdentifier:        userExternalIdentifier,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataUserExternalIdentifier(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataUserExternalIdentifier) GetTypeName() string {
+func (m *_BACnetConstructedDataUserExternalIdentifier) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUserExternalIdentifier"
 }
 
-func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (userExternalIdentifier)
 	lengthInBits += m.UserExternalIdentifier.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

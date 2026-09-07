@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer = (*_BACnetUncon
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData) *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
 	if vendorId == nil {
 		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
 	}
@@ -73,7 +73,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACne
 		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		VendorId:                                vendorId,
 		ServiceNumber:                           serviceNumber,
 		ServiceParameters:                       serviceParameters,
@@ -285,12 +285,12 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType an
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += m.VendorId.GetLengthInBits(ctx)
@@ -306,7 +306,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthIn
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -376,7 +376,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) SerializeWi
 			return errors.Wrap(err, "Error serializing 'serviceNumber' field")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "serviceParameters", GetRef(m.GetServiceParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "serviceParameters", new(m.GetServiceParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceParameters' field")
 		}
 

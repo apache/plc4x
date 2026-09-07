@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -77,9 +77,9 @@ var _ NLMRequestKeyUpdate = (*_NLMRequestKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMRequestKeyUpdate)(nil)
 
 // NewNLMRequestKeyUpdate factory function for _NLMRequestKeyUpdate
-func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte, apduLength uint16) *_NLMRequestKeyUpdate {
+func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte) *_NLMRequestKeyUpdate {
 	_result := &_NLMRequestKeyUpdate{
-		NLMContract:             NewNLM(apduLength),
+		NLMContract:             NewNLM(),
 		Set1KeyRevision:         set1KeyRevision,
 		Set1ActivationTime:      set1ActivationTime,
 		Set1ExpirationTime:      set1ExpirationTime,
@@ -297,12 +297,12 @@ func CastNLMRequestKeyUpdate(structType any) NLMRequestKeyUpdate {
 	return nil
 }
 
-func (m *_NLMRequestKeyUpdate) GetTypeName() string {
+func (m *_NLMRequestKeyUpdate) GetPlx4xTypeName() string {
 	return "NLMRequestKeyUpdate"
 }
 
-func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (set1KeyRevision)
 	lengthInBits += 8
@@ -328,7 +328,7 @@ func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMRequestKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRequestKeyUpdate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -22,8 +22,8 @@
 
   <name>S7</name>
 
-  <protocolName>s7</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>s7</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>COTP Connection Request</name>

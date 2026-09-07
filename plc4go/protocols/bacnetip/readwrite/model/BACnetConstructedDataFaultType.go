@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFaultType = (*_BACnetConstructedDataFaultType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultType)(nil)
 
 // NewBACnetConstructedDataFaultType factory function for _BACnetConstructedDataFaultType
-func NewBACnetConstructedDataFaultType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultType BACnetFaultTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultType {
+func NewBACnetConstructedDataFaultType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultType BACnetFaultTypeTagged) *_BACnetConstructedDataFaultType {
 	if faultType == nil {
 		panic("faultType of type BACnetFaultTypeTagged for BACnetConstructedDataFaultType must not be nil")
 	}
 	_result := &_BACnetConstructedDataFaultType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultType:                     faultType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataFaultType(structType any) BACnetConstructedDataFau
 	return nil
 }
 
-func (m *_BACnetConstructedDataFaultType) GetTypeName() string {
+func (m *_BACnetConstructedDataFaultType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFaultType"
 }
 
-func (m *_BACnetConstructedDataFaultType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFaultType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (faultType)
 	lengthInBits += m.FaultType.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFaultType) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFaultType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFaultType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -1,0 +1,51 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# Go test runner used by docker-compose to exercise the BACnet/IP integration
+# tests in their own network namespace. Co-located with bacnet-device on a
+# shared docker bridge network so both ends can bind UDP 47808 independently
+# (the BACnet protocol assumes the well-known port on both sides; one shared
+# host network namespace can't honour that).
+#
+# Build context expectation: plc4go/ (the module root). Run via
+# docker-compose.yml in this directory.
+
+FROM golang:1.26-bookworm
+
+WORKDIR /src
+
+# Prime the module cache. Copying go.{mod,sum} and tools.{mod,sum} first means
+# subsequent layers cache cleanly across edits to the source tree.
+COPY go.mod go.sum tools.mod tools.sum ./
+RUN go mod download
+
+# Bring in the rest of the module. .dockerignore would let us skip /target,
+# /node_modules etc.; not bothering yet because the build is a one-shot.
+COPY . .
+
+# BACNET_IT gates the test suite (see integration_test.go::skipIfDisabled).
+# BACNET_IT_HOST tells the tests where to find the simulator on the docker
+# bridge — `bacnet-device` is the service name defined in docker-compose.yml.
+ENV BACNET_IT=1 \
+    BACNET_IT_HOST=bacnet-device
+
+# `depends_on: service_started` only proves the bacpypes3 container exists, not
+# that the BACnet stack inside it has finished binding 47808. A 3-second nap
+# absorbs the startup race; tighten this once we have a UDP healthcheck.
+CMD ["sh", "-c", "sleep 3 && go test -tags integration -v -count=1 -timeout 120s ./tests/integration/bacnetip/..."]

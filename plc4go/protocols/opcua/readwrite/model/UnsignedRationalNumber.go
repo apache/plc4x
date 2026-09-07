@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -222,12 +223,12 @@ func CastUnsignedRationalNumber(structType any) UnsignedRationalNumber {
 	return nil
 }
 
-func (m *_UnsignedRationalNumber) GetTypeName() string {
+func (m *_UnsignedRationalNumber) GetPlx4xTypeName() string {
 	return "UnsignedRationalNumber"
 }
 
-func (m *_UnsignedRationalNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_UnsignedRationalNumber) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numerator)
 	lengthInBits += 32
@@ -238,7 +239,7 @@ func (m *_UnsignedRationalNumber) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_UnsignedRationalNumber) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_UnsignedRationalNumber) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,13 +254,13 @@ func (m *_UnsignedRationalNumber) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numerator, err := ReadSimpleField(ctx, "numerator", ReadUnsignedInt(readBuffer, uint8(32)))
+	numerator, err := ReadSimpleField(ctx, "numerator", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numerator' field"))
 	}
 	m.Numerator = numerator
 
-	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)))
+	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'denominator' field"))
 	}
@@ -290,11 +291,11 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnsignedRationalNumber")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "numerator", m.GetNumerator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "numerator", m.GetNumerator(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'numerator' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "denominator", m.GetDenominator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "denominator", m.GetDenominator(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'denominator' field")
 		}
 

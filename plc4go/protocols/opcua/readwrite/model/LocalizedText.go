@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -229,12 +229,12 @@ func CastLocalizedText(structType any) LocalizedText {
 	return nil
 }
 
-func (m *_LocalizedText) GetTypeName() string {
+func (m *_LocalizedText) GetPlx4xTypeName() string {
 	return "LocalizedText"
 }
 
-func (m *_LocalizedText) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LocalizedText) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 6
@@ -258,7 +258,7 @@ func (m *_LocalizedText) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LocalizedText) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LocalizedText) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +273,7 @@ func LocalizedTextParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
-	v, err := (&_LocalizedText{}).parse(ctx, readBuffer)
+	v, err := (new(_LocalizedText)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -363,11 +363,11 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'localeSpecified' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "locale", GetRef(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "locale", new(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'locale' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "text", GetRef(m.GetText()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "text", new(m.GetText()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataStateChangeValues interface {
 	// GetStateChangeValues returns StateChangeValues (property field)
 	GetStateChangeValues() []BACnetTimerStateChangeValue
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataStateChangeValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStateChangeValues()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataStateChangeValues = (*_BACnetConstructedDataStateChan
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStateChangeValues)(nil)
 
 // NewBACnetConstructedDataStateChangeValues factory function for _BACnetConstructedDataStateChangeValues
-func NewBACnetConstructedDataStateChangeValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, stateChangeValues []BACnetTimerStateChangeValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStateChangeValues {
+func NewBACnetConstructedDataStateChangeValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, stateChangeValues []BACnetTimerStateChangeValue) *_BACnetConstructedDataStateChangeValues {
 	_result := &_BACnetConstructedDataStateChangeValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		StateChangeValues:             stateChangeValues,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataStateChangeValues(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataStateChangeValues) GetTypeName() string {
+func (m *_BACnetConstructedDataStateChangeValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStateChangeValues"
 }
 
-func (m *_BACnetConstructedDataStateChangeValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataStateChangeValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataStateChangeValues) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataStateChangeValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataStateChangeValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -354,7 +355,7 @@ func (m *_BACnetConstructedDataStateChangeValues) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

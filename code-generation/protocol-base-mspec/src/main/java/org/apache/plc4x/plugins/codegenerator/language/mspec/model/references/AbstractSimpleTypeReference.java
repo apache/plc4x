@@ -45,16 +45,15 @@ public abstract class AbstractSimpleTypeReference implements SimpleTypeReference
     @Override
     public String toString() {
         return "AbstractSimpleTypeReference{" +
-                "baseType=" + baseType +
-                ", sizeInBits=" + sizeInBits +
-                '}';
+            "baseType=" + baseType +
+            ", sizeInBits=" + sizeInBits +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AbstractSimpleTypeReference)) return false;
-        AbstractSimpleTypeReference that = (AbstractSimpleTypeReference) o;
+        if (!(o instanceof AbstractSimpleTypeReference that)) return false;
         return getSizeInBits() == that.getSizeInBits() && getBaseType() == that.getBaseType();
     }
 

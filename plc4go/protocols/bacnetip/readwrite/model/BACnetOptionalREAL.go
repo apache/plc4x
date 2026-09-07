@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,8 +62,8 @@ type BACnetOptionalREALContract interface {
 
 // BACnetOptionalREALRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetOptionalREALRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -277,23 +277,23 @@ func CastBACnetOptionalREAL(structType any) BACnetOptionalREAL {
 	return nil
 }
 
-func (m *_BACnetOptionalREAL) GetTypeName() string {
+func (m *_BACnetOptionalREAL) GetPlx4xTypeName() string {
 	return "BACnetOptionalREAL"
 }
 
-func (m *_BACnetOptionalREAL) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetOptionalREAL) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalREAL) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetOptionalREAL) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetOptionalREAL) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetOptionalREAL) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -313,7 +313,7 @@ func BACnetOptionalREALParseWithBufferProducer[T BACnetOptionalREAL]() func(ctx 
 }
 
 func BACnetOptionalREALParseWithBuffer[T BACnetOptionalREAL](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetOptionalREAL{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetOptionalREAL)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

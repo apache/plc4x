@@ -18,21 +18,36 @@
  */
 package org.apache.plc4x.java.knxnetip.model;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.drivers.functions.PlcSubscriber;
 
-public class KnxNetIpSubscriptionHandle extends DefaultPlcSubscriptionHandle {
+import java.util.Collections;
+import java.util.Objects;
+import java.util.function.Consumer;
 
+/**
+ * Handle for one subscribed KNXNet/IP tag. KNX is push-driven: any value
+ * written to the bus produces an {@code LDataInd} that the connection
+ * filters against active subscriptions before delivering an event.
+ */
+public final class KnxNetIpSubscriptionHandle implements PlcSubscriptionHandle {
+
+    private final PlcSubscriber subscriber;
+    private final String name;
     private final KnxNetIpTag tag;
 
-    public KnxNetIpSubscriptionHandle(PlcSubscriber plcSubscriber, KnxNetIpTag tag) {
-        super(plcSubscriber);
-        this.tag = tag;
+    public KnxNetIpSubscriptionHandle(PlcSubscriber subscriber, String name, KnxNetIpTag tag) {
+        this.subscriber = Objects.requireNonNull(subscriber, "subscriber");
+        this.name = Objects.requireNonNull(name, "name");
+        this.tag = Objects.requireNonNull(tag, "tag");
+    }
+
+    public String getName() {
+        return name;
     }
 
     public KnxNetIpTag getTag() {
@@ -44,35 +59,29 @@ public class KnxNetIpSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     }
 
     @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        return subscriber.registerConsumer(consumer, Collections.singletonList(this));
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-
-        if (!(o instanceof KnxNetIpSubscriptionHandle)) {
+        if (!(o instanceof KnxNetIpSubscriptionHandle other)) {
             return false;
         }
-
-        KnxNetIpSubscriptionHandle that = (KnxNetIpSubscriptionHandle) o;
-
-        return new EqualsBuilder()
-            .append(getTag(), that.getTag())
-            .isEquals();
+        return Objects.equals(tag, other.tag) && Objects.equals(name, other.name);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-            .appendSuper(super.hashCode())
-            .append(getTag())
-            .toHashCode();
+        return Objects.hash(name, tag);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-            .append("tag", tag)
-            .toString();
+        return "KnxNetIpSubscriptionHandle[" + name + "=" + tag + "]";
     }
 
 }

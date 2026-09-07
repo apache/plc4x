@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetConfirmedServiceRequestCreateObject = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestCreateObject)(nil)
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
+func NewBACnetConfirmedServiceRequestCreateObject(serviceRequestLength uint32, objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues) *_BACnetConfirmedServiceRequestCreateObject {
 	if objectSpecifier == nil {
 		panic("objectSpecifier of type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier for BACnetConfirmedServiceRequestCreateObject must not be nil")
 	}
@@ -252,12 +252,12 @@ func CastBACnetConfirmedServiceRequestCreateObject(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestCreateObject) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestCreateObject"
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectSpecifier)
 	lengthInBits += m.ObjectSpecifier.GetLengthInBits(ctx)
@@ -270,7 +270,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -330,7 +330,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'objectSpecifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetPropertyValues](ctx, "listOfValues", GetRef(m.GetListOfValues()), WriteComplex[BACnetPropertyValues](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetPropertyValues](ctx, "listOfValues", new(m.GetListOfValues()), WriteComplex[BACnetPropertyValues](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'listOfValues' field")
 		}
 

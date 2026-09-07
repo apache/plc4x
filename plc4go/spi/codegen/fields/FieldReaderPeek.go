@@ -22,11 +22,11 @@ package fields
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	"github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,7 +52,7 @@ func (f *FieldReaderPeek[T]) ReadPeekField(ctx context.Context, logicalName stri
 	}, dataReader, f.ExtractByteOrder(utils.UpcastReaderArgs(readerArgs...)...))
 	switch {
 	case errors.Is(err, utils.ParseAssertError{}):
-		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint16("oldPos", currentPos).Msg("Peek failed for field. Resetting read position to oldPos")
+		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint32("oldPos", currentPos).Msg("Peek failed for field. Resetting read position to oldPos")
 	case err != nil:
 		return zero, errors.Wrapf(err, "Error parsing '%s' field", logicalName)
 	default:

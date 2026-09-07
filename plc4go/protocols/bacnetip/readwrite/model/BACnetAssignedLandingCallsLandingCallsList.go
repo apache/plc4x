@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,22 +57,19 @@ type _BACnetAssignedLandingCallsLandingCallsList struct {
 	OpeningTag   BACnetOpeningTag
 	LandingCalls []BACnetAssignedLandingCallsLandingCallsListEntry
 	ClosingTag   BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetAssignedLandingCallsLandingCallsList = (*_BACnetAssignedLandingCallsLandingCallsList)(nil)
 
 // NewBACnetAssignedLandingCallsLandingCallsList factory function for _BACnetAssignedLandingCallsLandingCallsList
-func NewBACnetAssignedLandingCallsLandingCallsList(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAssignedLandingCallsLandingCallsList {
+func NewBACnetAssignedLandingCallsLandingCallsList(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag) *_BACnetAssignedLandingCallsLandingCallsList {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetAssignedLandingCallsLandingCallsList must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetAssignedLandingCallsLandingCallsList must not be nil")
 	}
-	return &_BACnetAssignedLandingCallsLandingCallsList{OpeningTag: openingTag, LandingCalls: landingCalls, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetAssignedLandingCallsLandingCallsList{OpeningTag: openingTag, LandingCalls: landingCalls, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetAssignedLandingCallsLandingCallsListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAssignedLandingCallsLandingCallsListBuilder
 	// Build builds the BACnetAssignedLandingCallsLandingCallsList or returns an error if something is wrong
 	Build() (BACnetAssignedLandingCallsLandingCallsList, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTagBuild
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithArgTagNumber(tagNumber uint8) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -235,12 +225,12 @@ func CastBACnetAssignedLandingCallsLandingCallsList(structType any) BACnetAssign
 	return nil
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsList) GetTypeName() string {
+func (m *_BACnetAssignedLandingCallsLandingCallsList) GetPlx4xTypeName() string {
 	return "BACnetAssignedLandingCallsLandingCallsList"
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAssignedLandingCallsLandingCallsList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -258,7 +248,7 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAssignedLandingCallsLandingCallsList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +263,7 @@ func BACnetAssignedLandingCallsLandingCallsListParseWithBufferProducer(tagNumber
 }
 
 func BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAssignedLandingCallsLandingCallsList, error) {
-	v, err := (&_BACnetAssignedLandingCallsLandingCallsList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetAssignedLandingCallsLandingCallsList)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) SerializeWithWriteBuffer(c
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAssignedLandingCallsLandingCallsList) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetAssignedLandingCallsLandingCallsList) IsBACnetAssignedLandingCallsLandingCallsList() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) deepCopy() *_BACnetAssigne
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetAssignedLandingCallsLandingCallsListEntry, BACnetAssignedLandingCallsLandingCallsListEntry](m.LandingCalls),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetAssignedLandingCallsLandingCallsListCopy
 }

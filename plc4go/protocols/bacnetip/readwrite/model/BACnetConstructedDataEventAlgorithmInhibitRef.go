@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEventAlgorithmInhibitRef = (*_BACnetConstructedDataEv
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
 
 // NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
-func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
+func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference) *_BACnetConstructedDataEventAlgorithmInhibitRef {
 	if eventAlgorithmInhibitRef == nil {
 		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
 	}
 	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetTypeName() string {
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventAlgorithmInhibitRef"
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (eventAlgorithmInhibitRef)
 	lengthInBits += m.EventAlgorithmInhibitRef.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

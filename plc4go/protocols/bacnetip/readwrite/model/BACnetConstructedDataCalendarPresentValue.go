@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCalendarPresentValue = (*_BACnetConstructedDataCalend
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCalendarPresentValue)(nil)
 
 // NewBACnetConstructedDataCalendarPresentValue factory function for _BACnetConstructedDataCalendarPresentValue
-func NewBACnetConstructedDataCalendarPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarPresentValue {
+func NewBACnetConstructedDataCalendarPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagBoolean) *_BACnetConstructedDataCalendarPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetApplicationTagBoolean for BACnetConstructedDataCalendarPresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataCalendarPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCalendarPresentValue(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataCalendarPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataCalendarPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCalendarPresentValue"
 }
 
-func (m *_BACnetConstructedDataCalendarPresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCalendarPresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCalendarPresentValue) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCalendarPresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCalendarPresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

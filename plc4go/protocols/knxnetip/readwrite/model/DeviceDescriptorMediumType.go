@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -118,11 +118,11 @@ func CastDeviceDescriptorMediumType(structType any) DeviceDescriptorMediumType {
 	return castFunc(structType)
 }
 
-func (m DeviceDescriptorMediumType) GetLengthInBits(ctx context.Context) uint16 {
+func (m DeviceDescriptorMediumType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m DeviceDescriptorMediumType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DeviceDescriptorMediumType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

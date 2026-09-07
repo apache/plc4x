@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastCounter(structType any) Counter {
 	return nil
 }
 
-func (m *_Counter) GetTypeName() string {
+func (m *_Counter) GetPlx4xTypeName() string {
 	return "Counter"
 }
 
-func (m *_Counter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Counter) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_Counter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Counter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func CounterParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 }
 
 func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
-	v, err := (&_Counter{}).parse(ctx, readBuffer)
+	v, err := (new(_Counter)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

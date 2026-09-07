@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.opcua.protocol.chunk;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Collections;
 import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
@@ -30,7 +30,6 @@ import org.apache.plc4x.java.opcua.readwrite.HistoryEvent;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdFourByte;
 import org.apache.plc4x.java.opcua.readwrite.RootExtensionObject;
 import org.apache.plc4x.java.opcua.readwrite.SequenceHeader;
-import org.apache.plc4x.java.spi.utils.hex.Hex;
 import org.junit.jupiter.api.Test;
 
 class PayloadConverterTest {
@@ -60,12 +59,12 @@ class PayloadConverterTest {
         BinaryPayload binary = PayloadConverter.toBinary(payload);
         ExtensiblePayload extensible = PayloadConverter.toExtensible(binary);
 
-        String extensibleSrcHex = Hex.dump(PayloadConverter.toStream(payload));
-        String binaryDstHex = Hex.dump(PayloadConverter.toStream(binary));
-        String extensibleDstHex = Hex.dump(PayloadConverter.toStream(extensible));
+        byte[] extensibleSrc = PayloadConverter.toStream(payload);
+        byte[] binaryDst = PayloadConverter.toStream(binary);
+        byte[] extensibleDst = PayloadConverter.toStream(extensible);
 
-        assertEquals(extensibleSrcHex, binaryDstHex);
-        assertEquals(extensibleSrcHex, extensibleDstHex);
+        assertArrayEquals(extensibleSrc, binaryDst);
+        assertArrayEquals(extensibleSrc, extensibleDst);
     }
 
 }

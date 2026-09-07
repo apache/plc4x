@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAut
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 
 // NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
-func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
+func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged) *_BACnetConstructedDataAuthorizationExemptions {
 	_result := &_BACnetConstructedDataAuthorizationExemptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AuthorizationExemption:        authorizationExemption,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataAuthorizationExemptions(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthorizationExemptions"
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AuthorizationExemption) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

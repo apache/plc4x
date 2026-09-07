@@ -22,8 +22,8 @@
 
   <name>Allen-Bradley DF1</name>
 
-  <protocolName>df1</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>df1</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>Unprotected Read Address Request</name>

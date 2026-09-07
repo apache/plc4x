@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataObjectIdentifier = (*_BACnetConstructedDataObjectIden
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectIdentifier)(nil)
 
 // NewBACnetConstructedDataObjectIdentifier factory function for _BACnetConstructedDataObjectIdentifier
-func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectIdentifier BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectIdentifier {
+func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectIdentifier BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataObjectIdentifier {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataObjectIdentifier must not be nil")
 	}
 	_result := &_BACnetConstructedDataObjectIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ObjectIdentifier:              objectIdentifier,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataObjectIdentifier(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) GetTypeName() string {
+func (m *_BACnetConstructedDataObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataObjectIdentifier"
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

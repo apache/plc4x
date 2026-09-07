@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMultiStateValueRelinquishDefault = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueRelinquishDefault)(nil)
 
 // NewBACnetConstructedDataMultiStateValueRelinquishDefault factory function for _BACnetConstructedDataMultiStateValueRelinquishDefault
-func NewBACnetConstructedDataMultiStateValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueRelinquishDefault {
+func NewBACnetConstructedDataMultiStateValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMultiStateValueRelinquishDefault {
 	if relinquishDefault == nil {
 		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateValueRelinquishDefault must not be nil")
 	}
 	_result := &_BACnetConstructedDataMultiStateValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RelinquishDefault:             relinquishDefault,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMultiStateValueRelinquishDefault(structType any) B
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateValueRelinquishDefault"
 }
 
-func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersBufferReady = (*_BACnetNotificationParametersB
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersBufferReady)(nil)
 
 // NewBACnetNotificationParametersBufferReady factory function for _BACnetNotificationParametersBufferReady
-func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersBufferReady {
+func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersBufferReady {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersBufferReady must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, pee
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersBufferReady must not be nil")
 	}
 	_result := &_BACnetNotificationParametersBufferReady{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		BufferProperty:                       bufferProperty,
 		PreviousNotification:                 previousNotification,
@@ -353,12 +353,12 @@ func CastBACnetNotificationParametersBufferReady(structType any) BACnetNotificat
 	return nil
 }
 
-func (m *_BACnetNotificationParametersBufferReady) GetTypeName() string {
+func (m *_BACnetNotificationParametersBufferReady) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersBufferReady"
 }
 
-func (m *_BACnetNotificationParametersBufferReady) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersBufferReady) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetNotificationParametersBufferReady) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersBufferReady) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersBufferReady) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

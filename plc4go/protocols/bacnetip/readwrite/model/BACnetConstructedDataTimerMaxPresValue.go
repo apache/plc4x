@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimerMaxPresValue = (*_BACnetConstructedDataTimerMaxP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
 
 // NewBACnetConstructedDataTimerMaxPresValue factory function for _BACnetConstructedDataTimerMaxPresValue
-func NewBACnetConstructedDataTimerMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMaxPresValue {
+func NewBACnetConstructedDataTimerMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTimerMaxPresValue {
 	if maxPresValue == nil {
 		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMaxPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimerMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxPresValue:                  maxPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimerMaxPresValue(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerMaxPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerMaxPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerMaxPresValue"
 }
 
-func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

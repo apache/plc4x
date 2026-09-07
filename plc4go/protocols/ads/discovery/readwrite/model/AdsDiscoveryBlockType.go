@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -136,11 +136,11 @@ func CastAdsDiscoveryBlockType(structType any) AdsDiscoveryBlockType {
 	return castFunc(structType)
 }
 
-func (m AdsDiscoveryBlockType) GetLengthInBits(ctx context.Context) uint16 {
+func (m AdsDiscoveryBlockType) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m AdsDiscoveryBlockType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AdsDiscoveryBlockType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -203,12 +203,12 @@ func CastMeteringDataOtherWaterConsumption(structType any) MeteringDataOtherWate
 	return nil
 }
 
-func (m *_MeteringDataOtherWaterConsumption) GetTypeName() string {
+func (m *_MeteringDataOtherWaterConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataOtherWaterConsumption"
 }
 
-func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	// Simple field (kL)
 	lengthInBits += 32
@@ -216,7 +216,7 @@ func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_MeteringDataOtherWaterConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeteringDataOtherWaterConsumption) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -26,17 +26,45 @@ public interface ArrayInfo {
     int getSize();
 
     /**
-     * As in PLCs not every array starts at 0, we need to be flexible with this.
-     * In the default usage scenario of a simple array [6] this index will be 0 by default.
+     * The lower index of the selection, as it was written in the address. For a single element
+     * such as [6] this is 6, and {@link #getUpperBound()} is 6 as well - a bare index selects
+     * one element, not a range starting at zero.
      * @return Returns the index of lower bound of the array.
      */
     int getLowerBound();
 
     /**
-     * As in PLCs not every array starts at 0, we need to be flexible with this.
-     * In the default usage scenario of a simple array [6] this index will be match the array size.
+     * The upper index of the selection, as it was written in the address. For the range [0..7]
+     * this is 7 and {@link #getSize()} is 8, both bounds being inclusive.
      * @return Returns the index of upper bound of the array.
      */
     int getUpperBound();
+
+    /**
+     * The array's declared lower bound, as in PLCs not every array starts at 0. An address may
+     * state it explicitly - [4..7;1] selects elements 4 to 7 of an array declared from 1 - so
+     * that the bounds above can be written the way the PLC program declares them. The offset of
+     * an element from the start of the array is its index minus this value.
+     *
+     * <p>Defaults to 0, which is correct for any array that does not declare otherwise.
+     *
+     * @return Returns the index the array is declared to start at.
+     */
+    default int getBase() {
+        return 0;
+    }
+
+    /**
+     * Whether the address wrote this dimension as a range rather than a single index.
+     *
+     * <p>The two mean different things to a caller: a single index selects one element and yields
+     * a scalar, while a range yields an array - even a range spanning one element. Equal bounds
+     * alone cannot tell them apart, so the written form has to be remembered.
+     *
+     * @return true when the dimension was written as a range.
+     */
+    default boolean isRange() {
+        return getLowerBound() != getUpperBound();
+    }
 
 }

@@ -17,14 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4x-website</artifactId>
@@ -33,10 +31,10 @@
   <description />
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
     <bootstrap.version>5.3.3</bootstrap.version>
     <popper.version>2.8.0</popper.version>
-    <jquery.version>3.7.1</jquery.version>
+    <jquery.version>4.0.0</jquery.version>
     <fontawesome.version>6.5.2</fontawesome.version>
   </properties>
 
@@ -314,6 +312,23 @@
         </executions>
       </plugin>
 
+      <!--
+        Makes the version of this project available as ${parsedVersion.*} properties, so
+        the release version (without any "-SNAPSHOT" qualifier) can be derived from it.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>parse-version</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
       <!--
         The bootstrap uses "fonts" as directory for locating fonts and fontawesome uses "webfonts".
@@ -322,8 +337,41 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
         <executions>
+          <!--
+            The documentation refers to the current version in a lot of places (dependency
+            snippets, download instructions, ...) via the "current-project-version" and
+            "current-full-version" AsciiDoc attributes. Both are defined in the component
+            descriptor "asciidoc/antora.yml", and were easy to forget when the version of the
+            project was bumped. This keeps them in sync with the version of the Maven project.
+
+            They can't simply be passed to Antora on the command line: the playbook builds the
+            released branches (rel/0.13, rel/0.12, ...) from git alongside this one, and each of
+            those has to keep documenting its own version rather than the one being built here.
+            So the value stays in the descriptor of each branch and this only maintains the copy
+            on the branch it is run on.
+          -->
+          <execution>
+            <id>sync-antora-version</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <file>${project.basedir}/asciidoc/antora.yml</file>
+              <regex>true</regex>
+              <replacements>
+                <replacement>
+                  <token>current-project-version: '[^']*'</token>
+                  <value>current-project-version: '${project.version}'</value>
+                </replacement>
+                <replacement>
+                  <token>current-full-version: '[^']*'</token>
+                  <value>current-full-version: '${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}'</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
           <execution>
             <id>streamline-font-urls</id>
             <!-- Only execute this for the parent module -->
@@ -347,7 +395,6 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.15.1</version>
 
         <executions>
           <execution>
@@ -423,7 +470,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>

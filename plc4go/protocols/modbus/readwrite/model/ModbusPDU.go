@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,8 @@ type ModbusPDUContract interface {
 
 // ModbusPDURequirements provides a set of functions which need to be implemented by a sub struct
 type ModbusPDURequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetErrorFlag returns ErrorFlag (discriminator field)
 	GetErrorFlag() bool
 	// GetFunctionFlag returns FunctionFlag (discriminator field)
@@ -665,12 +665,12 @@ func CastModbusPDU(structType any) ModbusPDU {
 	return nil
 }
 
-func (m *_ModbusPDU) GetTypeName() string {
+func (m *_ModbusPDU) GetPlx4xTypeName() string {
 	return "ModbusPDU"
 }
 
-func (m *_ModbusPDU) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ModbusPDU) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
 	// Discriminator Field (functionFlag)
@@ -679,11 +679,11 @@ func (m *_ModbusPDU) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ModbusPDU) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ModbusPDU) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ModbusPDU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -703,7 +703,7 @@ func ModbusPDUParseWithBufferProducer[T ModbusPDU](response bool) func(ctx conte
 }
 
 func ModbusPDUParseWithBuffer[T ModbusPDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_ModbusPDU{}).parse(ctx, readBuffer, response)
+	v, err := (new(_ModbusPDU)).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

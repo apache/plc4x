@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPrescale = (*_BACnetConstructedDataPrescale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPrescale)(nil)
 
 // NewBACnetConstructedDataPrescale factory function for _BACnetConstructedDataPrescale
-func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, prescale BACnetPrescale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPrescale {
+func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, prescale BACnetPrescale) *_BACnetConstructedDataPrescale {
 	if prescale == nil {
 		panic("prescale of type BACnetPrescale for BACnetConstructedDataPrescale must not be nil")
 	}
 	_result := &_BACnetConstructedDataPrescale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Prescale:                      prescale,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPrescale(structType any) BACnetConstructedDataPres
 	return nil
 }
 
-func (m *_BACnetConstructedDataPrescale) GetTypeName() string {
+func (m *_BACnetConstructedDataPrescale) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPrescale"
 }
 
-func (m *_BACnetConstructedDataPrescale) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPrescale) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (prescale)
 	lengthInBits += m.Prescale.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPrescale) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPrescale) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPrescale) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

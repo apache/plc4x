@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,12 +65,12 @@ var _ BACnetUnconfirmedServiceRequestWhoHas = (*_BACnetUnconfirmedServiceRequest
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoHas)(nil)
 
 // NewBACnetUnconfirmedServiceRequestWhoHas factory function for _BACnetUnconfirmedServiceRequestWhoHas
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject) *_BACnetUnconfirmedServiceRequestWhoHas {
 	if object == nil {
 		panic("object of type BACnetUnconfirmedServiceRequestWhoHasObject for BACnetUnconfirmedServiceRequestWhoHas must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestWhoHas{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
 		Object:                                  object,
@@ -279,12 +279,12 @@ func CastBACnetUnconfirmedServiceRequestWhoHas(structType any) BACnetUnconfirmed
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoHas"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {
@@ -302,7 +302,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -368,11 +368,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWhoHas")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", GetRef(m.GetDeviceInstanceRangeLowLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", new(m.GetDeviceInstanceRangeLowLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeLowLimit' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", GetRef(m.GetDeviceInstanceRangeHighLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", new(m.GetDeviceInstanceRangeHighLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeHighLimit' field")
 		}
 

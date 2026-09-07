@@ -33,8 +33,8 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
 
     private final List<Term> discriminatorValueTerms;
 
-    public DefaultDiscriminatedComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, boolean isAbstract, List<Field> fields, List<Term> discriminatorValueTerms) {
-        super(name, attributes, parserArguments, isAbstract, fields);
+    public DefaultDiscriminatedComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, boolean isAbstract, List<Field> fields, List<Term> discriminatorValueTerms, String comment) {
+        super(name, attributes, parserArguments, isAbstract, fields, comment);
         this.discriminatorValueTerms = Objects.requireNonNull(discriminatorValueTerms);
     }
 

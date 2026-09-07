@@ -31,17 +31,23 @@ import java.util.regex.Pattern;
 public class KnxNetIpTag implements PlcTag {
 
     private static final String WILDCARD = "*";
+    /** Optional {@code :DPT<n>[.<sub>]} suffix used to override the wire datatype. */
+    private static final String DPT_SUFFIX = "(?::(?<dpt>DPT\\d+(?:\\.\\d+)?))?";
     private static final Pattern KNX_GROUP_ADDRESS_1_LEVEL =
-        Pattern.compile("^(?<mainGroup>(\\d{1,5}|\\*))");
+        Pattern.compile("^(?<mainGroup>(\\d{1,5}|\\*))" + DPT_SUFFIX + "$",
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern KNX_GROUP_ADDRESS_2_LEVEL =
-        Pattern.compile("^(?<mainGroup>(\\d{1,2}|\\*))/(?<subGroup>(\\d{1,4}|\\*))");
+        Pattern.compile("^(?<mainGroup>(\\d{1,2}|\\*))/(?<subGroup>(\\d{1,4}|\\*))" + DPT_SUFFIX + "$",
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern KNX_GROUP_ADDRESS_3_LEVEL =
-        Pattern.compile("^(?<mainGroup>(\\d{1,2}|\\*))/(?<middleGroup>(\\d|\\*))/(?<subGroup>(\\d{1,3}|\\*))");
+        Pattern.compile("^(?<mainGroup>(\\d{1,2}|\\*))/(?<middleGroup>(\\d|\\*))/(?<subGroup>(\\d{1,3}|\\*))" + DPT_SUFFIX + "$",
+            Pattern.CASE_INSENSITIVE);
 
     private final int levels;
     private final String mainGroup;
     private final String middleGroup;
     private final String subGroup;
+    private final String dptId;
 
     public static boolean matches(String tagString) {
         return KNX_GROUP_ADDRESS_3_LEVEL.matcher(tagString).matches() ||
@@ -50,26 +56,44 @@ public class KnxNetIpTag implements PlcTag {
     }
 
     public static KnxNetIpTag of(String tagString) {
-        Matcher matcher = KNX_GROUP_ADDRESS_1_LEVEL.matcher(tagString);
-        if(matcher.matches()) {
-            return new KnxNetIpTag(1, matcher.group("mainGroup"), null, null);
+        // Order: try 3-level, then 2-level, then 1-level (most specific first so
+        // that "1/2/3" doesn't accidentally match as a 1-level number).
+        Matcher matcher = KNX_GROUP_ADDRESS_3_LEVEL.matcher(tagString);
+        if (matcher.matches()) {
+            return new KnxNetIpTag(3, matcher.group("mainGroup"),
+                matcher.group("middleGroup"), matcher.group("subGroup"), matcher.group("dpt"));
         }
         matcher = KNX_GROUP_ADDRESS_2_LEVEL.matcher(tagString);
-        if(matcher.matches()) {
-            return new KnxNetIpTag(2, matcher.group("mainGroup"), null, matcher.group("subGroup"));
+        if (matcher.matches()) {
+            return new KnxNetIpTag(2, matcher.group("mainGroup"), null,
+                matcher.group("subGroup"), matcher.group("dpt"));
         }
-        matcher = KNX_GROUP_ADDRESS_3_LEVEL.matcher(tagString);
-        if(matcher.matches()) {
-            return new KnxNetIpTag(3, matcher.group("mainGroup"), matcher.group("middleGroup"), matcher.group("subGroup"));
+        matcher = KNX_GROUP_ADDRESS_1_LEVEL.matcher(tagString);
+        if (matcher.matches()) {
+            return new KnxNetIpTag(1, matcher.group("mainGroup"), null, null, matcher.group("dpt"));
         }
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
     }
 
     public KnxNetIpTag(int levels, String mainGroup, String middleGroup, String subGroup) {
+        this(levels, mainGroup, middleGroup, subGroup, null);
+    }
+
+    public KnxNetIpTag(int levels, String mainGroup, String middleGroup, String subGroup, String dptId) {
         this.levels = levels;
         this.mainGroup = mainGroup;
         this.middleGroup = middleGroup;
         this.subGroup = subGroup;
+        this.dptId = dptId == null ? null : dptId.toUpperCase();
+    }
+
+    /**
+     * Optional DPT identifier (e.g. {@code DPT1}, {@code DPT9.001}) supplied via
+     * the {@code :DPT…} suffix. Used to drive the encoder when no ETS model
+     * entry is available for the group address.
+     */
+    public String getDptId() {
+        return dptId;
     }
 
     public int getLevels() {

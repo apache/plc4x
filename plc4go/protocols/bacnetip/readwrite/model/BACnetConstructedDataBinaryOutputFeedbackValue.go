@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBinaryOutputFeedbackValue = (*_BACnetConstructedDataB
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
 
 // NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for _BACnetConstructedDataBinaryOutputFeedbackValue
-func NewBACnetConstructedDataBinaryOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
+func NewBACnetConstructedDataBinaryOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetBinaryPVTagged) *_BACnetConstructedDataBinaryOutputFeedbackValue {
 	if feedbackValue == nil {
 		panic("feedbackValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputFeedbackValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FeedbackValue:                 feedbackValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBinaryOutputFeedbackValue(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryOutputFeedbackValue"
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (feedbackValue)
 	lengthInBits += m.FeedbackValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

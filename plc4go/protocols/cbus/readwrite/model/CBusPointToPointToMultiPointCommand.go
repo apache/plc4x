@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +58,6 @@ type CBusPointToPointToMultiPointCommandContract interface {
 	GetNetworkRoute() NetworkRoute
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsCBusPointToPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointToMultiPointCommand()
 	// CreateBuilder creates a CBusPointToPointToMultiPointCommandBuilder
@@ -66,8 +66,8 @@ type CBusPointToPointToMultiPointCommandContract interface {
 
 // CBusPointToPointToMultiPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusPointToPointToMultiPointCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedApplication returns PeekedApplication (discriminator field)
 	GetPeekedApplication() byte
 }
@@ -81,22 +81,19 @@ type _CBusPointToPointToMultiPointCommand struct {
 	BridgeAddress     BridgeAddress
 	NetworkRoute      NetworkRoute
 	PeekedApplication byte
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ CBusPointToPointToMultiPointCommandContract = (*_CBusPointToPointToMultiPointCommand)(nil)
 
 // NewCBusPointToPointToMultiPointCommand factory function for _CBusPointToPointToMultiPointCommand
-func NewCBusPointToPointToMultiPointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommand {
+func NewCBusPointToPointToMultiPointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte) *_CBusPointToPointToMultiPointCommand {
 	if bridgeAddress == nil {
 		panic("bridgeAddress of type BridgeAddress for CBusPointToPointToMultiPointCommand must not be nil")
 	}
 	if networkRoute == nil {
 		panic("networkRoute of type NetworkRoute for CBusPointToPointToMultiPointCommand must not be nil")
 	}
-	return &_CBusPointToPointToMultiPointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
+	return &_CBusPointToPointToMultiPointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication}
 }
 
 ///////////////////////////////////////////////////////////
@@ -119,8 +116,6 @@ type CBusPointToPointToMultiPointCommandBuilder interface {
 	WithNetworkRouteBuilder(func(NetworkRouteBuilder) NetworkRouteBuilder) CBusPointToPointToMultiPointCommandBuilder
 	// WithPeekedApplication adds PeekedApplication (property field)
 	WithPeekedApplication(byte) CBusPointToPointToMultiPointCommandBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CBusPointToPointToMultiPointCommandBuilder
 	// AsCBusPointToPointToMultiPointCommandStatus converts this build to a subType of CBusPointToPointToMultiPointCommand. It is always possible to return to current builder using Done()
 	AsCBusPointToPointToMultiPointCommandStatus() CBusPointToPointToMultiPointCommandStatusBuilder
 	// AsCBusPointToPointToMultiPointCommandNormal converts this build to a subType of CBusPointToPointToMultiPointCommand. It is always possible to return to current builder using Done()
@@ -192,11 +187,6 @@ func (b *_CBusPointToPointToMultiPointCommandBuilder) WithNetworkRouteBuilder(bu
 
 func (b *_CBusPointToPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToPointToMultiPointCommandBuilder {
 	b.PeekedApplication = peekedApplication
-	return b
-}
-
-func (b *_CBusPointToPointToMultiPointCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusPointToPointToMultiPointCommandBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -317,12 +307,12 @@ func CastCBusPointToPointToMultiPointCommand(structType any) CBusPointToPointToM
 	return nil
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetTypeName() string {
+func (m *_CBusPointToPointToMultiPointCommand) GetPlx4xTypeName() string {
 	return "CBusPointToPointToMultiPointCommand"
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (bridgeAddress)
 	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
@@ -333,16 +323,16 @@ func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointToMultiPointCommandParse[T CBusPointToPointToMultiPointCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return CBusPointToPointToMultiPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointToMultiPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func CBusPointToPointToMultiPointCommandParseWithBufferProducer[T CBusPointToPointToMultiPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -357,7 +347,7 @@ func CBusPointToPointToMultiPointCommandParseWithBufferProducer[T CBusPointToPoi
 }
 
 func CBusPointToPointToMultiPointCommandParseWithBuffer[T CBusPointToPointToMultiPointCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusPointToPointToMultiPointCommand{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_CBusPointToPointToMultiPointCommand)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -379,19 +369,19 @@ func (m *_CBusPointToPointToMultiPointCommand) parse(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bridgeAddress, err := ReadSimpleField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer))
+	bridgeAddress, err := ReadSimpleField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddress' field"))
 	}
 	m.BridgeAddress = bridgeAddress
 
-	networkRoute, err := ReadSimpleField[NetworkRoute](ctx, "networkRoute", ReadComplex[NetworkRoute](NetworkRouteParseWithBuffer, readBuffer))
+	networkRoute, err := ReadSimpleField[NetworkRoute](ctx, "networkRoute", ReadComplex[NetworkRoute](NetworkRouteParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkRoute' field"))
 	}
 	m.NetworkRoute = networkRoute
 
-	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0)
+	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedApplication' field"))
 	}
@@ -431,11 +421,11 @@ func (pm *_CBusPointToPointToMultiPointCommand) serializeParent(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultiPointCommand")
 	}
 
-	if err := WriteSimpleField[BridgeAddress](ctx, "bridgeAddress", m.GetBridgeAddress(), WriteComplex[BridgeAddress](writeBuffer)); err != nil {
+	if err := WriteSimpleField[BridgeAddress](ctx, "bridgeAddress", m.GetBridgeAddress(), WriteComplex[BridgeAddress](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 	}
 
-	if err := WriteSimpleField[NetworkRoute](ctx, "networkRoute", m.GetNetworkRoute(), WriteComplex[NetworkRoute](writeBuffer)); err != nil {
+	if err := WriteSimpleField[NetworkRoute](ctx, "networkRoute", m.GetNetworkRoute(), WriteComplex[NetworkRoute](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'networkRoute' field")
 	}
 
@@ -449,16 +439,6 @@ func (pm *_CBusPointToPointToMultiPointCommand) serializeParent(ctx context.Cont
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_CBusPointToPointToMultiPointCommand) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
 
 func (m *_CBusPointToPointToMultiPointCommand) IsCBusPointToPointToMultiPointCommand() {}
 
@@ -475,7 +455,6 @@ func (m *_CBusPointToPointToMultiPointCommand) deepCopy() *_CBusPointToPointToMu
 		utils.DeepCopy[BridgeAddress](m.BridgeAddress),
 		utils.DeepCopy[NetworkRoute](m.NetworkRoute),
 		m.PeekedApplication,
-		m.CBusOptions,
 	}
 	return _CBusPointToPointToMultiPointCommandCopy
 }

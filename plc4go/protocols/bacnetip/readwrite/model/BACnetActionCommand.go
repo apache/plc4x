@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -405,12 +405,12 @@ func CastBACnetActionCommand(structType any) BACnetActionCommand {
 	return nil
 }
 
-func (m *_BACnetActionCommand) GetTypeName() string {
+func (m *_BACnetActionCommand) GetPlx4xTypeName() string {
 	return "BACnetActionCommand"
 }
 
-func (m *_BACnetActionCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetActionCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Optional Field (deviceIdentifier)
 	if m.DeviceIdentifier != nil {
@@ -452,7 +452,7 @@ func (m *_BACnetActionCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetActionCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetActionCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -467,7 +467,7 @@ func BACnetActionCommandParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func BACnetActionCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionCommand, error) {
-	v, err := (&_BACnetActionCommand{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetActionCommand)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -581,7 +581,7 @@ func (m *_BACnetActionCommand) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for BACnetActionCommand")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "deviceIdentifier", GetRef(m.GetDeviceIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "deviceIdentifier", new(m.GetDeviceIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
@@ -593,19 +593,19 @@ func (m *_BACnetActionCommand) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", GetRef(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", new(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", new(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "postDelay", GetRef(m.GetPostDelay()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "postDelay", new(m.GetPostDelay()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'postDelay' field")
 	}
 

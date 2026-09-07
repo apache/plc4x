@@ -17,14 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-utils-test-generator</artifactId>
@@ -33,7 +31,8 @@
   <description>Generates tests.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
+    <skipBytecodeCheck>true</skipBytecodeCheck>
   </properties>
 
   <build>
@@ -41,7 +40,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>4.2.1</version>
         <executions>
           <execution>
             <goals>
@@ -79,41 +77,34 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-iec-60870</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
           </usedDependencies>
+        </configuration>
+      </plugin>
+      <!-- This is a separate utility, that is not used in the drivers -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.spockframework</groupId>
-        <artifactId>spock-bom</artifactId>
-        <version>2.3-groovy-4.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-buffers-xml</artifactId>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>
-      <version>${groovy.version}</version>
     </dependency>
     <dependency>
       <groupId>org.pcap4j</groupId>
@@ -136,33 +127,33 @@
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>${groovy.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-iec-60870</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.spockframework</groupId>
-      <artifactId>spock-core</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

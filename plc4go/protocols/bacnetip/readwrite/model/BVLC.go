@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,8 +65,8 @@ type BVLCContract interface {
 
 // BVLCRequirements provides a set of functions which need to be implemented by a sub struct
 type BVLCRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
 	GetBvlcFunction() uint8
 }
@@ -386,12 +386,12 @@ func CastBVLC(structType any) BVLC {
 	return nil
 }
 
-func (m *_BVLC) GetTypeName() string {
+func (m *_BVLC) GetPlx4xTypeName() string {
 	return "BVLC"
 }
 
-func (m *_BVLC) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BVLC) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (bacnetType)
 	lengthInBits += 8
@@ -406,11 +406,11 @@ func (m *_BVLC) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BVLC) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BVLC) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BVLC) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLC) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -430,7 +430,7 @@ func BVLCParseWithBufferProducer[T BVLC]() func(ctx context.Context, readBuffer 
 }
 
 func BVLCParseWithBuffer[T BVLC](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BVLC{}).parse(ctx, readBuffer)
+	v, err := (new(_BVLC)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -452,24 +452,24 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bacnetType, err := ReadConstField[uint8](ctx, "bacnetType", ReadUnsignedByte(readBuffer, uint8(8)), BVLC_BACNETTYPE, codegen.WithByteOrder(binary.BigEndian))
+	bacnetType, err := ReadConstField[uint8](ctx, "bacnetType", ReadUnsignedByte(readBuffer, uint8(8)), BVLC_BACNETTYPE, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetType' field"))
 	}
 	_ = bacnetType
 
-	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcFunction' field"))
 	}
 
-	bvlcLength, err := ReadImplicitField[uint16](ctx, "bvlcLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	bvlcLength, err := ReadImplicitField[uint16](ctx, "bvlcLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcLength' field"))
 	}
 	_ = bvlcLength
 
-	bvlcPayloadLength, err := ReadVirtualField[uint16](ctx, "bvlcPayloadLength", (*uint16)(nil), uint16(bvlcLength)-uint16(uint16(4)), codegen.WithByteOrder(binary.BigEndian))
+	bvlcPayloadLength, err := ReadVirtualField[uint16](ctx, "bvlcPayloadLength", (*uint16)(nil), uint16(bvlcLength)-uint16(uint16(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcPayloadLength' field"))
 	}
@@ -483,7 +483,7 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCResult for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x01: // BVLCWriteBroadcastDistributionTable
-		if _child, err = new(_BVLCWriteBroadcastDistributionTable).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCWriteBroadcastDistributionTable).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCWriteBroadcastDistributionTable for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x02: // BVLCReadBroadcastDistributionTable
@@ -491,11 +491,11 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadBroadcastDistributionTable for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x03: // BVLCReadBroadcastDistributionTableAck
-		if _child, err = new(_BVLCReadBroadcastDistributionTableAck).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCReadBroadcastDistributionTableAck).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadBroadcastDistributionTableAck for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x04: // BVLCForwardedNPDU
-		if _child, err = new(_BVLCForwardedNPDU).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCForwardedNPDU).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCForwardedNPDU for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x05: // BVLCRegisterForeignDevice
@@ -507,7 +507,7 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadForeignDeviceTable for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x07: // BVLCReadForeignDeviceTableAck
-		if _child, err = new(_BVLCReadForeignDeviceTableAck).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCReadForeignDeviceTableAck).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadForeignDeviceTableAck for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
@@ -515,19 +515,19 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCDeleteForeignDeviceTableEntry for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
-		if _child, err = new(_BVLCDistributeBroadcastToNetwork).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCDistributeBroadcastToNetwork).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCDistributeBroadcastToNetwork for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
-		if _child, err = new(_BVLCOriginalUnicastNPDU).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCOriginalUnicastNPDU).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCOriginalUnicastNPDU for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
-		if _child, err = new(_BVLCOriginalBroadcastNPDU).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCOriginalBroadcastNPDU).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCOriginalBroadcastNPDU for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
-		if _child, err = new(_BVLCSecureBVLL).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCSecureBVLL).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCSecureBVLL for type-switch of BVLC")
 		}
 	default:
@@ -553,15 +553,15 @@ func (pm *_BVLC) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for BVLC")
 	}
 
-	if err := WriteConstField(ctx, "bacnetType", BVLC_BACNETTYPE, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteConstField(ctx, "bacnetType", BVLC_BACNETTYPE, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bacnetType' field")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "bvlcFunction", m.GetBvlcFunction(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "bvlcFunction", m.GetBvlcFunction(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bvlcFunction' field")
 	}
 	bvlcLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	if err := WriteImplicitField(ctx, "bvlcLength", bvlcLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "bvlcLength", bvlcLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bvlcLength' field")
 	}
 	// Virtual field

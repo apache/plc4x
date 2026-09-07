@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,6 +41,7 @@ type QualifiedName interface {
 	utils.Serializable
 	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
+	// A string qualified with a namespace index.
 	GetNamespaceIndex() uint16
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -193,12 +194,12 @@ func CastQualifiedName(structType any) QualifiedName {
 	return nil
 }
 
-func (m *_QualifiedName) GetTypeName() string {
+func (m *_QualifiedName) GetPlx4xTypeName() string {
 	return "QualifiedName"
 }
 
-func (m *_QualifiedName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_QualifiedName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 16
@@ -209,7 +210,7 @@ func (m *_QualifiedName) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_QualifiedName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_QualifiedName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -224,7 +225,7 @@ func QualifiedNameParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func QualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (QualifiedName, error) {
-	v, err := (&_QualifiedName{}).parse(ctx, readBuffer)
+	v, err := (new(_QualifiedName)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

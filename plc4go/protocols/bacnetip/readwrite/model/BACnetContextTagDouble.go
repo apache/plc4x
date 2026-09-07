@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetContextTagDouble = (*_BACnetContextTagDouble)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDouble)(nil)
 
 // NewBACnetContextTagDouble factory function for _BACnetContextTagDouble
-func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble, tagNumberArgument uint8) *_BACnetContextTagDouble {
+func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble) *_BACnetContextTagDouble {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadDouble for BACnetContextTagDouble must not be nil")
 	}
 	_result := &_BACnetContextTagDouble{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
@@ -242,12 +242,12 @@ func CastBACnetContextTagDouble(structType any) BACnetContextTagDouble {
 	return nil
 }
 
-func (m *_BACnetContextTagDouble) GetTypeName() string {
+func (m *_BACnetContextTagDouble) GetPlx4xTypeName() string {
 	return "BACnetContextTagDouble"
 }
 
-func (m *_BACnetContextTagDouble) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagDouble) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -257,7 +257,7 @@ func (m *_BACnetContextTagDouble) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagDouble) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagDouble) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataModificationDate = (*_BACnetConstructedDataModificati
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataModificationDate)(nil)
 
 // NewBACnetConstructedDataModificationDate factory function for _BACnetConstructedDataModificationDate
-func NewBACnetConstructedDataModificationDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, modificationDate BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataModificationDate {
+func NewBACnetConstructedDataModificationDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, modificationDate BACnetDateTime) *_BACnetConstructedDataModificationDate {
 	if modificationDate == nil {
 		panic("modificationDate of type BACnetDateTime for BACnetConstructedDataModificationDate must not be nil")
 	}
 	_result := &_BACnetConstructedDataModificationDate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ModificationDate:              modificationDate,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataModificationDate(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataModificationDate) GetTypeName() string {
+func (m *_BACnetConstructedDataModificationDate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataModificationDate"
 }
 
-func (m *_BACnetConstructedDataModificationDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataModificationDate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (modificationDate)
 	lengthInBits += m.ModificationDate.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataModificationDate) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataModificationDate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataModificationDate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

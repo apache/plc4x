@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,12 +70,12 @@ var _ IdentifyReplyCommandOutputUnitSummary = (*_IdentifyReplyCommandOutputUnitS
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
 
 // NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
+func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8) *_IdentifyReplyCommandOutputUnitSummary {
 	if unitFlags == nil {
 		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
 	}
 	_result := &_IdentifyReplyCommandOutputUnitSummary{
-		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(),
 		UnitFlags:                           unitFlags,
 		GavStoreEnabledByte1:                gavStoreEnabledByte1,
 		GavStoreEnabledByte2:                gavStoreEnabledByte2,
@@ -270,12 +272,12 @@ func CastIdentifyReplyCommandOutputUnitSummary(structType any) IdentifyReplyComm
 	return nil
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetTypeName() string {
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandOutputUnitSummary"
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (unitFlags)
 	lengthInBits += m.UnitFlags.GetLengthInBits(ctx)
@@ -296,7 +298,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -311,27 +313,27 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) parse(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	unitFlags, err := ReadSimpleField[IdentifyReplyCommandUnitSummary](ctx, "unitFlags", ReadComplex[IdentifyReplyCommandUnitSummary](IdentifyReplyCommandUnitSummaryParseWithBuffer, readBuffer))
+	unitFlags, err := ReadSimpleField[IdentifyReplyCommandUnitSummary](ctx, "unitFlags", ReadComplex[IdentifyReplyCommandUnitSummary](IdentifyReplyCommandUnitSummaryParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitFlags' field"))
 	}
 	m.UnitFlags = unitFlags
 
 	var gavStoreEnabledByte1 *byte
-	gavStoreEnabledByte1, err = ReadOptionalField[byte](ctx, "gavStoreEnabledByte1", ReadByte(readBuffer, 8), bool((numBytes) > (1)))
+	gavStoreEnabledByte1, err = ReadOptionalField[byte](ctx, "gavStoreEnabledByte1", ReadByte(readBuffer, 8), bool((numBytes) > (1)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gavStoreEnabledByte1' field"))
 	}
 	m.GavStoreEnabledByte1 = gavStoreEnabledByte1
 
 	var gavStoreEnabledByte2 *byte
-	gavStoreEnabledByte2, err = ReadOptionalField[byte](ctx, "gavStoreEnabledByte2", ReadByte(readBuffer, 8), bool((numBytes) > (2)))
+	gavStoreEnabledByte2, err = ReadOptionalField[byte](ctx, "gavStoreEnabledByte2", ReadByte(readBuffer, 8), bool((numBytes) > (2)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gavStoreEnabledByte2' field"))
 	}
 	m.GavStoreEnabledByte2 = gavStoreEnabledByte2
 
-	timeFromLastRecoverOfMainsInSeconds, err := ReadSimpleField(ctx, "timeFromLastRecoverOfMainsInSeconds", ReadUnsignedByte(readBuffer, uint8(8)))
+	timeFromLastRecoverOfMainsInSeconds, err := ReadSimpleField(ctx, "timeFromLastRecoverOfMainsInSeconds", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeFromLastRecoverOfMainsInSeconds' field"))
 	}
@@ -345,7 +347,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) parse(ctx context.Context, read
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -362,19 +364,19 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandOutputUnitSummary")
 		}
 
-		if err := WriteSimpleField[IdentifyReplyCommandUnitSummary](ctx, "unitFlags", m.GetUnitFlags(), WriteComplex[IdentifyReplyCommandUnitSummary](writeBuffer)); err != nil {
+		if err := WriteSimpleField[IdentifyReplyCommandUnitSummary](ctx, "unitFlags", m.GetUnitFlags(), WriteComplex[IdentifyReplyCommandUnitSummary](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitFlags' field")
 		}
 
-		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte1", m.GetGavStoreEnabledByte1(), WriteByte(writeBuffer, 8), true); err != nil {
+		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte1", m.GetGavStoreEnabledByte1(), WriteByte(writeBuffer, 8), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'gavStoreEnabledByte1' field")
 		}
 
-		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte2", m.GetGavStoreEnabledByte2(), WriteByte(writeBuffer, 8), true); err != nil {
+		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte2", m.GetGavStoreEnabledByte2(), WriteByte(writeBuffer, 8), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'gavStoreEnabledByte2' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "timeFromLastRecoverOfMainsInSeconds", m.GetTimeFromLastRecoverOfMainsInSeconds(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "timeFromLastRecoverOfMainsInSeconds", m.GetTimeFromLastRecoverOfMainsInSeconds(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'timeFromLastRecoverOfMainsInSeconds' field")
 		}
 

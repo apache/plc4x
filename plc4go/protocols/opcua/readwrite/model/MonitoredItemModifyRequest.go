@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastMonitoredItemModifyRequest(structType any) MonitoredItemModifyRequest {
 	return nil
 }
 
-func (m *_MonitoredItemModifyRequest) GetTypeName() string {
+func (m *_MonitoredItemModifyRequest) GetPlx4xTypeName() string {
 	return "MonitoredItemModifyRequest"
 }
 
-func (m *_MonitoredItemModifyRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_MonitoredItemModifyRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (monitoredItemId)
 	lengthInBits += 32
@@ -256,7 +257,7 @@ func (m *_MonitoredItemModifyRequest) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_MonitoredItemModifyRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoredItemModifyRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -271,13 +272,13 @@ func (m *_MonitoredItemModifyRequest) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	monitoredItemId, err := ReadSimpleField(ctx, "monitoredItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	monitoredItemId, err := ReadSimpleField(ctx, "monitoredItemId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemId' field"))
 	}
 	m.MonitoredItemId = monitoredItemId
 
-	requestedParameters, err := ReadSimpleField[MonitoringParameters](ctx, "requestedParameters", ReadComplex[MonitoringParameters](ExtensionObjectDefinitionParseWithBufferProducer[MonitoringParameters]((int32)(int32(742))), readBuffer))
+	requestedParameters, err := ReadSimpleField[MonitoringParameters](ctx, "requestedParameters", ReadComplex[MonitoringParameters](ExtensionObjectDefinitionParseWithBufferProducer[MonitoringParameters]((int32)(int32(742))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedParameters' field"))
 	}
@@ -308,11 +309,11 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemModifyRequest")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "monitoredItemId", m.GetMonitoredItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "monitoredItemId", m.GetMonitoredItemId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoredItemId' field")
 		}
 
-		if err := WriteSimpleField[MonitoringParameters](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[MonitoringParameters](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MonitoringParameters](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[MonitoringParameters](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedParameters' field")
 		}
 

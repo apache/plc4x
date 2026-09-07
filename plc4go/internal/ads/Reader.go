@@ -26,12 +26,11 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
@@ -44,12 +43,10 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		if len(readRequest.GetTagNames()) <= 1 {
@@ -57,13 +54,13 @@ func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadReque
 		} else {
 			m.multiRead(ctx, readRequest, result)
 		}
-	}()
+	})
 	return result
 }
 
 func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
 	if len(readRequest.GetTagNames()) != 1 {
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("this part of the ads driver only supports single-item requests")))
 		m.log.Debug().Int("nTags", len(readRequest.GetTagNames())).Msg("this part of the ads driver only supports single-item requests. Got nTags tags")
 		return
 	}
@@ -71,47 +68,26 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	// Here we can be sure that we're only handling a single request.
 	tagName := readRequest.GetTagNames()[0]
 	tag := readRequest.GetTag(tagName)
-	if model.NeedsResolving(tag) {
-		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-		if err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type"))
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-		// Replace the symbolic tag with a direct one
-		tag, err = m.resolveSymbolicTag(ctx, adsField)
-		if err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(
-				readRequest,
-				nil,
-				errors.Wrap(err, "invalid tag item type"),
-			)
-			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-			return
-		}
-	}
-	directAdsTag, ok := tag.(*model.DirectPlcTag)
-	if !ok {
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("invalid tag item type"))
+	directAdsTag, err := m.directTagFor(ctx, tag)
+	if err != nil {
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type")))
 		m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 		return
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
-		response, err := m.ExecuteAdsReadRequest(ctx, directAdsTag.IndexGroup, directAdsTag.IndexOffset, directAdsTag.DataType.GetSize())
+		response, err := m.ExecuteAdsReadRequest(ctx, directAdsTag.IndexGroup, directAdsTag.IndexOffset, directAdsTag.TransferSizeInBytes())
 		if err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
 				nil,
 				errors.Wrap(err, "got error executing the read request"),
-			)
+			))
 			return
 		}
 
@@ -125,7 +101,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 		for _, tagName := range readRequest.GetTagNames() {
 			m.log.Debug().Str("tagName", tagName).Msg("get a tag from request with name")
 			// Try to parse the value
-			plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb)
+			plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DecodeArrayInfo(), rb)
 			if err != nil {
 				m.log.Error().Err(err).Msg("Error parsing plc value")
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
@@ -135,12 +111,12 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 			}
 		}
 		// Return the response to the caller.
-		result <- spiModel.NewDefaultPlcReadRequestResult(
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 			readRequest,
 			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
 			nil,
-		)
-	}()
+		))
+	})
 }
 
 func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
@@ -151,67 +127,35 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 	requestItems := make([]driverModel.AdsMultiRequestItem, 0)
 	for _, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName)
-		if model.NeedsResolving(tag) {
-			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
-			if err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrap(err, "invalid tag item type"),
-				)
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-			// Replace the symbolic tag with a direct one
-			tag, err = m.resolveSymbolicTag(ctx, adsField)
-			if err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrap(err, "invalid tag item type"),
-				)
-				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
-				return
-			}
-		}
-		directAdsTag, ok := tag.(*model.DirectPlcTag)
-		if !ok {
-			result <- spiModel.NewDefaultPlcReadRequestResult(
-				readRequest,
-				nil,
-				errors.New("invalid tag item type"),
-			)
+		directAdsTag, err := m.directTagFor(ctx, tag)
+		if err != nil {
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type")))
 			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 
 		directAdsTags[tagName] = directAdsTag
 
-		// Size of one element.
-		size := directAdsTag.DataType.GetSize()
-
-		// Calculate how many elements in total we'll be reading.
-		arraySize := uint32(1)
-		if len(tag.GetArrayInfo()) > 0 {
-			for _, arrayInfo := range tag.GetArrayInfo() {
-				arraySize = arraySize * arrayInfo.GetSize()
-			}
-		}
+		// How many bytes this tag transfers, which the resolved tag knows: the whole of what its
+		// type declares, or just the part the address selected out of it. Reading it from the
+		// request tag's own selection instead double-counted a symbolic selection, whose declared
+		// type is already the whole array.
+		size := directAdsTag.TransferSizeInBytes()
 
 		// Status code + payload size
-		expectedTagSize := 4 + (size * arraySize)
+		expectedTagSize := 4 + size
 		expectedResponseDataSize += expectedTagSize
 
-		requestItems = append(requestItems, driverModel.NewAdsMultiRequestItemRead(directAdsTag.IndexGroup, directAdsTag.IndexOffset, size*arraySize))
+		requestItems = append(requestItems, driverModel.NewAdsMultiRequestItemRead(directAdsTag.IndexGroup, directAdsTag.IndexOffset, size))
 	}
 
 	response, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(driverModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(directAdsTags)), expectedResponseDataSize, requestItems, nil)
 	if err != nil {
-		result <- spiModel.NewDefaultPlcReadRequestResult(
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 			readRequest,
 			nil,
 			errors.Wrap(err, "error executing multi-item read request"),
-		)
+		))
 		return
 	}
 
@@ -241,7 +185,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 		directAdsTag := directAdsTags[tagName]
 		m.log.Debug().Str("tagName", tagName).Msg("get a tag from request with name")
 		// Try to parse the value
-		plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb)
+		plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DecodeArrayInfo(), rb)
 		if err != nil {
 			m.log.Error().Err(err).Msg("Error parsing plc value")
 			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
@@ -252,23 +196,44 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 	}
 
 	// Return the response to the caller.
-	result <- spiModel.NewDefaultPlcReadRequestResult(
+	utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 		readRequest,
 		spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
 		nil,
-	)
+	))
+}
+
+// arrayItemTypeFor is the type of one element of a shape being decoded or encoded.
+//
+// A declared array names its element type in its own name ("ARRAY [0..9] OF DINT"), and that is
+// where the shape usually comes from. A shape can also come from the address instead - a
+// selection out of a location whose type is already the element type, as every direct array tag
+// is ("0x4020/0[0..3]:DINT" resolves to DINT). Such a type names no element type because it *is*
+// the element type, which is what the fallback says.
+func (m *Connection) arrayItemTypeFor(dataType driverModel.AdsDataTypeTableEntry) (driverModel.AdsDataTypeTableEntry, error) {
+	name := dataType.GetSecondaryName()
+	separator := strings.Index(name, " OF ")
+	if separator < 0 {
+		return dataType, nil
+	}
+	itemTypeName := name[separator+4:]
+	itemType, ok := m.driverContext.dataTypeTable[itemTypeName]
+	if !ok {
+		return nil, fmt.Errorf("couldn't resolve array item type %s", itemTypeName)
+	}
+	return itemType, nil
 }
 
 func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, rb utils.ReadBufferByteBased) (apiValues.PlcValue, error) {
+	ctx := context.TODO()
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {
 		// This is an Array/List type.
 		curArrayInfo := arrayInfo[0]
-		arrayItemTypeName := dataType.GetDataTypeName()[strings.Index(dataType.GetDataTypeName(), " OF ")+4:]
-		arrayItemType, ok := m.driverContext.dataTypeTable[arrayItemTypeName]
-		if !ok {
-			return nil, fmt.Errorf("couldn't resolve array item type %s", arrayItemTypeName)
+		arrayItemType, err := m.arrayItemTypeFor(dataType)
+		if err != nil {
+			return nil, err
 		}
 		var plcValues []apiValues.PlcValue
 		for i := uint32(0); i < curArrayInfo.GetNumElements(); i++ {
@@ -283,39 +248,43 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 	} else if len(dataType.GetChildren()) > 0 {
 		// This is a Struct type.
 		plcValues := map[string]apiValues.PlcValue{}
+		var memberOrder []string
 		startPos := uint32(rb.GetPos())
 		curPos := uint32(0)
 		for _, child := range dataType.GetChildren() {
-			childName := child.GetPropertyName()
-			childDataType, ok := m.driverContext.dataTypeTable[child.GetDataTypeName()]
+			childName := child.GetMainName()
+			childDataType, ok := m.driverContext.dataTypeTable[child.GetSecondaryName()]
 			if !ok {
-				return nil, fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetDataTypeName(), childName, dataType.GetDataTypeName())
+				return nil, fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetSecondaryName(), childName, dataType.GetSecondaryName())
 			}
 			if child.GetOffset() > curPos {
 				skipBytes := child.GetOffset() - curPos
-				for i := uint32(0); i < skipBytes; i++ {
+				for range skipBytes {
 					_, _ = rb.ReadByte("")
 				}
 			}
 			childValue, err := m.parsePlcValue(childDataType, childDataType.GetArrayInfo(), rb)
 			if err != nil {
-				return nil, errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetDataTypeName()))
+				return nil, errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetSecondaryName()))
 			}
 			plcValues[childName] = childValue
+			memberOrder = append(memberOrder, childName)
 			curPos = uint32(rb.GetPos()) - startPos
 		}
-		return spiValues.NewPlcStruct(plcValues), nil
+		// Keep the struct's declaration order (the order of the children in the data type
+		// table), like the Java driver does with its LinkedHashMap-based PlcStruct.
+		return spiValues.NewPlcStructOrdered(plcValues, memberOrder), nil
 	} else {
 		// This is a primitive type.
 		valueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(dataType)
 		if valueType == apiValues.NULL {
-			return nil, errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
+			return nil, errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetSecondaryName()))
 		}
 
 		adsValueType, ok := apiValues.PlcValueTypeByName(valueType.String())
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}
-		return driverModel.DataItemParseWithBuffer(context.Background(), rb, adsValueType, stringLength)
+		return driverModel.DataItemParseWithBuffer(ctx, rb, adsValueType, stringLength)
 	}
 }

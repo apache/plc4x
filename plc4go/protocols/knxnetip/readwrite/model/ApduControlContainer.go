@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ ApduControlContainer = (*_ApduControlContainer)(nil)
 var _ ApduRequirements = (*_ApduControlContainer)(nil)
 
 // NewApduControlContainer factory function for _ApduControlContainer
-func NewApduControlContainer(numbered bool, counter uint8, controlApdu ApduControl, dataLength uint8) *_ApduControlContainer {
+func NewApduControlContainer(numbered bool, counter uint8, controlApdu ApduControl) *_ApduControlContainer {
 	if controlApdu == nil {
 		panic("controlApdu of type ApduControl for ApduControlContainer must not be nil")
 	}
 	_result := &_ApduControlContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
+		ApduContract: NewApdu(numbered, counter),
 		ControlApdu:  controlApdu,
 	}
 	_result.ApduContract.(*_Apdu)._SubType = _result
@@ -225,12 +225,12 @@ func CastApduControlContainer(structType any) ApduControlContainer {
 	return nil
 }
 
-func (m *_ApduControlContainer) GetTypeName() string {
+func (m *_ApduControlContainer) GetPlx4xTypeName() string {
 	return "ApduControlContainer"
 }
 
-func (m *_ApduControlContainer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduContract.(*_Apdu).getLengthInBits(ctx))
+func (m *_ApduControlContainer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduContract.(*_Apdu).getLengthInBits(ctx))
 
 	// Simple field (controlApdu)
 	lengthInBits += m.ControlApdu.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_ApduControlContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduControlContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduControlContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

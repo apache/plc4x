@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ LRawReq = (*_LRawReq)(nil)
 var _ CEMIRequirements = (*_LRawReq)(nil)
 
 // NewLRawReq factory function for _LRawReq
-func NewLRawReq(size uint16) *_LRawReq {
+func NewLRawReq() *_LRawReq {
 	_result := &_LRawReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastLRawReq(structType any) LRawReq {
 	return nil
 }
 
-func (m *_LRawReq) GetTypeName() string {
+func (m *_LRawReq) GetPlx4xTypeName() string {
 	return "LRawReq"
 }
 
-func (m *_LRawReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_LRawReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_LRawReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LRawReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

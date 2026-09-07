@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBinaryLightingOutputPresentValue = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
 
 // NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for _BACnetConstructedDataBinaryLightingOutputPresentValue
-func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
+func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputPresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBinaryLightingOutputPresentValue(structType any) B
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryLightingOutputPresentValue"
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

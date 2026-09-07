@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,9 +57,8 @@ type CBusCommandContract interface {
 	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)
 	GetIsDeviceManagement() bool
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
+	// TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
 	GetDestinationAddressType() DestinationAddressType
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommand()
 	// CreateBuilder creates a CBusCommandBuilder
@@ -66,8 +67,8 @@ type CBusCommandContract interface {
 
 // CBusCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDestinationAddressType returns DestinationAddressType (discriminator field)
 	GetDestinationAddressType() DestinationAddressType
 	// GetIsDeviceManagement returns IsDeviceManagement (discriminator field)
@@ -81,19 +82,16 @@ type _CBusCommand struct {
 		CBusCommandRequirements
 	}
 	Header CBusHeader
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ CBusCommandContract = (*_CBusCommand)(nil)
 
 // NewCBusCommand factory function for _CBusCommand
-func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+func NewCBusCommand(header CBusHeader) *_CBusCommand {
 	if header == nil {
 		panic("header of type CBusHeader for CBusCommand must not be nil")
 	}
-	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
+	return &_CBusCommand{Header: header}
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,8 +108,6 @@ type CBusCommandBuilder interface {
 	WithHeader(CBusHeader) CBusCommandBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CBusCommandBuilder
 	// AsCBusCommandDeviceManagement converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
 	AsCBusCommandDeviceManagement() CBusCommandDeviceManagementBuilder
 	// AsCBusCommandPointToPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
@@ -167,11 +163,6 @@ func (b *_CBusCommandBuilder) WithHeaderBuilder(builderSupplier func(CBusHeaderB
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CBusHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CBusCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusCommandBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -324,12 +315,12 @@ func CastCBusCommand(structType any) CBusCommand {
 	return nil
 }
 
-func (m *_CBusCommand) GetTypeName() string {
+func (m *_CBusCommand) GetPlx4xTypeName() string {
 	return "CBusCommand"
 }
 
-func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -341,16 +332,16 @@ func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusCommandParse[T CBusCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return CBusCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func CBusCommandParseWithBufferProducer[T CBusCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -365,7 +356,7 @@ func CBusCommandParseWithBufferProducer[T CBusCommand](cBusOptions CBusOptions) 
 }
 
 func CBusCommandParseWithBuffer[T CBusCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusCommand{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_CBusCommand)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -387,19 +378,19 @@ func (m *_CBusCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	header, err := ReadSimpleField[CBusHeader](ctx, "header", ReadComplex[CBusHeader](CBusHeaderParseWithBuffer, readBuffer))
+	header, err := ReadSimpleField[CBusHeader](ctx, "header", ReadComplex[CBusHeader](CBusHeaderParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
 	m.Header = header
 
-	isDeviceManagement, err := ReadVirtualField[bool](ctx, "isDeviceManagement", (*bool)(nil), header.GetDp())
+	isDeviceManagement, err := ReadVirtualField[bool](ctx, "isDeviceManagement", (*bool)(nil), header.GetDp(), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDeviceManagement' field"))
 	}
 	_ = isDeviceManagement
 
-	destinationAddressType, err := ReadVirtualField[DestinationAddressType](ctx, "destinationAddressType", (*DestinationAddressType)(nil), header.GetDestinationAddressType())
+	destinationAddressType, err := ReadVirtualField[DestinationAddressType](ctx, "destinationAddressType", (*DestinationAddressType)(nil), header.GetDestinationAddressType(), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddressType' field"))
 	}
@@ -447,7 +438,7 @@ func (pm *_CBusCommand) serializeParent(ctx context.Context, writeBuffer utils.W
 		return errors.Wrap(pushErr, "Error pushing for CBusCommand")
 	}
 
-	if err := WriteSimpleField[CBusHeader](ctx, "header", m.GetHeader(), WriteComplex[CBusHeader](writeBuffer)); err != nil {
+	if err := WriteSimpleField[CBusHeader](ctx, "header", m.GetHeader(), WriteComplex[CBusHeader](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 	// Virtual field
@@ -474,16 +465,6 @@ func (pm *_CBusCommand) serializeParent(ctx context.Context, writeBuffer utils.W
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CBusCommand) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
-
 func (m *_CBusCommand) IsCBusCommand() {}
 
 func (m *_CBusCommand) DeepCopy() any {
@@ -497,7 +478,6 @@ func (m *_CBusCommand) deepCopy() *_CBusCommand {
 	_CBusCommandCopy := &_CBusCommand{
 		nil, // will be set by child
 		utils.DeepCopy[CBusHeader](m.Header),
-		m.CBusOptions,
 	}
 	return _CBusCommandCopy
 }

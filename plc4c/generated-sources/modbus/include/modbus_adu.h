@@ -50,7 +50,7 @@ typedef enum plc4c_modbus_read_write_modbus_adu_type plc4c_modbus_read_write_mod
 plc4c_modbus_read_write_modbus_adu_discriminator plc4c_modbus_read_write_modbus_adu_get_discriminator(plc4c_modbus_read_write_modbus_adu_type type);
 
 // Constant values.
-uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER();
+const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER();
 
 struct plc4c_modbus_read_write_modbus_adu {
   /* This is an abstract type so this property saves the type of this typed union */

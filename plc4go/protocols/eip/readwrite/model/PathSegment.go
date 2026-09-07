@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,8 @@ type PathSegmentContract interface {
 
 // PathSegmentRequirements provides a set of functions which need to be implemented by a sub struct
 type PathSegmentRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPathSegment returns PathSegment (discriminator field)
 	GetPathSegment() uint8
 }
@@ -229,23 +229,23 @@ func CastPathSegment(structType any) PathSegment {
 	return nil
 }
 
-func (m *_PathSegment) GetTypeName() string {
+func (m *_PathSegment) GetPlx4xTypeName() string {
 	return "PathSegment"
 }
 
-func (m *_PathSegment) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PathSegment) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (pathSegment)
 	lengthInBits += 3
 
 	return lengthInBits
 }
 
-func (m *_PathSegment) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_PathSegment) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -265,7 +265,7 @@ func PathSegmentParseWithBufferProducer[T PathSegment]() func(ctx context.Contex
 }
 
 func PathSegmentParseWithBuffer[T PathSegment](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_PathSegment{}).parse(ctx, readBuffer)
+	v, err := (new(_PathSegment)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

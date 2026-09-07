@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -306,12 +306,12 @@ func CastOpenChannelMessageRequest(structType any) OpenChannelMessageRequest {
 	return nil
 }
 
-func (m *_OpenChannelMessageRequest) GetTypeName() string {
+func (m *_OpenChannelMessageRequest) GetPlx4xTypeName() string {
 	return "OpenChannelMessageRequest"
 }
 
-func (m *_OpenChannelMessageRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.OpenChannelMessageContract.(*_OpenChannelMessage).getLengthInBits(ctx))
+func (m *_OpenChannelMessageRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.OpenChannelMessageContract.(*_OpenChannelMessage).getLengthInBits(ctx))
 
 	// Simple field (secureChannelId)
 	lengthInBits += 32
@@ -328,7 +328,7 @@ func (m *_OpenChannelMessageRequest) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_OpenChannelMessageRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpenChannelMessageRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

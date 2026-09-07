@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetPriorityValueEnumerated = (*_BACnetPriorityValueEnumerated)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueEnumerated)(nil)
 
 // NewBACnetPriorityValueEnumerated factory function for _BACnetPriorityValueEnumerated
-func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
+func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetPriorityValueEnumerated {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetPriorityValueEnumerated must not be nil")
 	}
 	_result := &_BACnetPriorityValueEnumerated{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		EnumeratedValue:             enumeratedValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetPriorityValueEnumerated(structType any) BACnetPriorityValueEnumer
 	return nil
 }
 
-func (m *_BACnetPriorityValueEnumerated) GetTypeName() string {
+func (m *_BACnetPriorityValueEnumerated) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueEnumerated"
 }
 
-func (m *_BACnetPriorityValueEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueEnumerated) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueEnumerated) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueEnumerated) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueEnumerated) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

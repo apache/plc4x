@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -189,12 +189,12 @@ func CastTransportType(structType any) TransportType {
 	return nil
 }
 
-func (m *_TransportType) GetTypeName() string {
+func (m *_TransportType) GetPlx4xTypeName() string {
 	return "TransportType"
 }
 
-func (m *_TransportType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TransportType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (direction)
 	lengthInBits += 1
@@ -208,7 +208,7 @@ func (m *_TransportType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_TransportType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TransportType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -223,7 +223,7 @@ func TransportTypeParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
-	v, err := (&_TransportType{}).parse(ctx, readBuffer)
+	v, err := (new(_TransportType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

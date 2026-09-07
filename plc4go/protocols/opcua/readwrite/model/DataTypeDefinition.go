@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,17 +180,17 @@ func CastDataTypeDefinition(structType any) DataTypeDefinition {
 	return nil
 }
 
-func (m *_DataTypeDefinition) GetTypeName() string {
+func (m *_DataTypeDefinition) GetPlx4xTypeName() string {
 	return "DataTypeDefinition"
 }
 
-func (m *_DataTypeDefinition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DataTypeDefinition) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_DataTypeDefinition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DataTypeDefinition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

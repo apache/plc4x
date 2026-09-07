@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataElapsedActiveTime = (*_BACnetConstructedDataElapsedAc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElapsedActiveTime)(nil)
 
 // NewBACnetConstructedDataElapsedActiveTime factory function for _BACnetConstructedDataElapsedActiveTime
-func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
+func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
 	if elapsedActiveTime == nil {
 		panic("elapsedActiveTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataElapsedActiveTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataElapsedActiveTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ElapsedActiveTime:             elapsedActiveTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataElapsedActiveTime(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) GetTypeName() string {
+func (m *_BACnetConstructedDataElapsedActiveTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElapsedActiveTime"
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (elapsedActiveTime)
 	lengthInBits += m.ElapsedActiveTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

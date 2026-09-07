@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPDHCPLeaseTime = (*_BACnetConstructedDataIPDHCPLease
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPLeaseTime)(nil)
 
 // NewBACnetConstructedDataIPDHCPLeaseTime factory function for _BACnetConstructedDataIPDHCPLeaseTime
-func NewBACnetConstructedDataIPDHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
+func NewBACnetConstructedDataIPDHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
 	if ipDhcpLeaseTime == nil {
 		panic("ipDhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPDHCPLeaseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpDhcpLeaseTime:               ipDhcpLeaseTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPDHCPLeaseTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetTypeName() string {
+func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPDHCPLeaseTime"
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipDhcpLeaseTime)
 	lengthInBits += m.IpDhcpLeaseTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

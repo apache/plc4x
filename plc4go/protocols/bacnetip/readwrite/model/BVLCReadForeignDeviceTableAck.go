@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,16 +55,13 @@ type BVLCReadForeignDeviceTableAck interface {
 type _BVLCReadForeignDeviceTableAck struct {
 	BVLCContract
 	Table []BVLCForeignDeviceTableEntry
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTableAck)(nil)
 
 // NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
-func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
+func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry) *_BVLCReadForeignDeviceTableAck {
 	_result := &_BVLCReadForeignDeviceTableAck{
 		BVLCContract: NewBVLC(),
 		Table:        table,
@@ -85,8 +82,6 @@ type BVLCReadForeignDeviceTableAckBuilder interface {
 	WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCReadForeignDeviceTableAckBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCReadForeignDeviceTableAck or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_BVLCReadForeignDeviceTableAckBuilder) WithMandatoryFields(table []BVLC
 
 func (b *_BVLCReadForeignDeviceTableAckBuilder) WithTable(table ...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
 	b.Table = table
-	return b
-}
-
-func (b *_BVLCReadForeignDeviceTableAckBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCReadForeignDeviceTableAckBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -219,12 +209,12 @@ func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTabl
 	return nil
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetTypeName() string {
+func (m *_BVLCReadForeignDeviceTableAck) GetPlx4xTypeName() string {
 	return "BVLCReadForeignDeviceTableAck"
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {
@@ -236,7 +226,7 @@ func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -251,7 +241,7 @@ func (m *_BVLCReadForeignDeviceTableAck) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	table, err := ReadLengthArrayField[BVLCForeignDeviceTableEntry](ctx, "table", ReadComplex[BVLCForeignDeviceTableEntry](BVLCForeignDeviceTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	table, err := ReadLengthArrayField[BVLCForeignDeviceTableEntry](ctx, "table", ReadComplex[BVLCForeignDeviceTableEntry](BVLCForeignDeviceTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'table' field"))
 	}
@@ -282,7 +272,7 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BVLCReadForeignDeviceTableAck")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'table' field")
 		}
 
@@ -293,16 +283,6 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(ctx context.Co
 	}
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
-
-////
-// Arguments Getter
-
-func (m *_BVLCReadForeignDeviceTableAck) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
 
 func (m *_BVLCReadForeignDeviceTableAck) IsBVLCReadForeignDeviceTableAck() {}
 
@@ -317,7 +297,6 @@ func (m *_BVLCReadForeignDeviceTableAck) deepCopy() *_BVLCReadForeignDeviceTable
 	_BVLCReadForeignDeviceTableAckCopy := &_BVLCReadForeignDeviceTableAck{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCForeignDeviceTableEntry, BVLCForeignDeviceTableEntry](m.Table),
-		m.BvlcPayloadLength,
 	}
 	_BVLCReadForeignDeviceTableAckCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadForeignDeviceTableAckCopy

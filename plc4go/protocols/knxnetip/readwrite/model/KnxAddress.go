@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -189,12 +189,12 @@ func CastKnxAddress(structType any) KnxAddress {
 	return nil
 }
 
-func (m *_KnxAddress) GetTypeName() string {
+func (m *_KnxAddress) GetPlx4xTypeName() string {
 	return "KnxAddress"
 }
 
-func (m *_KnxAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_KnxAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (mainGroup)
 	lengthInBits += 4
@@ -208,7 +208,7 @@ func (m *_KnxAddress) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -223,7 +223,7 @@ func KnxAddressParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
-	v, err := (&_KnxAddress{}).parse(ctx, readBuffer)
+	v, err := (new(_KnxAddress)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

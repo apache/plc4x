@@ -27,11 +27,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -78,6 +78,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connectio
 }
 
 func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWriteModel.CreateMonitoredItemsResponse, error) {
+	ctx := context.TODO()
 	requestList := make([]readWriteModel.MonitoredItemCreateRequest, len(h.tagNames))
 
 	for _, tagName := range h.tagNames {
@@ -147,11 +148,8 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		createMonitoredItemsRequest,
-		identifier,
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
-	defer cancel()
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		return nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")
@@ -220,11 +218,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 func (h *SubscriptionHandle) startSubscriber() {
 	h.log.Trace().Msg("Starting Subscription")
 
-	h.subscriberWg.Add(1)
-	h.wg.Add(1)
-	go func() {
-		defer h.wg.Done()
-		defer h.subscriberWg.Done()
+	h.subscriberWg.Go(func() {
 
 		var outstandingAcknowledgements []readWriteModel.SubscriptionAcknowledgement
 		var outstandingRequests []uint32
@@ -279,7 +273,6 @@ func (h *SubscriptionHandle) startSubscriber() {
 				extObject := readWriteModel.NewRootExtensionObject(
 					extExpandedNodeId,
 					publishRequest,
-					identifier,
 				)
 
 				ctx := context.Background()
@@ -355,11 +348,12 @@ func (h *SubscriptionHandle) startSubscriber() {
 		//Wait for any outstanding responses to arrive, using the request timeout length
 		//sleep(this.revisedCycleTime * 10);
 		h.complete = true
-	}()
+	})
 }
 
 // stopSubscriber stops the subscriber either on disconnect or on error
 func (h *SubscriptionHandle) stopSubscriber() {
+	ctx := context.TODO()
 	h.destroy.Store(true)
 
 	requestHandle := h.connection.channel.getRequestHandle()
@@ -390,10 +384,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 	extObject := readWriteModel.NewRootExtensionObject(
 		extExpandedNodeId,
 		deleteSubscriptionrequest,
-		identifier,
 	)
-
-	ctx := context.Background()
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
@@ -420,7 +411,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 				Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 			return
 		}
-		h.log.Debug().Stringer("responseMessage", responseMessage).Msg("Received response")
+		h.log.Debug().Interface("responseMessage", responseMessage).Msg("Received response")
 	}
 
 	errorDispatcher := func(err error) {

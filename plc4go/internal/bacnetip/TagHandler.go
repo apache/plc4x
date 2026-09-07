@@ -25,10 +25,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,8 +38,8 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		addressPattern:       regexp.MustCompile(`^(?P<objectType>[\d\w]+),(?P<objectInstance>\d+)/(?P<propertyIdentifiers>[\d\w]+(?:\[\d+])?(?:&[\d\w]+(?:\[\d+])?)*)`),
-		propertyFieldPattern: regexp.MustCompile(`^(?P<propertyIdentifier>[\d\w]+)(?:\[(?P<arrayIndex>\d+)])?$`),
+		addressPattern:       regexp.MustCompile(`^(?P<objectType>[\d\w]+),(?P<objectInstance>\d+)/(?P<propertyIdentifiers>[\d\w]+(?:\[\d+])?(?:\{\d+})?(?:&[\d\w]+(?:\[\d+])?(?:\{\d+})?)*)`),
+		propertyFieldPattern: regexp.MustCompile(`^(?P<propertyIdentifier>[\d\w]+)(?:\[(?P<arrayIndex>\d+)])?(?:\{(?P<writePriority>\d+)})?$`),
 	}
 }
 
@@ -50,6 +49,7 @@ const (
 	PROPERTY_IDENTIFIERS = "propertyIdentifiers"
 	PROPERTY_IDENTIFIER  = "propertyIdentifier"
 	ARRAY_INDEX          = "arrayIndex"
+	WRITE_PRIORITY       = "writePriority"
 )
 
 func (m TagHandler) ParseTag(tagString string) (apiModel.PlcTag, error) {
@@ -74,11 +74,12 @@ func (m TagHandler) ParseTag(tagString string) (apiModel.PlcTag, error) {
 			result.ObjectId.ObjectIdInstance = uint32(parsedObjectInstance)
 		}
 
-		for _, propertyString := range strings.Split(addressMatch[PROPERTY_IDENTIFIERS], "&") {
+		for propertyString := range strings.SplitSeq(addressMatch[PROPERTY_IDENTIFIERS], "&") {
 			var _property struct {
 				PropertyIdentifier            *readWriteModel.BACnetPropertyIdentifier
 				PropertyIdentifierProprietary *uint32
 				ArrayIndex                    *uint
+				WritePriority                 *uint8
 			}
 			propertyMatch := utils.GetSubgroupMatches(m.propertyFieldPattern, propertyString)
 			propertyIdentifierMatch := propertyMatch[PROPERTY_IDENTIFIER]
@@ -98,6 +99,16 @@ func (m TagHandler) ParseTag(tagString string) (apiModel.PlcTag, error) {
 				} else {
 					arrayIndex := uint(parsedArrayIndex)
 					_property.ArrayIndex = &arrayIndex
+				}
+			}
+			if writePriorityMatch := propertyMatch[WRITE_PRIORITY]; writePriorityMatch != "" {
+				if parsedPriority, err := strconv.ParseUint(writePriorityMatch, 10, 8); err != nil {
+					return nil, errors.Wrap(err, "Error parsing write priority")
+				} else if parsedPriority < 1 || parsedPriority > 16 {
+					return nil, errors.Errorf("write priority %d out of range (1..16)", parsedPriority)
+				} else {
+					writePriority := uint8(parsedPriority)
+					_property.WritePriority = &writePriority
 				}
 			}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInstantaneousPower = (*_BACnetConstructedDataInstanta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstantaneousPower)(nil)
 
 // NewBACnetConstructedDataInstantaneousPower factory function for _BACnetConstructedDataInstantaneousPower
-func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instantaneousPower BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstantaneousPower {
+func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instantaneousPower BACnetApplicationTagReal) *_BACnetConstructedDataInstantaneousPower {
 	if instantaneousPower == nil {
 		panic("instantaneousPower of type BACnetApplicationTagReal for BACnetConstructedDataInstantaneousPower must not be nil")
 	}
 	_result := &_BACnetConstructedDataInstantaneousPower{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InstantaneousPower:            instantaneousPower,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataInstantaneousPower(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataInstantaneousPower) GetTypeName() string {
+func (m *_BACnetConstructedDataInstantaneousPower) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInstantaneousPower"
 }
 
-func (m *_BACnetConstructedDataInstantaneousPower) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataInstantaneousPower) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (instantaneousPower)
 	lengthInBits += m.InstantaneousPower.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataInstantaneousPower) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInstantaneousPower) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataInstantaneousPower) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

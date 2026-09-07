@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
 
 // NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode) *_FirmataCommandSetPinMode {
 	_result := &_FirmataCommandSetPinMode{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 		Pin:                    pin,
 		Mode:                   mode,
 	}
@@ -222,12 +222,12 @@ func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
 	return nil
 }
 
-func (m *_FirmataCommandSetPinMode) GetTypeName() string {
+func (m *_FirmataCommandSetPinMode) GetPlx4xTypeName() string {
 	return "FirmataCommandSetPinMode"
 }
 
-func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

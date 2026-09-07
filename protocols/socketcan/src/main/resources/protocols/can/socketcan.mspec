@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type SocketCANFrame byteOrder='LITTLE_ENDIAN'
+[type SocketCANFrame byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple     int 32  rawId                                               ]
     [virtual    int 32  identifier  'STATIC_CALL("readIdentifier", rawId)'  ]
     [virtual    bit     extended    'STATIC_CALL("isExtended", rawId)'      ]

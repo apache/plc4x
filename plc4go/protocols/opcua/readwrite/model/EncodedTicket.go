@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastEncodedTicket(structType any) EncodedTicket {
 	return nil
 }
 
-func (m *_EncodedTicket) GetTypeName() string {
+func (m *_EncodedTicket) GetPlx4xTypeName() string {
 	return "EncodedTicket"
 }
 
-func (m *_EncodedTicket) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_EncodedTicket) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_EncodedTicket) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EncodedTicket) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func EncodedTicketParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func EncodedTicketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
-	v, err := (&_EncodedTicket{}).parse(ctx, readBuffer)
+	v, err := (new(_EncodedTicket)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

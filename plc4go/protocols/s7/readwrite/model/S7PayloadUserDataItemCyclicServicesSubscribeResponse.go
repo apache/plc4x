@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -230,12 +230,12 @@ func CastS7PayloadUserDataItemCyclicServicesSubscribeResponse(structType any) S7
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesSubscribeResponse"
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (itemsCount)
 	lengthInBits += 16
@@ -251,7 +251,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBits(
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

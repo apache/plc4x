@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,9 +64,9 @@ var _ APDUSimpleAck = (*_APDUSimpleAck)(nil)
 var _ APDURequirements = (*_APDUSimpleAck)(nil)
 
 // NewAPDUSimpleAck factory function for _APDUSimpleAck
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice) *_APDUSimpleAck {
 	_result := &_APDUSimpleAck{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
 	}
@@ -224,12 +224,12 @@ func CastAPDUSimpleAck(structType any) APDUSimpleAck {
 	return nil
 }
 
-func (m *_APDUSimpleAck) GetTypeName() string {
+func (m *_APDUSimpleAck) GetPlx4xTypeName() string {
 	return "APDUSimpleAck"
 }
 
-func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -243,7 +243,7 @@ func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

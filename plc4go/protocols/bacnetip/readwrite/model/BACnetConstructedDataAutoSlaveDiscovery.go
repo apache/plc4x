@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAutoSlaveDiscovery = (*_BACnetConstructedDataAutoSlav
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
 
 // NewBACnetConstructedDataAutoSlaveDiscovery factory function for _BACnetConstructedDataAutoSlaveDiscovery
-func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
+func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean) *_BACnetConstructedDataAutoSlaveDiscovery {
 	if autoSlaveDiscovery == nil {
 		panic("autoSlaveDiscovery of type BACnetApplicationTagBoolean for BACnetConstructedDataAutoSlaveDiscovery must not be nil")
 	}
 	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AutoSlaveDiscovery:            autoSlaveDiscovery,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAutoSlaveDiscovery(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetTypeName() string {
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAutoSlaveDiscovery"
 }
 
-func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (autoSlaveDiscovery)
 	lengthInBits += m.AutoSlaveDiscovery.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataValueBeforeChange = (*_BACnetConstructedDataValueBefo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueBeforeChange)(nil)
 
 // NewBACnetConstructedDataValueBeforeChange factory function for _BACnetConstructedDataValueBeforeChange
-func NewBACnetConstructedDataValueBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valuesBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueBeforeChange {
+func NewBACnetConstructedDataValueBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valuesBeforeChange BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataValueBeforeChange {
 	if valuesBeforeChange == nil {
 		panic("valuesBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueBeforeChange must not be nil")
 	}
 	_result := &_BACnetConstructedDataValueBeforeChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ValuesBeforeChange:            valuesBeforeChange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataValueBeforeChange(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataValueBeforeChange) GetTypeName() string {
+func (m *_BACnetConstructedDataValueBeforeChange) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataValueBeforeChange"
 }
 
-func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (valuesBeforeChange)
 	lengthInBits += m.ValuesBeforeChange.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

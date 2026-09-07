@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastTimeString(structType any) TimeString {
 	return nil
 }
 
-func (m *_TimeString) GetTypeName() string {
+func (m *_TimeString) GetPlx4xTypeName() string {
 	return "TimeString"
 }
 
-func (m *_TimeString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TimeString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_TimeString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TimeString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func TimeStringParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
-	v, err := (&_TimeString{}).parse(ctx, readBuffer)
+	v, err := (new(_TimeString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

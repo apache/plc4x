@@ -52,19 +52,19 @@ plc4c_s7_read_write_s7_data_alarm_message plc4c_s7_read_write_s7_data_alarm_mess
 
 // Constant values.
 static const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID_const = 0x00;
-uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID() {
+const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID() {
   return PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID_const;
 }
 static const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ_const = 0x01;
-uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ() {
+const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ() {
   return PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ_const;
 }
 static const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC_const = 0x12;
-uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC() {
+const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC() {
   return PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC_const;
 }
 static const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH_const = 0x08;
-uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH() {
+const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH() {
   return PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH_const;
 }
 
@@ -72,6 +72,15 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH() {
 plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionType, plc4c_s7_read_write_s7_data_alarm_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
+
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_data_alarm_message));

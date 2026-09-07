@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastIndex(structType any) Index {
 	return nil
 }
 
-func (m *_Index) GetTypeName() string {
+func (m *_Index) GetPlx4xTypeName() string {
 	return "Index"
 }
 
-func (m *_Index) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Index) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_Index) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Index) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func IndexParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
-	v, err := (&_Index{}).parse(ctx, readBuffer)
+	v, err := (new(_Index)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

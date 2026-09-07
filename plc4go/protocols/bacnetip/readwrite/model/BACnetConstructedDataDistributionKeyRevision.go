@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDistributionKeyRevision = (*_BACnetConstructedDataDis
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
 
 // NewBACnetConstructedDataDistributionKeyRevision factory function for _BACnetConstructedDataDistributionKeyRevision
-func NewBACnetConstructedDataDistributionKeyRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, distributionKeyRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDistributionKeyRevision {
+func NewBACnetConstructedDataDistributionKeyRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, distributionKeyRevision BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDistributionKeyRevision {
 	if distributionKeyRevision == nil {
 		panic("distributionKeyRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDistributionKeyRevision must not be nil")
 	}
 	_result := &_BACnetConstructedDataDistributionKeyRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DistributionKeyRevision:       distributionKeyRevision,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDistributionKeyRevision(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetTypeName() string {
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDistributionKeyRevision"
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (distributionKeyRevision)
 	lengthInBits += m.DistributionKeyRevision.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

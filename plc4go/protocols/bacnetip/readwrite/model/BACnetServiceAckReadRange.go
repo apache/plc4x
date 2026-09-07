@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -77,7 +77,7 @@ var _ BACnetServiceAckReadRange = (*_BACnetServiceAckReadRange)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadRange)(nil)
 
 // NewBACnetServiceAckReadRange factory function for _BACnetServiceAckReadRange
-func NewBACnetServiceAckReadRange(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, resultFlags BACnetResultFlagsTagged, itemCount BACnetContextTagUnsignedInteger, itemData BACnetConstructedData, firstSequenceNumber BACnetContextTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckReadRange {
+func NewBACnetServiceAckReadRange(serviceAckLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, resultFlags BACnetResultFlagsTagged, itemCount BACnetContextTagUnsignedInteger, itemData BACnetConstructedData, firstSequenceNumber BACnetContextTagUnsignedInteger) *_BACnetServiceAckReadRange {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadRange must not be nil")
 	}
@@ -405,12 +405,12 @@ func CastBACnetServiceAckReadRange(structType any) BACnetServiceAckReadRange {
 	return nil
 }
 
-func (m *_BACnetServiceAckReadRange) GetTypeName() string {
+func (m *_BACnetServiceAckReadRange) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadRange"
 }
 
-func (m *_BACnetServiceAckReadRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckReadRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -442,7 +442,7 @@ func (m *_BACnetServiceAckReadRange) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckReadRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckReadRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -544,7 +544,7 @@ func (m *_BACnetServiceAckReadRange) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", new(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 		}
 
@@ -556,11 +556,11 @@ func (m *_BACnetServiceAckReadRange) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'itemCount' field")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "itemData", GetRef(m.GetItemData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "itemData", new(m.GetItemData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'itemData' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "firstSequenceNumber", GetRef(m.GetFirstSequenceNumber()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "firstSequenceNumber", new(m.GetFirstSequenceNumber()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'firstSequenceNumber' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,7 +59,7 @@ var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicWriteFile)(nil)
 
 // NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
+func NewBACnetServiceAckAtomicWriteFile(serviceAckLength uint32, fileStartPosition BACnetContextTagSignedInteger) *_BACnetServiceAckAtomicWriteFile {
 	if fileStartPosition == nil {
 		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
 	}
@@ -225,12 +225,12 @@ func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicW
 	return nil
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetTypeName() string {
+func (m *_BACnetServiceAckAtomicWriteFile) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicWriteFile"
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (fileStartPosition)
 	lengthInBits += m.FileStartPosition.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

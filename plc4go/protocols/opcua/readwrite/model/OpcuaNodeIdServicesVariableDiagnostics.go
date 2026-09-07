@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -88,11 +88,11 @@ func CastOpcuaNodeIdServicesVariableDiagnostics(structType any) OpcuaNodeIdServi
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableDiagnostics) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableDiagnostics) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableDiagnostics) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableDiagnostics) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

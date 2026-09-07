@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ MFuncPropStateReadReq = (*_MFuncPropStateReadReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropStateReadReq)(nil)
 
 // NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
-func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
+func NewMFuncPropStateReadReq() *_MFuncPropStateReadReq {
 	_result := &_MFuncPropStateReadReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastMFuncPropStateReadReq(structType any) MFuncPropStateReadReq {
 	return nil
 }
 
-func (m *_MFuncPropStateReadReq) GetTypeName() string {
+func (m *_MFuncPropStateReadReq) GetPlx4xTypeName() string {
 	return "MFuncPropStateReadReq"
 }
 
-func (m *_MFuncPropStateReadReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MFuncPropStateReadReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MFuncPropStateReadReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MFuncPropStateReadReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

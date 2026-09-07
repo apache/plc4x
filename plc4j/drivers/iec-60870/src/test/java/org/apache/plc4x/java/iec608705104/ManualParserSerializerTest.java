@@ -21,15 +21,14 @@ package org.apache.plc4x.java.iec608705104;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.iec608705104.readwrite.APDU;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 
 public class ManualParserSerializerTest {
 
     public static void main(String[] args) throws Exception {
         byte[] data = Hex.decodeHex("0b00687010000000091101000200020000e60100010000d00b00020000e60100010000d00b00020000e60100010000d00b00020000e60100010000d00b00020000e60100010000d00b00020000e60100010000d00b00020000e60100010000d00b00020000e60100010000d00b00020000e6");
-        ReadBuffer readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
+        ReadBuffer readBuffer = new ReadBufferByteBased(data);
         final APDU apdu = APDU.staticParse(readBuffer);
         System.out.println(apdu);
     }

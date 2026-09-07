@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -205,12 +205,12 @@ func CastBACnetPortPermission(structType any) BACnetPortPermission {
 	return nil
 }
 
-func (m *_BACnetPortPermission) GetTypeName() string {
+func (m *_BACnetPortPermission) GetPlx4xTypeName() string {
 	return "BACnetPortPermission"
 }
 
-func (m *_BACnetPortPermission) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetPortPermission) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (port)
 	lengthInBits += m.Port.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetPortPermission) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPortPermission) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPortPermission) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -238,7 +238,7 @@ func BACnetPortPermissionParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
-	v, err := (&_BACnetPortPermission{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetPortPermission)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(err, "Error serializing 'port' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "enable", GetRef(m.GetEnable()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "enable", new(m.GetEnable()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'enable' field")
 	}
 

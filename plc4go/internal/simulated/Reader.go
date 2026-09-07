@@ -26,11 +26,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
@@ -59,9 +59,7 @@ func NewReader(device *Device, readerOptions map[string][]string, tracer tracer.
 
 func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	ch := make(chan apiModel.PlcReadRequestResult, 1)
-	r.wg.Add(1)
-	go func() {
-		defer r.wg.Done()
+	r.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -111,6 +109,6 @@ func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-
 			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
 			nil,
 		)
-	}()
+	})
 	return ch
 }

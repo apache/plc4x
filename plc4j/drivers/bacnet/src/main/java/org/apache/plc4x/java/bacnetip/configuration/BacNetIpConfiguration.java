@@ -18,36 +18,36 @@
  */
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
 
-public class BacNetIpConfiguration implements PlcConnectionConfiguration {
+import java.io.File;
 
-    // Path to a single EDE file.
+public class BacNetIpConfiguration implements Configuration {
+
     @ConfigurationParameter("ede-file-path")
     @Description("Path to the location of a single EDE file, that contains the descriptor for the target device.")
-    private String edeFilePath;
+    private File edeFile;
 
-    // Path to a directory containing many EDE files.
     @ConfigurationParameter("ede-directory-path")
     @Description("Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.")
-    private String edeDirectoryPath;
+    private File edeDirectory;
 
-    public String getEdeFilePath() {
-        return edeFilePath;
+    public File getEdeFile() {
+        return edeFile;
     }
 
-    public void setEdeFilePath(String edeFilePath) {
-        this.edeFilePath = edeFilePath;
+    public void setEdeFile(File edeFile) {
+        this.edeFile = edeFile;
     }
 
-    public String getEdeDirectoryPath() {
-        return edeDirectoryPath;
+    public File getEdeDirectory() {
+        return edeDirectory;
     }
 
-    public void setEdeDirectoryPath(String edeDirectoryPath) {
-        this.edeDirectoryPath = edeDirectoryPath;
+    public void setEdeDirectory(File edeDirectory) {
+        this.edeDirectory = edeDirectory;
     }
 
 }

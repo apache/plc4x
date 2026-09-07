@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,6 @@ type BACnetContextTagContract interface {
 	GetTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetTagNumberArgument() returns a parser argument
-	GetTagNumberArgument() uint8
 	// IsBACnetContextTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTag()
 	// CreateBuilder creates a BACnetContextTagBuilder
@@ -66,8 +64,8 @@ type BACnetContextTagContract interface {
 
 // BACnetContextTagRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetContextTagRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() BACnetDataType
 }
@@ -79,19 +77,16 @@ type _BACnetContextTag struct {
 		BACnetContextTagRequirements
 	}
 	Header BACnetTagHeader
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 var _ BACnetContextTagContract = (*_BACnetContextTag)(nil)
 
 // NewBACnetContextTag factory function for _BACnetContextTag
-func NewBACnetContextTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTag {
+func NewBACnetContextTag(header BACnetTagHeader) *_BACnetContextTag {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetContextTag must not be nil")
 	}
-	return &_BACnetContextTag{Header: header, TagNumberArgument: tagNumberArgument}
+	return &_BACnetContextTag{Header: header}
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,8 +103,6 @@ type BACnetContextTagBuilder interface {
 	WithHeader(BACnetTagHeader) BACnetContextTagBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetContextTagBuilder
-	// WithArgTagNumberArgument sets a parser argument
-	WithArgTagNumberArgument(uint8) BACnetContextTagBuilder
 	// AsBACnetContextTagNull converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
 	AsBACnetContextTagNull() BACnetContextTagNullBuilder
 	// AsBACnetContextTagBoolean converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
@@ -185,11 +178,6 @@ func (b *_BACnetContextTagBuilder) WithHeaderBuilder(builderSupplier func(BACnet
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetContextTagBuilder) WithArgTagNumberArgument(tagNumberArgument uint8) BACnetContextTagBuilder {
-	b.TagNumberArgument = tagNumberArgument
 	return b
 }
 
@@ -442,12 +430,12 @@ func CastBACnetContextTag(structType any) BACnetContextTag {
 	return nil
 }
 
-func (m *_BACnetContextTag) GetTypeName() string {
+func (m *_BACnetContextTag) GetPlx4xTypeName() string {
 	return "BACnetContextTag"
 }
 
-func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -459,11 +447,11 @@ func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetContextTag) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetContextTag) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetContextTag) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTag) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -483,7 +471,7 @@ func BACnetContextTagParseWithBufferProducer[T BACnetContextTag](tagNumberArgume
 }
 
 func BACnetContextTagParseWithBuffer[T BACnetContextTag](ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (T, error) {
-	v, err := (&_BACnetContextTag{TagNumberArgument: tagNumberArgument}).parse(ctx, readBuffer, tagNumberArgument, dataType)
+	v, err := (new(_BACnetContextTag)).parse(ctx, readBuffer, tagNumberArgument, dataType)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -542,59 +530,59 @@ func (m *_BACnetContextTag) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child BACnetContextTag
 	switch {
 	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
-		if _child, err = new(_BACnetContextTagNull).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagNull).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagNull for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
-		if _child, err = new(_BACnetContextTagBoolean).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagBoolean).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagBoolean for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
-		if _child, err = new(_BACnetContextTagUnsignedInteger).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagUnsignedInteger).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagUnsignedInteger for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetContextTagSignedInteger
-		if _child, err = new(_BACnetContextTagSignedInteger).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagSignedInteger).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagSignedInteger for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_REAL: // BACnetContextTagReal
-		if _child, err = new(_BACnetContextTagReal).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagReal).parse(ctx, readBuffer, m, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagReal for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_DOUBLE: // BACnetContextTagDouble
-		if _child, err = new(_BACnetContextTagDouble).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagDouble).parse(ctx, readBuffer, m, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagDouble for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetContextTagOctetString
-		if _child, err = new(_BACnetContextTagOctetString).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagOctetString).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagOctetString for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetContextTagCharacterString
-		if _child, err = new(_BACnetContextTagCharacterString).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagCharacterString).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagCharacterString for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_BIT_STRING: // BACnetContextTagBitString
-		if _child, err = new(_BACnetContextTagBitString).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagBitString).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagBitString for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_ENUMERATED: // BACnetContextTagEnumerated
-		if _child, err = new(_BACnetContextTagEnumerated).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagEnumerated).parse(ctx, readBuffer, m, header, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagEnumerated for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_DATE: // BACnetContextTagDate
-		if _child, err = new(_BACnetContextTagDate).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagDate).parse(ctx, readBuffer, m, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagDate for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_TIME: // BACnetContextTagTime
-		if _child, err = new(_BACnetContextTagTime).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagTime).parse(ctx, readBuffer, m, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagTime for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
-		if _child, err = new(_BACnetContextTagObjectIdentifier).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagObjectIdentifier).parse(ctx, readBuffer, m, uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagObjectIdentifier for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_UNKNOWN: // BACnetContextTagUnknown
-		if _child, err = new(_BACnetContextTagUnknown).parse(ctx, readBuffer, m, actualLength, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagUnknown).parse(ctx, readBuffer, m, uint32(actualLength), uint8(tagNumberArgument), dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagUnknown for type-switch of BACnetContextTag")
 		}
 	default:
@@ -647,16 +635,6 @@ func (pm *_BACnetContextTag) serializeParent(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetContextTag) GetTagNumberArgument() uint8 {
-	return m.TagNumberArgument
-}
-
-//
-////
-
 func (m *_BACnetContextTag) IsBACnetContextTag() {}
 
 func (m *_BACnetContextTag) DeepCopy() any {
@@ -670,7 +648,6 @@ func (m *_BACnetContextTag) deepCopy() *_BACnetContextTag {
 	_BACnetContextTagCopy := &_BACnetContextTag{
 		nil, // will be set by child
 		utils.DeepCopy[BACnetTagHeader](m.Header),
-		m.TagNumberArgument,
 	}
 	return _BACnetContextTagCopy
 }

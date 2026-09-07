@@ -20,6 +20,8 @@
 package utils
 
 import (
+	cryptoRand "crypto/rand"
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -34,7 +36,20 @@ func init() {
 	}
 }
 
-// RandomString returns a random string using the alphabet
+// RandomBytes returns length cryptographically secure random bytes. It is intended for
+// security-sensitive values such as nonces and fails hard (panics) if the system CSPRNG is
+// unavailable, because silently continuing with predictable values would undermine any key
+// material derived from them.
+func RandomBytes(length int) []byte {
+	randomBytes := make([]byte, length)
+	if _, err := cryptoRand.Read(randomBytes); err != nil {
+		panic(fmt.Sprintf("unable to generate %d secure random bytes: %v", length, err))
+	}
+	return randomBytes
+}
+
+// RandomString returns a random string using the alphabet.
+// Not cryptographically secure: use RandomBytes for nonces and other security-sensitive values.
 func RandomString(length int) string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	randomString := make([]rune, length)

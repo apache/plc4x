@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"context"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -31,12 +32,13 @@ import (
 
 func Test_worker_initialize(t *testing.T) {
 	type fields struct {
-		id          int
+		id          string
 		interrupter chan struct{}
 		executor    interface {
 			isTraceWorkers() bool
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
+			getCtx() context.Context
 		}
 	}
 	tests := []struct {
@@ -62,11 +64,12 @@ func Test_worker_initialize(t *testing.T) {
 
 func Test_worker_start(t *testing.T) {
 	type fields struct {
-		id       int
+		id       string
 		executor interface {
 			isTraceWorkers() bool
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
+			getCtx() context.Context
 		}
 		lastReceived atomic.Value
 		interrupter  chan struct{}
@@ -86,7 +89,7 @@ func Test_worker_start(t *testing.T) {
 					}
 					e.workItems <- workItem{
 						workItemId: 0,
-						runnable: func() {
+						runnable: func(context.Context) {
 							// No-op
 						},
 						completionFuture: &future{},
@@ -105,7 +108,7 @@ func Test_worker_start(t *testing.T) {
 					}
 					e.workItems <- workItem{
 						workItemId: 0,
-						runnable: func() {
+						runnable: func(context.Context) {
 							// No-op
 						},
 						completionFuture: &future{},
@@ -141,11 +144,12 @@ func Test_worker_start(t *testing.T) {
 
 func Test_worker_stop(t *testing.T) {
 	type fields struct {
-		id       int
+		id       string
 		executor interface {
 			isTraceWorkers() bool
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
+			getCtx() context.Context
 		}
 		lastReceived atomic.Value
 		interrupter  chan struct{}
@@ -167,16 +171,24 @@ func Test_worker_stop(t *testing.T) {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
-					go func() {
-						e.workItems <- workItem{
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
+						select {
+						case e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								// No-op
 							},
 							completionFuture: &future{},
+						}:
+						case <-t.Context().Done():
+							return
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -204,7 +216,7 @@ func Test_worker_stop(t *testing.T) {
 
 func Test_worker_work(t *testing.T) {
 	type fields struct {
-		id       int
+		id       string
 		executor *executor
 	}
 	tests := []struct {
@@ -220,21 +232,25 @@ func Test_worker_work(t *testing.T) {
 		{
 			name: "Worker should work till shutdown (even if it panics)",
 			fields: fields{
-				id: 0,
+				id: "0",
 				executor: func() *executor {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								panic("Oh no what should I do???")
 							},
 							completionFuture: &future{},
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -254,21 +270,25 @@ func Test_worker_work(t *testing.T) {
 		{
 			name: "Worker should work till shutdown",
 			fields: fields{
-				id: 1,
+				id: "1",
 				executor: func() *executor {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								time.Sleep(time.Millisecond * 70)
 							},
 							completionFuture: &future{},
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -287,11 +307,13 @@ func Test_worker_work(t *testing.T) {
 		{
 			name: "Work interrupted",
 			fields: fields{
-				id: 1,
+				id: "1",
 				executor: func() *executor {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
 					return e
 				}(),
@@ -312,23 +334,27 @@ func Test_worker_work(t *testing.T) {
 		{
 			name: "Work on canceled",
 			fields: fields{
-				id: 1,
+				id: "1",
 				executor: func() *executor {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						completionFuture := &future{}
 						completionFuture.cancelRequested.Store(true)
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								time.Sleep(time.Millisecond * 70)
 							},
 							completionFuture: completionFuture,
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -374,7 +400,7 @@ func Test_worker_work(t *testing.T) {
 
 func Test_worker_String(t *testing.T) {
 	type fields struct {
-		id int
+		id string
 	}
 	tests := []struct {
 		name   string
@@ -384,11 +410,11 @@ func Test_worker_String(t *testing.T) {
 		{
 			name: "string it",
 			want: `
-╔═worker═══════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║
-║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║
-║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═worker═════════════════════════════════════════════════════════════════════════╗
+║╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║
+║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║
+║╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║
+╚════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

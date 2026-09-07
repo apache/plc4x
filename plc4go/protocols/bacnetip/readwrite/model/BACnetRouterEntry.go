@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -269,12 +269,12 @@ func CastBACnetRouterEntry(structType any) BACnetRouterEntry {
 	return nil
 }
 
-func (m *_BACnetRouterEntry) GetTypeName() string {
+func (m *_BACnetRouterEntry) GetPlx4xTypeName() string {
 	return "BACnetRouterEntry"
 }
 
-func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (networkNumber)
 	lengthInBits += m.NetworkNumber.GetLengthInBits(ctx)
@@ -293,7 +293,7 @@ func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetRouterEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetRouterEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -308,7 +308,7 @@ func BACnetRouterEntryParseWithBufferProducer() func(ctx context.Context, readBu
 }
 
 func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
-	v, err := (&_BACnetRouterEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetRouterEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -388,7 +388,7 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", GetRef(m.GetPerformanceIndex()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", new(m.GetPerformanceIndex()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'performanceIndex' field")
 	}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMACAddress = (*_BACnetConstructedDataMACAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMACAddress)(nil)
 
 // NewBACnetConstructedDataMACAddress factory function for _BACnetConstructedDataMACAddress
-func NewBACnetConstructedDataMACAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, macAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMACAddress {
+func NewBACnetConstructedDataMACAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, macAddress BACnetApplicationTagOctetString) *_BACnetConstructedDataMACAddress {
 	if macAddress == nil {
 		panic("macAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataMACAddress must not be nil")
 	}
 	_result := &_BACnetConstructedDataMACAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MacAddress:                    macAddress,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMACAddress(structType any) BACnetConstructedDataMA
 	return nil
 }
 
-func (m *_BACnetConstructedDataMACAddress) GetTypeName() string {
+func (m *_BACnetConstructedDataMACAddress) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMACAddress"
 }
 
-func (m *_BACnetConstructedDataMACAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMACAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (macAddress)
 	lengthInBits += m.MacAddress.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMACAddress) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMACAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMACAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

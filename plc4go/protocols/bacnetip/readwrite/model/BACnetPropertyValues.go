@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,23 +57,19 @@ type _BACnetPropertyValues struct {
 	InnerOpeningTag BACnetOpeningTag
 	Data            []BACnetPropertyValue
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ BACnetPropertyValues = (*_BACnetPropertyValues)(nil)
 
 // NewBACnetPropertyValues factory function for _BACnetPropertyValues
-func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetPropertyValues {
+func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag) *_BACnetPropertyValues {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetPropertyValues must not be nil")
 	}
 	if innerClosingTag == nil {
 		panic("innerClosingTag of type BACnetClosingTag for BACnetPropertyValues must not be nil")
 	}
-	return &_BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+	return &_BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -96,10 +92,6 @@ type BACnetPropertyValuesBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetPropertyValuesBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyValuesBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetPropertyValuesBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetPropertyValuesBuilder
 	// Build builds the BACnetPropertyValues or returns an error if something is wrong
 	Build() (BACnetPropertyValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,15 +147,6 @@ func (b *_BACnetPropertyValuesBuilder) WithInnerClosingTagBuilder(builderSupplie
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetPropertyValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetPropertyValuesBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetPropertyValuesBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPropertyValuesBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -242,12 +225,12 @@ func CastBACnetPropertyValues(structType any) BACnetPropertyValues {
 	return nil
 }
 
-func (m *_BACnetPropertyValues) GetTypeName() string {
+func (m *_BACnetPropertyValues) GetPlx4xTypeName() string {
 	return "BACnetPropertyValues"
 }
 
-func (m *_BACnetPropertyValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetPropertyValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -265,7 +248,7 @@ func (m *_BACnetPropertyValues) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -280,7 +263,7 @@ func BACnetPropertyValuesParseWithBufferProducer(tagNumber uint8, objectTypeArgu
 }
 
 func BACnetPropertyValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetPropertyValues, error) {
-	v, err := (&_BACnetPropertyValues{TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	v, err := (new(_BACnetPropertyValues)).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -356,19 +339,6 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetPropertyValues) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetPropertyValues) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
-
 func (m *_BACnetPropertyValues) IsBACnetPropertyValues() {}
 
 func (m *_BACnetPropertyValues) DeepCopy() any {
@@ -383,8 +353,6 @@ func (m *_BACnetPropertyValues) deepCopy() *_BACnetPropertyValues {
 		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
 		utils.DeepCopySlice[BACnetPropertyValue, BACnetPropertyValue](m.Data),
 		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
-		m.TagNumber,
-		m.ObjectTypeArgument,
 	}
 	return _BACnetPropertyValuesCopy
 }

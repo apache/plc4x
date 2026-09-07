@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataLinkSpeeds interface {
 	// GetLinkSpeeds returns LinkSpeeds (property field)
 	GetLinkSpeeds() []BACnetApplicationTagReal
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataLinkSpeeds is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLinkSpeeds()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataLinkSpeeds = (*_BACnetConstructedDataLinkSpeeds)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeeds)(nil)
 
 // NewBACnetConstructedDataLinkSpeeds factory function for _BACnetConstructedDataLinkSpeeds
-func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeeds {
+func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal) *_BACnetConstructedDataLinkSpeeds {
 	_result := &_BACnetConstructedDataLinkSpeeds{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		LinkSpeeds:                    linkSpeeds,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataLinkSpeeds(structType any) BACnetConstructedDataLi
 	return nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeeds) GetTypeName() string {
+func (m *_BACnetConstructedDataLinkSpeeds) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLinkSpeeds"
 }
 
-func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataLinkSpeeds) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

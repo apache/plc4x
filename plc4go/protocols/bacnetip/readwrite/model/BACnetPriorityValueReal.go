@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetPriorityValueReal = (*_BACnetPriorityValueReal)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueReal)(nil)
 
 // NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
-func NewBACnetPriorityValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
+func NewBACnetPriorityValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetPriorityValueReal {
 	if realValue == nil {
 		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
 	}
 	_result := &_BACnetPriorityValueReal{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		RealValue:                   realValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetPriorityValueReal(structType any) BACnetPriorityValueReal {
 	return nil
 }
 
-func (m *_BACnetPriorityValueReal) GetTypeName() string {
+func (m *_BACnetPriorityValueReal) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueReal"
 }
 
-func (m *_BACnetPriorityValueReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueReal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueReal) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueReal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueReal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

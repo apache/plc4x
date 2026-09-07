@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetConfirmedServiceRequestLifeSafetyOperation = (*_BACnetConfirmedServi
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestLifeSafetyOperation)(nil)
 
 // NewBACnetConfirmedServiceRequestLifeSafetyOperation factory function for _BACnetConfirmedServiceRequestLifeSafetyOperation
-func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
+func NewBACnetConfirmedServiceRequestLifeSafetyOperation(serviceRequestLength uint32, requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
 	if requestingProcessIdentifier == nil {
 		panic("requestingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
 	}
@@ -318,12 +318,12 @@ func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestLifeSafetyOperation"
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (requestingProcessIdentifier)
 	lengthInBits += m.RequestingProcessIdentifier.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -422,7 +422,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", new(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 

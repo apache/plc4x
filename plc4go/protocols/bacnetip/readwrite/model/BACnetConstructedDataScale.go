@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataScale = (*_BACnetConstructedDataScale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScale)(nil)
 
 // NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
-func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
+func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale) *_BACnetConstructedDataScale {
 	if scale == nil {
 		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
 	}
 	_result := &_BACnetConstructedDataScale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Scale:                         scale,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataScale(structType any) BACnetConstructedDataScale {
 	return nil
 }
 
-func (m *_BACnetConstructedDataScale) GetTypeName() string {
+func (m *_BACnetConstructedDataScale) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScale"
 }
 
-func (m *_BACnetConstructedDataScale) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataScale) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (scale)
 	lengthInBits += m.Scale.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataScale) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataScale) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataScale) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

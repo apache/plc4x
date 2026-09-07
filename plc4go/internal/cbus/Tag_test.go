@@ -29,7 +29,6 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -291,9 +290,8 @@ func Test_calGetStatusTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -501,7 +499,7 @@ func Test_calGetStatusTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -570,9 +568,8 @@ func Test_calIdentifyTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -739,7 +736,7 @@ func Test_calIdentifyTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize with write buffer",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -810,9 +807,8 @@ func Test_calRecallTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -1020,7 +1016,7 @@ func Test_calRecallTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1154,7 +1150,7 @@ func Test_calTag_SerializeWithWriteBuffer(t *testing.T) {
 				unitAddress: readWriteModel.NewUnitAddress(34),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1281,9 +1277,8 @@ func Test_mmiMonitorTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "mmi monitor tag",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -1449,7 +1444,7 @@ func Test_mmiMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1464,7 +1459,7 @@ func Test_mmiMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 				}(),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1597,9 +1592,8 @@ func Test_salMonitorTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -1765,7 +1759,7 @@ func Test_salMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "default serialize",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1780,7 +1774,7 @@ func Test_salMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 				}(),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1907,9 +1901,8 @@ func Test_salTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -2117,7 +2110,7 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize default",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2135,7 +2128,7 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 				},
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2273,9 +2266,8 @@ func Test_statusTag_GetArrayInfo(t *testing.T) {
 	}{
 		{
 			name: "get empty array info",
-			want: []apiModel.ArrayInfo{
-				&spiModel.DefaultArrayInfo{},
-			},
+			// A count below two is not an array: the tags report no dimensions.
+			want: []apiModel.ArrayInfo{},
 		},
 		{
 			name: "one element",
@@ -2527,7 +2519,7 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2553,7 +2545,7 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 				numElements: 0,
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,

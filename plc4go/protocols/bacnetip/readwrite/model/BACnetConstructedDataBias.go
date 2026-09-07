@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBias = (*_BACnetConstructedDataBias)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBias)(nil)
 
 // NewBACnetConstructedDataBias factory function for _BACnetConstructedDataBias
-func NewBACnetConstructedDataBias(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bias BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBias {
+func NewBACnetConstructedDataBias(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bias BACnetApplicationTagReal) *_BACnetConstructedDataBias {
 	if bias == nil {
 		panic("bias of type BACnetApplicationTagReal for BACnetConstructedDataBias must not be nil")
 	}
 	_result := &_BACnetConstructedDataBias{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Bias:                          bias,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBias(structType any) BACnetConstructedDataBias {
 	return nil
 }
 
-func (m *_BACnetConstructedDataBias) GetTypeName() string {
+func (m *_BACnetConstructedDataBias) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBias"
 }
 
-func (m *_BACnetConstructedDataBias) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBias) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (bias)
 	lengthInBits += m.Bias.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBias) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBias) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBias) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

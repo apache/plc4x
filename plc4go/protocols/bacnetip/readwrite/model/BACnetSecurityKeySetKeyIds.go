@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,22 +57,19 @@ type _BACnetSecurityKeySetKeyIds struct {
 	OpeningTag BACnetOpeningTag
 	KeyIds     []BACnetKeyIdentifier
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetSecurityKeySetKeyIds = (*_BACnetSecurityKeySetKeyIds)(nil)
 
 // NewBACnetSecurityKeySetKeyIds factory function for _BACnetSecurityKeySetKeyIds
-func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSecurityKeySetKeyIds {
+func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag) *_BACnetSecurityKeySetKeyIds {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetSecurityKeySetKeyIds must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetSecurityKeySetKeyIds must not be nil")
 	}
-	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetSecurityKeySetKeyIdsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSecurityKeySetKeyIdsBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetSecurityKeySetKeyIdsBuilder
 	// Build builds the BACnetSecurityKeySetKeyIds or returns an error if something is wrong
 	Build() (BACnetSecurityKeySetKeyIds, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTagBuilder(builderSuppli
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithArgTagNumber(tagNumber uint8) BACnetSecurityKeySetKeyIdsBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -235,12 +225,12 @@ func CastBACnetSecurityKeySetKeyIds(structType any) BACnetSecurityKeySetKeyIds {
 	return nil
 }
 
-func (m *_BACnetSecurityKeySetKeyIds) GetTypeName() string {
+func (m *_BACnetSecurityKeySetKeyIds) GetPlx4xTypeName() string {
 	return "BACnetSecurityKeySetKeyIds"
 }
 
-func (m *_BACnetSecurityKeySetKeyIds) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetSecurityKeySetKeyIds) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -258,7 +248,7 @@ func (m *_BACnetSecurityKeySetKeyIds) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetSecurityKeySetKeyIds) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetSecurityKeySetKeyIds) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +263,7 @@ func BACnetSecurityKeySetKeyIdsParseWithBufferProducer(tagNumber uint8) func(ctx
 }
 
 func BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSecurityKeySetKeyIds, error) {
-	v, err := (&_BACnetSecurityKeySetKeyIds{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetSecurityKeySetKeyIds)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetSecurityKeySetKeyIds) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetSecurityKeySetKeyIds) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetSecurityKeySetKeyIds) IsBACnetSecurityKeySetKeyIds() {}
 
 func (m *_BACnetSecurityKeySetKeyIds) DeepCopy() any {
@@ -373,7 +353,6 @@ func (m *_BACnetSecurityKeySetKeyIds) deepCopy() *_BACnetSecurityKeySetKeyIds {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetKeyIdentifier, BACnetKeyIdentifier](m.KeyIds),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetSecurityKeySetKeyIdsCopy
 }

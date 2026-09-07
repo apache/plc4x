@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,6 +38,9 @@ import (
 const ModbusPDUReadDeviceIdentificationRequest_MEITYPE uint8 = 0x0E
 
 // ModbusPDUReadDeviceIdentificationRequest is the corresponding interface of ModbusPDUReadDeviceIdentificationRequest
+// Remark: Even if the Modbus spec states that supporting this type of request is mandatory
+// I have not come across a single device that really supported it. Some devices just reacted
+// with an error.
 type ModbusPDUReadDeviceIdentificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
@@ -246,12 +249,12 @@ func CastModbusPDUReadDeviceIdentificationRequest(structType any) ModbusPDUReadD
 	return nil
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetTypeName() string {
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadDeviceIdentificationRequest"
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Const Field (meiType)
 	lengthInBits += 8
@@ -265,7 +268,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

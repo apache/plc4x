@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.profinet.config;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.profinet.device.GsdFileMap;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
-import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.*;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.ConfigurationParameterConverter;
+import org.apache.plc4x.java.spi.config.annotations.*;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetConfiguration implements PlcConnectionConfiguration {
+public class ProfinetConfiguration implements Configuration {
 
     @Required
     @ConfigurationParameter

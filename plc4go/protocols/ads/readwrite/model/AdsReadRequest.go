@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,10 +42,13 @@ type AdsReadRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
+	// 4 bytes	Index Group of the data which should be read.
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
+	// 4 bytes	Index Offset of the data which should be read.
 	GetIndexOffset() uint32
 	// GetLength returns Length (property field)
+	// 4 bytes	Length of the data (in bytes) which should be read.
 	GetLength() uint32
 	// IsAdsReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadRequest()
@@ -65,7 +68,7 @@ var _ AdsReadRequest = (*_AdsReadRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadRequest)(nil)
 
 // NewAdsReadRequest factory function for _AdsReadRequest
-func NewAdsReadRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32) *_AdsReadRequest {
+func NewAdsReadRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32) *_AdsReadRequest {
 	_result := &_AdsReadRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		IndexGroup:        indexGroup,
@@ -241,12 +244,12 @@ func CastAdsReadRequest(structType any) AdsReadRequest {
 	return nil
 }
 
-func (m *_AdsReadRequest) GetTypeName() string {
+func (m *_AdsReadRequest) GetPlx4xTypeName() string {
 	return "AdsReadRequest"
 }
 
-func (m *_AdsReadRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsReadRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -260,7 +263,7 @@ func (m *_AdsReadRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsReadRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsReadRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

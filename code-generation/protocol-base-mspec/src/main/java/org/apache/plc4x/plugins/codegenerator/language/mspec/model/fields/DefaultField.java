@@ -24,26 +24,49 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+
 
 public abstract class DefaultField {
 
-    protected TypeDefinition owner;
     protected final Map<String, Term> attributes;
+    protected final Set<String> currentAttributeNames;
+    protected final String comment;
+    protected TypeDefinition owner;
 
-    protected DefaultField(Map<String, Term> attributes) {
+    protected DefaultField(Map<String, Term> attributes, Set<String> currentAttributeNames, String comment) {
         this.attributes = Objects.requireNonNull(attributes);
+        currentAttributeNames.forEach(attributeName -> {
+            if (!attributes.containsKey(attributeName)) {
+                throw new IllegalArgumentException("Attribute '" + attributeName + "' is not defined for field " + this);
+            }
+        });
+        this.currentAttributeNames = Objects.requireNonNull(currentAttributeNames);
+        this.comment = comment;
     }
 
-    public void setOwner(TypeDefinition owner) {
-        this.owner = owner;
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
     }
 
     public TypeDefinition getOwner() {
         return owner;
     }
 
+    public void setOwner(TypeDefinition owner) {
+        this.owner = owner;
+    }
+
+    public Set<String> getAllAttributeNames() {
+        return attributes.keySet();
+    }
+
+    public Set<String> getCurrentAttributeNames() {
+        return attributes.keySet();
+    }
+
     public Optional<Term> getAttribute(String attributeName) {
-        if(attributes.containsKey(attributeName)) {
+        if (attributes.containsKey(attributeName)) {
             return Optional.of(attributes.get(attributeName));
         }
         return Optional.empty();
@@ -53,6 +76,7 @@ public abstract class DefaultField {
     public String toString() {
         return "DefaultField{" +
             "attributes=" + attributes +
+            ", comment='" + comment + '\'' +
             '}';
     }
 
@@ -61,11 +85,11 @@ public abstract class DefaultField {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultField that = (DefaultField) o;
-        return Objects.equals(attributes, that.attributes);
+        return Objects.equals(attributes, that.attributes) && Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attributes);
+        return Objects.hash(attributes, comment);
     }
 }

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastSessionAuthenticationToken(structType any) SessionAuthenticationToken {
 	return nil
 }
 
-func (m *_SessionAuthenticationToken) GetTypeName() string {
+func (m *_SessionAuthenticationToken) GetPlx4xTypeName() string {
 	return "SessionAuthenticationToken"
 }
 
-func (m *_SessionAuthenticationToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SessionAuthenticationToken) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_SessionAuthenticationToken) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SessionAuthenticationToken) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func SessionAuthenticationTokenParseWithBufferProducer() func(ctx context.Contex
 }
 
 func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
-	v, err := (&_SessionAuthenticationToken{}).parse(ctx, readBuffer)
+	v, err := (new(_SessionAuthenticationToken)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

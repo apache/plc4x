@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -340,11 +340,11 @@ func CastOpcuaDataType(structType any) OpcuaDataType {
 	return castFunc(structType)
 }
 
-func (m OpcuaDataType) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaDataType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m OpcuaDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -355,7 +355,7 @@ func OpcuaDataTypeParse(ctx context.Context, theBytes []byte) (OpcuaDataType, er
 func OpcuaDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaDataType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("OpcuaDataType", uint32(112), utils.WithEncoding("UTF-8"))
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("OpcuaDataType", uint32(112), utils.WithEncoding("UTF8"))
 	if err != nil {
 		return "", errors.Wrap(err, "error reading OpcuaDataType")
 	}
@@ -378,7 +378,7 @@ func (e OpcuaDataType) Serialize() ([]byte, error) {
 func (e OpcuaDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaDataType", uint32(112), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaDataType", uint32(112), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8"))
 }
 
 func (e OpcuaDataType) GetValue() string {

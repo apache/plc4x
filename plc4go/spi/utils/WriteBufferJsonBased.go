@@ -24,10 +24,11 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"math/big"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type WriteBufferJsonBased interface {
@@ -35,18 +36,45 @@ type WriteBufferJsonBased interface {
 	GetJsonString() (string, error)
 }
 
-func NewJsonWriteBuffer() WriteBufferJsonBased {
-	return NewJsonWriteBufferWithOptions(true)
-}
-
-func NewJsonWriteBufferWithOptions(renderAttr bool) WriteBufferJsonBased {
+// NewJsonWriteBuffer creates a new WriteBufferJsonBased with renders all information into json
+func NewJsonWriteBuffer(opts ...func(*jsonWriteBuffer)) WriteBufferJsonBased {
 	var jsonString strings.Builder
 	encoder := json.NewEncoder(&jsonString)
 	encoder.SetIndent("", "  ")
-	return &jsonWriteBuffer{
+	j := &jsonWriteBuffer{
 		jsonString:   &jsonString,
 		Encoder:      encoder,
-		doRenderAttr: renderAttr,
+		doRenderAttr: true,
+	}
+	for _, opt := range opts {
+		opt(j)
+	}
+	return j
+}
+
+// WithJsonWriteBufferDefaultIdent configures the jsonWriteBuffer to use default indentation
+func WithJsonWriteBufferDefaultIdent(defaultIndent bool) func(*jsonWriteBuffer) {
+	return func(x *jsonWriteBuffer) {
+		if defaultIndent {
+			x.Encoder.SetIndent("", "  ")
+			return
+		} else {
+			x.Encoder.SetIndent("", "")
+		}
+	}
+}
+
+// WithJsonWriteBufferIdent configures the jsonWriteBuffer to use the given indentation
+func WithJsonWriteBufferIdent(indent string) func(*jsonWriteBuffer) {
+	return func(x *jsonWriteBuffer) {
+		x.Encoder.SetIndent("", indent)
+	}
+}
+
+// WithJsonWriteBufferRenderAttr configures the jsonWriteBuffer to render attributes
+func WithJsonWriteBufferRenderAttr(renderAttr bool) func(*jsonWriteBuffer) {
+	return func(x *jsonWriteBuffer) {
+		x.doRenderAttr = renderAttr
 	}
 }
 
@@ -101,8 +129,8 @@ func (j *jsonWriteBuffer) PushContext(logicalName string, writerArgs ...WithWrit
 	return nil
 }
 
-func (j *jsonWriteBuffer) GetPos() uint16 {
-	return uint16(j.pos / 8)
+func (j *jsonWriteBuffer) GetPos() uint32 {
+	return uint32(j.pos / 8)
 }
 
 func (j *jsonWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {
@@ -258,24 +286,18 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value any, attr map[str
 	switch _context := peek.(type) {
 	case *elementContext:
 		_context.properties[logicalName] = value
-		for key, attrValue := range attr {
-			_context.properties[key] = attrValue
-		}
+		maps.Copy(_context.properties, attr)
 		return nil
 	case *listContext:
 		m := make(map[string]any)
 		m[logicalName] = value
-		for attrKey, attrValue := range attr {
-			m[attrKey] = attrValue
-		}
+		maps.Copy(m, attr)
 		_context.list = append(_context.list, m)
 		return nil
 	default:
 		newContext := &elementContext{logicalName, make(map[string]any)}
 		newContext.properties[logicalName] = value
-		for key, attrValue := range attr {
-			newContext.properties[key] = attrValue
-		}
+		maps.Copy(newContext.properties, attr)
 		j.Push(newContext)
 		return nil
 	}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ NLMWhoIsRouterToNetwork = (*_NLMWhoIsRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMWhoIsRouterToNetwork)(nil)
 
 // NewNLMWhoIsRouterToNetwork factory function for _NLMWhoIsRouterToNetwork
-func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength uint16) *_NLMWhoIsRouterToNetwork {
+func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16) *_NLMWhoIsRouterToNetwork {
 	_result := &_NLMWhoIsRouterToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result
@@ -207,12 +207,12 @@ func CastNLMWhoIsRouterToNetwork(structType any) NLMWhoIsRouterToNetwork {
 	return nil
 }
 
-func (m *_NLMWhoIsRouterToNetwork) GetTypeName() string {
+func (m *_NLMWhoIsRouterToNetwork) GetPlx4xTypeName() string {
 	return "NLMWhoIsRouterToNetwork"
 }
 
-func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Optional Field (destinationNetworkAddress)
 	if m.DestinationNetworkAddress != nil {
@@ -222,7 +222,7 @@ func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMWhoIsRouterToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMWhoIsRouterToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

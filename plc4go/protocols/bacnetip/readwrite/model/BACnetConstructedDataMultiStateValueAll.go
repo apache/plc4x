@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataMultiStateValueAll = (*_BACnetConstructedDataMultiSta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueAll)(nil)
 
 // NewBACnetConstructedDataMultiStateValueAll factory function for _BACnetConstructedDataMultiStateValueAll
-func NewBACnetConstructedDataMultiStateValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueAll {
+func NewBACnetConstructedDataMultiStateValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataMultiStateValueAll {
 	_result := &_BACnetConstructedDataMultiStateValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataMultiStateValueAll(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateValueAll"
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMultiStateValueAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMultiStateValueAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +227,12 @@ func CastSALDataMeasurement(structType any) SALDataMeasurement {
 	return nil
 }
 
-func (m *_SALDataMeasurement) GetTypeName() string {
+func (m *_SALDataMeasurement) GetPlx4xTypeName() string {
 	return "SALDataMeasurement"
 }
 
-func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (measurementData)
 	lengthInBits += m.MeasurementData.GetLengthInBits(ctx)
@@ -238,7 +240,7 @@ func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataMeasurement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataMeasurement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +255,7 @@ func (m *_SALDataMeasurement) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	measurementData, err := ReadSimpleField[MeasurementData](ctx, "measurementData", ReadComplex[MeasurementData](MeasurementDataParseWithBuffer, readBuffer))
+	measurementData, err := ReadSimpleField[MeasurementData](ctx, "measurementData", ReadComplex[MeasurementData](MeasurementDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'measurementData' field"))
 	}
@@ -267,7 +269,7 @@ func (m *_SALDataMeasurement) parse(ctx context.Context, readBuffer utils.ReadBu
 }
 
 func (m *_SALDataMeasurement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (m *_SALDataMeasurement) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for SALDataMeasurement")
 		}
 
-		if err := WriteSimpleField[MeasurementData](ctx, "measurementData", m.GetMeasurementData(), WriteComplex[MeasurementData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MeasurementData](ctx, "measurementData", m.GetMeasurementData(), WriteComplex[MeasurementData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'measurementData' field")
 		}
 

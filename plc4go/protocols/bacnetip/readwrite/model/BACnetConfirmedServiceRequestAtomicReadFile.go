@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetConfirmedServiceRequestAtomicReadFile = (*_BACnetConfirmedServiceReq
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicReadFile)(nil)
 
 // NewBACnetConfirmedServiceRequestAtomicReadFile factory function for _BACnetConfirmedServiceRequestAtomicReadFile
-func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier BACnetApplicationTagObjectIdentifier, accessMethod BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicReadFile {
+func NewBACnetConfirmedServiceRequestAtomicReadFile(serviceRequestLength uint32, fileIdentifier BACnetApplicationTagObjectIdentifier, accessMethod BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) *_BACnetConfirmedServiceRequestAtomicReadFile {
 	if fileIdentifier == nil {
 		panic("fileIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
 	}
@@ -258,12 +258,12 @@ func CastBACnetConfirmedServiceRequestAtomicReadFile(structType any) BACnetConfi
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicReadFile"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (fileIdentifier)
 	lengthInBits += m.FileIdentifier.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

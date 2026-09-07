@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataExtWriteRoutingTableRequest = (*_ApduDataExtWriteRoutingTableReque
 var _ ApduDataExtRequirements = (*_ApduDataExtWriteRoutingTableRequest)(nil)
 
 // NewApduDataExtWriteRoutingTableRequest factory function for _ApduDataExtWriteRoutingTableRequest
-func NewApduDataExtWriteRoutingTableRequest(length uint8) *_ApduDataExtWriteRoutingTableRequest {
+func NewApduDataExtWriteRoutingTableRequest() *_ApduDataExtWriteRoutingTableRequest {
 	_result := &_ApduDataExtWriteRoutingTableRequest{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataExtWriteRoutingTableRequest(structType any) ApduDataExtWriteRou
 	return nil
 }
 
-func (m *_ApduDataExtWriteRoutingTableRequest) GetTypeName() string {
+func (m *_ApduDataExtWriteRoutingTableRequest) GetPlx4xTypeName() string {
 	return "ApduDataExtWriteRoutingTableRequest"
 }
 
-func (m *_ApduDataExtWriteRoutingTableRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtWriteRoutingTableRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtWriteRoutingTableRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtWriteRoutingTableRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataControlledVariableValue = (*_BACnetConstructedDataCon
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableValue)(nil)
 
 // NewBACnetConstructedDataControlledVariableValue factory function for _BACnetConstructedDataControlledVariableValue
-func NewBACnetConstructedDataControlledVariableValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableValue {
+func NewBACnetConstructedDataControlledVariableValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableValue BACnetApplicationTagReal) *_BACnetConstructedDataControlledVariableValue {
 	if controlledVariableValue == nil {
 		panic("controlledVariableValue of type BACnetApplicationTagReal for BACnetConstructedDataControlledVariableValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataControlledVariableValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ControlledVariableValue:       controlledVariableValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataControlledVariableValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) GetTypeName() string {
+func (m *_BACnetConstructedDataControlledVariableValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataControlledVariableValue"
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (controlledVariableValue)
 	lengthInBits += m.ControlledVariableValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

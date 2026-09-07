@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,14 +42,19 @@ type AdsReadWriteRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
+	// 4 bytes	Index Group of the data which should be written.
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
+	// 4 bytes	Index Offset of the data which should be written.
 	GetIndexOffset() uint32
 	// GetReadLength returns ReadLength (property field)
+	// 4 bytes	Length of data in bytes, which should be read.
 	GetReadLength() uint32
 	// GetItems returns Items (property field)
+	// Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements. (ADSIGRP_MULTIPLE_READ, ADSIGRP_MULTIPLE_WRITE, ADSIGRP_MULTIPLE_READ_WRITE)
 	GetItems() []AdsMultiRequestItem
 	// GetData returns Data (property field)
+	// n bytes	Data which are written in the ADS device.
 	GetData() []byte
 	// IsAdsReadWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadWriteRequest()
@@ -71,7 +76,7 @@ var _ AdsReadWriteRequest = (*_AdsReadWriteRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadWriteRequest)(nil)
 
 // NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
-func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
+func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
 	_result := &_AdsReadWriteRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		IndexGroup:        indexGroup,
@@ -271,12 +276,12 @@ func CastAdsReadWriteRequest(structType any) AdsReadWriteRequest {
 	return nil
 }
 
-func (m *_AdsReadWriteRequest) GetTypeName() string {
+func (m *_AdsReadWriteRequest) GetPlx4xTypeName() string {
 	return "AdsReadWriteRequest"
 }
 
-func (m *_AdsReadWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsReadWriteRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -300,13 +305,13 @@ func (m *_AdsReadWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsReadWriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsReadWriteRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

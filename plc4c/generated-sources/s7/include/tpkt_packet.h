@@ -32,7 +32,7 @@
 
 
 // Constant values.
-uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID();
+const uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID();
 
 struct plc4c_s7_read_write_tpkt_packet {
   /* Properties */

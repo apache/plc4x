@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +64,7 @@ var _ ReplyOrConfirmationReply = (*_ReplyOrConfirmationReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ReplyOrConfirmationReply)(nil)
 
 // NewReplyOrConfirmationReply factory function for _ReplyOrConfirmationReply
-func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination ResponseTermination, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
+func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination ResponseTermination) *_ReplyOrConfirmationReply {
 	if reply == nil {
 		panic("reply of type Reply for ReplyOrConfirmationReply must not be nil")
 	}
@@ -70,7 +72,7 @@ func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination Respo
 		panic("termination of type ResponseTermination for ReplyOrConfirmationReply must not be nil")
 	}
 	_result := &_ReplyOrConfirmationReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte),
 		Reply:                       reply,
 		Termination:                 termination,
 	}
@@ -254,12 +256,12 @@ func CastReplyOrConfirmationReply(structType any) ReplyOrConfirmationReply {
 	return nil
 }
 
-func (m *_ReplyOrConfirmationReply) GetTypeName() string {
+func (m *_ReplyOrConfirmationReply) GetPlx4xTypeName() string {
 	return "ReplyOrConfirmationReply"
 }
 
-func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
+func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
 
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits(ctx)
@@ -270,7 +272,7 @@ func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_ReplyOrConfirmationReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReplyOrConfirmationReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -285,13 +287,13 @@ func (m *_ReplyOrConfirmationReply) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reply, err := ReadSimpleField[Reply](ctx, "reply", ReadComplex[Reply](ReplyParseWithBufferProducer[Reply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	reply, err := ReadSimpleField[Reply](ctx, "reply", ReadComplex[Reply](ReplyParseWithBufferProducer[Reply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reply' field"))
 	}
 	m.Reply = reply
 
-	termination, err := ReadSimpleField[ResponseTermination](ctx, "termination", ReadComplex[ResponseTermination](ResponseTerminationParseWithBuffer, readBuffer))
+	termination, err := ReadSimpleField[ResponseTermination](ctx, "termination", ReadComplex[ResponseTermination](ResponseTerminationParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'termination' field"))
 	}
@@ -305,7 +307,7 @@ func (m *_ReplyOrConfirmationReply) parse(ctx context.Context, readBuffer utils.
 }
 
 func (m *_ReplyOrConfirmationReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -322,11 +324,11 @@ func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for ReplyOrConfirmationReply")
 		}
 
-		if err := WriteSimpleField[Reply](ctx, "reply", m.GetReply(), WriteComplex[Reply](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Reply](ctx, "reply", m.GetReply(), WriteComplex[Reply](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reply' field")
 		}
 
-		if err := WriteSimpleField[ResponseTermination](ctx, "termination", m.GetTermination(), WriteComplex[ResponseTermination](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseTermination](ctx, "termination", m.GetTermination(), WriteComplex[ResponseTermination](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'termination' field")
 		}
 

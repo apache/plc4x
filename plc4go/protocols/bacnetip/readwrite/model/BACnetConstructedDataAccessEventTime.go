@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccessEventTime = (*_BACnetConstructedDataAccessEvent
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventTime)(nil)
 
 // NewBACnetConstructedDataAccessEventTime factory function for _BACnetConstructedDataAccessEventTime
-func NewBACnetConstructedDataAccessEventTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTime {
+func NewBACnetConstructedDataAccessEventTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTime BACnetTimeStamp) *_BACnetConstructedDataAccessEventTime {
 	if accessEventTime == nil {
 		panic("accessEventTime of type BACnetTimeStamp for BACnetConstructedDataAccessEventTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccessEventTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AccessEventTime:               accessEventTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccessEventTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessEventTime) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessEventTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessEventTime"
 }
 
-func (m *_BACnetConstructedDataAccessEventTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccessEventTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (accessEventTime)
 	lengthInBits += m.AccessEventTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccessEventTime) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccessEventTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccessEventTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

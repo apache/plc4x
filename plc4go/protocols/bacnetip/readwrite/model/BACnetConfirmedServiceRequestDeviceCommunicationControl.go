@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetConfirmedServiceRequestDeviceCommunicationControl = (*_BACnetConfirm
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeviceCommunicationControl)(nil)
 
 // NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControl
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(serviceRequestLength uint32, timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
 	if enableDisable == nil {
 		panic("enableDisable of type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged for BACnetConfirmedServiceRequestDeviceCommunicationControl must not be nil")
 	}
@@ -279,12 +279,12 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any)
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (timeDuration)
 	if m.TimeDuration != nil {
@@ -302,7 +302,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBi
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -368,7 +368,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", GetRef(m.GetTimeDuration()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", new(m.GetTimeDuration()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'timeDuration' field")
 		}
 
@@ -376,7 +376,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(err, "Error serializing 'enableDisable' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", new(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 

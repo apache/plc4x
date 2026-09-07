@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +208,12 @@ func CastLogRecordsDataType(structType any) LogRecordsDataType {
 	return nil
 }
 
-func (m *_LogRecordsDataType) GetTypeName() string {
+func (m *_LogRecordsDataType) GetPlx4xTypeName() string {
 	return "LogRecordsDataType"
 }
 
-func (m *_LogRecordsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_LogRecordsDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfLogRecordArray)
 	lengthInBits += 32
@@ -228,7 +229,7 @@ func (m *_LogRecordsDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LogRecordsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LogRecordsDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -243,13 +244,13 @@ func (m *_LogRecordsDataType) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfLogRecordArray, err := ReadImplicitField[int32](ctx, "noOfLogRecordArray", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLogRecordArray, err := ReadImplicitField[int32](ctx, "noOfLogRecordArray", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLogRecordArray' field"))
 	}
 	_ = noOfLogRecordArray
 
-	logRecordArray, err := ReadCountArrayField[LogRecord](ctx, "logRecordArray", ReadComplex[LogRecord](ExtensionObjectDefinitionParseWithBufferProducer[LogRecord]((int32)(int32(19363))), readBuffer), uint64(noOfLogRecordArray))
+	logRecordArray, err := ReadCountArrayField[LogRecord](ctx, "logRecordArray", ReadComplex[LogRecord](ExtensionObjectDefinitionParseWithBufferProducer[LogRecord]((int32)(int32(19363))), readBuffer), uint64(noOfLogRecordArray), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logRecordArray' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_LogRecordsDataType) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for LogRecordsDataType")
 		}
 		noOfLogRecordArray := int32(utils.InlineIf(bool((m.GetLogRecordArray()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLogRecordArray()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfLogRecordArray", noOfLogRecordArray, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfLogRecordArray", noOfLogRecordArray, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLogRecordArray' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "logRecordArray", m.GetLogRecordArray(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "logRecordArray", m.GetLogRecordArray(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'logRecordArray' field")
 		}
 

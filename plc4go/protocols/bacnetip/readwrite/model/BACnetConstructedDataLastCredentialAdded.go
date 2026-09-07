@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastCredentialAdded = (*_BACnetConstructedDataLastCre
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAdded)(nil)
 
 // NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
-func NewBACnetConstructedDataLastCredentialAdded(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAdded BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
+func NewBACnetConstructedDataLastCredentialAdded(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAdded BACnetDeviceObjectReference) *_BACnetConstructedDataLastCredentialAdded {
 	if lastCredentialAdded == nil {
 		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastCredentialAdded{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastCredentialAdded:           lastCredentialAdded,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLastCredentialAdded(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialAdded) GetTypeName() string {
+func (m *_BACnetConstructedDataLastCredentialAdded) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastCredentialAdded"
 }
 
-func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastCredentialAdded)
 	lengthInBits += m.LastCredentialAdded.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

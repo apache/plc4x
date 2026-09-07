@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeSynchronizationInterval = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
 
 // NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
-func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
+func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
 	if timeSynchronization == nil {
 		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeSynchronization:           timeSynchronization,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimeSynchronizationInterval(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeSynchronizationInterval"
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timeSynchronization)
 	lengthInBits += m.TimeSynchronization.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

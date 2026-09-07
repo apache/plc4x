@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6AutoAddressingEnable = (*_BACnetConstructedDataIP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6AutoAddressingEnable)(nil)
 
 // NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for _BACnetConstructedDataIPv6AutoAddressingEnable
-func NewBACnetConstructedDataIPv6AutoAddressingEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoAddressingEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6AutoAddressingEnable {
+func NewBACnetConstructedDataIPv6AutoAddressingEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoAddressingEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataIPv6AutoAddressingEnable {
 	if autoAddressingEnable == nil {
 		panic("autoAddressingEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPv6AutoAddressingEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6AutoAddressingEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AutoAddressingEnable:          autoAddressingEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPv6AutoAddressingEnable(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6AutoAddressingEnable"
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (autoAddressingEnable)
 	lengthInBits += m.AutoAddressingEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

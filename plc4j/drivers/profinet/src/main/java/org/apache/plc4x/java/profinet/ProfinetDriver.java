@@ -18,33 +18,28 @@
  */
 package org.apache.plc4x.java.profinet;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.config.ProfinetRawSocketTransportConfiguration;
-import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
-import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
-import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.pcap4j.core.*;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.Pcaps;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 
-public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
+public class ProfinetDriver extends DriverBase {
 
     public static final String DRIVER_CODE = "profinet";
 
@@ -71,52 +66,26 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return ProfinetConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "raw":
-                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("raw-socket".equals(transport.getTransportCode())) {
+            return ProfinetRawSocketTransportConfiguration.class;
         }
-        return Optional.empty();
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
-        return Optional.of("raw");
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("raw-socket");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("raw");
-    }
-
-    @Override
-    protected boolean awaitSetupComplete() {
-        return true;
-    }
-
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     *
-     * @return false
-     */
-    @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
-    }
-
-    @Override
-    protected boolean canRead() {
-        return false;
-    }
-
-    @Override
-    protected boolean canWrite() {
-        return false;
+    public List<String> getSupportedTransportCodes() {
+        return List.of("raw-socket");
     }
 
     @Override
@@ -130,31 +99,15 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();
+    protected boolean canDiscover() {
+        return true;
     }
 
     @Override
-    protected ProtocolStackConfigurer<Ethernet_Frame> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(Ethernet_Frame.class, Ethernet_Frame::staticParse)
-            .withProtocol(ProfinetProtocolLogic.class)
-            .withDriverContext(ProfinetDriverContext.class)
-            // Every incoming message is to be treated as a response.
-            .build();
-    }
-
-    /**
-     * Estimate the Length of a Packet
-     */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4) + 6;
-            }
-            return -1;
-        }
-
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new ProfinetConnection((ProfinetConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override

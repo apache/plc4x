@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegralConstant = (*_BACnetConstructedDataIntegralCo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegralConstant)(nil)
 
 // NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
-func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
+func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal) *_BACnetConstructedDataIntegralConstant {
 	if integralConstant == nil {
 		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegralConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IntegralConstant:              integralConstant,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegralConstant) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegralConstant"
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (integralConstant)
 	lengthInBits += m.IntegralConstant.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

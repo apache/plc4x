@@ -17,14 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j</artifactId>
@@ -34,18 +32,8 @@
   <description>Implementation of the protocol adapters for usage as Java library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
-
-  <modules>
-    <module>api</module>
-    <module>drivers</module>
-    <module>spi</module>
-    <module>tools</module>
-    <module>transports</module>
-    <module>utils</module>
-    <module>osgi</module>
-  </modules>
 
   <build>
     <plugins>
@@ -96,7 +84,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>4.2.1</version>
         <executions>
           <execution>
             <id>compile-groovy-tests</id>
@@ -141,8 +128,8 @@
               is passed as VM argument when Maven the Failsafe plugin is executed.
           -->
           <execution>
-            <id>pre-integration-test</id>
-            <phase>pre-integration-test</phase>
+            <id>before:integration-test</id>
+            <phase>before:integration-test</phase>
             <goals>
               <goal>prepare-agent-integration</goal>
             </goals>
@@ -160,6 +147,15 @@
             <goals>
               <goal>report</goal>
             </goals>
+            <configuration>
+              <!-- Exclude multi-release classes and generated code -->
+              <excludes>
+                <exclude>META-INF/versions/**</exclude>
+                <exclude>module-info.class</exclude>
+                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                <exclude>**/readwrite/*.class</exclude>
+              </excludes>
+            </configuration>
           </execution>
           <!--
               Check if the unit-test-coverage is at least a certain minimum.
@@ -171,8 +167,18 @@
               <goal>check</goal>
             </goals>
             <configuration>
-              <!-- TODO: Turn this on as soon as possible. -->
-              <haltOnFailure>false</haltOnFailure>
+              <haltOnFailure>true</haltOnFailure>
+              <!-- Exclude multi-release classes, functional interfaces, and generated code -->
+              <excludes>
+                <exclude>META-INF/versions/**</exclude>
+                <exclude>module-info.class</exclude>
+                <!-- Exclude functional interfaces that can't be directly covered -->
+                <exclude>**/*$*Listener.class</exclude>
+                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                <exclude>**/readwrite/*.class</exclude>
+                <!-- Exclude functional marker interfaces (hard to test directly) -->
+                <exclude>**/with*.class</exclude>
+              </excludes>
               <rules>
                 <rule implementation="org.jacoco.maven.RuleConfiguration">
                   <element>BUNDLE</element>
@@ -181,7 +187,7 @@
                     <limit implementation="org.jacoco.report.check.Limit">
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.50</minimum>
+                      <minimum>0.80</minimum>
                     </limit>
                     <!-- Fail the build if there are classes without any coverage. -->
                     <limit implementation="org.jacoco.report.check.Limit">
@@ -198,7 +204,7 @@
       </plugin>
 
       <!--
-        As our libraries should be consumable on Java 11, downgrade the compiler settings.
+        As our libraries should be consumable on Java 21, downgrade the compiler settings.
       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

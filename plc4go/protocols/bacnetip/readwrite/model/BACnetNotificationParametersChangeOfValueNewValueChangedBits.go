@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersChangeOfValueNewValueChangedBits = (*_BACnetNo
 var _ BACnetNotificationParametersChangeOfValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfValueNewValueChangedBits)(nil)
 
 // NewBACnetNotificationParametersChangeOfValueNewValueChangedBits factory function for _BACnetNotificationParametersChangeOfValueNewValueChangedBits
-func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changedBits BACnetContextTagBitString, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changedBits BACnetContextTagBitString) *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
 	if changedBits == nil {
 		panic("changedBits of type BACnetContextTagBitString for BACnetNotificationParametersChangeOfValueNewValueChangedBits must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
-		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag),
 		ChangedBits: changedBits,
 	}
 	_result.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetNotificationParametersChangeOfValueNewValueChangedBits(structType
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfValueNewValueChangedBits"
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (changedBits)
 	lengthInBits += m.ChangedBits.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengt
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

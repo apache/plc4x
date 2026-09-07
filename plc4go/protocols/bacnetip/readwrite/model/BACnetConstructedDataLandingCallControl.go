@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLandingCallControl = (*_BACnetConstructedDataLandingC
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCallControl)(nil)
 
 // NewBACnetConstructedDataLandingCallControl factory function for _BACnetConstructedDataLandingCallControl
-func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
+func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus) *_BACnetConstructedDataLandingCallControl {
 	if landingCallControl == nil {
 		panic("landingCallControl of type BACnetLandingCallStatus for BACnetConstructedDataLandingCallControl must not be nil")
 	}
 	_result := &_BACnetConstructedDataLandingCallControl{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LandingCallControl:            landingCallControl,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLandingCallControl(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) GetTypeName() string {
+func (m *_BACnetConstructedDataLandingCallControl) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLandingCallControl"
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (landingCallControl)
 	lengthInBits += m.LandingCallControl.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

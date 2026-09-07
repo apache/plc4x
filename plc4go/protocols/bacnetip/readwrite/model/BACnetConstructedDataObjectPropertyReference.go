@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataObjectPropertyReference = (*_BACnetConstructedDataObj
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectPropertyReference)(nil)
 
 // NewBACnetConstructedDataObjectPropertyReference factory function for _BACnetConstructedDataObjectPropertyReference
-func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
+func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataObjectPropertyReference {
 	if propertyReference == nil {
 		panic("propertyReference of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataObjectPropertyReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataObjectPropertyReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PropertyReference:             propertyReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataObjectPropertyReference(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) GetTypeName() string {
+func (m *_BACnetConstructedDataObjectPropertyReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataObjectPropertyReference"
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (propertyReference)
 	lengthInBits += m.PropertyReference.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

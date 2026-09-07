@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataExtDomainAddressSelectiveRead = (*_ApduDataExtDomainAddressSelecti
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
 
 // NewApduDataExtDomainAddressSelectiveRead factory function for _ApduDataExtDomainAddressSelectiveRead
-func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainAddressSelectiveRead {
+func NewApduDataExtDomainAddressSelectiveRead() *_ApduDataExtDomainAddressSelectiveRead {
 	_result := &_ApduDataExtDomainAddressSelectiveRead{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataExtDomainAddressSelectiveRead(structType any) ApduDataExtDomain
 	return nil
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetTypeName() string {
+func (m *_ApduDataExtDomainAddressSelectiveRead) GetPlx4xTypeName() string {
 	return "ApduDataExtDomainAddressSelectiveRead"
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

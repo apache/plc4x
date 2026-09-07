@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetPriorityValueTime = (*_BACnetPriorityValueTime)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueTime)(nil)
 
 // NewBACnetPriorityValueTime factory function for _BACnetPriorityValueTime
-func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueTime {
+func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetPriorityValueTime {
 	if timeValue == nil {
 		panic("timeValue of type BACnetApplicationTagTime for BACnetPriorityValueTime must not be nil")
 	}
 	_result := &_BACnetPriorityValueTime{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		TimeValue:                   timeValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetPriorityValueTime(structType any) BACnetPriorityValueTime {
 	return nil
 }
 
-func (m *_BACnetPriorityValueTime) GetTypeName() string {
+func (m *_BACnetPriorityValueTime) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueTime"
 }
 
-func (m *_BACnetPriorityValueTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueTime) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

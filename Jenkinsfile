@@ -200,6 +200,12 @@ pipeline {
                     }
                     steps {
                         echo 'Building Site'
+                        // Maven 4 no longer resolves modules of the current project from remote
+                        // repositories when they are excluded from the reactor via -pl, so the
+                        // driver modules (and their upstream modules) need to be built and
+                        // installed first. Everything not needed for the artifacts themselves
+                        // (tests, coverage, rat, javadoc, sources) is skipped for speed.
+                        sh './mvnw -P${JENKINS_PROFILE},with-java,skip-prerequisite-check install -pl :plc4j-driver-all -am -DskipTests -Djacoco.skip=true -Drat.skip=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true'
                         // Generate the driver documentation.
                         sh './mvnw -P${JENKINS_PROFILE},with-java,skip-prerequisite-check site -X -pl :plc4j-driver-all'
                         // Build the actual website.

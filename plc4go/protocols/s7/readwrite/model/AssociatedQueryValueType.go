@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -203,12 +203,12 @@ func CastAssociatedQueryValueType(structType any) AssociatedQueryValueType {
 	return nil
 }
 
-func (m *_AssociatedQueryValueType) GetTypeName() string {
+func (m *_AssociatedQueryValueType) GetPlx4xTypeName() string {
 	return "AssociatedQueryValueType"
 }
 
-func (m *_AssociatedQueryValueType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AssociatedQueryValueType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (returnCode)
 	lengthInBits += 8
@@ -221,13 +221,13 @@ func (m *_AssociatedQueryValueType) GetLengthInBits(ctx context.Context) uint16 
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AssociatedQueryValueType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AssociatedQueryValueType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func AssociatedQueryValueTypeParseWithBufferProducer() func(ctx context.Context,
 }
 
 func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
-	v, err := (&_AssociatedQueryValueType{}).parse(ctx, readBuffer)
+	v, err := (new(_AssociatedQueryValueType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

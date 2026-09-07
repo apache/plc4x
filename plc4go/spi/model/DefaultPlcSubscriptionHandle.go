@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/google/uuid"
+	"uuid"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -35,9 +35,8 @@ type DefaultPlcSubscriptionHandle struct {
 
 // NewDefaultPlcSubscriptionHandle can be used when the DefaultPlcSubscriptionHandle is sufficient
 func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) apiModel.PlcSubscriptionHandle {
-	uuid, _ := uuid.NewUUID()
 	handle := &DefaultPlcSubscriptionHandle{
-		uuid:          uuid,
+		uuid:          uuid.NewV7(),
 		plcSubscriber: plcSubscriber,
 	}
 	handle.handleToRegister = handle
@@ -55,4 +54,10 @@ func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSu
 // Register registers at the spi.PlcSubscriber
 func (d *DefaultPlcSubscriptionHandle) Register(consumer apiModel.PlcSubscriptionEventConsumer) apiModel.PlcConsumerRegistration {
 	return d.plcSubscriber.Register(consumer, []apiModel.PlcSubscriptionHandle{d.handleToRegister})
+}
+
+// getPlcSubscriber exposes the subscriber to the unsubscription flow; through embedding it
+// also makes driver-specific handle types unsubscribable.
+func (d *DefaultPlcSubscriptionHandle) getPlcSubscriber() spi.PlcSubscriber {
+	return d.plcSubscriber
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataUTCOffset = (*_BACnetConstructedDataUTCOffset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCOffset)(nil)
 
 // NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
-func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
+func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger) *_BACnetConstructedDataUTCOffset {
 	if utcOffset == nil {
 		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
 	}
 	_result := &_BACnetConstructedDataUTCOffset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UtcOffset:                     utcOffset,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTC
 	return nil
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetTypeName() string {
+func (m *_BACnetConstructedDataUTCOffset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUTCOffset"
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataUTCOffset) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (utcOffset)
 	lengthInBits += m.UtcOffset.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataUTCOffset) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataUTCOffset) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

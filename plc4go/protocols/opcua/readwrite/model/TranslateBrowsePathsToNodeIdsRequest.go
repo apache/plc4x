@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastTranslateBrowsePathsToNodeIdsRequest(structType any) TranslateBrowsePat
 	return nil
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsRequest) GetTypeName() string {
+func (m *_TranslateBrowsePathsToNodeIdsRequest) GetPlx4xTypeName() string {
 	return "TranslateBrowsePathsToNodeIdsRequest"
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) parse(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfBrowsePaths, err := ReadImplicitField[int32](ctx, "noOfBrowsePaths", ReadSignedInt(readBuffer, uint8(32)))
+	noOfBrowsePaths, err := ReadImplicitField[int32](ctx, "noOfBrowsePaths", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfBrowsePaths' field"))
 	}
 	_ = noOfBrowsePaths
 
-	browsePaths, err := ReadCountArrayField[BrowsePath](ctx, "browsePaths", ReadComplex[BrowsePath](ExtensionObjectDefinitionParseWithBufferProducer[BrowsePath]((int32)(int32(545))), readBuffer), uint64(noOfBrowsePaths))
+	browsePaths, err := ReadCountArrayField[BrowsePath](ctx, "browsePaths", ReadComplex[BrowsePath](ExtensionObjectDefinitionParseWithBufferProducer[BrowsePath]((int32)(int32(545))), readBuffer), uint64(noOfBrowsePaths), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browsePaths' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for TranslateBrowsePathsToNodeIdsRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfBrowsePaths := int32(utils.InlineIf(bool((m.GetBrowsePaths()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetBrowsePaths()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfBrowsePaths", noOfBrowsePaths, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfBrowsePaths", noOfBrowsePaths, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfBrowsePaths' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "browsePaths", m.GetBrowsePaths(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "browsePaths", m.GetBrowsePaths(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'browsePaths' field")
 		}
 

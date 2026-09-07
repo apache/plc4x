@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,20 +54,16 @@ type BACnetSecurityPolicyTagged interface {
 type _BACnetSecurityPolicyTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetSecurityPolicy
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetSecurityPolicyTagged = (*_BACnetSecurityPolicyTagged)(nil)
 
 // NewBACnetSecurityPolicyTagged factory function for _BACnetSecurityPolicyTagged
-func NewBACnetSecurityPolicyTagged(header BACnetTagHeader, value BACnetSecurityPolicy, tagNumber uint8, tagClass TagClass) *_BACnetSecurityPolicyTagged {
+func NewBACnetSecurityPolicyTagged(header BACnetTagHeader, value BACnetSecurityPolicy) *_BACnetSecurityPolicyTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetSecurityPolicyTagged must not be nil")
 	}
-	return &_BACnetSecurityPolicyTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetSecurityPolicyTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetSecurityPolicyTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetSecurityPolicyTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetSecurityPolicyTaggedBuilder
 	// Build builds the BACnetSecurityPolicyTagged or returns an error if something is wrong
 	Build() (BACnetSecurityPolicyTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetSecurityPolicyTaggedBuilder) WithHeaderBuilder(builderSupplier f
 
 func (b *_BACnetSecurityPolicyTaggedBuilder) WithValue(value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetSecurityPolicyTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetSecurityPolicyTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetSecurityPolicyTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetSecurityPolicyTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -210,23 +193,23 @@ func CastBACnetSecurityPolicyTagged(structType any) BACnetSecurityPolicyTagged {
 	return nil
 }
 
-func (m *_BACnetSecurityPolicyTagged) GetTypeName() string {
+func (m *_BACnetSecurityPolicyTagged) GetPlx4xTypeName() string {
 	return "BACnetSecurityPolicyTagged"
 }
 
-func (m *_BACnetSecurityPolicyTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetSecurityPolicyTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
+	lengthInBits += uint64(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
 
 	return lengthInBits
 }
 
-func (m *_BACnetSecurityPolicyTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetSecurityPolicyTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -241,7 +224,7 @@ func BACnetSecurityPolicyTaggedParseWithBufferProducer(tagNumber uint8, tagClass
 }
 
 func BACnetSecurityPolicyTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSecurityPolicyTagged, error) {
-	v, err := (&_BACnetSecurityPolicyTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetSecurityPolicyTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetSecurityPolicyTagged) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetSecurityPolicyTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetSecurityPolicyTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetSecurityPolicyTagged) IsBACnetSecurityPolicyTagged() {}
 
 func (m *_BACnetSecurityPolicyTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetSecurityPolicyTagged) deepCopy() *_BACnetSecurityPolicyTagged {
 	_BACnetSecurityPolicyTaggedCopy := &_BACnetSecurityPolicyTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetSecurityPolicyTaggedCopy
 }

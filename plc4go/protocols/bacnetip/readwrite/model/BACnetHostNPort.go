@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetHostNPort(structType any) BACnetHostNPort {
 	return nil
 }
 
-func (m *_BACnetHostNPort) GetTypeName() string {
+func (m *_BACnetHostNPort) GetPlx4xTypeName() string {
 	return "BACnetHostNPort"
 }
 
-func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (host)
 	lengthInBits += m.Host.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetHostNPort) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetHostNPort) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetHostNPortParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
-	v, err := (&_BACnetHostNPort{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetHostNPort)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetTimerStateChangeValueInteger = (*_BACnetTimerStateChangeValueInteger
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueInteger)(nil)
 
 // NewBACnetTimerStateChangeValueInteger factory function for _BACnetTimerStateChangeValueInteger
-func NewBACnetTimerStateChangeValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueInteger {
+func NewBACnetTimerStateChangeValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetTimerStateChangeValueInteger {
 	if integerValue == nil {
 		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetTimerStateChangeValueInteger must not be nil")
 	}
 	_result := &_BACnetTimerStateChangeValueInteger{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader),
 		IntegerValue:                        integerValue,
 	}
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetTimerStateChangeValueInteger(structType any) BACnetTimerStateChan
 	return nil
 }
 
-func (m *_BACnetTimerStateChangeValueInteger) GetTypeName() string {
+func (m *_BACnetTimerStateChangeValueInteger) GetPlx4xTypeName() string {
 	return "BACnetTimerStateChangeValueInteger"
 }
 
-func (m *_BACnetTimerStateChangeValueInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
+func (m *_BACnetTimerStateChangeValueInteger) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
 
 	// Simple field (integerValue)
 	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetTimerStateChangeValueInteger) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueInteger) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateChangeValueInteger) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

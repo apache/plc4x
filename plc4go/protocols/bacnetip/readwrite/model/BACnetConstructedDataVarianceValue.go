@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataVarianceValue = (*_BACnetConstructedDataVarianceValue
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVarianceValue)(nil)
 
 // NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
-func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
+func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal) *_BACnetConstructedDataVarianceValue {
 	if varianceValue == nil {
 		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataVarianceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VarianceValue:                 varianceValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataVarianceValue(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataVarianceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVarianceValue"
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (varianceValue)
 	lengthInBits += m.VarianceValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataVarianceValue) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVarianceValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataVarianceValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

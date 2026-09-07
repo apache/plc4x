@@ -22,15 +22,30 @@ package knxnetip
 import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type ValueHandler struct {
+	spiValues.DefaultValueHandler
 }
 
-func NewValueHandler() ValueHandler {
-	return ValueHandler{}
+func NewValueHandler(_options ...options.WithOption) ValueHandler {
+	return ValueHandler{
+		DefaultValueHandler: spiValues.NewDefaultValueHandler(_options...),
+	}
 }
 
+// NewPlcValue converts a user supplied value into the PlcValue the datapoint-type of the
+// addressed group address expects. Knx tags all report "Struct" as their generic value type,
+// which the default handler can't convert, so the actual type comes from the tags DPT.
 func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {
-	return nil, nil
+	if groupAddressTag, ok := tag.(GroupAddressTag); ok {
+		tagType := groupAddressTag.GetTagType()
+		if tagType != nil && *tagType != driverModel.KnxDatapointType_DPT_UNKNOWN {
+			return m.NewPlcValueFromType(tagType.PlcValueTpe(), value)
+		}
+	}
+	return m.DefaultValueHandler.NewPlcValue(tag, value)
 }

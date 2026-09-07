@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate = (*_BA
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate)(nil)
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateValue BACnetApplicationTagDate, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateValue BACnetApplicationTagDate) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
 	if dateValue == nil {
 		panic("dateValue of type BACnetApplicationTagDate for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag),
 		DateValue: dateValue,
 	}
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate(stru
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (dateValue)
 	lengthInBits += m.DateValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) Ge
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

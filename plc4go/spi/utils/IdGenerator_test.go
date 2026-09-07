@@ -49,7 +49,7 @@ func TestGenerateId(t *testing.T) {
 			randomByteFiller = func(_ []byte) (n int, err error) {
 				return 0, nil
 			}
-			assert.Equalf(t, tt.want, GenerateId(produceTestLogger(t), tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
+			assert.Equalf(t, tt.want, GenerateId(tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
 		})
 	}
 }

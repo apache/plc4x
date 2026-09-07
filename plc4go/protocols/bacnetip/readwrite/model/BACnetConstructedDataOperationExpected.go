@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOperationExpected = (*_BACnetConstructedDataOperation
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationExpected)(nil)
 
 // NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
-func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
+func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged) *_BACnetConstructedDataOperationExpected {
 	if lifeSafetyOperations == nil {
 		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
 	}
 	_result := &_BACnetConstructedDataOperationExpected{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LifeSafetyOperations:          lifeSafetyOperations,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataOperationExpected(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataOperationExpected) GetTypeName() string {
+func (m *_BACnetConstructedDataOperationExpected) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOperationExpected"
 }
 
-func (m *_BACnetConstructedDataOperationExpected) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOperationExpected) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lifeSafetyOperations)
 	lengthInBits += m.LifeSafetyOperations.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOperationExpected) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOperationExpected) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOperationExpected) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

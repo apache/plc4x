@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBackupAndRestoreState = (*_BACnetConstructedDataBacku
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
 
 // NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
-func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
+func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged) *_BACnetConstructedDataBackupAndRestoreState {
 	if backupAndRestoreState == nil {
 		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
 	}
 	_result := &_BACnetConstructedDataBackupAndRestoreState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BackupAndRestoreState:         backupAndRestoreState,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBackupAndRestoreState(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetTypeName() string {
+func (m *_BACnetConstructedDataBackupAndRestoreState) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBackupAndRestoreState"
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (backupAndRestoreState)
 	lengthInBits += m.BackupAndRestoreState.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

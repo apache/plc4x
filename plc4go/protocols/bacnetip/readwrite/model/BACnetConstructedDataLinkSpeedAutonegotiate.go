@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLinkSpeedAutonegotiate = (*_BACnetConstructedDataLink
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeedAutonegotiate)(nil)
 
 // NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for _BACnetConstructedDataLinkSpeedAutonegotiate
-func NewBACnetConstructedDataLinkSpeedAutonegotiate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeedAutonegotiate BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeedAutonegotiate {
+func NewBACnetConstructedDataLinkSpeedAutonegotiate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeedAutonegotiate BACnetApplicationTagBoolean) *_BACnetConstructedDataLinkSpeedAutonegotiate {
 	if linkSpeedAutonegotiate == nil {
 		panic("linkSpeedAutonegotiate of type BACnetApplicationTagBoolean for BACnetConstructedDataLinkSpeedAutonegotiate must not be nil")
 	}
 	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LinkSpeedAutonegotiate:        linkSpeedAutonegotiate,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetTypeName() string {
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLinkSpeedAutonegotiate"
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (linkSpeedAutonegotiate)
 	lengthInBits += m.LinkSpeedAutonegotiate.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

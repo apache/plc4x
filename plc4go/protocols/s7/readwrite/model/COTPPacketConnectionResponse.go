@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,9 +65,9 @@ var _ COTPPacketConnectionResponse = (*_COTPPacketConnectionResponse)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketConnectionResponse)(nil)
 
 // NewCOTPPacketConnectionResponse factory function for _COTPPacketConnectionResponse
-func NewCOTPPacketConnectionResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionResponse {
+func NewCOTPPacketConnectionResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) *_COTPPacketConnectionResponse {
 	_result := &_COTPPacketConnectionResponse{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract:   NewCOTPPacket(parameters, payload),
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
@@ -237,12 +237,12 @@ func CastCOTPPacketConnectionResponse(structType any) COTPPacketConnectionRespon
 	return nil
 }
 
-func (m *_COTPPacketConnectionResponse) GetTypeName() string {
+func (m *_COTPPacketConnectionResponse) GetPlx4xTypeName() string {
 	return "COTPPacketConnectionResponse"
 }
 
-func (m *_COTPPacketConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
+func (m *_COTPPacketConnectionResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -256,11 +256,11 @@ func (m *_COTPPacketConnectionResponse) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_COTPPacketConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPPacketConnectionResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_COTPPacketConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketConnectionResponse COTPPacketConnectionResponse, err error) {
+func (m *_COTPPacketConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint32) (__cOTPPacketConnectionResponse COTPPacketConnectionResponse, err error) {
 	m.COTPPacketContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

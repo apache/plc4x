@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -381,12 +381,12 @@ func CastDiagnosticInfo(structType any) DiagnosticInfo {
 	return nil
 }
 
-func (m *_DiagnosticInfo) GetTypeName() string {
+func (m *_DiagnosticInfo) GetPlx4xTypeName() string {
 	return "DiagnosticInfo"
 }
 
-func (m *_DiagnosticInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DiagnosticInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 1
@@ -450,7 +450,7 @@ func (m *_DiagnosticInfo) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DiagnosticInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DiagnosticInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -465,7 +465,7 @@ func DiagnosticInfoParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticInfo, error) {
-	v, err := (&_DiagnosticInfo{}).parse(ctx, readBuffer)
+	v, err := (new(_DiagnosticInfo)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -659,15 +659,15 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'localizedText' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "additionalInfo", GetRef(m.GetAdditionalInfo()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "additionalInfo", new(m.GetAdditionalInfo()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'additionalInfo' field")
 	}
 
-	if err := WriteOptionalField[StatusCode](ctx, "innerStatusCode", GetRef(m.GetInnerStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[StatusCode](ctx, "innerStatusCode", new(m.GetInnerStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'innerStatusCode' field")
 	}
 
-	if err := WriteOptionalField[DiagnosticInfo](ctx, "innerDiagnosticInfo", GetRef(m.GetInnerDiagnosticInfo()), WriteComplex[DiagnosticInfo](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[DiagnosticInfo](ctx, "innerDiagnosticInfo", new(m.GetInnerDiagnosticInfo()), WriteComplex[DiagnosticInfo](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'innerDiagnosticInfo' field")
 	}
 

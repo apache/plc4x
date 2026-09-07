@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValueLowLimit = (*_BACnetConstructedDataIntege
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueLowLimit)(nil)
 
 // NewBACnetConstructedDataIntegerValueLowLimit factory function for _BACnetConstructedDataIntegerValueLowLimit
-func NewBACnetConstructedDataIntegerValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueLowLimit {
+func NewBACnetConstructedDataIntegerValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValueLowLimit {
 	if lowLimit == nil {
 		panic("lowLimit of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueLowLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValueLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LowLimit:                      lowLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIntegerValueLowLimit(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegerValueLowLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegerValueLowLimit"
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntegerValueLowLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lowLimit)
 	lengthInBits += m.LowLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIntegerValueLowLimit) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntegerValueLowLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

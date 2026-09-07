@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ NLMSetMasterKey = (*_NLMSetMasterKey)(nil)
 var _ NLMRequirements = (*_NLMSetMasterKey)(nil)
 
 // NewNLMSetMasterKey factory function for _NLMSetMasterKey
-func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMSetMasterKey {
+func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry) *_NLMSetMasterKey {
 	if key == nil {
 		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMSetMasterKey must not be nil")
 	}
 	_result := &_NLMSetMasterKey{
-		NLMContract: NewNLM(apduLength),
+		NLMContract: NewNLM(),
 		Key:         key,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result
@@ -225,12 +225,12 @@ func CastNLMSetMasterKey(structType any) NLMSetMasterKey {
 	return nil
 }
 
-func (m *_NLMSetMasterKey) GetTypeName() string {
+func (m *_NLMSetMasterKey) GetPlx4xTypeName() string {
 	return "NLMSetMasterKey"
 }
 
-func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += m.Key.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

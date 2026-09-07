@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -290,12 +291,12 @@ func CastNodeReference(structType any) NodeReference {
 	return nil
 }
 
-func (m *_NodeReference) GetTypeName() string {
+func (m *_NodeReference) GetPlx4xTypeName() string {
 	return "NodeReference"
 }
 
-func (m *_NodeReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_NodeReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -323,7 +324,7 @@ func (m *_NodeReference) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NodeReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -338,37 +339,37 @@ func (m *_NodeReference) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 	m.NodeId = nodeId
 
-	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 	m.ReferenceTypeId = referenceTypeId
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
 	m.IsForward = isForward
 
-	noOfReferencedNodeIds, err := ReadImplicitField[int32](ctx, "noOfReferencedNodeIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencedNodeIds, err := ReadImplicitField[int32](ctx, "noOfReferencedNodeIds", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencedNodeIds' field"))
 	}
 	_ = noOfReferencedNodeIds
 
-	referencedNodeIds, err := ReadCountArrayField[NodeId](ctx, "referencedNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodeIds))
+	referencedNodeIds, err := ReadCountArrayField[NodeId](ctx, "referencedNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodeIds), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencedNodeIds' field"))
 	}
@@ -399,27 +400,27 @@ func (m *_NodeReference) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for NodeReference")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 		noOfReferencedNodeIds := int32(utils.InlineIf(bool((m.GetReferencedNodeIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencedNodeIds()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReferencedNodeIds", noOfReferencedNodeIds, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReferencedNodeIds", noOfReferencedNodeIds, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencedNodeIds' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "referencedNodeIds", m.GetReferencedNodeIds(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "referencedNodeIds", m.GetReferencedNodeIds(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'referencedNodeIds' field")
 		}
 

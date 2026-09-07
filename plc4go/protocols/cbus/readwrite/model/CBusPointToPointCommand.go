@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +58,6 @@ type CBusPointToPointCommandContract interface {
 	GetCalData() CALData
 	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
 	// CreateBuilder creates a CBusPointToPointCommandBuilder
@@ -66,8 +66,8 @@ type CBusPointToPointCommandContract interface {
 
 // CBusPointToPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusPointToPointCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIsDirect returns IsDirect (discriminator field)
 	GetIsDirect() bool
 }
@@ -80,19 +80,16 @@ type _CBusPointToPointCommand struct {
 	}
 	BridgeAddressCountPeek uint16
 	CalData                CALData
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ CBusPointToPointCommandContract = (*_CBusPointToPointCommand)(nil)
 
 // NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommand {
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData) *_CBusPointToPointCommand {
 	if calData == nil {
 		panic("calData of type CALData for CBusPointToPointCommand must not be nil")
 	}
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData}
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,8 +108,6 @@ type CBusPointToPointCommandBuilder interface {
 	WithCalData(CALData) CBusPointToPointCommandBuilder
 	// WithCalDataBuilder adds CalData (property field) which is build by the builder
 	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CBusPointToPointCommandBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CBusPointToPointCommandBuilder
 	// AsCBusPointToPointCommandDirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
 	AsCBusPointToPointCommandDirect() CBusPointToPointCommandDirectBuilder
 	// AsCBusPointToPointCommandIndirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
@@ -169,11 +164,6 @@ func (b *_CBusPointToPointCommandBuilder) WithCalDataBuilder(builderSupplier fun
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CALDataBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CBusPointToPointCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusPointToPointCommandBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -303,12 +293,12 @@ func CastCBusPointToPointCommand(structType any) CBusPointToPointCommand {
 	return nil
 }
 
-func (m *_CBusPointToPointCommand) GetTypeName() string {
+func (m *_CBusPointToPointCommand) GetPlx4xTypeName() string {
 	return "CBusPointToPointCommand"
 }
 
-func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -318,16 +308,16 @@ func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToPointCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointCommandParse[T CBusPointToPointCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return CBusPointToPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -342,7 +332,7 @@ func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](c
 }
 
 func CBusPointToPointCommandParseWithBuffer[T CBusPointToPointCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusPointToPointCommand{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_CBusPointToPointCommand)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -364,13 +354,13 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bridgeAddressCountPeek, err := ReadPeekField[uint16](ctx, "bridgeAddressCountPeek", ReadUnsignedShort(readBuffer, uint8(16)), 0)
+	bridgeAddressCountPeek, err := ReadPeekField[uint16](ctx, "bridgeAddressCountPeek", ReadUnsignedShort(readBuffer, uint8(16)), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddressCountPeek' field"))
 	}
 	m.BridgeAddressCountPeek = bridgeAddressCountPeek
 
-	isDirect, err := ReadVirtualField[bool](ctx, "isDirect", (*bool)(nil), bool((bridgeAddressCountPeek&0x00FF) == (0x0000)))
+	isDirect, err := ReadVirtualField[bool](ctx, "isDirect", (*bool)(nil), bool((bridgeAddressCountPeek&0x00FF) == (0x0000)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDirect' field"))
 	}
@@ -391,7 +381,7 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 		return nil, errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
 
-	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer))
+	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
@@ -427,7 +417,7 @@ func (pm *_CBusPointToPointCommand) serializeParent(ctx context.Context, writeBu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer)); err != nil {
+	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'calData' field")
 	}
 
@@ -436,16 +426,6 @@ func (pm *_CBusPointToPointCommand) serializeParent(ctx context.Context, writeBu
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_CBusPointToPointCommand) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
 
 func (m *_CBusPointToPointCommand) IsCBusPointToPointCommand() {}
 
@@ -461,7 +441,6 @@ func (m *_CBusPointToPointCommand) deepCopy() *_CBusPointToPointCommand {
 		nil, // will be set by child
 		m.BridgeAddressCountPeek,
 		utils.DeepCopy[CALData](m.CalData),
-		m.CBusOptions,
 	}
 	return _CBusPointToPointCommandCopy
 }

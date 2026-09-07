@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultTimeout = (*_BACnetConstructedDataDefaultTimeo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultTimeout)(nil)
 
 // NewBACnetConstructedDataDefaultTimeout factory function for _BACnetConstructedDataDefaultTimeout
-func NewBACnetConstructedDataDefaultTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
+func NewBACnetConstructedDataDefaultTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
 	if defaultTimeout == nil {
 		panic("defaultTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultTimeout:                defaultTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDefaultTimeout(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataDefaultTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataDefaultTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultTimeout"
 }
 
-func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (defaultTimeout)
 	lengthInBits += m.DefaultTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataNotificationForwarderAll = (*_BACnetConstructedDataNo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationForwarderAll)(nil)
 
 // NewBACnetConstructedDataNotificationForwarderAll factory function for _BACnetConstructedDataNotificationForwarderAll
-func NewBACnetConstructedDataNotificationForwarderAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationForwarderAll {
+func NewBACnetConstructedDataNotificationForwarderAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataNotificationForwarderAll {
 	_result := &_BACnetConstructedDataNotificationForwarderAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataNotificationForwarderAll(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAll) GetTypeName() string {
+func (m *_BACnetConstructedDataNotificationForwarderAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotificationForwarderAll"
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNotificationForwarderAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNotificationForwarderAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

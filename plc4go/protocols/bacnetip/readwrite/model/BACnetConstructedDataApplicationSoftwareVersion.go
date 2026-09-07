@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataApplicationSoftwareVersion = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataApplicationSoftwareVersion)(nil)
 
 // NewBACnetConstructedDataApplicationSoftwareVersion factory function for _BACnetConstructedDataApplicationSoftwareVersion
-func NewBACnetConstructedDataApplicationSoftwareVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, applicationSoftwareVersion BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataApplicationSoftwareVersion {
+func NewBACnetConstructedDataApplicationSoftwareVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, applicationSoftwareVersion BACnetApplicationTagCharacterString) *_BACnetConstructedDataApplicationSoftwareVersion {
 	if applicationSoftwareVersion == nil {
 		panic("applicationSoftwareVersion of type BACnetApplicationTagCharacterString for BACnetConstructedDataApplicationSoftwareVersion must not be nil")
 	}
 	_result := &_BACnetConstructedDataApplicationSoftwareVersion{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ApplicationSoftwareVersion:    applicationSoftwareVersion,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataApplicationSoftwareVersion(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetTypeName() string {
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataApplicationSoftwareVersion"
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (applicationSoftwareVersion)
 	lengthInBits += m.ApplicationSoftwareVersion.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

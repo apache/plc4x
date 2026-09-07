@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,8 +62,8 @@ type BACnetOptionalCharacterStringContract interface {
 
 // BACnetOptionalCharacterStringRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetOptionalCharacterStringRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -277,23 +277,23 @@ func CastBACnetOptionalCharacterString(structType any) BACnetOptionalCharacterSt
 	return nil
 }
 
-func (m *_BACnetOptionalCharacterString) GetTypeName() string {
+func (m *_BACnetOptionalCharacterString) GetPlx4xTypeName() string {
 	return "BACnetOptionalCharacterString"
 }
 
-func (m *_BACnetOptionalCharacterString) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetOptionalCharacterString) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalCharacterString) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetOptionalCharacterString) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetOptionalCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetOptionalCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -313,7 +313,7 @@ func BACnetOptionalCharacterStringParseWithBufferProducer[T BACnetOptionalCharac
 }
 
 func BACnetOptionalCharacterStringParseWithBuffer[T BACnetOptionalCharacterString](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetOptionalCharacterString{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetOptionalCharacterString)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetContextTagNull = (*_BACnetContextTagNull)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagNull)(nil)
 
 // NewBACnetContextTagNull factory function for _BACnetContextTagNull
-func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
+func NewBACnetContextTagNull(header BACnetTagHeader) *_BACnetContextTagNull {
 	_result := &_BACnetContextTagNull{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastBACnetContextTagNull(structType any) BACnetContextTagNull {
 	return nil
 }
 
-func (m *_BACnetContextTagNull) GetTypeName() string {
+func (m *_BACnetContextTagNull) GetPlx4xTypeName() string {
 	return "BACnetContextTagNull"
 }
 
-func (m *_BACnetContextTagNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagNull) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagNull) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagNull) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

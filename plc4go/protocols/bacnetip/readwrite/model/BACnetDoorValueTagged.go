@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,20 +54,16 @@ type BACnetDoorValueTagged interface {
 type _BACnetDoorValueTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetDoorValue
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetDoorValueTagged = (*_BACnetDoorValueTagged)(nil)
 
 // NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
-func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
+func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue) *_BACnetDoorValueTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
 	}
-	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetDoorValueTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetDoorValueTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorValueTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetDoorValue) BACnetDoorValueTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetDoorValueTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetDoorValueTaggedBuilder
 	// Build builds the BACnetDoorValueTagged or returns an error if something is wrong
 	Build() (BACnetDoorValueTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetDoorValueTaggedBuilder) WithHeaderBuilder(builderSupplier func(B
 
 func (b *_BACnetDoorValueTaggedBuilder) WithValue(value BACnetDoorValue) BACnetDoorValueTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetDoorValueTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDoorValueTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetDoorValueTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetDoorValueTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -210,23 +193,23 @@ func CastBACnetDoorValueTagged(structType any) BACnetDoorValueTagged {
 	return nil
 }
 
-func (m *_BACnetDoorValueTagged) GetTypeName() string {
+func (m *_BACnetDoorValueTagged) GetPlx4xTypeName() string {
 	return "BACnetDoorValueTagged"
 }
 
-func (m *_BACnetDoorValueTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetDoorValueTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
+	lengthInBits += uint64(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
 
 	return lengthInBits
 }
 
-func (m *_BACnetDoorValueTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetDoorValueTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -241,7 +224,7 @@ func BACnetDoorValueTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagC
 }
 
 func BACnetDoorValueTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorValueTagged, error) {
-	v, err := (&_BACnetDoorValueTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetDoorValueTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetDoorValueTagged) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetDoorValueTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetDoorValueTagged) IsBACnetDoorValueTagged() {}
 
 func (m *_BACnetDoorValueTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetDoorValueTagged) deepCopy() *_BACnetDoorValueTagged {
 	_BACnetDoorValueTaggedCopy := &_BACnetDoorValueTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetDoorValueTaggedCopy
 }

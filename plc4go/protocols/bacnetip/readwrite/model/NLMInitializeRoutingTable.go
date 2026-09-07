@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
 
 // NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
-func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
+func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) *_NLMInitializeRoutingTable {
 	_result := &_NLMInitializeRoutingTable{
-		NLMContract:   NewNLM(apduLength),
+		NLMContract:   NewNLM(),
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
 	}
@@ -222,12 +222,12 @@ func CastNLMInitializeRoutingTable(structType any) NLMInitializeRoutingTable {
 	return nil
 }
 
-func (m *_NLMInitializeRoutingTable) GetTypeName() string {
+func (m *_NLMInitializeRoutingTable) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTable"
 }
 
-func (m *_NLMInitializeRoutingTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMInitializeRoutingTable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -243,7 +243,7 @@ func (m *_NLMInitializeRoutingTable) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_NLMInitializeRoutingTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMInitializeRoutingTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

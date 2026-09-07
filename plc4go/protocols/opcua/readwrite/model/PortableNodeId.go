@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastPortableNodeId(structType any) PortableNodeId {
 	return nil
 }
 
-func (m *_PortableNodeId) GetTypeName() string {
+func (m *_PortableNodeId) GetPlx4xTypeName() string {
 	return "PortableNodeId"
 }
 
-func (m *_PortableNodeId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PortableNodeId) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (namespaceUri)
 	lengthInBits += m.NamespaceUri.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_PortableNodeId) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PortableNodeId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PortableNodeId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_PortableNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	namespaceUri, err := ReadSimpleField[PascalString](ctx, "namespaceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	namespaceUri, err := ReadSimpleField[PascalString](ctx, "namespaceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUri' field"))
 	}
 	m.NamespaceUri = namespaceUri
 
-	identifier, err := ReadSimpleField[NodeId](ctx, "identifier", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	identifier, err := ReadSimpleField[NodeId](ctx, "identifier", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_PortableNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for PortableNodeId")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "namespaceUri", m.GetNamespaceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "namespaceUri", m.GetNamespaceUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaceUri' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "identifier", m.GetIdentifier(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "identifier", m.GetIdentifier(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'identifier' field")
 		}
 

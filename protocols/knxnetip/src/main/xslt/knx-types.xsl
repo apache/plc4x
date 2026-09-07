@@ -180,11 +180,11 @@
         ]
         ['CHAR' CHAR
             [reserved uint 8    '0x00']
-            [simple   string 8  value  encoding='"UTF-8"']
+            [simple   string 8  value  stringEncoding='"UTF8"']
         ]
         ['WCHAR' WCHAR
             [reserved uint 8    '0x00']
-            [simple   string 16 value  encoding='"UTF-16"']
+            [simple   string 16 value  stringEncoding='"UTF16"']
         ]
         //['STRING' STRING
         //]
@@ -224,7 +224,7 @@
             [simple   uint 8  hour       ]
             [simple   uint 8  minutes    ]
             [simple   uint 8  seconds    ]
-            [simple   uint 32 nanoseconds]
+            [simple   uint 32 nanosecondsOfSecond]
         ]
         ['DT' DATE_AND_TIME
             [reserved uint 8  '0x00'     ]
@@ -235,7 +235,7 @@
             [simple   uint 8  hour       ]
             [simple   uint 8  minutes    ]
             [simple   uint 8  seconds    ]
-            [simple   uint 32 nanoseconds]
+            [simple   uint 32 nanosecondsOfSecond]
         ]
 
     <xsl:for-each select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype">
@@ -501,7 +501,7 @@
             [reserved uint 8 '0x00']
                 <xsl:choose>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 16">
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 32">
             [simple   float 32 value]
@@ -611,7 +611,7 @@
         <xsl:choose>
             <xsl:when test="name($field) = 'Float'">
                 <xsl:choose>
-                    <xsl:when test="$field/@Width = 16"> encoding='"KNXFloat"'</xsl:when>
+                    <xsl:when test="$field/@Width = 16"> floatEncoding='"KNXFloat"'</xsl:when>
                 </xsl:choose>
             </xsl:when>
         </xsl:choose>

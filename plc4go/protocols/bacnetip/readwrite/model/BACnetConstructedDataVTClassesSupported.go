@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataVTClassesSupported = (*_BACnetConstructedDataVTClasse
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVTClassesSupported)(nil)
 
 // NewBACnetConstructedDataVTClassesSupported factory function for _BACnetConstructedDataVTClassesSupported
-func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
+func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged) *_BACnetConstructedDataVTClassesSupported {
 	_result := &_BACnetConstructedDataVTClassesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VtClassesSupported:            vtClassesSupported,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataVTClassesSupported(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataVTClassesSupported) GetTypeName() string {
+func (m *_BACnetConstructedDataVTClassesSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVTClassesSupported"
 }
 
-func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.VtClassesSupported) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

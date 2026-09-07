@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAverageValue = (*_BACnetConstructedDataAverageValue)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAverageValue)(nil)
 
 // NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
-func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
+func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal) *_BACnetConstructedDataAverageValue {
 	if averageValue == nil {
 		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAverageValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AverageValue:                  averageValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAverageValue(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataAverageValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAverageValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAverageValue"
 }
 
-func (m *_BACnetConstructedDataAverageValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAverageValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (averageValue)
 	lengthInBits += m.AverageValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAverageValue) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAverageValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAverageValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

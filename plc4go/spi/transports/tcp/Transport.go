@@ -26,9 +26,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -37,6 +37,8 @@ import (
 type Transport struct {
 	log zerolog.Logger
 }
+
+var _ transports.Transport = (*Transport)(nil)
 
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -76,10 +78,10 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[st
 		}
 	}
 	var connectTimeout uint32 = 1000
-	if val, ok := options["connect-timeout"]; ok {
+	if val, ok := options["tcp.connect-timeout-ms"]; ok {
 		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
 		if err != nil {
-			return nil, errors.Wrap(err, "error setting connect-timeout")
+			return nil, errors.Wrap(err, "error setting tcp.connect-timeout-ms")
 		}
 		connectTimeout = uint32(parsedConnectTimeout)
 	}

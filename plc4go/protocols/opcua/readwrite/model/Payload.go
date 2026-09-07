@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,8 +52,6 @@ type Payload interface {
 type PayloadContract interface {
 	// GetSequenceHeader returns SequenceHeader (property field)
 	GetSequenceHeader() SequenceHeader
-	// GetByteCount() returns a parser argument
-	GetByteCount() uint32
 	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPayload()
 	// CreateBuilder creates a PayloadBuilder
@@ -62,8 +60,8 @@ type PayloadContract interface {
 
 // PayloadRequirements provides a set of functions which need to be implemented by a sub struct
 type PayloadRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetBinary returns Binary (discriminator field)
 	GetBinary() bool
 }
@@ -75,19 +73,16 @@ type _Payload struct {
 		PayloadRequirements
 	}
 	SequenceHeader SequenceHeader
-
-	// Arguments.
-	ByteCount uint32
 }
 
 var _ PayloadContract = (*_Payload)(nil)
 
 // NewPayload factory function for _Payload
-func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
+func NewPayload(sequenceHeader SequenceHeader) *_Payload {
 	if sequenceHeader == nil {
 		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
 	}
-	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
+	return &_Payload{SequenceHeader: sequenceHeader}
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,8 +99,6 @@ type PayloadBuilder interface {
 	WithSequenceHeader(SequenceHeader) PayloadBuilder
 	// WithSequenceHeaderBuilder adds SequenceHeader (property field) which is build by the builder
 	WithSequenceHeaderBuilder(func(SequenceHeaderBuilder) SequenceHeaderBuilder) PayloadBuilder
-	// WithArgByteCount sets a parser argument
-	WithArgByteCount(uint32) PayloadBuilder
 	// AsExtensiblePayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
 	AsExtensiblePayload() ExtensiblePayloadBuilder
 	// AsBinaryPayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
@@ -157,11 +150,6 @@ func (b *_PayloadBuilder) WithSequenceHeaderBuilder(builderSupplier func(Sequenc
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SequenceHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_PayloadBuilder) WithArgByteCount(byteCount uint32) PayloadBuilder {
-	b.ByteCount = byteCount
 	return b
 }
 
@@ -271,12 +259,12 @@ func CastPayload(structType any) Payload {
 	return nil
 }
 
-func (m *_Payload) GetTypeName() string {
+func (m *_Payload) GetPlx4xTypeName() string {
 	return "Payload"
 }
 
-func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Payload) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (sequenceHeader)
 	lengthInBits += m.SequenceHeader.GetLengthInBits(ctx)
@@ -284,11 +272,11 @@ func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Payload) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_Payload) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_Payload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Payload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -308,7 +296,7 @@ func PayloadParseWithBufferProducer[T Payload](binary bool, byteCount uint32) fu
 }
 
 func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.ReadBuffer, binary bool, byteCount uint32) (T, error) {
-	v, err := (&_Payload{ByteCount: byteCount}).parse(ctx, readBuffer, binary, byteCount)
+	v, err := (new(_Payload)).parse(ctx, readBuffer, binary, byteCount)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -340,11 +328,11 @@ func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, binar
 	var _child Payload
 	switch {
 	case binary == bool(false): // ExtensiblePayload
-		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
+		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, uint32(byteCount)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
 		}
 	case binary == bool(true): // BinaryPayload
-		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
+		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, uint32(byteCount)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
 		}
 	default:
@@ -385,16 +373,6 @@ func (pm *_Payload) serializeParent(ctx context.Context, writeBuffer utils.Write
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_Payload) GetByteCount() uint32 {
-	return m.ByteCount
-}
-
-//
-////
-
 func (m *_Payload) IsPayload() {}
 
 func (m *_Payload) DeepCopy() any {
@@ -408,7 +386,6 @@ func (m *_Payload) deepCopy() *_Payload {
 	_PayloadCopy := &_Payload{
 		nil, // will be set by child
 		utils.DeepCopy[SequenceHeader](m.SequenceHeader),
-		m.ByteCount,
 	}
 	return _PayloadCopy
 }

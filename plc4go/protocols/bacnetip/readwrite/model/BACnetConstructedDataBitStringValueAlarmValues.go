@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetApplicationTagBitString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataBitStringValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBitStringValueAlarmValues()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataBitStringValueAlarmValues = (*_BACnetConstructedDataB
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitStringValueAlarmValues)(nil)
 
 // NewBACnetConstructedDataBitStringValueAlarmValues factory function for _BACnetConstructedDataBitStringValueAlarmValues
-func NewBACnetConstructedDataBitStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueAlarmValues {
+func NewBACnetConstructedDataBitStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetApplicationTagBitString) *_BACnetConstructedDataBitStringValueAlarmValues {
 	_result := &_BACnetConstructedDataBitStringValueAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AlarmValues:                   alarmValues,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataBitStringValueAlarmValues(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetTypeName() string {
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBitStringValueAlarmValues"
 }
 
-func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) SerializeWithWriteBuff
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

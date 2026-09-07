@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +42,7 @@ type AdsDeleteDeviceNotificationRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
+	// 4 bytes	Handle of notification
 	GetNotificationHandle() uint32
 	// IsAdsDeleteDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeleteDeviceNotificationRequest()
@@ -59,7 +60,7 @@ var _ AdsDeleteDeviceNotificationRequest = (*_AdsDeleteDeviceNotificationRequest
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationRequest)(nil)
 
 // NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
-func NewAdsDeleteDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, notificationHandle uint32) *_AdsDeleteDeviceNotificationRequest {
+func NewAdsDeleteDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, notificationHandle uint32) *_AdsDeleteDeviceNotificationRequest {
 	_result := &_AdsDeleteDeviceNotificationRequest{
 		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		NotificationHandle: notificationHandle,
@@ -211,12 +212,12 @@ func CastAdsDeleteDeviceNotificationRequest(structType any) AdsDeleteDeviceNotif
 	return nil
 }
 
-func (m *_AdsDeleteDeviceNotificationRequest) GetTypeName() string {
+func (m *_AdsDeleteDeviceNotificationRequest) GetPlx4xTypeName() string {
 	return "AdsDeleteDeviceNotificationRequest"
 }
 
-func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -224,7 +225,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

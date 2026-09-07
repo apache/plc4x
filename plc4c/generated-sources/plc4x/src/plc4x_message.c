@@ -30,6 +30,10 @@
 // (The order is identical to the enum constants, so we can use the
 // enum constant to directly access a given type's discriminator values)
 const plc4c_plc4x_read_write_plc4x_message_discriminator plc4c_plc4x_read_write_plc4x_message_discriminators[] = {
+  {/* plc4c_plc4x_read_write_plc4x_auth_request */
+   .requestType = plc4c_plc4x_read_write_plc4x_request_type_AUTH_REQUEST },
+  {/* plc4c_plc4x_read_write_plc4x_auth_response */
+   .requestType = plc4c_plc4x_read_write_plc4x_request_type_AUTH_RESPONSE },
   {/* plc4c_plc4x_read_write_plc4x_connect_request */
    .requestType = plc4c_plc4x_read_write_plc4x_request_type_CONNECT_REQUEST },
   {/* plc4c_plc4x_read_write_plc4x_connect_response */
@@ -60,7 +64,7 @@ plc4c_plc4x_read_write_plc4x_message plc4c_plc4x_read_write_plc4x_message_null()
 
 // Constant values.
 static const uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION_const = 0x01;
-uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION() {
+const uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION() {
   return PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION_const;
 }
 
@@ -68,6 +72,15 @@ uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION() {
 plc4c_return_code plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
+
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_plc4x_read_write_plc4x_message));
@@ -108,6 +121,53 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context c
   }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( requestType == plc4c_plc4x_read_write_plc4x_request_type_AUTH_REQUEST ) { /* Plc4xAuthRequest */
+    (*_message)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_request;
+
+  // Implicit Field (usernameLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  uint8_t usernameLen = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &usernameLen);
+  if(_res != OK) {
+    return _res;
+  }
+
+
+  // Simple Field (username)
+  char* username = "";
+  _res = plc4c_spi_read_string(readBuffer, (usernameLen) * (8), "UTF8", (char**) &username);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->plc4x_auth_request_username = username;
+
+
+  // Implicit Field (passwordLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  uint8_t passwordLen = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &passwordLen);
+  if(_res != OK) {
+    return _res;
+  }
+
+
+  // Simple Field (password)
+  char* password = "";
+  _res = plc4c_spi_read_string(readBuffer, (passwordLen) * (8), "UTF8", (char**) &password);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->plc4x_auth_request_password = password;
+  } else 
+if( requestType == plc4c_plc4x_read_write_plc4x_request_type_AUTH_RESPONSE ) { /* Plc4xAuthResponse */
+    (*_message)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_response;
+
+  // Simple Field (responseCode)
+  plc4c_plc4x_read_write_plc4x_response_code responseCode;
+  _res = plc4c_plc4x_read_write_plc4x_response_code_parse(ctx, readBuffer, (void*) &responseCode);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->plc4x_auth_response_response_code = responseCode;
+  } else 
 if( requestType == plc4c_plc4x_read_write_plc4x_request_type_CONNECT_REQUEST ) { /* Plc4xConnectRequest */
     (*_message)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request;
 
@@ -121,7 +181,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_CONNECT_REQUEST ) {
 
   // Simple Field (connectionString)
   char* connectionString = "";
-  _res = plc4c_spi_read_string(readBuffer, (connectionStringLen) * (8), "UTF-8", (char**) &connectionString);
+  _res = plc4c_spi_read_string(readBuffer, (connectionStringLen) * (8), "UTF8", (char**) &connectionString);
   if(_res != OK) {
     return _res;
   }
@@ -356,6 +416,44 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_conte
 
   // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
+    case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_request: {
+
+  // Implicit Field (usernameLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_str_len(_message->plc4x_auth_request_username));
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (username)
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_auth_request_username)) * (8), "UTF8", (const uint8_t*) _message->plc4x_auth_request_username);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Implicit Field (passwordLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_str_len(_message->plc4x_auth_request_password));
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (password)
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_auth_request_password)) * (8), "UTF8", (const uint8_t*) _message->plc4x_auth_request_password);
+  if(_res != OK) {
+    return _res;
+  }
+
+      break;
+    }
+    case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_response: {
+
+  // Simple Field (responseCode)
+  _res = plc4c_plc4x_read_write_plc4x_response_code_serialize(ctx, writeBuffer, &_message->plc4x_auth_response_response_code);
+  if(_res != OK) {
+    return _res;
+  }
+
+      break;
+    }
     case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request: {
 
   // Implicit Field (connectionStringLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -365,7 +463,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_conte
   }
 
   // Simple Field (connectionString)
-  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8), "UTF-8", _message->plc4x_connect_request_connection_string);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8), "UTF8", (const uint8_t*) _message->plc4x_connect_request_connection_string);
   if(_res != OK) {
     return _res;
   }
@@ -538,6 +636,32 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4x_spi_context c
 
   // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
+    case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_request: {
+
+  // Implicit Field (usernameLen)
+  lengthInBits += 8;
+
+
+  // Simple field (username)
+  lengthInBits +=  (plc4c_spi_evaluation_helper_str_len(_message->plc4x_auth_request_username)) * (8);
+
+
+  // Implicit Field (passwordLen)
+  lengthInBits += 8;
+
+
+  // Simple field (password)
+  lengthInBits +=  (plc4c_spi_evaluation_helper_str_len(_message->plc4x_auth_request_password)) * (8);
+
+      break;
+    }
+    case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_response: {
+
+  // Simple field (responseCode)
+  lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(ctx, &_message->plc4x_auth_response_response_code);
+
+      break;
+    }
     case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request: {
 
   // Implicit Field (connectionStringLen)

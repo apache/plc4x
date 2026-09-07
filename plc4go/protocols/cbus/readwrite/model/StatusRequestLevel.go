@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +223,12 @@ func CastStatusRequestLevel(structType any) StatusRequestLevel {
 	return nil
 }
 
-func (m *_StatusRequestLevel) GetTypeName() string {
+func (m *_StatusRequestLevel) GetPlx4xTypeName() string {
 	return "StatusRequestLevel"
 }
 
-func (m *_StatusRequestLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
+func (m *_StatusRequestLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -243,7 +245,7 @@ func (m *_StatusRequestLevel) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_StatusRequestLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusRequestLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -258,25 +260,25 @@ func (m *_StatusRequestLevel) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x73))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x73), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x07))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x07), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField1 = reservedField1
 
-	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 	m.Application = application
 
-	startingGroupAddressLabel, err := ReadSimpleField(ctx, "startingGroupAddressLabel", ReadByte(readBuffer, 8))
+	startingGroupAddressLabel, err := ReadSimpleField(ctx, "startingGroupAddressLabel", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingGroupAddressLabel' field"))
 	}
@@ -295,7 +297,7 @@ func (m *_StatusRequestLevel) parse(ctx context.Context, readBuffer utils.ReadBu
 }
 
 func (m *_StatusRequestLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -312,19 +314,19 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for StatusRequestLevel")
 		}
 
-		if err := WriteReservedField[byte](ctx, "reserved", byte(0x73), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x73), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteReservedField[byte](ctx, "reserved", byte(0x07), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x07), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "startingGroupAddressLabel", m.GetStartingGroupAddressLabel(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "startingGroupAddressLabel", m.GetStartingGroupAddressLabel(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'startingGroupAddressLabel' field")
 		}
 

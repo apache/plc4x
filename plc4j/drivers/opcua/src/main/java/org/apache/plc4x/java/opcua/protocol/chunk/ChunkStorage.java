@@ -36,6 +36,13 @@ public interface ChunkStorage {
     long size();
 
     /**
+     * Gets the number of chunks accumulated so far.
+     *
+     * @return Number of appended chunks.
+     */
+    long count();
+
+    /**
      * Retrieves final result from segmented payload.
      *
      * @return Assembled result.

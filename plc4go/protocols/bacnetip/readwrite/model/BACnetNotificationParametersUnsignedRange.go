@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersUnsignedRange = (*_BACnetNotificationParameter
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersUnsignedRange)(nil)
 
 // NewBACnetNotificationParametersUnsignedRange factory function for _BACnetNotificationParametersUnsignedRange
-func NewBACnetNotificationParametersUnsignedRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, sequenceNumber BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersUnsignedRange {
+func NewBACnetNotificationParametersUnsignedRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, sequenceNumber BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersUnsignedRange {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersUnsignedRange must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersUnsignedRange(openingTag BACnetOpeningTag, p
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersUnsignedRange must not be nil")
 	}
 	_result := &_BACnetNotificationParametersUnsignedRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		SequenceNumber:                       sequenceNumber,
 		StatusFlags:                          statusFlags,
@@ -353,12 +353,12 @@ func CastBACnetNotificationParametersUnsignedRange(structType any) BACnetNotific
 	return nil
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetTypeName() string {
+func (m *_BACnetNotificationParametersUnsignedRange) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersUnsignedRange"
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -42,8 +42,8 @@ public class DefaultHexadecimalLiteral implements HexadecimalLiteral {
     @Override
     public String toString() {
         return "DefaultHexadecimalLiteral{" +
-                "hexString=" + hexString +
-                '}';
+            "hexString=" + hexString +
+            '}';
     }
 
     @Override

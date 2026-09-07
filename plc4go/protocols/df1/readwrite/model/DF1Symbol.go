@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -63,8 +63,8 @@ type DF1SymbolContract interface {
 
 // DF1SymbolRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1SymbolRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
 }
@@ -248,12 +248,12 @@ func CastDF1Symbol(structType any) DF1Symbol {
 	return nil
 }
 
-func (m *_DF1Symbol) GetTypeName() string {
+func (m *_DF1Symbol) GetPlx4xTypeName() string {
 	return "DF1Symbol"
 }
 
-func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (messageStart)
 	lengthInBits += 8
@@ -263,11 +263,11 @@ func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DF1Symbol) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1Symbol) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -287,7 +287,7 @@ func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, r
 }
 
 func DF1SymbolParseWithBuffer[T DF1Symbol](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_DF1Symbol{}).parse(ctx, readBuffer)
+	v, err := (new(_DF1Symbol)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

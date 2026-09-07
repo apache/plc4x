@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,10 +42,13 @@ type AdsWriteControlRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetAdsState returns AdsState (property field)
+	// 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
+	// 2 bytes	New device status.
 	GetDeviceState() uint16
 	// GetData returns Data (property field)
+	// n bytes	Additional data which are sent to the ADS device
 	GetData() []byte
 	// IsAdsWriteControlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteControlRequest()
@@ -65,7 +68,7 @@ var _ AdsWriteControlRequest = (*_AdsWriteControlRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteControlRequest)(nil)
 
 // NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
-func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
+func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
 	_result := &_AdsWriteControlRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		AdsState:          adsState,
@@ -241,12 +244,12 @@ func CastAdsWriteControlRequest(structType any) AdsWriteControlRequest {
 	return nil
 }
 
-func (m *_AdsWriteControlRequest) GetTypeName() string {
+func (m *_AdsWriteControlRequest) GetPlx4xTypeName() string {
 	return "AdsWriteControlRequest"
 }
 
-func (m *_AdsWriteControlRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsWriteControlRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (adsState)
 	lengthInBits += 16
@@ -259,13 +262,13 @@ func (m *_AdsWriteControlRequest) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsWriteControlRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsWriteControlRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

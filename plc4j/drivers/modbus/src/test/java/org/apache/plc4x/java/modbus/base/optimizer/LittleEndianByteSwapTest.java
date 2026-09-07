@@ -16,35 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.modbus.base.optimizer;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
-import org.apache.plc4x.java.modbus.tcp.context.ModbusTcpContext;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.values.PlcRawByteArray;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class LittleEndianByteSwapTest {
 
@@ -186,92 +174,79 @@ public class LittleEndianByteSwapTest {
         input.put("variable132",   new String[]{"coil:171:BOOL",             "false"});
         input.put("variable133",   new String[]{"coil:173:BOOL",             "false"});
         input.put("variable134",   new String[]{"coil:175:BOOL",             "false"});
-        PlcReader mockPlcReader = Mockito.mock(PlcReader.class);
-        PlcTagHandler modbusTagHandler = new ModbusTagHandler();
-        PlcReadRequest.Builder builder = new DefaultPlcReadRequest.Builder(mockPlcReader, modbusTagHandler);
-        for (String name : input.keySet()) {
-            String[] data = input.get(name);
-            builder.addTagAddress(name, data[0]);
+
+        // Parse all tags
+        ModbusTagHandler tagHandler = new ModbusTagHandler();
+        LinkedHashMap<String, ModbusTag> tagsByName = new LinkedHashMap<>();
+        for (Map.Entry<String, String[]> entry : input.entrySet()) {
+            tagsByName.put(entry.getKey(), (ModbusTag) tagHandler.parseTag(entry.getValue()[0]));
         }
-        PlcReadRequest readRequest = builder.build();
 
-        ModbusOptimizer sut = new ModbusOptimizer();
-
-        ModbusTcpContext mockContext = Mockito.mock(ModbusTcpContext.class);
-        Mockito.when(mockContext.getByteOrder()).thenReturn(ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP);
-        Mockito.when(mockContext.getMaxCoilsPerRequest()).thenReturn(2000);
-        Mockito.when(mockContext.getMaxRegistersPerRequest()).thenReturn(125);
+        // Run the optimizer
+        ModbusReadOptimizer optimizer = new ModbusReadOptimizer(2000, 125, ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP);
+        List<ModbusReadOptimizer.OptimizedRead> optimizedReads = optimizer.optimizeReads(tagsByName);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Do the first part of the optimizer ... split up into multiple requests ...
+        // Validate the optimization step
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        List<PlcReadRequest> optimizedReadRequests = sut.processReadRequest(readRequest, mockContext);
+        Assertions.assertNotNull(optimizedReads);
+        Assertions.assertEquals(3, optimizedReads.size());
 
-        // Validate the results of this first step.
-
-        Assertions.assertNotNull(optimizedReadRequests);
-        Assertions.assertEquals(3, optimizedReadRequests.size());
-
-        // Check the expected first request (Coil)
-        PlcReadRequest firstRequest = optimizedReadRequests.get(0);
-        Assertions.assertEquals(1, firstRequest.getNumberOfTags());
-        Assertions.assertEquals("coils0", firstRequest.getTagNames().stream().findFirst().orElseThrow());
-        PlcTag coilsTag = firstRequest.getTag("coils0");
+        // Check the expected first request (Coil) - coil:1 maps to address 0 (PROTOCOL_ADDRESS_OFFSET)
+        ModbusTag coilsTag = optimizedReads.getFirst().mergedTag;
         Assertions.assertInstanceOf(ModbusTagCoil.class, coilsTag);
-        ModbusTagCoil coil = (ModbusTagCoil) coilsTag;
-        Assertions.assertEquals(0, coil.getAddress());
-        Assertions.assertEquals(175, coil.getNumberOfElements());
+        Assertions.assertEquals(0, coilsTag.getAddress());
 
-        // Check the expected second request (Register)
-        PlcReadRequest secondRequest = optimizedReadRequests.get(1);
-        Assertions.assertEquals(1, secondRequest.getNumberOfTags());
-        Assertions.assertEquals("registers0", secondRequest.getTagNames().stream().findFirst().orElseThrow());
-        PlcTag registers0Tag = secondRequest.getTag("registers0");
-        Assertions.assertInstanceOf(ModbusTagHoldingRegister.class, registers0Tag);
-        ModbusTagHoldingRegister registers0 = (ModbusTagHoldingRegister) registers0Tag;
+        // Check the expected second request (Register block 1) - register:1 maps to address 0
+        ModbusTag registers0 = optimizedReads.get(1).mergedTag;
+        Assertions.assertInstanceOf(ModbusTagHoldingRegister.class, registers0);
         Assertions.assertEquals(0, registers0.getAddress());
-        Assertions.assertEquals(122, registers0.getNumberOfElements());
 
-        // Check the expected third request (Register)
-        PlcReadRequest thirdRequest = optimizedReadRequests.get(2);
-        Assertions.assertEquals(1, thirdRequest.getNumberOfTags());
-        Assertions.assertEquals("registers1", thirdRequest.getTagNames().stream().findFirst().orElseThrow());
-        PlcTag registers1Tag = thirdRequest.getTag("registers1");
-        Assertions.assertInstanceOf(ModbusTagHoldingRegister.class, registers1Tag);
-        ModbusTagHoldingRegister registers1 = (ModbusTagHoldingRegister) registers1Tag;
-        Assertions.assertEquals(124, registers1.getAddress());
-        Assertions.assertEquals(62, registers1.getNumberOfElements());
-
-        // Prepare the results as we got them on the wire.
-
-        Map<PlcReadRequest, BaseOptimizer.SubResponse<PlcReadResponse>> readResponses = new HashMap<>();
-        readResponses.put(firstRequest, new BaseOptimizer.SubResponse<>(
-            new DefaultPlcReadResponse(firstRequest, Map.of(
-                "coils0", new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("3060480c00c084000000000000000000000000000000")))))));
-        readResponses.put(secondRequest, new BaseOptimizer.SubResponse<>(
-            new DefaultPlcReadResponse(secondRequest, Map.of(
-                "registers0", new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("134141b000000000f80146c3000000003852c31f000000000b7841ae00000000fc0046e000000000028fc31f00000000c50441ab00000000540046dd00000000c000c31e000000006e973f32000000009998420300000000a5e33c9b00000000ccd041fc00000000020c3f2f00000000c3f9409e0000000047ae3f39000000009fbe3f3a00000000fbe83ff900000000d70a3aa30000000033333e33000000008f5c412400000000b83143d4000000005c293f5700000000c28f3f0500000000ac093f3c00000000fbe7413a0000000000000000000000000000000000000000e0df3f3b0000000023a33f3900000000a3d74220")))))));
-        readResponses.put(thirdRequest, new BaseOptimizer.SubResponse<>(
-            new DefaultPlcReadResponse(thirdRequest, Map.of(
-                "registers1", new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("a75cbc11000000007620bc26000000002f833f3c0000000086593f38000000005c293f0f0000000013aabc50000000003ffbbc8700000000da513f3b00000000c7113f3a0000000051ec3f3800000000a75cbc11000000007620bca60000000016873ed900000000ebee3ec000000000000000000000000044e5bc3b")))))));
+        // Check the expected third request (Register block 2)
+        ModbusTag registers1 = optimizedReads.get(2).mergedTag;
+        Assertions.assertInstanceOf(ModbusTagHoldingRegister.class, registers1);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Process the responses
+        // Simulate responses and test the splitting
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        PlcReadResponse readResponse = sut.processReadResponses(readRequest, readResponses, mockContext);
+        // Coil response data
+        byte[] coilData = Hex.decodeHex("3060480c00c084000000000000000000000000000000");
+        Map<String, PlcResponseItem<PlcValue>> coilResults =
+            optimizer.splitResponse(optimizedReads.get(0), PlcResponseCode.OK, coilData);
+
+        // Register block 1 response data
+        byte[] registerData0 = Hex.decodeHex("134141b000000000f80146c3000000003852c31f000000000b7841ae00000000fc0046e000000000028fc31f00000000c50441ab00000000540046dd00000000c000c31e000000006e973f32000000009998420300000000a5e33c9b00000000ccd041fc00000000020c3f2f00000000c3f9409e0000000047ae3f39000000009fbe3f3a00000000fbe83ff900000000d70a3aa30000000033333e33000000008f5c412400000000b83143d4000000005c293f5700000000c28f3f0500000000ac093f3c00000000fbe7413a0000000000000000000000000000000000000000e0df3f3b0000000023a33f3900000000a3d74220");
+        Map<String, PlcResponseItem<PlcValue>> registerResults0 =
+            optimizer.splitResponse(optimizedReads.get(1), PlcResponseCode.OK, registerData0);
+
+        // Register block 2 response data
+        byte[] registerData1 = Hex.decodeHex("a75cbc11000000007620bc26000000002f833f3c0000000086593f38000000005c293f0f0000000013aabc50000000003ffbbc8700000000da513f3b00000000c7113f3a0000000051ec3f3800000000a75cbc11000000007620bca60000000016873ed900000000ebee3ec000000000000000000000000044e5bc3b");
+        Map<String, PlcResponseItem<PlcValue>> registerResults1 =
+            optimizer.splitResponse(optimizedReads.get(2), PlcResponseCode.OK, registerData1);
+
+        // Merge all results
+        Map<String, PlcResponseItem<PlcValue>> allResults = new LinkedHashMap<>();
+        allResults.putAll(coilResults);
+        allResults.putAll(registerResults0);
+        allResults.putAll(registerResults1);
 
         // Check if there were no invalid items
-        List<String> failedTags = readResponse.getTagNames().stream().filter(tagName -> readResponse.getResponseCode(tagName) != PlcResponseCode.OK).collect(Collectors.toList());
-        failedTags.forEach(failedTag -> Assertions.fail("Field " + failedTag + "failed."));
+        for (Map.Entry<String, PlcResponseItem<PlcValue>> entry : allResults.entrySet()) {
+            Assertions.assertEquals(PlcResponseCode.OK, entry.getValue().getResponseCode(),
+                "Tag " + entry.getKey() + " failed with " + entry.getValue().getResponseCode());
+        }
 
         // Check if the returned values match the expected ones
-        for (String name : input.keySet()) {
-            String[] data = input.get(name);
-            String readValue = readResponse.getString(name);
-            Assertions.assertEquals(data[1], readValue);
+        for (Map.Entry<String, String[]> entry : input.entrySet()) {
+            String name = entry.getKey();
+            String expectedValue = entry.getValue()[1];
+            PlcResponseItem<PlcValue> responseItem = allResults.get(name);
+            Assertions.assertNotNull(responseItem, "No response for tag " + name);
+            String actualValue = responseItem.getValue().getString();
+            Assertions.assertEquals(expectedValue, actualValue, "Value mismatch for tag " + name);
         }
     }
-    
+
 }

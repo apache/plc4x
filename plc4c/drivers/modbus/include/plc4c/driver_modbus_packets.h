@@ -39,7 +39,7 @@ plc4c_return_code plc4c_driver_modbus_create_modbus_read_request(
     plc4c_item* read_request_item,
     plc4c_modbus_read_write_modbus_adu** modbus_read_request_packet);
 plc4c_return_code plc4c_driver_modbus_create_modbus_write_request(
-    plc4c_driver_modbus_item* write_request_item,
+    plc4c_write_request* write_request,
     plc4c_modbus_read_write_modbus_adu** modbus_read_request_packet);
 
 #ifdef __cplusplus

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -287,12 +287,12 @@ func CastBACnetFaultParameterFaultCharacterString(structType any) BACnetFaultPar
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultCharacterString) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultCharacterString) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultCharacterString"
 }
 
-func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -306,7 +306,7 @@ func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

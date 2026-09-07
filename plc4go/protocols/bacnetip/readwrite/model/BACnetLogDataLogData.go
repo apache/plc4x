@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetLogDataLogData = (*_BACnetLogDataLogData)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogData)(nil)
 
 // NewBACnetLogDataLogData factory function for _BACnetLogDataLogData
-func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
+func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag) *_BACnetLogDataLogData {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetLogDataLogData must not be nil")
 	}
@@ -73,7 +73,7 @@ func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnet
 		panic("innerClosingTag of type BACnetClosingTag for BACnetLogDataLogData must not be nil")
 	}
 	_result := &_BACnetLogDataLogData{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:       innerOpeningTag,
 		LogData:               logData,
 		InnerClosingTag:       innerClosingTag,
@@ -269,12 +269,12 @@ func CastBACnetLogDataLogData(structType any) BACnetLogDataLogData {
 	return nil
 }
 
-func (m *_BACnetLogDataLogData) GetTypeName() string {
+func (m *_BACnetLogDataLogData) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogData"
 }
 
-func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
+func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -292,7 +292,7 @@ func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogDataLogData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -63,8 +63,8 @@ type KnxNetIpMessageContract interface {
 
 // KnxNetIpMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type KnxNetIpMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
 }
@@ -404,12 +404,12 @@ func CastKnxNetIpMessage(structType any) KnxNetIpMessage {
 	return nil
 }
 
-func (m *_KnxNetIpMessage) GetTypeName() string {
+func (m *_KnxNetIpMessage) GetPlx4xTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
@@ -425,11 +425,11 @@ func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -449,7 +449,7 @@ func KnxNetIpMessageParseWithBufferProducer[T KnxNetIpMessage]() func(ctx contex
 }
 
 func KnxNetIpMessageParseWithBuffer[T KnxNetIpMessage](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_KnxNetIpMessage{}).parse(ctx, readBuffer)
+	v, err := (new(_KnxNetIpMessage)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -471,24 +471,24 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
 	_ = headerLength
 
-	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithByteOrder(binary.BigEndian))
+	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
 	_ = protocolVersion
 
-	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msgType' field"))
 	}
 
-	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}
@@ -538,11 +538,11 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type DisconnectResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x020B: // UnknownMessage
-		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnknownMessage for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0311: // DeviceConfigurationAck
@@ -550,7 +550,7 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationAck for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0420: // TunnelingRequest
-		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TunnelingRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0421: // TunnelingResponse
@@ -584,19 +584,19 @@ func (pm *_KnxNetIpMessage) serializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for KnxNetIpMessage")
 	}
 	headerLength := uint8(uint8(6))
-	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'headerLength' field")
 	}
 
-	if err := WriteConstField(ctx, "protocolVersion", KnxNetIpMessage_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteConstField(ctx, "protocolVersion", KnxNetIpMessage_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "msgType", m.GetMsgType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "msgType", m.GetMsgType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'msgType' field")
 	}
 	totalLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'totalLength' field")
 	}
 

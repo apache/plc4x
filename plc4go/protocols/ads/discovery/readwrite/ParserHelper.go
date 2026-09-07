@@ -22,9 +22,8 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,8 +38,6 @@ func (m AdsDiscoveryParserHelper) Parse(typeName string, arguments []string, io 
 		return AdsDiscoveryParseWithBuffer(context.Background(), io)
 	case "AdsDiscoveryBlock":
 		return AdsDiscoveryBlockParseWithBuffer[AdsDiscoveryBlock](context.Background(), io)
-	case "AdsDiscoveryConstants":
-		return AdsDiscoveryConstantsParseWithBuffer(context.Background(), io)
 	case "AmsNetId":
 		return AmsNetIdParseWithBuffer(context.Background(), io)
 	case "AmsString":

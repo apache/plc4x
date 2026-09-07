@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -237,12 +238,12 @@ func CastSessionlessInvokeResponseType(structType any) SessionlessInvokeResponse
 	return nil
 }
 
-func (m *_SessionlessInvokeResponseType) GetTypeName() string {
+func (m *_SessionlessInvokeResponseType) GetPlx4xTypeName() string {
 	return "SessionlessInvokeResponseType"
 }
 
-func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfNamespaceUris)
 	lengthInBits += 32
@@ -272,7 +273,7 @@ func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_SessionlessInvokeResponseType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SessionlessInvokeResponseType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -287,31 +288,31 @@ func (m *_SessionlessInvokeResponseType) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfNamespaceUris, err := ReadImplicitField[int32](ctx, "noOfNamespaceUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNamespaceUris, err := ReadImplicitField[int32](ctx, "noOfNamespaceUris", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaceUris' field"))
 	}
 	_ = noOfNamespaceUris
 
-	namespaceUris, err := ReadCountArrayField[PascalString](ctx, "namespaceUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaceUris))
+	namespaceUris, err := ReadCountArrayField[PascalString](ctx, "namespaceUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaceUris), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUris' field"))
 	}
 	m.NamespaceUris = namespaceUris
 
-	noOfServerUris, err := ReadImplicitField[int32](ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerUris, err := ReadImplicitField[int32](ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerUris' field"))
 	}
 	_ = noOfServerUris
 
-	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
+	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUris' field"))
 	}
 	m.ServerUris = serverUris
 
-	serviceId, err := ReadSimpleField(ctx, "serviceId", ReadUnsignedInt(readBuffer, uint8(32)))
+	serviceId, err := ReadSimpleField(ctx, "serviceId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceId' field"))
 	}
@@ -342,23 +343,23 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for SessionlessInvokeResponseType")
 		}
 		noOfNamespaceUris := int32(utils.InlineIf(bool((m.GetNamespaceUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNamespaceUris()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNamespaceUris", noOfNamespaceUris, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNamespaceUris", noOfNamespaceUris, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNamespaceUris' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "namespaceUris", m.GetNamespaceUris(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "namespaceUris", m.GetNamespaceUris(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaceUris' field")
 		}
 		noOfServerUris := int32(utils.InlineIf(bool((m.GetServerUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerUris()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServerUris", noOfServerUris, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServerUris", noOfServerUris, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerUris' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serverUris", m.GetServerUris(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serverUris", m.GetServerUris(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverUris' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "serviceId", m.GetServiceId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "serviceId", m.GetServiceId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceId' field")
 		}
 

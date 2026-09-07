@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReadOnly = (*_BACnetConstructedDataReadOnly)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReadOnly)(nil)
 
 // NewBACnetConstructedDataReadOnly factory function for _BACnetConstructedDataReadOnly
-func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReadOnly {
+func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean) *_BACnetConstructedDataReadOnly {
 	if readOnly == nil {
 		panic("readOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataReadOnly must not be nil")
 	}
 	_result := &_BACnetConstructedDataReadOnly{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReadOnly:                      readOnly,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataReadOnly(structType any) BACnetConstructedDataRead
 	return nil
 }
 
-func (m *_BACnetConstructedDataReadOnly) GetTypeName() string {
+func (m *_BACnetConstructedDataReadOnly) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReadOnly"
 }
 
-func (m *_BACnetConstructedDataReadOnly) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataReadOnly) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (readOnly)
 	lengthInBits += m.ReadOnly.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataReadOnly) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReadOnly) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataReadOnly) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

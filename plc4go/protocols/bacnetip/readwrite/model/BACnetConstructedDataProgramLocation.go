@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProgramLocation = (*_BACnetConstructedDataProgramLoca
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramLocation)(nil)
 
 // NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
-func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
+func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString) *_BACnetConstructedDataProgramLocation {
 	if programLocation == nil {
 		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
 	}
 	_result := &_BACnetConstructedDataProgramLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProgramLocation:               programLocation,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataProgramLocation(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataProgramLocation) GetTypeName() string {
+func (m *_BACnetConstructedDataProgramLocation) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProgramLocation"
 }
 
-func (m *_BACnetConstructedDataProgramLocation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataProgramLocation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (programLocation)
 	lengthInBits += m.ProgramLocation.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataProgramLocation) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProgramLocation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataProgramLocation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

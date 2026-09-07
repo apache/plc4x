@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -255,12 +256,12 @@ func CastModificationInfo(structType any) ModificationInfo {
 	return nil
 }
 
-func (m *_ModificationInfo) GetTypeName() string {
+func (m *_ModificationInfo) GetPlx4xTypeName() string {
 	return "ModificationInfo"
 }
 
-func (m *_ModificationInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ModificationInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (modificationTime)
 	lengthInBits += 64
@@ -274,7 +275,7 @@ func (m *_ModificationInfo) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ModificationInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModificationInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,19 +290,19 @@ func (m *_ModificationInfo) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	modificationTime, err := ReadSimpleField(ctx, "modificationTime", ReadSignedLong(readBuffer, uint8(64)))
+	modificationTime, err := ReadSimpleField(ctx, "modificationTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modificationTime' field"))
 	}
 	m.ModificationTime = modificationTime
 
-	updateType, err := ReadEnumField[HistoryUpdateType](ctx, "updateType", "HistoryUpdateType", ReadEnum(HistoryUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	updateType, err := ReadEnumField[HistoryUpdateType](ctx, "updateType", "HistoryUpdateType", ReadEnum(HistoryUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateType' field"))
 	}
 	m.UpdateType = updateType
 
-	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
@@ -332,15 +333,15 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ModificationInfo")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "modificationTime", m.GetModificationTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "modificationTime", m.GetModificationTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'modificationTime' field")
 		}
 
-		if err := WriteSimpleEnumField[HistoryUpdateType](ctx, "updateType", "HistoryUpdateType", m.GetUpdateType(), WriteEnum[HistoryUpdateType, uint32](HistoryUpdateType.GetValue, HistoryUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[HistoryUpdateType](ctx, "updateType", "HistoryUpdateType", m.GetUpdateType(), WriteEnum[HistoryUpdateType, uint32](HistoryUpdateType.GetValue, HistoryUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'updateType' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 

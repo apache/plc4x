@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ VariantDateTime = (*_VariantDateTime)(nil)
 var _ VariantRequirements = (*_VariantDateTime)(nil)
 
 // NewVariantDateTime factory function for _VariantDateTime
-func NewVariantDateTime(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int64) *_VariantDateTime {
+func NewVariantDateTime(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []int64) *_VariantDateTime {
 	_result := &_VariantDateTime{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -222,12 +222,12 @@ func CastVariantDateTime(structType any) VariantDateTime {
 	return nil
 }
 
-func (m *_VariantDateTime) GetTypeName() string {
+func (m *_VariantDateTime) GetPlx4xTypeName() string {
 	return "VariantDateTime"
 }
 
-func (m *_VariantDateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantDateTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -236,13 +236,13 @@ func (m *_VariantDateTime) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 64 * uint16(len(m.Value))
+		lengthInBits += 64 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_VariantDateTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantDateTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

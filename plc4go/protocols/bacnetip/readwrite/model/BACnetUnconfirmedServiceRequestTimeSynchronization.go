@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetUnconfirmedServiceRequestTimeSynchronization = (*_BACnetUnconfirmedS
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestTimeSynchronization)(nil)
 
 // NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestTimeSynchronization
-func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestTimeSynchronization {
+func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime) *_BACnetUnconfirmedServiceRequestTimeSynchronization {
 	if synchronizedDate == nil {
 		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
 	}
@@ -70,7 +70,7 @@ func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACn
 		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		SynchronizedDate:                        synchronizedDate,
 		SynchronizedTime:                        synchronizedTime,
 	}
@@ -258,12 +258,12 @@ func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestTimeSynchronization"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (synchronizedDate)
 	lengthInBits += m.SynchronizedDate.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

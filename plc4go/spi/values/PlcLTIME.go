@@ -70,7 +70,7 @@ func (m PlcLTIME) IsString() bool {
 }
 
 func (m PlcLTIME) GetString() string {
-	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
+	return formatDurationIso8601(m.GetDuration())
 }
 
 func (m PlcLTIME) GetPlcValueType() apiValues.PlcValueType {
@@ -86,7 +86,7 @@ func (m PlcLTIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcLTIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcLTIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
+	return writeBuffer.WriteString("PlcLTIME", uint32(len([]rune(m.GetString()))*8), m.GetString(), utils.WithEncoding("UTF-8"))
 }
 
 func (m PlcLTIME) String() string {

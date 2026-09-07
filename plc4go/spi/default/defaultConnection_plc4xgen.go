@@ -49,11 +49,11 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return err
 	}
 
-	if err := writeBuffer.WriteString("defaultTtl", uint32(len(fmt.Sprintf("%s", d.defaultTtl))*8), fmt.Sprintf("%s", d.defaultTtl)); err != nil {
+	if err := writeBuffer.WriteBit("connected", d.connected.Load()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteBit("connected", d.connected.Load()); err != nil {
+	if err := writeBuffer.WriteBit("invalidated", d.invalidated.Load()); err != nil {
 		return err
 	}
 
@@ -70,7 +70,7 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.tagHandler)
-			if err := writeBuffer.WriteString("tagHandler", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("tagHandler", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -89,7 +89,7 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.valueHandler)
-			if err := writeBuffer.WriteString("valueHandler", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("valueHandler", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

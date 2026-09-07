@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -666,9 +666,6 @@ const (
 	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 14846
 	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 14847
 	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 14848
-	OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 15024
-	OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 15025
-	OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 15026
 	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15041
 	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15042
 	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15044
@@ -807,9 +804,6 @@ const (
 	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Status                                                                                 OpcuaNodeIdServicesObject = 15223
 	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings                                                                      OpcuaNodeIdServicesObject = 15227
 	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15228
-	OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 15232
-	OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 15233
-	OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 15234
 	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15236
 	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15244
 	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15252
@@ -923,17 +917,8 @@ const (
 	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultJson                                                                                                               OpcuaNodeIdServicesObject = 15380
 	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15381
 	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson                                                                                                           OpcuaNodeIdServicesObject = 15382
-	OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15396
-	OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15397
-	OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15398
-	OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15401
-	OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15402
-	OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 15403
-	OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 15404
-	OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15405
 	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15421
 	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 15422
-	OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15431
 	OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups                                                                                                           OpcuaNodeIdServicesObject = 15443
 	OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder                                                                               OpcuaNodeIdServicesObject = 15453
 	OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupName_Placeholder                                                                                     OpcuaNodeIdServicesObject = 15459
@@ -1091,7 +1076,6 @@ const (
 	OpcuaNodeIdServicesObject_BaseConfigurationRecordDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 16539
 	OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 16540
 	OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 16541
-	OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 16542
 	OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 16543
 	OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 16544
 	OpcuaNodeIdServicesObject_ServerEndpointDataType_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 16545
@@ -1101,7 +1085,6 @@ const (
 	OpcuaNodeIdServicesObject_BaseConfigurationRecordDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 16588
 	OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 16589
 	OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 16590
-	OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 16591
 	OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 16592
 	OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 16593
 	OpcuaNodeIdServicesObject_ServerEndpointDataType_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 16594
@@ -1111,7 +1094,6 @@ const (
 	OpcuaNodeIdServicesObject_BaseConfigurationRecordDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 16633
 	OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 16634
 	OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 16635
-	OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16636
 	OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 16637
 	OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 16642
 	OpcuaNodeIdServicesObject_ServerEndpointDataType_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 16643
@@ -1299,12 +1281,6 @@ const (
 	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_AuthorizationServices                                                      OpcuaNodeIdServicesObject = 19413
 	OpcuaNodeIdServicesObject_ApplicationConfigurationType_KeyCredentials                                                                                               OpcuaNodeIdServicesObject = 19423
 	OpcuaNodeIdServicesObject_ApplicationConfigurationType_AuthorizationServices                                                                                        OpcuaNodeIdServicesObject = 19427
-	OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary                                                                                                          OpcuaNodeIdServicesObject = 19435
-	OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 19436
-	OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml                                                                                                             OpcuaNodeIdServicesObject = 19437
-	OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 19438
-	OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson                                                                                                            OpcuaNodeIdServicesObject = 19439
-	OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 19440
 	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired                                                                                                   OpcuaNodeIdServicesObject = 19450
 	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState                                                                                     OpcuaNodeIdServicesObject = 19537
 	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics                                                                                                             OpcuaNodeIdServicesObject = 19550
@@ -1317,23 +1293,21 @@ const (
 	OpcuaNodeIdServicesObject_PubSubDiagnosticsType_LiveValues                                                                                                          OpcuaNodeIdServicesObject = 19722
 	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials                                                                        OpcuaNodeIdServicesObject = 19739
 	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices                                                                 OpcuaNodeIdServicesObject = 19743
-	OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 19752
 	OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 19753
 	OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 19754
 	OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 19755
 	OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 19756
-	OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 19772
 	OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 19773
 	OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 19774
 	OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 19775
 	OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 19776
 	OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues                                                                                                      OpcuaNodeIdServicesObject = 19777
-	OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 19802
 	OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 19803
 	OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 19804
 	OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 19805
 	OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 19806
 	OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues                                                                                                OpcuaNodeIdServicesObject = 19831
+	OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder                                                                                      OpcuaNodeIdServicesObject = 19847
 	OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters                                                                                                 OpcuaNodeIdServicesObject = 19848
 	OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_LiveValues                                                                                               OpcuaNodeIdServicesObject = 19879
 	OpcuaNodeIdServicesObject_PubSubDiagnosticsReaderGroupType_Counters                                                                                                 OpcuaNodeIdServicesObject = 19917
@@ -1451,11 +1425,22 @@ const (
 	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 23528
 	OpcuaNodeIdServicesObject_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder                                                                      OpcuaNodeIdServicesObject = 23557
 	OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets                                                                                                   OpcuaNodeIdServicesObject = 23622
+	OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState                                                                        OpcuaNodeIdServicesObject = 23623
 	OpcuaNodeIdServicesObject_PublishSubscribeType_PubSubCapablities                                                                                                    OpcuaNodeIdServicesObject = 23642
 	OpcuaNodeIdServicesObject_PublishSubscribeType_DataSetClasses                                                                                                       OpcuaNodeIdServicesObject = 23649
 	OpcuaNodeIdServicesObject_PublishSubscribe_SubscribedDataSets                                                                                                       OpcuaNodeIdServicesObject = 23658
 	OpcuaNodeIdServicesObject_PublishSubscribe_PubSubCapablities                                                                                                        OpcuaNodeIdServicesObject = 23678
 	OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses                                                                                                           OpcuaNodeIdServicesObject = 23685
+	OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup                                                                         OpcuaNodeIdServicesObject = 23694
+	OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 23725
+	OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 23735
+	OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 23739
+	OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 23754
+	OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 23755
+	OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 23762
+	OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 23763
+	OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 23776
+	OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 23777
 	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder                                                                       OpcuaNodeIdServicesObject = 23796
 	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder                                                                   OpcuaNodeIdServicesObject = 23807
 	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_SubscribedDataSet                                                 OpcuaNodeIdServicesObject = 23808
@@ -1517,10 +1502,23 @@ const (
 	OpcuaNodeIdServicesObject_Streams                                                                                                                                   OpcuaNodeIdServicesObject = 24230
 	OpcuaNodeIdServicesObject_TalkerStreams                                                                                                                             OpcuaNodeIdServicesObject = 24231
 	OpcuaNodeIdServicesObject_ListenerStreams                                                                                                                           OpcuaNodeIdServicesObject = 24232
+	OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 24250
+	OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 24262
 	OpcuaNodeIdServicesObject_UserManagement                                                                                                                            OpcuaNodeIdServicesObject = 24290
 	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 24292
 	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 24296
 	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 24300
+	OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 24338
+	OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 24339
+	OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 24352
+	OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 24353
+	OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 24354
+	OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 24355
+	OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 24368
+	OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 24369
+	OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 24370
+	OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 24371
+	OpcuaNodeIdServicesObject_DefaultJson                                                                                                                               OpcuaNodeIdServicesObject = 24502
 	OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder                                                                                    OpcuaNodeIdServicesObject = 25226
 	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 25239
 	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 25243
@@ -1590,8 +1588,6 @@ const (
 	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder                                                                                           OpcuaNodeIdServicesObject = 32482
 	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits                                                                          OpcuaNodeIdServicesObject = 32487
 	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit                                                                              OpcuaNodeIdServicesObject = 32497
-	OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder                                                                                                 OpcuaNodeIdServicesObject = 32503
-	OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits                                                                                     OpcuaNodeIdServicesObject = 32509
 	OpcuaNodeIdServicesObject_Quantities                                                                                                                                OpcuaNodeIdServicesObject = 32530
 	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 32560
 	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 32561
@@ -2253,9 +2249,6 @@ func init() {
 		OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultJson,
@@ -2394,9 +2387,6 @@ func init() {
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Status,
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings,
 		OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultJson,
@@ -2510,17 +2500,8 @@ func init() {
 		OpcuaNodeIdServicesObject_XVType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups,
 		OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder,
 		OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupName_Placeholder,
@@ -2678,7 +2659,6 @@ func init() {
 		OpcuaNodeIdServicesObject_BaseConfigurationRecordDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_ServerEndpointDataType_Encoding_DefaultBinary,
@@ -2688,7 +2668,6 @@ func init() {
 		OpcuaNodeIdServicesObject_BaseConfigurationRecordDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_ServerEndpointDataType_Encoding_DefaultXml,
@@ -2698,7 +2677,6 @@ func init() {
 		OpcuaNodeIdServicesObject_BaseConfigurationRecordDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ServerEndpointDataType_Encoding_DefaultJson,
@@ -2886,12 +2864,6 @@ func init() {
 		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_AuthorizationServices,
 		OpcuaNodeIdServicesObject_ApplicationConfigurationType_KeyCredentials,
 		OpcuaNodeIdServicesObject_ApplicationConfigurationType_AuthorizationServices,
-		OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml,
-		OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson,
-		OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired,
 		OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState,
 		OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics,
@@ -2904,23 +2876,21 @@ func init() {
 		OpcuaNodeIdServicesObject_PubSubDiagnosticsType_LiveValues,
 		OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials,
 		OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices,
-		OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultBinary,
-		OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues,
-		OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues,
+		OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder,
 		OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters,
 		OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_LiveValues,
 		OpcuaNodeIdServicesObject_PubSubDiagnosticsReaderGroupType_Counters,
@@ -3038,11 +3008,22 @@ func init() {
 		OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets,
+		OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_PubSubCapablities,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_DataSetClasses,
 		OpcuaNodeIdServicesObject_PublishSubscribe_SubscribedDataSets,
 		OpcuaNodeIdServicesObject_PublishSubscribe_PubSubCapablities,
 		OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses,
+		OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup,
+		OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder,
 		OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder,
 		OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_SubscribedDataSet,
@@ -3104,10 +3085,23 @@ func init() {
 		OpcuaNodeIdServicesObject_Streams,
 		OpcuaNodeIdServicesObject_TalkerStreams,
 		OpcuaNodeIdServicesObject_ListenerStreams,
+		OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_UserManagement,
 		OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_DefaultJson,
 		OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder,
 		OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultXml,
@@ -3177,8 +3171,6 @@ func init() {
 		OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder,
 		OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits,
 		OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit,
-		OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder,
-		OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits,
 		OpcuaNodeIdServicesObject_Quantities,
 		OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultBinary,
@@ -3491,12 +3483,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary, true
 	case 14848:
 		return OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary, true
-	case 15024:
-		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary, true
-	case 15025:
-		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary, true
-	case 15026:
-		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary, true
 	case 15041:
 		return OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson, true
 	case 15042:
@@ -3773,12 +3759,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings, true
 	case 15228:
 		return OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson, true
-	case 15232:
-		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml, true
-	case 15233:
-		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml, true
-	case 15234:
-		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml, true
 	case 15236:
 		return OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson, true
 	case 15244:
@@ -4005,28 +3985,10 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson, true
 	case 15382:
 		return OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson, true
-	case 15396:
-		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson, true
-	case 15397:
-		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson, true
-	case 15398:
-		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson, true
-	case 15401:
-		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary, true
-	case 15402:
-		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary, true
-	case 15403:
-		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml, true
-	case 15404:
-		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml, true
-	case 15405:
-		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson, true
 	case 15421:
 		return OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary, true
 	case 15422:
 		return OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary, true
-	case 15431:
-		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson, true
 	case 15443:
 		return OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups, true
 	case 15453:
@@ -4341,8 +4303,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultBinary, true
 	case 16541:
 		return OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultBinary, true
-	case 16542:
-		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary, true
 	case 16543:
 		return OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultBinary, true
 	case 16544:
@@ -4361,8 +4321,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultXml, true
 	case 16590:
 		return OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultXml, true
-	case 16591:
-		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml, true
 	case 16592:
 		return OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultXml, true
 	case 16593:
@@ -4381,8 +4339,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultJson, true
 	case 16635:
 		return OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultJson, true
-	case 16636:
-		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson, true
 	case 16637:
 		return OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultJson, true
 	case 16642:
@@ -4757,18 +4713,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ApplicationConfigurationType_KeyCredentials, true
 	case 19427:
 		return OpcuaNodeIdServicesObject_ApplicationConfigurationType_AuthorizationServices, true
-	case 19435:
-		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary, true
-	case 19436:
-		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary, true
-	case 19437:
-		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml, true
-	case 19438:
-		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml, true
-	case 19439:
-		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson, true
-	case 19440:
-		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson, true
 	case 19450:
 		return OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired, true
 	case 19537:
@@ -4793,8 +4737,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials, true
 	case 19743:
 		return OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices, true
-	case 19752:
-		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary, true
 	case 19753:
 		return OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultBinary, true
 	case 19754:
@@ -4803,8 +4745,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultBinary, true
 	case 19756:
 		return OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultBinary, true
-	case 19772:
-		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml, true
 	case 19773:
 		return OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultXml, true
 	case 19774:
@@ -4815,8 +4755,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultXml, true
 	case 19777:
 		return OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues, true
-	case 19802:
-		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson, true
 	case 19803:
 		return OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultJson, true
 	case 19804:
@@ -4827,6 +4765,8 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultJson, true
 	case 19831:
 		return OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues, true
+	case 19847:
+		return OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder, true
 	case 19848:
 		return OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters, true
 	case 19879:
@@ -5117,6 +5057,8 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_AggregateFunction_PercentGood, true
 	case 23622:
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets, true
+	case 23623:
+		return OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState, true
 	case 2363:
 		return OpcuaNodeIdServicesObject_AggregateFunction_PercentBad, true
 	case 2364:
@@ -5131,6 +5073,26 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishSubscribe_PubSubCapablities, true
 	case 23685:
 		return OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses, true
+	case 23694:
+		return OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup, true
+	case 23725:
+		return OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultBinary, true
+	case 23735:
+		return OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultXml, true
+	case 23739:
+		return OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultJson, true
+	case 23754:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary, true
+	case 23755:
+		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary, true
+	case 23762:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml, true
+	case 23763:
+		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml, true
+	case 23776:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson, true
+	case 23777:
+		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson, true
 	case 23796:
 		return OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder, true
 	case 23807:
@@ -5279,6 +5241,10 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ListenerStreams, true
 	case 2424:
 		return OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToHalted, true
+	case 24250:
+		return OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultBinary, true
+	case 24262:
+		return OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultBinary, true
 	case 24290:
 		return OpcuaNodeIdServicesObject_UserManagement, true
 	case 24292:
@@ -5287,6 +5253,28 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultXml, true
 	case 24300:
 		return OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson, true
+	case 24338:
+		return OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultBinary, true
+	case 24339:
+		return OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultBinary, true
+	case 24352:
+		return OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultXml, true
+	case 24353:
+		return OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultXml, true
+	case 24354:
+		return OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultXml, true
+	case 24355:
+		return OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultXml, true
+	case 24368:
+		return OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultJson, true
+	case 24369:
+		return OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultJson, true
+	case 24370:
+		return OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultJson, true
+	case 24371:
+		return OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultJson, true
+	case 24502:
+		return OpcuaNodeIdServicesObject_DefaultJson, true
 	case 25226:
 		return OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder, true
 	case 25239:
@@ -5537,10 +5525,6 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits, true
 	case 32497:
 		return OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit, true
-	case 32503:
-		return OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder, true
-	case 32509:
-		return OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits, true
 	case 32530:
 		return OpcuaNodeIdServicesObject_Quantities, true
 	case 32560:
@@ -6657,12 +6641,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary, true
 	case "FieldTargetDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary, true
-	case "TestScalarStructure_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary, true
-	case "TestArrayStructure_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary, true
-	case "TestStructure_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary, true
 	case "KeyValuePair_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson, true
 	case "IdentityMappingRuleType_Encoding_DefaultJson":
@@ -6939,12 +6917,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings, true
 	case "ContentFilterResult_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson, true
-	case "TestScalarStructure_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml, true
-	case "TestArrayStructure_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml, true
-	case "TestStructure_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml, true
 	case "ParsingResult_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson, true
 	case "QueryFirstRequest_Encoding_DefaultJson":
@@ -7171,28 +7143,10 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson, true
 	case "Annotation_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson, true
-	case "TestScalarStructure_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson, true
-	case "TestArrayStructure_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson, true
-	case "TestStructure_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson, true
-	case "TestAbstractStructure_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary, true
-	case "TestConcreteStructure_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary, true
-	case "TestAbstractStructure_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml, true
-	case "TestConcreteStructure_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml, true
-	case "TestAbstractStructure_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson, true
 	case "SimpleTypeDescription_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary, true
 	case "UABinaryFileDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary, true
-	case "TestConcreteStructure_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson, true
 	case "PublishSubscribe_SecurityGroups":
 		return OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups, true
 	case "SecurityGroupFolderType_SecurityGroupFolderName_Placeholder":
@@ -7507,8 +7461,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultBinary, true
 	case "ConfigurationUpdateTargetType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultBinary, true
-	case "ApplicationConfigurationDataType_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary, true
 	case "ApplicationIdentityDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultBinary, true
 	case "EndpointDataType_Encoding_DefaultBinary":
@@ -7527,8 +7479,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultXml, true
 	case "ConfigurationUpdateTargetType_Encoding_DefaultXml":
 		return OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultXml, true
-	case "ApplicationConfigurationDataType_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml, true
 	case "ApplicationIdentityDataType_Encoding_DefaultXml":
 		return OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultXml, true
 	case "EndpointDataType_Encoding_DefaultXml":
@@ -7547,8 +7497,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_CertificateGroupDataType_Encoding_DefaultJson, true
 	case "ConfigurationUpdateTargetType_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultJson, true
-	case "ApplicationConfigurationDataType_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson, true
 	case "ApplicationIdentityDataType_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultJson, true
 	case "EndpointDataType_Encoding_DefaultJson":
@@ -7923,18 +7871,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ApplicationConfigurationType_KeyCredentials, true
 	case "ApplicationConfigurationType_AuthorizationServices":
 		return OpcuaNodeIdServicesObject_ApplicationConfigurationType_AuthorizationServices, true
-	case "TestUnion_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary, true
-	case "TestOptionalFields_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary, true
-	case "TestUnion_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml, true
-	case "TestOptionalFields_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml, true
-	case "TestUnion_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson, true
-	case "TestOptionalFields_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson, true
 	case "CertificateGroupType_CertificateExpired":
 		return OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired, true
 	case "CertificateGroupType_CertificateExpired_ShelvingState":
@@ -7959,8 +7895,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials, true
 	case "ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices":
 		return OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices, true
-	case "AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary":
-		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary, true
 	case "LogRecordsDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultBinary, true
 	case "SpanContextDataType_Encoding_DefaultBinary":
@@ -7969,8 +7903,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_TraceContextDataType_Encoding_DefaultBinary, true
 	case "NameValuePair_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultBinary, true
-	case "AuthorizationServiceConfigurationDataType_Encoding_DefaultXml":
-		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml, true
 	case "LogRecordsDataType_Encoding_DefaultXml":
 		return OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultXml, true
 	case "SpanContextDataType_Encoding_DefaultXml":
@@ -7981,8 +7913,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultXml, true
 	case "PubSubDiagnosticsRootType_LiveValues":
 		return OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues, true
-	case "AuthorizationServiceConfigurationDataType_Encoding_DefaultJson":
-		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson, true
 	case "LogRecordsDataType_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultJson, true
 	case "SpanContextDataType_Encoding_DefaultJson":
@@ -7993,6 +7923,8 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultJson, true
 	case "PubSubDiagnosticsConnectionType_LiveValues":
 		return OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder":
+		return OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder, true
 	case "PubSubDiagnosticsWriterGroupType_Counters":
 		return OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters, true
 	case "PubSubDiagnosticsWriterGroupType_LiveValues":
@@ -8283,6 +8215,8 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_AggregateFunction_PercentGood, true
 	case "PublishSubscribeType_SubscribedDataSets":
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState":
+		return OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState, true
 	case "AggregateFunction_PercentBad":
 		return OpcuaNodeIdServicesObject_AggregateFunction_PercentBad, true
 	case "AggregateFunction_WorstQuality":
@@ -8297,6 +8231,26 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishSubscribe_PubSubCapablities, true
 	case "PublishSubscribe_DataSetClasses":
 		return OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup":
+		return OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup, true
+	case "ServiceCertificateDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultBinary, true
+	case "ServiceCertificateDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultXml, true
+	case "ServiceCertificateDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultJson, true
+	case "ApplicationConfigurationDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary, true
+	case "AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary, true
+	case "ApplicationConfigurationDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml, true
+	case "AuthorizationServiceConfigurationDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml, true
+	case "ApplicationConfigurationDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson, true
+	case "AuthorizationServiceConfigurationDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson, true
 	case "SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder":
 		return OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder, true
 	case "SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder":
@@ -8445,6 +8399,10 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ListenerStreams, true
 	case "ProgramStateMachineType_ReadyToHalted":
 		return OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToHalted, true
+	case "NumberRange_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultBinary, true
+	case "AliasNameVerboseDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultBinary, true
 	case "UserManagement":
 		return OpcuaNodeIdServicesObject_UserManagement, true
 	case "UserManagementDataType_Encoding_DefaultBinary":
@@ -8453,6 +8411,28 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultXml, true
 	case "UserManagementDataType_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson, true
+	case "AliasCategoryUpdateDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultBinary, true
+	case "AliasUpdateDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultBinary, true
+	case "NumberRange_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultXml, true
+	case "AliasNameVerboseDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultXml, true
+	case "AliasCategoryUpdateDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultXml, true
+	case "AliasUpdateDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultXml, true
+	case "NumberRange_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultJson, true
+	case "AliasNameVerboseDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultJson, true
+	case "AliasCategoryUpdateDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultJson, true
+	case "AliasUpdateDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultJson, true
+	case "DefaultJson":
+		return OpcuaNodeIdServicesObject_DefaultJson, true
 	case "IetfBaseNetworkInterfaceType_InterfaceName_Placeholder":
 		return OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder, true
 	case "PriorityMappingEntryType_Encoding_DefaultBinary":
@@ -8703,10 +8683,6 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit":
 		return OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit, true
-	case "QuantitiesFolderType_Quantity_Placeholder":
-		return OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder, true
-	case "QuantitiesFolderType_Quantity_Placeholder_ServerUnits":
-		return OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits, true
 	case "Quantities":
 		return OpcuaNodeIdServicesObject_Quantities, true
 	case "AnnotationDataType_Encoding_DefaultBinary":
@@ -9562,11 +9538,11 @@ func CastOpcuaNodeIdServicesObject(structType any) OpcuaNodeIdServicesObject {
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesObject) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesObject) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -9888,12 +9864,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ConfigurationVersionDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary:
 		return "FieldTargetDataType_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary:
-		return "TestScalarStructure_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary:
-		return "TestArrayStructure_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary:
-		return "TestStructure_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson:
 		return "KeyValuePair_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson:
@@ -10170,12 +10140,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings"
 	case OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson:
 		return "ContentFilterResult_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml:
-		return "TestScalarStructure_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml:
-		return "TestArrayStructure_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml:
-		return "TestStructure_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson:
 		return "ParsingResult_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson:
@@ -10402,28 +10366,10 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ProgramDiagnosticDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson:
 		return "Annotation_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson:
-		return "TestScalarStructure_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson:
-		return "TestArrayStructure_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson:
-		return "TestStructure_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary:
-		return "TestAbstractStructure_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary:
-		return "TestConcreteStructure_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml:
-		return "TestAbstractStructure_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml:
-		return "TestConcreteStructure_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson:
-		return "TestAbstractStructure_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary:
 		return "SimpleTypeDescription_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary:
 		return "UABinaryFileDataType_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson:
-		return "TestConcreteStructure_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups:
 		return "PublishSubscribe_SecurityGroups"
 	case OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder:
@@ -10738,8 +10684,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "CertificateGroupDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultBinary:
 		return "ConfigurationUpdateTargetType_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary:
-		return "ApplicationConfigurationDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultBinary:
 		return "ApplicationIdentityDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultBinary:
@@ -10758,8 +10702,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "CertificateGroupDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultXml:
 		return "ConfigurationUpdateTargetType_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml:
-		return "ApplicationConfigurationDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultXml:
 		return "ApplicationIdentityDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultXml:
@@ -10778,8 +10720,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "CertificateGroupDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_ConfigurationUpdateTargetType_Encoding_DefaultJson:
 		return "ConfigurationUpdateTargetType_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson:
-		return "ApplicationConfigurationDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_ApplicationIdentityDataType_Encoding_DefaultJson:
 		return "ApplicationIdentityDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_EndpointDataType_Encoding_DefaultJson:
@@ -11154,18 +11094,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ApplicationConfigurationType_KeyCredentials"
 	case OpcuaNodeIdServicesObject_ApplicationConfigurationType_AuthorizationServices:
 		return "ApplicationConfigurationType_AuthorizationServices"
-	case OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary:
-		return "TestUnion_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary:
-		return "TestOptionalFields_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml:
-		return "TestUnion_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml:
-		return "TestOptionalFields_Encoding_DefaultXml"
-	case OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson:
-		return "TestUnion_Encoding_DefaultJson"
-	case OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson:
-		return "TestOptionalFields_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired:
 		return "CertificateGroupType_CertificateExpired"
 	case OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState:
@@ -11190,8 +11118,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials"
 	case OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices:
 		return "ProvisionableDeviceType_ApplicationName_Placeholder_AuthorizationServices"
-	case OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary:
-		return "AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultBinary:
 		return "LogRecordsDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultBinary:
@@ -11200,8 +11126,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "TraceContextDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_NameValuePair_Encoding_DefaultBinary:
 		return "NameValuePair_Encoding_DefaultBinary"
-	case OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml:
-		return "AuthorizationServiceConfigurationDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultXml:
 		return "LogRecordsDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultXml:
@@ -11212,8 +11136,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "NameValuePair_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues:
 		return "PubSubDiagnosticsRootType_LiveValues"
-	case OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson:
-		return "AuthorizationServiceConfigurationDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_LogRecordsDataType_Encoding_DefaultJson:
 		return "LogRecordsDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_SpanContextDataType_Encoding_DefaultJson:
@@ -11224,6 +11146,8 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "NameValuePair_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues:
 		return "PubSubDiagnosticsConnectionType_LiveValues"
+	case OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder"
 	case OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters:
 		return "PubSubDiagnosticsWriterGroupType_Counters"
 	case OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_LiveValues:
@@ -11514,6 +11438,8 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "AggregateFunction_PercentGood"
 	case OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets:
 		return "PublishSubscribeType_SubscribedDataSets"
+	case OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState"
 	case OpcuaNodeIdServicesObject_AggregateFunction_PercentBad:
 		return "AggregateFunction_PercentBad"
 	case OpcuaNodeIdServicesObject_AggregateFunction_WorstQuality:
@@ -11528,6 +11454,26 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "PublishSubscribe_PubSubCapablities"
 	case OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses:
 		return "PublishSubscribe_DataSetClasses"
+	case OpcuaNodeIdServicesObject_AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultBinary:
+		return "ServiceCertificateDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultXml:
+		return "ServiceCertificateDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_ServiceCertificateDataType_Encoding_DefaultJson:
+		return "ServiceCertificateDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultBinary:
+		return "ApplicationConfigurationDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary:
+		return "AuthorizationServiceConfigurationDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultXml:
+		return "ApplicationConfigurationDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultXml:
+		return "AuthorizationServiceConfigurationDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationDataType_Encoding_DefaultJson:
+		return "ApplicationConfigurationDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_AuthorizationServiceConfigurationDataType_Encoding_DefaultJson:
+		return "AuthorizationServiceConfigurationDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder:
 		return "SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder"
 	case OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder:
@@ -11676,6 +11622,10 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ListenerStreams"
 	case OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToHalted:
 		return "ProgramStateMachineType_ReadyToHalted"
+	case OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultBinary:
+		return "NumberRange_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultBinary:
+		return "AliasNameVerboseDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_UserManagement:
 		return "UserManagement"
 	case OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultBinary:
@@ -11684,6 +11634,28 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "UserManagementDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson:
 		return "UserManagementDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultBinary:
+		return "AliasCategoryUpdateDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultBinary:
+		return "AliasUpdateDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultXml:
+		return "NumberRange_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultXml:
+		return "AliasNameVerboseDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultXml:
+		return "AliasCategoryUpdateDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultXml:
+		return "AliasUpdateDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_NumberRange_Encoding_DefaultJson:
+		return "NumberRange_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_AliasNameVerboseDataType_Encoding_DefaultJson:
+		return "AliasNameVerboseDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_AliasCategoryUpdateDataType_Encoding_DefaultJson:
+		return "AliasCategoryUpdateDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_AliasUpdateDataType_Encoding_DefaultJson:
+		return "AliasUpdateDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_DefaultJson:
+		return "DefaultJson"
 	case OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder:
 		return "IetfBaseNetworkInterfaceType_InterfaceName_Placeholder"
 	case OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultBinary:
@@ -11934,10 +11906,6 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits"
 	case OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit:
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit"
-	case OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder:
-		return "QuantitiesFolderType_Quantity_Placeholder"
-	case OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits:
-		return "QuantitiesFolderType_Quantity_Placeholder_ServerUnits"
 	case OpcuaNodeIdServicesObject_Quantities:
 		return "Quantities"
 	case OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultBinary:

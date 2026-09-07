@@ -82,7 +82,7 @@ func TestManualCBusDriverMixed(t *testing.T) {
 			}).
 			Build()
 		require.NoError(t, err)
-		subscriptionRequest.Execute()
+		subscriptionRequest.Execute(t.Context())
 		timeout := time.NewTimer(30 * time.Second)
 		// We expect couple monitors
 		mmiCount := 0
@@ -126,12 +126,8 @@ func TestManualCBusBrowse(t *testing.T) {
 	})
 	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
 	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
-	connectionResult := <-driverManager.GetConnection(connectionString)
-	if err := connectionResult.GetErr(); err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	connection := connectionResult.GetConnection()
+	connection, err := driverManager.GetConnection(t.Context(), connectionString)
+	require.NoError(t, err)
 	defer connection.Close()
 	browseRequest, err := connection.BrowseRequestBuilder().
 		AddQuery("infoQuery", "info/*/*").
@@ -139,7 +135,7 @@ func TestManualCBusBrowse(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
+	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(t.Context(), func(result apiModel.PlcBrowseItem) bool {
 		fmt.Printf("%s\n", result)
 		return true
 	})
@@ -158,18 +154,14 @@ func TestManualCBusRead(t *testing.T) {
 	})
 	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
 	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
-	connectionResult := <-driverManager.GetConnection(connectionString)
-	if err := connectionResult.GetErr(); err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	connection := connectionResult.GetConnection()
+	connection, err := driverManager.GetConnection(t.Context(), connectionString)
+	require.NoError(t, err)
 	defer connection.Close()
 	readRequest, err := connection.ReadRequestBuilder().
 		AddTagAddress("asd", "cal/3/identify=OutputUnitSummary").
 		Build()
 	require.NoError(t, err)
-	readRequestResult := <-readRequest.Execute()
+	readRequestResult := <-readRequest.Execute(t.Context())
 	fmt.Printf("%s", readRequestResult.GetResponse())
 }
 
@@ -185,7 +177,7 @@ func TestManualDiscovery(t *testing.T) {
 	driver := cbus.NewDriver(optionsForTesting...)
 	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
-	err := driver.Discover(func(event apiModel.PlcDiscoveryItem) {
+	err := driver.Discover(t.Context(), func(event apiModel.PlcDiscoveryItem) {
 		t.Log(event.(fmt.Stringer).String())
 	})
 	require.NoError(t, err)

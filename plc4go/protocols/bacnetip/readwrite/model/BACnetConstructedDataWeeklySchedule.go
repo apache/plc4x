@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataWeeklySchedule interface {
 	// GetWeeklySchedule returns WeeklySchedule (property field)
 	GetWeeklySchedule() []BACnetDailySchedule
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataWeeklySchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataWeeklySchedule()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataWeeklySchedule = (*_BACnetConstructedDataWeeklySchedu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWeeklySchedule)(nil)
 
 // NewBACnetConstructedDataWeeklySchedule factory function for _BACnetConstructedDataWeeklySchedule
-func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWeeklySchedule {
+func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule) *_BACnetConstructedDataWeeklySchedule {
 	_result := &_BACnetConstructedDataWeeklySchedule{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		WeeklySchedule:                weeklySchedule,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataWeeklySchedule(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataWeeklySchedule) GetTypeName() string {
+func (m *_BACnetConstructedDataWeeklySchedule) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataWeeklySchedule"
 }
 
-func (m *_BACnetConstructedDataWeeklySchedule) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataWeeklySchedule) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataWeeklySchedule) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataWeeklySchedule) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataWeeklySchedule) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -354,7 +355,7 @@ func (m *_BACnetConstructedDataWeeklySchedule) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

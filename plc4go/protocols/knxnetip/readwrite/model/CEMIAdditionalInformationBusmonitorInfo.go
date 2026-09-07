@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -298,12 +298,12 @@ func CastCEMIAdditionalInformationBusmonitorInfo(structType any) CEMIAdditionalI
 	return nil
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetPlx4xTypeName() string {
 	return "CEMIAdditionalInformationBusmonitorInfo"
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -329,7 +329,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

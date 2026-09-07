@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BinaryPayload = (*_BinaryPayload)(nil)
 var _ PayloadRequirements = (*_BinaryPayload)(nil)
 
 // NewBinaryPayload factory function for _BinaryPayload
-func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
+func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte) *_BinaryPayload {
 	_result := &_BinaryPayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		PayloadContract: NewPayload(sequenceHeader),
 		Payload:         payload,
 	}
 	_result.PayloadContract.(*_Payload)._SubType = _result
@@ -207,22 +207,22 @@ func CastBinaryPayload(structType any) BinaryPayload {
 	return nil
 }
 
-func (m *_BinaryPayload) GetTypeName() string {
+func (m *_BinaryPayload) GetPlx4xTypeName() string {
 	return "BinaryPayload"
 }
 
-func (m *_BinaryPayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+func (m *_BinaryPayload) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Payload) > 0 {
-		lengthInBits += 8 * uint16(len(m.Payload))
+		lengthInBits += 8 * uint64(len(m.Payload))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BinaryPayload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BinaryPayload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

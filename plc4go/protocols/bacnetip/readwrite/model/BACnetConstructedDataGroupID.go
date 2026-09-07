@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataGroupID = (*_BACnetConstructedDataGroupID)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupID)(nil)
 
 // NewBACnetConstructedDataGroupID factory function for _BACnetConstructedDataGroupID
-func NewBACnetConstructedDataGroupID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupID {
+func NewBACnetConstructedDataGroupID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupId BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataGroupID {
 	if groupId == nil {
 		panic("groupId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGroupID must not be nil")
 	}
 	_result := &_BACnetConstructedDataGroupID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		GroupId:                       groupId,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataGroupID(structType any) BACnetConstructedDataGroup
 	return nil
 }
 
-func (m *_BACnetConstructedDataGroupID) GetTypeName() string {
+func (m *_BACnetConstructedDataGroupID) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGroupID"
 }
 
-func (m *_BACnetConstructedDataGroupID) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataGroupID) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (groupId)
 	lengthInBits += m.GroupId.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataGroupID) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataGroupID) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataGroupID) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

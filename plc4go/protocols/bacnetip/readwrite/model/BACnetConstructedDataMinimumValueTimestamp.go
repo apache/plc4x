@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMinimumValueTimestamp = (*_BACnetConstructedDataMinim
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
 
 // NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
-func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
+func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime) *_BACnetConstructedDataMinimumValueTimestamp {
 	if minimumValueTimestamp == nil {
 		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
 	}
 	_result := &_BACnetConstructedDataMinimumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinimumValueTimestamp:         minimumValueTimestamp,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMinimumValueTimestamp(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetTypeName() string {
+func (m *_BACnetConstructedDataMinimumValueTimestamp) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinimumValueTimestamp"
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumValueTimestamp)
 	lengthInBits += m.MinimumValueTimestamp.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

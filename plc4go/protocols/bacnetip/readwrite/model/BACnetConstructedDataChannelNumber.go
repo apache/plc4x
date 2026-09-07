@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataChannelNumber = (*_BACnetConstructedDataChannelNumber
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChannelNumber)(nil)
 
 // NewBACnetConstructedDataChannelNumber factory function for _BACnetConstructedDataChannelNumber
-func NewBACnetConstructedDataChannelNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, channelNumber BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelNumber {
+func NewBACnetConstructedDataChannelNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, channelNumber BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataChannelNumber {
 	if channelNumber == nil {
 		panic("channelNumber of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataChannelNumber must not be nil")
 	}
 	_result := &_BACnetConstructedDataChannelNumber{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ChannelNumber:                 channelNumber,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataChannelNumber(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataChannelNumber) GetTypeName() string {
+func (m *_BACnetConstructedDataChannelNumber) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChannelNumber"
 }
 
-func (m *_BACnetConstructedDataChannelNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataChannelNumber) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (channelNumber)
 	lengthInBits += m.ChannelNumber.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataChannelNumber) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChannelNumber) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataChannelNumber) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

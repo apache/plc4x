@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataActiveCOVMultipleSubscriptions = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
 
 // NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for _BACnetConstructedDataActiveCOVMultipleSubscriptions
-func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
+func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveCOVMultipleSubscriptions"
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ActiveCOVMultipleSubscriptions) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

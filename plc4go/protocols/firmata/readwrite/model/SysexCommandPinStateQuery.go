@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {
 	return nil
 }
 
-func (m *_SysexCommandPinStateQuery) GetTypeName() string {
+func (m *_SysexCommandPinStateQuery) GetPlx4xTypeName() string {
 	return "SysexCommandPinStateQuery"
 }
 
-func (m *_SysexCommandPinStateQuery) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+func (m *_SysexCommandPinStateQuery) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -224,7 +224,7 @@ func (m *_SysexCommandPinStateQuery) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_SysexCommandPinStateQuery) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SysexCommandPinStateQuery) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

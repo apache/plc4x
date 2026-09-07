@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ COTPPacketTpduError = (*_COTPPacketTpduError)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketTpduError)(nil)
 
 // NewCOTPPacketTpduError factory function for _COTPPacketTpduError
-func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8, cotpLen uint16) *_COTPPacketTpduError {
+func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8) *_COTPPacketTpduError {
 	_result := &_COTPPacketTpduError{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract:   NewCOTPPacket(parameters, payload),
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
 	}
@@ -222,12 +222,12 @@ func CastCOTPPacketTpduError(structType any) COTPPacketTpduError {
 	return nil
 }
 
-func (m *_COTPPacketTpduError) GetTypeName() string {
+func (m *_COTPPacketTpduError) GetPlx4xTypeName() string {
 	return "COTPPacketTpduError"
 }
 
-func (m *_COTPPacketTpduError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
+func (m *_COTPPacketTpduError) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -238,11 +238,11 @@ func (m *_COTPPacketTpduError) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPPacketTpduError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPPacketTpduError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_COTPPacketTpduError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketTpduError COTPPacketTpduError, err error) {
+func (m *_COTPPacketTpduError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint32) (__cOTPPacketTpduError COTPPacketTpduError, err error) {
 	m.COTPPacketContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

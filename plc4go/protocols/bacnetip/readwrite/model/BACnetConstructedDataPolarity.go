@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPolarity = (*_BACnetConstructedDataPolarity)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPolarity)(nil)
 
 // NewBACnetConstructedDataPolarity factory function for _BACnetConstructedDataPolarity
-func NewBACnetConstructedDataPolarity(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, polarity BACnetPolarityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
+func NewBACnetConstructedDataPolarity(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, polarity BACnetPolarityTagged) *_BACnetConstructedDataPolarity {
 	if polarity == nil {
 		panic("polarity of type BACnetPolarityTagged for BACnetConstructedDataPolarity must not be nil")
 	}
 	_result := &_BACnetConstructedDataPolarity{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Polarity:                      polarity,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPolarity(structType any) BACnetConstructedDataPola
 	return nil
 }
 
-func (m *_BACnetConstructedDataPolarity) GetTypeName() string {
+func (m *_BACnetConstructedDataPolarity) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPolarity"
 }
 
-func (m *_BACnetConstructedDataPolarity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPolarity) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (polarity)
 	lengthInBits += m.Polarity.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPolarity) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPolarity) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPolarity) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

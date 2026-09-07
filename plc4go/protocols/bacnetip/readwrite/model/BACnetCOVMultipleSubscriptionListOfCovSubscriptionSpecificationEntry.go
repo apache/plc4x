@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(st
 	return nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) GetTypeName() string {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) GetPlx4xTypeName() string {
 	return "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (monitoredObjectIdentifier)
 	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 	return lengthInBits
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWi
 }
 
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
-	v, err := (&_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

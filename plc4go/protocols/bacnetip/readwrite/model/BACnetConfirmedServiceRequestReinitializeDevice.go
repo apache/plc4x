@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetConfirmedServiceRequestReinitializeDevice = (*_BACnetConfirmedServic
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
 
 // NewBACnetConfirmedServiceRequestReinitializeDevice factory function for _BACnetConfirmedServiceRequestReinitializeDevice
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReinitializeDevice {
+func NewBACnetConfirmedServiceRequestReinitializeDevice(serviceRequestLength uint32, reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString) *_BACnetConfirmedServiceRequestReinitializeDevice {
 	if reinitializedStateOfDevice == nil {
 		panic("reinitializedStateOfDevice of type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged for BACnetConfirmedServiceRequestReinitializeDevice must not be nil")
 	}
@@ -252,12 +252,12 @@ func CastBACnetConfirmedServiceRequestReinitializeDevice(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReinitializeDevice"
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (reinitializedStateOfDevice)
 	lengthInBits += m.ReinitializedStateOfDevice.GetLengthInBits(ctx)
@@ -270,7 +270,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -330,7 +330,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 			return errors.Wrap(err, "Error serializing 'reinitializedStateOfDevice' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", new(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 

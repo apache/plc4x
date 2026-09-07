@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,10 +41,13 @@ type AdsStampHeader interface {
 	utils.Serializable
 	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
+	// 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
 	GetTimestamp() uint64
 	// GetSamples returns Samples (property field)
+	// 4 bytes	Number of elements of type AdsNotificationSample.
 	GetSamples() uint32
 	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
+	// n bytes	Array with elements of type AdsNotificationSample.
 	GetAdsNotificationSamples() []AdsNotificationSample
 	// IsAdsStampHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsStampHeader()
@@ -189,12 +192,12 @@ func CastAdsStampHeader(structType any) AdsStampHeader {
 	return nil
 }
 
-func (m *_AdsStampHeader) GetTypeName() string {
+func (m *_AdsStampHeader) GetPlx4xTypeName() string {
 	return "AdsStampHeader"
 }
 
-func (m *_AdsStampHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsStampHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timestamp)
 	lengthInBits += 64
@@ -213,7 +216,7 @@ func (m *_AdsStampHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsStampHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsStampHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -228,7 +231,7 @@ func AdsStampHeaderParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
-	v, err := (&_AdsStampHeader{}).parse(ctx, readBuffer)
+	v, err := (new(_AdsStampHeader)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

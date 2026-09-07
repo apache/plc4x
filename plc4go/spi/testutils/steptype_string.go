@@ -42,9 +42,9 @@ const _StepType_name = "StepTypeOutgoingPlcMessageStepTypeOutgoingPlcBytesStepTy
 var _StepType_index = [...]uint8{0, 26, 50, 76, 100, 118, 137, 150, 167}
 
 func (i StepType) String() string {
-	i -= 1
-	if i >= StepType(len(_StepType_index)-1) {
-		return "StepType(" + strconv.FormatInt(int64(i+1), 10) + ")"
+	idx := int(i) - 1
+	if i < 1 || idx >= len(_StepType_index)-1 {
+		return "StepType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _StepType_name[_StepType_index[i]:_StepType_index[i+1]]
+	return _StepType_name[_StepType_index[idx]:_StepType_index[idx+1]]
 }

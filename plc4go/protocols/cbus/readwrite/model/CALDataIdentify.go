@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +44,7 @@ type CALDataIdentify interface {
 	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
+	// Request
 	GetAttribute() Attribute
 	// IsCALDataIdentify is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataIdentify()
@@ -59,9 +62,9 @@ var _ CALDataIdentify = (*_CALDataIdentify)(nil)
 var _ CALDataRequirements = (*_CALDataIdentify)(nil)
 
 // NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
+func NewCALDataIdentify(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute) *_CALDataIdentify {
 	_result := &_CALDataIdentify{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		Attribute:       attribute,
 	}
 	_result.CALDataContract.(*_CALData)._SubType = _result
@@ -203,12 +206,12 @@ func CastCALDataIdentify(structType any) CALDataIdentify {
 	return nil
 }
 
-func (m *_CALDataIdentify) GetTypeName() string {
+func (m *_CALDataIdentify) GetPlx4xTypeName() string {
 	return "CALDataIdentify"
 }
 
-func (m *_CALDataIdentify) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+func (m *_CALDataIdentify) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (attribute)
 	lengthInBits += 8
@@ -216,7 +219,7 @@ func (m *_CALDataIdentify) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALDataIdentify) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALDataIdentify) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -231,7 +234,7 @@ func (m *_CALDataIdentify) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attribute' field"))
 	}
@@ -245,7 +248,7 @@ func (m *_CALDataIdentify) parse(ctx context.Context, readBuffer utils.ReadBuffe
 }
 
 func (m *_CALDataIdentify) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -262,7 +265,7 @@ func (m *_CALDataIdentify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for CALDataIdentify")
 		}
 
-		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'attribute' field")
 		}
 

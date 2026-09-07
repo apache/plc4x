@@ -24,20 +24,19 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
+import org.apache.plc4x.java.knxnetip.KnxNetIpMessageCodec;
 import org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint;
 import org.apache.plc4x.java.knxnetip.readwrite.HostProtocolCode;
 import org.apache.plc4x.java.knxnetip.readwrite.IPAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
 import org.apache.plc4x.java.knxnetip.readwrite.SearchRequest;
 import org.apache.plc4x.java.knxnetip.readwrite.SearchResponse;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
-import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,139 +60,134 @@ import java.util.concurrent.TimeUnit;
 
 public class KnxNetIpPlcDiscoverer implements PlcDiscoverer {
 
-    private final Logger logger = LoggerFactory.getLogger(KnxNetIpPlcDiscoverer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpPlcDiscoverer.class);
+    private static final long DISCOVERY_TIMEOUT_MS = 5000L;
+    private static final byte[] KNX_MULTICAST = new byte[]{(byte) 224, 0, 23, 12};
 
     @Override
     public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
         return discoverWithHandler(discoveryRequest, null);
     }
 
-    public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
+    @Override
+    public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest,
+                                                                       PlcDiscoveryItemHandler handler) {
         CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
         Map<String, PlcDiscoveryItem> values = new ConcurrentHashMap<>();
-
-        // Send out a discovery request to every non-loopback device with IPv4 address.
         List<DatagramSocket> openSockets = new ArrayList<>();
+
         try {
             for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-                if (!networkInterface.isLoopback()) {
-                    for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                        if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address)) {
-                            Inet4Address inet4Address = (Inet4Address) interfaceAddress.getAddress();
-                            // Open a listening socket on the AMS discovery default port for taking in responses.
-                            DatagramSocket discoverySocket = new DatagramSocket(KnxNetIpDriver.KNXNET_IP_PORT, inet4Address);
-                            discoverySocket.setBroadcast(true);
-
-                            openSockets.add(discoverySocket);
-
-                            // Start listening for incoming messages.
-                            Thread thread = new Thread(() -> {
-                                try {
-                                    while (true) {
-                                        // Wait for an incoming packet.
-                                        byte[] buffer = new byte[512];
-                                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                                        discoverySocket.receive(packet);
-
-                                        ReadBuffer readBuffer = new ReadBufferByteBased(packet.getData());
-                                        try {
-                                            KnxNetIpMessage knxNetIpMessage = KnxNetIpMessage.staticParse(readBuffer);
-                                            if(knxNetIpMessage instanceof SearchResponse) {
-                                                SearchResponse searchResponse = (SearchResponse) knxNetIpMessage;
-                                                IPAddress ipAddress = searchResponse.getHpaiControlEndpoint().getIpAddress();
-                                                int port = searchResponse.getHpaiControlEndpoint().getIpPort();
-                                                String name = new String(searchResponse.getDibDeviceInfo().getDeviceFriendlyName()).trim();
-
-                                                PlcDiscoveryItem plcDiscoveryItem = new DefaultPlcDiscoveryItem(
-                                                    "knxnet-ip",
-                                                    "udp",
-                                                    InetAddress.getByAddress(ipAddress.getAddr()).toString().substring(1) + ":" + port,
-                                                    Collections.emptyMap(),
-                                                    name,
-                                                    Collections.emptyMap());
-
-                                                // If we've got an explicit handler, pass the new item to that.
-                                                if ((handler != null) && !values.containsKey(plcDiscoveryItem.getConnectionUrl())){
-                                                    handler.handle(plcDiscoveryItem);
-                                                }
-
-                                                // Simply add the item to the list.
-                                                values.put(plcDiscoveryItem.getConnectionUrl(), plcDiscoveryItem);
-                                            }
-                                        } catch (ParseException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-                                } catch (SocketException e) {
-                                    // If we're closing the socket at the end, a "Socket closed"
-                                    // exception is thrown.
-                                    if(!"Socket closed".equals(e.getMessage())) {
-                                        logger.error("Error receiving EIP discovery response", e);
-                                    }
-                                } catch (IOException e) {
-                                    logger.error("Error reading EIP discovery response", e);
-                                }
-                            });
-                            thread.start();
-
-                            // Send the discovery request.
-                            try {
-                                // TODO: Replace with the local ip address and the local udp port number.
-
-                                SearchRequest searchRequest = new SearchRequest(new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, new IPAddress(discoverySocket.getLocalAddress().getAddress()), discoverySocket.getLocalPort()));
-
-                                // Serialize the message.
-                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(searchRequest.getLengthInBytes()/*, ByteOrder.LITTLE_ENDIAN*/);
-                                searchRequest.serialize(writeBuffer);
-
-                                // Get the broadcast address for this interface.
-                                InetAddress knxDiscoveryAddress = InetAddress.getByAddress(new byte[]{(byte) 224, (byte) 0, (byte) 23, (byte) 12});
-
-                                // Create the UDP packet to the broadcast address.
-                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, knxDiscoveryAddress, KnxNetIpDriver.KNXNET_IP_PORT);
-                                discoverySocket.send(discoveryRequestPacket);
-                            } catch (SerializationException e) {
-                                logger.error("Error serializing EIP discovery request", e);
-                            } catch (IOException e) {
-                                logger.error("Error sending EIP discover request", e);
-                            }
-                        }
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                if (networkInterface.isLoopback()) {
+                    continue;
+                }
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    if (interfaceAddress.getBroadcast() == null) {
+                        continue;
                     }
+                    if (!(interfaceAddress.getAddress() instanceof Inet4Address inet4Address)) {
+                        continue;
+                    }
+                    DatagramSocket discoverySocket = new DatagramSocket(KnxNetIpDriver.KNXNET_IP_PORT, inet4Address);
+                    discoverySocket.setBroadcast(true);
+                    openSockets.add(discoverySocket);
+
+                    Thread receiver = new Thread(() -> receiveLoop(discoverySocket, values, handler),
+                        "KnxDiscovery-" + inet4Address.getHostAddress());
+                    receiver.setDaemon(true);
+                    receiver.start();
+
+                    sendSearchRequest(discoverySocket);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
         } catch (SocketException e) {
-            throw new RuntimeException(e);
-        } finally {
-            for (DatagramSocket openSocket : openSockets) {
-                openSocket.close();
-            }
+            future.completeExceptionally(new RuntimeException("Error preparing KNXnet/IP discovery sockets", e));
+            return future;
         }
 
-        // Create a timer that completes the future after a given time with all the responses it found till then.
-        Timer timer = new Timer("Discovery Timeout");
+        Timer timer = new Timer("KnxDiscoveryTimeout", true);
         timer.schedule(new TimerTask() {
+            @Override
             public void run() {
-                PlcDiscoveryResponse response =
-                    new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values.values()));
+                openSockets.forEach(DatagramSocket::close);
+                future.complete(new DefaultPlcDiscoveryResponse(
+                    discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values.values())));
                 timer.cancel();
-                timer.purge();
-                future.complete(response);
             }
-        }, 5000L);
+        }, DISCOVERY_TIMEOUT_MS);
 
         return future;
     }
 
+    private void receiveLoop(DatagramSocket socket,
+                             Map<String, PlcDiscoveryItem> values,
+                             PlcDiscoveryItemHandler handler) {
+        byte[] buffer = new byte[512];
+        try {
+            while (!socket.isClosed()) {
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
+                try {
+                    ReadBufferByteBased readBuffer = new ReadBufferByteBased(packet.getData(),
+                        KnxNetIpMessageCodec.BUFFER_OPTIONS);
+                    KnxNetIpMessage message = KnxNetIpMessage.staticParse(readBuffer);
+                    if (!(message instanceof SearchResponse searchResponse)) {
+                        continue;
+                    }
+                    IPAddress ipAddress = searchResponse.getHpaiControlEndpoint().getIpAddress();
+                    int port = searchResponse.getHpaiControlEndpoint().getIpPort();
+                    String name = new String(searchResponse.getDibDeviceInfo().getDeviceFriendlyName()).trim();
+                    String transportUrl = InetAddress.getByAddress(ipAddress.getAddr()).getHostAddress() + ":" + port;
+                    PlcDiscoveryItem item = new DefaultPlcDiscoveryItem(
+                        "knxnet-ip", "udp", transportUrl,
+                        Collections.emptyMap(), name, Collections.emptyMap());
+                    if (handler != null && !values.containsKey(item.getConnectionUrl())) {
+                        handler.handle(item);
+                    }
+                    values.put(item.getConnectionUrl(), item);
+                } catch (BufferException e) {
+                    LOGGER.warn("Failed to parse incoming KNXnet/IP discovery datagram", e);
+                }
+            }
+        } catch (SocketException e) {
+            if (!"Socket closed".equals(e.getMessage())) {
+                LOGGER.error("Error receiving KNXnet/IP discovery response", e);
+            }
+        } catch (IOException e) {
+            LOGGER.error("Error reading KNXnet/IP discovery response", e);
+        }
+    }
+
+    private void sendSearchRequest(DatagramSocket discoverySocket) {
+        try {
+            SearchRequest searchRequest = new SearchRequest(
+                new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP,
+                    new IPAddress(discoverySocket.getLocalAddress().getAddress()),
+                    discoverySocket.getLocalPort()));
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(
+                new byte[searchRequest.getLengthInBytes()], KnxNetIpMessageCodec.BUFFER_OPTIONS);
+            searchRequest.serialize(writeBuffer);
+            InetAddress knxDiscoveryAddress = InetAddress.getByAddress(KNX_MULTICAST);
+            DatagramPacket packet = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length,
+                knxDiscoveryAddress, KnxNetIpDriver.KNXNET_IP_PORT);
+            discoverySocket.send(packet);
+        } catch (BufferException e) {
+            LOGGER.error("Error serializing KNXnet/IP discovery request", e);
+        } catch (IOException e) {
+            LOGGER.error("Error sending KNXnet/IP discovery request", e);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         KnxNetIpPlcDiscoverer discoverer = new KnxNetIpPlcDiscoverer();
-        CompletableFuture<PlcDiscoveryResponse> discover = discoverer.discover(null);
-        PlcDiscoveryResponse plcDiscoveryResponse = discover.get(6000L, TimeUnit.MILLISECONDS);
-        for (PlcDiscoveryItem value : plcDiscoveryResponse.getValues()) {
+        PlcDiscoveryResponse response = discoverer.discover(null).get(10, TimeUnit.SECONDS);
+        for (PlcDiscoveryItem value : response.getValues()) {
             System.out.println(value.getConnectionUrl() + " (" + value.getName() + ")");
         }
     }

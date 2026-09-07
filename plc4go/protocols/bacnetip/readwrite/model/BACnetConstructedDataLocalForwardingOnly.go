@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLocalForwardingOnly = (*_BACnetConstructedDataLocalFo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalForwardingOnly)(nil)
 
 // NewBACnetConstructedDataLocalForwardingOnly factory function for _BACnetConstructedDataLocalForwardingOnly
-func NewBACnetConstructedDataLocalForwardingOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localForwardingOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalForwardingOnly {
+func NewBACnetConstructedDataLocalForwardingOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localForwardingOnly BACnetApplicationTagBoolean) *_BACnetConstructedDataLocalForwardingOnly {
 	if localForwardingOnly == nil {
 		panic("localForwardingOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataLocalForwardingOnly must not be nil")
 	}
 	_result := &_BACnetConstructedDataLocalForwardingOnly{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LocalForwardingOnly:           localForwardingOnly,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLocalForwardingOnly(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnly) GetTypeName() string {
+func (m *_BACnetConstructedDataLocalForwardingOnly) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLocalForwardingOnly"
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (localForwardingOnly)
 	lengthInBits += m.LocalForwardingOnly.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

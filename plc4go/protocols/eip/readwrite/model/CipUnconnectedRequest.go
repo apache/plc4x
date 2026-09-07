@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,12 +43,13 @@ type CipUnconnectedRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
 	// GetInstanceSegment returns InstanceSegment (property field)
 	GetInstanceSegment() PathSegment
 	// GetUnconnectedService returns UnconnectedService (property field)
+	//subtract above and routing
 	GetUnconnectedService() CipService
 	// GetBackPlane returns BackPlane (property field)
 	GetBackPlane() int8
@@ -62,7 +63,7 @@ type CipUnconnectedRequest interface {
 
 // _CipUnconnectedRequest is the data-structure of this message
 type _CipUnconnectedRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 	ClassSegment       PathSegment
 	InstanceSegment    PathSegment
 	UnconnectedService CipService
@@ -73,10 +74,10 @@ type _CipUnconnectedRequest struct {
 }
 
 var _ CipUnconnectedRequest = (*_CipUnconnectedRequest)(nil)
-var _ CipServiceRequirements = (*_CipUnconnectedRequest)(nil)
+var _ CipServiceRequestRequirements = (*_CipUnconnectedRequest)(nil)
 
 // NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
-func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
+func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) *_CipUnconnectedRequest {
 	if classSegment == nil {
 		panic("classSegment of type PathSegment for CipUnconnectedRequest must not be nil")
 	}
@@ -87,14 +88,14 @@ func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegm
 		panic("unconnectedService of type CipService for CipUnconnectedRequest must not be nil")
 	}
 	_result := &_CipUnconnectedRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		ClassSegment:       classSegment,
-		InstanceSegment:    instanceSegment,
-		UnconnectedService: unconnectedService,
-		BackPlane:          backPlane,
-		Slot:               slot,
+		CipServiceRequestContract: NewCipServiceRequest(),
+		ClassSegment:              classSegment,
+		InstanceSegment:           instanceSegment,
+		UnconnectedService:        unconnectedService,
+		BackPlane:                 backPlane,
+		Slot:                      slot,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -125,7 +126,7 @@ type CipUnconnectedRequestBuilder interface {
 	// WithSlot adds Slot (property field)
 	WithSlot(int8) CipUnconnectedRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the CipUnconnectedRequest or returns an error if something is wrong
 	Build() (CipUnconnectedRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,16 +141,16 @@ func NewCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder {
 type _CipUnconnectedRequestBuilder struct {
 	*_CipUnconnectedRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (CipUnconnectedRequestBuilder) = (*_CipUnconnectedRequestBuilder)(nil)
 
-func (b *_CipUnconnectedRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipUnconnectedRequest
+func (b *_CipUnconnectedRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._CipUnconnectedRequest
 }
 
 func (b *_CipUnconnectedRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) CipUnconnectedRequestBuilder {
@@ -235,14 +236,14 @@ func (b *_CipUnconnectedRequestBuilder) MustBuild() CipUnconnectedRequest {
 	return build
 }
 
-func (b *_CipUnconnectedRequestBuilder) Done() CipServiceBuilder {
+func (b *_CipUnconnectedRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipUnconnectedRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_CipUnconnectedRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -276,10 +277,6 @@ func (m *_CipUnconnectedRequest) GetService() uint8 {
 	return 0x52
 }
 
-func (m *_CipUnconnectedRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_CipUnconnectedRequest) GetConnected() bool {
 	return bool(false)
 }
@@ -289,8 +286,8 @@ func (m *_CipUnconnectedRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipUnconnectedRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipUnconnectedRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -347,12 +344,12 @@ func CastCipUnconnectedRequest(structType any) CipUnconnectedRequest {
 	return nil
 }
 
-func (m *_CipUnconnectedRequest) GetTypeName() string {
+func (m *_CipUnconnectedRequest) GetPlx4xTypeName() string {
 	return "CipUnconnectedRequest"
 }
 
-func (m *_CipUnconnectedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_CipUnconnectedRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
@@ -384,12 +381,12 @@ func (m *_CipUnconnectedRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipUnconnectedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipUnconnectedRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipUnconnectedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipUnconnectedRequest CipUnconnectedRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_CipUnconnectedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__cipUnconnectedRequest CipUnconnectedRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -519,7 +516,7 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipUnconnectedRequest) IsCipUnconnectedRequest() {}
@@ -533,7 +530,7 @@ func (m *_CipUnconnectedRequest) deepCopy() *_CipUnconnectedRequest {
 		return nil
 	}
 	_CipUnconnectedRequestCopy := &_CipUnconnectedRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 		utils.DeepCopy[PathSegment](m.ClassSegment),
 		utils.DeepCopy[PathSegment](m.InstanceSegment),
 		utils.DeepCopy[CipService](m.UnconnectedService),
@@ -541,7 +538,7 @@ func (m *_CipUnconnectedRequest) deepCopy() *_CipUnconnectedRequest {
 		m.Slot,
 		m.reservedField0,
 	}
-	_CipUnconnectedRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipUnconnectedRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _CipUnconnectedRequestCopy
 }
 

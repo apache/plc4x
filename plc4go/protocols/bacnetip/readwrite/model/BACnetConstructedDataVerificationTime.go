@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificati
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVerificationTime)(nil)
 
 // NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
-func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
+func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger) *_BACnetConstructedDataVerificationTime {
 	if verificationTime == nil {
 		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataVerificationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VerificationTime:              verificationTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataVerificationTime(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataVerificationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVerificationTime"
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (verificationTime)
 	lengthInBits += m.VerificationTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataVerificationTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

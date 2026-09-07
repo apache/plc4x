@@ -39,6 +39,11 @@ public class MemoryChunkStorage implements ChunkStorage {
     }
 
     @Override
+    public long count() {
+        return chunks.size();
+    }
+
+    @Override
     public byte[] get() {
         Optional<byte[]> collect = chunks.stream().reduce((b1, b2) -> {
             byte[] combined = new byte[b1.length + b2.length];

@@ -19,38 +19,40 @@
 package org.apache.plc4x.java.opcua.context;
 
 import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
-import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.apache.plc4x.java.opcua.security.SecurityPolicy.EncryptionAlgorithm;
-import org.apache.plc4x.java.opcua.security.SecurityPolicy.MacSignatureAlgorithm;
-import org.apache.plc4x.java.opcua.security.SymmetricKeys;
-import org.apache.plc4x.java.spi.generation.*;
-
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy.EncryptionAlgorithm;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy.MacSignatureAlgorithm;
+import org.apache.plc4x.java.opcua.security.SymmetricKeys;
 
-
+/**
+ * Encryption + signing for the steady-state {@code MSG}/{@code CLO} chunks once
+ * the symmetric keys have been derived from the asymmetric handshake's nonces.
+ */
 public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
 
     private SymmetricKeys keys = null;
     private byte[] senderNonce;
 
-    public SymmetricEncryptionHandler(Conversation channel, SecurityPolicy policy) {
+    public SymmetricEncryptionHandler(SecureChannelState channel, SecurityPolicy policy) {
         super(channel, policy);
     }
 
-    protected void verify(WriteBufferByteBased buffer, Chunk chunk, int messageLength) throws Exception {
+    @Override
+    protected void verify(byte[] chunkBytes, Chunk chunk, int messageLength) throws Exception {
         int signatureStart = messageLength - chunk.getSignatureSize();
-        byte[] message = buffer.getBytes(0, signatureStart);
-        byte[] signatureData = buffer.getBytes(signatureStart, signatureStart + chunk.getSignatureSize());
+        byte[] message = Arrays.copyOfRange(chunkBytes, 0, signatureStart);
+        byte[] signatureData = Arrays.copyOfRange(chunkBytes, signatureStart, signatureStart + chunk.getSignatureSize());
 
         SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
         MacSignatureAlgorithm algorithm = securityPolicy.getSymmetricSignatureAlgorithm();
@@ -64,14 +66,15 @@ public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
         }
     }
 
-    protected int decrypt(WriteBufferByteBased chunkBuffer, Chunk chunk, int messageLength) throws Exception {
-        int bodyStart = 12 + chunk.getSecurityHeaderSize();
+    @Override
+    protected int decryptInPlace(byte[] chunkBytes, Chunk chunk, int messageLength) throws Exception {
+        int bodyStart = SECURE_MESSAGE_HEADER_SIZE + chunk.getSecurityHeaderSize();
 
         int bodySize = messageLength - bodyStart;
         int blockCount = bodySize / chunk.getCipherTextBlockSize();
-        assert(bodySize % chunk.getCipherTextBlockSize() == 0);
+        assert (bodySize % chunk.getCipherTextBlockSize() == 0);
 
-        byte[] encrypted = chunkBuffer.getBytes(bodyStart, bodyStart + bodySize);
+        byte[] encrypted = Arrays.copyOfRange(chunkBytes, bodyStart, bodyStart + bodySize);
         byte[] plainText = new byte[chunk.getCipherTextBlockSize() * blockCount];
 
         SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
@@ -79,27 +82,27 @@ public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
 
         int bodyLength = cipher.doFinal(encrypted, 0, encrypted.length, plainText, 0);
 
-        chunkBuffer.setPos(bodyStart);
-        chunkBuffer.writeByteArray("payload", plainText);
+        System.arraycopy(plainText, 0, chunkBytes, bodyStart, plainText.length);
         return bodyLength;
     }
 
-    protected void encrypt(WriteBufferByteBased buffer, int securityHeaderSize, int plainTextBlockSize, int cipherTextBlockSize, int blockCount) throws Exception {
+    @Override
+    protected void encryptInPlace(byte[] chunkBytes, int securityHeaderSize, int plainTextBlockSize, int cipherTextBlockSize, int blockCount) throws Exception {
         SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
 
-        int bodyStart = 12 + securityHeaderSize;
-        byte[] copy = buffer.getBytes(bodyStart, bodyStart + (plainTextBlockSize * blockCount));
+        int bodyStart = SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize;
+        byte[] copy = Arrays.copyOfRange(chunkBytes, bodyStart, bodyStart + (plainTextBlockSize * blockCount));
         byte[] encrypted = new byte[cipherTextBlockSize * blockCount];
 
         EncryptionAlgorithm transformation = securityPolicy.getSymmetricEncryptionAlgorithm();
         Cipher cipher = getCipher(symmetricKeys.getClientKeys(), transformation, Cipher.ENCRYPT_MODE);
         cipher.doFinal(copy, 0, copy.length, encrypted, 0);
 
-        buffer.setPos(bodyStart);
-        buffer.writeByteArray("encrypted", encrypted);
+        System.arraycopy(encrypted, 0, chunkBytes, bodyStart, encrypted.length);
     }
 
-    protected byte[] sign(byte[] data)throws GeneralSecurityException {
+    @Override
+    protected byte[] sign(byte[] data) throws GeneralSecurityException {
         SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
         MacSignatureAlgorithm algorithm = securityPolicy.getSymmetricSignatureAlgorithm();
         Mac signature = algorithm.getSignature();
@@ -113,21 +116,19 @@ public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
             this.senderNonce = senderNonce;
             keys = SymmetricKeys.generateKeyPair(senderNonce, receiverNonce, securityPolicy);
         } else if (!Arrays.equals(this.senderNonce, senderNonce)) {
-            // sender nonce changed, we have to roll new security keys because security token
-            // was just renewed.
-            // We do not track receiver nonce, because they change at the same time
+            // Sender nonce changed — the security token was just renewed, so
+            // we have to roll new symmetric keys.
             this.senderNonce = senderNonce;
             keys = SymmetricKeys.generateKeyPair(senderNonce, receiverNonce, securityPolicy);
         }
         return keys;
     }
 
-    private static Cipher getCipher(SymmetricKeys.Keys symmetricKeys, EncryptionAlgorithm transformation, int mode) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+    private static Cipher getCipher(SymmetricKeys.Keys symmetricKeys, EncryptionAlgorithm transformation, int mode)
+        throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         Cipher cipher = transformation.getCipher();
-
         SecretKeySpec keySpec = new SecretKeySpec(symmetricKeys.getEncryptionKey(), "AES");
         IvParameterSpec ivSpec = new IvParameterSpec(symmetricKeys.getInitializationVector());
-
         cipher.init(mode, keySpec, ivSpec);
         return cipher;
     }

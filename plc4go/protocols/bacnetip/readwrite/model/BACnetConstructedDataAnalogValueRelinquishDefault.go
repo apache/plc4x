@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAnalogValueRelinquishDefault = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogValueRelinquishDefault)(nil)
 
 // NewBACnetConstructedDataAnalogValueRelinquishDefault factory function for _BACnetConstructedDataAnalogValueRelinquishDefault
-func NewBACnetConstructedDataAnalogValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueRelinquishDefault {
+func NewBACnetConstructedDataAnalogValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagReal) *_BACnetConstructedDataAnalogValueRelinquishDefault {
 	if relinquishDefault == nil {
 		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValueRelinquishDefault must not be nil")
 	}
 	_result := &_BACnetConstructedDataAnalogValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RelinquishDefault:             relinquishDefault,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAnalogValueRelinquishDefault(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogValueRelinquishDefault"
 }
 
-func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -20,7 +20,7 @@ package org.apache.plc4x.java.opm;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;

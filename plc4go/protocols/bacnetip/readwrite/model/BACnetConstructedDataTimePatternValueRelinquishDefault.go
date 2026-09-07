@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimePatternValueRelinquishDefault = (*_BACnetConstruc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimePatternValueRelinquishDefault)(nil)
 
 // NewBACnetConstructedDataTimePatternValueRelinquishDefault factory function for _BACnetConstructedDataTimePatternValueRelinquishDefault
-func NewBACnetConstructedDataTimePatternValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimePatternValueRelinquishDefault {
+func NewBACnetConstructedDataTimePatternValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagTime) *_BACnetConstructedDataTimePatternValueRelinquishDefault {
 	if relinquishDefault == nil {
 		panic("relinquishDefault of type BACnetApplicationTagTime for BACnetConstructedDataTimePatternValueRelinquishDefault must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimePatternValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RelinquishDefault:             relinquishDefault,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimePatternValueRelinquishDefault(structType any) 
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimePatternValueRelinquishDefault"
 }
 
-func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetLengthInBit
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

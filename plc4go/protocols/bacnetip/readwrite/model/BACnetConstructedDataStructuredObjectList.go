@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataStructuredObjectList interface {
 	// GetStructuredObjectList returns StructuredObjectList (property field)
 	GetStructuredObjectList() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataStructuredObjectList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStructuredObjectList()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataStructuredObjectList = (*_BACnetConstructedDataStruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStructuredObjectList)(nil)
 
 // NewBACnetConstructedDataStructuredObjectList factory function for _BACnetConstructedDataStructuredObjectList
-func NewBACnetConstructedDataStructuredObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, structuredObjectList []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredObjectList {
+func NewBACnetConstructedDataStructuredObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, structuredObjectList []BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataStructuredObjectList {
 	_result := &_BACnetConstructedDataStructuredObjectList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		StructuredObjectList:          structuredObjectList,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataStructuredObjectList(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataStructuredObjectList) GetTypeName() string {
+func (m *_BACnetConstructedDataStructuredObjectList) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStructuredObjectList"
 }
 
-func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataStructuredObjectList) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

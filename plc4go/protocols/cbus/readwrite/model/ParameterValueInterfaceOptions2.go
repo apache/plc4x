@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,6 +46,7 @@ type ParameterValueInterfaceOptions2 interface {
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions2
 	// GetData returns Data (property field)
+	// TODO: find out what additional bytes mean here...
 	GetData() []byte
 	// IsParameterValueInterfaceOptions2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueInterfaceOptions2()
@@ -62,12 +65,12 @@ var _ ParameterValueInterfaceOptions2 = (*_ParameterValueInterfaceOptions2)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions2)(nil)
 
 // NewParameterValueInterfaceOptions2 factory function for _ParameterValueInterfaceOptions2
-func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions2 {
+func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte) *_ParameterValueInterfaceOptions2 {
 	if value == nil {
 		panic("value of type InterfaceOptions2 for ParameterValueInterfaceOptions2 must not be nil")
 	}
 	_result := &_ParameterValueInterfaceOptions2{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 		Data:                   data,
 	}
@@ -240,25 +243,25 @@ func CastParameterValueInterfaceOptions2(structType any) ParameterValueInterface
 	return nil
 }
 
-func (m *_ParameterValueInterfaceOptions2) GetTypeName() string {
+func (m *_ParameterValueInterfaceOptions2) GetPlx4xTypeName() string {
 	return "ParameterValueInterfaceOptions2"
 }
 
-func (m *_ParameterValueInterfaceOptions2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+func (m *_ParameterValueInterfaceOptions2) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -278,13 +281,13 @@ func (m *_ParameterValueInterfaceOptions2) parse(ctx context.Context, readBuffer
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "InterfaceOptions2 has exactly one byte"})
 	}
 
-	value, err := ReadSimpleField[InterfaceOptions2](ctx, "value", ReadComplex[InterfaceOptions2](InterfaceOptions2ParseWithBuffer, readBuffer))
+	value, err := ReadSimpleField[InterfaceOptions2](ctx, "value", ReadComplex[InterfaceOptions2](InterfaceOptions2ParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 	m.Value = value
 
-	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))))
+	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
@@ -298,7 +301,7 @@ func (m *_ParameterValueInterfaceOptions2) parse(ctx context.Context, readBuffer
 }
 
 func (m *_ParameterValueInterfaceOptions2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -315,11 +318,11 @@ func (m *_ParameterValueInterfaceOptions2) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueInterfaceOptions2")
 		}
 
-		if err := WriteSimpleField[InterfaceOptions2](ctx, "value", m.GetValue(), WriteComplex[InterfaceOptions2](writeBuffer)); err != nil {
+		if err := WriteSimpleField[InterfaceOptions2](ctx, "value", m.GetValue(), WriteComplex[InterfaceOptions2](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

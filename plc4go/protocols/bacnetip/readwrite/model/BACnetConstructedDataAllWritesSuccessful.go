@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAllWritesSuccessful = (*_BACnetConstructedDataAllWrit
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
 
 // NewBACnetConstructedDataAllWritesSuccessful factory function for _BACnetConstructedDataAllWritesSuccessful
-func NewBACnetConstructedDataAllWritesSuccessful(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allWritesSuccessful BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllWritesSuccessful {
+func NewBACnetConstructedDataAllWritesSuccessful(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allWritesSuccessful BACnetApplicationTagBoolean) *_BACnetConstructedDataAllWritesSuccessful {
 	if allWritesSuccessful == nil {
 		panic("allWritesSuccessful of type BACnetApplicationTagBoolean for BACnetConstructedDataAllWritesSuccessful must not be nil")
 	}
 	_result := &_BACnetConstructedDataAllWritesSuccessful{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AllWritesSuccessful:           allWritesSuccessful,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAllWritesSuccessful(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetTypeName() string {
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAllWritesSuccessful"
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (allWritesSuccessful)
 	lengthInBits += m.AllWritesSuccessful.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

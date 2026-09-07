@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +227,12 @@ func CastDF1CommandRequestMessage(structType any) DF1CommandRequestMessage {
 	return nil
 }
 
-func (m *_DF1CommandRequestMessage) GetTypeName() string {
+func (m *_DF1CommandRequestMessage) GetPlx4xTypeName() string {
 	return "DF1CommandRequestMessage"
 }
 
-func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1RequestMessageContract.(*_DF1RequestMessage).getLengthInBits(ctx))
+func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1RequestMessageContract.(*_DF1RequestMessage).getLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)
@@ -238,7 +240,7 @@ func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_DF1CommandRequestMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1CommandRequestMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +255,7 @@ func (m *_DF1CommandRequestMessage) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	command, err := ReadSimpleField[DF1RequestCommand](ctx, "command", ReadComplex[DF1RequestCommand](DF1RequestCommandParseWithBuffer, readBuffer))
+	command, err := ReadSimpleField[DF1RequestCommand](ctx, "command", ReadComplex[DF1RequestCommand](DF1RequestCommandParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
@@ -267,7 +269,7 @@ func (m *_DF1CommandRequestMessage) parse(ctx context.Context, readBuffer utils.
 }
 
 func (m *_DF1CommandRequestMessage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (m *_DF1CommandRequestMessage) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for DF1CommandRequestMessage")
 		}
 
-		if err := WriteSimpleField[DF1RequestCommand](ctx, "command", m.GetCommand(), WriteComplex[DF1RequestCommand](writeBuffer)); err != nil {
+		if err := WriteSimpleField[DF1RequestCommand](ctx, "command", m.GetCommand(), WriteComplex[DF1RequestCommand](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 

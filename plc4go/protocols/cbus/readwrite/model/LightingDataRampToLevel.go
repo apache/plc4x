@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,12 +218,12 @@ func CastLightingDataRampToLevel(structType any) LightingDataRampToLevel {
 	return nil
 }
 
-func (m *_LightingDataRampToLevel) GetTypeName() string {
+func (m *_LightingDataRampToLevel) GetPlx4xTypeName() string {
 	return "LightingDataRampToLevel"
 }
 
-func (m *_LightingDataRampToLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
+func (m *_LightingDataRampToLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -234,7 +234,7 @@ func (m *_LightingDataRampToLevel) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LightingDataRampToLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LightingDataRampToLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

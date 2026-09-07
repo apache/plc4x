@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,8 +62,8 @@ type BACnetEventParameterContract interface {
 
 // BACnetEventParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetEventParameterRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -481,23 +481,23 @@ func CastBACnetEventParameter(structType any) BACnetEventParameter {
 	return nil
 }
 
-func (m *_BACnetEventParameter) GetTypeName() string {
+func (m *_BACnetEventParameter) GetPlx4xTypeName() string {
 	return "BACnetEventParameter"
 }
 
-func (m *_BACnetEventParameter) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventParameter) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameter) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventParameter) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetEventParameter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -517,7 +517,7 @@ func BACnetEventParameterParseWithBufferProducer[T BACnetEventParameter]() func(
 }
 
 func BACnetEventParameterParseWithBuffer[T BACnetEventParameter](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetEventParameter{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetEventParameter)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

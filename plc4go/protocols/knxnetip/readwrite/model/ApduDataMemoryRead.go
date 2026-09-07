@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ ApduDataMemoryRead = (*_ApduDataMemoryRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryRead)(nil)
 
 // NewApduDataMemoryRead factory function for _ApduDataMemoryRead
-func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
+func NewApduDataMemoryRead(numBytes uint8, address uint16) *_ApduDataMemoryRead {
 	_result := &_ApduDataMemoryRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		NumBytes:         numBytes,
 		Address:          address,
 	}
@@ -222,12 +222,12 @@ func CastApduDataMemoryRead(structType any) ApduDataMemoryRead {
 	return nil
 }
 
-func (m *_ApduDataMemoryRead) GetTypeName() string {
+func (m *_ApduDataMemoryRead) GetPlx4xTypeName() string {
 	return "ApduDataMemoryRead"
 }
 
-func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (numBytes)
 	lengthInBits += 6
@@ -238,7 +238,7 @@ func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApduDataMemoryRead) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataMemoryRead) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

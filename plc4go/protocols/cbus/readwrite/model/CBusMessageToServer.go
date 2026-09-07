@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +61,12 @@ var _ CBusMessageToServer = (*_CBusMessageToServer)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToServer)(nil)
 
 // NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
+func NewCBusMessageToServer(request Request) *_CBusMessageToServer {
 	if request == nil {
 		panic("request of type Request for CBusMessageToServer must not be nil")
 	}
 	_result := &_CBusMessageToServer{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		CBusMessageContract: NewCBusMessage(),
 		Request:             request,
 	}
 	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
@@ -225,12 +227,12 @@ func CastCBusMessageToServer(structType any) CBusMessageToServer {
 	return nil
 }
 
-func (m *_CBusMessageToServer) GetTypeName() string {
+func (m *_CBusMessageToServer) GetPlx4xTypeName() string {
 	return "CBusMessageToServer"
 }
 
-func (m *_CBusMessageToServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusMessageContract.(*_CBusMessage).getLengthInBits(ctx))
+func (m *_CBusMessageToServer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CBusMessageContract.(*_CBusMessage).getLengthInBits(ctx))
 
 	// Simple field (request)
 	lengthInBits += m.Request.GetLengthInBits(ctx)
@@ -238,7 +240,7 @@ func (m *_CBusMessageToServer) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusMessageToServer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CBusMessageToServer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +255,7 @@ func (m *_CBusMessageToServer) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	request, err := ReadSimpleField[Request](ctx, "request", ReadComplex[Request](RequestParseWithBufferProducer[Request]((CBusOptions)(cBusOptions)), readBuffer))
+	request, err := ReadSimpleField[Request](ctx, "request", ReadComplex[Request](RequestParseWithBufferProducer[Request]((CBusOptions)(cBusOptions)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'request' field"))
 	}
@@ -267,7 +269,7 @@ func (m *_CBusMessageToServer) parse(ctx context.Context, readBuffer utils.ReadB
 }
 
 func (m *_CBusMessageToServer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (m *_CBusMessageToServer) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToServer")
 		}
 
-		if err := WriteSimpleField[Request](ctx, "request", m.GetRequest(), WriteComplex[Request](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Request](ctx, "request", m.GetRequest(), WriteComplex[Request](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 

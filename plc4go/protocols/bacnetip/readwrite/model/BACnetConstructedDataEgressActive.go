@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEgressActive = (*_BACnetConstructedDataEgressActive)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressActive)(nil)
 
 // NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
-func NewBACnetConstructedDataEgressActive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressActive BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
+func NewBACnetConstructedDataEgressActive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressActive BACnetApplicationTagBoolean) *_BACnetConstructedDataEgressActive {
 	if egressActive == nil {
 		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
 	}
 	_result := &_BACnetConstructedDataEgressActive{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EgressActive:                  egressActive,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataEgressActive(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataEgressActive) GetTypeName() string {
+func (m *_BACnetConstructedDataEgressActive) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEgressActive"
 }
 
-func (m *_BACnetConstructedDataEgressActive) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEgressActive) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (egressActive)
 	lengthInBits += m.EgressActive.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEgressActive) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEgressActive) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEgressActive) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -276,12 +276,12 @@ func CastMediaTransportControlDataFastForward(structType any) MediaTransportCont
 	return nil
 }
 
-func (m *_MediaTransportControlDataFastForward) GetTypeName() string {
+func (m *_MediaTransportControlDataFastForward) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataFastForward"
 }
 
-func (m *_MediaTransportControlDataFastForward) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataFastForward) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -305,7 +305,7 @@ func (m *_MediaTransportControlDataFastForward) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataFastForward) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataFastForward) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

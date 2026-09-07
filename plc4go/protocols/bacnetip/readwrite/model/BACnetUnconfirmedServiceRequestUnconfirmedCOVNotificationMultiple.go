@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple = (*_BAC
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple factory function for _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
 	if subscriberProcessIdentifier == nil {
 		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
 	}
@@ -85,7 +85,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscr
 		panic("listOfCovNotifications of type ListOfCovNotificationsList for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		SubscriberProcessIdentifier:             subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:              initiatingDeviceIdentifier,
 		TimeRemaining:                           timeRemaining,
@@ -351,12 +351,12 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(struc
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Get
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -464,7 +464,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Ser
 			return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 		}
 
-		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", GetRef(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", new(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 

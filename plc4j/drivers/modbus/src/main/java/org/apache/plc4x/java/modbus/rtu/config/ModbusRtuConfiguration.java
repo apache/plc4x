@@ -19,25 +19,29 @@
 package org.apache.plc4x.java.modbus.rtu.config;
 
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.Since;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.Since;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
-public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
+public class ModbusRtuConfiguration implements Configuration {
 
-    @ConfigurationParameter("request-timeout")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(5_000)
-    @Description("Default timeout for all types of requests.")
+    @Description("Default timeout for all types of requests. The timeout covers the full time from submission including queueing; queued requests whose remaining budget falls below a small dispatch margin (at most a quarter of the timeout, capped at 50 ms) fail fast instead of being sent.")
     private int requestTimeout;
 
     @ConfigurationParameter("default-unit-identifier")
     @IntDefaultValue(1)
     @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
-    @Since("renamed from 'unit-identifier' in 0.13.0")
     private int defaultUnitIdentifier;
+
+    @ConfigurationParameter("ping-address")
+    @StringDefaultValue("4x00001:BOOL")
+    @Description("Simple address, that the driver will use to check, if the connection to a given device is active (Defaults to reading holding-register 1).")
+    private String pingAddress;
 
     @ConfigurationParameter("default-payload-byte-order")
     @StringDefaultValue("BIG_ENDIAN")
@@ -78,6 +82,14 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
         this.defaultUnitIdentifier = defaultUnitIdentifier;
     }
 
+    public String getPingAddress() {
+        return pingAddress;
+    }
+
+    public void setPingAddress(String pingAddress) {
+        this.pingAddress = pingAddress;
+    }
+
     public ModbusByteOrder getDefaultPayloadByteOrder() {
         return defaultPayloadByteOrder;
     }
@@ -107,6 +119,7 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
         return "ModbusRtuConfiguration{" +
             "requestTimeout=" + requestTimeout +
             ", unitIdentifier=" + defaultUnitIdentifier +
+            ", pingAddress=" + pingAddress +
             ", defaultPayloadByteOrder=" + defaultPayloadByteOrder +
             ", maxCoilsPerRequest=" + maxCoilsPerRequest +
             ", maxRegistersPerRequest=" + maxRegistersPerRequest +

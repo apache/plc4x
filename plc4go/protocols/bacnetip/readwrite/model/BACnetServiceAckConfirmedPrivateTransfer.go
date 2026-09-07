@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetServiceAckConfirmedPrivateTransfer = (*_BACnetServiceAckConfirmedPri
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
+func NewBACnetServiceAckConfirmedPrivateTransfer(serviceAckLength uint32, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData) *_BACnetServiceAckConfirmedPrivateTransfer {
 	if vendorId == nil {
 		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
 	}
@@ -285,12 +285,12 @@ func CastBACnetServiceAckConfirmedPrivateTransfer(structType any) BACnetServiceA
 	return nil
 }
 
-func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetTypeName() string {
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetPlx4xTypeName() string {
 	return "BACnetServiceAckConfirmedPrivateTransfer"
 }
 
-func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += m.VendorId.GetLengthInBits(ctx)
@@ -306,7 +306,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -376,7 +376,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(err, "Error serializing 'serviceNumber' field")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "resultBlock", GetRef(m.GetResultBlock()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "resultBlock", new(m.GetResultBlock()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'resultBlock' field")
 		}
 

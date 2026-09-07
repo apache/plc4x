@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,16 +53,13 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple interface {
 type _BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 	BACnetConfirmedServiceRequestContract
 	Data []BACnetReadAccessSpecification
-
-	// Arguments.
-	ServiceRequestPayloadLength uint32
 }
 
 var _ BACnetConfirmedServiceRequestReadPropertyMultiple = (*_BACnetConfirmedServiceRequestReadPropertyMultiple)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadPropertyMultiple)(nil)
 
 // NewBACnetConfirmedServiceRequestReadPropertyMultiple factory function for _BACnetConfirmedServiceRequestReadPropertyMultiple
-func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAccessSpecification, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadPropertyMultiple {
+func NewBACnetConfirmedServiceRequestReadPropertyMultiple(serviceRequestLength uint32, data []BACnetReadAccessSpecification) *_BACnetConfirmedServiceRequestReadPropertyMultiple {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyMultiple{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		Data:                                  data,
@@ -83,8 +80,6 @@ type BACnetConfirmedServiceRequestReadPropertyMultipleBuilder interface {
 	WithMandatoryFields(data []BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
 	// WithData adds Data (property field)
 	WithData(...BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
-	// WithArgServiceRequestPayloadLength sets a parser argument
-	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadPropertyMultiple or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithMandator
 
 func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithData(data ...BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
 	b.Data = data
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
-	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 
@@ -217,12 +207,12 @@ func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadPropertyMultiple"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -234,7 +224,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -292,16 +282,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) SerializeWithWriteB
 	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetServiceRequestPayloadLength() uint32 {
-	return m.ServiceRequestPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) IsBACnetConfirmedServiceRequestReadPropertyMultiple() {
 }
 
@@ -316,7 +296,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) deepCopy() *_BACnet
 	_BACnetConfirmedServiceRequestReadPropertyMultipleCopy := &_BACnetConfirmedServiceRequestReadPropertyMultiple{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[BACnetReadAccessSpecification, BACnetReadAccessSpecification](m.Data),
-		m.ServiceRequestPayloadLength,
 	}
 	_BACnetConfirmedServiceRequestReadPropertyMultipleCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestReadPropertyMultipleCopy

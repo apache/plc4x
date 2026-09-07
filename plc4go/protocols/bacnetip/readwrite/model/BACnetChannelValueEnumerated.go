@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetChannelValueEnumerated(structType any) BACnetChannelValueEnumerat
 	return nil
 }
 
-func (m *_BACnetChannelValueEnumerated) GetTypeName() string {
+func (m *_BACnetChannelValueEnumerated) GetPlx4xTypeName() string {
 	return "BACnetChannelValueEnumerated"
 }
 
-func (m *_BACnetChannelValueEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
+func (m *_BACnetChannelValueEnumerated) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetChannelValueEnumerated) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueEnumerated) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetChannelValueEnumerated) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

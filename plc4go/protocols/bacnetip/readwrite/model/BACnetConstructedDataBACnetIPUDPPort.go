@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPUDPPort = (*_BACnetConstructedDataBACnetIPUDP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPUDPPort)(nil)
 
 // NewBACnetConstructedDataBACnetIPUDPPort factory function for _BACnetConstructedDataBACnetIPUDPPort
-func NewBACnetConstructedDataBACnetIPUDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipUdpPort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPUDPPort {
+func NewBACnetConstructedDataBACnetIPUDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipUdpPort BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataBACnetIPUDPPort {
 	if ipUdpPort == nil {
 		panic("ipUdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPUDPPort must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPUDPPort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpUdpPort:                     ipUdpPort,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBACnetIPUDPPort(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetTypeName() string {
+func (m *_BACnetConstructedDataBACnetIPUDPPort) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBACnetIPUDPPort"
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipUdpPort)
 	lengthInBits += m.IpUdpPort.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -339,12 +340,12 @@ func CastAttributeOperand(structType any) AttributeOperand {
 	return nil
 }
 
-func (m *_AttributeOperand) GetTypeName() string {
+func (m *_AttributeOperand) GetPlx4xTypeName() string {
 	return "AttributeOperand"
 }
 
-func (m *_AttributeOperand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_AttributeOperand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -364,7 +365,7 @@ func (m *_AttributeOperand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AttributeOperand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AttributeOperand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -379,31 +380,31 @@ func (m *_AttributeOperand) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 	m.NodeId = nodeId
 
-	alias, err := ReadSimpleField[PascalString](ctx, "alias", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	alias, err := ReadSimpleField[PascalString](ctx, "alias", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alias' field"))
 	}
 	m.Alias = alias
 
-	browsePath, err := ReadSimpleField[RelativePath](ctx, "browsePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer))
+	browsePath, err := ReadSimpleField[RelativePath](ctx, "browsePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browsePath' field"))
 	}
 	m.BrowsePath = browsePath
 
-	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
 	m.AttributeId = attributeId
 
-	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
@@ -434,23 +435,23 @@ func (m *_AttributeOperand) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for AttributeOperand")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "alias", m.GetAlias(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "alias", m.GetAlias(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'alias' field")
 		}
 
-		if err := WriteSimpleField[RelativePath](ctx, "browsePath", m.GetBrowsePath(), WriteComplex[RelativePath](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RelativePath](ctx, "browsePath", m.GetBrowsePath(), WriteComplex[RelativePath](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'browsePath' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 

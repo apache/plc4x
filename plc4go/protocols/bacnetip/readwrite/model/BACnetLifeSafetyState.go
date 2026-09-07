@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -232,11 +232,11 @@ func CastBACnetLifeSafetyState(structType any) BACnetLifeSafetyState {
 	return castFunc(structType)
 }
 
-func (m BACnetLifeSafetyState) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLifeSafetyState) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetLifeSafetyState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLifeSafetyState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

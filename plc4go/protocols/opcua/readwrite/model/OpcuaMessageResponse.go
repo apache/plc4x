@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,16 +56,13 @@ type _OpcuaMessageResponse struct {
 	MessagePDUContract
 	SecurityHeader SecurityHeader
 	Message        Payload
-
-	// Arguments.
-	TotalLength uint32
 }
 
 var _ OpcuaMessageResponse = (*_OpcuaMessageResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageResponse)(nil)
 
 // NewOpcuaMessageResponse factory function for _OpcuaMessageResponse
-func NewOpcuaMessageResponse(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32, binary bool) *_OpcuaMessageResponse {
+func NewOpcuaMessageResponse(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaMessageResponse {
 	if securityHeader == nil {
 		panic("securityHeader of type SecurityHeader for OpcuaMessageResponse must not be nil")
 	}
@@ -73,7 +70,7 @@ func NewOpcuaMessageResponse(chunk ChunkType, securityHeader SecurityHeader, mes
 		panic("message of type Payload for OpcuaMessageResponse must not be nil")
 	}
 	_result := &_OpcuaMessageResponse{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		SecurityHeader:     securityHeader,
 		Message:            message,
 	}
@@ -99,8 +96,6 @@ type OpcuaMessageResponseBuilder interface {
 	WithMessage(Payload) OpcuaMessageResponseBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageResponseBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint32) OpcuaMessageResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() MessagePDUBuilder
 	// Build builds the OpcuaMessageResponse or returns an error if something is wrong
@@ -160,11 +155,6 @@ func (b *_OpcuaMessageResponseBuilder) WithMessageBuilder(builderSupplier func(P
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	return b
-}
-
-func (b *_OpcuaMessageResponseBuilder) WithArgTotalLength(totalLength uint32) OpcuaMessageResponseBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -272,12 +262,12 @@ func CastOpcuaMessageResponse(structType any) OpcuaMessageResponse {
 	return nil
 }
 
-func (m *_OpcuaMessageResponse) GetTypeName() string {
+func (m *_OpcuaMessageResponse) GetPlx4xTypeName() string {
 	return "OpcuaMessageResponse"
 }
 
-func (m *_OpcuaMessageResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaMessageResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (securityHeader)
 	lengthInBits += m.SecurityHeader.GetLengthInBits(ctx)
@@ -288,7 +278,7 @@ func (m *_OpcuaMessageResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaMessageResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaMessageResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -356,16 +346,6 @@ func (m *_OpcuaMessageResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_OpcuaMessageResponse) GetTotalLength() uint32 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_OpcuaMessageResponse) IsOpcuaMessageResponse() {}
 
 func (m *_OpcuaMessageResponse) DeepCopy() any {
@@ -380,7 +360,6 @@ func (m *_OpcuaMessageResponse) deepCopy() *_OpcuaMessageResponse {
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		utils.DeepCopy[SecurityHeader](m.SecurityHeader),
 		utils.DeepCopy[Payload](m.Message),
-		m.TotalLength,
 	}
 	_OpcuaMessageResponseCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaMessageResponseCopy

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType CIPEncapsulationPacket byteOrder='BIG_ENDIAN'
+[discriminatedType CIPEncapsulationPacket byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [discriminator uint 16 commandType]
     [implicit      uint 16 packetLen 'lengthInBytes - 28']
     [simple        uint 32 sessionHandle]
@@ -39,7 +39,7 @@
     ]
 ]
 
-[discriminatedType DF1RequestMessage
+[discriminatedType DF1RequestMessage byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple        uint 8  destinationAddress]
     [simple        uint 8  sourceAddress]
     [reserved      uint 16 '0x0000']
@@ -53,7 +53,7 @@
     ]
 ]
 
-[discriminatedType DF1ResponseMessage(uint 16 payloadLength)
+[discriminatedType DF1ResponseMessage(uint 16 payloadLength) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [reserved      uint 8  '0x00']
     [simple        uint 8  destinationAddress]
     [simple        uint 8  sourceAddress]
@@ -68,7 +68,7 @@
     ]
 ]
 
-[discriminatedType DF1RequestCommand
+[discriminatedType DF1RequestCommand byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [discriminator    uint 8 functionCode]
     [typeSwitch functionCode
         ['0xA2' DF1RequestProtectedTypedLogicalRead

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProtocolVersion = (*_BACnetConstructedDataProtocolVer
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolVersion)(nil)
 
 // NewBACnetConstructedDataProtocolVersion factory function for _BACnetConstructedDataProtocolVersion
-func NewBACnetConstructedDataProtocolVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolVersion BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
+func NewBACnetConstructedDataProtocolVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolVersion BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
 	if protocolVersion == nil {
 		panic("protocolVersion of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolVersion must not be nil")
 	}
 	_result := &_BACnetConstructedDataProtocolVersion{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProtocolVersion:               protocolVersion,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataProtocolVersion(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) GetTypeName() string {
+func (m *_BACnetConstructedDataProtocolVersion) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProtocolVersion"
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (protocolVersion)
 	lengthInBits += m.ProtocolVersion.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

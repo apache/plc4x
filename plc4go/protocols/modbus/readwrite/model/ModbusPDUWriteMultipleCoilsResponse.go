@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -230,12 +230,12 @@ func CastModbusPDUWriteMultipleCoilsResponse(structType any) ModbusPDUWriteMulti
 	return nil
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponse) GetTypeName() string {
+func (m *_ModbusPDUWriteMultipleCoilsResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteMultipleCoilsResponse"
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUWriteMultipleCoilsResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -246,7 +246,7 @@ func (m *_ModbusPDUWriteMultipleCoilsResponse) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUWriteMultipleCoilsResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

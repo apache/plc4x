@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMachineRoomID = (*_BACnetConstructedDataMachineRoomID
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMachineRoomID)(nil)
 
 // NewBACnetConstructedDataMachineRoomID factory function for _BACnetConstructedDataMachineRoomID
-func NewBACnetConstructedDataMachineRoomID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, machineRoomId BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMachineRoomID {
+func NewBACnetConstructedDataMachineRoomID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, machineRoomId BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataMachineRoomID {
 	if machineRoomId == nil {
 		panic("machineRoomId of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataMachineRoomID must not be nil")
 	}
 	_result := &_BACnetConstructedDataMachineRoomID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MachineRoomId:                 machineRoomId,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMachineRoomID(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) GetTypeName() string {
+func (m *_BACnetConstructedDataMachineRoomID) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMachineRoomID"
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (machineRoomId)
 	lengthInBits += m.MachineRoomId.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

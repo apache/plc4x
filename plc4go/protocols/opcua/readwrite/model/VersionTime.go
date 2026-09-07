@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastVersionTime(structType any) VersionTime {
 	return nil
 }
 
-func (m *_VersionTime) GetTypeName() string {
+func (m *_VersionTime) GetPlx4xTypeName() string {
 	return "VersionTime"
 }
 
-func (m *_VersionTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_VersionTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_VersionTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VersionTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func VersionTimeParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
-	v, err := (&_VersionTime{}).parse(ctx, readBuffer)
+	v, err := (new(_VersionTime)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

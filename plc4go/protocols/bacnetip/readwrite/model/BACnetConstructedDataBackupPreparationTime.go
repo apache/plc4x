@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBackupPreparationTime = (*_BACnetConstructedDataBacku
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupPreparationTime)(nil)
 
 // NewBACnetConstructedDataBackupPreparationTime factory function for _BACnetConstructedDataBackupPreparationTime
-func NewBACnetConstructedDataBackupPreparationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupPreparationTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupPreparationTime {
+func NewBACnetConstructedDataBackupPreparationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupPreparationTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataBackupPreparationTime {
 	if backupPreparationTime == nil {
 		panic("backupPreparationTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupPreparationTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataBackupPreparationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BackupPreparationTime:         backupPreparationTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBackupPreparationTime(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataBackupPreparationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBackupPreparationTime"
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (backupPreparationTime)
 	lengthInBits += m.BackupPreparationTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

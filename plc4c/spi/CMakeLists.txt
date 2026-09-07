@@ -52,6 +52,7 @@ if (BUILD_PHASE STREQUAL test-compile)
     add_executable(plc4c-spi-test
             test/system_test.c
             test/spi_test.c
+            test/context_test.c
             test/read_buffer_test.c
             test/write_buffer_test.c
             )

@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -702,9 +702,6 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType                                OpcuaNodeIdServicesVariableOpc = 16557
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DataTypeVersion                OpcuaNodeIdServicesVariableOpc = 16562
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment             OpcuaNodeIdServicesVariableOpc = 16563
-	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType                             OpcuaNodeIdServicesVariableOpc = 16564
-	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion             OpcuaNodeIdServicesVariableOpc = 16565
-	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment          OpcuaNodeIdServicesVariableOpc = 16566
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType                                  OpcuaNodeIdServicesVariableOpc = 16567
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType_DataTypeVersion                  OpcuaNodeIdServicesVariableOpc = 16568
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType_DictionaryFragment               OpcuaNodeIdServicesVariableOpc = 16569
@@ -732,9 +729,6 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType                                   OpcuaNodeIdServicesVariableOpc = 16610
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DataTypeVersion                   OpcuaNodeIdServicesVariableOpc = 16612
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment                OpcuaNodeIdServicesVariableOpc = 16613
-	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType                                OpcuaNodeIdServicesVariableOpc = 16614
-	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion                OpcuaNodeIdServicesVariableOpc = 16615
-	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment             OpcuaNodeIdServicesVariableOpc = 16616
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType                                     OpcuaNodeIdServicesVariableOpc = 16617
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType_DataTypeVersion                     OpcuaNodeIdServicesVariableOpc = 16618
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType_DictionaryFragment                  OpcuaNodeIdServicesVariableOpc = 16619
@@ -900,9 +894,6 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord                                                       OpcuaNodeIdServicesVariableOpc = 19384
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DataTypeVersion                                       OpcuaNodeIdServicesVariableOpc = 19385
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DictionaryFragment                                    OpcuaNodeIdServicesVariableOpc = 19386
-	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType                    OpcuaNodeIdServicesVariableOpc = 19757
-	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion    OpcuaNodeIdServicesVariableOpc = 19758
-	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment OpcuaNodeIdServicesVariableOpc = 19759
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType                                           OpcuaNodeIdServicesVariableOpc = 19760
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType_DataTypeVersion                           OpcuaNodeIdServicesVariableOpc = 19761
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType_DictionaryFragment                        OpcuaNodeIdServicesVariableOpc = 19762
@@ -915,9 +906,6 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair                                                OpcuaNodeIdServicesVariableOpc = 19769
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DataTypeVersion                                OpcuaNodeIdServicesVariableOpc = 19770
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DictionaryFragment                             OpcuaNodeIdServicesVariableOpc = 19771
-	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType                       OpcuaNodeIdServicesVariableOpc = 19787
-	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion       OpcuaNodeIdServicesVariableOpc = 19788
-	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment    OpcuaNodeIdServicesVariableOpc = 19789
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType                                              OpcuaNodeIdServicesVariableOpc = 19790
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType_DataTypeVersion                              OpcuaNodeIdServicesVariableOpc = 19791
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType_DictionaryFragment                           OpcuaNodeIdServicesVariableOpc = 19792
@@ -979,6 +967,24 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType                                                OpcuaNodeIdServicesVariableOpc = 23522
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DataTypeVersion                                OpcuaNodeIdServicesVariableOpc = 23523
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment                             OpcuaNodeIdServicesVariableOpc = 23524
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType                                   OpcuaNodeIdServicesVariableOpc = 23732
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion                   OpcuaNodeIdServicesVariableOpc = 23733
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment                OpcuaNodeIdServicesVariableOpc = 23734
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType                                      OpcuaNodeIdServicesVariableOpc = 23736
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion                      OpcuaNodeIdServicesVariableOpc = 23737
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment                   OpcuaNodeIdServicesVariableOpc = 23738
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType                             OpcuaNodeIdServicesVariableOpc = 23756
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion             OpcuaNodeIdServicesVariableOpc = 23757
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment          OpcuaNodeIdServicesVariableOpc = 23758
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType                    OpcuaNodeIdServicesVariableOpc = 23759
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion    OpcuaNodeIdServicesVariableOpc = 23760
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment OpcuaNodeIdServicesVariableOpc = 23761
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType                                OpcuaNodeIdServicesVariableOpc = 23764
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion                OpcuaNodeIdServicesVariableOpc = 23765
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment             OpcuaNodeIdServicesVariableOpc = 23766
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType                       OpcuaNodeIdServicesVariableOpc = 23773
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion       OpcuaNodeIdServicesVariableOpc = 23774
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment    OpcuaNodeIdServicesVariableOpc = 23775
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType                       OpcuaNodeIdServicesVariableOpc = 23870
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType_DataTypeVersion       OpcuaNodeIdServicesVariableOpc = 23871
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType_DictionaryFragment    OpcuaNodeIdServicesVariableOpc = 23872
@@ -1081,6 +1087,36 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType                                          OpcuaNodeIdServicesVariableOpc = 24297
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DataTypeVersion                          OpcuaNodeIdServicesVariableOpc = 24298
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment                       OpcuaNodeIdServicesVariableOpc = 24299
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange                                                  OpcuaNodeIdServicesVariableOpc = 24340
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DataTypeVersion                                  OpcuaNodeIdServicesVariableOpc = 24341
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DictionaryFragment                               OpcuaNodeIdServicesVariableOpc = 24342
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType                                     OpcuaNodeIdServicesVariableOpc = 24343
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion                     OpcuaNodeIdServicesVariableOpc = 24344
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment                  OpcuaNodeIdServicesVariableOpc = 24345
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType                                  OpcuaNodeIdServicesVariableOpc = 24346
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion                  OpcuaNodeIdServicesVariableOpc = 24347
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment               OpcuaNodeIdServicesVariableOpc = 24348
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType                                          OpcuaNodeIdServicesVariableOpc = 24349
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion                          OpcuaNodeIdServicesVariableOpc = 24350
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment                       OpcuaNodeIdServicesVariableOpc = 24351
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange                                                     OpcuaNodeIdServicesVariableOpc = 24356
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DataTypeVersion                                     OpcuaNodeIdServicesVariableOpc = 24357
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DictionaryFragment                                  OpcuaNodeIdServicesVariableOpc = 24358
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType                                        OpcuaNodeIdServicesVariableOpc = 24359
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion                        OpcuaNodeIdServicesVariableOpc = 24360
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment                     OpcuaNodeIdServicesVariableOpc = 24361
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType                                     OpcuaNodeIdServicesVariableOpc = 24362
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion                     OpcuaNodeIdServicesVariableOpc = 24363
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment                  OpcuaNodeIdServicesVariableOpc = 24364
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType                                             OpcuaNodeIdServicesVariableOpc = 24365
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion                             OpcuaNodeIdServicesVariableOpc = 24366
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment                          OpcuaNodeIdServicesVariableOpc = 24367
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData                                                OpcuaNodeIdServicesVariableOpc = 24481
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DataTypeVersion                                OpcuaNodeIdServicesVariableOpc = 24482
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DictionaryFragment                             OpcuaNodeIdServicesVariableOpc = 24495
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData                                                   OpcuaNodeIdServicesVariableOpc = 24496
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DataTypeVersion                                   OpcuaNodeIdServicesVariableOpc = 24497
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DictionaryFragment                                OpcuaNodeIdServicesVariableOpc = 24498
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType                                     OpcuaNodeIdServicesVariableOpc = 25240
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType_DataTypeVersion                     OpcuaNodeIdServicesVariableOpc = 25241
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType_DictionaryFragment                  OpcuaNodeIdServicesVariableOpc = 25242
@@ -1827,9 +1863,6 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType_DictionaryFragment,
@@ -1857,9 +1890,6 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType_DictionaryFragment,
@@ -2025,9 +2055,6 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DictionaryFragment,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType_DictionaryFragment,
@@ -2040,9 +2067,6 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DictionaryFragment,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion,
-		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType_DictionaryFragment,
@@ -2104,6 +2128,24 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType_DictionaryFragment,
@@ -2206,6 +2248,36 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType_DictionaryFragment,
@@ -3047,12 +3119,6 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DataTypeVersion, true
 	case 16563:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment, true
-	case 16564:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType, true
-	case 16565:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion, true
-	case 16566:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment, true
 	case 16567:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType, true
 	case 16568:
@@ -3107,12 +3173,6 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DataTypeVersion, true
 	case 16613:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment, true
-	case 16614:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType, true
-	case 16615:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion, true
-	case 16616:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment, true
 	case 16617:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType, true
 	case 16618:
@@ -3443,12 +3503,6 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DataTypeVersion, true
 	case 19386:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DictionaryFragment, true
-	case 19757:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType, true
-	case 19758:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
-	case 19759:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
 	case 19760:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType, true
 	case 19761:
@@ -3473,12 +3527,6 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DataTypeVersion, true
 	case 19771:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DictionaryFragment, true
-	case 19787:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType, true
-	case 19788:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
-	case 19789:
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
 	case 19790:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType, true
 	case 19791:
@@ -3601,6 +3649,42 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DataTypeVersion, true
 	case 23524:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment, true
+	case 23732:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType, true
+	case 23733:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion, true
+	case 23734:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment, true
+	case 23736:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType, true
+	case 23737:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion, true
+	case 23738:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment, true
+	case 23756:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType, true
+	case 23757:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion, true
+	case 23758:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment, true
+	case 23759:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType, true
+	case 23760:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
+	case 23761:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
+	case 23764:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType, true
+	case 23765:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion, true
+	case 23766:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment, true
+	case 23773:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType, true
+	case 23774:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
+	case 23775:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
 	case 23870:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType, true
 	case 23871:
@@ -3805,6 +3889,66 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DataTypeVersion, true
 	case 24299:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment, true
+	case 24340:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange, true
+	case 24341:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DataTypeVersion, true
+	case 24342:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DictionaryFragment, true
+	case 24343:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType, true
+	case 24344:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion, true
+	case 24345:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment, true
+	case 24346:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType, true
+	case 24347:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion, true
+	case 24348:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment, true
+	case 24349:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType, true
+	case 24350:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion, true
+	case 24351:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment, true
+	case 24356:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange, true
+	case 24357:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DataTypeVersion, true
+	case 24358:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DictionaryFragment, true
+	case 24359:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType, true
+	case 24360:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion, true
+	case 24361:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment, true
+	case 24362:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType, true
+	case 24363:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion, true
+	case 24364:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment, true
+	case 24365:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType, true
+	case 24366:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion, true
+	case 24367:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment, true
+	case 24481:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData, true
+	case 24482:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DataTypeVersion, true
+	case 24495:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DictionaryFragment, true
+	case 24496:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData, true
+	case 24497:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DataTypeVersion, true
+	case 24498:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DictionaryFragment, true
 	case 25240:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType, true
 	case 25241:
@@ -5289,12 +5433,6 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DataTypeVersion, true
 	case "OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment, true
-	case "OpcUa_BinarySchema_ApplicationConfigurationDataType":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType, true
-	case "OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion, true
-	case "OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment, true
 	case "OpcUa_BinarySchema_ApplicationIdentityDataType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType, true
 	case "OpcUa_BinarySchema_ApplicationIdentityDataType_DataTypeVersion":
@@ -5349,12 +5487,6 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DataTypeVersion, true
 	case "OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment, true
-	case "OpcUa_XmlSchema_ApplicationConfigurationDataType":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType, true
-	case "OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion, true
-	case "OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment, true
 	case "OpcUa_XmlSchema_ApplicationIdentityDataType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType, true
 	case "OpcUa_XmlSchema_ApplicationIdentityDataType_DataTypeVersion":
@@ -5685,12 +5817,6 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DataTypeVersion, true
 	case "OpcUa_XmlSchema_LogRecord_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DictionaryFragment, true
-	case "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType, true
-	case "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
-	case "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
 	case "OpcUa_BinarySchema_LogRecordsDataType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType, true
 	case "OpcUa_BinarySchema_LogRecordsDataType_DataTypeVersion":
@@ -5715,12 +5841,6 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DataTypeVersion, true
 	case "OpcUa_BinarySchema_NameValuePair_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DictionaryFragment, true
-	case "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType, true
-	case "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
-	case "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment":
-		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
 	case "OpcUa_XmlSchema_LogRecordsDataType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType, true
 	case "OpcUa_XmlSchema_LogRecordsDataType_DataTypeVersion":
@@ -5843,6 +5963,42 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DataTypeVersion, true
 	case "OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_ServiceCertificateDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType, true
+	case "OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_ServiceCertificateDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType, true
+	case "OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_ApplicationConfigurationDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType, true
+	case "OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType, true
+	case "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_ApplicationConfigurationDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType, true
+	case "OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType, true
+	case "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment, true
 	case "OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType, true
 	case "OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType_DataTypeVersion":
@@ -6047,6 +6203,66 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DataTypeVersion, true
 	case "OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_NumberRange":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange, true
+	case "OpcUa_BinarySchema_NumberRange_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DataTypeVersion, true
+	case "OpcUa_BinarySchema_NumberRange_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DictionaryFragment, true
+	case "OpcUa_BinarySchema_AliasNameVerboseDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType, true
+	case "OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_AliasCategoryUpdateDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType, true
+	case "OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_AliasUpdateDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType, true
+	case "OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_NumberRange":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange, true
+	case "OpcUa_XmlSchema_NumberRange_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DataTypeVersion, true
+	case "OpcUa_XmlSchema_NumberRange_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DictionaryFragment, true
+	case "OpcUa_XmlSchema_AliasNameVerboseDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType, true
+	case "OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_AliasCategoryUpdateDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType, true
+	case "OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_AliasUpdateDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType, true
+	case "OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_SignatureData":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData, true
+	case "OpcUa_BinarySchema_SignatureData_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DataTypeVersion, true
+	case "OpcUa_BinarySchema_SignatureData_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DictionaryFragment, true
+	case "OpcUa_XmlSchema_SignatureData":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData, true
+	case "OpcUa_XmlSchema_SignatureData_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DataTypeVersion, true
+	case "OpcUa_XmlSchema_SignatureData_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DictionaryFragment, true
 	case "OpcUa_BinarySchema_PriorityMappingEntryType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType, true
 	case "OpcUa_BinarySchema_PriorityMappingEntryType_DataTypeVersion":
@@ -6790,11 +7006,11 @@ func CastOpcuaNodeIdServicesVariableOpc(structType any) OpcuaNodeIdServicesVaria
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableOpc) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableOpc) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableOpc) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableOpc) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -7596,12 +7812,6 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_BinarySchema_ConfigurationUpdateTargetType_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment:
 		return "OpcUa_BinarySchema_ConfigurationUpdateTargetType_DictionaryFragment"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType:
-		return "OpcUa_BinarySchema_ApplicationConfigurationDataType"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion:
-		return "OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment:
-		return "OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType:
 		return "OpcUa_BinarySchema_ApplicationIdentityDataType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationIdentityDataType_DataTypeVersion:
@@ -7656,12 +7866,6 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_XmlSchema_ConfigurationUpdateTargetType_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment:
 		return "OpcUa_XmlSchema_ConfigurationUpdateTargetType_DictionaryFragment"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType:
-		return "OpcUa_XmlSchema_ApplicationConfigurationDataType"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion:
-		return "OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment:
-		return "OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType:
 		return "OpcUa_XmlSchema_ApplicationIdentityDataType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationIdentityDataType_DataTypeVersion:
@@ -7992,12 +8196,6 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_XmlSchema_LogRecord_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecord_DictionaryFragment:
 		return "OpcUa_XmlSchema_LogRecord_DictionaryFragment"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType:
-		return "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion:
-		return "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment:
-		return "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType:
 		return "OpcUa_BinarySchema_LogRecordsDataType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LogRecordsDataType_DataTypeVersion:
@@ -8022,12 +8220,6 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_BinarySchema_NameValuePair_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NameValuePair_DictionaryFragment:
 		return "OpcUa_BinarySchema_NameValuePair_DictionaryFragment"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType:
-		return "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion:
-		return "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion"
-	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment:
-		return "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType:
 		return "OpcUa_XmlSchema_LogRecordsDataType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LogRecordsDataType_DataTypeVersion:
@@ -8150,6 +8342,42 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_XmlSchema_CurrencyUnitType_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment:
 		return "OpcUa_XmlSchema_CurrencyUnitType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType:
+		return "OpcUa_BinarySchema_ServiceCertificateDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_ServiceCertificateDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_ServiceCertificateDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType:
+		return "OpcUa_XmlSchema_ServiceCertificateDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_ServiceCertificateDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_ServiceCertificateDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType:
+		return "OpcUa_BinarySchema_ApplicationConfigurationDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_ApplicationConfigurationDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_ApplicationConfigurationDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType:
+		return "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_AuthorizationServiceConfigurationDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType:
+		return "OpcUa_XmlSchema_ApplicationConfigurationDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_ApplicationConfigurationDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_ApplicationConfigurationDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType:
+		return "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_AuthorizationServiceConfigurationDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType:
 		return "OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_StandaloneSubscribedDataSetRefDataType_DataTypeVersion:
@@ -8354,6 +8582,66 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_XmlSchema_UserManagementDataType_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment:
 		return "OpcUa_XmlSchema_UserManagementDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange:
+		return "OpcUa_BinarySchema_NumberRange"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DataTypeVersion:
+		return "OpcUa_BinarySchema_NumberRange_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_NumberRange_DictionaryFragment:
+		return "OpcUa_BinarySchema_NumberRange_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType:
+		return "OpcUa_BinarySchema_AliasNameVerboseDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_AliasNameVerboseDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_AliasNameVerboseDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType:
+		return "OpcUa_BinarySchema_AliasCategoryUpdateDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_AliasCategoryUpdateDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_AliasCategoryUpdateDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType:
+		return "OpcUa_BinarySchema_AliasUpdateDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_AliasUpdateDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_AliasUpdateDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange:
+		return "OpcUa_XmlSchema_NumberRange"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DataTypeVersion:
+		return "OpcUa_XmlSchema_NumberRange_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_NumberRange_DictionaryFragment:
+		return "OpcUa_XmlSchema_NumberRange_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType:
+		return "OpcUa_XmlSchema_AliasNameVerboseDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_AliasNameVerboseDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_AliasNameVerboseDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType:
+		return "OpcUa_XmlSchema_AliasCategoryUpdateDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_AliasCategoryUpdateDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_AliasCategoryUpdateDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType:
+		return "OpcUa_XmlSchema_AliasUpdateDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_AliasUpdateDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_AliasUpdateDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData:
+		return "OpcUa_BinarySchema_SignatureData"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DataTypeVersion:
+		return "OpcUa_BinarySchema_SignatureData_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_SignatureData_DictionaryFragment:
+		return "OpcUa_BinarySchema_SignatureData_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData:
+		return "OpcUa_XmlSchema_SignatureData"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DataTypeVersion:
+		return "OpcUa_XmlSchema_SignatureData_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_SignatureData_DictionaryFragment:
+		return "OpcUa_XmlSchema_SignatureData_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType:
 		return "OpcUa_BinarySchema_PriorityMappingEntryType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PriorityMappingEntryType_DataTypeVersion:

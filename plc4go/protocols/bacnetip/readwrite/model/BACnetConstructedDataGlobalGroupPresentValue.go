@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataGlobalGroupPresentValue interface {
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() []BACnetPropertyAccessResult
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataGlobalGroupPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGlobalGroupPresentValue()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataGlobalGroupPresentValue = (*_BACnetConstructedDataGlo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalGroupPresentValue)(nil)
 
 // NewBACnetConstructedDataGlobalGroupPresentValue factory function for _BACnetConstructedDataGlobalGroupPresentValue
-func NewBACnetConstructedDataGlobalGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, presentValue []BACnetPropertyAccessResult, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupPresentValue {
+func NewBACnetConstructedDataGlobalGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, presentValue []BACnetPropertyAccessResult) *_BACnetConstructedDataGlobalGroupPresentValue {
 	_result := &_BACnetConstructedDataGlobalGroupPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		PresentValue:                  presentValue,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataGlobalGroupPresentValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGlobalGroupPresentValue"
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) SerializeWithWriteBuffer
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

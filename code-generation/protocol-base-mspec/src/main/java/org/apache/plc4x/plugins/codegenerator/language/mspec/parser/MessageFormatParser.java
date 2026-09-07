@@ -51,9 +51,12 @@ public class MessageFormatParser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        var tokenStream = new CommonTokenStream(lexer);
+
         MessageFormatListener listener;
         if (existingTypeContext == null) {
-            listener = new MessageFormatListener();
+            listener = new MessageFormatListener(tokenStream);
         } else {
             if (LOGGER.isDebugEnabled()) {
                 Map<String, TypeDefinition> exitingTypeDefinitions = existingTypeContext.getTypeDefinitions();
@@ -66,10 +69,13 @@ public class MessageFormatParser {
                 }
             }
 
-            listener = new MessageFormatListener(existingTypeContext);
+            listener = new MessageFormatListener(tokenStream, existingTypeContext);
         }
 
-        new ParseTreeWalker().walk(listener, new MSpecParser(new CommonTokenStream(lexer)).file());
+        var parser = new MSpecParser(tokenStream);
+
+        ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
+        parseTreeWalker.walk(listener, parser.file());
         LOGGER.info("Checking for open consumers");
         listener.typeDefinitionConsumers.forEach((key, value) -> LOGGER.warn("{} has {} open consumers", key, value.size()));
         return new ValidatableTypeContext() {

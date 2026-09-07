@@ -17,14 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4py</artifactId>
@@ -34,15 +32,23 @@
   <description>Implementation of the protocol adapters for usage as Python library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the python sources -->
     <sonar.sources>plc4py</sonar.sources>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
   <build>
-    <sourceDirectory>src/main/python</sourceDirectory>
-    <testSourceDirectory>src/test/python</testSourceDirectory>
+    <sources>
+      <source>
+        <scope>main</scope>
+        <directory>src/main/python</directory>
+      </source>
+      <source>
+        <scope>test</scope>
+        <directory>src/test/python</directory>
+      </source>
+    </sources>
     <plugins>
       <!-- Unpack the protocol spec -->
       <plugin>
@@ -286,6 +292,7 @@
                 </goals>
                 <configuration>
                   <protocolName>umas</protocolName>
+                  <protocolVersion>0</protocolVersion>
                   <languageName>python</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>${project.basedir}/plc4py/protocols</outputDir>
@@ -300,7 +307,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-python</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -308,7 +315,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -316,7 +323,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-simulated</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -324,7 +331,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-umas</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

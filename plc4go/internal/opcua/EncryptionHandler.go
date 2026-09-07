@@ -28,10 +28,10 @@ import (
 	"crypto/x509"
 	"encoding/binary"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -78,14 +78,14 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 	numberOfBlocks := preEncryptedLength / PREENCRYPTED_BLOCK_LENGTH
 	encryptedLength := numberOfBlocks*256 + positionFirstBlock
 	buf := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := readWriteModel.NewOpcuaAPU(pdu, false, true).SerializeWithWriteBuffer(ctx, buf); err != nil {
+	if err := readWriteModel.NewOpcuaAPU(pdu).SerializeWithWriteBuffer(ctx, buf); err != nil {
 		return nil, errors.Wrap(err, "error serializing")
 	}
 	paddingByte := byte(paddingSize)
 	if err := buf.WriteByte("", paddingByte); err != nil {
 		return nil, errors.Wrap(err, "error writing byte")
 	}
-	for i := 0; i < paddingSize; i++ {
+	for range paddingSize {
 		if err := buf.WriteByte("", paddingByte); err != nil {
 			return nil, errors.Wrap(err, "error writing byte")
 		}
@@ -191,9 +191,26 @@ func (h *EncryptionHandler) setServerCertificate(serverCertificate *x509.Certifi
 	h.serverCertificate = serverCertificate
 }
 
+// getServerPublicKey returns the RSA public key of the server certificate. x509 parsing
+// yields a *rsa.PublicKey, so this must never be asserted to the value type rsa.PublicKey
+// (that assertion always fails and would panic).
+func (h *EncryptionHandler) getServerPublicKey() (*rsa.PublicKey, error) {
+	if h.serverCertificate == nil {
+		return nil, errors.New("no server certificate available")
+	}
+	publicKey, ok := h.serverCertificate.PublicKey.(*rsa.PublicKey)
+	if !ok {
+		return nil, errors.Errorf("server certificate public key is not an RSA key but %T", h.serverCertificate.PublicKey)
+	}
+	return publicKey, nil
+}
+
 func (h *EncryptionHandler) encryptPassword(password []byte) ([]byte, error) {
-	publicKey := h.serverCertificate.PublicKey.(rsa.PublicKey)
-	encryptOAEP, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, &publicKey, password, nil)
+	publicKey, err := h.getServerPublicKey()
+	if err != nil {
+		return nil, err
+	}
+	encryptOAEP, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, publicKey, password, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error EncryptOAEP")
 	}
@@ -201,8 +218,11 @@ func (h *EncryptionHandler) encryptPassword(password []byte) ([]byte, error) {
 }
 
 func (h *EncryptionHandler) encryptBlock(buf utils.WriteBufferByteBased, data []byte) error {
-	publicKey := h.serverCertificate.PublicKey.(rsa.PublicKey)
-	encryptOAEP, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, &publicKey, data, nil)
+	publicKey, err := h.getServerPublicKey()
+	if err != nil {
+		return err
+	}
+	encryptOAEP, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, publicKey, data, nil)
 	if err != nil {
 		return errors.Wrap(err, "error EncryptOAEP")
 	}

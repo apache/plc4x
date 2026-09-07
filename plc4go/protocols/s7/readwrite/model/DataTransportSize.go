@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -170,11 +170,11 @@ func CastDataTransportSize(structType any) DataTransportSize {
 	return castFunc(structType)
 }
 
-func (m DataTransportSize) GetLengthInBits(ctx context.Context) uint16 {
+func (m DataTransportSize) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m DataTransportSize) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DataTransportSize) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

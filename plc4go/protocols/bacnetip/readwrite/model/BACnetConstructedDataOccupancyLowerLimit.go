@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOccupancyLowerLimit = (*_BACnetConstructedDataOccupan
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyLowerLimit)(nil)
 
 // NewBACnetConstructedDataOccupancyLowerLimit factory function for _BACnetConstructedDataOccupancyLowerLimit
-func NewBACnetConstructedDataOccupancyLowerLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyLowerLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimit {
+func NewBACnetConstructedDataOccupancyLowerLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyLowerLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimit {
 	if occupancyLowerLimit == nil {
 		panic("occupancyLowerLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyLowerLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataOccupancyLowerLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OccupancyLowerLimit:           occupancyLowerLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataOccupancyLowerLimit(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyLowerLimit"
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (occupancyLowerLimit)
 	lengthInBits += m.OccupancyLowerLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

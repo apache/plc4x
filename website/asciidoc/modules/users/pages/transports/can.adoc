@@ -47,8 +47,8 @@ Note this API is available since Apache PLC4X 0.9.
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transport-can</artifactId>
-  <version>{current-last-released-version}</version>
+  <artifactId>plc4j-transports-can</artifactId>
+  <version>{current-project-version}</version>
 </dependency>
 ----
 
@@ -72,8 +72,8 @@ In this regard, these operations can be made by library available for specific C
 == Developer notes
 
 Usage of CAN transport APIs is recommended for portability reasons.
-Please have a look on link:../protocols/can.html[CAN] describe usage of CAN driver adapter with CAN transport facade.
+Please have a look on xref:protocols/can.adoc[CAN] describe usage of CAN driver adapter with CAN transport facade.
 
 == Compatible CAN transports
 
-- link:socketcan.html[SocketCAN]
+- xref:transports/socketcan.adoc[SocketCAN]

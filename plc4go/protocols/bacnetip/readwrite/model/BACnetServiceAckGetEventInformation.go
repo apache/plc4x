@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformati
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEventInformation)(nil)
 
 // NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
+func NewBACnetServiceAckGetEventInformation(serviceAckLength uint32, listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean) *_BACnetServiceAckGetEventInformation {
 	if listOfEventSummaries == nil {
 		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
 	}
@@ -258,12 +258,12 @@ func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGet
 	return nil
 }
 
-func (m *_BACnetServiceAckGetEventInformation) GetTypeName() string {
+func (m *_BACnetServiceAckGetEventInformation) GetPlx4xTypeName() string {
 	return "BACnetServiceAckGetEventInformation"
 }
 
-func (m *_BACnetServiceAckGetEventInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckGetEventInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (listOfEventSummaries)
 	lengthInBits += m.ListOfEventSummaries.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetServiceAckGetEventInformation) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

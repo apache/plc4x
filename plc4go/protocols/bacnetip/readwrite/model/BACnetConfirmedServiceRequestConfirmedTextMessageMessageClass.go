@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,6 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract inter
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetTagNumber() returns a parser argument
-	GetTagNumber() uint8
 	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass()
 	// CreateBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
@@ -68,8 +66,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract inter
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -83,15 +81,12 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)(nil)
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
 	}
@@ -101,7 +96,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,8 +121,6 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder interf
 	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 	// AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric converts this build to a subType of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass. It is always possible to return to current builder using Done()
 	AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
 	// AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter converts this build to a subType of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass. It is always possible to return to current builder using Done()
@@ -209,11 +202,6 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) 
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -353,12 +341,12 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(structTyp
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -371,11 +359,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) getLeng
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -395,7 +383,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffe
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer[T BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -439,11 +427,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) parse(c
 	var _child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
-		if _child, err = new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 		}
 	case peekedTagNumber == uint8(1): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-		if _child, err = new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 		}
 	default:
@@ -500,16 +488,6 @@ func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) serial
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() {
 }
 
@@ -526,7 +504,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) deepCop
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCopy
 }

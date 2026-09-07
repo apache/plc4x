@@ -23,10 +23,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 //go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionRequestBuilder
@@ -144,11 +143,7 @@ func NewDefaultPlcSubscriptionRequest(subscriber spi.PlcSubscriber, tagNames []s
 	return &DefaultPlcSubscriptionRequest{NewDefaultPlcTagRequest(_tags, tagNames), types, intervals, preRegisteredConsumers, subscriber}
 }
 
-func (d *DefaultPlcSubscriptionRequest) Execute() <-chan apiModel.PlcSubscriptionRequestResult {
-	return d.ExecuteWithContext(context.Background())
-}
-
-func (d *DefaultPlcSubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcSubscriptionRequestResult {
+func (d *DefaultPlcSubscriptionRequest) Execute(ctx context.Context) <-chan apiModel.PlcSubscriptionRequestResult {
 	return d.subscriber.Subscribe(ctx, d)
 }
 

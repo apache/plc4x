@@ -61,11 +61,11 @@ public class DefaultTernaryTerm implements TernaryTerm {
     @Override
     public String toString() {
         return "DefaultTernaryTerm{" +
-                "a=" + a +
-                ", b=" + b +
-                ", c=" + c +
-                ", operation='" + operation + '\'' +
-                '}';
+            "a=" + a +
+            ", b=" + b +
+            ", c=" + c +
+            ", operation='" + operation + '\'' +
+            '}';
     }
 
     @Override

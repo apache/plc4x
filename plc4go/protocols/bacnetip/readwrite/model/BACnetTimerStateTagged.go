@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,20 +54,16 @@ type BACnetTimerStateTagged interface {
 type _BACnetTimerStateTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetTimerState
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetTimerStateTagged = (*_BACnetTimerStateTagged)(nil)
 
 // NewBACnetTimerStateTagged factory function for _BACnetTimerStateTagged
-func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, tagNumber uint8, tagClass TagClass) *_BACnetTimerStateTagged {
+func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState) *_BACnetTimerStateTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetTimerStateTagged must not be nil")
 	}
-	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetTimerStateTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetTimerStateTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetTimerState) BACnetTimerStateTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetTimerStateTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetTimerStateTaggedBuilder
 	// Build builds the BACnetTimerStateTagged or returns an error if something is wrong
 	Build() (BACnetTimerStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetTimerStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(
 
 func (b *_BACnetTimerStateTaggedBuilder) WithValue(value BACnetTimerState) BACnetTimerStateTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetTimerStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetTimerStateTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetTimerStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetTimerStateTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -210,23 +193,23 @@ func CastBACnetTimerStateTagged(structType any) BACnetTimerStateTagged {
 	return nil
 }
 
-func (m *_BACnetTimerStateTagged) GetTypeName() string {
+func (m *_BACnetTimerStateTagged) GetPlx4xTypeName() string {
 	return "BACnetTimerStateTagged"
 }
 
-func (m *_BACnetTimerStateTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetTimerStateTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
+	lengthInBits += uint64(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -241,7 +224,7 @@ func BACnetTimerStateTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetTimerStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetTimerStateTagged, error) {
-	v, err := (&_BACnetTimerStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetTimerStateTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetTimerStateTagged) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetTimerStateTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetTimerStateTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetTimerStateTagged) IsBACnetTimerStateTagged() {}
 
 func (m *_BACnetTimerStateTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetTimerStateTagged) deepCopy() *_BACnetTimerStateTagged {
 	_BACnetTimerStateTaggedCopy := &_BACnetTimerStateTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetTimerStateTaggedCopy
 }

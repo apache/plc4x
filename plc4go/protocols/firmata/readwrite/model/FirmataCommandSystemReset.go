@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ FirmataCommandSystemReset = (*_FirmataCommandSystemReset)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSystemReset)(nil)
 
 // NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
-func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
+func NewFirmataCommandSystemReset() *_FirmataCommandSystemReset {
 	_result := &_FirmataCommandSystemReset{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 	}
 	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastFirmataCommandSystemReset(structType any) FirmataCommandSystemReset {
 	return nil
 }
 
-func (m *_FirmataCommandSystemReset) GetTypeName() string {
+func (m *_FirmataCommandSystemReset) GetPlx4xTypeName() string {
 	return "FirmataCommandSystemReset"
 }
 
-func (m *_FirmataCommandSystemReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+func (m *_FirmataCommandSystemReset) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSystemReset) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommandSystemReset) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

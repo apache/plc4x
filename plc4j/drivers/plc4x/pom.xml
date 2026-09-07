@@ -17,25 +17,25 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-driver-plc4x</artifactId>
-      
+
   <name>PLC4J: Driver: PLC4X (Proxy)</name>
   <description>Implementation of a PLC4X driver for the PLC4X protocol, which is used for relaying PLC4X requests from one system to another.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
   <build>
+    <!-- Override the path of the sources roots until the code is ported  -->
     <plugins>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
@@ -76,7 +76,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.plc4x.readwrite.Plc4xDriver
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.plc4x.Plc4xDriver
             </Export-Service>
             <Import-Package>
               *
@@ -92,27 +92,62 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-tcp</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-tls</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
@@ -127,21 +162,20 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.3</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-plc4x</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -180,7 +214,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -188,7 +222,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-plc4x</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

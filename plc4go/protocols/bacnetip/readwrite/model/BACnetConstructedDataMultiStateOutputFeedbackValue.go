@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMultiStateOutputFeedbackValue = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputFeedbackValue)(nil)
 
 // NewBACnetConstructedDataMultiStateOutputFeedbackValue factory function for _BACnetConstructedDataMultiStateOutputFeedbackValue
-func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
+func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
 	if feedbackValue == nil {
 		panic("feedbackValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputFeedbackValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FeedbackValue:                 feedbackValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMultiStateOutputFeedbackValue(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateOutputFeedbackValue"
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (feedbackValue)
 	lengthInBits += m.FeedbackValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,16 +53,13 @@ type BACnetConfirmedServiceRequestReadPropertyConditional interface {
 type _BACnetConfirmedServiceRequestReadPropertyConditional struct {
 	BACnetConfirmedServiceRequestContract
 	BytesOfRemovedService []byte
-
-	// Arguments.
-	ServiceRequestPayloadLength uint32
 }
 
 var _ BACnetConfirmedServiceRequestReadPropertyConditional = (*_BACnetConfirmedServiceRequestReadPropertyConditional)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadPropertyConditional)(nil)
 
 // NewBACnetConfirmedServiceRequestReadPropertyConditional factory function for _BACnetConfirmedServiceRequestReadPropertyConditional
-func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadPropertyConditional {
+func NewBACnetConfirmedServiceRequestReadPropertyConditional(serviceRequestLength uint32, bytesOfRemovedService []byte) *_BACnetConfirmedServiceRequestReadPropertyConditional {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyConditional{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		BytesOfRemovedService:                 bytesOfRemovedService,
@@ -83,8 +80,6 @@ type BACnetConfirmedServiceRequestReadPropertyConditionalBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
-	// WithArgServiceRequestPayloadLength sets a parser argument
-	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadPropertyConditional or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithManda
 
 func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
-	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 
@@ -217,22 +207,22 @@ func CastBACnetConfirmedServiceRequestReadPropertyConditional(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadPropertyConditional"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
-		lengthInBits += 8 * uint16(len(m.BytesOfRemovedService))
+		lengthInBits += 8 * uint64(len(m.BytesOfRemovedService))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -290,16 +280,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) SerializeWithWri
 	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetServiceRequestPayloadLength() uint32 {
-	return m.ServiceRequestPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) IsBACnetConfirmedServiceRequestReadPropertyConditional() {
 }
 
@@ -314,7 +294,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) deepCopy() *_BAC
 	_BACnetConfirmedServiceRequestReadPropertyConditionalCopy := &_BACnetConfirmedServiceRequestReadPropertyConditional{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
-		m.ServiceRequestPayloadLength,
 	}
 	_BACnetConfirmedServiceRequestReadPropertyConditionalCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestReadPropertyConditionalCopy

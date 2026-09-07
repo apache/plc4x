@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccessZoneAdjustValue = (*_BACnetConstructedDataAcces
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessZoneAdjustValue)(nil)
 
 // NewBACnetConstructedDataAccessZoneAdjustValue factory function for _BACnetConstructedDataAccessZoneAdjustValue
-func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
+func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
 	if adjustValue == nil {
 		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAccessZoneAdjustValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccessZoneAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AdjustValue:                   adjustValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccessZoneAdjustValue(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessZoneAdjustValue"
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

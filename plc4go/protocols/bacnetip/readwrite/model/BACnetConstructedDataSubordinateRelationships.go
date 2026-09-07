@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataSubordinateRelationships interface {
 	// GetSubordinateRelationships returns SubordinateRelationships (property field)
 	GetSubordinateRelationships() []BACnetRelationshipTagged
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateRelationships is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateRelationships()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataSubordinateRelationships = (*_BACnetConstructedDataSu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateRelationships)(nil)
 
 // NewBACnetConstructedDataSubordinateRelationships factory function for _BACnetConstructedDataSubordinateRelationships
-func NewBACnetConstructedDataSubordinateRelationships(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateRelationships []BACnetRelationshipTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateRelationships {
+func NewBACnetConstructedDataSubordinateRelationships(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateRelationships []BACnetRelationshipTagged) *_BACnetConstructedDataSubordinateRelationships {
 	_result := &_BACnetConstructedDataSubordinateRelationships{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SubordinateRelationships:      subordinateRelationships,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataSubordinateRelationships(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataSubordinateRelationships) GetTypeName() string {
+func (m *_BACnetConstructedDataSubordinateRelationships) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSubordinateRelationships"
 }
 
-func (m *_BACnetConstructedDataSubordinateRelationships) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSubordinateRelationships) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataSubordinateRelationships) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSubordinateRelationships) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSubordinateRelationships) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataSubordinateRelationships) SerializeWithWriteBuffe
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

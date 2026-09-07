@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -120,11 +120,11 @@ func CastClockAndTimekeepingCommandType(structType any) ClockAndTimekeepingComma
 	return castFunc(structType)
 }
 
-func (m ClockAndTimekeepingCommandType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ClockAndTimekeepingCommandType) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ClockAndTimekeepingCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ClockAndTimekeepingCommandType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

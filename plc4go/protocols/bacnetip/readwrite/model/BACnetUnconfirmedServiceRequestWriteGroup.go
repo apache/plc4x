@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetUnconfirmedServiceRequestWriteGroup = (*_BACnetUnconfirmedServiceReq
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWriteGroup)(nil)
 
 // NewBACnetUnconfirmedServiceRequestWriteGroup factory function for _BACnetUnconfirmedServiceRequestWriteGroup
-func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUnsignedInteger, writePriority BACnetContextTagUnsignedInteger, changeList BACnetGroupChannelValueList, inhibitDelay BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWriteGroup {
+func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUnsignedInteger, writePriority BACnetContextTagUnsignedInteger, changeList BACnetGroupChannelValueList, inhibitDelay BACnetContextTagUnsignedInteger) *_BACnetUnconfirmedServiceRequestWriteGroup {
 	if groupNumber == nil {
 		panic("groupNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
 	}
@@ -79,7 +79,7 @@ func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUn
 		panic("changeList of type BACnetGroupChannelValueList for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestWriteGroup{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		GroupNumber:                             groupNumber,
 		WritePriority:                           writePriority,
 		ChangeList:                              changeList,
@@ -318,12 +318,12 @@ func CastBACnetUnconfirmedServiceRequestWriteGroup(structType any) BACnetUnconfi
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWriteGroup"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (groupNumber)
 	lengthInBits += m.GroupNumber.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -422,7 +422,7 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'changeList' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", GetRef(m.GetInhibitDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", new(m.GetInhibitDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'inhibitDelay' field")
 		}
 

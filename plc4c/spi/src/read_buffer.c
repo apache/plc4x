@@ -328,7 +328,11 @@ plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value) {
 }
 
 plc4c_return_code plc4c_spi_read_char(plc4c_spi_read_buffer* buf, char* value) {
-    return plc4c_spi_read_signed_int(buf, 8, (int8_t*) value);
+  int32_t tmp;
+  plc4c_return_code rc = plc4c_spi_read_signed_int(buf, 8, &tmp);
+  if(rc != OK) return rc;
+  *value = (char) tmp;
+  return OK;
 }
 
 // Unsigned Integers ...
@@ -604,7 +608,7 @@ plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf,
                                         char** value) {
 
   // Right now we only support utf-8 and utf-16.
-  if((strcmp(encoding,"UTF-8") != 0) && (strcmp(encoding,"UTF-16") != 0)) {
+  if((strcmp(encoding,"UTF8") != 0) && (strcmp(encoding,"UTF16") != 0)) {
       return INVALID_ARGUMENT;
   }
 

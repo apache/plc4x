@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPowerMode = (*_BACnetConstructedDataPowerMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPowerMode)(nil)
 
 // NewBACnetConstructedDataPowerMode factory function for _BACnetConstructedDataPowerMode
-func NewBACnetConstructedDataPowerMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, powerMode BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
+func NewBACnetConstructedDataPowerMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, powerMode BACnetApplicationTagBoolean) *_BACnetConstructedDataPowerMode {
 	if powerMode == nil {
 		panic("powerMode of type BACnetApplicationTagBoolean for BACnetConstructedDataPowerMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataPowerMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PowerMode:                     powerMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPowerMode(structType any) BACnetConstructedDataPow
 	return nil
 }
 
-func (m *_BACnetConstructedDataPowerMode) GetTypeName() string {
+func (m *_BACnetConstructedDataPowerMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPowerMode"
 }
 
-func (m *_BACnetConstructedDataPowerMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPowerMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (powerMode)
 	lengthInBits += m.PowerMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPowerMode) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPowerMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPowerMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

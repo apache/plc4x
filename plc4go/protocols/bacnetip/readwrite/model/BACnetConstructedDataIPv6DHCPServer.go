@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6DHCPServer = (*_BACnetConstructedDataIPv6DHCPServ
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
 
 // NewBACnetConstructedDataIPv6DHCPServer factory function for _BACnetConstructedDataIPv6DHCPServer
-func NewBACnetConstructedDataIPv6DHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPServer {
+func NewBACnetConstructedDataIPv6DHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString) *_BACnetConstructedDataIPv6DHCPServer {
 	if dhcpServer == nil {
 		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DHCPServer must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6DHCPServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DhcpServer:                    dhcpServer,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPv6DHCPServer(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPServer) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6DHCPServer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6DHCPServer"
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (dhcpServer)
 	lengthInBits += m.DhcpServer.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

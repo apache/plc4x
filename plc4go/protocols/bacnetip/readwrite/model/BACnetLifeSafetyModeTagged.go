@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,20 +59,16 @@ type _BACnetLifeSafetyModeTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLifeSafetyMode
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLifeSafetyModeTagged = (*_BACnetLifeSafetyModeTagged)(nil)
 
 // NewBACnetLifeSafetyModeTagged factory function for _BACnetLifeSafetyModeTagged
-func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyModeTagged {
+func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) *_BACnetLifeSafetyModeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLifeSafetyModeTagged must not be nil")
 	}
-	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLifeSafetyModeTaggedBuilder interface {
 	WithValue(BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLifeSafetyModeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLifeSafetyModeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLifeSafetyModeTaggedBuilder
 	// Build builds the BACnetLifeSafetyModeTagged or returns an error if something is wrong
 	Build() (BACnetLifeSafetyModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLifeSafetyModeTaggedBuilder) WithValue(value BACnetLifeSafetyMod
 
 func (b *_BACnetLifeSafetyModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLifeSafetyModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLifeSafetyModeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLifeSafetyModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLifeSafetyModeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,28 +224,28 @@ func CastBACnetLifeSafetyModeTagged(structType any) BACnetLifeSafetyModeTagged {
 	return nil
 }
 
-func (m *_BACnetLifeSafetyModeTagged) GetTypeName() string {
+func (m *_BACnetLifeSafetyModeTagged) GetPlx4xTypeName() string {
 	return "BACnetLifeSafetyModeTagged"
 }
 
-func (m *_BACnetLifeSafetyModeTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLifeSafetyModeTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
 
-func (m *_BACnetLifeSafetyModeTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLifeSafetyModeTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +260,7 @@ func BACnetLifeSafetyModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass
 }
 
 func BACnetLifeSafetyModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyModeTagged, error) {
-	v, err := (&_BACnetLifeSafetyModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLifeSafetyModeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLifeSafetyModeTagged) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLifeSafetyModeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLifeSafetyModeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLifeSafetyModeTagged) IsBACnetLifeSafetyModeTagged() {}
 
 func (m *_BACnetLifeSafetyModeTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLifeSafetyModeTagged) deepCopy() *_BACnetLifeSafetyModeTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLifeSafetyModeTaggedCopy
 }

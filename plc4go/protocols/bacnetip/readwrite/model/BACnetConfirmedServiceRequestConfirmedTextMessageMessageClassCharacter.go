@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter = (
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)(nil)
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterValue BACnetContextTagCharacterString, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterValue BACnetContextTagCharacterString) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
 	if characterValue == nil {
 		panic("characterValue of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter must not be nil")
 	}
 	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
-		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag),
 		CharacterValue: characterValue,
 	}
 	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).getLengthInBits(ctx))
 
 	// Simple field (characterValue)
 	lengthInBits += m.CharacterValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

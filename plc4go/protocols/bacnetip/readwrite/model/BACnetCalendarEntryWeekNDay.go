@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetCalendarEntryWeekNDay(structType any) BACnetCalendarEntryWeekNDay
 	return nil
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) GetTypeName() string {
+func (m *_BACnetCalendarEntryWeekNDay) GetPlx4xTypeName() string {
 	return "BACnetCalendarEntryWeekNDay"
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).getLengthInBits(ctx))
+func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).getLengthInBits(ctx))
 
 	// Simple field (weekNDay)
 	lengthInBits += m.WeekNDay.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

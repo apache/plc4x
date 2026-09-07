@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetConfirmedServiceRequestAtomicWriteFile = (*_BACnetConfirmedServiceRe
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
 
 // NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for _BACnetConfirmedServiceRequestAtomicWriteFile
-func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, closingTag BACnetClosingTag, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicWriteFile {
+func NewBACnetConfirmedServiceRequestAtomicWriteFile(serviceRequestLength uint32, deviceIdentifier BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicWriteFile {
 	if deviceIdentifier == nil {
 		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
 	}
@@ -345,12 +345,12 @@ func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType any) BACnetConf
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicWriteFile"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -374,7 +374,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -456,7 +456,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", GetRef(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", new(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
@@ -468,7 +468,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
-		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", GetRef(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", new(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 

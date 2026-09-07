@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastIntegerId(structType any) IntegerId {
 	return nil
 }
 
-func (m *_IntegerId) GetTypeName() string {
+func (m *_IntegerId) GetPlx4xTypeName() string {
 	return "IntegerId"
 }
 
-func (m *_IntegerId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_IntegerId) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_IntegerId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IntegerId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func IntegerIdParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func IntegerIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
-	v, err := (&_IntegerId{}).parse(ctx, readBuffer)
+	v, err := (new(_IntegerId)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

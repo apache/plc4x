@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetTimerStateChangeValueLightingCommand = (*_BACnetTimerStateChangeValu
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueLightingCommand)(nil)
 
 // NewBACnetTimerStateChangeValueLightingCommand factory function for _BACnetTimerStateChangeValueLightingCommand
-func NewBACnetTimerStateChangeValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueLightingCommand {
+func NewBACnetTimerStateChangeValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed) *_BACnetTimerStateChangeValueLightingCommand {
 	if ligthingCommandValue == nil {
 		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetTimerStateChangeValueLightingCommand must not be nil")
 	}
 	_result := &_BACnetTimerStateChangeValueLightingCommand{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader),
 		LigthingCommandValue:                ligthingCommandValue,
 	}
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetTimerStateChangeValueLightingCommand(structType any) BACnetTimerS
 	return nil
 }
 
-func (m *_BACnetTimerStateChangeValueLightingCommand) GetTypeName() string {
+func (m *_BACnetTimerStateChangeValueLightingCommand) GetPlx4xTypeName() string {
 	return "BACnetTimerStateChangeValueLightingCommand"
 }
 
-func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
+func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
 
 	// Simple field (ligthingCommandValue)
 	lengthInBits += m.LigthingCommandValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

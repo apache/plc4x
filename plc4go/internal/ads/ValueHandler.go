@@ -24,12 +24,11 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/pkg/errors"
-
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
@@ -132,10 +131,10 @@ func (t ValueHandler) AdsParseStructType(dataType readWriteModel.AdsDataTypeTabl
 		childValues := plcStruct.GetStruct()
 
 		for _, childTypeEntry := range dataType.GetChildren() {
-			childName := childTypeEntry.GetPropertyName()
-			childType := t.driverContext.dataTypeTable[childTypeEntry.GetDataTypeName()]
+			childName := childTypeEntry.GetMainName()
+			childType := t.driverContext.dataTypeTable[childTypeEntry.GetSecondaryName()]
 			childArrayInfo := childType.GetArrayInfo()
-			childValue, ok := childValues[childTypeEntry.GetPropertyName()]
+			childValue, ok := childValues[childTypeEntry.GetMainName()]
 			if !ok {
 				return nil, fmt.Errorf("missing child value named %s", childName)
 			}
@@ -151,10 +150,10 @@ func (t ValueHandler) AdsParseStructType(dataType readWriteModel.AdsDataTypeTabl
 		parsedValues := map[string]apiValues.PlcValue{}
 
 		for _, childTypeEntry := range dataType.GetChildren() {
-			childName := childTypeEntry.GetPropertyName()
-			childType := t.driverContext.dataTypeTable[childTypeEntry.GetDataTypeName()]
+			childName := childTypeEntry.GetMainName()
+			childType := t.driverContext.dataTypeTable[childTypeEntry.GetSecondaryName()]
 			childArrayInfo := childType.GetArrayInfo()
-			childValue, ok := simpleMap[childTypeEntry.GetPropertyName()]
+			childValue, ok := simpleMap[childTypeEntry.GetMainName()]
 			if !ok {
 				return nil, fmt.Errorf("missing child value named %s", childName)
 			}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -205,12 +205,12 @@ func CastBACnetNameValue(structType any) BACnetNameValue {
 	return nil
 }
 
-func (m *_BACnetNameValue) GetTypeName() string {
+func (m *_BACnetNameValue) GetPlx4xTypeName() string {
 	return "BACnetNameValue"
 }
 
-func (m *_BACnetNameValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetNameValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)
@@ -223,7 +223,7 @@ func (m *_BACnetNameValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetNameValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNameValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -238,7 +238,7 @@ func BACnetNameValueParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetNameValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNameValue, error) {
-	v, err := (&_BACnetNameValue{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetNameValue)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(err, "Error serializing 'name' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "value", GetRef(m.GetValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "value", new(m.GetValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 

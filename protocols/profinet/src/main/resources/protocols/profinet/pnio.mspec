@@ -66,7 +66,7 @@
     ]
 ]
 
-[type UserData(uint 32 recordDataLength) byteOrder='BIG_ENDIAN'
+[type UserData(uint 32 recordDataLength) byteOrder='"BIG_ENDIAN"'
     [array              byte      data count         'recordDataLength'       ]
 ]
 
@@ -75,7 +75,7 @@
 ]
 
 // Big Endian
-[discriminatedType PnIoCm_Block byteOrder='BIG_ENDIAN'
+[discriminatedType PnIoCm_Block byteOrder='"BIG_ENDIAN"'
     [discriminator PnIoCm_BlockType blockType                           ]
     [typeSwitch blockType
         ['IOD_WRITE_REQ_HEADER' IODWriteRequestHeader
@@ -390,7 +390,7 @@
     ]
 ]
 
-[type PnIoCm_IoCrBlockReqApi byteOrder='BIG_ENDIAN'
+[type PnIoCm_IoCrBlockReqApi byteOrder='"BIG_ENDIAN"'
     [const    uint 32             api              0x00000000             ]
     [implicit uint 16             numIoDataObjects 'COUNT(ioDataObjects)'   ]
     [array    PnIoCm_IoDataObject ioDataObjects    count 'numIoDataObjects' ]
@@ -398,31 +398,31 @@
     [array    PnIoCm_IoCs         ioCss            count 'numIoCss'         ]
 ]
 
-[type PnIoCm_IoDataObject byteOrder='BIG_ENDIAN'
+[type PnIoCm_IoDataObject byteOrder='"BIG_ENDIAN"'
     [simple   uint 16 slotNumber             ]
     [simple   uint 16 subSlotNumber          ]
     [simple   uint 16 ioDataObjectFrameOffset]
 ]
 
-[type PnIoCm_IoCs byteOrder='BIG_ENDIAN'
+[type PnIoCm_IoCs byteOrder='"BIG_ENDIAN"'
     [simple   uint 16 slotNumber   ]
     [simple   uint 16 subSlotNumber]
     [simple   uint 16 ioFrameOffset]
 ]
 
-[type PnIoCm_DataUnitIoCs byteOrder='BIG_ENDIAN'
+[type PnIoCm_DataUnitIoCs byteOrder='"BIG_ENDIAN"'
     [simple   bit               dataState]
     [simple   uint 2            instance ]
     [reserved uint 4            '0x00'   ]
     [simple   bit               extension]
 ]
 
-[type PnIoCm_DataUnitDataObject(uint 16 dataObjectLength) byteOrder='BIG_ENDIAN'
+[type PnIoCm_DataUnitDataObject(uint 16 dataObjectLength) byteOrder='"BIG_ENDIAN"'
     [array    byte              dataState   count  'dataObjectLength']
     [simple   PnIoCm_DataUnitIoCs iops   ]
 ]
 
-[type PnIoCm_ExpectedSubmoduleBlockReqApi byteOrder='BIG_ENDIAN'
+[type PnIoCm_ExpectedSubmoduleBlockReqApi byteOrder='"BIG_ENDIAN"'
     [const    uint 32          api               0x00000000                       ]
     [simple   uint 16          slotNumber                                           ]
     [simple   uint 32          moduleIdentNumber                                    ]
@@ -431,13 +431,13 @@
     [array    PnIoCm_Submodule submodules        count               'numSubmodules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi byteOrder='BIG_ENDIAN'
+[type PnIoCm_ModuleDiffBlockApi byteOrder='"BIG_ENDIAN"'
     [const    uint 32                          api        0x00000000                    ]
     [implicit uint 16                          numModules 'COUNT(modules)'                ]
     [array    PnIoCm_ModuleDiffBlockApi_Module modules    count               'numModules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi_Module byteOrder='BIG_ENDIAN'
+[type PnIoCm_ModuleDiffBlockApi_Module byteOrder='"BIG_ENDIAN"'
     [simple   uint 16                             slotNumber                                           ]
     [simple   uint 32                             moduleIdentNumber                                    ]
     [simple   PnIoCm_ModuleState                  moduleState                                          ]
@@ -445,7 +445,7 @@
     [array    PnIoCm_ModuleDiffBlockApi_Submodule submodules        count               'numSubmodules']
 ]
 
-[type PnIoCm_ModuleDiffBlockApi_Submodule byteOrder='BIG_ENDIAN'
+[type PnIoCm_ModuleDiffBlockApi_Submodule byteOrder='"BIG_ENDIAN"'
     [simple uint 16          subslotNumber       ]
     [simple uint 32          submoduleIdentNumber]
     [simple bit              codingUsesIdentInfo ]
@@ -458,25 +458,25 @@
     [simple PnIoCm_AddInfo   addInfo             ]
 ]
 
-[type PnIoCm_RealIdentificationApi byteOrder='BIG_ENDIAN'
+[type PnIoCm_RealIdentificationApi byteOrder='"BIG_ENDIAN"'
     [const    uint 32                           api      0x00000000               ]
     [implicit uint 16                           numSlots 'COUNT(slots)'           ]
     [array    PnIoCm_RealIdentificationApi_Slot slots    count          'numSlots']
 ]
 
-[type PnIoCm_RealIdentificationApi_Slot byteOrder='BIG_ENDIAN'
+[type PnIoCm_RealIdentificationApi_Slot byteOrder='"BIG_ENDIAN"'
     [simple   uint 16                              slotNumber                                       ]
     [simple   uint 32                              moduleIdentNumber                                ]
     [implicit uint 16                              numSubslots       'COUNT(subslots)'              ]
     [array    PnIoCm_RealIdentificationApi_Subslot subslots          count             'numSubslots']
 ]
 
-[type PnIoCm_RealIdentificationApi_Subslot byteOrder='BIG_ENDIAN'
+[type PnIoCm_RealIdentificationApi_Subslot byteOrder='"BIG_ENDIAN"'
     [simple        uint 16                subslotNumber                 ]
     [simple        uint 32                submoduleIdentNumber          ]
 ]
 
-[discriminatedType PnIoCm_Submodule byteOrder='BIG_ENDIAN'
+[discriminatedType PnIoCm_Submodule byteOrder='"BIG_ENDIAN"'
     [simple        uint 16                slotNumber                    ]
     [simple        uint 32                submoduleIdentNumber          ]
     // Begin SubmoduleProperties
@@ -786,34 +786,34 @@
             [array float 64 value count 'numberOfValues']
         ]
         ['CHAR','1' CHAR
-            [simple string 8 value encoding='"UTF-8"']
+            [simple string 8 value stringEncoding='"UTF8"']
         ]
         ['CHAR' List
-            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+            [array string 8 value count 'numberOfValues' stringEncoding='"UTF8"']
         ]
         ['WCHAR','1' WCHAR
-            [simple string 16 value encoding='"UTF-16"']
+            [simple string 16 value stringEncoding='"UTF16BE"']
         ]
         ['WCHAR' List
-            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
+            [array string 16 value count 'numberOfValues' stringEncoding='"UTF16BE"']
         ]
         ['UNICODESTRING8','1' CHAR
-            [simple string 8 value encoding='"UTF-8"']
+            [simple string 8 value stringEncoding='"UTF8"']
         ]
         ['UNICODESTRING8' List
-            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+            [array string 8 value count 'numberOfValues' stringEncoding='"UTF8"']
         ]
         ['WSTRING','1' CHAR
-            [simple string 16 value encoding='"UTF-16"']
+            [simple string 16 value stringEncoding='"UTF16BE"']
         ]
         ['WSTRING' List
-            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
+            [array string 16 value count 'numberOfValues' stringEncoding='"UTF16BE"']
         ]
         ['VISIBLESTRING','1' CHAR
-            [simple string 8 value encoding='"UTF-8"']
+            [simple string 8 value stringEncoding='"UTF8"']
         ]
         ['VISIBLESTRING' List
-            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+            [array string 8 value count 'numberOfValues' v='"UTF8"']
         ]
         ['F_MESSAGETRAILER4BYTE','1'  List
             [array    uint 8     value count '4 * 8' ]

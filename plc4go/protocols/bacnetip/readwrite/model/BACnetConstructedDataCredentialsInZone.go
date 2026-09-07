@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataCredentialsInZone = (*_BACnetConstructedDataCredentia
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialsInZone)(nil)
 
 // NewBACnetConstructedDataCredentialsInZone factory function for _BACnetConstructedDataCredentialsInZone
-func NewBACnetConstructedDataCredentialsInZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialsInZone []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialsInZone {
+func NewBACnetConstructedDataCredentialsInZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialsInZone []BACnetDeviceObjectReference) *_BACnetConstructedDataCredentialsInZone {
 	_result := &_BACnetConstructedDataCredentialsInZone{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CredentialsInZone:             credentialsInZone,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataCredentialsInZone(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialsInZone) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialsInZone"
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.CredentialsInZone) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -203,12 +203,12 @@ func CastModbusPDUWriteFileRecordResponseItem(structType any) ModbusPDUWriteFile
 	return nil
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItem) GetTypeName() string {
+func (m *_ModbusPDUWriteFileRecordResponseItem) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteFileRecordResponseItem"
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ModbusPDUWriteFileRecordResponseItem) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (referenceType)
 	lengthInBits += 8
@@ -224,13 +224,13 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) GetLengthInBits(ctx context.Cont
 
 	// Array field
 	if len(m.RecordData) > 0 {
-		lengthInBits += 8 * uint16(len(m.RecordData))
+		lengthInBits += 8 * uint64(len(m.RecordData))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUWriteFileRecordResponseItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -245,7 +245,7 @@ func ModbusPDUWriteFileRecordResponseItemParseWithBufferProducer() func(ctx cont
 }
 
 func ModbusPDUWriteFileRecordResponseItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordResponseItem, error) {
-	v, err := (&_ModbusPDUWriteFileRecordResponseItem{}).parse(ctx, readBuffer)
+	v, err := (new(_ModbusPDUWriteFileRecordResponseItem)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

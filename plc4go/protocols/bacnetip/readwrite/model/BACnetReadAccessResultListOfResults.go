@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,23 +57,19 @@ type _BACnetReadAccessResultListOfResults struct {
 	OpeningTag               BACnetOpeningTag
 	ListOfReadAccessProperty []BACnetReadAccessProperty
 	ClosingTag               BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ BACnetReadAccessResultListOfResults = (*_BACnetReadAccessResultListOfResults)(nil)
 
 // NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
-func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
+func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag) *_BACnetReadAccessResultListOfResults {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
 	}
-	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -96,10 +92,6 @@ type BACnetReadAccessResultListOfResultsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetReadAccessResultListOfResultsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetReadAccessResultListOfResultsBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetReadAccessResultListOfResultsBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetReadAccessResultListOfResultsBuilder
 	// Build builds the BACnetReadAccessResultListOfResults or returns an error if something is wrong
 	Build() (BACnetReadAccessResultListOfResults, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,15 +147,6 @@ func (b *_BACnetReadAccessResultListOfResultsBuilder) WithClosingTagBuilder(buil
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetReadAccessResultListOfResultsBuilder) WithArgTagNumber(tagNumber uint8) BACnetReadAccessResultListOfResultsBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetReadAccessResultListOfResultsBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetReadAccessResultListOfResultsBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -242,12 +225,12 @@ func CastBACnetReadAccessResultListOfResults(structType any) BACnetReadAccessRes
 	return nil
 }
 
-func (m *_BACnetReadAccessResultListOfResults) GetTypeName() string {
+func (m *_BACnetReadAccessResultListOfResults) GetPlx4xTypeName() string {
 	return "BACnetReadAccessResultListOfResults"
 }
 
-func (m *_BACnetReadAccessResultListOfResults) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetReadAccessResultListOfResults) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -265,7 +248,7 @@ func (m *_BACnetReadAccessResultListOfResults) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessResultListOfResults) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetReadAccessResultListOfResults) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -280,7 +263,7 @@ func BACnetReadAccessResultListOfResultsParseWithBufferProducer(tagNumber uint8,
 }
 
 func BACnetReadAccessResultListOfResultsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
-	v, err := (&_BACnetReadAccessResultListOfResults{TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	v, err := (new(_BACnetReadAccessResultListOfResults)).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -356,19 +339,6 @@ func (m *_BACnetReadAccessResultListOfResults) SerializeWithWriteBuffer(ctx cont
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetReadAccessResultListOfResults) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
-
 func (m *_BACnetReadAccessResultListOfResults) IsBACnetReadAccessResultListOfResults() {}
 
 func (m *_BACnetReadAccessResultListOfResults) DeepCopy() any {
@@ -383,8 +353,6 @@ func (m *_BACnetReadAccessResultListOfResults) deepCopy() *_BACnetReadAccessResu
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetReadAccessProperty, BACnetReadAccessProperty](m.ListOfReadAccessProperty),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
-		m.ObjectTypeArgument,
 	}
 	return _BACnetReadAccessResultListOfResultsCopy
 }

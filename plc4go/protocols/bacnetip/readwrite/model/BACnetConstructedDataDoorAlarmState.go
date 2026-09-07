@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDoorAlarmState = (*_BACnetConstructedDataDoorAlarmSta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorAlarmState)(nil)
 
 // NewBACnetConstructedDataDoorAlarmState factory function for _BACnetConstructedDataDoorAlarmState
-func NewBACnetConstructedDataDoorAlarmState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorAlarmState BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
+func NewBACnetConstructedDataDoorAlarmState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorAlarmState BACnetDoorAlarmStateTagged) *_BACnetConstructedDataDoorAlarmState {
 	if doorAlarmState == nil {
 		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetConstructedDataDoorAlarmState must not be nil")
 	}
 	_result := &_BACnetConstructedDataDoorAlarmState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DoorAlarmState:                doorAlarmState,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDoorAlarmState(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorAlarmState) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorAlarmState) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorAlarmState"
 }
 
-func (m *_BACnetConstructedDataDoorAlarmState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDoorAlarmState) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (doorAlarmState)
 	lengthInBits += m.DoorAlarmState.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDoorAlarmState) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDoorAlarmState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDoorAlarmState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

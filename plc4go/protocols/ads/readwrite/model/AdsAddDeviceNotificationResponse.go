@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,8 +42,10 @@ type AdsAddDeviceNotificationResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle (property field)
+	// 4 bytes	Handle of notification
 	GetNotificationHandle() uint32
 	// IsAdsAddDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsAddDeviceNotificationResponse()
@@ -62,7 +64,7 @@ var _ AdsAddDeviceNotificationResponse = (*_AdsAddDeviceNotificationResponse)(ni
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationResponse)(nil)
 
 // NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
-func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
+func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
 	_result := &_AdsAddDeviceNotificationResponse{
 		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:             result,
@@ -226,12 +228,12 @@ func CastAdsAddDeviceNotificationResponse(structType any) AdsAddDeviceNotificati
 	return nil
 }
 
-func (m *_AdsAddDeviceNotificationResponse) GetTypeName() string {
+func (m *_AdsAddDeviceNotificationResponse) GetPlx4xTypeName() string {
 	return "AdsAddDeviceNotificationResponse"
 }
 
-func (m *_AdsAddDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsAddDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -242,7 +244,7 @@ func (m *_AdsAddDeviceNotificationResponse) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_AdsAddDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsAddDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

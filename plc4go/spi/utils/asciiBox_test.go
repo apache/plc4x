@@ -943,13 +943,11 @@ func TestExpandBox(t *testing.T) {
 	}{
 		{
 			name: "Small expand",
-			args: args{
-				box: asciiBoxForTest(`
+			box: asciiBoxForTest(`
 123123123
 123123123
 123123123`[1:]),
-				width: 100,
-			},
+			width: 100,
 			want: asciiBoxForTest(`
 123123123                                                                                           
 123123123                                                                                           
@@ -957,13 +955,11 @@ func TestExpandBox(t *testing.T) {
 		},
 		{
 			name: "Big expand",
-			args: args{
-				box: asciiBoxForTest(`
+			box: asciiBoxForTest(`
 123123123
 123123123
 123123123`[1:]),
-				width: 10000,
-			},
+			width: 10000,
 			want: asciiBoxForTest(fmt.Sprintf(`
 123123123%[1]s
 123123123%[1]s

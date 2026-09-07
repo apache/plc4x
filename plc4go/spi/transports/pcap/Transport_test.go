@@ -1,3 +1,5 @@
+//go:build cgo || windows
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -71,9 +73,9 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 			name: "create it",
 			args: args{
 				options: map[string][]string{
-					"transport-type":       {"pcap"},
-					"transport-port-range": {"1-3"},
-					"speed-factor":         {"1.5"},
+					"pcap.transport-type":       {"pcap"},
+					"pcap.transport-port-range": {"1-3"},
+					"pcap.speed-factor":         {"1.5"},
 				},
 			},
 			want: func() transports.TransportInstance {

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNodeType = (*_BACnetConstructedDataNodeType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeType)(nil)
 
 // NewBACnetConstructedDataNodeType factory function for _BACnetConstructedDataNodeType
-func NewBACnetConstructedDataNodeType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeType BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
+func NewBACnetConstructedDataNodeType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeType BACnetNodeTypeTagged) *_BACnetConstructedDataNodeType {
 	if nodeType == nil {
 		panic("nodeType of type BACnetNodeTypeTagged for BACnetConstructedDataNodeType must not be nil")
 	}
 	_result := &_BACnetConstructedDataNodeType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NodeType:                      nodeType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNodeType(structType any) BACnetConstructedDataNode
 	return nil
 }
 
-func (m *_BACnetConstructedDataNodeType) GetTypeName() string {
+func (m *_BACnetConstructedDataNodeType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNodeType"
 }
 
-func (m *_BACnetConstructedDataNodeType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNodeType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (nodeType)
 	lengthInBits += m.NodeType.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNodeType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNodeType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNodeType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

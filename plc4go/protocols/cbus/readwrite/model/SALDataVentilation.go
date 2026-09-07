@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +44,7 @@ type SALDataVentilation interface {
 	utils.Copyable
 	SALData
 	// GetVentilationData returns VentilationData (property field)
+	// Note: the documentation states that the data for ventilation uses LightingData
 	GetVentilationData() LightingData
 	// IsSALDataVentilation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataVentilation()
@@ -225,12 +228,12 @@ func CastSALDataVentilation(structType any) SALDataVentilation {
 	return nil
 }
 
-func (m *_SALDataVentilation) GetTypeName() string {
+func (m *_SALDataVentilation) GetPlx4xTypeName() string {
 	return "SALDataVentilation"
 }
 
-func (m *_SALDataVentilation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataVentilation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (ventilationData)
 	lengthInBits += m.VentilationData.GetLengthInBits(ctx)
@@ -238,7 +241,7 @@ func (m *_SALDataVentilation) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataVentilation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataVentilation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +256,7 @@ func (m *_SALDataVentilation) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ventilationData, err := ReadSimpleField[LightingData](ctx, "ventilationData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	ventilationData, err := ReadSimpleField[LightingData](ctx, "ventilationData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ventilationData' field"))
 	}
@@ -267,7 +270,7 @@ func (m *_SALDataVentilation) parse(ctx context.Context, readBuffer utils.ReadBu
 }
 
 func (m *_SALDataVentilation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +287,7 @@ func (m *_SALDataVentilation) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for SALDataVentilation")
 		}
 
-		if err := WriteSimpleField[LightingData](ctx, "ventilationData", m.GetVentilationData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LightingData](ctx, "ventilationData", m.GetVentilationData(), WriteComplex[LightingData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'ventilationData' field")
 		}
 

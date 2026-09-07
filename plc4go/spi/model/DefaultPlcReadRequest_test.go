@@ -25,12 +25,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 )
 
@@ -207,43 +207,6 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 		reader                 spi.PlcReader
 		readRequestInterceptor interceptors.ReadRequestInterceptor
 	}
-	tests := []struct {
-		name   string
-		fields fields
-		setup  func(t *testing.T, fields *fields)
-		want   <-chan apiModel.PlcReadRequestResult
-	}{
-		{
-			name: "execute it",
-			setup: func(t *testing.T, fields *fields) {
-				reader := NewMockPlcReader(t)
-				reader.EXPECT().Read(mock.Anything, mock.Anything).Return(nil)
-				fields.reader = reader
-			},
-			want: nil,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &DefaultPlcReadRequest{
-				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,
-				reader:                 tt.fields.reader,
-				readRequestInterceptor: tt.fields.readRequestInterceptor,
-			}
-			assert.Equalf(t, tt.want, d.Execute(), "Execute()")
-		})
-	}
-}
-
-func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
-	type fields struct {
-		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		reader                 spi.PlcReader
-		readRequestInterceptor interceptors.ReadRequestInterceptor
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -285,13 +248,12 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.NoError(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.NotNil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -318,13 +280,12 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.Error(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.Nil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -334,7 +295,7 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 			name: "execute it with interceptor with three request (context done)",
 			args: args{
 				ctx: func() context.Context {
-					timeout, cancelFunc := context.WithCancel(context.Background())
+					timeout, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return timeout
 				}(),
@@ -358,13 +319,12 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.Error(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.Nil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -374,7 +334,7 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 			name: "execute it with interceptor with three request",
 			args: args{
 				ctx: func() context.Context {
-					timeout, cancelFunc := context.WithTimeout(context.Background(), 1*time.Second)
+					timeout, cancelFunc := context.WithTimeout(t.Context(), 1*time.Second)
 					t.Cleanup(cancelFunc)
 					return timeout
 				}(),
@@ -410,13 +370,12 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.NoError(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.NotNil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -433,9 +392,9 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 				reader:                 tt.fields.reader,
 				readRequestInterceptor: tt.fields.readRequestInterceptor,
 			}
-			result := d.ExecuteWithContext(tt.args.ctx)
+			result := d.Execute(tt.args.ctx)
 			if tt.wantAsserter != nil {
-				assert.True(t, tt.wantAsserter(t, result), "ExecuteWithContext(%v)", tt.args.ctx)
+				assert.True(t, tt.wantAsserter(t, result), "Execute(%v)", tt.args.ctx)
 			}
 		})
 	}

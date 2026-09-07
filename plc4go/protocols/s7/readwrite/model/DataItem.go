@@ -22,10 +22,10 @@ package model
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/spi/values"
 )
@@ -183,7 +183,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcLREAL(value), nil
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF-8"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -192,7 +192,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF16BE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -201,7 +201,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		value, _valueErr := ParseS7String(ctx, readBuffer, stringLength, "UTF-8")
+		value, _valueErr := ParseS7String(ctx, readBuffer, stringLength, "UTF8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -210,7 +210,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		value, _valueErr := ParseS7String(ctx, readBuffer, stringLength, "UTF-16")
+		value, _valueErr := ParseS7String(ctx, readBuffer, stringLength, "UTF16BE")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -280,49 +280,49 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		_ = year // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (month)
-		month, _monthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
+		month, _monthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8, utils.WithEncoding("BCD"))
 		if _monthErr != nil {
 			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 		}
 		_ = month // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (day)
-		day, _dayErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("day", 8)
+		day, _dayErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("day", 8, utils.WithEncoding("BCD"))
 		if _dayErr != nil {
 			return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 		}
 		_ = day // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (hour)
-		hour, _hourErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 8)
+		hour, _hourErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 8, utils.WithEncoding("BCD"))
 		if _hourErr != nil {
 			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
 		_ = hour // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (minutes)
-		minutes, _minutesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("minutes", 8)
+		minutes, _minutesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("minutes", 8, utils.WithEncoding("BCD"))
 		if _minutesErr != nil {
 			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 		}
 		_ = minutes // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (seconds)
-		seconds, _secondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("seconds", 8)
+		seconds, _secondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("seconds", 8, utils.WithEncoding("BCD"))
 		if _secondsErr != nil {
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
 		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (millisecondsOfSecond)
-		millisecondsOfSecond, _millisecondsOfSecondErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("millisecondsOfSecond", 12)
+		millisecondsOfSecond, _millisecondsOfSecondErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("millisecondsOfSecond", 12, utils.WithEncoding("BCD"))
 		if _millisecondsOfSecondErr != nil {
 			return nil, errors.Wrap(_millisecondsOfSecondErr, "Error parsing 'millisecondsOfSecond' field")
 		}
 		_ = millisecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (dayOfWeek)
-		dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 4)
+		// Manual Field (dayOfWeek)
+		dayOfWeek, _dayOfWeekErr := ParseSiemensDayOfWeek(ctx, readBuffer)
 		if _dayOfWeekErr != nil {
 			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
@@ -387,12 +387,12 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		}
 		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (nannosecondsOfSecond)
-		nannosecondsOfSecond, _nannosecondsOfSecondErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nannosecondsOfSecond", 32)
-		if _nannosecondsOfSecondErr != nil {
-			return nil, errors.Wrap(_nannosecondsOfSecondErr, "Error parsing 'nannosecondsOfSecond' field")
+		// Simple Field (nanosecondsOfSecond)
+		nanosecondsOfSecond, _nanosecondsOfSecondErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nanosecondsOfSecond", 32)
+		if _nanosecondsOfSecondErr != nil {
+			return nil, errors.Wrap(_nanosecondsOfSecondErr, "Error parsing 'nanosecondsOfSecond' field")
 		}
-		_ = nannosecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		_ = nanosecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 	}
 	// TODO: add more info which type it is actually
@@ -518,23 +518,23 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF-8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF-16)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF16BE")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(ctx, writeBuffer, value, stringLength, "UTF-8")
+		_valueErr := SerializeS7String(ctx, writeBuffer, value, stringLength, "UTF8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(ctx, writeBuffer, value, stringLength, "UTF-16")
+		_valueErr := SerializeS7String(ctx, writeBuffer, value, stringLength, "UTF16BE")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
@@ -578,38 +578,39 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 
 		// Simple Field (month)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8(value.(values.PlcDATE_AND_TIME).GetMonth())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8(value.(values.PlcDATE_AND_TIME).GetMonth()), utils.WithEncoding("BCD")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 8, uint8(value.(values.PlcDATE_AND_TIME).GetDay())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 8, uint8(value.(values.PlcDATE_AND_TIME).GetDay()), utils.WithEncoding("BCD")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (hour)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 8, uint8(value.(values.PlcDATE_AND_TIME).GetHour())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 8, uint8(value.(values.PlcDATE_AND_TIME).GetHour()), utils.WithEncoding("BCD")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("minutes", 8, uint8(value.(values.PlcDATE_AND_TIME).GetMinutes())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("minutes", 8, uint8(value.(values.PlcDATE_AND_TIME).GetMinutes()), utils.WithEncoding("BCD")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("seconds", 8, uint8(value.(values.PlcDATE_AND_TIME).GetSeconds())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("seconds", 8, uint8(value.(values.PlcDATE_AND_TIME).GetSeconds()), utils.WithEncoding("BCD")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (millisecondsOfSecond)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("millisecondsOfSecond", 12, uint16(value.(values.PlcDATE_AND_TIME).GetMillisecondsOfSecond())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("millisecondsOfSecond", 12, uint16(value.(values.PlcDATE_AND_TIME).GetMillisecondsOfSecond()), utils.WithEncoding("BCD")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsOfSecond' field")
 		}
 
-		// Simple Field (dayOfWeek)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 4, uint8(value.(values.PlcDATE_AND_TIME).GetDayOfWeek())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
+		// Manual Field (dayOfWeek)
+		_dayOfWeekErr := SerializeSiemensDayOfWeek(ctx, writeBuffer, value)
+		if _dayOfWeekErr != nil {
+			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_LTIME": // DATE_AND_LTIME
 		// Simple Field (nanosecondsSinceEpoch)
@@ -652,9 +653,9 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
-		// Simple Field (nannosecondsOfSecond)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("nannosecondsOfSecond", 32, uint32(value.GetUint32())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'nannosecondsOfSecond' field")
+		// Simple Field (nanosecondsOfSecond)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("nanosecondsOfSecond", 32, uint32(value.GetUint32())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'nanosecondsOfSecond' field")
 		}
 	default:
 		// TODO: add more info which type it is actually

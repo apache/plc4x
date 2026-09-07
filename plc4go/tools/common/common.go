@@ -20,13 +20,12 @@
 package common
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
-
-	"github.com/pkg/errors"
 )
 
 func GetLicenseFileContent(licenseFileName string, verbose bool) []byte {

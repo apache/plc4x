@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFDBBMDAddress = (*_BACnetConstructedDataFDBBMDAddress
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDBBMDAddress)(nil)
 
 // NewBACnetConstructedDataFDBBMDAddress factory function for _BACnetConstructedDataFDBBMDAddress
-func NewBACnetConstructedDataFDBBMDAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fDBBMDAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDBBMDAddress {
+func NewBACnetConstructedDataFDBBMDAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fDBBMDAddress BACnetHostNPort) *_BACnetConstructedDataFDBBMDAddress {
 	if fDBBMDAddress == nil {
 		panic("fDBBMDAddress of type BACnetHostNPort for BACnetConstructedDataFDBBMDAddress must not be nil")
 	}
 	_result := &_BACnetConstructedDataFDBBMDAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FDBBMDAddress:                 fDBBMDAddress,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataFDBBMDAddress(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) GetTypeName() string {
+func (m *_BACnetConstructedDataFDBBMDAddress) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFDBBMDAddress"
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fDBBMDAddress)
 	lengthInBits += m.FDBBMDAddress.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

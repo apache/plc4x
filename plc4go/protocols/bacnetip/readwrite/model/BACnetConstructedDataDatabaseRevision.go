@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDatabaseRevision = (*_BACnetConstructedDataDatabaseRe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDatabaseRevision)(nil)
 
 // NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
-func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
+func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
 	if databaseRevision == nil {
 		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
 	}
 	_result := &_BACnetConstructedDataDatabaseRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DatabaseRevision:              databaseRevision,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDatabaseRevision(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetTypeName() string {
+func (m *_BACnetConstructedDataDatabaseRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatabaseRevision"
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (databaseRevision)
 	lengthInBits += m.DatabaseRevision.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

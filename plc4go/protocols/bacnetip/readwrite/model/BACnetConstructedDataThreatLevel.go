@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataThreatLevel = (*_BACnetConstructedDataThreatLevel)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatLevel)(nil)
 
 // NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
-func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
+func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel) *_BACnetConstructedDataThreatLevel {
 	if threatLevel == nil {
 		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
 	}
 	_result := &_BACnetConstructedDataThreatLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ThreatLevel:                   threatLevel,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataThreatLevel(structType any) BACnetConstructedDataT
 	return nil
 }
 
-func (m *_BACnetConstructedDataThreatLevel) GetTypeName() string {
+func (m *_BACnetConstructedDataThreatLevel) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataThreatLevel"
 }
 
-func (m *_BACnetConstructedDataThreatLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataThreatLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (threatLevel)
 	lengthInBits += m.ThreatLevel.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataThreatLevel) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataThreatLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataThreatLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

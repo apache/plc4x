@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,6 +54,7 @@ type APDUComplexAck interface {
 	// GetServiceAck returns ServiceAck (property field)
 	GetServiceAck() BACnetServiceAck
 	// GetSegmentServiceChoice returns SegmentServiceChoice (property field)
+	// When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
 	GetSegmentServiceChoice() *BACnetConfirmedServiceChoice
 	// GetSegment returns Segment (property field)
 	GetSegment() []byte
@@ -86,9 +87,9 @@ var _ APDUComplexAck = (*_APDUComplexAck)(nil)
 var _ APDURequirements = (*_APDUComplexAck)(nil)
 
 // NewAPDUComplexAck factory function for _APDUComplexAck
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUComplexAck {
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte) *_APDUComplexAck {
 	_result := &_APDUComplexAck{
-		APDUContract:         NewAPDU(apduLength),
+		APDUContract:         NewAPDU(),
 		SegmentedMessage:     segmentedMessage,
 		MoreFollows:          moreFollows,
 		OriginalInvokeId:     originalInvokeId,
@@ -367,12 +368,12 @@ func CastAPDUComplexAck(structType any) APDUComplexAck {
 	return nil
 }
 
-func (m *_APDUComplexAck) GetTypeName() string {
+func (m *_APDUComplexAck) GetPlx4xTypeName() string {
 	return "APDUComplexAck"
 }
 
-func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -412,13 +413,13 @@ func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Segment) > 0 {
-		lengthInBits += 8 * uint16(len(m.Segment))
+		lengthInBits += 8 * uint64(len(m.Segment))
 	}
 
 	return lengthInBits
 }
 
-func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -488,7 +489,7 @@ func (m *_APDUComplexAck) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Validation
-	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool(segmentedMessage)) {
+	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool((bool(bool(segmentedMessage) && bool(bool((sequenceNumber) != (nil)))) && bool(bool((proposedWindowSize) != (nil)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service ack should be set"})
 	}
 
@@ -568,7 +569,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		if err := WriteOptionalField[BACnetServiceAck](ctx, "serviceAck", GetRef(m.GetServiceAck()), WriteComplex[BACnetServiceAck](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetServiceAck](ctx, "serviceAck", new(m.GetServiceAck()), WriteComplex[BACnetServiceAck](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceAck' field")
 		}
 

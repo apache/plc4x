@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastSecurityDataExitDelayStarted(structType any) SecurityDataExitDelayStart
 	return nil
 }
 
-func (m *_SecurityDataExitDelayStarted) GetTypeName() string {
+func (m *_SecurityDataExitDelayStarted) GetPlx4xTypeName() string {
 	return "SecurityDataExitDelayStarted"
 }
 
-func (m *_SecurityDataExitDelayStarted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataExitDelayStarted) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataExitDelayStarted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataExitDelayStarted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

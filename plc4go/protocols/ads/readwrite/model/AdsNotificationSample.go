@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,10 +41,13 @@ type AdsNotificationSample interface {
 	utils.Serializable
 	utils.Copyable
 	// GetNotificationHandle returns NotificationHandle (property field)
+	// 4 bytes	Handle of notification
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
+	// 4 Bytes	Size of data range in bytes.
 	GetSampleSize() uint32
 	// GetData returns Data (property field)
+	// n Bytes	Data
 	GetData() []byte
 	// IsAdsNotificationSample is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsNotificationSample()
@@ -189,12 +192,12 @@ func CastAdsNotificationSample(structType any) AdsNotificationSample {
 	return nil
 }
 
-func (m *_AdsNotificationSample) GetTypeName() string {
+func (m *_AdsNotificationSample) GetPlx4xTypeName() string {
 	return "AdsNotificationSample"
 }
 
-func (m *_AdsNotificationSample) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsNotificationSample) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -204,13 +207,13 @@ func (m *_AdsNotificationSample) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsNotificationSample) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsNotificationSample) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -225,7 +228,7 @@ func AdsNotificationSampleParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
-	v, err := (&_AdsNotificationSample{}).parse(ctx, readBuffer)
+	v, err := (new(_AdsNotificationSample)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

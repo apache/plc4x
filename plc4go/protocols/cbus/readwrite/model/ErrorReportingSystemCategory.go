@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +207,12 @@ func CastErrorReportingSystemCategory(structType any) ErrorReportingSystemCatego
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategory) GetTypeName() string {
+func (m *_ErrorReportingSystemCategory) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategory"
 }
 
-func (m *_ErrorReportingSystemCategory) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ErrorReportingSystemCategory) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (systemCategoryClass)
 	lengthInBits += 4
@@ -226,7 +226,7 @@ func (m *_ErrorReportingSystemCategory) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_ErrorReportingSystemCategory) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ErrorReportingSystemCategory) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -241,7 +241,7 @@ func ErrorReportingSystemCategoryParseWithBufferProducer() func(ctx context.Cont
 }
 
 func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategory, error) {
-	v, err := (&_ErrorReportingSystemCategory{}).parse(ctx, readBuffer)
+	v, err := (new(_ErrorReportingSystemCategory)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

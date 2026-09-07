@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	// GetAssignedLandingCalls returns AssignedLandingCalls (property field)
 	GetAssignedLandingCalls() []BACnetAssignedLandingCalls
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAssignedLandingCalls()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataAssignedLandingCalls = (*_BACnetConstructedDataAssign
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
 
 // NewBACnetConstructedDataAssignedLandingCalls factory function for _BACnetConstructedDataAssignedLandingCalls
-func NewBACnetConstructedDataAssignedLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedLandingCalls []BACnetAssignedLandingCalls, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedLandingCalls {
+func NewBACnetConstructedDataAssignedLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedLandingCalls []BACnetAssignedLandingCalls) *_BACnetConstructedDataAssignedLandingCalls {
 	_result := &_BACnetConstructedDataAssignedLandingCalls{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AssignedLandingCalls:          assignedLandingCalls,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataAssignedLandingCalls(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataAssignedLandingCalls) GetTypeName() string {
+func (m *_BACnetConstructedDataAssignedLandingCalls) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAssignedLandingCalls"
 }
 
-func (m *_BACnetConstructedDataAssignedLandingCalls) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAssignedLandingCalls) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAssignedLandingCalls) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAssignedLandingCalls) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

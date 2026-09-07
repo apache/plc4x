@@ -23,28 +23,28 @@ github:
   description: PLC4X The Industrial IoT adapter
   homepage: https://plc4x.apache.org/
 
-  dependabot_alerts:  true
+  dependabot_alerts: true
   dependabot_updates: false
 
   labels:
-    - java
-    - cpp
-    - c
-    - go
-    - python
-    - net
-    - ab
-    - ads
-    - ethernetip
-    - firmata
-    - knx
-    - modbus
-    - opcua
-    - s7
-    - siemens
-    - bacnet
-    - can
-    - iot
+  - java
+  - cpp
+  - c
+  - go
+  - python
+  - net
+  - ab
+  - ads
+  - ethernetip
+  - firmata
+  - knx
+  - modbus
+  - opcua
+  - s7
+  - siemens
+  - bacnet
+  - can
+  - iot
 
   features:
     wiki: true
@@ -80,10 +80,32 @@ github:
     edit_comment_discussion: "Re: [D] {title}"
     delete_comment_discussion: "Re: [D] {title}"
 
+  rulesets:
+  - name: "Default Branch Protection"
+    type: branch
+    branches:
+      includes:
+      - "~DEFAULT_BRANCH"
+      - "release/*"
+      - "rel/*"
+      excludes: [ ]
+    bypass_teams:
+    - root
+    - plc4x-committers
+    restrict_deletion: true
+    restrict_force_push: true
+    required_pull_request_reviews:
+      dismiss_stale_reviews: true
+      require_last_push_approval: true
+      required_approving_review_count: 1
+    required_linear_history: false
+    required_signatures: false
+    required_conversation_resolution: true
+
 notifications:
-  commits:              commits@plc4x.apache.org
-  issues:               issues@plc4x.apache.org
-  discussions:          dev@plc4x.apache.org
-  pullrequests_status:  commits@plc4x.apache.org
+  commits: commits@plc4x.apache.org
+  issues: issues@plc4x.apache.org
+  discussions: dev@plc4x.apache.org
+  pullrequests_status: commits@plc4x.apache.org
   pullrequests_comment: commits@plc4x.apache.org
   pullrequests_bot_dependabot: commits@plc4x.apache.org

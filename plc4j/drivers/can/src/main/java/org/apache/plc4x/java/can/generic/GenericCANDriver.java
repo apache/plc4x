@@ -18,31 +18,26 @@
  */
 package org.apache.plc4x.java.can.generic;
 
-import org.apache.plc4x.java.can.generic.tag.GenericCANTagHandler;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.can.generic.configuration.GenericCANConfiguration;
-import org.apache.plc4x.java.can.generic.context.GenericCANDriverContext;
-import org.apache.plc4x.java.can.generic.protocol.GenericCANProtocolLogic;
-import org.apache.plc4x.java.can.generic.transport.GenericCANFrameDataHandler;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.connection.CustomProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.transport.can.CANTransport;
+import org.apache.plc4x.java.can.generic.tag.GenericCANTag;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
- * A generic purpose CAN driver which is able to work with any compatible CAN transport.
+ * Generic CAN driver, transport-agnostic so long as the chosen transport
+ * presents incoming traffic as fixed 16-byte SocketCAN-style frames (true for
+ * both {@code can-socketcan} and {@code can-virtualcan}).
  *
- * Main role of this driver is provisioning of quick and easy way to create user specific CAN bus applications.
+ * <p>URL: {@code genericcan:&lt;transport&gt;://...}</p>
  */
-public class GenericCANDriver extends GeneratedDriverBase<Message> {
+public class GenericCANDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -55,18 +50,18 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
-        return Optional.of("socketcan");
-    }
-
-    @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return GenericCANConfiguration.class;
     }
 
     @Override
-    protected boolean canRead() {
-        return false;
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("can-socketcan");
+    }
+
+    @Override
+    public List<String> getSupportedTransportCodes() {
+        return List.of("can-socketcan", "can-virtualcan", "test");
     }
 
     @Override
@@ -79,46 +74,16 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
         return true;
     }
 
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new GenericCANConnection((GenericCANConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override
-    protected BaseOptimizer getOptimizer() {
-        return null;
-    }
-
-    @Override
-    protected ProtocolStackConfigurer<Message> getStackConfigurer() {
-        throw new PlcRuntimeException("Generic CAN driver requires access to transport layer.");
-    }
-
-    @Override
-    protected ProtocolStackConfigurer<Message> getStackConfigurer(Transport transport) {
-        if (!(transport instanceof CANTransport)) {
-            throw new PlcRuntimeException("Generic CAN Driver requires CAN Transport instance");
-        }
-
-        CANTransport<Message> canTransport = (CANTransport<Message>) transport;
-        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageInput)
-            .withProtocol(cfg -> {
-                GenericCANProtocolLogic protocolLogic = new GenericCANProtocolLogic();
-                ConfigurationFactory.configure(cfg, protocolLogic);
-                return new CANDriverAdapter<>(protocolLogic,
-                    canTransport.getMessageType(), canTransport.adapter(),
-                    new GenericCANFrameDataHandler(canTransport::getTransportFrameBuilder),
-                    new GenericCANTagHandler()
-                );
-            })
-            .withDriverContext(cfg -> new GenericCANDriverContext())
-            .withPacketSizeEstimator(cfg -> canTransport.getEstimator())
-            .littleEndian()
-            .build();
+    public PlcTag prepareTag(String tagAddress) {
+        return GenericCANTag.matches(tagAddress).orElse(null);
     }
 
 }

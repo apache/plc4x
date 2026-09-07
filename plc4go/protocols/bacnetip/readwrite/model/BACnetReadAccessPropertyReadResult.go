@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,21 +59,16 @@ type _BACnetReadAccessPropertyReadResult struct {
 	PeekedTagHeader     BACnetTagHeader
 	PropertyValue       BACnetConstructedData
 	PropertyAccessError ErrorEnclosed
-
-	// Arguments.
-	ObjectTypeArgument         BACnetObjectType
-	PropertyIdentifierArgument BACnetPropertyIdentifier
-	ArrayIndexArgument         BACnetTagPayloadUnsignedInteger
 }
 
 var _ BACnetReadAccessPropertyReadResult = (*_BACnetReadAccessPropertyReadResult)(nil)
 
 // NewBACnetReadAccessPropertyReadResult factory function for _BACnetReadAccessPropertyReadResult
-func NewBACnetReadAccessPropertyReadResult(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, propertyAccessError ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetReadAccessPropertyReadResult {
+func NewBACnetReadAccessPropertyReadResult(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, propertyAccessError ErrorEnclosed) *_BACnetReadAccessPropertyReadResult {
 	if peekedTagHeader == nil {
 		panic("peekedTagHeader of type BACnetTagHeader for BACnetReadAccessPropertyReadResult must not be nil")
 	}
-	return &_BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
+	return &_BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError}
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,12 +93,6 @@ type BACnetReadAccessPropertyReadResultBuilder interface {
 	WithOptionalPropertyAccessError(ErrorEnclosed) BACnetReadAccessPropertyReadResultBuilder
 	// WithOptionalPropertyAccessErrorBuilder adds PropertyAccessError (property field) which is build by the builder
 	WithOptionalPropertyAccessErrorBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetReadAccessPropertyReadResultBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetReadAccessPropertyReadResultBuilder
-	// WithArgPropertyIdentifierArgument sets a parser argument
-	WithArgPropertyIdentifierArgument(BACnetPropertyIdentifier) BACnetReadAccessPropertyReadResultBuilder
-	// WithArgArrayIndexArgument sets a parser argument
-	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetReadAccessPropertyReadResultBuilder
 	// Build builds the BACnetReadAccessPropertyReadResult or returns an error if something is wrong
 	Build() (BACnetReadAccessPropertyReadResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -169,19 +158,6 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyAccessE
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetReadAccessPropertyReadResultBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
-	return b
-}
-func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgPropertyIdentifierArgument(propertyIdentifierArgument BACnetPropertyIdentifier) BACnetReadAccessPropertyReadResultBuilder {
-	b.PropertyIdentifierArgument = propertyIdentifierArgument
-	return b
-}
-func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetReadAccessPropertyReadResultBuilder {
-	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 
@@ -276,12 +252,12 @@ func CastBACnetReadAccessPropertyReadResult(structType any) BACnetReadAccessProp
 	return nil
 }
 
-func (m *_BACnetReadAccessPropertyReadResult) GetTypeName() string {
+func (m *_BACnetReadAccessPropertyReadResult) GetPlx4xTypeName() string {
 	return "BACnetReadAccessPropertyReadResult"
 }
 
-func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -298,7 +274,7 @@ func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -313,7 +289,7 @@ func BACnetReadAccessPropertyReadResultParseWithBufferProducer(objectTypeArgumen
 }
 
 func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetReadAccessPropertyReadResult, error) {
-	v, err := (&_BACnetReadAccessPropertyReadResult{ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	v, err := (new(_BACnetReadAccessPropertyReadResult)).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -406,11 +382,11 @@ func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", GetRef(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", new(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", GetRef(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", new(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyAccessError' field")
 	}
 
@@ -419,22 +395,6 @@ func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx conte
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetReadAccessPropertyReadResult) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-func (m *_BACnetReadAccessPropertyReadResult) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
-	return m.PropertyIdentifierArgument
-}
-func (m *_BACnetReadAccessPropertyReadResult) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
-	return m.ArrayIndexArgument
-}
-
-//
-////
 
 func (m *_BACnetReadAccessPropertyReadResult) IsBACnetReadAccessPropertyReadResult() {}
 
@@ -450,9 +410,6 @@ func (m *_BACnetReadAccessPropertyReadResult) deepCopy() *_BACnetReadAccessPrope
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
 		utils.DeepCopy[ErrorEnclosed](m.PropertyAccessError),
-		m.ObjectTypeArgument,
-		m.PropertyIdentifierArgument,
-		m.ArrayIndexArgument,
 	}
 	return _BACnetReadAccessPropertyReadResultCopy
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetPriorityValueBoolean = (*_BACnetPriorityValueBoolean)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBoolean)(nil)
 
 // NewBACnetPriorityValueBoolean factory function for _BACnetPriorityValueBoolean
-func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
+func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetPriorityValueBoolean {
 	if booleanValue == nil {
 		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetPriorityValueBoolean must not be nil")
 	}
 	_result := &_BACnetPriorityValueBoolean{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		BooleanValue:                booleanValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetPriorityValueBoolean(structType any) BACnetPriorityValueBoolean {
 	return nil
 }
 
-func (m *_BACnetPriorityValueBoolean) GetTypeName() string {
+func (m *_BACnetPriorityValueBoolean) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueBoolean"
 }
 
-func (m *_BACnetPriorityValueBoolean) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueBoolean) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (booleanValue)
 	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueBoolean) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueBoolean) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

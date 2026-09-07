@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastLocaleId(structType any) LocaleId {
 	return nil
 }
 
-func (m *_LocaleId) GetTypeName() string {
+func (m *_LocaleId) GetPlx4xTypeName() string {
 	return "LocaleId"
 }
 
-func (m *_LocaleId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_LocaleId) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_LocaleId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LocaleId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func LocaleIdParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func LocaleIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
-	v, err := (&_LocaleId{}).parse(ctx, readBuffer)
+	v, err := (new(_LocaleId)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

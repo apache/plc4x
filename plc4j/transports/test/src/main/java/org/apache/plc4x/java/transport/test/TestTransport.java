@@ -18,11 +18,23 @@
  */
 package org.apache.plc4x.java.transport.test;
 
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
+import org.apache.plc4x.java.transport.test.config.TestTransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TestTransport implements Transport {
+/**
+ * Test transport implementation for testing purposes.
+ * This transport uses in-memory byte streams for communication,
+ * allowing testing without actual network connections.
+ */
+public class TestTransport implements Transport<TestTransportConfiguration> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestTransport.class);
 
     @Override
     public String getTransportCode() {
@@ -35,14 +47,22 @@ public class TestTransport implements Transport {
     }
 
     @Override
-    public ChannelFactory createChannelFactory(String transportConfig) {
-        TestSocketAddress address = new TestSocketAddress(transportConfig);
-        return new TestChannelFactory(address);
+    public Class<TestTransportConfiguration> getTransportConfigType() {
+        return TestTransportConfiguration.class;
     }
 
     @Override
-    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
-        return TestTransportConfiguration.class;
+    public TransportInstance<TestTransportConfiguration> createTransportInstance(
+            String transportUrl,
+            TransportConfiguration configuration,
+            AuditLog auditLog) throws TransportException {
+        if (!(configuration instanceof TestTransportConfiguration testTransportConfiguration)) {
+            throw new IllegalArgumentException(String.format("Expected configuration of type %s but got %s",
+                TestTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
+        }
+
+        LOGGER.debug("Creating test transport instance for URL: {}", transportUrl);
+        return new TestTransportInstance(testTransportConfiguration, auditLog);
     }
 
 }

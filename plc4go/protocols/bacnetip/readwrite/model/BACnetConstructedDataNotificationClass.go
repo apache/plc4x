@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNotificationClass = (*_BACnetConstructedDataNotificat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationClass)(nil)
 
 // NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
-func NewBACnetConstructedDataNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
+func NewBACnetConstructedDataNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationClass BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNotificationClass {
 	if notificationClass == nil {
 		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
 	}
 	_result := &_BACnetConstructedDataNotificationClass{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NotificationClass:             notificationClass,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNotificationClass(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotificationClass) GetTypeName() string {
+func (m *_BACnetConstructedDataNotificationClass) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotificationClass"
 }
 
-func (m *_BACnetConstructedDataNotificationClass) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNotificationClass) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (notificationClass)
 	lengthInBits += m.NotificationClass.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNotificationClass) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNotificationClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNotificationClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

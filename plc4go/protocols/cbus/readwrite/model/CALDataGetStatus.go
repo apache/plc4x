@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +44,7 @@ type CALDataGetStatus interface {
 	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
+	// Request
 	GetParamNo() Parameter
 	// GetCount returns Count (property field)
 	GetCount() uint8
@@ -62,9 +65,9 @@ var _ CALDataGetStatus = (*_CALDataGetStatus)(nil)
 var _ CALDataRequirements = (*_CALDataGetStatus)(nil)
 
 // NewCALDataGetStatus factory function for _CALDataGetStatus
-func NewCALDataGetStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataGetStatus {
+func NewCALDataGetStatus(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8) *_CALDataGetStatus {
 	_result := &_CALDataGetStatus{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		ParamNo:         paramNo,
 		Count:           count,
 	}
@@ -218,12 +221,12 @@ func CastCALDataGetStatus(structType any) CALDataGetStatus {
 	return nil
 }
 
-func (m *_CALDataGetStatus) GetTypeName() string {
+func (m *_CALDataGetStatus) GetPlx4xTypeName() string {
 	return "CALDataGetStatus"
 }
 
-func (m *_CALDataGetStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+func (m *_CALDataGetStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -234,7 +237,7 @@ func (m *_CALDataGetStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALDataGetStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALDataGetStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -249,13 +252,13 @@ func (m *_CALDataGetStatus) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
 	m.ParamNo = paramNo
 
-	count, err := ReadSimpleField(ctx, "count", ReadUnsignedByte(readBuffer, uint8(8)))
+	count, err := ReadSimpleField(ctx, "count", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
@@ -269,7 +272,7 @@ func (m *_CALDataGetStatus) parse(ctx context.Context, readBuffer utils.ReadBuff
 }
 
 func (m *_CALDataGetStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -286,11 +289,11 @@ func (m *_CALDataGetStatus) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CALDataGetStatus")
 		}
 
-		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "count", m.GetCount(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "count", m.GetCount(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 

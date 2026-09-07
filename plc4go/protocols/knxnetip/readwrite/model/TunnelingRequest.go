@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,16 +58,13 @@ type _TunnelingRequest struct {
 	KnxNetIpMessageContract
 	TunnelingRequestDataBlock TunnelingRequestDataBlock
 	Cemi                      CEMI
-
-	// Arguments.
-	TotalLength uint16
 }
 
 var _ TunnelingRequest = (*_TunnelingRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_TunnelingRequest)(nil)
 
 // NewTunnelingRequest factory function for _TunnelingRequest
-func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
+func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) *_TunnelingRequest {
 	if tunnelingRequestDataBlock == nil {
 		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
 	}
@@ -101,8 +98,6 @@ type TunnelingRequestBuilder interface {
 	WithCemi(CEMI) TunnelingRequestBuilder
 	// WithCemiBuilder adds Cemi (property field) which is build by the builder
 	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) TunnelingRequestBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint16) TunnelingRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() KnxNetIpMessageBuilder
 	// Build builds the TunnelingRequest or returns an error if something is wrong
@@ -162,11 +157,6 @@ func (b *_TunnelingRequestBuilder) WithCemiBuilder(builderSupplier func(CEMIBuil
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CEMIBuilder failed"))
 	}
-	return b
-}
-
-func (b *_TunnelingRequestBuilder) WithArgTotalLength(totalLength uint16) TunnelingRequestBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -270,12 +260,12 @@ func CastTunnelingRequest(structType any) TunnelingRequest {
 	return nil
 }
 
-func (m *_TunnelingRequest) GetTypeName() string {
+func (m *_TunnelingRequest) GetPlx4xTypeName() string {
 	return "TunnelingRequest"
 }
 
-func (m *_TunnelingRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_TunnelingRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.GetLengthInBits(ctx)
@@ -286,7 +276,7 @@ func (m *_TunnelingRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_TunnelingRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TunnelingRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -301,13 +291,13 @@ func (m *_TunnelingRequest) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	tunnelingRequestDataBlock, err := ReadSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", ReadComplex[TunnelingRequestDataBlock](TunnelingRequestDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	tunnelingRequestDataBlock, err := ReadSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", ReadComplex[TunnelingRequestDataBlock](TunnelingRequestDataBlockParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tunnelingRequestDataBlock' field"))
 	}
 	m.TunnelingRequestDataBlock = tunnelingRequestDataBlock
 
-	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cemi' field"))
 	}
@@ -338,11 +328,11 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for TunnelingRequest")
 		}
 
-		if err := WriteSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", m.GetTunnelingRequestDataBlock(), WriteComplex[TunnelingRequestDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", m.GetTunnelingRequestDataBlock(), WriteComplex[TunnelingRequestDataBlock](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
-		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'cemi' field")
 		}
 
@@ -353,16 +343,6 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 	}
 	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
-
-////
-// Arguments Getter
-
-func (m *_TunnelingRequest) GetTotalLength() uint16 {
-	return m.TotalLength
-}
-
-//
-////
 
 func (m *_TunnelingRequest) IsTunnelingRequest() {}
 
@@ -378,7 +358,6 @@ func (m *_TunnelingRequest) deepCopy() *_TunnelingRequest {
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		utils.DeepCopy[TunnelingRequestDataBlock](m.TunnelingRequestDataBlock),
 		utils.DeepCopy[CEMI](m.Cemi),
-		m.TotalLength,
 	}
 	_TunnelingRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _TunnelingRequestCopy

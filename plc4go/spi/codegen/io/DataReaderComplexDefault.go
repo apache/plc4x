@@ -23,8 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 
-	"github.com/pkg/errors"
-
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,11 +41,11 @@ func NewDataReaderComplexDefault[T any](complexTypeSupplier func(context.Context
 	}
 }
 
-func (d *DataReaderComplexDefault[T]) GetPos() uint16 {
+func (d *DataReaderComplexDefault[T]) GetPos() uint32 {
 	return d.readBuffer.GetPos()
 }
 
-func (d *DataReaderComplexDefault[T]) SetPos(pos uint16) {
+func (d *DataReaderComplexDefault[T]) SetPos(pos uint32) {
 	d.readBuffer.Reset(pos)
 }
 

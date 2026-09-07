@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLogInterval = (*_BACnetConstructedDataLogInterval)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLogInterval)(nil)
 
 // NewBACnetConstructedDataLogInterval factory function for _BACnetConstructedDataLogInterval
-func NewBACnetConstructedDataLogInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogInterval {
+func NewBACnetConstructedDataLogInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logInterval BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLogInterval {
 	if logInterval == nil {
 		panic("logInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLogInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataLogInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LogInterval:                   logInterval,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLogInterval(structType any) BACnetConstructedDataL
 	return nil
 }
 
-func (m *_BACnetConstructedDataLogInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataLogInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLogInterval"
 }
 
-func (m *_BACnetConstructedDataLogInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLogInterval) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (logInterval)
 	lengthInBits += m.LogInterval.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLogInterval) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLogInterval) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLogInterval) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

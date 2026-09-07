@@ -22,9 +22,8 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -37,8 +36,6 @@ func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	switch typeName {
 	case "PathSegment":
 		return PathSegmentParseWithBuffer[PathSegment](context.Background(), io)
-	case "EipConstants":
-		return EipConstantsParseWithBuffer(context.Background(), io)
 	case "TransportType":
 		return TransportTypeParseWithBuffer(context.Background(), io)
 	case "PortSegmentType":

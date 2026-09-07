@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -74,7 +74,7 @@ var _ BACnetConfirmedServiceRequestAcknowledgeAlarm = (*_BACnetConfirmedServiceR
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
 
 // NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for _BACnetConfirmedServiceRequestAcknowledgeAlarm
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(serviceRequestLength uint32, acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
 	if acknowledgingProcessIdentifier == nil {
 		panic("acknowledgingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
 	}
@@ -390,12 +390,12 @@ func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAcknowledgeAlarm"
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (acknowledgingProcessIdentifier)
 	lengthInBits += m.AcknowledgingProcessIdentifier.GetLengthInBits(ctx)
@@ -418,7 +418,7 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -450,12 +451,12 @@ func CastCreateSessionResponse(structType any) CreateSessionResponse {
 	return nil
 }
 
-func (m *_CreateSessionResponse) GetTypeName() string {
+func (m *_CreateSessionResponse) GetPlx4xTypeName() string {
 	return "CreateSessionResponse"
 }
 
-func (m *_CreateSessionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CreateSessionResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -506,7 +507,7 @@ func (m *_CreateSessionResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CreateSessionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CreateSessionResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -521,73 +522,73 @@ func (m *_CreateSessionResponse) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 	m.SessionId = sessionId
 
-	authenticationToken, err := ReadSimpleField[NodeId](ctx, "authenticationToken", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	authenticationToken, err := ReadSimpleField[NodeId](ctx, "authenticationToken", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationToken' field"))
 	}
 	m.AuthenticationToken = authenticationToken
 
-	revisedSessionTimeout, err := ReadSimpleField(ctx, "revisedSessionTimeout", ReadDouble(readBuffer, uint8(64)))
+	revisedSessionTimeout, err := ReadSimpleField(ctx, "revisedSessionTimeout", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedSessionTimeout' field"))
 	}
 	m.RevisedSessionTimeout = revisedSessionTimeout
 
-	serverNonce, err := ReadSimpleField[PascalByteString](ctx, "serverNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	serverNonce, err := ReadSimpleField[PascalByteString](ctx, "serverNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNonce' field"))
 	}
 	m.ServerNonce = serverNonce
 
-	serverCertificate, err := ReadSimpleField[PascalByteString](ctx, "serverCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	serverCertificate, err := ReadSimpleField[PascalByteString](ctx, "serverCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCertificate' field"))
 	}
 	m.ServerCertificate = serverCertificate
 
-	noOfServerEndpoints, err := ReadImplicitField[int32](ctx, "noOfServerEndpoints", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerEndpoints, err := ReadImplicitField[int32](ctx, "noOfServerEndpoints", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerEndpoints' field"))
 	}
 	_ = noOfServerEndpoints
 
-	serverEndpoints, err := ReadCountArrayField[EndpointDescription](ctx, "serverEndpoints", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfServerEndpoints))
+	serverEndpoints, err := ReadCountArrayField[EndpointDescription](ctx, "serverEndpoints", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfServerEndpoints), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverEndpoints' field"))
 	}
 	m.ServerEndpoints = serverEndpoints
 
-	noOfServerSoftwareCertificates, err := ReadImplicitField[int32](ctx, "noOfServerSoftwareCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerSoftwareCertificates, err := ReadImplicitField[int32](ctx, "noOfServerSoftwareCertificates", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerSoftwareCertificates' field"))
 	}
 	_ = noOfServerSoftwareCertificates
 
-	serverSoftwareCertificates, err := ReadCountArrayField[SignedSoftwareCertificate](ctx, "serverSoftwareCertificates", ReadComplex[SignedSoftwareCertificate](ExtensionObjectDefinitionParseWithBufferProducer[SignedSoftwareCertificate]((int32)(int32(346))), readBuffer), uint64(noOfServerSoftwareCertificates))
+	serverSoftwareCertificates, err := ReadCountArrayField[SignedSoftwareCertificate](ctx, "serverSoftwareCertificates", ReadComplex[SignedSoftwareCertificate](ExtensionObjectDefinitionParseWithBufferProducer[SignedSoftwareCertificate]((int32)(int32(346))), readBuffer), uint64(noOfServerSoftwareCertificates), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverSoftwareCertificates' field"))
 	}
 	m.ServerSoftwareCertificates = serverSoftwareCertificates
 
-	serverSignature, err := ReadSimpleField[SignatureData](ctx, "serverSignature", ReadComplex[SignatureData](ExtensionObjectDefinitionParseWithBufferProducer[SignatureData]((int32)(int32(458))), readBuffer))
+	serverSignature, err := ReadSimpleField[SignatureData](ctx, "serverSignature", ReadComplex[SignatureData](ExtensionObjectDefinitionParseWithBufferProducer[SignatureData]((int32)(int32(458))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverSignature' field"))
 	}
 	m.ServerSignature = serverSignature
 
-	maxRequestMessageSize, err := ReadSimpleField(ctx, "maxRequestMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxRequestMessageSize, err := ReadSimpleField(ctx, "maxRequestMessageSize", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxRequestMessageSize' field"))
 	}
@@ -618,51 +619,51 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CreateSessionResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "authenticationToken", m.GetAuthenticationToken(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "authenticationToken", m.GetAuthenticationToken(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'authenticationToken' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "revisedSessionTimeout", m.GetRevisedSessionTimeout(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "revisedSessionTimeout", m.GetRevisedSessionTimeout(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'revisedSessionTimeout' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverNonce' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "serverCertificate", m.GetServerCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "serverCertificate", m.GetServerCertificate(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverCertificate' field")
 		}
 		noOfServerEndpoints := int32(utils.InlineIf(bool((m.GetServerEndpoints()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerEndpoints()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServerEndpoints", noOfServerEndpoints, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServerEndpoints", noOfServerEndpoints, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerEndpoints' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serverEndpoints", m.GetServerEndpoints(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serverEndpoints", m.GetServerEndpoints(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverEndpoints' field")
 		}
 		noOfServerSoftwareCertificates := int32(utils.InlineIf(bool((m.GetServerSoftwareCertificates()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerSoftwareCertificates()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServerSoftwareCertificates", noOfServerSoftwareCertificates, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServerSoftwareCertificates", noOfServerSoftwareCertificates, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerSoftwareCertificates' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serverSoftwareCertificates", m.GetServerSoftwareCertificates(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serverSoftwareCertificates", m.GetServerSoftwareCertificates(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverSoftwareCertificates' field")
 		}
 
-		if err := WriteSimpleField[SignatureData](ctx, "serverSignature", m.GetServerSignature(), WriteComplex[SignatureData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SignatureData](ctx, "serverSignature", m.GetServerSignature(), WriteComplex[SignatureData](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverSignature' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxRequestMessageSize", m.GetMaxRequestMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxRequestMessageSize", m.GetMaxRequestMessageSize(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxRequestMessageSize' field")
 		}
 

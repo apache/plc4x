@@ -137,19 +137,25 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return getLanguageTypeNameForTypeReference(typeReference);
     }
 
-    public List<Pair<ConstField, ComplexTypeDefinition>> getAllConstFields() {
+    public List<Pair<ConstField, String>> getAllConstFields() {
         // Note: a map is not an option here as ConstFields are duplicated
-        List<Pair<ConstField, ComplexTypeDefinition>> constFields = new LinkedList<>();
-        ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
-        complexTypeDefinition.getConstFields()
-            .forEach(constField -> constFields.add(Pair.of(constField, complexTypeDefinition)));
-        complexTypeDefinition.getSwitchField()
-            .map(SwitchField::getCases)
-            .ifPresent(discriminatedComplexTypeDefinitions ->
-                discriminatedComplexTypeDefinitions.forEach(switchCase ->
-                    switchCase.getConstFields().forEach(constField -> constFields.add(Pair.of(constField, switchCase)))
-                )
-            );
+        List<Pair<ConstField, String>> constFields = new LinkedList<>();
+        if(this.thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            complexTypeDefinition.getConstFields()
+                .forEach(constField -> constFields.add(Pair.of(constField, complexTypeDefinition.getName())));
+            complexTypeDefinition.getSwitchField()
+                .map(SwitchField::getCases)
+                .ifPresent(discriminatedComplexTypeDefinitions ->
+                    discriminatedComplexTypeDefinitions.forEach(switchCase ->
+                        switchCase.getConstFields().forEach(constField -> constFields.add(Pair.of(constField, switchCase.getName())))
+                    )
+                );
+        } else if (this.thisType instanceof ConstantsTypeDefinition) {
+            ConstantsTypeDefinition constantsTypeDefinition = (ConstantsTypeDefinition) this.thisType;
+            constantsTypeDefinition.getConstFields()
+                .forEach(constField -> constFields.add(Pair.of(constField, constantsTypeDefinition.getName())));
+        }
         return constFields;
     }
 
@@ -489,7 +495,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
@@ -499,7 +505,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     encoding + "\"" + ", (char**) " + valueString + ")";
             }
             case VSTRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
@@ -512,6 +518,32 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
         }
+    }
+
+    /**
+     * Same as {@link #getWriteBufferWriteMethodCall(SimpleTypeReference, String, TypedField)}, but
+     * with the arguments of the surrounding type in scope.
+     * <p>
+     * A vstring's length is an expression, and in a dataIo it usually refers to one of those
+     * arguments - "stringLength" for instance. Without them, serialization renders the name as a
+     * field of the message being written ("_message-&gt;string_length"), which does not exist there
+     * and does not compile. The parse side does not have this problem, because it leaves names it
+     * cannot resolve alone.
+     */
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName,
+                                                TypedField field, List<Argument> parserArguments) {
+        if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
+            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
+            if (!(encodingTerm instanceof StringLiteral)) {
+                throw new FreemarkerException("Encoding must be a quoted string value");
+            }
+            String encoding = ((StringLiteral) encodingTerm).getValue();
+            String lengthExpression = toSerializationExpression(null, field,
+                simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), parserArguments);
+            return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
+                encoding + "\", (const uint8_t*) " + fieldName + ")";
+        }
+        return getWriteBufferWriteMethodCall(simpleTypeReference, fieldName, field);
     }
 
     @Override
@@ -560,17 +592,27 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                int numChars;
+                if ("UTF8".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 8;
+                } else if ("UTF16".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 16;
+                } else if ("UTF16BE".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 16;
+                } else {
+                    throw new FreemarkerException("Unsupported encoding " + encoding);
+                }
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
-                    encoding + "\", (char*) " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + (numChars == 1 ? "&" : "") + fieldName + ")";
             }
             case VSTRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
@@ -578,7 +620,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 // Here we need to use the serialized expression of the length instead.
                 String lengthExpression = toSerializationExpression(thisType, field, simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), null);
                 return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
-                    encoding + "\", " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + fieldName + ")";
             }
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -893,7 +935,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         tracer = tracer.dive("type");
         if (variableLiteral.getChild().isPresent() && "encoding".equals(variableLiteral.getChild().get().getName()) && (field instanceof TypedField) && ((((TypedField) field).getType() instanceof StringTypeReference) || (((TypedField) field).getType() instanceof VstringTypeReference))) {
             // TODO: replace with map join
-            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
             if (!(encodingTerm instanceof StringLiteral)) {
                 throw new FreemarkerException("Encoding must be a quoted string value");
             }
@@ -1082,7 +1124,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (!(typedField.getType() instanceof StringTypeReference)) {
                         throw new FreemarkerException("Can only access 'encoding' for string types.");
                     }
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                     if (!(encodingTerm instanceof StringLiteral)) {
                         throw new FreemarkerException("Encoding must be a quoted string value");
                     }
@@ -1174,7 +1216,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 if (!(typedField.getType() instanceof StringTypeReference)) {
                                     throw new FreemarkerException("Can only access 'encoding' for string types.");
                                 }
-                                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                                 if (!(encodingTerm instanceof StringLiteral)) {
                                     throw new FreemarkerException("Encoding must be a quoted string value");
                                 }
@@ -1251,7 +1293,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                             if (!(typedField.getType() instanceof StringTypeReference)) {
                                 throw new FreemarkerException("Can only access 'encoding' for string types.");
                             }
-                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                             if (!(encodingTerm instanceof StringLiteral)) {
                                 throw new FreemarkerException("Encoding must be a quoted string value");
                             }

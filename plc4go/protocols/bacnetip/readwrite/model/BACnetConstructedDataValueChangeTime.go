@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataValueChangeTime = (*_BACnetConstructedDataValueChange
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueChangeTime)(nil)
 
 // NewBACnetConstructedDataValueChangeTime factory function for _BACnetConstructedDataValueChangeTime
-func NewBACnetConstructedDataValueChangeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueChangeTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueChangeTime {
+func NewBACnetConstructedDataValueChangeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueChangeTime BACnetDateTime) *_BACnetConstructedDataValueChangeTime {
 	if valueChangeTime == nil {
 		panic("valueChangeTime of type BACnetDateTime for BACnetConstructedDataValueChangeTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataValueChangeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ValueChangeTime:               valueChangeTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataValueChangeTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataValueChangeTime) GetTypeName() string {
+func (m *_BACnetConstructedDataValueChangeTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataValueChangeTime"
 }
 
-func (m *_BACnetConstructedDataValueChangeTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataValueChangeTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (valueChangeTime)
 	lengthInBits += m.ValueChangeTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataValueChangeTime) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataValueChangeTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataValueChangeTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

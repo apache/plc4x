@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -228,12 +228,12 @@ func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolat
 	return nil
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetTypeName() string {
+func (m *_TelephonyDataIsolateSecondaryOutlet) GetPlx4xTypeName() string {
 	return "TelephonyDataIsolateSecondaryOutlet"
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	// Simple field (isolateStatus)
 	lengthInBits += 8
@@ -245,7 +245,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

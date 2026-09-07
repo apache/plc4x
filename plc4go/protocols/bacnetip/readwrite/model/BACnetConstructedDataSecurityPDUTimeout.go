@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSecurityPDUTimeout = (*_BACnetConstructedDataSecurity
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityPDUTimeout)(nil)
 
 // NewBACnetConstructedDataSecurityPDUTimeout factory function for _BACnetConstructedDataSecurityPDUTimeout
-func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityPduTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityPDUTimeout {
+func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityPduTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSecurityPDUTimeout {
 	if securityPduTimeout == nil {
 		panic("securityPduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityPDUTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataSecurityPDUTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SecurityPduTimeout:            securityPduTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSecurityPDUTimeout(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataSecurityPDUTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSecurityPDUTimeout"
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (securityPduTimeout)
 	lengthInBits += m.SecurityPduTimeout.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

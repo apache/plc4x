@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataEntryPoints = (*_BACnetConstructedDataEntryPoints)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEntryPoints)(nil)
 
 // NewBACnetConstructedDataEntryPoints factory function for _BACnetConstructedDataEntryPoints
-func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
+func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference) *_BACnetConstructedDataEntryPoints {
 	_result := &_BACnetConstructedDataEntryPoints{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EntryPoints:                   entryPoints,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataEntryPoints(structType any) BACnetConstructedDataE
 	return nil
 }
 
-func (m *_BACnetConstructedDataEntryPoints) GetTypeName() string {
+func (m *_BACnetConstructedDataEntryPoints) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEntryPoints"
 }
 
-func (m *_BACnetConstructedDataEntryPoints) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEntryPoints) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.EntryPoints) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEntryPoints) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEntryPoints) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEntryPoints) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

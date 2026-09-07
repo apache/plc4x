@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDaysRemaining = (*_BACnetConstructedDataDaysRemaining
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaysRemaining)(nil)
 
 // NewBACnetConstructedDataDaysRemaining factory function for _BACnetConstructedDataDaysRemaining
-func NewBACnetConstructedDataDaysRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daysRemaining BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
+func NewBACnetConstructedDataDaysRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daysRemaining BACnetApplicationTagSignedInteger) *_BACnetConstructedDataDaysRemaining {
 	if daysRemaining == nil {
 		panic("daysRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataDaysRemaining must not be nil")
 	}
 	_result := &_BACnetConstructedDataDaysRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DaysRemaining:                 daysRemaining,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDaysRemaining(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetTypeName() string {
+func (m *_BACnetConstructedDataDaysRemaining) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDaysRemaining"
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (daysRemaining)
 	lengthInBits += m.DaysRemaining.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

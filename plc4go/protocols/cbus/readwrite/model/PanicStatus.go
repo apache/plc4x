@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -194,12 +194,12 @@ func CastPanicStatus(structType any) PanicStatus {
 	return nil
 }
 
-func (m *_PanicStatus) GetTypeName() string {
+func (m *_PanicStatus) GetPlx4xTypeName() string {
 	return "PanicStatus"
 }
 
-func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (status)
 	lengthInBits += 8
@@ -213,7 +213,7 @@ func (m *_PanicStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PanicStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PanicStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -228,7 +228,7 @@ func PanicStatusParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {
-	v, err := (&_PanicStatus{}).parse(ctx, readBuffer)
+	v, err := (new(_PanicStatus)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

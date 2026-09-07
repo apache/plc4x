@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,16 +55,13 @@ type BVLCReadBroadcastDistributionTableAck interface {
 type _BVLCReadBroadcastDistributionTableAck struct {
 	BVLCContract
 	Table []BVLCBroadcastDistributionTableEntry
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCReadBroadcastDistributionTableAck = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 
 // NewBVLCReadBroadcastDistributionTableAck factory function for _BVLCReadBroadcastDistributionTableAck
-func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCReadBroadcastDistributionTableAck {
+func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry) *_BVLCReadBroadcastDistributionTableAck {
 	_result := &_BVLCReadBroadcastDistributionTableAck{
 		BVLCContract: NewBVLC(),
 		Table:        table,
@@ -85,8 +82,6 @@ type BVLCReadBroadcastDistributionTableAckBuilder interface {
 	WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCReadBroadcastDistributionTableAckBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCReadBroadcastDistributionTableAck or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithMandatoryFields(tabl
 
 func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
 	b.Table = table
-	return b
-}
-
-func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCReadBroadcastDistributionTableAckBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -219,12 +209,12 @@ func CastBVLCReadBroadcastDistributionTableAck(structType any) BVLCReadBroadcast
 	return nil
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAck) GetTypeName() string {
+func (m *_BVLCReadBroadcastDistributionTableAck) GetPlx4xTypeName() string {
 	return "BVLCReadBroadcastDistributionTableAck"
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {
@@ -236,7 +226,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -251,7 +241,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) parse(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	table, err := ReadLengthArrayField[BVLCBroadcastDistributionTableEntry](ctx, "table", ReadComplex[BVLCBroadcastDistributionTableEntry](BVLCBroadcastDistributionTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	table, err := ReadLengthArrayField[BVLCBroadcastDistributionTableEntry](ctx, "table", ReadComplex[BVLCBroadcastDistributionTableEntry](BVLCBroadcastDistributionTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'table' field"))
 	}
@@ -282,7 +272,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BVLCReadBroadcastDistributionTableAck")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'table' field")
 		}
 
@@ -293,16 +283,6 @@ func (m *_BVLCReadBroadcastDistributionTableAck) SerializeWithWriteBuffer(ctx co
 	}
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
-
-////
-// Arguments Getter
-
-func (m *_BVLCReadBroadcastDistributionTableAck) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
 
 func (m *_BVLCReadBroadcastDistributionTableAck) IsBVLCReadBroadcastDistributionTableAck() {}
 
@@ -317,7 +297,6 @@ func (m *_BVLCReadBroadcastDistributionTableAck) deepCopy() *_BVLCReadBroadcastD
 	_BVLCReadBroadcastDistributionTableAckCopy := &_BVLCReadBroadcastDistributionTableAck{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
-		m.BvlcPayloadLength,
 	}
 	_BVLCReadBroadcastDistributionTableAckCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadBroadcastDistributionTableAckCopy

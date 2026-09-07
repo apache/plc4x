@@ -27,6 +27,18 @@
     </encoder>
   </appender>
 
+  <!-- Show connection-lifecycle diagnostics (SetupCommunication negotiation, SZL probe
+       outcome, capability flags) when running the manual tests against a real PLC. -->
+  <logger name="org.apache.plc4x.java.s7" level="info"/>
+
+  <!-- Suppress the TCP transport's connect-failure stack traces. They're emitted at ERROR
+       level on every retry attempt and during S7H heartbeat reconnect tries (cable pulled
+       → factory fires every 4 s while we wait for the PLC to come back). The real failure
+       state is already reported up the call stack and logged by the application — these
+       transport-level traces are pure noise. Demote to OFF; re-enable if you need to
+       diagnose actual transport-layer issues. -->
+  <logger name="org.apache.plc4x.java.transport.tcp.TcpTransportInstance" level="off"/>
+
   <root level="warn">
     <appender-ref ref="STDOUT" />
   </root>

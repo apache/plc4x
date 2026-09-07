@@ -27,10 +27,19 @@ var _ apiModel.ArrayInfo = &DefaultArrayInfo{}
 type DefaultArrayInfo struct {
 	LowerBound uint32
 	UpperBound uint32
+	// Base is the array's declared lower bound; 0 for an array that does not declare one.
+	Base uint32
+	// Range records whether the address wrote this dimension as a range. A one-element range is
+	// still a range, so this cannot be derived from the bounds - see apiModel.ArrayInfo.IsRange.
+	Range bool
 }
 
+// GetSize is the number of elements. Both bounds are inclusive, so {0, 7} is eight elements.
+// This used to return UpperBound-LowerBound, treating the upper bound as exclusive, which
+// disagreed with plc4j about the same address and with the drivers that build from an inclusive
+// range.
 func (t *DefaultArrayInfo) GetSize() uint32 {
-	return t.UpperBound - t.LowerBound
+	return t.UpperBound - t.LowerBound + 1
 }
 
 func (t *DefaultArrayInfo) GetLowerBound() uint32 {
@@ -39,4 +48,12 @@ func (t *DefaultArrayInfo) GetLowerBound() uint32 {
 
 func (t *DefaultArrayInfo) GetUpperBound() uint32 {
 	return t.UpperBound
+}
+
+func (t *DefaultArrayInfo) GetBase() uint32 {
+	return t.Base
+}
+
+func (t *DefaultArrayInfo) IsRange() bool {
+	return t.Range
 }

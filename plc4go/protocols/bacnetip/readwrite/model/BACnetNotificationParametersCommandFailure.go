@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersCommandFailure = (*_BACnetNotificationParamete
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersCommandFailure)(nil)
 
 // NewBACnetNotificationParametersCommandFailure factory function for _BACnetNotificationParametersCommandFailure
-func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersCommandFailure {
+func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersCommandFailure {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersCommandFailure must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, 
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersCommandFailure must not be nil")
 	}
 	_result := &_BACnetNotificationParametersCommandFailure{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		CommandValue:                         commandValue,
 		StatusFlags:                          statusFlags,
@@ -353,12 +353,12 @@ func CastBACnetNotificationParametersCommandFailure(structType any) BACnetNotifi
 	return nil
 }
 
-func (m *_BACnetNotificationParametersCommandFailure) GetTypeName() string {
+func (m *_BACnetNotificationParametersCommandFailure) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersCommandFailure"
 }
 
-func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -378,7 +378,7 @@ func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

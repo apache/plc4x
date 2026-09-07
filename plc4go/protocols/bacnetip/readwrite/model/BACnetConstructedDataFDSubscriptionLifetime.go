@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFDSubscriptionLifetime = (*_BACnetConstructedDataFDSu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDSubscriptionLifetime)(nil)
 
 // NewBACnetConstructedDataFDSubscriptionLifetime factory function for _BACnetConstructedDataFDSubscriptionLifetime
-func NewBACnetConstructedDataFDSubscriptionLifetime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDSubscriptionLifetime {
+func NewBACnetConstructedDataFDSubscriptionLifetime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataFDSubscriptionLifetime {
 	if fdSubscriptionLifetime == nil {
 		panic("fdSubscriptionLifetime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFDSubscriptionLifetime must not be nil")
 	}
 	_result := &_BACnetConstructedDataFDSubscriptionLifetime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FdSubscriptionLifetime:        fdSubscriptionLifetime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataFDSubscriptionLifetime(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetTypeName() string {
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFDSubscriptionLifetime"
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fdSubscriptionLifetime)
 	lengthInBits += m.FdSubscriptionLifetime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

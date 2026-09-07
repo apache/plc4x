@@ -26,12 +26,12 @@ jobs:
   generate-changelog:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: BobAnkh/auto-generate-changelog@v1.2.5
+      - uses: BobAnkh/auto-generate-changelog@v1.3.2
         with:
           ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements'
+          TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements,chore(deps):Dependency Updates,chore:Miscellaneous,test:Testing,build:Build System,ci:Continuous Integration,revert:Reverts,style:Style,wip:Work In Progress,release:Release'
           PATH: 'CHANGELOG.md'
-          BRANCH: 'chore/changelog_update'
+          #BRANCH: 'chore/changelog_update'

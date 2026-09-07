@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastImageGIF(structType any) ImageGIF {
 	return nil
 }
 
-func (m *_ImageGIF) GetTypeName() string {
+func (m *_ImageGIF) GetPlx4xTypeName() string {
 	return "ImageGIF"
 }
 
-func (m *_ImageGIF) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ImageGIF) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ImageGIF) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ImageGIF) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func ImageGIFParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func ImageGIFParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
-	v, err := (&_ImageGIF{}).parse(ctx, readBuffer)
+	v, err := (new(_ImageGIF)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

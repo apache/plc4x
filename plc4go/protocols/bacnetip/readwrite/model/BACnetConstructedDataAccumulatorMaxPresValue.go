@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccumulatorMaxPresValue = (*_BACnetConstructedDataAcc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorMaxPresValue)(nil)
 
 // NewBACnetConstructedDataAccumulatorMaxPresValue factory function for _BACnetConstructedDataAccumulatorMaxPresValue
-func NewBACnetConstructedDataAccumulatorMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorMaxPresValue {
+func NewBACnetConstructedDataAccumulatorMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccumulatorMaxPresValue {
 	if maxPresValue == nil {
 		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorMaxPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccumulatorMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxPresValue:                  maxPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccumulatorMaxPresValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorMaxPresValue"
 }
 
-func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

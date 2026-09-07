@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetNetworkSecurityPolicy(structType any) BACnetNetworkSecurityPolicy
 	return nil
 }
 
-func (m *_BACnetNetworkSecurityPolicy) GetTypeName() string {
+func (m *_BACnetNetworkSecurityPolicy) GetPlx4xTypeName() string {
 	return "BACnetNetworkSecurityPolicy"
 }
 
-func (m *_BACnetNetworkSecurityPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetNetworkSecurityPolicy) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (portId)
 	lengthInBits += m.PortId.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetNetworkSecurityPolicy) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_BACnetNetworkSecurityPolicy) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNetworkSecurityPolicy) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetNetworkSecurityPolicyParseWithBufferProducer() func(ctx context.Conte
 }
 
 func BACnetNetworkSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
-	v, err := (&_BACnetNetworkSecurityPolicy{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetNetworkSecurityPolicy)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

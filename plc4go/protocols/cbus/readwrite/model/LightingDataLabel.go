@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -266,12 +266,12 @@ func CastLightingDataLabel(structType any) LightingDataLabel {
 	return nil
 }
 
-func (m *_LightingDataLabel) GetTypeName() string {
+func (m *_LightingDataLabel) GetPlx4xTypeName() string {
 	return "LightingDataLabel"
 }
 
-func (m *_LightingDataLabel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
+func (m *_LightingDataLabel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -286,13 +286,13 @@ func (m *_LightingDataLabel) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_LightingDataLabel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LightingDataLabel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetConfirmedServiceRequestReadProperty = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadProperty)(nil)
 
 // NewBACnetConfirmedServiceRequestReadProperty factory function for _BACnetConfirmedServiceRequestReadProperty
-func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadProperty {
+func NewBACnetConfirmedServiceRequestReadProperty(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetConfirmedServiceRequestReadProperty {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestReadProperty must not be nil")
 	}
@@ -285,12 +285,12 @@ func CastBACnetConfirmedServiceRequestReadProperty(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadProperty) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadProperty"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -306,7 +306,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -376,7 +376,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 

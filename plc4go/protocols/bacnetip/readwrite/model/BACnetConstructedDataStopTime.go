@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataStopTime = (*_BACnetConstructedDataStopTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStopTime)(nil)
 
 // NewBACnetConstructedDataStopTime factory function for _BACnetConstructedDataStopTime
-func NewBACnetConstructedDataStopTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stopTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopTime {
+func NewBACnetConstructedDataStopTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stopTime BACnetDateTime) *_BACnetConstructedDataStopTime {
 	if stopTime == nil {
 		panic("stopTime of type BACnetDateTime for BACnetConstructedDataStopTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataStopTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		StopTime:                      stopTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataStopTime(structType any) BACnetConstructedDataStop
 	return nil
 }
 
-func (m *_BACnetConstructedDataStopTime) GetTypeName() string {
+func (m *_BACnetConstructedDataStopTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStopTime"
 }
 
-func (m *_BACnetConstructedDataStopTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataStopTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (stopTime)
 	lengthInBits += m.StopTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataStopTime) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataStopTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataStopTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

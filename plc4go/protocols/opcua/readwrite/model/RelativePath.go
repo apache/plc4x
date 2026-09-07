@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +208,12 @@ func CastRelativePath(structType any) RelativePath {
 	return nil
 }
 
-func (m *_RelativePath) GetTypeName() string {
+func (m *_RelativePath) GetPlx4xTypeName() string {
 	return "RelativePath"
 }
 
-func (m *_RelativePath) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_RelativePath) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfElements)
 	lengthInBits += 32
@@ -228,7 +229,7 @@ func (m *_RelativePath) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RelativePath) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RelativePath) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -243,13 +244,13 @@ func (m *_RelativePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfElements, err := ReadImplicitField[int32](ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)))
+	noOfElements, err := ReadImplicitField[int32](ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElements' field"))
 	}
 	_ = noOfElements
 
-	elements, err := ReadCountArrayField[RelativePathElement](ctx, "elements", ReadComplex[RelativePathElement](ExtensionObjectDefinitionParseWithBufferProducer[RelativePathElement]((int32)(int32(539))), readBuffer), uint64(noOfElements))
+	elements, err := ReadCountArrayField[RelativePathElement](ctx, "elements", ReadComplex[RelativePathElement](ExtensionObjectDefinitionParseWithBufferProducer[RelativePathElement]((int32)(int32(539))), readBuffer), uint64(noOfElements), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elements' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for RelativePath")
 		}
 		noOfElements := int32(utils.InlineIf(bool((m.GetElements()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetElements()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfElements", noOfElements, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfElements", noOfElements, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfElements' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "elements", m.GetElements(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "elements", m.GetElements(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'elements' field")
 		}
 

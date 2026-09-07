@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMultiStateInputInterfaceValue = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateInputInterfaceValue)(nil)
 
 // NewBACnetConstructedDataMultiStateInputInterfaceValue factory function for _BACnetConstructedDataMultiStateInputInterfaceValue
-func NewBACnetConstructedDataMultiStateInputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputInterfaceValue {
+func NewBACnetConstructedDataMultiStateInputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV) *_BACnetConstructedDataMultiStateInputInterfaceValue {
 	if interfaceValue == nil {
 		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataMultiStateInputInterfaceValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMultiStateInputInterfaceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InterfaceValue:                interfaceValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMultiStateInputInterfaceValue(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateInputInterfaceValue"
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (interfaceValue)
 	lengthInBits += m.InterfaceValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

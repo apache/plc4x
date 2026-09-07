@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ APDUUnconfirmedRequest = (*_APDUUnconfirmedRequest)(nil)
 var _ APDURequirements = (*_APDUUnconfirmedRequest)(nil)
 
 // NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
-func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
+func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest) *_APDUUnconfirmedRequest {
 	if serviceRequest == nil {
 		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
 	}
 	_result := &_APDUUnconfirmedRequest{
-		APDUContract:   NewAPDU(apduLength),
+		APDUContract:   NewAPDU(),
 		ServiceRequest: serviceRequest,
 	}
 	_result.APDUContract.(*_APDU)._SubType = _result
@@ -227,12 +227,12 @@ func CastAPDUUnconfirmedRequest(structType any) APDUUnconfirmedRequest {
 	return nil
 }
 
-func (m *_APDUUnconfirmedRequest) GetTypeName() string {
+func (m *_APDUUnconfirmedRequest) GetPlx4xTypeName() string {
 	return "APDUUnconfirmedRequest"
 }
 
-func (m *_APDUUnconfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUUnconfirmedRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -243,7 +243,7 @@ func (m *_APDUUnconfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUUnconfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUUnconfirmedRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

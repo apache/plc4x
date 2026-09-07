@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValueResolution = (*_BACnetConstructedDataInte
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueResolution)(nil)
 
 // NewBACnetConstructedDataIntegerValueResolution factory function for _BACnetConstructedDataIntegerValueResolution
-func NewBACnetConstructedDataIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueResolution {
+func NewBACnetConstructedDataIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValueResolution {
 	if resolution == nil {
 		panic("resolution of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueResolution must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Resolution:                    resolution,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIntegerValueResolution(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegerValueResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegerValueResolution"
 }
 
-func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (resolution)
 	lengthInBits += m.Resolution.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataLogBuffer interface {
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogRecord
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLogBuffer()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataLogBuffer = (*_BACnetConstructedDataLogBuffer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLogBuffer)(nil)
 
 // NewBACnetConstructedDataLogBuffer factory function for _BACnetConstructedDataLogBuffer
-func NewBACnetConstructedDataLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, floorText []BACnetLogRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogBuffer {
+func NewBACnetConstructedDataLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, floorText []BACnetLogRecord) *_BACnetConstructedDataLogBuffer {
 	_result := &_BACnetConstructedDataLogBuffer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		FloorText:                     floorText,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataLogBuffer(structType any) BACnetConstructedDataLog
 	return nil
 }
 
-func (m *_BACnetConstructedDataLogBuffer) GetTypeName() string {
+func (m *_BACnetConstructedDataLogBuffer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLogBuffer"
 }
 
-func (m *_BACnetConstructedDataLogBuffer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLogBuffer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataLogBuffer) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLogBuffer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLogBuffer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataLogBuffer) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

@@ -32,6 +32,15 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
+
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item));
   if(*_message == NULL) {
@@ -76,16 +85,15 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
     return NO_MEMORY;
   }
   {
-    // Length array
-    uint8_t _recordDataLength = (recordLength) * (2);
-    uint8_t recordDataEndPos = plc4c_spi_read_get_pos(readBuffer) + _recordDataLength;
-    while(plc4c_spi_read_get_pos(readBuffer) < recordDataEndPos) {
-      char _value = 0;
-      _res = plc4c_spi_read_char(readBuffer, (char*) &_value);
+    // Count array
+    uint16_t itemCount = (uint16_t) (recordLength) * (2);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      char* _value = malloc(sizeof(char));
+      _res = plc4c_spi_read_char(readBuffer, (char*) _value);
       if(_res != OK) {
         return _res;
       }
-      plc4c_utils_list_insert_head_value(recordData, &_value);
+      plc4c_utils_list_insert_head_value(recordData, _value);
     }
   }
   (*_message)->record_data = recordData;

@@ -17,16 +17,25 @@
  * under the License.
  */
 
-[type Plc4xConstants
+[constants
     [const          uint 16     plc4xTcpDefaultPort 59837] // Hex of CAFE
 ]
 
-[discriminatedType Plc4xMessage byteOrder='BIG_ENDIAN'
+[discriminatedType Plc4xMessage byteOrder='"BIG_ENDIAN"'
     [const         uint 8           version      0x01           ]
     [implicit      uint 16          packetLength 'lengthInBytes']
     [simple        uint 16          requestId                   ]
     [discriminator Plc4xRequestType requestType                 ]
     [typeSwitch requestType
+        ['AUTH_REQUEST' Plc4xAuthRequest
+            [implicit uint 8                      usernameLen 'STR_LEN(username)']
+            [simple   vstring 'usernameLen * 8'   username                       ]
+            [implicit uint 8                      passwordLen 'STR_LEN(password)']
+            [simple   vstring 'passwordLen * 8'   password                       ]
+        ]
+        ['AUTH_RESPONSE' Plc4xAuthResponse
+            [simple   Plc4xResponseCode           responseCode                   ]
+        ]
         ['CONNECT_REQUEST' Plc4xConnectRequest
             [implicit uint 8                            connectionStringLen 'STR_LEN(connectionString)']
             [simple   vstring 'connectionStringLen * 8' connectionString                               ]
@@ -173,7 +182,7 @@
             [simple   string 8                   value                           ]
         ]
         ['WCHAR'         STRING
-            [simple   string 16                  value        encoding='"UTF-16"']
+            [simple   string 16                  value        encoding='"UTF16"']
         ]
         //['STRING'        STRING
         //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
@@ -181,7 +190,7 @@
         //]
         //['WSTRING'       STRING
         //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
-        //    [simple   vstring 'stringLength * 2' value        encoding='"UTF-16"']
+        //    [simple   vstring 'stringLength * 2' value        encoding='"UTF16"']
         //]
 
         // Times and Dates
@@ -229,6 +238,8 @@
     ['0x0A' SUBSCRIPTION_RESPONSE  ]
     ['0x0B' UNSUBSCRIPTION_REQUEST ]
     ['0x0C' UNSUBSCRIPTION_RESPONSE]
+    ['0x0D' AUTH_REQUEST           ]
+    ['0x0E' AUTH_RESPONSE          ]
 ]
 
 [enum uint 8 Plc4xResponseCode

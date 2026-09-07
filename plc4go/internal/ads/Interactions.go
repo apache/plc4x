@@ -32,9 +32,7 @@ import (
 
 func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model.AdsReadDeviceInfoResponse, error) {
 	responseChannel := make(chan model.AdsReadDeviceInfoResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -44,30 +42,25 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 			}
 		}()
 		request := m.NewAdsReadDeviceInfoRequest()
-		if err := m.messageCodec.SendRequest(
-			ctx,
-			request,
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				response := amsTcpPacket.GetUserdata().(model.AdsReadDeviceInfoResponse)
-				responseChannel <- response
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, "ads_read_device_info_request", request, func(message spi.Message) bool {
+			amsTcpPacket, ok := message.(model.AmsTCPPacket)
+			if !ok {
+				return false
+			}
+			return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
+		}, func(message spi.Message) error {
+			amsTcpPacket := message.(model.AmsTCPPacket)
+			response := amsTcpPacket.GetUserdata().(model.AdsReadDeviceInfoResponse)
+			responseChannel <- response
+			return nil
+		}, func(err error) error {
+			m.log.Debug().Err(err).Msg("error during send request")
+			return nil
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error reading device info: %v", err)
@@ -77,9 +70,7 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 
 func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, length uint32) (model.AdsReadResponse, error) {
 	responseChannel := make(chan model.AdsReadResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -89,30 +80,25 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 			}
 		}()
 		request := m.NewAdsReadRequest(indexGroup, indexOffset, length)
-		if err := m.messageCodec.SendRequest(
-			ctx,
-			request,
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				response := amsTcpPacket.GetUserdata().(model.AdsReadResponse)
-				responseChannel <- response
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second*5); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, "ads_read_request", request, func(message spi.Message) bool {
+			amsTcpPacket, ok := message.(model.AmsTCPPacket)
+			if !ok {
+				return false
+			}
+			return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
+		}, func(message spi.Message) error {
+			amsTcpPacket := message.(model.AmsTCPPacket)
+			response := amsTcpPacket.GetUserdata().(model.AdsReadResponse)
+			responseChannel <- response
+			return nil
+		}, func(err error) error {
+			m.log.Debug().Err(err).Msg("error during send request")
+			return nil
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error reading: %v", err)
@@ -122,9 +108,7 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 
 func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, data []byte) (model.AdsWriteResponse, error) {
 	responseChannel := make(chan model.AdsWriteResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -134,30 +118,25 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 			}
 		}()
 		request := m.NewAdsWriteRequest(indexGroup, indexOffset, data)
-		if err := m.messageCodec.SendRequest(
-			ctx,
-			request,
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				response := amsTcpPacket.GetUserdata().(model.AdsWriteResponse)
-				responseChannel <- response
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, "execute_ads_write_request", request, func(message spi.Message) bool {
+			amsTcpPacket, ok := message.(model.AmsTCPPacket)
+			if !ok {
+				return false
+			}
+			return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
+		}, func(message spi.Message) error {
+			amsTcpPacket := message.(model.AmsTCPPacket)
+			response := amsTcpPacket.GetUserdata().(model.AdsWriteResponse)
+			responseChannel <- response
+			return nil
+		}, func(err error) error {
+			m.log.Debug().Err(err).Msg("error during send request")
+			return nil
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -167,9 +146,7 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 
 func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, readLength uint32, items []model.AdsMultiRequestItem, writeData []byte) (model.AdsReadWriteResponse, error) {
 	responseChannel := make(chan model.AdsReadWriteResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -179,30 +156,25 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 			}
 		}()
 		request := m.NewAdsReadWriteRequest(indexGroup, indexOffset, readLength, items, writeData)
-		if err := m.messageCodec.SendRequest(
-			ctx,
-			request,
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				response := amsTcpPacket.GetUserdata().(model.AdsReadWriteResponse)
-				responseChannel <- response
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, "ads_read_write_request", request, func(message spi.Message) bool {
+			amsTcpPacket, ok := message.(model.AmsTCPPacket)
+			if !ok {
+				return false
+			}
+			return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
+		}, func(message spi.Message) error {
+			amsTcpPacket := message.(model.AmsTCPPacket)
+			response := amsTcpPacket.GetUserdata().(model.AdsReadWriteResponse)
+			responseChannel <- response
+			return nil
+		}, func(err error) error {
+			m.log.Debug().Err(err).Msg("error during send request")
+			return nil
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -212,9 +184,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 
 func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode model.AdsTransMode, maxDelay uint32, cycleTime uint32) (model.AdsAddDeviceNotificationResponse, error) {
 	responseChannel := make(chan model.AdsAddDeviceNotificationResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -224,30 +194,24 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 			}
 		}()
 		request := m.NewAdsAddDeviceNotificationRequest(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime)
-		if err := m.messageCodec.SendRequest(
-			ctx,
-			request,
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				response := amsTcpPacket.GetUserdata().(model.AdsAddDeviceNotificationResponse)
-				responseChannel <- response
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, "ads_add_device_notification_request", request, func(message spi.Message) bool {
+			amsTcpPacket, ok := message.(model.AmsTCPPacket)
+			if !ok {
+				return false
+			}
+			return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
+		}, func(message spi.Message) error {
+			amsTcpPacket := message.(model.AmsTCPPacket)
+			response := amsTcpPacket.GetUserdata().(model.AdsAddDeviceNotificationResponse)
+			responseChannel <- response
+			return nil
+		}, func(err error) error {
+			return nil
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -257,9 +221,7 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 
 func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Context, notificationHandle uint32) (model.AdsDeleteDeviceNotificationResponse, error) {
 	responseChannel := make(chan model.AdsDeleteDeviceNotificationResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -269,30 +231,25 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 			}
 		}()
 		request := m.NewAdsDeleteDeviceNotificationRequest(notificationHandle)
-		if err := m.messageCodec.SendRequest(
-			ctx,
-			request,
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				response := amsTcpPacket.GetUserdata().(model.AdsDeleteDeviceNotificationResponse)
-				responseChannel <- response
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, "ads_delete_device_notification_request", request, func(message spi.Message) bool {
+			amsTcpPacket, ok := message.(model.AmsTCPPacket)
+			if !ok {
+				return false
+			}
+			return amsTcpPacket.GetUserdata().GetInvokeId() == request.GetUserdata().GetInvokeId()
+		}, func(message spi.Message) error {
+			amsTcpPacket := message.(model.AmsTCPPacket)
+			response := amsTcpPacket.GetUserdata().(model.AdsDeleteDeviceNotificationResponse)
+			responseChannel <- response
+			return nil
+		}, func(err error) error {
+			m.log.Debug().Err(err).Msg("error during send request")
+			return nil
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -301,7 +258,7 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 }
 
 func ReadWithTimeout[T spi.Message](ctx context.Context, ch <-chan T) (T, error) {
-	timeout, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	timeout, cancelFunc := utils.WithNamedTimeout(ctx, "read timeout", 5*time.Second)
 	defer cancelFunc()
 
 	select {

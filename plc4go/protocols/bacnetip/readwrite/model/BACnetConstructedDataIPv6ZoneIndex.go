@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6ZoneIndex = (*_BACnetConstructedDataIPv6ZoneIndex
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
 
 // NewBACnetConstructedDataIPv6ZoneIndex factory function for _BACnetConstructedDataIPv6ZoneIndex
-func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6ZoneIndex BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
+func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6ZoneIndex BACnetApplicationTagCharacterString) *_BACnetConstructedDataIPv6ZoneIndex {
 	if ipv6ZoneIndex == nil {
 		panic("ipv6ZoneIndex of type BACnetApplicationTagCharacterString for BACnetConstructedDataIPv6ZoneIndex must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6ZoneIndex{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Ipv6ZoneIndex:                 ipv6ZoneIndex,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPv6ZoneIndex(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6ZoneIndex"
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipv6ZoneIndex)
 	lengthInBits += m.Ipv6ZoneIndex.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -248,12 +250,12 @@ func CastLevelInformationCorrupted(structType any) LevelInformationCorrupted {
 	return nil
 }
 
-func (m *_LevelInformationCorrupted) GetTypeName() string {
+func (m *_LevelInformationCorrupted) GetPlx4xTypeName() string {
 	return "LevelInformationCorrupted"
 }
 
-func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
 
 	// Simple field (corruptedNibble1)
 	lengthInBits += 4
@@ -270,7 +272,7 @@ func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -285,25 +287,25 @@ func (m *_LevelInformationCorrupted) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	corruptedNibble1, err := ReadSimpleField(ctx, "corruptedNibble1", ReadUnsignedByte(readBuffer, uint8(4)))
+	corruptedNibble1, err := ReadSimpleField(ctx, "corruptedNibble1", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble1' field"))
 	}
 	m.CorruptedNibble1 = corruptedNibble1
 
-	corruptedNibble2, err := ReadSimpleField(ctx, "corruptedNibble2", ReadUnsignedByte(readBuffer, uint8(4)))
+	corruptedNibble2, err := ReadSimpleField(ctx, "corruptedNibble2", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble2' field"))
 	}
 	m.CorruptedNibble2 = corruptedNibble2
 
-	corruptedNibble3, err := ReadSimpleField(ctx, "corruptedNibble3", ReadUnsignedByte(readBuffer, uint8(4)))
+	corruptedNibble3, err := ReadSimpleField(ctx, "corruptedNibble3", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble3' field"))
 	}
 	m.CorruptedNibble3 = corruptedNibble3
 
-	corruptedNibble4, err := ReadSimpleField(ctx, "corruptedNibble4", ReadUnsignedByte(readBuffer, uint8(4)))
+	corruptedNibble4, err := ReadSimpleField(ctx, "corruptedNibble4", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble4' field"))
 	}
@@ -317,7 +319,7 @@ func (m *_LevelInformationCorrupted) parse(ctx context.Context, readBuffer utils
 }
 
 func (m *_LevelInformationCorrupted) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -334,19 +336,19 @@ func (m *_LevelInformationCorrupted) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for LevelInformationCorrupted")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "corruptedNibble1", m.GetCorruptedNibble1(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble1", m.GetCorruptedNibble1(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'corruptedNibble1' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "corruptedNibble2", m.GetCorruptedNibble2(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble2", m.GetCorruptedNibble2(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'corruptedNibble2' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "corruptedNibble3", m.GetCorruptedNibble3(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble3", m.GetCorruptedNibble3(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'corruptedNibble3' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "corruptedNibble4", m.GetCorruptedNibble4(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble4", m.GetCorruptedNibble4(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'corruptedNibble4' field")
 		}
 

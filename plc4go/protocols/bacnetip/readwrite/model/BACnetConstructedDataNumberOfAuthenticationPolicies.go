@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNumberOfAuthenticationPolicies = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAuthenticationPolicies)(nil)
 
 // NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for _BACnetConstructedDataNumberOfAuthenticationPolicies
-func NewBACnetConstructedDataNumberOfAuthenticationPolicies(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
+func NewBACnetConstructedDataNumberOfAuthenticationPolicies(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
 	if numberOfAuthenticationPolicies == nil {
 		panic("numberOfAuthenticationPolicies of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAuthenticationPolicies must not be nil")
 	}
 	_result := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNumberOfAuthenticationPolicies(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetTypeName() string {
+func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNumberOfAuthenticationPolicies"
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (numberOfAuthenticationPolicies)
 	lengthInBits += m.NumberOfAuthenticationPolicies.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

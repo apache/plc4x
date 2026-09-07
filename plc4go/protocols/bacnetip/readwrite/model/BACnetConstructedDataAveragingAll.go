@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAveragingAll = (*_BACnetConstructedDataAveragingAll)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAveragingAll)(nil)
 
 // NewBACnetConstructedDataAveragingAll factory function for _BACnetConstructedDataAveragingAll
-func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAveragingAll {
+func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAveragingAll {
 	_result := &_BACnetConstructedDataAveragingAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataAveragingAll(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataAveragingAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAveragingAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAveragingAll"
 }
 
-func (m *_BACnetConstructedDataAveragingAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAveragingAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAveragingAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAveragingAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

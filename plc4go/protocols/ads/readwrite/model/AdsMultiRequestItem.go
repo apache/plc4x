@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,8 @@ type AdsMultiRequestItemContract interface {
 
 // AdsMultiRequestItemRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsMultiRequestItemRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIndexGroup returns IndexGroup (discriminator field)
 	GetIndexGroup() uint32
 }
@@ -227,21 +227,21 @@ func CastAdsMultiRequestItem(structType any) AdsMultiRequestItem {
 	return nil
 }
 
-func (m *_AdsMultiRequestItem) GetTypeName() string {
+func (m *_AdsMultiRequestItem) GetPlx4xTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_AdsMultiRequestItem) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItem) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -261,7 +261,7 @@ func AdsMultiRequestItemParseWithBufferProducer[T AdsMultiRequestItem](indexGrou
 }
 
 func AdsMultiRequestItemParseWithBuffer[T AdsMultiRequestItem](ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (T, error) {
-	v, err := (&_AdsMultiRequestItem{}).parse(ctx, readBuffer, indexGroup)
+	v, err := (new(_AdsMultiRequestItem)).parse(ctx, readBuffer, indexGroup)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -287,15 +287,15 @@ func (m *_AdsMultiRequestItem) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child AdsMultiRequestItem
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		if _child, err = new(_AdsMultiRequestItemRead).parse(ctx, readBuffer, m, indexGroup); err != nil {
+		if _child, err = new(_AdsMultiRequestItemRead).parse(ctx, readBuffer, m, uint32(indexGroup)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemRead for type-switch of AdsMultiRequestItem")
 		}
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		if _child, err = new(_AdsMultiRequestItemWrite).parse(ctx, readBuffer, m, indexGroup); err != nil {
+		if _child, err = new(_AdsMultiRequestItemWrite).parse(ctx, readBuffer, m, uint32(indexGroup)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemWrite for type-switch of AdsMultiRequestItem")
 		}
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		if _child, err = new(_AdsMultiRequestItemReadWrite).parse(ctx, readBuffer, m, indexGroup); err != nil {
+		if _child, err = new(_AdsMultiRequestItemReadWrite).parse(ctx, readBuffer, m, uint32(indexGroup)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemReadWrite for type-switch of AdsMultiRequestItem")
 		}
 	default:

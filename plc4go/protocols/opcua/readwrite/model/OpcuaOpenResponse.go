@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,16 +56,13 @@ type _OpcuaOpenResponse struct {
 	MessagePDUContract
 	OpenResponse OpenChannelMessage
 	Message      Payload
-
-	// Arguments.
-	TotalLength uint32
 }
 
 var _ OpcuaOpenResponse = (*_OpcuaOpenResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenResponse)(nil)
 
 // NewOpcuaOpenResponse factory function for _OpcuaOpenResponse
-func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, message Payload, totalLength uint32, binary bool) *_OpcuaOpenResponse {
+func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, message Payload) *_OpcuaOpenResponse {
 	if openResponse == nil {
 		panic("openResponse of type OpenChannelMessage for OpcuaOpenResponse must not be nil")
 	}
@@ -73,7 +70,7 @@ func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, mess
 		panic("message of type Payload for OpcuaOpenResponse must not be nil")
 	}
 	_result := &_OpcuaOpenResponse{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		OpenResponse:       openResponse,
 		Message:            message,
 	}
@@ -99,8 +96,6 @@ type OpcuaOpenResponseBuilder interface {
 	WithMessage(Payload) OpcuaOpenResponseBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaOpenResponseBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint32) OpcuaOpenResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() MessagePDUBuilder
 	// Build builds the OpcuaOpenResponse or returns an error if something is wrong
@@ -160,11 +155,6 @@ func (b *_OpcuaOpenResponseBuilder) WithMessageBuilder(builderSupplier func(Payl
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	return b
-}
-
-func (b *_OpcuaOpenResponseBuilder) WithArgTotalLength(totalLength uint32) OpcuaOpenResponseBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -272,12 +262,12 @@ func CastOpcuaOpenResponse(structType any) OpcuaOpenResponse {
 	return nil
 }
 
-func (m *_OpcuaOpenResponse) GetTypeName() string {
+func (m *_OpcuaOpenResponse) GetPlx4xTypeName() string {
 	return "OpcuaOpenResponse"
 }
 
-func (m *_OpcuaOpenResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaOpenResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (openResponse)
 	lengthInBits += m.OpenResponse.GetLengthInBits(ctx)
@@ -288,7 +278,7 @@ func (m *_OpcuaOpenResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaOpenResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaOpenResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -356,16 +346,6 @@ func (m *_OpcuaOpenResponse) SerializeWithWriteBuffer(ctx context.Context, write
 	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_OpcuaOpenResponse) GetTotalLength() uint32 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_OpcuaOpenResponse) IsOpcuaOpenResponse() {}
 
 func (m *_OpcuaOpenResponse) DeepCopy() any {
@@ -380,7 +360,6 @@ func (m *_OpcuaOpenResponse) deepCopy() *_OpcuaOpenResponse {
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		utils.DeepCopy[OpenChannelMessage](m.OpenResponse),
 		utils.DeepCopy[Payload](m.Message),
-		m.TotalLength,
 	}
 	_OpcuaOpenResponseCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaOpenResponseCopy

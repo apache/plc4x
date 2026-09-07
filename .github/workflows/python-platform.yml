@@ -61,22 +61,22 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install libpcap
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '${{ matrix.python-version }}'
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-package: jdk
-          java-version: 17
+          java-version: 21
 
       - name: Set Platform options
         id: platform_opts
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9.0.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -94,7 +94,7 @@ jobs:
 
       - name: Calculate platform suffix
         id: platform_suffix
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9.0.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -108,7 +108,7 @@ jobs:
 
       - name: Set extra options
         id: extra_options
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9.0.0
         env:
           FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
         with:
@@ -121,7 +121,7 @@ jobs:
             }
 
       - name: Cache local Maven repository
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}

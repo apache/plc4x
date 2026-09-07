@@ -22,14 +22,16 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class DefaultChecksumField extends DefaultTypedNamedField implements ChecksumField {
 
     private final Term checksumExpression;
 
-    public DefaultChecksumField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term checksumExpression) {
-        super(attributes, name);
+    public DefaultChecksumField(Map<String, Term> attributes, Set<String> currentAttributeNames, SimpleTypeReference type, String name, Term checksumExpression, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.checksumExpression = Objects.requireNonNull(checksumExpression);
         this.type = type;
     }

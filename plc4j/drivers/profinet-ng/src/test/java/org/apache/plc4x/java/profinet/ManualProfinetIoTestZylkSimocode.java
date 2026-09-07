@@ -34,7 +34,7 @@ public class ManualProfinetIoTestZylkSimocode {
         try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.54.23")) {
             // Create and execute the subscription request.
             PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
-                .addCyclicTagAddress("inputs", "1.1.INPUT.0:BYTE[10]", Duration.ofMillis(400))
+                .addCyclicTagAddress("inputs", "1.1.INPUT.0[0..9]:BYTE", Duration.ofMillis(400))
                 .addCyclicTagAddress("output", "1.1.OUTPUT.0:DWORD", Duration.ofMillis(400))
                 .build();
             PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(100000, TimeUnit.MILLISECONDS);

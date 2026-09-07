@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccumulatorHighLimit = (*_BACnetConstructedDataAccumu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorHighLimit)(nil)
 
 // NewBACnetConstructedDataAccumulatorHighLimit factory function for _BACnetConstructedDataAccumulatorHighLimit
-func NewBACnetConstructedDataAccumulatorHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorHighLimit {
+func NewBACnetConstructedDataAccumulatorHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccumulatorHighLimit {
 	if highLimit == nil {
 		panic("highLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccumulatorHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		HighLimit:                     highLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccumulatorHighLimit(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorHighLimit"
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (highLimit)
 	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

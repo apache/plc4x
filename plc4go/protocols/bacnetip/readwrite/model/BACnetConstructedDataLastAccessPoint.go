@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastAccessPoint = (*_BACnetConstructedDataLastAccessP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastAccessPoint)(nil)
 
 // NewBACnetConstructedDataLastAccessPoint factory function for _BACnetConstructedDataLastAccessPoint
-func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessPoint BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessPoint {
+func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessPoint BACnetDeviceObjectReference) *_BACnetConstructedDataLastAccessPoint {
 	if lastAccessPoint == nil {
 		panic("lastAccessPoint of type BACnetDeviceObjectReference for BACnetConstructedDataLastAccessPoint must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastAccessPoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastAccessPoint:               lastAccessPoint,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLastAccessPoint(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) GetTypeName() string {
+func (m *_BACnetConstructedDataLastAccessPoint) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastAccessPoint"
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastAccessPoint)
 	lengthInBits += m.LastAccessPoint.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -20,7 +20,9 @@
 package org.apache.plc4x.java.profinet.channel;
 
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.EtherType;
@@ -55,12 +57,12 @@ public class ProfinetChannel {
     public void send(Ethernet_Frame ethFrame) {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
-            WriteBufferByteBased buffer = new WriteBufferByteBased(ethFrame.getLengthInBytes());
+            WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[ethFrame.getLengthInBytes()]);
             try {
                 ethFrame.serialize(buffer);
                 Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, ethFrame.getLengthInBytes());
                 handle.sendPacket(packet);
-            } catch (PcapNativeException | NotOpenException | SerializationException | IllegalRawDataException e) {
+            } catch (PcapNativeException | NotOpenException | BufferException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -71,6 +73,13 @@ public class ProfinetChannel {
             PacketListener listener = createListener();
             Thread thread = new Thread(() -> {
                 try {
+                    // Two things stand between a bad frame and this thread. pcap4j catches Throwable
+                    // around the listener call and logs it as "The executor has thrown an exception",
+                    // which contains it but says nothing useful about a spoofed frame - and it only
+                    // works because loop() defaults to an executor that runs the listener inline.
+                    // Hand loop() a real thread pool and the listener moves off this stack, where that
+                    // catch can no longer see it. The listener contains its own failures for that
+                    // reason; do not rely on the library to do it.
                     handle.loop(-1, listener);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -87,6 +96,19 @@ public class ProfinetChannel {
 
     public PacketListener createListener() {
         return packet -> {
+            try {
+                handlePacket(packet);
+            } catch (Throwable t) {
+                // pcap4j hands each captured packet to this listener on the capture thread, and
+                // the source address in a frame is whoever wrote it there. One frame we cannot
+                // make sense of has to cost that frame: taking the loop with it would stop every
+                // other device on this interface being heard from.
+                logger.warn("Ignoring a packet that could not be handled", t);
+            }
+        };
+    }
+
+    private void handlePacket(Packet packet) {
             // EthernetPacket is the highest level of abstraction we can be expecting.
             // Everything inside this we will have to decode ourselves.
             if (packet instanceof EthernetPacket) {
@@ -110,7 +132,7 @@ public class ProfinetChannel {
                 }
 
                 if (isPnPacket) {
-                    ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
+                    ReadBufferByteBased reader = new ReadBufferByteBased(ethernetPacket.getRawData());
                     try {
                         Ethernet_Frame ethernetFrame = Ethernet_Frame.staticParse(reader);
                         Ethernet_FramePayload payload = ethernetFrame.getPayload();
@@ -190,12 +212,11 @@ public class ProfinetChannel {
                                 }
                             }
                         }*/
-                    } catch (ParseException e) {
+                    } catch (BufferException e) {
                         logger.error("Got error decoding packet", e);
                     }
                 }
             }
-        };
     }
 
     public Map<MacAddress, PcapHandle> getInterfaceHandles(List<PcapNetworkInterface> devs) {

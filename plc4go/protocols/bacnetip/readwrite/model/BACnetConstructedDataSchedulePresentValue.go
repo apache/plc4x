@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSchedulePresentValue = (*_BACnetConstructedDataSchedu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSchedulePresentValue)(nil)
 
 // NewBACnetConstructedDataSchedulePresentValue factory function for _BACnetConstructedDataSchedulePresentValue
-func NewBACnetConstructedDataSchedulePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSchedulePresentValue {
+func NewBACnetConstructedDataSchedulePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetConstructedDataElement) *_BACnetConstructedDataSchedulePresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetConstructedDataElement for BACnetConstructedDataSchedulePresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataSchedulePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSchedulePresentValue(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataSchedulePresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSchedulePresentValue"
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSchedulePresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSchedulePresentValue) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSchedulePresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

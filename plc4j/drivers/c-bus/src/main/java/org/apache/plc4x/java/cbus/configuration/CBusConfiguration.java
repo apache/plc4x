@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.cbus.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 
-public class CBusConfiguration implements PlcConnectionConfiguration {
+public class CBusConfiguration implements Configuration {
 
     @ConfigurationParameter("srchk")
     @BooleanDefaultValue(false)
@@ -40,9 +40,7 @@ public class CBusConfiguration implements PlcConnectionConfiguration {
 
     @Override
     public String toString() {
-        return "Configuration{" +
-            "srchk=" + srchk +
-            '}';
+        return "CBusConfiguration{srchk=" + srchk + '}';
     }
 
 }

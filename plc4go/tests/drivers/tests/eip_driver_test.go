@@ -28,12 +28,44 @@ import (
 )
 
 func TestEIPDriver(t *testing.T) {
-	t.Skip("temporary skip for really strange bug") // TODO: unskip asap
 	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(
 		t,
 		eip.NewDriver(optionsForTesting...),
 		"assets/testing/protocols/eip/DriverTestsuite.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
+}
+
+func TestEIPDriverConnected(t *testing.T) {
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuiteConnected.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
+}
+
+func TestEIPDriverMessageRouter(t *testing.T) {
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuiteMessageRouter.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
+}
+
+func TestEIPDriverForcedUnconnected(t *testing.T) {
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuiteForcedUnconnected.xml",
 		eipIO.EipXmlParserHelper{},
 		optionsForTesting...,
 	)

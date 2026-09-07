@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -212,12 +213,12 @@ func CastEipConnectionRequest(structType any) EipConnectionRequest {
 	return nil
 }
 
-func (m *_EipConnectionRequest) GetTypeName() string {
+func (m *_EipConnectionRequest) GetPlx4xTypeName() string {
 	return "EipConnectionRequest"
 }
 
-func (m *_EipConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+func (m *_EipConnectionRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Const Field (protocolVersion)
 	lengthInBits += 16
@@ -228,7 +229,7 @@ func (m *_EipConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -243,13 +244,13 @@ func (m *_EipConnectionRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	protocolVersion, err := ReadConstField[uint16](ctx, "protocolVersion", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionRequest_PROTOCOLVERSION)
+	protocolVersion, err := ReadConstField[uint16](ctx, "protocolVersion", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionRequest_PROTOCOLVERSION, codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
 	_ = protocolVersion
 
-	flags, err := ReadConstField[uint16](ctx, "flags", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionRequest_FLAGS)
+	flags, err := ReadConstField[uint16](ctx, "flags", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionRequest_FLAGS, codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flags' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_EipConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for EipConnectionRequest")
 		}
 
-		if err := WriteConstField(ctx, "protocolVersion", EipConnectionRequest_PROTOCOLVERSION, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteConstField(ctx, "protocolVersion", EipConnectionRequest_PROTOCOLVERSION, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 		}
 
-		if err := WriteConstField(ctx, "flags", EipConnectionRequest_FLAGS, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteConstField(ctx, "flags", EipConnectionRequest_FLAGS, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'flags' field")
 		}
 

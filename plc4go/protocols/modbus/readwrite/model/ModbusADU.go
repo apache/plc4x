@@ -25,9 +25,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,8 +49,6 @@ type ModbusADU interface {
 
 // ModbusADUContract provides a set of functions which can be overwritten by a sub struct
 type ModbusADUContract interface {
-	// GetResponse() returns a parser argument
-	GetResponse() bool
 	// IsModbusADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusADU()
 	// CreateBuilder creates a ModbusADUBuilder
@@ -59,8 +57,8 @@ type ModbusADUContract interface {
 
 // ModbusADURequirements provides a set of functions which need to be implemented by a sub struct
 type ModbusADURequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDriverType returns DriverType (discriminator field)
 	GetDriverType() DriverType
 }
@@ -71,16 +69,13 @@ type _ModbusADU struct {
 		ModbusADUContract
 		ModbusADURequirements
 	}
-
-	// Arguments.
-	Response bool
 }
 
 var _ ModbusADUContract = (*_ModbusADU)(nil)
 
 // NewModbusADU factory function for _ModbusADU
-func NewModbusADU(response bool) *_ModbusADU {
-	return &_ModbusADU{Response: response}
+func NewModbusADU() *_ModbusADU {
+	return &_ModbusADU{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,8 +88,6 @@ type ModbusADUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ModbusADUBuilder
-	// WithArgResponse sets a parser argument
-	WithArgResponse(bool) ModbusADUBuilder
 	// AsModbusTcpADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
 	AsModbusTcpADU() ModbusTcpADUBuilder
 	// AsModbusRtuADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
@@ -133,11 +126,6 @@ type _ModbusADUBuilder struct {
 var _ (ModbusADUBuilder) = (*_ModbusADUBuilder)(nil)
 
 func (b *_ModbusADUBuilder) WithMandatoryFields() ModbusADUBuilder {
-	return b
-}
-
-func (b *_ModbusADUBuilder) WithArgResponse(response bool) ModbusADUBuilder {
-	b.Response = response
 	return b
 }
 
@@ -240,21 +228,21 @@ func CastModbusADU(structType any) ModbusADU {
 	return nil
 }
 
-func (m *_ModbusADU) GetTypeName() string {
+func (m *_ModbusADU) GetPlx4xTypeName() string {
 	return "ModbusADU"
 }
 
-func (m *_ModbusADU) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ModbusADU) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ModbusADU) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ModbusADU) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ModbusADU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusADU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -274,7 +262,7 @@ func ModbusADUParseWithBufferProducer[T ModbusADU](driverType DriverType, respon
 }
 
 func ModbusADUParseWithBuffer[T ModbusADU](ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (T, error) {
-	v, err := (&_ModbusADU{Response: response}).parse(ctx, readBuffer, driverType, response)
+	v, err := (new(_ModbusADU)).parse(ctx, readBuffer, driverType, response)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -345,16 +333,6 @@ func (pm *_ModbusADU) serializeParent(ctx context.Context, writeBuffer utils.Wri
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ModbusADU) GetResponse() bool {
-	return m.Response
-}
-
-//
-////
-
 func (m *_ModbusADU) IsModbusADU() {}
 
 func (m *_ModbusADU) DeepCopy() any {
@@ -367,7 +345,6 @@ func (m *_ModbusADU) deepCopy() *_ModbusADU {
 	}
 	_ModbusADUCopy := &_ModbusADU{
 		nil, // will be set by child
-		m.Response,
 	}
 	return _ModbusADUCopy
 }

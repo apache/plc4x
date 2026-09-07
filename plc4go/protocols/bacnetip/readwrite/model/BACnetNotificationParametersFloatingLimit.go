@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersFloatingLimit = (*_BACnetNotificationParameter
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersFloatingLimit)(nil)
 
 // NewBACnetNotificationParametersFloatingLimit factory function for _BACnetNotificationParametersFloatingLimit
-func NewBACnetNotificationParametersFloatingLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersFloatingLimit {
+func NewBACnetNotificationParametersFloatingLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersFloatingLimit {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersFloatingLimit must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersFloatingLimit(openingTag BACnetOpeningTag, p
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersFloatingLimit must not be nil")
 	}
 	_result := &_BACnetNotificationParametersFloatingLimit{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ReferenceValue:                       referenceValue,
 		StatusFlags:                          statusFlags,
@@ -386,12 +386,12 @@ func CastBACnetNotificationParametersFloatingLimit(structType any) BACnetNotific
 	return nil
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) GetTypeName() string {
+func (m *_BACnetNotificationParametersFloatingLimit) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersFloatingLimit"
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -414,7 +414,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

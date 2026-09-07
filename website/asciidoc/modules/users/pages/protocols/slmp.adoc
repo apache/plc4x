@@ -1,0 +1,121 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+= SLMP (Mitsubishi MELSEC)
+
+SLMP (Seamless Message Protocol, also known as MELSEC Communication Protocol / MC protocol)
+is used by Mitsubishi Electric MELSEC PLCs such as the iQ-R, iQ-F, Q and L series.
+
+The driver communicates using binary 3E frames over TCP.
+
+Both the Go and Java drivers address the word devices D, W and R only. This is the
+driver's deliberate scope, not an unfinished port: the bit devices (M, X, Y, B) and the
+wider MELSEC command set are not implemented in either language.
+
+== Supported Operations
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+2+| `read`
+
+|
+2+| `write`
+
+|
+2+| `subscribe` (polling-emulated only - SLMP has no native push mechanism, so a
+subscription is really a periodic read under the hood)
+|===
+
+== Connection String
+
+SLMP has the following connection string format:
+----
+slmp:{transport}://{ip-address}:{port}?{options}
+----
+An example connection string would look like:
+----
+slmp:tcp://192.168.0.10:5007
+----
+Note the transport, port and option fields are optional.
+
+== Connection String Options
+
+include::partial$slmp.adoc[]
+
+== Tag Addresses
+
+Addressing is implemented in Go and Java. Both address the word devices D, W and R
+only. See the xref:protocols/index.adoc[protocol support matrix] for what each
+implementation does.
+
+=== General Format
+
+[NOTE]
+====
+Array selection uses the shared notation - a single index, an inclusive range, and
+optionally the array's declared lower bound, placed before the type. See
+xref:array-notation.adoc[Addressing arrays].
+====
+
+In general all SLMP addresses have this format:
+
+----
+{device}{address}[selection]:{data-type}
+----
+
+If the data-type part is omitted, it defaults to `WORD`.
+If no selection is given, a single element is assumed.
+
+=== Devices
+
+The following word devices are supported:
+
+- `D` (data register, decimal address)
+- `R` (file register, decimal address)
+- `W` (link register, hexadecimal address; an optional `0x` prefix is accepted)
+
+The `0x` prefix is only valid for hexadecimally addressed devices (W).
+
+A single read or write request may cover at most 960 words (a conservative
+single-frame ceiling); larger requests are rejected instead of being split.
+
+=== Data Types
+
+The following data types are supported:
+
+- WORD (uint 16, default)
+- INT (int 16)
+- UINT (uint 16)
+- DINT (int 32)
+- UDINT (uint 32)
+- REAL (float 32)
+
+Multi-word types (DINT, UDINT, REAL) are decoded from consecutive words in
+little-endian (low-word-first) order, as transmitted by the PLC.
+
+=== Examples
+
+- `D350` (one word from data register 350, default WORD type)
+- `D350:DINT` (one 32-bit integer, occupying two words, from data register 350)
+- `R200[0..3]:REAL` (four floats from file register 200)
+- `W1A[0..9]:WORD` (ten words from link register 0x1A)
+- `W0x1A` (link register 0x1A, using the explicit `0x` prefix form)

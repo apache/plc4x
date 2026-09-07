@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -273,12 +274,12 @@ func CastQueryDataDescription(structType any) QueryDataDescription {
 	return nil
 }
 
-func (m *_QueryDataDescription) GetTypeName() string {
+func (m *_QueryDataDescription) GetPlx4xTypeName() string {
 	return "QueryDataDescription"
 }
 
-func (m *_QueryDataDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_QueryDataDescription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (relativePath)
 	lengthInBits += m.RelativePath.GetLengthInBits(ctx)
@@ -292,7 +293,7 @@ func (m *_QueryDataDescription) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_QueryDataDescription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_QueryDataDescription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -307,19 +308,19 @@ func (m *_QueryDataDescription) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	relativePath, err := ReadSimpleField[RelativePath](ctx, "relativePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer))
+	relativePath, err := ReadSimpleField[RelativePath](ctx, "relativePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
 	m.RelativePath = relativePath
 
-	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
 	m.AttributeId = attributeId
 
-	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
@@ -350,15 +351,15 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for QueryDataDescription")
 		}
 
-		if err := WriteSimpleField[RelativePath](ctx, "relativePath", m.GetRelativePath(), WriteComplex[RelativePath](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RelativePath](ctx, "relativePath", m.GetRelativePath(), WriteComplex[RelativePath](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 

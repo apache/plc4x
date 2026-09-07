@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +208,12 @@ func CastElementOperand(structType any) ElementOperand {
 	return nil
 }
 
-func (m *_ElementOperand) GetTypeName() string {
+func (m *_ElementOperand) GetPlx4xTypeName() string {
 	return "ElementOperand"
 }
 
-func (m *_ElementOperand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ElementOperand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (index)
 	lengthInBits += 32
@@ -220,7 +221,7 @@ func (m *_ElementOperand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ElementOperand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ElementOperand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -235,7 +236,7 @@ func (m *_ElementOperand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	index, err := ReadSimpleField(ctx, "index", ReadUnsignedInt(readBuffer, uint8(32)))
+	index, err := ReadSimpleField(ctx, "index", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}
@@ -266,7 +267,7 @@ func (m *_ElementOperand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for ElementOperand")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "index", m.GetIndex(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "index", m.GetIndex(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'index' field")
 		}
 

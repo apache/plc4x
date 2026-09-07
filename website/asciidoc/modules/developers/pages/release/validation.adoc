@@ -90,20 +90,27 @@ By piping the result into a text file gives you the chance to investigate the co
 
 == Release Tooling
 
-In the `tools` directory we have a little script that can help with downloading and checking the hashes and signatures automatically.
+`tools/validate-release.sh` checks the hardest part for you: that the artifacts staged in Nexus can
+be reproduced from the staged sources.
 
-In order to execute this, please change directories into the projects base directory and execute the following command:
+Unpack the `apache-plc4x-{current-full-version}-source-release.zip` you downloaded above and run it
+from inside the unpacked directory:
 
 [subs="attributes"]
 ----
-tools/download_staged_release.sh {current-full-version} 1
+   ./tools/validate-release.sh
 ----
 
-This will download all the files into a directory: `downloaded-plc4x-{current-full-version}1`.
+It builds the project inside the same Docker container the release was built in and then compares
+the result against the staging repository with `artifact:compare`.
+It refuses to run on a `SNAPSHOT` version, so it cannot accidentally be pointed at a development
+checkout, and it needs at least 12 GB of memory available to Docker.
 
-After that it will calculate the SHA512 hash and compare it with the staged hash.
+Only the Java artifacts are compared - the C, .Net and Python ones are either platform specific or
+not published to Maven at all, so there is nothing staged to compare them against.
 
-Last not least it will validate the PGP key and print out some information on it.
+NOTE: The signature and hash checks above are still done by hand; there is no script for those any
+more.
 
 == Template for the email for voting
 

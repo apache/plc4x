@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,6 +52,7 @@ type MPropReadCon interface {
 	// GetStartIndex returns StartIndex (property field)
 	GetStartIndex() uint16
 	// GetData returns Data (property field)
+	// TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements ('numberOfElements') with the type specified by 'interfaceObjectType'.
 	GetData() uint16
 	// IsMPropReadCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropReadCon()
@@ -74,9 +75,9 @@ var _ MPropReadCon = (*_MPropReadCon)(nil)
 var _ CEMIRequirements = (*_MPropReadCon)(nil)
 
 // NewMPropReadCon factory function for _MPropReadCon
-func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16, size uint16) *_MPropReadCon {
+func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) *_MPropReadCon {
 	_result := &_MPropReadCon{
-		CEMIContract:        NewCEMI(size),
+		CEMIContract:        NewCEMI(),
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
@@ -282,12 +283,12 @@ func CastMPropReadCon(structType any) MPropReadCon {
 	return nil
 }
 
-func (m *_MPropReadCon) GetTypeName() string {
+func (m *_MPropReadCon) GetPlx4xTypeName() string {
 	return "MPropReadCon"
 }
 
-func (m *_MPropReadCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MPropReadCon) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -310,7 +311,7 @@ func (m *_MPropReadCon) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MPropReadCon) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MPropReadCon) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -18,20 +18,25 @@
  */
 package org.apache.plc4x.java.can.generic.protocol;
 
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.can.generic.tag.GenericCANTag;
+import org.apache.plc4x.java.spi.drivers.functions.PlcSubscriber;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.plc4x.java.can.generic.tag.GenericCANTag;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import java.util.function.Consumer;
 
-public class GenericCANSubscriptionHandle extends DefaultPlcSubscriptionHandle {
+public class GenericCANSubscriptionHandle implements PlcSubscriptionHandle {
 
+    private final PlcSubscriber subscriber;
     private final Map<String, GenericCANTag> tags = new LinkedHashMap<>();
     private final Integer nodeId;
 
     public GenericCANSubscriptionHandle(PlcSubscriber subscriber, Integer nodeId) {
-        super(subscriber);
+        this.subscriber = subscriber;
         this.nodeId = nodeId;
     }
 
@@ -39,20 +44,21 @@ public class GenericCANSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         return nodeId == identifier;
     }
 
-    public String toString() {
-        return "GenericCANSubscriptionHandle [node=" + nodeId + " " + intAndHex(nodeId) + "]";
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        return subscriber.registerConsumer(consumer, Collections.singletonList(this));
     }
 
     public void add(String name, GenericCANTag tag) {
         tags.put(name, tag);
     }
 
-    private static String intAndHex(int val) {
-        return val + "(0x" + Integer.toHexString(val) + ")";
-    }
-
     public Map<String, GenericCANTag> getTags() {
         return Collections.unmodifiableMap(tags);
     }
-}
 
+    @Override
+    public String toString() {
+        return "GenericCANSubscriptionHandle[node=" + nodeId + " (0x" + Integer.toHexString(nodeId) + ")]";
+    }
+}

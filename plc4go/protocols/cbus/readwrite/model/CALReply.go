@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,10 +56,6 @@ type CALReplyContract interface {
 	GetCalType() byte
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
-	// GetRequestContext() returns a parser argument
-	GetRequestContext() RequestContext
 	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReply()
 	// CreateBuilder creates a CALReplyBuilder
@@ -66,8 +64,8 @@ type CALReplyContract interface {
 
 // CALReplyRequirements provides a set of functions which need to be implemented by a sub struct
 type CALReplyRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCalType returns CalType (discriminator field)
 	GetCalType() byte
 }
@@ -80,20 +78,16 @@ type _CALReply struct {
 	}
 	CalType byte
 	CalData CALData
-
-	// Arguments.
-	CBusOptions    CBusOptions
-	RequestContext RequestContext
 }
 
 var _ CALReplyContract = (*_CALReply)(nil)
 
 // NewCALReply factory function for _CALReply
-func NewCALReply(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReply {
+func NewCALReply(calType byte, calData CALData) *_CALReply {
 	if calData == nil {
 		panic("calData of type CALData for CALReply must not be nil")
 	}
-	return &_CALReply{CalType: calType, CalData: calData, CBusOptions: cBusOptions, RequestContext: requestContext}
+	return &_CALReply{CalType: calType, CalData: calData}
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,10 +106,6 @@ type CALReplyBuilder interface {
 	WithCalData(CALData) CALReplyBuilder
 	// WithCalDataBuilder adds CalData (property field) which is build by the builder
 	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CALReplyBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CALReplyBuilder
-	// WithArgRequestContext sets a parser argument
-	WithArgRequestContext(RequestContext) CALReplyBuilder
 	// AsCALReplyLong converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
 	AsCALReplyLong() CALReplyLongBuilder
 	// AsCALReplyShort converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
@@ -172,15 +162,6 @@ func (b *_CALReplyBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilde
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CALDataBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CALReplyBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CALReplyBuilder {
-	b.CBusOptions = cBusOptions
-	return b
-}
-func (b *_CALReplyBuilder) WithArgRequestContext(requestContext RequestContext) CALReplyBuilder {
-	b.RequestContext = requestContext
 	return b
 }
 
@@ -294,12 +275,12 @@ func CastCALReply(structType any) CALReply {
 	return nil
 }
 
-func (m *_CALReply) GetTypeName() string {
+func (m *_CALReply) GetPlx4xTypeName() string {
 	return "CALReply"
 }
 
-func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CALReply) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (calData)
 	lengthInBits += m.CalData.GetLengthInBits(ctx)
@@ -307,16 +288,16 @@ func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALReply) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CALReply) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CALReplyParse[T CALReply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	return CALReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return CALReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext)
 }
 
 func CALReplyParseWithBufferProducer[T CALReply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -331,7 +312,7 @@ func CALReplyParseWithBufferProducer[T CALReply](cBusOptions CBusOptions, reques
 }
 
 func CALReplyParseWithBuffer[T CALReply](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	v, err := (&_CALReply{CBusOptions: cBusOptions, RequestContext: requestContext}).parse(ctx, readBuffer, cBusOptions, requestContext)
+	v, err := (new(_CALReply)).parse(ctx, readBuffer, cBusOptions, requestContext)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -353,7 +334,7 @@ func (m *_CALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	calType, err := ReadPeekField[byte](ctx, "calType", ReadByte(readBuffer, 8), 0)
+	calType, err := ReadPeekField[byte](ctx, "calType", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calType' field"))
 	}
@@ -374,7 +355,7 @@ func (m *_CALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 		return nil, errors.Errorf("Unmapped type for parameters [calType=%v]", calType)
 	}
 
-	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(requestContext)), readBuffer))
+	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(requestContext)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
@@ -404,7 +385,7 @@ func (pm *_CALReply) serializeParent(ctx context.Context, writeBuffer utils.Writ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer)); err != nil {
+	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'calData' field")
 	}
 
@@ -413,19 +394,6 @@ func (pm *_CALReply) serializeParent(ctx context.Context, writeBuffer utils.Writ
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_CALReply) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-func (m *_CALReply) GetRequestContext() RequestContext {
-	return m.RequestContext
-}
-
-//
-////
 
 func (m *_CALReply) IsCALReply() {}
 
@@ -441,8 +409,6 @@ func (m *_CALReply) deepCopy() *_CALReply {
 		nil, // will be set by child
 		m.CalType,
 		utils.DeepCopy[CALData](m.CalData),
-		m.CBusOptions,
-		m.RequestContext,
 	}
 	return _CALReplyCopy
 }

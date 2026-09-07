@@ -24,8 +24,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 func Test_completedFuture_AwaitCompletion(t *testing.T) {

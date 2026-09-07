@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataElevatorGroupAll = (*_BACnetConstructedDataElevatorGr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElevatorGroupAll)(nil)
 
 // NewBACnetConstructedDataElevatorGroupAll factory function for _BACnetConstructedDataElevatorGroupAll
-func NewBACnetConstructedDataElevatorGroupAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroupAll {
+func NewBACnetConstructedDataElevatorGroupAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataElevatorGroupAll {
 	_result := &_BACnetConstructedDataElevatorGroupAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataElevatorGroupAll(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataElevatorGroupAll) GetTypeName() string {
+func (m *_BACnetConstructedDataElevatorGroupAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElevatorGroupAll"
 }
 
-func (m *_BACnetConstructedDataElevatorGroupAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataElevatorGroupAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataElevatorGroupAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataElevatorGroupAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

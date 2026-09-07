@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ VariantUInt64 = (*_VariantUInt64)(nil)
 var _ VariantRequirements = (*_VariantUInt64)(nil)
 
 // NewVariantUInt64 factory function for _VariantUInt64
-func NewVariantUInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint64) *_VariantUInt64 {
+func NewVariantUInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []uint64) *_VariantUInt64 {
 	_result := &_VariantUInt64{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -222,12 +222,12 @@ func CastVariantUInt64(structType any) VariantUInt64 {
 	return nil
 }
 
-func (m *_VariantUInt64) GetTypeName() string {
+func (m *_VariantUInt64) GetPlx4xTypeName() string {
 	return "VariantUInt64"
 }
 
-func (m *_VariantUInt64) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantUInt64) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -236,13 +236,13 @@ func (m *_VariantUInt64) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 64 * uint16(len(m.Value))
+		lengthInBits += 64 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_VariantUInt64) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantUInt64) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

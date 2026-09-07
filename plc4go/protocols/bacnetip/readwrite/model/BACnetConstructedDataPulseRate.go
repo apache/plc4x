@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPulseRate = (*_BACnetConstructedDataPulseRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseRate)(nil)
 
 // NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
-func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
+func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPulseRate {
 	if pulseRate == nil {
 		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
 	}
 	_result := &_BACnetConstructedDataPulseRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PulseRate:                     pulseRate,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataPulseRate(structType any) BACnetConstructedDataPul
 	return nil
 }
 
-func (m *_BACnetConstructedDataPulseRate) GetTypeName() string {
+func (m *_BACnetConstructedDataPulseRate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPulseRate"
 }
 
-func (m *_BACnetConstructedDataPulseRate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPulseRate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (pulseRate)
 	lengthInBits += m.PulseRate.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPulseRate) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPulseRate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPulseRate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

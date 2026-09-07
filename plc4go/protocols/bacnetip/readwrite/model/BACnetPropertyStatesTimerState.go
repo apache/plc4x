@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetPropertyStatesTimerState(structType any) BACnetPropertyStatesTime
 	return nil
 }
 
-func (m *_BACnetPropertyStatesTimerState) GetTypeName() string {
+func (m *_BACnetPropertyStatesTimerState) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesTimerState"
 }
 
-func (m *_BACnetPropertyStatesTimerState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+func (m *_BACnetPropertyStatesTimerState) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (timerState)
 	lengthInBits += m.TimerState.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPropertyStatesTimerState) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesTimerState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPropertyStatesTimerState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

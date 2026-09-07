@@ -29,7 +29,7 @@
 
 // Constant values.
 static const uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH_const = 0xFFFF;
-uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH() {
+const uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH() {
   return PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH_const;
 }
 
@@ -37,6 +37,15 @@ uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH() {
 plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_query_type** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
+
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_alarm_message_query_type));

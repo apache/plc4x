@@ -28,7 +28,7 @@ mission-critical applications.
 == PLC4X Kafka Connectors
 
 The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
-They can be built from source from the latest https://github.com/apache/plc4x-extras/tree/main/plc4j/integrations/apache-kafka[plc4x extras - kafka integration] and plc4x https://plc4x.apache.org/users/download.html[release] of
+They can be built from source from the latest https://github.com/apache/plc4x-extras/tree/main/plc4j/integrations/apache-kafka[plc4x extras - kafka integration] and plc4x xref:download.adoc[release] of
 PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github].
 
 == Introduction

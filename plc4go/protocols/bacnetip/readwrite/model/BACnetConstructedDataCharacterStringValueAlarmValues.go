@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataCharacterStringValueAlarmValues interface {
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetOptionalCharacterString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataCharacterStringValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCharacterStringValueAlarmValues()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataCharacterStringValueAlarmValues = (*_BACnetConstructe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCharacterStringValueAlarmValues)(nil)
 
 // NewBACnetConstructedDataCharacterStringValueAlarmValues factory function for _BACnetConstructedDataCharacterStringValueAlarmValues
-func NewBACnetConstructedDataCharacterStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueAlarmValues {
+func NewBACnetConstructedDataCharacterStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetOptionalCharacterString) *_BACnetConstructedDataCharacterStringValueAlarmValues {
 	_result := &_BACnetConstructedDataCharacterStringValueAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AlarmValues:                   alarmValues,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataCharacterStringValueAlarmValues(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetTypeName() string {
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCharacterStringValueAlarmValues"
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetLengthInBits(
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) SerializeWithWri
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

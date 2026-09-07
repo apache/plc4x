@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetUnconfirmedServiceRequestUnknown = (*_BACnetUnconfirmedServiceReques
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnknown)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnknown factory function for _BACnetUnconfirmedServiceRequestUnknown
-func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnknown {
+func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte) *_BACnetUnconfirmedServiceRequestUnknown {
 	_result := &_BACnetUnconfirmedServiceRequestUnknown{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		UnknownBytes:                            unknownBytes,
 	}
 	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
@@ -207,22 +207,22 @@ func CastBACnetUnconfirmedServiceRequestUnknown(structType any) BACnetUnconfirme
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnknown) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnknown) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnknown"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestUnknown) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
-		lengthInBits += 8 * uint16(len(m.UnknownBytes))
+		lengthInBits += 8 * uint64(len(m.UnknownBytes))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnknown) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestUnknown) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

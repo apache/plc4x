@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -273,12 +274,12 @@ func CastAnnotation(structType any) Annotation {
 	return nil
 }
 
-func (m *_Annotation) GetTypeName() string {
+func (m *_Annotation) GetPlx4xTypeName() string {
 	return "Annotation"
 }
 
-func (m *_Annotation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_Annotation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (message)
 	lengthInBits += m.Message.GetLengthInBits(ctx)
@@ -292,7 +293,7 @@ func (m *_Annotation) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_Annotation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Annotation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -307,19 +308,19 @@ func (m *_Annotation) parse(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	message, err := ReadSimpleField[PascalString](ctx, "message", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	message, err := ReadSimpleField[PascalString](ctx, "message", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 	m.Message = message
 
-	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 	m.UserName = userName
 
-	annotationTime, err := ReadSimpleField(ctx, "annotationTime", ReadSignedLong(readBuffer, uint8(64)))
+	annotationTime, err := ReadSimpleField(ctx, "annotationTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'annotationTime' field"))
 	}
@@ -350,15 +351,15 @@ func (m *_Annotation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for Annotation")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "message", m.GetMessage(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "message", m.GetMessage(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "annotationTime", m.GetAnnotationTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "annotationTime", m.GetAnnotationTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'annotationTime' field")
 		}
 

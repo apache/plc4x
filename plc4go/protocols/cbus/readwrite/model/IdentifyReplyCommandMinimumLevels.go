@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +61,9 @@ var _ IdentifyReplyCommandMinimumLevels = (*_IdentifyReplyCommandMinimumLevels)(
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandMinimumLevels)(nil)
 
 // NewIdentifyReplyCommandMinimumLevels factory function for _IdentifyReplyCommandMinimumLevels
-func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMinimumLevels {
+func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte) *_IdentifyReplyCommandMinimumLevels {
 	_result := &_IdentifyReplyCommandMinimumLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		MinimumLevels:                minimumLevels,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
@@ -207,22 +209,22 @@ func CastIdentifyReplyCommandMinimumLevels(structType any) IdentifyReplyCommandM
 	return nil
 }
 
-func (m *_IdentifyReplyCommandMinimumLevels) GetTypeName() string {
+func (m *_IdentifyReplyCommandMinimumLevels) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandMinimumLevels"
 }
 
-func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.MinimumLevels) > 0 {
-		lengthInBits += 8 * uint16(len(m.MinimumLevels))
+		lengthInBits += 8 * uint64(len(m.MinimumLevels))
 	}
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -237,7 +239,7 @@ func (m *_IdentifyReplyCommandMinimumLevels) parse(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	minimumLevels, err := readBuffer.ReadByteArray("minimumLevels", int(numBytes))
+	minimumLevels, err := readBuffer.ReadByteArray("minimumLevels", int(numBytes), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumLevels' field"))
 	}
@@ -251,7 +253,7 @@ func (m *_IdentifyReplyCommandMinimumLevels) parse(ctx context.Context, readBuff
 }
 
 func (m *_IdentifyReplyCommandMinimumLevels) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -268,7 +270,7 @@ func (m *_IdentifyReplyCommandMinimumLevels) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandMinimumLevels")
 		}
 
-		if err := WriteByteArrayField(ctx, "minimumLevels", m.GetMinimumLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "minimumLevels", m.GetMinimumLevels(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'minimumLevels' field")
 		}
 

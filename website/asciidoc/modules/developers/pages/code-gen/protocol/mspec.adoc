@@ -27,7 +27,7 @@ After we had an initial format that seemed to do the trick, we then stated creat
 
 It's a text-based format.
 
-At the root level of these specs are a set of `type`, `discriminatedType`, `dataIo` and `enum` blocks.
+At the root level of these specs are a set of `type`, `discriminatedType`, `dataIo`, `enum` and 'constants' blocks.
 
 `type` elements are objects who`s content and structure is independent of the input.
 
@@ -75,6 +75,13 @@ For example part of the spec for the S7 format looks like this:
 ]
 ....
 
+A constants type allows you to define constants for the protocol.
+....
+[constants
+    [const          uint 16     adsDiscoveryUdpDefaultPort 48899]
+]
+....
+
 A type`s start is declared by an opening square bracket `[` followed by the `type` or `discriminatedType` keyword, which is directly followed by a name.
 A Type definition is ended with a closing square bracket `]`.
 
@@ -85,6 +92,7 @@ The list of available field types are:
 - abstract: used in the parent type declaration do declare a field that has to be defined with the identical type in all subtypes (reserved for `discriminatedType`).
 - array: array of simple or complex typed objects.
 - assert: generally similar to `constant` fields, however do they throw `AssertionExceptions` instead of hard `ParseExceptions`. They are used in combination with optional fields.
+- batchSet: this is a psuedo field that allows you to apply additional attributes for a group of fields
 - checksum: used for calculating and verifying checksum values.
 - const: expects a given value and causes a hard exception if the value doesn't match.
 - discriminator: special type of simple typed field which is used to determine the concrete type of object (reserved for `discriminatedType`).
@@ -97,6 +105,7 @@ The list of available field types are:
 - peek: field that tries to parse a given structure without actually consuming the bytes.
 - reserved: expects a given value, but only warns if condition is not meet.
 - simple: simple or complex typed object.
+- state: Allows you to assign a parameter as a stateful variable in a class.
 - typeSwitch: not a real field, but indicates the existence of subtypes, which are declared inline (reserved for `discriminatedType`).
 - unknown: field used to declare parts of a message that still has to be defined. Generally used when reverse-engineering a protocol. Messages with `unknown` fields can only be parsed and not serialized.
 - validation: this field is not actually a real field, it's more a condition that is checked during parsing and if the check fails, it throws a validation exception, wich is handled by
@@ -186,6 +195,20 @@ If there is no upstream `optional` field, then parsing of the message terminates
 See also:
 - validation field: Similar to an `assert` field, however no parsing is done, and instead simply a condition is checked.
 - optional field: `optional` fields are aware of the types of parser errors produced by `assert` and `validation` fields
+
+== batchSet Field
+
+A batch set field allows you to define or modify attributes for a group of fields.
+
+    [batchSet byteOrder='integerEncoding == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
+        
+            [simple DceRpc_ObjectUuid        objectUuid                                            ]
+        
+            [simple DceRpc_InterfaceUuid     interfaceUuid                                         ]
+        
+            [simple DceRpc_ActivityUuid      activityUuid                                          ]
+    ]
+
 
 === checksum Field
 
@@ -485,3 +508,19 @@ Unsigned integers for example use 2s-complement notation, floating point values 
 However, in some cases an alternate encoding needs to be used. Especially when dealing with Strings, different encodings, such as ASCII, UTF-16 and many more, can be used. But also for numeric values, different encodings might be used. For example does KNX use a 16bit floating point encoding, which is not standard or in S7 drivers a special encoding was used to encode numeric values so they represent the number in hex format.
 
 An `encoding` attribute can be used to select a non-default encoding.
+
+== Referencing parent class name of discriminated types
+
+For discriminated type it is convient sometimes to not have to repeat the parent class name for each case.
+Here you can use the * reference at the start of each case name
+
+    [discriminatedType SuperImportantClass
+        [simple uint 8 testNumber]
+        [typeSwitch testNumber
+            ['0x08' *Status
+                [simple uint 8 testNewNumber]        
+            ]    
+        ]
+    ]
+
+Here the child class will inherit the class name SuperImportantClassStatus

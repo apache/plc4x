@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,11 +106,11 @@ func CastLightingLabelType(structType any) LightingLabelType {
 	return castFunc(structType)
 }
 
-func (m LightingLabelType) GetLengthInBits(ctx context.Context) uint16 {
+func (m LightingLabelType) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m LightingLabelType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LightingLabelType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

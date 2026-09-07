@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,12 +218,12 @@ func CastMediaTransportControlDataSetSelection(structType any) MediaTransportCon
 	return nil
 }
 
-func (m *_MediaTransportControlDataSetSelection) GetTypeName() string {
+func (m *_MediaTransportControlDataSetSelection) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataSetSelection"
 }
 
-func (m *_MediaTransportControlDataSetSelection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+func (m *_MediaTransportControlDataSetSelection) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (selectionHi)
 	lengthInBits += 8
@@ -234,7 +234,7 @@ func (m *_MediaTransportControlDataSetSelection) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -73,9 +73,9 @@ var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
 var _ APDURequirements = (*_APDUSegmentAck)(nil)
 
 // NewAPDUSegmentAck factory function for _APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) *_APDUSegmentAck {
 	_result := &_APDUSegmentAck{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		NegativeAck:      negativeAck,
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
@@ -269,12 +269,12 @@ func CastAPDUSegmentAck(structType any) APDUSegmentAck {
 	return nil
 }
 
-func (m *_APDUSegmentAck) GetTypeName() string {
+func (m *_APDUSegmentAck) GetPlx4xTypeName() string {
 	return "APDUSegmentAck"
 }
 
-func (m *_APDUSegmentAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+func (m *_APDUSegmentAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -297,7 +297,7 @@ func (m *_APDUSegmentAck) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_APDUSegmentAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDUSegmentAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

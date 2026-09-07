@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple = (*_BACnetConfi
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)(nil)
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(serviceRequestLength uint32, subscriberProcessIdentifier BACnetContextTagUnsignedInteger, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList) *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
 	if subscriberProcessIdentifier == nil {
 		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple must not be nil")
 	}
@@ -339,12 +339,12 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType an
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -370,7 +370,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthIn
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -456,15 +456,15 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", new(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", GetRef(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", new(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", GetRef(m.GetMaxNotificationDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", new(m.GetMaxNotificationDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxNotificationDelay' field")
 		}
 

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ TDataIndividualInd = (*_TDataIndividualInd)(nil)
 var _ CEMIRequirements = (*_TDataIndividualInd)(nil)
 
 // NewTDataIndividualInd factory function for _TDataIndividualInd
-func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
+func NewTDataIndividualInd() *_TDataIndividualInd {
 	_result := &_TDataIndividualInd{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastTDataIndividualInd(structType any) TDataIndividualInd {
 	return nil
 }
 
-func (m *_TDataIndividualInd) GetTypeName() string {
+func (m *_TDataIndividualInd) GetPlx4xTypeName() string {
 	return "TDataIndividualInd"
 }
 
-func (m *_TDataIndividualInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_TDataIndividualInd) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TDataIndividualInd) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TDataIndividualInd) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

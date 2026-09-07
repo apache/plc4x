@@ -34,4 +34,16 @@ public interface Option {
     Optional<Object> getDefaultValue();
     Optional<String> getSince();
 
+    /**
+     * Whether this option carries a secret — a password, pre-shared key, token or passphrase —
+     * and must therefore be rendered masked in any form, log or string representation.
+     *
+     * <p>Defaults to {@code false} so that existing implementations remain source- and
+     * binary-compatible. Implementations derived from configuration classes report the presence
+     * of {@code @Secret} on the declaring field.</p>
+     */
+    default boolean isSecret() {
+        return false;
+    }
+
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeOfDeviceRestart = (*_BACnetConstructedDataTimeOfD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfDeviceRestart)(nil)
 
 // NewBACnetConstructedDataTimeOfDeviceRestart factory function for _BACnetConstructedDataTimeOfDeviceRestart
-func NewBACnetConstructedDataTimeOfDeviceRestart(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfDeviceRestart BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfDeviceRestart {
+func NewBACnetConstructedDataTimeOfDeviceRestart(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfDeviceRestart BACnetTimeStamp) *_BACnetConstructedDataTimeOfDeviceRestart {
 	if timeOfDeviceRestart == nil {
 		panic("timeOfDeviceRestart of type BACnetTimeStamp for BACnetConstructedDataTimeOfDeviceRestart must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeOfDeviceRestart{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeOfDeviceRestart:           timeOfDeviceRestart,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimeOfDeviceRestart(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeOfDeviceRestart"
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timeOfDeviceRestart)
 	lengthInBits += m.TimeOfDeviceRestart.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

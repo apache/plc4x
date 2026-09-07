@@ -17,13 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-driver-ads</artifactId>
@@ -31,7 +30,7 @@
   <name>PLC4J: Driver: ADS</name>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -68,6 +67,42 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- I/O-heavy driver-shell classes; require integration tests rather than unit tests. -->
+                <exclude>org/apache/plc4x/java/ads/AdsTcpConnection.class</exclude>
+                <exclude>org/apache/plc4x/java/ads/AdsTcpMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/ads/discovery/AdsPlcDiscoverer*.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- I/O-heavy driver-shell classes; require integration tests rather than unit tests. -->
+                <exclude>org/apache/plc4x/java/ads/AdsTcpConnection.class</exclude>
+                <exclude>org/apache/plc4x/java/ads/AdsTcpMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/ads/discovery/AdsPlcDiscoverer*.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -89,27 +124,57 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-tcp</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -129,7 +194,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -141,7 +206,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -197,7 +262,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ads</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -205,7 +270,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

@@ -19,8 +19,141 @@
 
 = C-Bus
 
+C-Bus is Clipsal's proprietary home and building automation bus, used to control lighting,
+HVAC, security and similar building services over a low-speed serial network of C-Bus units
+(relays, dimmers, sensors, panels). A network is reached through a PC Interface (PCI) unit,
+which the driver talks to over TCP.
 
+The Go driver is functional: it reads status, issues SAL commands, monitors SAL and MMI
+traffic, and browses installed units. The Java driver only opens a connection; it has no
+tag handler and implements none of the four operations below.
+
+== Supported Operations
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|
+| `read`
+| Reads a unit's status via a `status/` tag.
+
+|
+| `write`
+| Sends a SAL command via a `sal/` tag.
+
+|
+| `subscribe`
+| Monitors SAL or MMI traffic via a `salmonitor/` or `mmimonitor/` tag.
+
+|
+| `browse`
+| Discovers installed units and their attributes via an `info/` query.
+|===
+
+== Connection String
+
+C-Bus has the following connection string format:
+----
+c-bus:{transport}://{ip-address}:{port}?{options}
+----
+The only supported transport is `tcp`, and it connects to the PCI's default port `10001`
+when no port is given:
+----
+c-bus:tcp://192.168.42.11
+----
 
 == Connection String Options
 
 include::partial$c-bus.adoc[]
+
+== Tag Addresses
+
+Addressing is implemented in Go only. The Java driver connects but implements no operations
+and has no tag handler. See the xref:protocols/index.adoc[protocol support matrix] for what
+each implementation does.
+
+=== General Format
+
+A tag address is one of five prefixed forms. Each may carry an optional bridge chain
+(`b<address>[-b<address>]{0,5}`, up to 6 bridges) to route the command across bridged
+networks.
+
+`status/`::
+`status/[<bridges>/]binary|level=0xNN/<application>` - reads the binary or level status of
+an application's group addresses.
+
+`cal/`::
+`cal/[<bridges>-]<unit>/recall=[<param>, <count>]|identify=<attr>|getStatus=<param>, <count>`
+- device/network management ("CAL") commands addressed to a unit. Only `recall=`,
+`identify=` and `getStatus=` are implemented; see below.
+
+`sal/`::
+`sal/[<bridges>/]<application>/<salCommand>` - sends a SAL command to an application.
+
+`salmonitor/`::
+`salmonitor/<unit>|*/<application>|*` - a subscription tag that monitors SAL traffic for a
+unit and/or application, or `*` for either.
+
+`mmimonitor/`::
+`mmimonitor/<unit>|*/<application>|*` - a subscription tag that monitors MMI traffic, with
+the same unit/application/`*` shape as `salmonitor/`.
+
+The parser also accepts `cal/` forms it does not implement: `reset`, `write=[<param>,
+0xNN]`, `identifyReply=<attr>`, `reply=<param>`, `status=<app>` and
+`statusExtended=<app>` all parse without error but are marked `TODO: implement me` in the
+driver and return `Not implemented` when used.
+
+Applications for `sal/` and `status/` come from the driver's application table; most are
+implemented (`LIGHTING`, `TEMPERATURE_BROADCAST`, `VENTILATION`, `IRRIGATION_CONTROL`,
+`POOLS_SPAS_PONDS_FOUNTAINS_CONTROL`, `HEATING`, `AIR_CONDITIONING`, `TRIGGER_CONTROL`,
+`ENABLE_CONTROL`, `AUDIO_AND_VIDEO`, `SECURITY`, `METERING`, `ACCESS_CONTROL`,
+`CLOCK_AND_TIMEKEEPING`, `TELEPHONY_STATUS_AND_CONTROL`, `MEASUREMENT`,
+`MEDIA_TRANSPORT_CONTROL`, `ERROR_REPORTING`, `HVAC_ACTUATOR`), but `RESERVED`,
+`FREE_USAGE`, `ROOM_CONTROL_SYSTEM` and `TESTING` are accepted by the address parser and
+likewise not yet implemented.
+
+=== Browsing
+
+`info/` is not a tag address - it is a browse query, parsed separately by `ParseQuery`
+rather than `ParseTag`, and used only with the `browse` operation:
+
+`info/`::
+`info/<unit>|*/<identifyAttribute>|*` - lists installed units, optionally filtered to one
+unit and/or one identify attribute.
+
+=== Data Types
+
+C-Bus tags are commands and status requests, not typed memory addresses, so no
+`:\{data-type}` suffix is used or accepted. Values are decoded from the C-Bus response as a
+`Struct` (or `NULL` for `status/`); there is no data type to select on the address itself.
+
+=== Examples
+
+.Examples
+[cols="2,3" ,options="header"]
+|===
+|Address |Meaning
+|`status/binary/LIGHTING` |binary status of all LIGHTING group addresses
+|`status/b1/binary/LIGHTING` |the same, routed across one bridge
+|`status/b1-b2-b3-b4-b5-b6/binary/LIGHTING` |the same, routed across six bridges
+|`cal/2/getStatus=1,2` |get status of parameter `1`, count `2`, from unit `2`
+|`cal/b1-u2/getStatus=1,2` |the same `getStatus`, routed across one bridge to unit `2`
+|`cal/0/recall=[0x20, 4]` |recall 4 values of parameter `0x20` from unit `0`
+|`sal/LIGHTING/ON` |send the `ON` SAL command to the LIGHTING application
+|`sal/b1/LIGHTING/ON` |the same, routed across one bridge
+|`salmonitor/2/LIGHTING` |monitor SAL traffic for unit `2`, application LIGHTING
+|`salmonitor/*/*` |monitor all SAL traffic
+|`mmimonitor/2/LIGHTING` |monitor MMI traffic for unit `2`, application LIGHTING
+|`mmimonitor/*/*` |monitor all MMI traffic
+|`info/0x13/DSIStatus` |browse query for unit `0x13`'s `DSIStatus` attribute
+|`info/*/*` |browse query for every installed unit and every attribute
+|===
+
+== Notes and Tips
+
+Array notation does not apply to C-Bus addresses: the brackets in a `cal/` command such as
+`recall=[0x20, 4]` hold that command's own parameters (a parameter number and a count), not
+a selection appended to an address. A command that reads several values still reports that
+through the tag's array info, exactly like any other list - there is simply no separate
+selection syntax layered on top.

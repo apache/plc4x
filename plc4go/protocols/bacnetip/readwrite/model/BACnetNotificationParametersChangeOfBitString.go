@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetNotificationParametersChangeOfBitString = (*_BACnetNotificationParam
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfBitString)(nil)
 
 // NewBACnetNotificationParametersChangeOfBitString factory function for _BACnetNotificationParametersChangeOfBitString
-func NewBACnetNotificationParametersChangeOfBitString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changeOfBitString BACnetContextTagBitString, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfBitString {
+func NewBACnetNotificationParametersChangeOfBitString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changeOfBitString BACnetContextTagBitString, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersChangeOfBitString {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfBitString must not be nil")
 	}
@@ -82,7 +82,7 @@ func NewBACnetNotificationParametersChangeOfBitString(openingTag BACnetOpeningTa
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfBitString must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfBitString{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ChangeOfBitString:                    changeOfBitString,
 		StatusFlags:                          statusFlags,
@@ -320,12 +320,12 @@ func CastBACnetNotificationParametersChangeOfBitString(structType any) BACnetNot
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfBitString) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfBitString"
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

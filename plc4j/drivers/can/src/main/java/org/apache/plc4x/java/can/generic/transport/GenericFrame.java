@@ -18,10 +18,20 @@
  */
 package org.apache.plc4x.java.can.generic.transport;
 
+import org.apache.plc4x.java.spi.buffers.api.Message;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+
 /**
- * Wrapper for wire level data.
+ * Wrapper for one CAN frame's address + payload.
+ *
+ * <p>Implements {@link Message} so it fits the {@code MessageCodecBase<M extends Message>}
+ * generic; serialization is the same 16-byte wire layout the SocketCAN / VirtualCAN
+ * transports already speak: canId(4 BE) + dlc(1) + padding(3) + data(8).</p>
  */
-public class GenericFrame {
+public class GenericFrame implements Message {
+
+    private static final int FRAME_SIZE = 16;
 
     private final int nodeId;
     private final byte[] data;
@@ -37,6 +47,31 @@ public class GenericFrame {
 
     public byte[] getData() {
         return data;
+    }
+
+    @Override
+    public int getLengthInBytes() {
+        return FRAME_SIZE;
+    }
+
+    @Override
+    public int getLengthInBits() {
+        return FRAME_SIZE * 8;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        // writeUnsignedInt only supports 1..31 bits; a full 32-bit CAN ID has
+        // to go through writeUnsignedLong.
+        writeBuffer.writeUnsignedLong(32, nodeId);
+        int dlc = Math.min(data.length, 8);
+        writeBuffer.writeUnsignedInt(8, dlc);
+        writeBuffer.writeUnsignedInt(8, 0);
+        writeBuffer.writeUnsignedInt(8, 0);
+        writeBuffer.writeUnsignedInt(8, 0);
+        for (int i = 0; i < 8; i++) {
+            writeBuffer.writeUnsignedInt(8, i < dlc ? (data[i] & 0xFF) : 0);
+        }
     }
 
 }

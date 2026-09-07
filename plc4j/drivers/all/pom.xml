@@ -17,13 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-driver-all</artifactId>
@@ -33,7 +32,7 @@
   <description>Meta package to include all standard drivers</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -58,17 +57,44 @@
           <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-api</artifactId>
-            <version>0.13.1</version>
+            <version>1.0.0</version>
           </dependency>
           <dependency>
             <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-spi</artifactId>
-            <version>0.13.1</version>
+            <artifactId>plc4j-spi-config</artifactId>
+            <version>1.0.0</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.9.11</version>
+            <version>${maven-artifact.version}</version>
+          </dependency>
+          <!--
+            Drivers that are not deployed (they are not marked as fully supported
+            for Java in website/asciidoc/modules/users/pages/protocols/index.adoc)
+            are not dependencies of this meta-package, as the released artifact
+            would then reference artifacts nobody can resolve. They are needed
+            here so their configuration tables keep being generated.
+          -->
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-bacnet</artifactId>
+            <version>1.0.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-c-bus</artifactId>
+            <version>1.0.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-open-protocol</artifactId>
+            <version>1.0.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-profinet-ng</artifactId>
+            <version>1.0.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -80,110 +106,98 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.13.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-bacnet</artifactId>
-      <version>0.13.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-c-bus</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-can</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-iec-60870</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.13.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-open-protocol</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-plc4x</artifactId>
-      <version>0.13.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-profinet-ng</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-slmp</artifactId>
+      <version>1.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-umas</artifactId>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-serial</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-transports-serial</artifactId>
+      <version>1.0.0</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.eip.readwrite.utils;
 
 import org.apache.plc4x.java.eip.readwrite.PathSegment;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 
 
 public class StaticHelper {
@@ -30,7 +30,7 @@ public class StaticHelper {
      * @return false if there's another PathSegment, true if not.
      */
     public static boolean noMorePathSegments(ReadBuffer io) {
-        int initialPosition = io.getPos();
+        int initialPosition = io.getPositionInBits();
         try {
             // Simply try to parse the PathSegment, if it succeeds, we're not at the end.
             PathSegment.staticParse(io);
@@ -38,7 +38,7 @@ public class StaticHelper {
         } catch (Exception e) {
             return true;
         } finally {
-            io.reset(initialPosition);
+            io.setPositionInBits(initialPosition);
         }
     }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTransactionNotificationClass = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTransactionNotificationClass)(nil)
 
 // NewBACnetConstructedDataTransactionNotificationClass factory function for _BACnetConstructedDataTransactionNotificationClass
-func NewBACnetConstructedDataTransactionNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transactionNotificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransactionNotificationClass {
+func NewBACnetConstructedDataTransactionNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transactionNotificationClass BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTransactionNotificationClass {
 	if transactionNotificationClass == nil {
 		panic("transactionNotificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTransactionNotificationClass must not be nil")
 	}
 	_result := &_BACnetConstructedDataTransactionNotificationClass{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TransactionNotificationClass:  transactionNotificationClass,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTransactionNotificationClass(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataTransactionNotificationClass) GetTypeName() string {
+func (m *_BACnetConstructedDataTransactionNotificationClass) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTransactionNotificationClass"
 }
 
-func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (transactionNotificationClass)
 	lengthInBits += m.TransactionNotificationClass.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

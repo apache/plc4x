@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -365,12 +365,12 @@ func CastAirConditioningDataSetZoneHumidityMode(structType any) AirConditioningD
 	return nil
 }
 
-func (m *_AirConditioningDataSetZoneHumidityMode) GetTypeName() string {
+func (m *_AirConditioningDataSetZoneHumidityMode) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetZoneHumidityMode"
 }
 
-func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
+func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -402,7 +402,7 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -512,15 +512,15 @@ func (m *_AirConditioningDataSetZoneHumidityMode) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(err, "Error serializing 'humidityType' field")
 		}
 
-		if err := WriteOptionalField[HVACHumidity](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACHumidity](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACHumidity](ctx, "level", new(m.GetLevel()), WriteComplex[HVACHumidity](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", new(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 
-		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", GetRef(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", new(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'auxLevel' field")
 		}
 

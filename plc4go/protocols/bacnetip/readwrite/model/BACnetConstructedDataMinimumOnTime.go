@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMinimumOnTime = (*_BACnetConstructedDataMinimumOnTime
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOnTime)(nil)
 
 // NewBACnetConstructedDataMinimumOnTime factory function for _BACnetConstructedDataMinimumOnTime
-func NewBACnetConstructedDataMinimumOnTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOnTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
+func NewBACnetConstructedDataMinimumOnTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOnTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
 	if minimumOnTime == nil {
 		panic("minimumOnTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOnTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataMinimumOnTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinimumOnTime:                 minimumOnTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMinimumOnTime(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetTypeName() string {
+func (m *_BACnetConstructedDataMinimumOnTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinimumOnTime"
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumOnTime)
 	lengthInBits += m.MinimumOnTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

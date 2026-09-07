@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataEventTimeStamps interface {
 	// GetEventTimeStamps returns EventTimeStamps (property field)
 	GetEventTimeStamps() []BACnetTimeStamp
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// GetToOffnormal returns ToOffnormal (virtual field)
 	GetToOffnormal() BACnetTimeStamp
@@ -70,9 +71,9 @@ var _ BACnetConstructedDataEventTimeStamps = (*_BACnetConstructedDataEventTimeSt
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventTimeStamps)(nil)
 
 // NewBACnetConstructedDataEventTimeStamps factory function for _BACnetConstructedDataEventTimeStamps
-func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventTimeStamps []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventTimeStamps {
+func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventTimeStamps []BACnetTimeStamp) *_BACnetConstructedDataEventTimeStamps {
 	_result := &_BACnetConstructedDataEventTimeStamps{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		EventTimeStamps:               eventTimeStamps,
 	}
@@ -287,12 +288,12 @@ func CastBACnetConstructedDataEventTimeStamps(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) GetTypeName() string {
+func (m *_BACnetConstructedDataEventTimeStamps) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventTimeStamps"
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -317,7 +318,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -408,7 +409,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

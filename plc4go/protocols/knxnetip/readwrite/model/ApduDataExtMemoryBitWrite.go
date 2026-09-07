@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ ApduDataExtMemoryBitWrite = (*_ApduDataExtMemoryBitWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtMemoryBitWrite)(nil)
 
 // NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
-func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
+func NewApduDataExtMemoryBitWrite() *_ApduDataExtMemoryBitWrite {
 	_result := &_ApduDataExtMemoryBitWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastApduDataExtMemoryBitWrite(structType any) ApduDataExtMemoryBitWrite {
 	return nil
 }
 
-func (m *_ApduDataExtMemoryBitWrite) GetTypeName() string {
+func (m *_ApduDataExtMemoryBitWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtMemoryBitWrite"
 }
 
-func (m *_ApduDataExtMemoryBitWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtMemoryBitWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtMemoryBitWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtMemoryBitWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

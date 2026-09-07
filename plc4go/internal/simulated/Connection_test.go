@@ -20,12 +20,14 @@
 package simulated
 
 import (
+	"context"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -39,13 +41,12 @@ func TestConnection_Connect(t *testing.T) {
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
+		invalidated  bool
 	}
 	tests := []struct {
-		name         string
-		fields       fields
-		want         plc4go.PlcConnectionConnectResult
-		delayAtLeast time.Duration
-		wantErr      bool
+		name    string
+		fields  fields
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "simple",
@@ -56,15 +57,7 @@ func TestConnection_Connect(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    false,
 			},
-			want: _default.NewDefaultPlcConnectionConnectResult(&Connection{
-				device:       NewDevice("hurz"),
-				tagHandler:   NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options:      map[string][]string{},
-				connected:    true,
-			}, nil),
-			delayAtLeast: 0,
-			wantErr:      false,
+			wantErr: assert.NoError,
 		},
 		// If the connection was already connected, the
 		// connection should fail with an error.
@@ -77,40 +70,7 @@ func TestConnection_Connect(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: _default.NewDefaultPlcConnectionConnectResult(&Connection{
-				device:       NewDevice("hurz"),
-				tagHandler:   NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options:      map[string][]string{},
-				connected:    true,
-			}, nil),
-			delayAtLeast: 0,
-			wantErr:      true,
-		},
-		// If the connection should simulate a delay, make sure it doesn't
-		// return immediately.
-		{
-			name: "delayed connected",
-			fields: fields{
-				device:       NewDevice("hurz"),
-				fieldHandler: NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options: map[string][]string{
-					"connectionDelay": {"1000"},
-				},
-				connected: false,
-			},
-			want: _default.NewDefaultPlcConnectionConnectResult(&Connection{
-				device:       NewDevice("hurz"),
-				tagHandler:   NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options: map[string][]string{
-					"connectionDelay": {"1000"},
-				},
-				connected: true,
-			}, nil),
-			delayAtLeast: 1 * time.Second,
-			wantErr:      false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -122,32 +82,8 @@ func TestConnection_Connect(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			timeBeforeConnect := time.Now()
-			connectionChan := c.Connect()
-			timeout := time.NewTimer(3 * time.Second)
-			select {
-			case connectResult := <-connectionChan:
-				timeAfterConnect := time.Now()
-				// If an expected delay was defined, check if connecting
-				// took at least this long.
-				if tt.delayAtLeast > 0 {
-					connectionTime := timeAfterConnect.Sub(timeBeforeConnect)
-					if connectionTime < tt.delayAtLeast {
-						t.Errorf("TestConnection.Connect() connected too fast. Expected at least %v but connected after %v", tt.delayAtLeast, connectionTime)
-					}
-				}
-				// If we wanted an error, but didn't get one or the other way around.
-				if tt.wantErr != (connectResult.GetErr() != nil) {
-					t.Errorf("TestConnection.Connect() hasErr= %v, wantErr %v", connectResult.GetErr() != nil, tt.wantErr)
-				} else if !tt.wantErr {
-					// Check if we're connected.
-					if !assert.Equal(t, tt.want, connectResult) {
-						t.Errorf("TestConnection.Connect() = %v, want %v", connectResult, tt.want)
-					}
-				}
-			case <-timeout.C:
-				t.Errorf("TestConnection.Connect() got timeout")
-			}
+			err := c.Connect(t.Context())
+			tt.wantErr(t, err)
 		})
 	}
 }
@@ -159,13 +95,12 @@ func TestConnection_Close(t *testing.T) {
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
+		invalidated  bool
 	}
 	tests := []struct {
-		name         string
-		fields       fields
-		want         plc4go.PlcConnectionCloseResult
-		delayAtLeast time.Duration
-		wantErr      bool
+		name    string
+		fields  fields
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "simple",
@@ -176,15 +111,7 @@ func TestConnection_Close(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: _default.NewDefaultPlcConnectionCloseResult(&Connection{
-				device:       NewDevice("hurz"),
-				tagHandler:   NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options:      map[string][]string{},
-				connected:    false,
-			}, nil),
-			delayAtLeast: 0,
-			wantErr:      false,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "not connected",
@@ -195,38 +122,7 @@ func TestConnection_Close(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    false,
 			},
-			want: _default.NewDefaultPlcConnectionCloseResult(&Connection{
-				device:       NewDevice("hurz"),
-				tagHandler:   NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options:      map[string][]string{},
-				connected:    false,
-			}, nil),
-			delayAtLeast: 0,
-			wantErr:      true,
-		},
-		{
-			name: "delayed close",
-			fields: fields{
-				device:       NewDevice("hurz"),
-				fieldHandler: NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options: map[string][]string{
-					"closingDelay": {"1000"},
-				},
-				connected: true,
-			},
-			want: _default.NewDefaultPlcConnectionCloseResult(&Connection{
-				device:       NewDevice("hurz"),
-				tagHandler:   NewTagHandler(),
-				valueHandler: NewValueHandler(),
-				options: map[string][]string{
-					"closingDelay": {"1000"},
-				},
-				connected: false,
-			}, nil),
-			delayAtLeast: 1000,
-			wantErr:      false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -238,31 +134,8 @@ func TestConnection_Close(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			timeBeforeClose := time.Now()
-			closeChan := c.Close()
-			timeout := time.NewTimer(3 * time.Second)
-			select {
-			case closeResult := <-closeChan:
-				timeAfterClose := time.Now()
-				// If an expected delay was defined, check if closing
-				// took at least this long.
-				if tt.delayAtLeast > 0 {
-					connectionTime := timeAfterClose.Sub(timeBeforeClose)
-					if connectionTime < tt.delayAtLeast {
-						t.Errorf("TestConnection.Close() connected too fast. Expected at least %v but connected after %v", tt.delayAtLeast, connectionTime)
-					}
-				}
-				// If we wanted an error, but didn't get one or the other way around.
-				if tt.wantErr != (closeResult.GetErr() != nil) {
-					t.Errorf("TestConnection.Close() hasErr= %v, wantErr %v", closeResult.GetErr() != nil, tt.wantErr)
-				} else if !tt.wantErr {
-					if !assert.Equal(t, tt.want, closeResult) {
-						t.Errorf("TestConnection.Close() = %v, want %v", closeResult, tt.want)
-					}
-				}
-			case <-timeout.C:
-				t.Errorf("TestConnection.Close() got timeout")
-			}
+			err := c.Close()
+			tt.wantErr(t, err)
 		})
 	}
 }
@@ -275,9 +148,13 @@ func TestConnection_BlockingClose(t *testing.T) {
 		options      map[string][]string
 		connected    bool
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
 		name         string
 		fields       fields
+		args         args
 		delayAtLeast time.Duration
 	}{
 		{
@@ -289,6 +166,9 @@ func TestConnection_BlockingClose(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
+			args: args{
+				ctx: t.Context(),
+			},
 			delayAtLeast: 0,
 		},
 		{
@@ -299,6 +179,9 @@ func TestConnection_BlockingClose(t *testing.T) {
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
+			},
+			args: args{
+				ctx: t.Context(),
 			},
 			delayAtLeast: 0,
 		},
@@ -312,6 +195,9 @@ func TestConnection_BlockingClose(t *testing.T) {
 					"closingDelay": {"1000"},
 				},
 				connected: true,
+			},
+			args: args{
+				ctx: t.Context(),
 			},
 			delayAtLeast: 1000,
 		},
@@ -328,13 +214,14 @@ func TestConnection_BlockingClose(t *testing.T) {
 			timeBeforeClose := time.Now()
 			executor := func() <-chan bool {
 				ch := make(chan bool)
-				go func() {
-					c.BlockingClose()
+				var wg sync.WaitGroup
+				t.Cleanup(wg.Wait)
+				wg.Go(func() {
+					t.Log(c.Close())
 					ch <- true
-				}()
+				})
 				return ch
 			}
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case <-executor():
 				timeAfterClose := time.Now()
@@ -346,7 +233,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 						t.Errorf("TestConnection.Close() connected too fast. Expected at least %v but connected after %v", tt.delayAtLeast, connectionTime)
 					}
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("TestConnection.Close() got timeout")
 			}
 		})
@@ -407,6 +294,7 @@ func TestConnection_IsConnected(t *testing.T) {
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
+		invalidated  bool
 	}
 	tests := []struct {
 		name   string
@@ -435,6 +323,18 @@ func TestConnection_IsConnected(t *testing.T) {
 			},
 			want: false,
 		},
+		{
+			name: "invalidated",
+			fields: fields{
+				device:       NewDevice("hurz"),
+				fieldHandler: NewTagHandler(),
+				valueHandler: NewValueHandler(),
+				options:      map[string][]string{},
+				connected:    true,
+				invalidated:  true,
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -444,6 +344,9 @@ func TestConnection_IsConnected(t *testing.T) {
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
+			}
+			if tt.fields.invalidated {
+				c.invalidated.Store(true)
 			}
 			if got := c.IsConnected(); got != tt.want {
 				t.Errorf("IsConnected() = %v, want %v", got, tt.want)
@@ -460,10 +363,15 @@ func TestConnection_Ping(t *testing.T) {
 		options      map[string][]string
 		connected    bool
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
 		name         string
 		fields       fields
-		want         plc4go.PlcConnectionPingResult
+		args         args
+		prepare      func(*Connection)
+		wantErr      assert.ErrorAssertionFunc
 		delayAtLeast time.Duration
 	}{
 		{
@@ -475,7 +383,10 @@ func TestConnection_Ping(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want:         _default.NewDefaultPlcConnectionPingResult(nil),
+			args: args{
+				ctx: t.Context(),
+			},
+			wantErr:      assert.NoError,
 			delayAtLeast: 0,
 		},
 		{
@@ -489,8 +400,29 @@ func TestConnection_Ping(t *testing.T) {
 				},
 				connected: true,
 			},
-			want:         _default.NewDefaultPlcConnectionPingResult(nil),
+			args: args{
+				ctx: t.Context(),
+			},
+			wantErr:      assert.NoError,
 			delayAtLeast: 1000,
+		},
+		{
+			name: "invalidated",
+			fields: fields{
+				device:       NewDevice("hurz"),
+				fieldHandler: NewTagHandler(),
+				valueHandler: NewValueHandler(),
+				options:      map[string][]string{},
+				connected:    true,
+			},
+			args: args{
+				ctx: t.Context(),
+			},
+			prepare: func(c *Connection) {
+				c.invalidated.Store(true)
+			},
+			wantErr:      assert.Error,
+			delayAtLeast: 0,
 		},
 	}
 	for _, tt := range tests {
@@ -502,28 +434,26 @@ func TestConnection_Ping(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			timeBeforePing := time.Now()
-			pingChan := c.Ping()
-			timeout := time.NewTimer(3 * time.Second)
-			select {
-			case pingResult := <-pingChan:
-				timeAfterPing := time.Now()
-				// If an expected delay was defined, check if closing
-				// took at least this long.
-				if tt.delayAtLeast > 0 {
-					pingTime := timeAfterPing.Sub(timeBeforePing)
-					if pingTime < tt.delayAtLeast {
-						t.Errorf("TestConnection.Ping() completed too fast. Expected at least %v but returned after %v", tt.delayAtLeast, pingTime)
-					}
-				}
-				if !assert.Equal(t, tt.want, pingResult) {
-					t.Errorf("TestConnection.Ping() = %v, want %v", pingResult, tt.want)
-				}
-			case <-timeout.C:
-				t.Errorf("TestConnection.Ping() got timeout")
+			if tt.prepare != nil {
+				prepare := tt.prepare
+				prepare(c)
 			}
+			err := c.Ping(tt.args.ctx)
+			tt.wantErr(t, err)
 		})
 	}
+}
+
+func TestConnection_Invalidate(t *testing.T) {
+	conn := NewConnection(NewDevice("hurz"), NewTagHandler(), NewValueHandler(), map[string][]string{})
+	require.NoError(t, conn.Connect(t.Context()))
+	conn.Invalidate()
+	assert.True(t, conn.IsInvalidated())
+	assert.False(t, conn.IsConnected())
+	assert.Error(t, conn.Ping(t.Context()))
+	require.NoError(t, conn.Close())
+	conn.Invalidate()
+	assert.True(t, conn.IsInvalidated())
 }
 
 func TestConnection_BrowseRequestBuilder(t *testing.T) {

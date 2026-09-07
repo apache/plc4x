@@ -28,7 +28,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // NewJsonReadBuffer return as ReadBuffer which doesn't validate attributes and lists
@@ -87,11 +87,11 @@ func (j *jsonReadBuffer) GetByteOrder() binary.ByteOrder {
 	return binary.BigEndian
 }
 
-func (j *jsonReadBuffer) GetPos() uint16 {
-	return uint16(j.pos / 8)
+func (j *jsonReadBuffer) GetPos() uint32 {
+	return uint32(j.pos / 8)
 }
 
-func (j *jsonReadBuffer) Reset(pos uint16) {
+func (j *jsonReadBuffer) Reset(pos uint32) {
 	j.pos = uint(pos * 8)
 }
 

@@ -20,19 +20,32 @@
 package drivers
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/abeth"
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/eip"
+	"github.com/apache/plc4x/plc4go/internal/firmata"
+	"github.com/apache/plc4x/plc4go/internal/iec608705104"
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
 	"github.com/apache/plc4x/plc4go/internal/opcua"
 	"github.com/apache/plc4x/plc4go/internal/s7"
+	"github.com/apache/plc4x/plc4go/internal/slmp"
+	"github.com/apache/plc4x/plc4go/internal/umas"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 )
+
+func RegisterAbEthDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := abeth.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// Despite the protocol's name, AB-ETH is CIP encapsulation over plain TCP.
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
 
 func RegisterAdsDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
 	driver := ads.NewDriver(converter.WithOptionToInternal(_options...)...)
@@ -58,6 +71,31 @@ func RegisterCBusDriver(driverManager plc4go.PlcDriverManager, _options ...confi
 func RegisterEipDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
 	driver := eip.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterLogixDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := eip.NewLogixDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterFirmataDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := firmata.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// Firmata's home is a UART, but the same byte stream is served over TCP by the
+	// Firmata-over-WiFi/Ethernet sketches, so both transports are registered.
+	transports.RegisterSerialTransport(driverManager)
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterIec608705104Driver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := iec608705104.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// The "104" in the name is IEC 60870-5-101 carried over TCP/IP; there is no other real transport.
 	transports.RegisterTcpTransport(driverManager)
 	return driver
 }
@@ -102,6 +140,23 @@ func RegisterOpcuaDriver(driverManager plc4go.PlcDriverManager, _options ...conf
 func RegisterS7Driver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
 	driver := s7.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterSlmpDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := slmp.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// A SLMP 3E frame is length-delimited over a byte stream, so only TCP is usable.
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterUmasDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := umas.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// UMAS is Schneider Electric's proprietary Modicon protocol, tunneled inside
+	// Modbus/TCP as function code 0x5A.
 	transports.RegisterTcpTransport(driverManager)
 	return driver
 }

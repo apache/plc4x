@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -259,12 +259,12 @@ func CastState(structType any) State {
 	return nil
 }
 
-func (m *_State) GetTypeName() string {
+func (m *_State) GetPlx4xTypeName() string {
 	return "State"
 }
 
-func (m *_State) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_State) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (SIG_8)
 	lengthInBits += 1
@@ -293,7 +293,7 @@ func (m *_State) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_State) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_State) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -308,7 +308,7 @@ func StateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func StateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (State, error) {
-	v, err := (&_State{}).parse(ctx, readBuffer)
+	v, err := (new(_State)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -210,12 +210,12 @@ func CastHVACStartTime(structType any) HVACStartTime {
 	return nil
 }
 
-func (m *_HVACStartTime) GetTypeName() string {
+func (m *_HVACStartTime) GetPlx4xTypeName() string {
 	return "HVACStartTime"
 }
 
-func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (minutesSinceSunday12AM)
 	lengthInBits += 16
@@ -233,7 +233,7 @@ func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACStartTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HVACStartTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -248,7 +248,7 @@ func HVACStartTimeParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {
-	v, err := (&_HVACStartTime{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACStartTime)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

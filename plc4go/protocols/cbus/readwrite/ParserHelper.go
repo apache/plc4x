@@ -22,9 +22,8 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -90,8 +89,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return HVACHumidityParseWithBuffer(context.Background(), io)
 	case "HVACHumidityModeAndFlags":
 		return HVACHumidityModeAndFlagsParseWithBuffer(context.Background(), io)
-	case "CBusConstants":
-		return CBusConstantsParseWithBuffer(context.Background(), io)
 	case "SerialInterfaceAddress":
 		return SerialInterfaceAddressParseWithBuffer(context.Background(), io)
 	case "MeasurementData":

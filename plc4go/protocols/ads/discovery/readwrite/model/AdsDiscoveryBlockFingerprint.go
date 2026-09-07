@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,25 +207,25 @@ func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerpri
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockFingerprint) GetTypeName() string {
+func (m *_AdsDiscoveryBlockFingerprint) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockFingerprint"
 }
 
-func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Implicit Field (dataLen)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

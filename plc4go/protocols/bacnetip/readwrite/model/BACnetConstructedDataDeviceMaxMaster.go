@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDeviceMaxMaster = (*_BACnetConstructedDataDeviceMaxMa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceMaxMaster)(nil)
 
 // NewBACnetConstructedDataDeviceMaxMaster factory function for _BACnetConstructedDataDeviceMaxMaster
-func NewBACnetConstructedDataDeviceMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
+func NewBACnetConstructedDataDeviceMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
 	if maxMaster == nil {
 		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxMaster must not be nil")
 	}
 	_result := &_BACnetConstructedDataDeviceMaxMaster{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxMaster:                     maxMaster,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDeviceMaxMaster(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceMaxMaster) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceMaxMaster"
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxMaster)
 	lengthInBits += m.MaxMaster.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDutyWindow = (*_BACnetConstructedDataDutyWindow)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDutyWindow)(nil)
 
 // NewBACnetConstructedDataDutyWindow factory function for _BACnetConstructedDataDutyWindow
-func NewBACnetConstructedDataDutyWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dutyWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
+func NewBACnetConstructedDataDutyWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dutyWindow BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDutyWindow {
 	if dutyWindow == nil {
 		panic("dutyWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDutyWindow must not be nil")
 	}
 	_result := &_BACnetConstructedDataDutyWindow{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DutyWindow:                    dutyWindow,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDutyWindow(structType any) BACnetConstructedDataDu
 	return nil
 }
 
-func (m *_BACnetConstructedDataDutyWindow) GetTypeName() string {
+func (m *_BACnetConstructedDataDutyWindow) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDutyWindow"
 }
 
-func (m *_BACnetConstructedDataDutyWindow) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDutyWindow) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (dutyWindow)
 	lengthInBits += m.DutyWindow.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDutyWindow) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDutyWindow) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDutyWindow) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

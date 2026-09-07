@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProcessIdentifierFilter = (*_BACnetConstructedDataPro
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProcessIdentifierFilter)(nil)
 
 // NewBACnetConstructedDataProcessIdentifierFilter factory function for _BACnetConstructedDataProcessIdentifierFilter
-func NewBACnetConstructedDataProcessIdentifierFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifierFilter BACnetProcessIdSelection, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifierFilter {
+func NewBACnetConstructedDataProcessIdentifierFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifierFilter BACnetProcessIdSelection) *_BACnetConstructedDataProcessIdentifierFilter {
 	if processIdentifierFilter == nil {
 		panic("processIdentifierFilter of type BACnetProcessIdSelection for BACnetConstructedDataProcessIdentifierFilter must not be nil")
 	}
 	_result := &_BACnetConstructedDataProcessIdentifierFilter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProcessIdentifierFilter:       processIdentifierFilter,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataProcessIdentifierFilter(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetTypeName() string {
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProcessIdentifierFilter"
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (processIdentifierFilter)
 	lengthInBits += m.ProcessIdentifierFilter.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

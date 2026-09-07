@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -278,12 +278,12 @@ func CastDF1SymbolMessageFrame(structType any) DF1SymbolMessageFrame {
 	return nil
 }
 
-func (m *_DF1SymbolMessageFrame) GetTypeName() string {
+func (m *_DF1SymbolMessageFrame) GetPlx4xTypeName() string {
 	return "DF1SymbolMessageFrame"
 }
 
-func (m *_DF1SymbolMessageFrame) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
+func (m *_DF1SymbolMessageFrame) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
 
 	// Simple field (destinationAddress)
 	lengthInBits += 8
@@ -306,7 +306,7 @@ func (m *_DF1SymbolMessageFrame) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DF1SymbolMessageFrame) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1SymbolMessageFrame) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

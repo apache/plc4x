@@ -22,10 +22,9 @@ package model
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 var _ apiModel.PlcBrowseRequestBuilder = &DefaultPlcBrowseRequestBuilder{}
@@ -86,19 +85,11 @@ func (d *DefaultPlcBrowseRequest) IsAPlcMessage() bool {
 	return true
 }
 
-func (d *DefaultPlcBrowseRequest) Execute() <-chan apiModel.PlcBrowseRequestResult {
-	return d.browser.Browse(context.TODO(), d)
-}
-
-func (d *DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) Execute(ctx context.Context) <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.Browse(ctx, d)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
-	return d.ExecuteWithInterceptorWithContext(context.TODO(), interceptor)
-}
-
-func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.BrowseWithInterceptor(ctx, d, interceptor)
 }
 

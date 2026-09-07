@@ -26,10 +26,11 @@ import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -39,7 +40,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetDeviceContext implements DriverContext, HasConfiguration<ProfinetConfiguration> {
+public class ProfinetDeviceContext {
+
+    /**
+     * Callback the {@code ProfinetConnection} provides during setup — invoked
+     * once the underlying device has finished its multi-step handshake. Replaces
+     * the old SPI's {@code ConversationContext.fireConnected()} hook.
+     */
+    public interface OnConnectedCallback extends Runnable {}
+
 
     public static final int DEFAULT_UDP_PORT = 34964;
     public static final int DEFAULT_ARGS_MAXIMUM = 16696;
@@ -50,6 +59,14 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     public static final short BLOCK_VERSION_LOW = 0;
     public static final MacAddress DEFAULT_EMPTY_MAC_ADDRESS;
     public static final Pattern RANGE_PATTERN = Pattern.compile("(?<from>\\d+)(\\.\\.(?<to>\\d+))*");
+
+    /**
+     * Highest slot number a PROFINET device can address: slot numbers live in a 16 bit space, so a
+     * GSDML declaring a range beyond this describes no device that can exist. The range sizes an
+     * array directly, and a GSDML is vendor-supplied - downloaded or handed over by an integrator -
+     * so the bound is what keeps the file from choosing an allocation.
+     */
+    private static final int MAX_SLOT_NUMBER = 0x7FFF;
 
     static {
         try {
@@ -77,7 +94,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private DatagramSocket socket;
     private ProfinetChannel channel;
     private MacAddress macAddress;
-    private ConversationContext<Ethernet_Frame> context;
+    private OnConnectedCallback context;
     private ProfinetDeviceState state = ProfinetDeviceState.IDLE;
     private boolean lldpReceived = false;
     private boolean dcpReceived = false;
@@ -117,13 +134,13 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     protected static DceRpc_ActivityUuid generateActivityUuid() {
         UUID number = UUID.randomUUID();
         try {
-            WriteBufferByteBased wb = new WriteBufferByteBased(128);
-            wb.writeLong(64, number.getMostSignificantBits());
-            wb.writeLong(64, number.getLeastSignificantBits());
+            WriteBufferByteBased wb = new WriteBufferByteBased(new byte[16]);
+            wb.writeSignedLong(64, number.getMostSignificantBits());
+            wb.writeSignedLong(64, number.getLeastSignificantBits());
 
-            ReadBuffer rb = new ReadBufferByteBased(wb.getBytes());
-            return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readByteArray(8));
-        } catch (SerializationException | ParseException e) {
+            ReadBufferByteBased rb = new ReadBufferByteBased(wb.getBytes());
+            return new DceRpc_ActivityUuid(rb.readUnsignedLong(32), rb.readUnsignedInt(16), rb.readUnsignedInt(16), rb.readBits(64));
+        } catch (BufferException e) {
             // Ignore ... this should actually never happen.
         }
         return null;
@@ -152,7 +169,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return sessionKey;
     }
 
-    @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -189,11 +205,11 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.macAddress = macAddress;
     }
 
-    public ConversationContext<Ethernet_Frame> getContext() {
+    public OnConnectedCallback getContext() {
         return context;
     }
 
-    public void setContext(ConversationContext<Ethernet_Frame> context) {
+    public void setContext(OnConnectedCallback context) {
         this.context = context;
     }
 
@@ -349,7 +365,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                         Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(module.getSlotNumber(),
-                                module.getIdentNumber(),
+                                (long) module.getIdentNumber(),
                                 0x00000000,
                                 getExpectedSubModuleApiBlocks(module)
                             )
@@ -386,6 +402,29 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         extractGSDFileInfo(this.gsdFile);
     }
 
+    /**
+     * Read a slot number out of a GSDML range attribute, refusing anything a device could not
+     * actually have. Both failure modes reported as a connection error naming the file's value: a
+     * number too large for {@code int} would otherwise escape as a {@link NumberFormatException}
+     * from inside the connect path, and one merely too large for the protocol would otherwise size
+     * an array before anything checked it.
+     */
+    private static int parseSlotNumber(String value, String attributeName, String rawRange)
+            throws PlcConnectionException {
+        final int slotNumber;
+        try {
+            slotNumber = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new PlcConnectionException(
+                "GSDML " + attributeName + " value is not a usable slot number: " + rawRange);
+        }
+        if (slotNumber < 0 || slotNumber > MAX_SLOT_NUMBER) {
+            throw new PlcConnectionException("GSDML " + attributeName + " declares slot " + slotNumber
+                + ", outside the addressable slot range 0.." + MAX_SLOT_NUMBER + ": " + rawRange);
+        }
+        return slotNumber;
+    }
+
     private void extractGSDFileInfo(ProfinetISO15745Profile gsdFile) throws PlcConnectionException {
 
         // Find the DeviceAccessPoint specified by the "deviceAccess" parameter
@@ -408,7 +447,9 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         if (!matcher.group("from").equals("0")) {
             throw new PlcConnectionException("Physical Slots don't start from 0, instead starts at " + deviceAccessItem.getPhysicalSlots());
         }
-        int numberOfSlots = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : 0;
+        int numberOfSlots = matcher.group("to") != null
+            ? parseSlotNumber(matcher.group("to"), "PhysicalSlots", deviceAccessItem.getPhysicalSlots())
+            : 0;
 
         this.modules = new ProfinetModule[numberOfSlots];
         // The DAP is always in slot 0
@@ -430,8 +471,13 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                         if (!matcher.matches()) {
                             throw new PlcConnectionException("Physical Slots Range is not in the correct format " + useableModule.getAllowedInSlots());
                         }
-                        int from = matcher.group("to") != null ? Integer.parseInt(matcher.group("from")) : 0;
-                        int to = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : Integer.parseInt(matcher.group("from"));
+                        String allowedInSlots = useableModule.getAllowedInSlots();
+                        int from = matcher.group("to") != null
+                            ? parseSlotNumber(matcher.group("from"), "AllowedInSlots", allowedInSlots)
+                            : 0;
+                        int to = matcher.group("to") != null
+                            ? parseSlotNumber(matcher.group("to"), "AllowedInSlots", allowedInSlots)
+                            : parseSlotNumber(matcher.group("from"), "AllowedInSlots", allowedInSlots);
                         if (currentSlot < from || currentSlot > to) {
                             throw new PlcConnectionException("Current Submodule Slot " + currentSlot + " is not with the allowable slots" + useableModule.getAllowedInSlots());
                         }

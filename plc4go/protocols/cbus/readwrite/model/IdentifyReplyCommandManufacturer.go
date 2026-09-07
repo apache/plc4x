@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +61,9 @@ var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(ni
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandManufacturer)(nil)
 
 // NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
-func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
+func NewIdentifyReplyCommandManufacturer(manufacturerName string) *_IdentifyReplyCommandManufacturer {
 	_result := &_IdentifyReplyCommandManufacturer{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		ManufacturerName:             manufacturerName,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
@@ -207,12 +209,12 @@ func CastIdentifyReplyCommandManufacturer(structType any) IdentifyReplyCommandMa
 	return nil
 }
 
-func (m *_IdentifyReplyCommandManufacturer) GetTypeName() string {
+func (m *_IdentifyReplyCommandManufacturer) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandManufacturer"
 }
 
-func (m *_IdentifyReplyCommandManufacturer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandManufacturer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (manufacturerName)
 	lengthInBits += 64
@@ -220,7 +222,7 @@ func (m *_IdentifyReplyCommandManufacturer) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandManufacturer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -235,7 +237,7 @@ func (m *_IdentifyReplyCommandManufacturer) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	manufacturerName, err := ReadSimpleField(ctx, "manufacturerName", ReadString(readBuffer, uint32(64)))
+	manufacturerName, err := ReadSimpleField(ctx, "manufacturerName", ReadString(readBuffer, uint32(64)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manufacturerName' field"))
 	}
@@ -249,7 +251,7 @@ func (m *_IdentifyReplyCommandManufacturer) parse(ctx context.Context, readBuffe
 }
 
 func (m *_IdentifyReplyCommandManufacturer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -266,7 +268,7 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandManufacturer")
 		}
 
-		if err := WriteSimpleField[string](ctx, "manufacturerName", m.GetManufacturerName(), WriteString(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[string](ctx, "manufacturerName", m.GetManufacturerName(), WriteString(writeBuffer, 64), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'manufacturerName' field")
 		}
 

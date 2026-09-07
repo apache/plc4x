@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDoorExtendedPulseTime = (*_BACnetConstructedDataDoorE
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
 
 // NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
-func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
+func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
 	if doorExtendedPulseTime == nil {
 		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DoorExtendedPulseTime:         doorExtendedPulseTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDoorExtendedPulseTime(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorExtendedPulseTime"
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (doorExtendedPulseTime)
 	lengthInBits += m.DoorExtendedPulseTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

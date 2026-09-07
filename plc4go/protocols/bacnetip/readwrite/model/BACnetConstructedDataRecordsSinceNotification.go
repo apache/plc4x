@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataRecordsSinceNotification = (*_BACnetConstructedDataRe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
 
 // NewBACnetConstructedDataRecordsSinceNotification factory function for _BACnetConstructedDataRecordsSinceNotification
-func NewBACnetConstructedDataRecordsSinceNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordsSinceNotifications BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
+func NewBACnetConstructedDataRecordsSinceNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordsSinceNotifications BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
 	if recordsSinceNotifications == nil {
 		panic("recordsSinceNotifications of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRecordsSinceNotification must not be nil")
 	}
 	_result := &_BACnetConstructedDataRecordsSinceNotification{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RecordsSinceNotifications:     recordsSinceNotifications,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataRecordsSinceNotification(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) GetTypeName() string {
+func (m *_BACnetConstructedDataRecordsSinceNotification) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRecordsSinceNotification"
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (recordsSinceNotifications)
 	lengthInBits += m.RecordsSinceNotifications.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

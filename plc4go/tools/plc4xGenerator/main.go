@@ -196,10 +196,7 @@ func (g *Generator) parsePackage(patterns []string, tags []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	index := 0
-	if *pkgIndex > 0 {
-		index = *pkgIndex
-	}
+	index := max(*pkgIndex, 0)
 	if len(pkgs) != 1 {
 		if *pkgIndex < 0 {
 			log.Fatalf("error: %d packages found (%v)", len(pkgs), pkgs)
@@ -275,6 +272,19 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("if err := func()error {\n")
 			g.Printf("\td.%s.Lock()\n", field.hasLocker)
 			g.Printf("\tdefer d.%s.Unlock()\n", field.hasLocker)
+		}
+		// A marking applies whatever the field's type is. Handling it only where a string is
+		// rendered made the tag silently do nothing on every other kind of field - so a marking
+		// could be applied, reviewed, and still render the value.
+		if field.isSecret {
+			g.Printf(indent(0, secretFieldSerialize), fieldNameUntitled)
+			if field.hasLocker != "" {
+				g.Printf("\treturn nil\n")
+				g.Printf("}(); err != nil {\n")
+				g.Printf("\treturn err\n")
+				g.Printf("}\n")
+			}
+			continue
 		}
 		needsDereference := false
 		if starFieldType, ok := fieldType.(*ast.StarExpr); ok {
@@ -428,7 +438,7 @@ func (g *Generator) generate(typeName string) {
 				}
 			}
 			if *verbose {
-				fmt.Printf("Warn: no support yet for %#q\n", fieldType)
+				fmt.Printf("Warn: no support yet for %#v\n", fieldType)
 			}
 			continue
 		case *ast.Ident:
@@ -535,7 +545,7 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("\t\t\t}\n")
 				g.Printf("\t\t} else {\n")
 				g.Printf("\t\t\telemAsString := fmt.Sprintf(\"%%v\", elem)\n")
-				g.Printf("\t\t\tif err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {\n")
+				g.Printf("\t\t\tif err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString, utils.WithEncoding(\"UTF-8\")); err != nil {\n")
 				g.Printf("\t\t\t\treturn err\n")
 				g.Printf("\t\t\t}\n")
 				g.Printf("\t\t}\n")
@@ -607,6 +617,7 @@ type Field struct {
 	fieldType       ast.Expr
 	isDelegate      bool
 	isStringer      bool
+	isSecret        bool
 	asPtr           bool
 	directSerialize bool
 	hasLocker       string
@@ -665,6 +676,13 @@ func (f *File) genDecl(node ast.Node) bool {
 			if field.Tag != nil && field.Tag.Value == "`directSerialize:\"true\"`" { // TODO: Check if we do that a bit smarter
 				directSerialize = true
 			}
+			// A field carrying a credential renders as <redacted>, never as its value. This is
+			// the Go counterpart of plc4j's @Secret: the marking sits on the declaration, so it
+			// cannot drift the way a list of secret-looking names in another package would.
+			isSecret := false
+			if field.Tag != nil && field.Tag.Value == "`secret:\"true\"`" {
+				isSecret = true
+			}
 			if len(field.Names) == 0 {
 				if *verbose {
 					fmt.Printf("\t adding delegate\n")
@@ -675,6 +693,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft,
 						isDelegate: true,
 						isStringer: isStringer,
+						isSecret:   isSecret,
 						asPtr:      asPtr,
 						hasLocker:  hasLocker,
 					})
@@ -686,6 +705,7 @@ func (f *File) genDecl(node ast.Node) bool {
 							fieldType:  set,
 							isDelegate: true,
 							isStringer: isStringer,
+							isSecret:   isSecret,
 							asPtr:      asPtr,
 							hasLocker:  hasLocker,
 						})
@@ -695,6 +715,7 @@ func (f *File) genDecl(node ast.Node) bool {
 							fieldType:  set.Sel,
 							isDelegate: true,
 							isStringer: isStringer,
+							isSecret:   isSecret,
 							asPtr:      asPtr,
 							hasLocker:  hasLocker,
 						})
@@ -707,6 +728,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft.Sel,
 						isDelegate: true,
 						isStringer: isStringer,
+						isSecret:   isSecret,
 						asPtr:      asPtr,
 						hasLocker:  hasLocker,
 					})
@@ -722,6 +744,7 @@ func (f *File) genDecl(node ast.Node) bool {
 				name:            field.Names[0].Name,
 				fieldType:       field.Type,
 				isStringer:      isStringer,
+				isSecret:        isSecret,
 				asPtr:           asPtr,
 				directSerialize: directSerialize,
 				hasLocker:       hasLocker,
@@ -781,7 +804,7 @@ var serializableFieldTemplate = `
 			}
 		} else {
 			stringValue := fmt.Sprintf("%%v", %[1]s)
-			if err := writeBuffer.WriteString(%[2]s, uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString(%[2]s, uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -803,7 +826,7 @@ var atomicPointerFieldTemplate = `
 			}
 		} else {
 			stringValue := fmt.Sprintf("%%v", %[2]s)
-			if err := writeBuffer.WriteString(%[3]s, uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString(%[3]s, uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -852,8 +875,16 @@ var boolFieldSerialize = `
 	}
 `
 
+// secretFieldSerialize renders a marked field's placeholder rather than its value. The field is
+// still named, so a reader can see that a credential is configured without learning what it is.
+var secretFieldSerialize = `
+	if err := writeBuffer.WriteString(%[1]s, uint32(len("<redacted>")*8), "<redacted>", utils.WithEncoding("UTF-8")); err != nil {
+		return err
+	}
+`
+
 var stringFieldSerialize = `
-	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), %[1]s); err != nil {
+	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), %[1]s, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 `
@@ -861,7 +892,7 @@ var stringFieldSerialize = `
 var errorFieldSerialize = `
 	if %[1]s != nil {
 		_errString := %[1]s.Error()
-		if err := writeBuffer.WriteString(%[2]s, uint32(len(_errString)*8), _errString); err != nil {
+		if err := writeBuffer.WriteString(%[2]s, uint32(len(_errString)*8), _errString, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}

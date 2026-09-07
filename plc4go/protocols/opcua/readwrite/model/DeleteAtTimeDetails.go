@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastDeleteAtTimeDetails(structType any) DeleteAtTimeDetails {
 	return nil
 }
 
-func (m *_DeleteAtTimeDetails) GetTypeName() string {
+func (m *_DeleteAtTimeDetails) GetPlx4xTypeName() string {
 	return "DeleteAtTimeDetails"
 }
 
-func (m *_DeleteAtTimeDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DeleteAtTimeDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -255,13 +256,13 @@ func (m *_DeleteAtTimeDetails) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.ReqTimes) > 0 {
-		lengthInBits += 64 * uint16(len(m.ReqTimes))
+		lengthInBits += 64 * uint64(len(m.ReqTimes))
 	}
 
 	return lengthInBits
 }
 
-func (m *_DeleteAtTimeDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeleteAtTimeDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -276,19 +277,19 @@ func (m *_DeleteAtTimeDetails) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 	m.NodeId = nodeId
 
-	noOfReqTimes, err := ReadImplicitField[int32](ctx, "noOfReqTimes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReqTimes, err := ReadImplicitField[int32](ctx, "noOfReqTimes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReqTimes' field"))
 	}
 	_ = noOfReqTimes
 
-	reqTimes, err := ReadCountArrayField[int64](ctx, "reqTimes", ReadSignedLong(readBuffer, uint8(64)), uint64(noOfReqTimes))
+	reqTimes, err := ReadCountArrayField[int64](ctx, "reqTimes", ReadSignedLong(readBuffer, uint8(64)), uint64(noOfReqTimes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reqTimes' field"))
 	}
@@ -319,15 +320,15 @@ func (m *_DeleteAtTimeDetails) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for DeleteAtTimeDetails")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 		noOfReqTimes := int32(utils.InlineIf(bool((m.GetReqTimes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReqTimes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReqTimes", noOfReqTimes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReqTimes", noOfReqTimes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReqTimes' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "reqTimes", m.GetReqTimes(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "reqTimes", m.GetReqTimes(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reqTimes' field")
 		}
 

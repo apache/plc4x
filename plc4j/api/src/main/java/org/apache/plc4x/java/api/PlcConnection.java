@@ -35,6 +35,38 @@ import java.util.concurrent.CompletableFuture;
 public interface PlcConnection extends AutoCloseable {
 
     /**
+     * Returns the protocol code of the driver used to create this connection.
+     * @return protocol code
+     */
+    default String getProtocolCode() {
+        return "unknown";
+    }
+
+    /**
+     * Returns the human-readable name of the protocol of the driver used to create this connection.
+     * @return protocol name
+     */
+    default String getProtocolName() {
+        return "unknown";
+    }
+
+    /**
+     * Returns the code of the transport used to create this connection.
+     * @return transport code
+     */
+    default String getTransportCode() {
+        return "unknown";
+    }
+
+    /**
+     * Returns the human-readable name of the transport used to create this connection.
+     * @return transport name
+     */
+    default String getTransportName() {
+        return "unknown";
+    }
+
+    /**
      * Establishes the connection to the remote PLC.
      * @throws PlcConnectionException if the connection attempt failed
      */

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -71,7 +71,7 @@ var _ BACnetConfirmedServiceRequestWriteProperty = (*_BACnetConfirmedServiceRequ
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestWriteProperty)(nil)
 
 // NewBACnetConfirmedServiceRequestWriteProperty factory function for _BACnetConfirmedServiceRequestWriteProperty
-func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestWriteProperty {
+func NewBACnetConfirmedServiceRequestWriteProperty(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger) *_BACnetConfirmedServiceRequestWriteProperty {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestWriteProperty must not be nil")
 	}
@@ -345,12 +345,12 @@ func CastBACnetConfirmedServiceRequestWriteProperty(structType any) BACnetConfir
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestWriteProperty) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestWriteProperty) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestWriteProperty"
 }
 
-func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -374,7 +374,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -460,7 +460,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) SerializeWithWriteBuffer(c
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 
@@ -468,7 +468,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) SerializeWithWriteBuffer(c
 			return errors.Wrap(err, "Error serializing 'propertyValue' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", new(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,8 @@ type ApduControlContract interface {
 
 // ApduControlRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduControlRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetControlType returns ControlType (discriminator field)
 	GetControlType() uint8
 }
@@ -241,23 +241,23 @@ func CastApduControl(structType any) ApduControl {
 	return nil
 }
 
-func (m *_ApduControl) GetTypeName() string {
+func (m *_ApduControl) GetPlx4xTypeName() string {
 	return "ApduControl"
 }
 
-func (m *_ApduControl) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ApduControl) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (controlType)
 	lengthInBits += 2
 
 	return lengthInBits
 }
 
-func (m *_ApduControl) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ApduControl) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ApduControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +277,7 @@ func ApduControlParseWithBufferProducer[T ApduControl]() func(ctx context.Contex
 }
 
 func ApduControlParseWithBuffer[T ApduControl](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_ApduControl{}).parse(ctx, readBuffer)
+	v, err := (new(_ApduControl)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

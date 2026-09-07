@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"context"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -30,11 +31,12 @@ import (
 
 //go:generate go tool plc4xGenerator -type=worker
 type worker struct {
-	id       int
+	id       string
 	executor interface {
 		isTraceWorkers() bool
 		getWorksItems() chan workItem
 		getWorkerWaitGroup() *sync.WaitGroup
+		getCtx() context.Context
 	}
 
 	lastReceived atomic.Value
@@ -48,15 +50,16 @@ type worker struct {
 	log zerolog.Logger
 }
 
-func newWorker(localLog zerolog.Logger, workerId int, executor interface {
+func newWorker(localLog zerolog.Logger, workerId string, executor interface {
 	isTraceWorkers() bool
 	getWorksItems() chan workItem
 	getWorkerWaitGroup() *sync.WaitGroup
+	getCtx() context.Context
 }) *worker {
 	w := &worker{
 		id:       workerId,
 		executor: executor,
-		log:      localLog.With().Int("workerId", workerId).Logger(),
+		log:      localLog.With().Str("workerId", workerId).Logger(),
 	}
 	w.initialize()
 	return w
@@ -76,27 +79,26 @@ func (w *worker) start() {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if w.running.Load() {
-		w.log.Warn().Int("Worker id", w.id).Msg("Worker already started")
+		w.log.Warn().Msg("Worker already started")
 		return
 	}
 	if w.executor.isTraceWorkers() {
-		w.log.Debug().Stringer("worker", w).Msg("Starting worker")
+		w.log.Debug().Interface("worker", w).Msg("Starting worker")
 	}
-	w.executor.getWorkerWaitGroup().Add(1)
 	w.running.Store(true)
-	go w.work()
+	w.executor.getWorkerWaitGroup().Go(w.work)
 }
 
 func (w *worker) stop(interrupt bool) {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if !w.running.Load() {
-		w.log.Warn().Int("Worker id", w.id).Msg("Worker not running")
+		w.log.Warn().Msg("Worker not running")
 		return
 	}
 
 	if w.executor.isTraceWorkers() {
-		w.log.Debug().Stringer("worker", w).Msg("Stopping worker")
+		w.log.Debug().Interface("worker", w).Msg("Stopping worker")
 	}
 	w.shutdown.Store(true)
 	if interrupt {
@@ -106,7 +108,6 @@ func (w *worker) stop(interrupt bool) {
 }
 
 func (w *worker) work() {
-	defer w.executor.getWorkerWaitGroup().Done()
 	defer func() {
 		if err := recover(); err != nil {
 			w.log.Error().
@@ -130,19 +131,22 @@ func (w *worker) work() {
 		select {
 		case _workItem := <-w.executor.getWorksItems():
 			w.lastReceived.Store(time.Now())
-			workItemLog := workerLog.With().Stringer("workItem", &_workItem).Logger()
+			workItemLog := workerLog.With().Interface("workItem", &_workItem).Logger()
 			workItemLog.Debug().Msg("Got work item")
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
 				workerLog.Debug().Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
 				workItemLog.Debug().Msg("Running work item")
-				_workItem.runnable()
+				_workItem.runnable(w.executor.getCtx())
 				_workItem.completionFuture.complete()
 				workItemLog.Debug().Msg("work item completed")
 			}
 		case <-w.interrupter:
 			workerLog.Debug().Msg("We got interrupted")
+		case <-w.executor.getCtx().Done():
+			workerLog.Debug().Msg("Ctx done")
+			return
 		}
 	}
 	workerLog.Trace().Msg("done")

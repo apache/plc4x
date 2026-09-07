@@ -108,7 +108,7 @@ func (t *tracer) AddTrace(operation string, message string) {
 func (t *tracer) AddTransactionalStartTrace(operation string, message string) string {
 	t.m.Lock()
 	defer t.m.Unlock()
-	transactionId := utils.GenerateId(t.log, 4)
+	transactionId := utils.GenerateId(4)
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
 		ConnectionId:  t.connectionId.Load().(string),

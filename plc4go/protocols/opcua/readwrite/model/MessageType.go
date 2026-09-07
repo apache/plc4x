@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -118,11 +118,11 @@ func CastMessageType(structType any) MessageType {
 	return castFunc(structType)
 }
 
-func (m MessageType) GetLengthInBits(ctx context.Context) uint16 {
+func (m MessageType) GetLengthInBits(ctx context.Context) uint64 {
 	return 0
 }
 
-func (m MessageType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MessageType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -133,7 +133,7 @@ func MessageTypeParse(ctx context.Context, theBytes []byte) (MessageType, error)
 func MessageTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MessageType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("MessageType", uint32(24), utils.WithEncoding("UTF-8"))
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("MessageType", uint32(24), utils.WithEncoding("UTF8"))
 	if err != nil {
 		return "", errors.Wrap(err, "error reading MessageType")
 	}
@@ -156,7 +156,7 @@ func (e MessageType) Serialize() ([]byte, error) {
 func (e MessageType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("MessageType", uint32(24), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("MessageType", uint32(24), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8"))
 }
 
 func (e MessageType) GetValue() string {

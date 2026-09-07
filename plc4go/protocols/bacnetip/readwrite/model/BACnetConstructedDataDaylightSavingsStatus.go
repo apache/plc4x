@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDaylightSavingsStatus = (*_BACnetConstructedDataDayli
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
 
 // NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
-func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
+func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean) *_BACnetConstructedDataDaylightSavingsStatus {
 	if daylightSavingsStatus == nil {
 		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
 	}
 	_result := &_BACnetConstructedDataDaylightSavingsStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DaylightSavingsStatus:         daylightSavingsStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDaylightSavingsStatus(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetTypeName() string {
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDaylightSavingsStatus"
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (daylightSavingsStatus)
 	lengthInBits += m.DaylightSavingsStatus.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -309,12 +309,12 @@ func CastBACnetLightingCommand(structType any) BACnetLightingCommand {
 	return nil
 }
 
-func (m *_BACnetLightingCommand) GetTypeName() string {
+func (m *_BACnetLightingCommand) GetPlx4xTypeName() string {
 	return "BACnetLightingCommand"
 }
 
-func (m *_BACnetLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLightingCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (lightningOperation)
 	lengthInBits += m.LightningOperation.GetLengthInBits(ctx)
@@ -347,7 +347,7 @@ func (m *_BACnetLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLightingCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -362,7 +362,7 @@ func BACnetLightingCommandParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
-	v, err := (&_BACnetLightingCommand{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetLightingCommand)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -462,23 +462,23 @@ func (m *_BACnetLightingCommand) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(err, "Error serializing 'lightningOperation' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "targetLevel", GetRef(m.GetTargetLevel()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "targetLevel", new(m.GetTargetLevel()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'targetLevel' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "rampRate", GetRef(m.GetRampRate()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "rampRate", new(m.GetRampRate()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'rampRate' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "stepIncrement", GetRef(m.GetStepIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "stepIncrement", new(m.GetStepIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'stepIncrement' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", GetRef(m.GetFadeTime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", new(m.GetFadeTime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'fadeTime' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", new(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 

@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +61,9 @@ var _ ServerErrorReply = (*_ServerErrorReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte),
 	}
 	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
@@ -195,12 +197,12 @@ func CastServerErrorReply(structType any) ServerErrorReply {
 	return nil
 }
 
-func (m *_ServerErrorReply) GetTypeName() string {
+func (m *_ServerErrorReply) GetPlx4xTypeName() string {
 	return "ServerErrorReply"
 }
 
-func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
+func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
 
 	// Const Field (errorMarker)
 	lengthInBits += 8
@@ -208,7 +210,7 @@ func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ServerErrorReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ServerErrorReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -223,7 +225,7 @@ func (m *_ServerErrorReply) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	errorMarker, err := ReadConstField[byte](ctx, "errorMarker", ReadByte(readBuffer, 8), ServerErrorReply_ERRORMARKER)
+	errorMarker, err := ReadConstField[byte](ctx, "errorMarker", ReadByte(readBuffer, 8), ServerErrorReply_ERRORMARKER, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorMarker' field"))
 	}
@@ -237,7 +239,7 @@ func (m *_ServerErrorReply) parse(ctx context.Context, readBuffer utils.ReadBuff
 }
 
 func (m *_ServerErrorReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -254,7 +256,7 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ServerErrorReply")
 		}
 
-		if err := WriteConstField(ctx, "errorMarker", ServerErrorReply_ERRORMARKER, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "errorMarker", ServerErrorReply_ERRORMARKER, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'errorMarker' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultFadeTime = (*_BACnetConstructedDataDefaultFade
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultFadeTime)(nil)
 
 // NewBACnetConstructedDataDefaultFadeTime factory function for _BACnetConstructedDataDefaultFadeTime
-func NewBACnetConstructedDataDefaultFadeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultFadeTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultFadeTime {
+func NewBACnetConstructedDataDefaultFadeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultFadeTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDefaultFadeTime {
 	if defaultFadeTime == nil {
 		panic("defaultFadeTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultFadeTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultFadeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultFadeTime:               defaultFadeTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDefaultFadeTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDefaultFadeTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultFadeTime"
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (defaultFadeTime)
 	lengthInBits += m.DefaultFadeTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

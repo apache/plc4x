@@ -56,7 +56,7 @@ func (d *workItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		{
 			_value := fmt.Sprintf("%v", d.completionFuture)
 
-			if err := writeBuffer.WriteString("completionFuture", uint32(len(_value)*8), _value); err != nil {
+			if err := writeBuffer.WriteString("completionFuture", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

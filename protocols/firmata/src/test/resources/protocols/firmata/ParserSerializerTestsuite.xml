@@ -22,8 +22,8 @@
 
   <name>Firmata</name>
 
-  <protocolName>firmata</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>firmata</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>Firmata Reset</name>

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCredentialDataInputUpdateTime = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
 
 // NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
-func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
+func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp) *_BACnetConstructedDataCredentialDataInputUpdateTime {
 	if updateTime == nil {
 		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UpdateTime:                    updateTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialDataInputUpdateTime"
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (updateTime)
 	lengthInBits += m.UpdateTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

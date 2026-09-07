@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataGlobalIdentifier = (*_BACnetConstructedDataGlobalIden
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalIdentifier)(nil)
 
 // NewBACnetConstructedDataGlobalIdentifier factory function for _BACnetConstructedDataGlobalIdentifier
-func NewBACnetConstructedDataGlobalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, globalIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
+func NewBACnetConstructedDataGlobalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, globalIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
 	if globalIdentifier == nil {
 		panic("globalIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGlobalIdentifier must not be nil")
 	}
 	_result := &_BACnetConstructedDataGlobalIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		GlobalIdentifier:              globalIdentifier,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataGlobalIdentifier(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifier) GetTypeName() string {
+func (m *_BACnetConstructedDataGlobalIdentifier) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGlobalIdentifier"
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (globalIdentifier)
 	lengthInBits += m.GlobalIdentifier.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

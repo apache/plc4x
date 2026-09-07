@@ -34,10 +34,6 @@
 *** xref:code-gen/language/freemarker.adoc[]
 *** xref:code-gen/protocol/df1.adoc[]
 
-** xref:protocols/index.adoc[]
-*** xref:protocols/ads/protocol.adoc[]
-*** xref:protocols/eip/protocol.adoc[]
-
 ** xref:infrastructure/index.adoc[]
 *** xref:infrastructure/ci.adoc[]
 *** xref:infrastructure/issues.adoc[]
@@ -48,8 +44,11 @@
 
 ** xref:release/index.adoc[]
 *** xref:release/release.adoc[]
+*** xref:release/extras.adoc[]
 *** xref:release/validation.adoc[]
 *** xref:release/build-tools.adoc[]
+
+** xref:testing/index.adoc[]
 
 ** xref:tools.adoc[]
 ** xref:team.adoc[]

@@ -89,7 +89,7 @@ if (!mspecTargetDir.exists()) {
     mspecTargetDir.mkdirs()
 }
 def vendorIdMspec = new File(mspecTargetDir, "bacnet-bit-strings-tagged.mspec")
-if(vendorIdMspec.exists()) {
+if (vendorIdMspec.exists()) {
     vendorIdMspec.delete()
 }
 

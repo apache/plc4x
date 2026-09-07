@@ -101,7 +101,7 @@ func BoxAnything(anything any, options ...func(*BoxOptions)) AsciiBox {
 				boxes[i] = BoxAnything(index.Interface(), WithAsciiBoxCharWidth(opts.CharWidth-2))
 			}
 			return AsciiBoxWriterDefault.BoxBox(AsciiBoxWriterDefault.AlignBoxes(boxes, opts.CharWidth), options...)
-		case reflect.Ptr, reflect.Uintptr:
+		case reflect.Pointer, reflect.Uintptr:
 			return BoxAnything(valueOf.Elem().Interface(), options...)
 		default:
 			return AsciiBoxWriterDefault.BoxString(fmt.Sprintf("%v", anything), options...)

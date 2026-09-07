@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataCalendarAll = (*_BACnetConstructedDataCalendarAll)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCalendarAll)(nil)
 
 // NewBACnetConstructedDataCalendarAll factory function for _BACnetConstructedDataCalendarAll
-func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarAll {
+func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataCalendarAll {
 	_result := &_BACnetConstructedDataCalendarAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataCalendarAll(structType any) BACnetConstructedDataC
 	return nil
 }
 
-func (m *_BACnetConstructedDataCalendarAll) GetTypeName() string {
+func (m *_BACnetConstructedDataCalendarAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCalendarAll"
 }
 
-func (m *_BACnetConstructedDataCalendarAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCalendarAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCalendarAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCalendarAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

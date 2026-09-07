@@ -25,34 +25,37 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Writer struct {
 	tpduGenerator *TpduGenerator
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
+	driverContext *DriverContext
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
 
-func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
+func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, driverContext *DriverContext, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Writer{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,
 		tm:            tm,
+		driverContext: driverContext,
 		log:           customLogger,
 	}
 }
@@ -60,12 +63,10 @@ func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm t
 func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetTagNames()))
@@ -75,13 +76,13 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			plcValue := writeRequest.GetValue(tagName)
 			s7Address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName)))
 				return
 			}
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
-			value, err := serializePlcValue(tag, plcValue)
+			value, err := serializePlcValue(tag, plcValue, m.driverContext.ControllerType)
 			if err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", tagName))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", tagName)))
 				return
 			}
 			payloadItems[i] = value
@@ -92,7 +93,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			tpduId,
 			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems),
-			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, nil),
+			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems),
 		)
 
 		// Assemble the finished paket
@@ -104,15 +105,16 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				s7MessageRequest,
 				true,
 				uint8(tpduId),
-				0,
 			),
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)
-		transaction := m.tm.StartTransaction()
-		transaction.Submit(func(transaction transactions.RequestTransaction) {
-			// Send the  over the wire
-			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+		transaction := m.tm.StartTransaction("write")
+		transaction.Submit("writeOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+			ctx, cancel := context.WithCancel(ctx)
+			context.AfterFunc(transactionContext, cancel)
+			// Send the over the wire
+			if err := m.messageCodec.SendRequest(ctx, "write", tpktPacket, func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
@@ -137,31 +139,22 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
 
 				if err != nil {
-					result <- &spiModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "Error decoding response")))
 					return transaction.EndRequest()
 				}
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: readResponse,
-				}
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, readResponse, nil))
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request: writeRequest,
-					Err:     errors.New("got timeout while waiting for response"),
-				}
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("got timeout while waiting for response")))
 				return transaction.EndRequest()
-			}, time.Second*1); err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
+			}); err != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message")))
 				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 					m.log.Debug().Err(err).Msg("Error failing request")
 				}
 			}
 		})
-	}()
+	})
 	return result
 }
 
@@ -182,28 +175,12 @@ func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRe
 
 	// If the result contains any form of non-null error code, handle this instead.
 	if (errorClass != 0) || (errorCode != 0) {
-		// This is usually the case if PUT/GET wasn't enabled on the PLC
-		if (errorClass == 129) && (errorCode == 4) {
-			m.log.Warn().Msg("Got an error response from the PLC. This particular response code usually indicates " +
-				"that PUT/GET is not enabled on the PLC.")
-			for _, tagName := range writeRequest.GetTagNames() {
-				responseCodes[tagName] = apiModel.PlcResponseCode_ACCESS_DENIED
-			}
-			m.log.Trace().Msg("Returning the response")
-			return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
-		} else {
-			m.log.Warn().
-				Uint8("errorClass", errorClass).
-				Uint8("errorCode", errorCode).
-				Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
-					"We probably need to implement explicit handling for this, so please file a bug-report " +
-					"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
-					"containing a capture of the communication.")
-			for _, tagName := range writeRequest.GetTagNames() {
-				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			}
-			return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+		responseCode := mapPlcErrorCode(m.log, errorClass, errorCode)
+		for _, tagName := range writeRequest.GetTagNames() {
+			responseCodes[tagName] = responseCode
 		}
+		m.log.Trace().Msg("Returning the response")
+		return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 	}
 
 	// In all other cases all went well.
@@ -231,19 +208,60 @@ func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRe
 	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }
 
-func serializePlcValue(tag apiModel.PlcTag, plcValue apiValues.PlcValue) (readWriteModel.S7VarPayloadDataItem, error) {
+func serializePlcValue(tag apiModel.PlcTag, plcValue apiValues.PlcValue, controllerType readWriteModel.ControllerType) (readWriteModel.S7VarPayloadDataItem, error) {
 	s7Tag, ok := tag.(PlcTag)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", tag)
 	}
 	transportSize := s7Tag.GetDataType().DataTransportSize()
 	stringLength := uint16(254)
-	if s7StringTag, ok := tag.(*PlcStringTag); ok {
+	if s7StringTag, ok := tag.(PlcStringTag); ok {
 		stringLength = s7StringTag.stringLength
 	}
-	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), 0 /*TODO: port s7DriverContext.getControllerType()*/, int32(stringLength))
-	if err != nil {
-		return nil, errors.Wrapf(err, "Error serializing tag item of type: '%v'", s7Tag.GetDataType())
+	numElements := s7Tag.GetNumElements()
+	dataProtocolId := s7Tag.GetDataType().DataProtocolId()
+
+	if s7Tag.GetDataType() == readWriteModel.TransportSize_BYTE && numElements > 1 {
+		return readWriteModel.NewS7VarPayloadDataItem(
+			readWriteModel.DataTransportErrorCode_OK,
+			transportSize, plcValue.GetRaw(),
+		), nil
+	}
+	if s7Tag.GetDataType() == readWriteModel.TransportSize_BOOL && numElements > 1 {
+		if !plcValue.IsList() {
+			return nil, errors.New("expected a list value for a multi-element BOOL tag")
+		}
+		list := plcValue.GetList()
+		if len(list) < int(numElements) {
+			return nil, errors.Errorf("expected %d list elements, got %d", numElements, len(list))
+		}
+		data := make([]byte, (numElements+7)/8)
+		for i := range numElements {
+			if list[i].GetBool() {
+				data[i/8] |= 1 << (i % 8)
+			}
+		}
+		return readWriteModel.NewS7VarPayloadDataItem(
+			readWriteModel.DataTransportErrorCode_OK,
+			readWriteModel.DataTransportSize_BYTE_WORD_DWORD, data,
+		), nil
+	}
+
+	var data []byte
+	if numElements == 1 {
+		serialized, err := readWriteModel.DataItemSerialize(plcValue, dataProtocolId, controllerType, int32(stringLength))
+		if err != nil {
+			return nil, errors.Wrapf(err, "Error serializing tag item of type: '%v'", s7Tag.GetDataType())
+		}
+		data = serialized
+	} else {
+		for i := range numElements {
+			serialized, err := readWriteModel.DataItemSerialize(plcValue.GetIndex(uint32(i)), dataProtocolId, controllerType, int32(stringLength))
+			if err != nil {
+				return nil, errors.Wrapf(err, "Error serializing element %d of type: '%v'", i, s7Tag.GetDataType())
+			}
+			data = append(data, serialized...)
+		}
 	}
 	return readWriteModel.NewS7VarPayloadDataItem(
 		readWriteModel.DataTransportErrorCode_OK,

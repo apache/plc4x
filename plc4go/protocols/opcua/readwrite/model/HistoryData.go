@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +208,12 @@ func CastHistoryData(structType any) HistoryData {
 	return nil
 }
 
-func (m *_HistoryData) GetTypeName() string {
+func (m *_HistoryData) GetPlx4xTypeName() string {
 	return "HistoryData"
 }
 
-func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfDataValues)
 	lengthInBits += 32
@@ -228,7 +229,7 @@ func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HistoryData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HistoryData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -243,13 +244,13 @@ func (m *_HistoryData) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfDataValues, err := ReadImplicitField[int32](ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataValues, err := ReadImplicitField[int32](ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataValues' field"))
 	}
 	_ = noOfDataValues
 
-	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues))
+	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataValues' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for HistoryData")
 		}
 		noOfDataValues := int32(utils.InlineIf(bool((m.GetDataValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataValues()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDataValues", noOfDataValues, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDataValues", noOfDataValues, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataValues' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "dataValues", m.GetDataValues(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "dataValues", m.GetDataValues(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataValues' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,21 +68,16 @@ type _BACnetConstructedDataElement struct {
 	ApplicationTag  BACnetApplicationTag
 	ContextTag      BACnetContextTag
 	ConstructedData BACnetConstructedData
-
-	// Arguments.
-	ObjectTypeArgument         BACnetObjectType
-	PropertyIdentifierArgument BACnetPropertyIdentifier
-	ArrayIndexArgument         BACnetTagPayloadUnsignedInteger
 }
 
 var _ BACnetConstructedDataElement = (*_BACnetConstructedDataElement)(nil)
 
 // NewBACnetConstructedDataElement factory function for _BACnetConstructedDataElement
-func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicationTag BACnetApplicationTag, contextTag BACnetContextTag, constructedData BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElement {
+func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicationTag BACnetApplicationTag, contextTag BACnetContextTag, constructedData BACnetConstructedData) *_BACnetConstructedDataElement {
 	if peekedTagHeader == nil {
 		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedDataElement must not be nil")
 	}
-	return &_BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
+	return &_BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData}
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,12 +106,6 @@ type BACnetConstructedDataElementBuilder interface {
 	WithOptionalConstructedData(BACnetConstructedData) BACnetConstructedDataElementBuilder
 	// WithOptionalConstructedDataBuilder adds ConstructedData (property field) which is build by the builder
 	WithOptionalConstructedDataBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConstructedDataElementBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetConstructedDataElementBuilder
-	// WithArgPropertyIdentifierArgument sets a parser argument
-	WithArgPropertyIdentifierArgument(BACnetPropertyIdentifier) BACnetConstructedDataElementBuilder
-	// WithArgArrayIndexArgument sets a parser argument
-	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetConstructedDataElementBuilder
 	// Build builds the BACnetConstructedDataElement or returns an error if something is wrong
 	Build() (BACnetConstructedDataElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -197,19 +186,6 @@ func (b *_BACnetConstructedDataElementBuilder) WithOptionalConstructedDataBuilde
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetConstructedDataElementBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetConstructedDataElementBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
-	return b
-}
-func (b *_BACnetConstructedDataElementBuilder) WithArgPropertyIdentifierArgument(propertyIdentifierArgument BACnetPropertyIdentifier) BACnetConstructedDataElementBuilder {
-	b.PropertyIdentifierArgument = propertyIdentifierArgument
-	return b
-}
-func (b *_BACnetConstructedDataElementBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetConstructedDataElementBuilder {
-	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 
@@ -346,12 +322,12 @@ func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataEleme
 	return nil
 }
 
-func (m *_BACnetConstructedDataElement) GetTypeName() string {
+func (m *_BACnetConstructedDataElement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElement"
 }
 
-func (m *_BACnetConstructedDataElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConstructedDataElement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -379,7 +355,7 @@ func (m *_BACnetConstructedDataElement) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataElement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataElement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -394,7 +370,7 @@ func BACnetConstructedDataElementParseWithBufferProducer(objectTypeArgument BACn
 }
 
 func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
-	v, err := (&_BACnetConstructedDataElement{ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	v, err := (new(_BACnetConstructedDataElement)).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -528,15 +504,15 @@ func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(_isContextTagErr, "Error serializing 'isContextTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", GetRef(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", new(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'applicationTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", GetRef(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", new(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'contextTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", GetRef(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", new(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'constructedData' field")
 	}
 
@@ -545,22 +521,6 @@ func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Con
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetConstructedDataElement) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-func (m *_BACnetConstructedDataElement) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
-	return m.PropertyIdentifierArgument
-}
-func (m *_BACnetConstructedDataElement) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
-	return m.ArrayIndexArgument
-}
-
-//
-////
 
 func (m *_BACnetConstructedDataElement) IsBACnetConstructedDataElement() {}
 
@@ -577,9 +537,6 @@ func (m *_BACnetConstructedDataElement) deepCopy() *_BACnetConstructedDataElemen
 		utils.DeepCopy[BACnetApplicationTag](m.ApplicationTag),
 		utils.DeepCopy[BACnetContextTag](m.ContextTag),
 		utils.DeepCopy[BACnetConstructedData](m.ConstructedData),
-		m.ObjectTypeArgument,
-		m.PropertyIdentifierArgument,
-		m.ArrayIndexArgument,
 	}
 	return _BACnetConstructedDataElementCopy
 }

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -237,12 +237,12 @@ func CastBACnetGroupChannelValue(structType any) BACnetGroupChannelValue {
 	return nil
 }
 
-func (m *_BACnetGroupChannelValue) GetTypeName() string {
+func (m *_BACnetGroupChannelValue) GetPlx4xTypeName() string {
 	return "BACnetGroupChannelValue"
 }
 
-func (m *_BACnetGroupChannelValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetGroupChannelValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (channel)
 	lengthInBits += m.Channel.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetGroupChannelValue) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetGroupChannelValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetGroupChannelValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +273,7 @@ func BACnetGroupChannelValueParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
-	v, err := (&_BACnetGroupChannelValue{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetGroupChannelValue)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +339,7 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(err, "Error serializing 'channel' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", GetRef(m.GetOverridingPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", new(m.GetOverridingPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'overridingPriority' field")
 	}
 

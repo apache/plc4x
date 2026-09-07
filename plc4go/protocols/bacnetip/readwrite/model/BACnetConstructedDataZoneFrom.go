@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataZoneFrom = (*_BACnetConstructedDataZoneFrom)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneFrom)(nil)
 
 // NewBACnetConstructedDataZoneFrom factory function for _BACnetConstructedDataZoneFrom
-func NewBACnetConstructedDataZoneFrom(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneFrom BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
+func NewBACnetConstructedDataZoneFrom(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneFrom BACnetDeviceObjectReference) *_BACnetConstructedDataZoneFrom {
 	if zoneFrom == nil {
 		panic("zoneFrom of type BACnetDeviceObjectReference for BACnetConstructedDataZoneFrom must not be nil")
 	}
 	_result := &_BACnetConstructedDataZoneFrom{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ZoneFrom:                      zoneFrom,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataZoneFrom(structType any) BACnetConstructedDataZone
 	return nil
 }
 
-func (m *_BACnetConstructedDataZoneFrom) GetTypeName() string {
+func (m *_BACnetConstructedDataZoneFrom) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataZoneFrom"
 }
 
-func (m *_BACnetConstructedDataZoneFrom) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataZoneFrom) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (zoneFrom)
 	lengthInBits += m.ZoneFrom.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataZoneFrom) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataZoneFrom) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataZoneFrom) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

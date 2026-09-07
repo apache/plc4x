@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeOfStrikeCountReset = (*_BACnetConstructedDataTime
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfStrikeCountReset)(nil)
 
 // NewBACnetConstructedDataTimeOfStrikeCountReset factory function for _BACnetConstructedDataTimeOfStrikeCountReset
-func NewBACnetConstructedDataTimeOfStrikeCountReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfStrikeCountReset BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfStrikeCountReset {
+func NewBACnetConstructedDataTimeOfStrikeCountReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfStrikeCountReset BACnetDateTime) *_BACnetConstructedDataTimeOfStrikeCountReset {
 	if timeOfStrikeCountReset == nil {
 		panic("timeOfStrikeCountReset of type BACnetDateTime for BACnetConstructedDataTimeOfStrikeCountReset must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeOfStrikeCountReset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeOfStrikeCountReset:        timeOfStrikeCountReset,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimeOfStrikeCountReset(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeOfStrikeCountReset"
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timeOfStrikeCountReset)
 	lengthInBits += m.TimeOfStrikeCountReset.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

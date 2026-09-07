@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -257,12 +258,12 @@ func CastNodeTypeDescription(structType any) NodeTypeDescription {
 	return nil
 }
 
-func (m *_NodeTypeDescription) GetTypeName() string {
+func (m *_NodeTypeDescription) GetPlx4xTypeName() string {
 	return "NodeTypeDescription"
 }
 
-func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)
@@ -287,7 +288,7 @@ func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NodeTypeDescription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeTypeDescription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -302,31 +303,31 @@ func (m *_NodeTypeDescription) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	typeDefinitionNode, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	typeDefinitionNode, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinitionNode' field"))
 	}
 	m.TypeDefinitionNode = typeDefinitionNode
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	includeSubTypes, err := ReadSimpleField(ctx, "includeSubTypes", ReadBoolean(readBuffer))
+	includeSubTypes, err := ReadSimpleField(ctx, "includeSubTypes", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'includeSubTypes' field"))
 	}
 	m.IncludeSubTypes = includeSubTypes
 
-	noOfDataToReturn, err := ReadImplicitField[int32](ctx, "noOfDataToReturn", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataToReturn, err := ReadImplicitField[int32](ctx, "noOfDataToReturn", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataToReturn' field"))
 	}
 	_ = noOfDataToReturn
 
-	dataToReturn, err := ReadCountArrayField[QueryDataDescription](ctx, "dataToReturn", ReadComplex[QueryDataDescription](ExtensionObjectDefinitionParseWithBufferProducer[QueryDataDescription]((int32)(int32(572))), readBuffer), uint64(noOfDataToReturn))
+	dataToReturn, err := ReadCountArrayField[QueryDataDescription](ctx, "dataToReturn", ReadComplex[QueryDataDescription](ExtensionObjectDefinitionParseWithBufferProducer[QueryDataDescription]((int32)(int32(572))), readBuffer), uint64(noOfDataToReturn), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataToReturn' field"))
 	}
@@ -357,23 +358,23 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NodeTypeDescription")
 		}
 
-		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "includeSubTypes", m.GetIncludeSubTypes(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "includeSubTypes", m.GetIncludeSubTypes(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'includeSubTypes' field")
 		}
 		noOfDataToReturn := int32(utils.InlineIf(bool((m.GetDataToReturn()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataToReturn()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDataToReturn", noOfDataToReturn, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDataToReturn", noOfDataToReturn, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataToReturn' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "dataToReturn", m.GetDataToReturn(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "dataToReturn", m.GetDataToReturn(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataToReturn' field")
 		}
 

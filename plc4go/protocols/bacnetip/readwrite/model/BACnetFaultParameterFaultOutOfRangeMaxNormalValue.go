@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,6 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetTagNumber() returns a parser argument
-	GetTagNumber() uint8
 	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValue()
 	// CreateBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
@@ -68,8 +66,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract interface {
 
 // BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -83,15 +81,12 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValue struct {
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)(nil)
 
 // NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValue
-func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue {
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultOutOfRangeMaxNormalValue must not be nil")
 	}
@@ -101,7 +96,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag BACnetOpeni
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultOutOfRangeMaxNormalValue must not be nil")
 	}
-	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValue{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValue{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,8 +121,6 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMaxNormalValue. It is always possible to return to current builder using Done()
 	AsBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal() BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMaxNormalValue. It is always possible to return to current builder using Done()
@@ -213,11 +206,6 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder) WithClosingT
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -377,12 +365,12 @@ func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValue(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultOutOfRangeMaxNormalValue"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -395,11 +383,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) getLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -419,7 +407,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBufferProducer[T 
 }
 
 func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBuffer[T BACnetFaultParameterFaultOutOfRangeMaxNormalValue](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := (&_BACnetFaultParameterFaultOutOfRangeMaxNormalValue{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -468,19 +456,19 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) parse(ctx context.C
 	var _child BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	switch {
 	case peekedTagNumber == 0x4: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal for type-switch of BACnetFaultParameterFaultOutOfRangeMaxNormalValue")
 		}
 	case peekedTagNumber == 0x2: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned for type-switch of BACnetFaultParameterFaultOutOfRangeMaxNormalValue")
 		}
 	case peekedTagNumber == 0x5: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble for type-switch of BACnetFaultParameterFaultOutOfRangeMaxNormalValue")
 		}
 	case peekedTagNumber == 0x3: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
-		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger for type-switch of BACnetFaultParameterFaultOutOfRangeMaxNormalValue")
 		}
 	default:
@@ -537,16 +525,6 @@ func (pm *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) serializeParent(ct
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) IsBACnetFaultParameterFaultOutOfRangeMaxNormalValue() {
 }
 
@@ -563,7 +541,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) deepCopy() *_BACnet
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetFaultParameterFaultOutOfRangeMaxNormalValueCopy
 }

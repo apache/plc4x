@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,8 @@ type ComObjectTableContract interface {
 
 // ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
 type ComObjectTableRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
 }
@@ -227,21 +227,21 @@ func CastComObjectTable(structType any) ComObjectTable {
 	return nil
 }
 
-func (m *_ComObjectTable) GetTypeName() string {
+func (m *_ComObjectTable) GetPlx4xTypeName() string {
 	return "ComObjectTable"
 }
 
-func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ComObjectTable) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ComObjectTable) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -261,7 +261,7 @@ func ComObjectTableParseWithBufferProducer[T ComObjectTable](firmwareType Firmwa
 }
 
 func ComObjectTableParseWithBuffer[T ComObjectTable](ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (T, error) {
-	v, err := (&_ComObjectTable{}).parse(ctx, readBuffer, firmwareType)
+	v, err := (new(_ComObjectTable)).parse(ctx, readBuffer, firmwareType)
 	if err != nil {
 		var zero T
 		return zero, err

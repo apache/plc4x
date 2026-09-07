@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,7 +54,7 @@ var _ AdsReadDeviceInfoRequest = (*_AdsReadDeviceInfoRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoRequest)(nil)
 
 // NewAdsReadDeviceInfoRequest factory function for _AdsReadDeviceInfoRequest
-func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoRequest {
+func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32) *_AdsReadDeviceInfoRequest {
 	_result := &_AdsReadDeviceInfoRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
@@ -184,17 +184,17 @@ func CastAdsReadDeviceInfoRequest(structType any) AdsReadDeviceInfoRequest {
 	return nil
 }
 
-func (m *_AdsReadDeviceInfoRequest) GetTypeName() string {
+func (m *_AdsReadDeviceInfoRequest) GetPlx4xTypeName() string {
 	return "AdsReadDeviceInfoRequest"
 }
 
-func (m *_AdsReadDeviceInfoRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsReadDeviceInfoRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AdsReadDeviceInfoRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsReadDeviceInfoRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

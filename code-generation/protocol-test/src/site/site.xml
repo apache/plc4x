@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -38,7 +38,7 @@
     <reflowSkin>
       <localResources>true</localResources>
       <absoluteResourceURL>https://plc4x.apache.org/</absoluteResourceURL>
-      <titleTemplate>Apache PLC4X® - %2$s</titleTemplate>
+      <titleTemplate>Apache PLC4XÂ® - %2$s</titleTemplate>
       <slogan position="bannerLeft">The industrial IoT adapter</slogan>
       <showApacheEvents>true</showApacheEvents>
       <toc>top</toc>

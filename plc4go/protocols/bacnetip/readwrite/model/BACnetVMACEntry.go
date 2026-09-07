@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -199,12 +199,12 @@ func CastBACnetVMACEntry(structType any) BACnetVMACEntry {
 	return nil
 }
 
-func (m *_BACnetVMACEntry) GetTypeName() string {
+func (m *_BACnetVMACEntry) GetPlx4xTypeName() string {
 	return "BACnetVMACEntry"
 }
 
-func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Optional Field (virtualMacAddress)
 	if m.VirtualMacAddress != nil {
@@ -219,7 +219,7 @@ func (m *_BACnetVMACEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetVMACEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetVMACEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -234,7 +234,7 @@ func BACnetVMACEntryParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
-	v, err := (&_BACnetVMACEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetVMACEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -294,11 +294,11 @@ func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetVMACEntry")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", GetRef(m.GetVirtualMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", new(m.GetVirtualMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'virtualMacAddress' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", GetRef(m.GetNativeMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", new(m.GetNativeMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'nativeMacAddress' field")
 	}
 

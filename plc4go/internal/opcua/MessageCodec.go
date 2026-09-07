@@ -24,12 +24,12 @@ import (
 	"encoding/binary"
 	"sync"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -44,6 +44,10 @@ type MessageCodec struct {
 	passLogToModel bool `ignore:"true"`
 	log            zerolog.Logger
 }
+
+var (
+	_ spi.TransportInstanceExposer = (*MessageCodec)(nil)
+)
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
@@ -60,17 +64,13 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Connect() error {
-	return m.ConnectWithContext(context.Background())
-}
-
-func (m *MessageCodec) Send(message spi.Message) error {
-	m.log.Trace().Stringer("message", message).Msg("Sending message")
+func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	m.log.Trace().Str("interactionInfo", interactionInfo).Interface("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
 	if !ok {
 		if message, ok := message.(readWriteModel.MessagePDU); ok {
-			opcuaApu = readWriteModel.NewOpcuaAPU(message, false, true)
+			opcuaApu = readWriteModel.NewOpcuaAPU(message)
 		} else {
 			return errors.Errorf("Invalid message type %T", message)
 		}
@@ -78,56 +78,61 @@ func (m *MessageCodec) Send(message spi.Message) error {
 
 	// Serialize the request
 	wbbb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := opcuaApu.SerializeWithWriteBuffer(context.Background(), wbbb); err != nil {
+	if err := opcuaApu.SerializeWithWriteBuffer(ctx, wbbb); err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 	theBytes := wbbb.GetBytes()
 
 	// Send it to the PLC
-	if err := m.GetTransportInstance().Write(theBytes); err != nil {
+	if err := m.GetTransportInstance().Write(ctx, theBytes); err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	m.log.Trace().Msg("bytes written to transport instance")
 	return nil
 }
 
-func (m *MessageCodec) Receive() (spi.Message, error) {
+func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	m.log.Trace().Msg("Receive")
 	ti := m.GetTransportInstance()
 	if !ti.IsConnected() {
 		return nil, errors.New("Transport instance not connected")
 	}
 
-	if err := ti.FillBuffer(
-		func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-			m.log.Trace().Uint("pos", pos).Uint8("currentByte", currentByte).Msg("filling")
-			numBytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
-			if err != nil {
-				m.log.Debug().Err(err).Msg("error getting available bytes")
-				return false
-			}
-			m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 8")
-			return numBytesAvailable < 8
-		}); err != nil {
+	if err := ti.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+		m.log.Trace().Uint("pos", pos).Uint8("currentByte", currentByte).Msg("filling")
+		numBytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
+		if err != nil {
+			m.log.Debug().Err(err).Msg("error getting available bytes")
+			return false
+		}
+		m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 8")
+		return numBytesAvailable < 8
+	}); err != nil {
 		m.log.Debug().Err(err).Msg("error filling buffer")
 	}
 
-	data, err := ti.PeekReadableBytes(8)
+	data, err := ti.PeekReadableBytes(ctx, 8)
 	if err != nil {
 		m.log.Debug().Err(err).Msg("error peeking")
 		return nil, nil
 	}
 	numberOfBytesToRead := binary.LittleEndian.Uint32(data[4:8])
-	readBytes, err := ti.Read(numberOfBytesToRead)
+	// The driver advertises DEFAULT_RECEIVE_BUFFER_SIZE in its Hello message; a frame claiming
+	// to be larger is a protocol violation and must not be allocated or read (a malicious peer
+	// could otherwise force a ~4GiB allocation from a single 8-byte header).
+	if numberOfBytesToRead > DEFAULT_RECEIVE_BUFFER_SIZE {
+		return nil, errors.Errorf("received message length %d exceeds the advertised receive buffer size %d", numberOfBytesToRead, DEFAULT_RECEIVE_BUFFER_SIZE)
+	}
+	readBytes, err := ti.Read(ctx, numberOfBytesToRead)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not read %d bytes", readBytes)
 	}
-	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	rbbb := utils.NewReadBufferByteBased(readBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	opcuaAPU, err := readWriteModel.OpcuaAPUParseWithBuffer(ctxForModel, rbbb, true, true)
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}
-	m.log.Debug().Stringer("opcuaAPU", opcuaAPU).Msg("got message")
+	m.log.Debug().Interface("opcuaAPU", opcuaAPU).Msg("got message")
 	return opcuaAPU, nil
 }

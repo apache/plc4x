@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetConfirmedServiceRequestVTOpen = (*_BACnetConfirmedServiceRequestVTOp
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
-func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
+func NewBACnetConfirmedServiceRequestVTOpen(serviceRequestLength uint32, vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetConfirmedServiceRequestVTOpen {
 	if vtClass == nil {
 		panic("vtClass of type BACnetVTClassTagged for BACnetConfirmedServiceRequestVTOpen must not be nil")
 	}
@@ -258,12 +258,12 @@ func CastBACnetConfirmedServiceRequestVTOpen(structType any) BACnetConfirmedServ
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestVTOpen) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestVTOpen"
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (vtClass)
 	lengthInBits += m.VtClass.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

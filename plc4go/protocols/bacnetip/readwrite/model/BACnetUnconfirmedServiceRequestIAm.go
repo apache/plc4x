@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetUnconfirmedServiceRequestIAm = (*_BACnetUnconfirmedServiceRequestIAm
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestIAm)(nil)
 
 // NewBACnetUnconfirmedServiceRequestIAm factory function for _BACnetUnconfirmedServiceRequestIAm
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger, segmentationSupported BACnetSegmentationTagged, vendorId BACnetVendorIdTagged, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIAm {
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger, segmentationSupported BACnetSegmentationTagged, vendorId BACnetVendorIdTagged) *_BACnetUnconfirmedServiceRequestIAm {
 	if deviceIdentifier == nil {
 		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIAm must not be nil")
 	}
@@ -82,7 +82,7 @@ func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTag
 		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestIAm{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceIdentifier:                        deviceIdentifier,
 		MaximumApduLengthAcceptedLength:         maximumApduLengthAcceptedLength,
 		SegmentationSupported:                   segmentationSupported,
@@ -324,12 +324,12 @@ func CastBACnetUnconfirmedServiceRequestIAm(structType any) BACnetUnconfirmedSer
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIAm"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -346,7 +346,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

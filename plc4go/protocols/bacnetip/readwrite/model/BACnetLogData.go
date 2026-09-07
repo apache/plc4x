@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,6 @@ type BACnetLogDataContract interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetTagNumber() returns a parser argument
-	GetTagNumber() uint8
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
 	// CreateBuilder creates a BACnetLogDataBuilder
@@ -68,8 +66,8 @@ type BACnetLogDataContract interface {
 
 // BACnetLogDataRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetLogDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -83,15 +81,12 @@ type _BACnetLogData struct {
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetLogDataContract = (*_BACnetLogData)(nil)
 
 // NewBACnetLogData factory function for _BACnetLogData
-func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogData {
+func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetLogData {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetLogData must not be nil")
 	}
@@ -101,7 +96,7 @@ func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHead
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetLogData must not be nil")
 	}
-	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,8 +121,6 @@ type BACnetLogDataBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLogDataBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLogDataBuilder
 	// AsBACnetLogDataLogStatus converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
 	AsBACnetLogDataLogStatus() BACnetLogDataLogStatusBuilder
 	// AsBACnetLogDataLogData converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
@@ -211,11 +204,6 @@ func (b *_BACnetLogDataBuilder) WithClosingTagBuilder(builderSupplier func(BACne
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetLogDataBuilder) WithArgTagNumber(tagNumber uint8) BACnetLogDataBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -365,12 +353,12 @@ func CastBACnetLogData(structType any) BACnetLogData {
 	return nil
 }
 
-func (m *_BACnetLogData) GetTypeName() string {
+func (m *_BACnetLogData) GetPlx4xTypeName() string {
 	return "BACnetLogData"
 }
 
-func (m *_BACnetLogData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLogData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -383,11 +371,11 @@ func (m *_BACnetLogData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLogData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetLogData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetLogData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -407,7 +395,7 @@ func BACnetLogDataParseWithBufferProducer[T BACnetLogData](tagNumber uint8) func
 }
 
 func BACnetLogDataParseWithBuffer[T BACnetLogData](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := (&_BACnetLogData{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetLogData)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -451,15 +439,15 @@ func (m *_BACnetLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child BACnetLogData
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
-		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogStatus for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
-		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogData for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
-		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, uint8(tagNumber)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogDataTimeChange for type-switch of BACnetLogData")
 		}
 	default:
@@ -516,16 +504,6 @@ func (pm *_BACnetLogData) serializeParent(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLogData) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetLogData) IsBACnetLogData() {}
 
 func (m *_BACnetLogData) DeepCopy() any {
@@ -541,7 +519,6 @@ func (m *_BACnetLogData) deepCopy() *_BACnetLogData {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetLogDataCopy
 }

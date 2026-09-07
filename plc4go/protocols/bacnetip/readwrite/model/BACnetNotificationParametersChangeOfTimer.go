@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -80,7 +80,7 @@ var _ BACnetNotificationParametersChangeOfTimer = (*_BACnetNotificationParameter
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfTimer)(nil)
 
 // NewBACnetNotificationParametersChangeOfTimer factory function for _BACnetNotificationParametersChangeOfTimer
-func NewBACnetNotificationParametersChangeOfTimer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newValue BACnetTimerStateTagged, statusFlags BACnetStatusFlagsTagged, updateTime BACnetDateTimeEnclosed, lastStateChange BACnetTimerTransitionTagged, initialTimeout BACnetContextTagUnsignedInteger, expirationTime BACnetDateTimeEnclosed, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfTimer {
+func NewBACnetNotificationParametersChangeOfTimer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newValue BACnetTimerStateTagged, statusFlags BACnetStatusFlagsTagged, updateTime BACnetDateTimeEnclosed, lastStateChange BACnetTimerTransitionTagged, initialTimeout BACnetContextTagUnsignedInteger, expirationTime BACnetDateTimeEnclosed, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersChangeOfTimer {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfTimer must not be nil")
 	}
@@ -97,7 +97,7 @@ func NewBACnetNotificationParametersChangeOfTimer(openingTag BACnetOpeningTag, p
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfTimer must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfTimer{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		NewValue:                             newValue,
 		StatusFlags:                          statusFlags,
@@ -434,12 +434,12 @@ func CastBACnetNotificationParametersChangeOfTimer(structType any) BACnetNotific
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimer) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfTimer) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfTimer"
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfTimer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -474,7 +474,7 @@ func (m *_BACnetNotificationParametersChangeOfTimer) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfTimer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -590,15 +590,15 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'updateTime' field")
 		}
 
-		if err := WriteOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", GetRef(m.GetLastStateChange()), WriteComplex[BACnetTimerTransitionTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", new(m.GetLastStateChange()), WriteComplex[BACnetTimerTransitionTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastStateChange' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", GetRef(m.GetInitialTimeout()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", new(m.GetInitialTimeout()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'initialTimeout' field")
 		}
 
-		if err := WriteOptionalField[BACnetDateTimeEnclosed](ctx, "expirationTime", GetRef(m.GetExpirationTime()), WriteComplex[BACnetDateTimeEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetDateTimeEnclosed](ctx, "expirationTime", new(m.GetExpirationTime()), WriteComplex[BACnetDateTimeEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'expirationTime' field")
 		}
 

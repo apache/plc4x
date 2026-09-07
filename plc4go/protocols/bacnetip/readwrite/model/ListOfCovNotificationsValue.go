@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -60,22 +60,19 @@ type _ListOfCovNotificationsValue struct {
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	PropertyValue      BACnetConstructedData
 	TimeOfChange       BACnetContextTagTime
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ ListOfCovNotificationsValue = (*_ListOfCovNotificationsValue)(nil)
 
 // NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
+func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime) *_ListOfCovNotificationsValue {
 	if propertyIdentifier == nil {
 		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
 	}
 	if propertyValue == nil {
 		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
 	}
-	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
+	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange}
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,8 +101,6 @@ type ListOfCovNotificationsValueBuilder interface {
 	WithOptionalTimeOfChange(BACnetContextTagTime) ListOfCovNotificationsValueBuilder
 	// WithOptionalTimeOfChangeBuilder adds TimeOfChange (property field) which is build by the builder
 	WithOptionalTimeOfChangeBuilder(func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) ListOfCovNotificationsValueBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) ListOfCovNotificationsValueBuilder
 	// Build builds the ListOfCovNotificationsValue or returns an error if something is wrong
 	Build() (ListOfCovNotificationsValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -189,11 +184,6 @@ func (b *_ListOfCovNotificationsValueBuilder) WithOptionalTimeOfChangeBuilder(bu
 	return b
 }
 
-func (b *_ListOfCovNotificationsValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) ListOfCovNotificationsValueBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
-	return b
-}
-
 func (b *_ListOfCovNotificationsValueBuilder) Build() (ListOfCovNotificationsValue, error) {
 	if b.PropertyIdentifier == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'propertyIdentifier' not set"))
@@ -273,12 +263,12 @@ func CastListOfCovNotificationsValue(structType any) ListOfCovNotificationsValue
 	return nil
 }
 
-func (m *_ListOfCovNotificationsValue) GetTypeName() string {
+func (m *_ListOfCovNotificationsValue) GetPlx4xTypeName() string {
 	return "ListOfCovNotificationsValue"
 }
 
-func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (propertyIdentifier)
 	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
@@ -299,7 +289,7 @@ func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_ListOfCovNotificationsValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ListOfCovNotificationsValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -314,7 +304,7 @@ func ListOfCovNotificationsValueParseWithBufferProducer(objectTypeArgument BACne
 }
 
 func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
-	v, err := (&_ListOfCovNotificationsValue{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := (new(_ListOfCovNotificationsValue)).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -390,7 +380,7 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
@@ -398,7 +388,7 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagTime](ctx, "timeOfChange", GetRef(m.GetTimeOfChange()), WriteComplex[BACnetContextTagTime](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagTime](ctx, "timeOfChange", new(m.GetTimeOfChange()), WriteComplex[BACnetContextTagTime](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeOfChange' field")
 	}
 
@@ -407,16 +397,6 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_ListOfCovNotificationsValue) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
 
 func (m *_ListOfCovNotificationsValue) IsListOfCovNotificationsValue() {}
 
@@ -433,7 +413,6 @@ func (m *_ListOfCovNotificationsValue) deepCopy() *_ListOfCovNotificationsValue 
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
 		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
 		utils.DeepCopy[BACnetContextTagTime](m.TimeOfChange),
-		m.ObjectTypeArgument,
 	}
 	return _ListOfCovNotificationsValueCopy
 }

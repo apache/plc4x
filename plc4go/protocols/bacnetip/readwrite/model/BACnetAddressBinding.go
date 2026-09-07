@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,12 +211,12 @@ func CastBACnetAddressBinding(structType any) BACnetAddressBinding {
 	return nil
 }
 
-func (m *_BACnetAddressBinding) GetTypeName() string {
+func (m *_BACnetAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetAddressBinding"
 }
 
-func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetAddressBinding) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAddressBinding) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -242,7 +242,7 @@ func BACnetAddressBindingParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
-	v, err := (&_BACnetAddressBinding{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAddressBinding)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

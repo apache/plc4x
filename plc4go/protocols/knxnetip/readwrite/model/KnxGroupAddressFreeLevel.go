@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +207,12 @@ func CastKnxGroupAddressFreeLevel(structType any) KnxGroupAddressFreeLevel {
 	return nil
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetTypeName() string {
+func (m *_KnxGroupAddressFreeLevel) GetPlx4xTypeName() string {
 	return "KnxGroupAddressFreeLevel"
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxGroupAddressContract.(*_KnxGroupAddress).getLengthInBits(ctx))
+func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxGroupAddressContract.(*_KnxGroupAddress).getLengthInBits(ctx))
 
 	// Simple field (subGroup)
 	lengthInBits += 16
@@ -220,7 +220,7 @@ func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

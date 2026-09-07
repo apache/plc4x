@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastAudioDataType(structType any) AudioDataType {
 	return nil
 }
 
-func (m *_AudioDataType) GetTypeName() string {
+func (m *_AudioDataType) GetPlx4xTypeName() string {
 	return "AudioDataType"
 }
 
-func (m *_AudioDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AudioDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_AudioDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AudioDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func AudioDataTypeParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func AudioDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AudioDataType, error) {
-	v, err := (&_AudioDataType{}).parse(ctx, readBuffer)
+	v, err := (new(_AudioDataType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,7 +24,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.D
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultUndefinedTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -32,6 +31,7 @@ import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.BooleanLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.apache.plc4x.plugins.codegenerator.types.terms.WildcardTerm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,6 +130,33 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     /* *********************************************************************************
      * Methods related to fields.
      **********************************************************************************/
+
+    /**
+     * Checks whether the given type declares a discriminator field of this name itself.
+     *
+     * <p>{@link ComplexTypeDefinition#isDiscriminatorField(String)} cannot answer this for a type
+     * that carries a nested typeSwitch of its own: it resolves the discriminator names from
+     * {@code getParentType().orElse(this)}, so a discriminator this type declares in order to
+     * dispatch its own children is invisible to it and only the parent's discriminators are seen.
+     * {@link #getDiscriminatorTypes(TypeDefinition)} above already prefers the type's own switch
+     * field, so without this the two disagree and a language template that pairs them emits an
+     * interface without the accessor its own serializer calls.
+     *
+     * @param type              type to inspect.
+     * @param discriminatorName name of the discriminator.
+     * @return true if this very type declares a discriminator field with that name.
+     */
+    public boolean declaresDiscriminatorField(TypeDefinition type, String discriminatorName) {
+        Objects.requireNonNull(discriminatorName);
+        if (!(type instanceof ComplexTypeDefinition)) {
+            return false;
+        }
+        return ((ComplexTypeDefinition) type).getFields().stream()
+            .filter(Field::isDiscriminatorField)
+            .map(field -> field.asNamedField().orElse(null))
+            .filter(Objects::nonNull)
+            .anyMatch(namedField -> discriminatorName.equals(namedField.getName()));
+    }
 
     public boolean hasFieldOfType(String fieldTypeName) {
         Objects.requireNonNull(fieldTypeName);
@@ -300,15 +327,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return filteredEnumValues.values();
     }
 
-    public Collection<EnumValue> getEnumValuesForUniqueConstantValues(List<EnumValue> enumValues, String constantName) {
+    public Map<String, EnumValue> getEnumValuesForUniqueConstantValues(List<EnumValue> enumValues, String constantName) {
         Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
         for (EnumValue enumValue : enumValues) {
             String key = enumValue.getConstant(constantName).orElseThrow(() -> new FreemarkerException("No constant name " + constantName + " found in enum value" + enumValue));
-            if (!filteredEnumValues.containsKey(key)) {
+            if(!"null".equalsIgnoreCase(key) && !filteredEnumValues.containsKey(key)) {
                 filteredEnumValues.put(key, enumValue);
             }
         }
-        return filteredEnumValues.values();
+        return filteredEnumValues;
     }
 
     public SimpleTypeReference getEnumFieldSimpleTypeReference(NonSimpleTypeReference type, String fieldName) {
@@ -355,8 +382,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             .orElse(null);
     }
 
-
-    // TODO: replace that with term.isWildcard() (once the referenced wildcard term from build utils is used)
     public boolean isWildcard(Term term) {
         return term instanceof WildcardTerm;
     }

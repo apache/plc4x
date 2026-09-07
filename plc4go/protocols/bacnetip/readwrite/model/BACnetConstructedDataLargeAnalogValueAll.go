@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataLargeAnalogValueAll = (*_BACnetConstructedDataLargeAn
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueAll)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueAll factory function for _BACnetConstructedDataLargeAnalogValueAll
-func NewBACnetConstructedDataLargeAnalogValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueAll {
+func NewBACnetConstructedDataLargeAnalogValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataLargeAnalogValueAll {
 	_result := &_BACnetConstructedDataLargeAnalogValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataLargeAnalogValueAll(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueAll"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLargeAnalogValueAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

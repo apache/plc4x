@@ -49,15 +49,15 @@ func (d *DefaultPlcSubscriptionTag) SerializeWithWriteBuffer(ctx context.Context
 		return err
 	}
 
-	if err := writeBuffer.WriteString("plcTag", uint32(len(d.plcTag.String())*8), d.plcTag.String()); err != nil {
+	if err := writeBuffer.WriteString("plcTag", uint32(len(d.plcTag.String())*8), d.plcTag.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("plcSubscriptionType", uint32(len(d.plcSubscriptionType.String())*8), d.plcSubscriptionType.String()); err != nil {
+	if err := writeBuffer.WriteString("plcSubscriptionType", uint32(len(d.plcSubscriptionType.String())*8), d.plcSubscriptionType.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("duration", uint32(len(fmt.Sprintf("%s", d.duration))*8), fmt.Sprintf("%s", d.duration)); err != nil {
+	if err := writeBuffer.WriteString("duration", uint32(len(fmt.Sprintf("%s", d.duration))*8), fmt.Sprintf("%s", d.duration), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("PlcSubscriptionTag"); err != nil {

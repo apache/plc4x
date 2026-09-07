@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,8 +56,8 @@ type OpenChannelMessageContract interface {
 
 // OpenChannelMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type OpenChannelMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
 }
@@ -215,21 +215,21 @@ func CastOpenChannelMessage(structType any) OpenChannelMessage {
 	return nil
 }
 
-func (m *_OpenChannelMessage) GetTypeName() string {
+func (m *_OpenChannelMessage) GetPlx4xTypeName() string {
 	return "OpenChannelMessage"
 }
 
-func (m *_OpenChannelMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_OpenChannelMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_OpenChannelMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_OpenChannelMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_OpenChannelMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpenChannelMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -249,7 +249,7 @@ func OpenChannelMessageParseWithBufferProducer[T OpenChannelMessage](response bo
 }
 
 func OpenChannelMessageParseWithBuffer[T OpenChannelMessage](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_OpenChannelMessage{}).parse(ctx, readBuffer, response)
+	v, err := (new(_OpenChannelMessage)).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

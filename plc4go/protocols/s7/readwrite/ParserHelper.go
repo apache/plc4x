@@ -22,9 +22,8 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,7 +105,7 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 	case "AssociatedQueryValueType":
 		return AssociatedQueryValueTypeParseWithBuffer(context.Background(), io)
 	case "COTPPacket":
-		cotpLen, err := utils.StrToUint16(arguments[0])
+		cotpLen, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}

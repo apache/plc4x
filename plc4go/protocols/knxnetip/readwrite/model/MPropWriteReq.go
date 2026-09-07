@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ MPropWriteReq = (*_MPropWriteReq)(nil)
 var _ CEMIRequirements = (*_MPropWriteReq)(nil)
 
 // NewMPropWriteReq factory function for _MPropWriteReq
-func NewMPropWriteReq(size uint16) *_MPropWriteReq {
+func NewMPropWriteReq() *_MPropWriteReq {
 	_result := &_MPropWriteReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
@@ -180,17 +180,17 @@ func CastMPropWriteReq(structType any) MPropWriteReq {
 	return nil
 }
 
-func (m *_MPropWriteReq) GetTypeName() string {
+func (m *_MPropWriteReq) GetPlx4xTypeName() string {
 	return "MPropWriteReq"
 }
 
-func (m *_MPropWriteReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MPropWriteReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MPropWriteReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MPropWriteReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

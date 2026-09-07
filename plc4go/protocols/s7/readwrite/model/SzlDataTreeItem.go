@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -217,19 +217,19 @@ func CastSzlDataTreeItem(structType any) SzlDataTreeItem {
 	return nil
 }
 
-func (m *_SzlDataTreeItem) GetTypeName() string {
+func (m *_SzlDataTreeItem) GetPlx4xTypeName() string {
 	return "SzlDataTreeItem"
 }
 
-func (m *_SzlDataTreeItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SzlDataTreeItem) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (itemIndex)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.Mlfb) > 0 {
-		lengthInBits += 8 * uint16(len(m.Mlfb))
+		lengthInBits += 8 * uint64(len(m.Mlfb))
 	}
 
 	// Simple field (moduleTypeId)
@@ -244,7 +244,7 @@ func (m *_SzlDataTreeItem) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SzlDataTreeItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SzlDataTreeItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -259,7 +259,7 @@ func SzlDataTreeItemParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
-	v, err := (&_SzlDataTreeItem{}).parse(ctx, readBuffer)
+	v, err := (new(_SzlDataTreeItem)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

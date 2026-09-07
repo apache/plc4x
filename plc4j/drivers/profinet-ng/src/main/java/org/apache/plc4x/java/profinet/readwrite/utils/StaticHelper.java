@@ -19,7 +19,12 @@
 package org.apache.plc4x.java.profinet.readwrite.utils;
 
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 import java.util.Arrays;
 import java.util.List;
@@ -98,16 +103,14 @@ public class StaticHelper {
         }
         WriteBufferByteBased buffer;
         boolean evenSize = (payload.getLengthInBytes() % 2) == 0;
-        if (evenSize) {
-            buffer = new WriteBufferByteBased(payload.getLengthInBytes(), ByteOrder.BIG_ENDIAN);
-        } else {
-            buffer = new WriteBufferByteBased(payload.getLengthInBytes() + 1, ByteOrder.BIG_ENDIAN);
-        }
+        int byteLen = evenSize ? payload.getLengthInBytes() : payload.getLengthInBytes() + 1;
+        buffer = new WriteBufferByteBased(new byte[byteLen],
+            WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
 
         try {
             payload.serialize(buffer);
             if (!evenSize) {
-                buffer.writeByte("Padding", (byte) 0x00);
+                buffer.writeSignedByte(8, (byte) 0x00);
             }
             byte[] byteBuffer = buffer.getBytes();
 
@@ -122,7 +125,7 @@ public class StaticHelper {
                     cur += 1;
                 }
             }
-        } catch (SerializationException e) {
+        } catch (BufferException e) {
             return 0x0000;
         }
 
@@ -212,14 +215,27 @@ public class StaticHelper {
     }
 
     public static boolean isSysexEnd(ReadBuffer io) {
-        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2)[1] == (byte) 0x00;
+        // Peek two bytes; the LLDP sysex terminator is a 0x00 in the second
+        // position. New SPI buffers don't expose absolute byte access so we
+        // snapshot/rewind to peek non-destructively.
+        if (!(io instanceof ReadBufferByteBased rb)) {
+            return false;
+        }
+        int pos = rb.getPositionInBits();
+        try {
+            byte[] bytes = rb.readBits(16);
+            return bytes.length >= 2 && bytes[1] == (byte) 0x00;
+        } catch (BufferException e) {
+            return false;
+        } finally {
+            rb.setPositionInBits(pos);
+        }
     }
 
     public static LldpUnit parseSysexString(ReadBuffer io) {
         try {
-            LldpUnit unit = LldpUnit.staticParse(io);
-            return unit;
-        } catch (ParseException e) {
+            return LldpUnit.staticParse(io);
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -227,7 +243,8 @@ public class StaticHelper {
     public static void serializeSysexString(WriteBuffer io, LldpUnit unit) {
         try {
             unit.serialize(io);
-        } catch (SerializationException e) {
+        } catch (BufferException ignored) {
+            // best-effort
         }
     }
 
@@ -239,18 +256,19 @@ public class StaticHelper {
         return lengthInBytes;
     }
 
-    public static void writeDataUnit(WriteBuffer writeBuffer, PnIo_CyclicServiceDataUnit dataUnit) throws SerializationException {
+    public static void writeDataUnit(WriteBuffer writeBuffer, PnIo_CyclicServiceDataUnit dataUnit) throws BufferException {
         dataUnit.serialize(writeBuffer);
     }
 
-    public static PnIo_CyclicServiceDataUnit readDataUnit(ReadBuffer readBuffer) throws ParseException {
+    public static PnIo_CyclicServiceDataUnit readDataUnit(ReadBuffer readBuffer) throws BufferException {
+        // Subtract 4 bytes for the trailing footer (cycle counter + flags) we
+        // don't want to consume as part of the data unit.
         int NO_TRAILING_BYTES = 4;
-        int initialPos = readBuffer.getPos();
-        while (readBuffer.hasMore(8)) {
-            readBuffer.readByte();
+        if (!(readBuffer instanceof ReadBufferByteBased rb)) {
+            return PnIo_CyclicServiceDataUnit.staticParse(readBuffer, (short) 0);
         }
-        int dataUnitLength = readBuffer.getPos() - initialPos - NO_TRAILING_BYTES;
-        readBuffer.reset(initialPos);
+        int remainingBytes = rb.getRemainingBits() / 8;
+        int dataUnitLength = Math.max(remainingBytes - NO_TRAILING_BYTES, 0);
         return PnIo_CyclicServiceDataUnit.staticParse(readBuffer, (short) dataUnitLength);
     }
 

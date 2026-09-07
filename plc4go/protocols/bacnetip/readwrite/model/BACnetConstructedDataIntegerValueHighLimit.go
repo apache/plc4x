@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValueHighLimit = (*_BACnetConstructedDataInteg
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueHighLimit)(nil)
 
 // NewBACnetConstructedDataIntegerValueHighLimit factory function for _BACnetConstructedDataIntegerValueHighLimit
-func NewBACnetConstructedDataIntegerValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueHighLimit {
+func NewBACnetConstructedDataIntegerValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValueHighLimit {
 	if highLimit == nil {
 		panic("highLimit of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValueHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		HighLimit:                     highLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIntegerValueHighLimit(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegerValueHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegerValueHighLimit"
 }
 
-func (m *_BACnetConstructedDataIntegerValueHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntegerValueHighLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (highLimit)
 	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIntegerValueHighLimit) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegerValueHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntegerValueHighLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

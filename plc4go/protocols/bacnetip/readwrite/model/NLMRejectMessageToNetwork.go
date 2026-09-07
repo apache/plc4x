@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRejectMessageToNetwork)(nil)
 
 // NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
-func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
+func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16) *_NLMRejectMessageToNetwork {
 	_result := &_NLMRejectMessageToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
@@ -222,12 +222,12 @@ func CastNLMRejectMessageToNetwork(structType any) NLMRejectMessageToNetwork {
 	return nil
 }
 
-func (m *_NLMRejectMessageToNetwork) GetTypeName() string {
+func (m *_NLMRejectMessageToNetwork) GetPlx4xTypeName() string {
 	return "NLMRejectMessageToNetwork"
 }
 
-func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (rejectReason)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_NLMRejectMessageToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRejectMessageToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

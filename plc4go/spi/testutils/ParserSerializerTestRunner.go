@@ -20,7 +20,6 @@
 package testutils
 
 import (
-	"context"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
@@ -29,12 +28,13 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"testing/synctest"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/subchen/go-xmldom"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils/xmldom"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,6 +58,7 @@ type ParserSerializerTestcase struct {
 }
 
 func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerTestcase) error {
+	ctx := t.Context()
 	t.Logf("running testsuite: %s test: %s", p.name, testcase.name)
 
 	// Get the raw input by decoding the hex-encoded binary input
@@ -90,7 +91,7 @@ func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerT
 		// First try to use the native xml writer
 		serializable := msg.(utils.Serializable)
 		buffer := utils.NewXmlWriteBuffer()
-		if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
+		if err := serializable.SerializeWithWriteBuffer(ctx, buffer); err == nil {
 			actualXml := buffer.GetXmlString()
 			if err := CompareResults(t, []byte(actualXml), []byte(testcase.referenceXml)); err != nil {
 				border := strings.Repeat("=", 100)
@@ -142,7 +143,7 @@ func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerT
 
 	// Serialize the message
 	t.Log("Serialize message")
-	err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
+	err = s.SerializeWithWriteBuffer(ctx, writeBuffer)
 	if !ok {
 		return errors.New("Couldn't serialize message back to byte array")
 	}
@@ -207,9 +208,11 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, parser Parser, 
 				return
 			}
 			t.Logf("Running testcase %s", testcase.name)
-			if err := testsuite.Run(t, testcase); err != nil {
-				t.Fatalf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
-			}
+			synctest.Test(t, func(t *testing.T) {
+				if err := testsuite.Run(t, testcase); err != nil {
+					t.Fatalf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
+				}
+			})
 		})
 	}
 	t.Log("Done running testcases")
@@ -268,9 +271,9 @@ func ParseParserSerializerTestSuite(t *testing.T, node xmldom.Node, parser Parse
 		switch child.Name {
 		case "name":
 			testsuiteName = child.Text
-		case "protocolName":
+		case "protocol-name":
 			protocolName = child.Text
-		case "outputFlavor":
+		case "output-flavor":
 			outputFlavor = child.Text
 		case "driver-parameters":
 			parameterList := child.FindByName("parameter")

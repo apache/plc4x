@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAlertEnrollmentAll = (*_BACnetConstructedDataAlertEnr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlertEnrollmentAll)(nil)
 
 // NewBACnetConstructedDataAlertEnrollmentAll factory function for _BACnetConstructedDataAlertEnrollmentAll
-func NewBACnetConstructedDataAlertEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentAll {
+func NewBACnetConstructedDataAlertEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAlertEnrollmentAll {
 	_result := &_BACnetConstructedDataAlertEnrollmentAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataAlertEnrollmentAll(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAlertEnrollmentAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAlertEnrollmentAll"
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAlertEnrollmentAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAlertEnrollmentAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

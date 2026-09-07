@@ -22,23 +22,25 @@ package serial
 import (
 	"net"
 	"net/url"
-	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 type Transport struct {
+	registry *sharedPortRegistry
+
 	log zerolog.Logger
 }
 
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Transport{
-		log: customLogger,
+		registry: newSharedPortRegistry(customLogger),
+		log:      customLogger,
 	}
 }
 
@@ -57,27 +59,12 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[st
 func (m *Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr, _options ...options.WithOption) (transports.TransportInstance, error) {
 	var serialPortName = transportUrl.Path
 
-	var baudRate = uint(115200)
-	if val, ok := options["baud-rate"]; ok {
-		parsedBaudRate, err := strconv.ParseUint(val[0], 10, 32)
-		if err != nil {
-			return nil, errors.Wrap(err, "error setting connect-timeout")
-		} else {
-			baudRate = uint(parsedBaudRate)
-		}
+	cfg, err := parseSerialOptions(options)
+	if err != nil {
+		return nil, errors.Wrap(err, "error parsing serial options")
 	}
 
-	var connectTimeout uint32 = 1000
-	if val, ok := options["connect-timeout"]; ok {
-		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
-		if err != nil {
-			return nil, errors.Wrap(err, "error setting connect-timeout")
-		} else {
-			connectTimeout = uint32(parsedConnectTimeout)
-		}
-	}
-
-	return NewTransportInstance(serialPortName, baudRate, connectTimeout, m, _options...), nil
+	return NewTransportInstanceWithConfig(serialPortName, cfg, m, _options...), nil
 }
 
 func (m *Transport) Close() error {

@@ -18,16 +18,15 @@
  */
 package org.apache.plc4x.test.generator
 
-import org.apache.plc4x.java.spi.generation.ParseException
-import org.apache.plc4x.java.spi.generation.ReadBuffer
-import org.apache.plc4x.java.spi.generation.SerializationException
-import org.apache.plc4x.java.spi.generation.WriteBuffer
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException
 
 class DummyMessageRootType {
 
     def dummyOutput
 
-    static DummyMessageRootType staticParse(ReadBuffer readBuffer) throws ParseException {
+    static DummyMessageRootType staticParse(ReadBuffer readBuffer) throws BufferException {
         String dummyOutput = "<someXmlWithSomeContent>\n"
         int i = 0;
         while (true) {
@@ -42,7 +41,7 @@ class DummyMessageRootType {
         return new DummyMessageRootType(dummyOutput: dummyOutput)
     }
 
-    void serialize(WriteBuffer writeBuffer) throws SerializationException {
+    void serialize(WriteBuffer writeBuffer) throws BufferException {
         // TODO: we need to use this
     }
 

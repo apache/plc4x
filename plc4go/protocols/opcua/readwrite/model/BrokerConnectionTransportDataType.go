@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastBrokerConnectionTransportDataType(structType any) BrokerConnectionTrans
 	return nil
 }
 
-func (m *_BrokerConnectionTransportDataType) GetTypeName() string {
+func (m *_BrokerConnectionTransportDataType) GetPlx4xTypeName() string {
 	return "BrokerConnectionTransportDataType"
 }
 
-func (m *_BrokerConnectionTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_BrokerConnectionTransportDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (resourceUri)
 	lengthInBits += m.ResourceUri.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_BrokerConnectionTransportDataType) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BrokerConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BrokerConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_BrokerConnectionTransportDataType) parse(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	resourceUri, err := ReadSimpleField[PascalString](ctx, "resourceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	resourceUri, err := ReadSimpleField[PascalString](ctx, "resourceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resourceUri' field"))
 	}
 	m.ResourceUri = resourceUri
 
-	authenticationProfileUri, err := ReadSimpleField[PascalString](ctx, "authenticationProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	authenticationProfileUri, err := ReadSimpleField[PascalString](ctx, "authenticationProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationProfileUri' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_BrokerConnectionTransportDataType) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BrokerConnectionTransportDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "resourceUri", m.GetResourceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "resourceUri", m.GetResourceUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'resourceUri' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "authenticationProfileUri", m.GetAuthenticationProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "authenticationProfileUri", m.GetAuthenticationProfileUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'authenticationProfileUri' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetProcessIdSelectionNull(structType any) BACnetProcessIdSelectionNu
 	return nil
 }
 
-func (m *_BACnetProcessIdSelectionNull) GetTypeName() string {
+func (m *_BACnetProcessIdSelectionNull) GetPlx4xTypeName() string {
 	return "BACnetProcessIdSelectionNull"
 }
 
-func (m *_BACnetProcessIdSelectionNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).getLengthInBits(ctx))
+func (m *_BACnetProcessIdSelectionNull) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).getLengthInBits(ctx))
 
 	// Simple field (nullValue)
 	lengthInBits += m.NullValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetProcessIdSelectionNull) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetProcessIdSelectionNull) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetProcessIdSelectionNull) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

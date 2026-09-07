@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimerResolution = (*_BACnetConstructedDataTimerResolu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerResolution)(nil)
 
 // NewBACnetConstructedDataTimerResolution factory function for _BACnetConstructedDataTimerResolution
-func NewBACnetConstructedDataTimerResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerResolution {
+func NewBACnetConstructedDataTimerResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTimerResolution {
 	if resolution == nil {
 		panic("resolution of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerResolution must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimerResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Resolution:                    resolution,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataTimerResolution(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerResolution"
 }
 
-func (m *_BACnetConstructedDataTimerResolution) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimerResolution) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (resolution)
 	lengthInBits += m.Resolution.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataTimerResolution) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimerResolution) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimerResolution) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

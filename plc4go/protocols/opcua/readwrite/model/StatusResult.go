@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastStatusResult(structType any) StatusResult {
 	return nil
 }
 
-func (m *_StatusResult) GetTypeName() string {
+func (m *_StatusResult) GetPlx4xTypeName() string {
 	return "StatusResult"
 }
 
-func (m *_StatusResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_StatusResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_StatusResult) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_StatusResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_StatusResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 	m.StatusCode = statusCode
 
-	diagnosticInfo, err := ReadSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer))
+	diagnosticInfo, err := ReadSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfo' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_StatusResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for StatusResult")
 		}
 
-		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		if err := WriteSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", m.GetDiagnosticInfo(), WriteComplex[DiagnosticInfo](writeBuffer)); err != nil {
+		if err := WriteSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", m.GetDiagnosticInfo(), WriteComplex[DiagnosticInfo](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'diagnosticInfo' field")
 		}
 

@@ -16,17 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.plc4x.config;
 
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xConstants;
-import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
+import org.apache.plc4x.java.plc4x.readwrite.Constants;
+import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 
-public class Plc4xTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
+public class Plc4xTcpTransportConfiguration extends TcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return Plc4xConstants.PLC4XTCPDEFAULTPORT;
+        return Constants.PLC4XTCPDEFAULTPORT;
     }
 
 }

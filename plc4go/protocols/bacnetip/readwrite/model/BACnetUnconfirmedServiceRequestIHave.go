@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ BACnetUnconfirmedServiceRequestIHave = (*_BACnetUnconfirmedServiceRequestI
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestIHave)(nil)
 
 // NewBACnetUnconfirmedServiceRequestIHave factory function for _BACnetUnconfirmedServiceRequestIHave
-func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIHave {
+func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString) *_BACnetUnconfirmedServiceRequestIHave {
 	if deviceIdentifier == nil {
 		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIHave must not be nil")
 	}
@@ -76,7 +76,7 @@ func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationT
 		panic("objectName of type BACnetApplicationTagCharacterString for BACnetUnconfirmedServiceRequestIHave must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestIHave{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceIdentifier:                        deviceIdentifier,
 		ObjectIdentifier:                        objectIdentifier,
 		ObjectName:                              objectName,
@@ -291,12 +291,12 @@ func CastBACnetUnconfirmedServiceRequestIHave(structType any) BACnetUnconfirmedS
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestIHave) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIHave"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -310,7 +310,7 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

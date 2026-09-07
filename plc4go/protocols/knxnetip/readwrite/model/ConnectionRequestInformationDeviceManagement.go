@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,17 +180,17 @@ func CastConnectionRequestInformationDeviceManagement(structType any) Connection
 	return nil
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetTypeName() string {
+func (m *_ConnectionRequestInformationDeviceManagement) GetPlx4xTypeName() string {
 	return "ConnectionRequestInformationDeviceManagement"
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).getLengthInBits(ctx))
+func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

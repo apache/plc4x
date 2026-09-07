@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,8 +54,13 @@ type ExtensionObjectWithMaskContract interface {
 	ExtensionObjectContract
 	// GetEncodingMask returns EncodingMask (property field)
 	GetEncodingMask() ExtensionObjectEncodingMask
-	// GetExtensionId() returns a parser argument
-	GetExtensionId() int32
+	// GetBodyKind returns BodyKind (virtual field)
+	// Body kind: 0 = no binary body (null); 1 = binary body of a well-known standard type
+	// (encoding node in namespace 0) which the generated dispatch can decode; 2 = binary
+	// body of a custom / user-defined type (encoding node in namespace >= 1) which the
+	// dispatch cannot decode, so the raw bytes are captured for the driver to decode against
+	// the type's StructureDefinition.
+	GetBodyKind() int8
 	// GetIncludeEncodingMask returns IncludeEncodingMask (discriminator field)
 	GetIncludeEncodingMask() bool
 	// IsExtensionObjectWithMask is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -66,8 +72,8 @@ type ExtensionObjectWithMaskContract interface {
 // ExtensionObjectWithMaskRequirements provides a set of functions which need to be implemented by a sub struct
 type ExtensionObjectWithMaskRequirements interface {
 	ExtensionObjectRequirements
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 }
 
 // _ExtensionObjectWithMask is the data-structure of this message
@@ -78,15 +84,12 @@ type _ExtensionObjectWithMask struct {
 		ExtensionObjectWithMaskRequirements
 	}
 	EncodingMask ExtensionObjectEncodingMask
-
-	// Arguments.
-	ExtensionId int32
 }
 
 var _ ExtensionObjectWithMaskContract = (*_ExtensionObjectWithMask)(nil)
 
 // NewExtensionObjectWithMask factory function for _ExtensionObjectWithMask
-func NewExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, extensionId int32) *_ExtensionObjectWithMask {
+func NewExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask) *_ExtensionObjectWithMask {
 	if encodingMask == nil {
 		panic("encodingMask of type ExtensionObjectEncodingMask for ExtensionObjectWithMask must not be nil")
 	}
@@ -112,10 +115,10 @@ type ExtensionObjectWithMaskBuilder interface {
 	WithEncodingMask(ExtensionObjectEncodingMask) ExtensionObjectWithMaskBuilder
 	// WithEncodingMaskBuilder adds EncodingMask (property field) which is build by the builder
 	WithEncodingMaskBuilder(func(ExtensionObjectEncodingMaskBuilder) ExtensionObjectEncodingMaskBuilder) ExtensionObjectWithMaskBuilder
-	// WithArgExtensionId sets a parser argument
-	WithArgExtensionId(int32) ExtensionObjectWithMaskBuilder
 	// AsBinaryExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
 	AsBinaryExtensionObjectWithMask() BinaryExtensionObjectWithMaskBuilder
+	// AsRawBinaryExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
+	AsRawBinaryExtensionObjectWithMask() RawBinaryExtensionObjectWithMaskBuilder
 	// AsNullExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
 	AsNullExtensionObjectWithMask() NullExtensionObjectWithMaskBuilder
 	// Build builds the ExtensionObjectWithMask or returns an error if something is wrong
@@ -177,11 +180,6 @@ func (b *_ExtensionObjectWithMaskBuilder) WithEncodingMaskBuilder(builderSupplie
 	return b
 }
 
-func (b *_ExtensionObjectWithMaskBuilder) WithArgExtensionId(extensionId int32) ExtensionObjectWithMaskBuilder {
-	b.ExtensionId = extensionId
-	return b
-}
-
 func (b *_ExtensionObjectWithMaskBuilder) PartialBuild() (ExtensionObjectWithMaskContract, error) {
 	if b.EncodingMask == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'encodingMask' not set"))
@@ -205,6 +203,16 @@ func (b *_ExtensionObjectWithMaskBuilder) AsBinaryExtensionObjectWithMask() Bina
 		return cb
 	}
 	cb := NewBinaryExtensionObjectWithMaskBuilder().(*_BinaryExtensionObjectWithMaskBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectWithMaskBuilder) AsRawBinaryExtensionObjectWithMask() RawBinaryExtensionObjectWithMaskBuilder {
+	if cb, ok := b.childBuilder.(RawBinaryExtensionObjectWithMaskBuilder); ok {
+		return cb
+	}
+	cb := NewRawBinaryExtensionObjectWithMaskBuilder().(*_RawBinaryExtensionObjectWithMaskBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -300,6 +308,24 @@ func (m *_ExtensionObjectWithMask) GetEncodingMask() ExtensionObjectEncodingMask
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (pm *_ExtensionObjectWithMask) GetBodyKind() int8 {
+	m := pm._SubType
+	ctx := context.Background()
+	_ = ctx
+	return int8(utils.InlineIf(m.GetEncodingMask().GetBinaryBody(), func() any {
+		return int8((utils.InlineIf(m.GetStandardEncoding(), func() any { return int8(int8(1)) }, func() any { return int8(int8(2)) }).(int8)))
+	}, func() any { return int8(int8(0)) }).(int8))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObjectWithMask(structType any) ExtensionObjectWithMask {
@@ -312,28 +338,30 @@ func CastExtensionObjectWithMask(structType any) ExtensionObjectWithMask {
 	return nil
 }
 
-func (m *_ExtensionObjectWithMask) GetTypeName() string {
+func (m *_ExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "ExtensionObjectWithMask"
 }
 
-func (m *_ExtensionObjectWithMask) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ExtensionObjectWithMask) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
 
 	// Simple field (encodingMask)
 	lengthInBits += m.EncodingMask.GetLengthInBits(ctx)
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
-func (m *_ExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObject, extensionId int32, includeEncodingMask bool) (__extensionObjectWithMask ExtensionObjectWithMask, err error) {
+func (m *_ExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObject, extensionId int32, standardEncoding bool, includeEncodingMask bool) (__extensionObjectWithMask ExtensionObjectWithMask, err error) {
 	m.ExtensionObjectContract = parent
 	positionAware := readBuffer
 	_ = positionAware
@@ -343,25 +371,37 @@ func (m *_ExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	encodingMask, err := ReadSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", ReadComplex[ExtensionObjectEncodingMask](ExtensionObjectEncodingMaskParseWithBuffer, readBuffer))
+	encodingMask, err := ReadSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", ReadComplex[ExtensionObjectEncodingMask](ExtensionObjectEncodingMaskParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodingMask' field"))
 	}
 	m.EncodingMask = encodingMask
 
+	bodyKind, err := ReadVirtualField[int8](ctx, "bodyKind", (*int8)(nil), utils.InlineIf(encodingMask.GetBinaryBody(), func() any {
+		return int8((utils.InlineIf(standardEncoding, func() any { return int8(int8(1)) }, func() any { return int8(int8(2)) }).(int8)))
+	}, func() any { return int8(int8(0)) }).(int8), codegen.WithEncoding("UTF8"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bodyKind' field"))
+	}
+	_ = bodyKind
+
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _child ExtensionObjectWithMask
 	switch {
-	case encodingMask.GetXmlBody() == (false) && encodingMask.GetBinaryBody() == (true): // BinaryExtensionObjectWithMask
-		if _child, err = new(_BinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, includeEncodingMask); err != nil {
+	case bodyKind == int8(1): // BinaryExtensionObjectWithMask
+		if _child, err = new(_BinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
-	case encodingMask.GetXmlBody() == (false) && encodingMask.GetBinaryBody() == (false): // NullExtensionObjectWithMask
-		if _child, err = new(_NullExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, includeEncodingMask); err != nil {
+	case bodyKind == int8(2): // RawBinaryExtensionObjectWithMask
+		if _child, err = new(_RawBinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RawBinaryExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
+		}
+	case bodyKind == int8(0): // NullExtensionObjectWithMask
+		if _child, err = new(_NullExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	default:
-		return nil, errors.Errorf("Unmapped type for parameters [encodingMaskxmlBody=%v, encodingMaskbinaryBody=%v]", encodingMask.GetXmlBody(), encodingMask.GetBinaryBody())
+		return nil, errors.Errorf("Unmapped type for parameters [bodyKind=%v]", bodyKind)
 	}
 
 	if closeErr := readBuffer.CloseContext("ExtensionObjectWithMask"); closeErr != nil {
@@ -385,8 +425,14 @@ func (pm *_ExtensionObjectWithMask) serializeParent(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ExtensionObjectWithMask")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", m.GetEncodingMask(), WriteComplex[ExtensionObjectEncodingMask](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", m.GetEncodingMask(), WriteComplex[ExtensionObjectEncodingMask](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'encodingMask' field")
+		}
+		// Virtual field
+		bodyKind := m.GetBodyKind()
+		_ = bodyKind
+		if _bodyKindErr := writeBuffer.WriteVirtual(ctx, "bodyKind", m.GetBodyKind()); _bodyKindErr != nil {
+			return errors.Wrap(_bodyKindErr, "Error serializing 'bodyKind' field")
 		}
 
 		// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -402,16 +448,6 @@ func (pm *_ExtensionObjectWithMask) serializeParent(ctx context.Context, writeBu
 	return pm.ExtensionObjectContract.(*_ExtensionObject).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_ExtensionObjectWithMask) GetExtensionId() int32 {
-	return m.ExtensionId
-}
-
-//
-////
-
 func (m *_ExtensionObjectWithMask) IsExtensionObjectWithMask() {}
 
 func (m *_ExtensionObjectWithMask) DeepCopy() any {
@@ -426,7 +462,6 @@ func (m *_ExtensionObjectWithMask) deepCopy() *_ExtensionObjectWithMask {
 		m.ExtensionObjectContract.(*_ExtensionObject).deepCopy(),
 		nil, // will be set by child
 		utils.DeepCopy[ExtensionObjectEncodingMask](m.EncodingMask),
-		m.ExtensionId,
 	}
 	_ExtensionObjectWithMaskCopy.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
 	return _ExtensionObjectWithMaskCopy

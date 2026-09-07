@@ -166,9 +166,7 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			args: args{
 				calReply: readWriteModel.NewCALReplyShort(
 					1,
-					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
-					nil,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.NewRequestContext(false), readWriteModel.CALCommandTypeContainer_CALCommandReset, nil),
 				),
 			},
 		},
@@ -189,9 +187,7 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			args: args{
 				calReply: readWriteModel.NewCALReplyShort(
 					1,
-					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
-					nil,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.NewRequestContext(false), readWriteModel.CALCommandTypeContainer_CALCommandReset, nil),
 				),
 			},
 		},
@@ -200,13 +196,11 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			args: args{
 				calReply: readWriteModel.NewCALReplyLong(
 					0,
-					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					readWriteModel.NewCALDataReset(readWriteModel.NewRequestContext(false), readWriteModel.CALCommandTypeContainer_CALCommandReset, nil),
 					0,
 					readWriteModel.NewUnitAddress(0),
 					nil,
 					readWriteModel.NewSerialInterfaceAddress(0),
-					nil,
-					nil,
 					nil,
 					nil,
 				),
@@ -217,7 +211,7 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			args: args{
 				calReply: readWriteModel.NewCALReplyLong(
 					0,
-					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					readWriteModel.NewCALDataReset(readWriteModel.NewRequestContext(false), readWriteModel.CALCommandTypeContainer_CALCommandReset, nil),
 					1,
 					readWriteModel.NewUnitAddress(0),
 					readWriteModel.NewBridgeAddress(1),
@@ -233,8 +227,6 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 						),
 						readWriteModel.NewUnitAddress(1),
 					),
-					nil,
-					nil,
 				),
 			},
 		},
@@ -329,7 +321,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			name: "valid monitor tag cal unrelated",
 			args: args{
 				unitAddressString: "u13",
-				calData:           readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, nil),
+				calData:           readWriteModel.NewCALDataReset(readWriteModel.NewRequestContext(false), readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil),
 				subscriptionHandle: NewSubscriptionHandle(
 					nil,
 					"tag",
@@ -354,6 +346,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatus(
+					readWriteModel.NewRequestContext(false),
 					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 					nil,
 					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
@@ -361,7 +354,6 @@ func TestSubscriber_offerMMI(t *testing.T) {
 					[]readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
 					},
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
 					nil,
@@ -387,6 +379,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatus(
+					readWriteModel.NewRequestContext(false),
 					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 					nil,
 					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
@@ -394,7 +387,6 @@ func TestSubscriber_offerMMI(t *testing.T) {
 					[]readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
 					},
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
 					nil,
@@ -423,6 +415,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatusExtended(
+					readWriteModel.NewRequestContext(false),
 					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 					nil,
 					readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE,
@@ -431,7 +424,6 @@ func TestSubscriber_offerMMI(t *testing.T) {
 					[]readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
 					},
-					nil,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
@@ -458,6 +450,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatusExtended(
+					readWriteModel.NewRequestContext(false),
 					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 					nil,
 					readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE,
@@ -473,7 +466,6 @@ func TestSubscriber_offerMMI(t *testing.T) {
 							readWriteModel.LevelInformationNibblePair_Value_2,
 						),
 					},
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
 					nil,
@@ -545,7 +537,6 @@ func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 					nil,
 					nil,
 					nil,
-					nil,
 				),
 			},
 		},
@@ -602,7 +593,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -627,7 +617,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewAccessControlDataAccessPointClosed(readWriteModel.AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed, 0, 0),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -652,7 +641,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewAirConditioningDataRefresh(readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandRefresh, 0),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -677,7 +665,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOff(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 0),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -705,7 +692,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -730,7 +716,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewEnableControlData(0, 0, 0),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -771,7 +756,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							4,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -793,7 +777,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataFreeUsage(nil),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -818,7 +801,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -843,7 +825,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -868,7 +849,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -893,7 +873,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -926,7 +905,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -955,7 +933,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -984,7 +961,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1012,7 +988,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1036,7 +1011,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					readWriteModel.NewSALDataReserved(
 						nil,
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1060,7 +1034,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					readWriteModel.NewSALDataRoomControlSystem(
 						nil,
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1088,7 +1061,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1117,7 +1089,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							"1234",
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1146,7 +1117,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1170,7 +1140,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					readWriteModel.NewSALDataTesting(
 						nil,
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1199,7 +1168,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1227,7 +1195,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							0,
 						),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1252,7 +1219,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
 					nil,
@@ -1287,7 +1253,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
 					nil,
@@ -1326,7 +1291,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1360,7 +1324,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {

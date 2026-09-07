@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,6 +38,10 @@ import (
 const CycServiceItemType_FUNCTIONID uint8 = 0x12
 
 // CycServiceItemType is the corresponding interface of CycServiceItemType
+// //////////////////////////////////////////////////////////////
+// Cycle service Payloads
+// //////////////////////////////////////////////////////////////
+// Under test
 type CycServiceItemType interface {
 	CycServiceItemTypeContract
 	CycServiceItemTypeRequirements
@@ -65,8 +69,8 @@ type CycServiceItemTypeContract interface {
 
 // CycServiceItemTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type CycServiceItemTypeRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetSyntaxId returns SyntaxId (discriminator field)
 	GetSyntaxId() uint8
 }
@@ -271,12 +275,12 @@ func CastCycServiceItemType(structType any) CycServiceItemType {
 	return nil
 }
 
-func (m *_CycServiceItemType) GetTypeName() string {
+func (m *_CycServiceItemType) GetPlx4xTypeName() string {
 	return "CycServiceItemType"
 }
 
-func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -290,11 +294,11 @@ func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CycServiceItemType) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CycServiceItemType) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CycServiceItemType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CycServiceItemType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -314,7 +318,7 @@ func CycServiceItemTypeParseWithBufferProducer[T CycServiceItemType]() func(ctx 
 }
 
 func CycServiceItemTypeParseWithBuffer[T CycServiceItemType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_CycServiceItemType{}).parse(ctx, readBuffer)
+	v, err := (new(_CycServiceItemType)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

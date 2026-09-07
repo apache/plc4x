@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEffectivePeriod = (*_BACnetConstructedDataEffectivePe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEffectivePeriod)(nil)
 
 // NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
+func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange) *_BACnetConstructedDataEffectivePeriod {
 	if dateRange == nil {
 		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
 	}
 	_result := &_BACnetConstructedDataEffectivePeriod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DateRange:                     dateRange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataEffectivePeriod(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetTypeName() string {
+func (m *_BACnetConstructedDataEffectivePeriod) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEffectivePeriod"
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (dateRange)
 	lengthInBits += m.DateRange.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

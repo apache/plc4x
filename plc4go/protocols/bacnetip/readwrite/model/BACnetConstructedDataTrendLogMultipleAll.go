@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataTrendLogMultipleAll = (*_BACnetConstructedDataTrendLo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleAll)(nil)
 
 // NewBACnetConstructedDataTrendLogMultipleAll factory function for _BACnetConstructedDataTrendLogMultipleAll
-func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleAll {
+func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataTrendLogMultipleAll {
 	_result := &_BACnetConstructedDataTrendLogMultipleAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataTrendLogMultipleAll(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAll) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogMultipleAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogMultipleAll"
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTrendLogMultipleAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTrendLogMultipleAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

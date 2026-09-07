@@ -1,3 +1,5 @@
+//go:build cgo || windows
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,9 +25,9 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -59,15 +61,15 @@ func (m *Transport) GetTransportName() string {
 
 func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
 	var transportType = PCAP
-	if val, ok := options["transport-type"]; ok {
+	if val, ok := options["pcap.transport-type"]; ok {
 		transportType = TransportType(val[0])
 	}
 	var portRange = ""
-	if val, ok := options["transport-port-range"]; ok {
+	if val, ok := options["pcap.transport-port-range"]; ok {
 		portRange = val[0]
 	}
 	var speedFactor float32 = 1.0
-	if val, ok := options["speed-factor"]; ok {
+	if val, ok := options["pcap.speed-factor"]; ok {
 		if parsedSpeedFactory, err := strconv.ParseFloat(val[0], 32); err != nil {
 			return nil, errors.Wrap(err, "error parsing speed-factor")
 		} else {

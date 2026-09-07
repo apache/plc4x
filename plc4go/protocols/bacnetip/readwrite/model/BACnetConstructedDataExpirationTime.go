@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataExpirationTime = (*_BACnetConstructedDataExpirationTi
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExpirationTime)(nil)
 
 // NewBACnetConstructedDataExpirationTime factory function for _BACnetConstructedDataExpirationTime
-func NewBACnetConstructedDataExpirationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, expirationTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpirationTime {
+func NewBACnetConstructedDataExpirationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, expirationTime BACnetDateTime) *_BACnetConstructedDataExpirationTime {
 	if expirationTime == nil {
 		panic("expirationTime of type BACnetDateTime for BACnetConstructedDataExpirationTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataExpirationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ExpirationTime:                expirationTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataExpirationTime(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataExpirationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExpirationTime"
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (expirationTime)
 	lengthInBits += m.ExpirationTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

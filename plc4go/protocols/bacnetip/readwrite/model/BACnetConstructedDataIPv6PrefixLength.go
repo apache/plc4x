@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6PrefixLength = (*_BACnetConstructedDataIPv6Prefix
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6PrefixLength)(nil)
 
 // NewBACnetConstructedDataIPv6PrefixLength factory function for _BACnetConstructedDataIPv6PrefixLength
-func NewBACnetConstructedDataIPv6PrefixLength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6PrefixLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
+func NewBACnetConstructedDataIPv6PrefixLength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6PrefixLength BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
 	if ipv6PrefixLength == nil {
 		panic("ipv6PrefixLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6PrefixLength must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6PrefixLength{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Ipv6PrefixLength:              ipv6PrefixLength,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIPv6PrefixLength(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6PrefixLength"
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipv6PrefixLength)
 	lengthInBits += m.Ipv6PrefixLength.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

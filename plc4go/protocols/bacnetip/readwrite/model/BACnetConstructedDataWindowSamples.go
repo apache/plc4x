@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataWindowSamples = (*_BACnetConstructedDataWindowSamples
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWindowSamples)(nil)
 
 // NewBACnetConstructedDataWindowSamples factory function for _BACnetConstructedDataWindowSamples
-func NewBACnetConstructedDataWindowSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowSamples {
+func NewBACnetConstructedDataWindowSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowSamples BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataWindowSamples {
 	if windowSamples == nil {
 		panic("windowSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowSamples must not be nil")
 	}
 	_result := &_BACnetConstructedDataWindowSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		WindowSamples:                 windowSamples,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataWindowSamples(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataWindowSamples) GetTypeName() string {
+func (m *_BACnetConstructedDataWindowSamples) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataWindowSamples"
 }
 
-func (m *_BACnetConstructedDataWindowSamples) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataWindowSamples) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (windowSamples)
 	lengthInBits += m.WindowSamples.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataWindowSamples) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataWindowSamples) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataWindowSamples) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

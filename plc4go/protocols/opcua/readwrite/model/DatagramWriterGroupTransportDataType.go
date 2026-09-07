@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -222,12 +223,12 @@ func CastDatagramWriterGroupTransportDataType(structType any) DatagramWriterGrou
 	return nil
 }
 
-func (m *_DatagramWriterGroupTransportDataType) GetTypeName() string {
+func (m *_DatagramWriterGroupTransportDataType) GetPlx4xTypeName() string {
 	return "DatagramWriterGroupTransportDataType"
 }
 
-func (m *_DatagramWriterGroupTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DatagramWriterGroupTransportDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (messageRepeatCount)
 	lengthInBits += 8
@@ -238,7 +239,7 @@ func (m *_DatagramWriterGroupTransportDataType) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_DatagramWriterGroupTransportDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DatagramWriterGroupTransportDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,13 +254,13 @@ func (m *_DatagramWriterGroupTransportDataType) parse(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageRepeatCount, err := ReadSimpleField(ctx, "messageRepeatCount", ReadUnsignedByte(readBuffer, uint8(8)))
+	messageRepeatCount, err := ReadSimpleField(ctx, "messageRepeatCount", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageRepeatCount' field"))
 	}
 	m.MessageRepeatCount = messageRepeatCount
 
-	messageRepeatDelay, err := ReadSimpleField(ctx, "messageRepeatDelay", ReadDouble(readBuffer, uint8(64)))
+	messageRepeatDelay, err := ReadSimpleField(ctx, "messageRepeatDelay", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageRepeatDelay' field"))
 	}
@@ -290,11 +291,11 @@ func (m *_DatagramWriterGroupTransportDataType) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for DatagramWriterGroupTransportDataType")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "messageRepeatCount", m.GetMessageRepeatCount(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "messageRepeatCount", m.GetMessageRepeatCount(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageRepeatCount' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "messageRepeatDelay", m.GetMessageRepeatDelay(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "messageRepeatDelay", m.GetMessageRepeatDelay(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageRepeatDelay' field")
 		}
 

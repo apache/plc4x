@@ -42,8 +42,8 @@ public class DefaultStringLiteral implements StringLiteral {
     @Override
     public String toString() {
         return "DefaultStringLiteral{" +
-                "value='" + value + '\'' +
-                '}';
+            "value='" + value + '\'' +
+            '}';
     }
 
     @Override

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDoorUnlockDelayTime = (*_BACnetConstructedDataDoorUnl
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
 
 // NewBACnetConstructedDataDoorUnlockDelayTime factory function for _BACnetConstructedDataDoorUnlockDelayTime
-func NewBACnetConstructedDataDoorUnlockDelayTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorUnlockDelayTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
+func NewBACnetConstructedDataDoorUnlockDelayTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorUnlockDelayTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
 	if doorUnlockDelayTime == nil {
 		panic("doorUnlockDelayTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorUnlockDelayTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DoorUnlockDelayTime:           doorUnlockDelayTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDoorUnlockDelayTime(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorUnlockDelayTime"
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (doorUnlockDelayTime)
 	lengthInBits += m.DoorUnlockDelayTime.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

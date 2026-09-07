@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,25 +208,25 @@ func CastReadAnnotationDataDetails(structType any) ReadAnnotationDataDetails {
 	return nil
 }
 
-func (m *_ReadAnnotationDataDetails) GetTypeName() string {
+func (m *_ReadAnnotationDataDetails) GetPlx4xTypeName() string {
 	return "ReadAnnotationDataDetails"
 }
 
-func (m *_ReadAnnotationDataDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadAnnotationDataDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfReqTimes)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.ReqTimes) > 0 {
-		lengthInBits += 64 * uint16(len(m.ReqTimes))
+		lengthInBits += 64 * uint64(len(m.ReqTimes))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ReadAnnotationDataDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadAnnotationDataDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -240,13 +241,13 @@ func (m *_ReadAnnotationDataDetails) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfReqTimes, err := ReadImplicitField[int32](ctx, "noOfReqTimes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReqTimes, err := ReadImplicitField[int32](ctx, "noOfReqTimes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReqTimes' field"))
 	}
 	_ = noOfReqTimes
 
-	reqTimes, err := ReadCountArrayField[int64](ctx, "reqTimes", ReadSignedLong(readBuffer, uint8(64)), uint64(noOfReqTimes))
+	reqTimes, err := ReadCountArrayField[int64](ctx, "reqTimes", ReadSignedLong(readBuffer, uint8(64)), uint64(noOfReqTimes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reqTimes' field"))
 	}
@@ -277,11 +278,11 @@ func (m *_ReadAnnotationDataDetails) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for ReadAnnotationDataDetails")
 		}
 		noOfReqTimes := int32(utils.InlineIf(bool((m.GetReqTimes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReqTimes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReqTimes", noOfReqTimes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReqTimes", noOfReqTimes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReqTimes' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "reqTimes", m.GetReqTimes(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "reqTimes", m.GetReqTimes(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reqTimes' field")
 		}
 

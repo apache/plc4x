@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastRestartReason = (*_BACnetConstructedDataLastResta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastRestartReason)(nil)
 
 // NewBACnetConstructedDataLastRestartReason factory function for _BACnetConstructedDataLastRestartReason
-func NewBACnetConstructedDataLastRestartReason(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestartReason BACnetRestartReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestartReason {
+func NewBACnetConstructedDataLastRestartReason(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestartReason BACnetRestartReasonTagged) *_BACnetConstructedDataLastRestartReason {
 	if lastRestartReason == nil {
 		panic("lastRestartReason of type BACnetRestartReasonTagged for BACnetConstructedDataLastRestartReason must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastRestartReason{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastRestartReason:             lastRestartReason,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLastRestartReason(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastRestartReason) GetTypeName() string {
+func (m *_BACnetConstructedDataLastRestartReason) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastRestartReason"
 }
 
-func (m *_BACnetConstructedDataLastRestartReason) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLastRestartReason) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastRestartReason)
 	lengthInBits += m.LastRestartReason.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLastRestartReason) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastRestartReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLastRestartReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

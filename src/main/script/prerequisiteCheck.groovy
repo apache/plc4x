@@ -319,9 +319,15 @@ def checkLibPcap(String minVersion, String os, String arch) {
             }
         }
         output = org.pcap4j.core.Pcaps.libVersion()
-        String version = output - ~/^libpcap version /
-        def result = checkVersionAtLeast(version, minVersion)
-        if (!result) {
+        Matcher matcher = extractVersion(output)
+        if (matcher.size() > 0) {
+            String version = matcher[0][1]
+            def result = checkVersionAtLeast(version, minVersion)
+            if (!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "unable to parse version from: " + output
             allConditionsMet = false
         }
     } catch (Error e) {
@@ -413,7 +419,7 @@ if (os == "windows") {
 // profiles.
 /////////////////////////////////////////////////////
 
-checkJavaVersion("11", null)
+checkJavaVersion("21", null)
 
 if (dotnetEnabled) {
     checkDotnet()

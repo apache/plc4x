@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ VariantInt16 = (*_VariantInt16)(nil)
 var _ VariantRequirements = (*_VariantInt16)(nil)
 
 // NewVariantInt16 factory function for _VariantInt16
-func NewVariantInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int16) *_VariantInt16 {
+func NewVariantInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []int16) *_VariantInt16 {
 	_result := &_VariantInt16{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -222,12 +222,12 @@ func CastVariantInt16(structType any) VariantInt16 {
 	return nil
 }
 
-func (m *_VariantInt16) GetTypeName() string {
+func (m *_VariantInt16) GetPlx4xTypeName() string {
 	return "VariantInt16"
 }
 
-func (m *_VariantInt16) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+func (m *_VariantInt16) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -236,13 +236,13 @@ func (m *_VariantInt16) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 16 * uint16(len(m.Value))
+		lengthInBits += 16 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_VariantInt16) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_VariantInt16) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

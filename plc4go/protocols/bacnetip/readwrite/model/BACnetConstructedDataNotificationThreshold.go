@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNotificationThreshold = (*_BACnetConstructedDataNotif
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationThreshold)(nil)
 
 // NewBACnetConstructedDataNotificationThreshold factory function for _BACnetConstructedDataNotificationThreshold
-func NewBACnetConstructedDataNotificationThreshold(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationThreshold BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
+func NewBACnetConstructedDataNotificationThreshold(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationThreshold BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
 	if notificationThreshold == nil {
 		panic("notificationThreshold of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationThreshold must not be nil")
 	}
 	_result := &_BACnetConstructedDataNotificationThreshold{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NotificationThreshold:         notificationThreshold,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNotificationThreshold(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) GetTypeName() string {
+func (m *_BACnetConstructedDataNotificationThreshold) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotificationThreshold"
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (notificationThreshold)
 	lengthInBits += m.NotificationThreshold.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

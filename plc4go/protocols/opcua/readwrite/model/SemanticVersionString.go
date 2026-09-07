@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastSemanticVersionString(structType any) SemanticVersionString {
 	return nil
 }
 
-func (m *_SemanticVersionString) GetTypeName() string {
+func (m *_SemanticVersionString) GetPlx4xTypeName() string {
 	return "SemanticVersionString"
 }
 
-func (m *_SemanticVersionString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SemanticVersionString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_SemanticVersionString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SemanticVersionString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func SemanticVersionStringParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
-	v, err := (&_SemanticVersionString{}).parse(ctx, readBuffer)
+	v, err := (new(_SemanticVersionString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

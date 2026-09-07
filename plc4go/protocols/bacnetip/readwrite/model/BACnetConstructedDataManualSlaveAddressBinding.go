@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataManualSlaveAddressBinding = (*_BACnetConstructedDataM
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataManualSlaveAddressBinding)(nil)
 
 // NewBACnetConstructedDataManualSlaveAddressBinding factory function for _BACnetConstructedDataManualSlaveAddressBinding
-func NewBACnetConstructedDataManualSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manualSlaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManualSlaveAddressBinding {
+func NewBACnetConstructedDataManualSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manualSlaveAddressBinding []BACnetAddressBinding) *_BACnetConstructedDataManualSlaveAddressBinding {
 	_result := &_BACnetConstructedDataManualSlaveAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ManualSlaveAddressBinding:     manualSlaveAddressBinding,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataManualSlaveAddressBinding(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetTypeName() string {
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataManualSlaveAddressBinding"
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ManualSlaveAddressBinding) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

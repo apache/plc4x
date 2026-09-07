@@ -32,6 +32,15 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_parse(plc4x_spi_context ctx, 
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
+  // Descend one type deeper. A type that contains itself would otherwise let the
+  // sender decide how deep we recurse, and a C stack that runs out takes the
+  // process with it. The context is ours by value and is what the types below get
+  // handed, so this bounds everything under it and needs nothing on the way out.
+  _res = plc4x_spi_context_enter_type(&ctx);
+  if(_res != OK) {
+    return _res;
+  }
+
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_plc4x_read_write_plc4x_tag));
   if(*_message == NULL) {
@@ -47,7 +56,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_parse(plc4x_spi_context ctx, 
 
   // Simple Field (name)
   char* name = "";
-  _res = plc4c_spi_read_string(readBuffer, (nameLen) * (8), "UTF-8", (char**) &name);
+  _res = plc4c_spi_read_string(readBuffer, (nameLen) * (8), "UTF8", (char**) &name);
   if(_res != OK) {
     return _res;
   }
@@ -62,7 +71,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_parse(plc4x_spi_context ctx, 
 
   // Simple Field (tagQuery)
   char* tagQuery = "";
-  _res = plc4c_spi_read_string(readBuffer, (tagQueryLen) * (8), "UTF-8", (char**) &tagQuery);
+  _res = plc4c_spi_read_string(readBuffer, (tagQueryLen) * (8), "UTF8", (char**) &tagQuery);
   if(_res != OK) {
     return _res;
   }
@@ -81,7 +90,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_serialize(plc4x_spi_context c
   }
 
   // Simple Field (name)
-  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8), "UTF-8", _message->name);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8), "UTF8", (const uint8_t*) _message->name);
   if(_res != OK) {
     return _res;
   }
@@ -93,7 +102,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_serialize(plc4x_spi_context c
   }
 
   // Simple Field (tagQuery)
-  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->tag_query)) * (8), "UTF-8", _message->tag_query);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->tag_query)) * (8), "UTF8", (const uint8_t*) _message->tag_query);
   if(_res != OK) {
     return _res;
   }

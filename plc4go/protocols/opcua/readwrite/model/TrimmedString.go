@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastTrimmedString(structType any) TrimmedString {
 	return nil
 }
 
-func (m *_TrimmedString) GetTypeName() string {
+func (m *_TrimmedString) GetPlx4xTypeName() string {
 	return "TrimmedString"
 }
 
-func (m *_TrimmedString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TrimmedString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_TrimmedString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TrimmedString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func TrimmedStringParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func TrimmedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
-	v, err := (&_TrimmedString{}).parse(ctx, readBuffer)
+	v, err := (new(_TrimmedString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

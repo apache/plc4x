@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastApplicationInstanceCertificate(structType any) ApplicationInstanceCerti
 	return nil
 }
 
-func (m *_ApplicationInstanceCertificate) GetTypeName() string {
+func (m *_ApplicationInstanceCertificate) GetPlx4xTypeName() string {
 	return "ApplicationInstanceCertificate"
 }
 
-func (m *_ApplicationInstanceCertificate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ApplicationInstanceCertificate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ApplicationInstanceCertificate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApplicationInstanceCertificate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func ApplicationInstanceCertificateParseWithBufferProducer() func(ctx context.Co
 }
 
 func ApplicationInstanceCertificateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationInstanceCertificate, error) {
-	v, err := (&_ApplicationInstanceCertificate{}).parse(ctx, readBuffer)
+	v, err := (new(_ApplicationInstanceCertificate)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

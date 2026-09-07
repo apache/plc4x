@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLimitMonitoringInterval = (*_BACnetConstructedDataLim
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
 
 // NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
-func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
+func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
 	if limitMonitoringInterval == nil {
 		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataLimitMonitoringInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LimitMonitoringInterval:       limitMonitoringInterval,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataLimitMonitoringInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLimitMonitoringInterval"
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (limitMonitoringInterval)
 	lengthInBits += m.LimitMonitoringInterval.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,8 +46,10 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 	// GetMessageClass returns MessageClass (property field)
 	GetMessageClass() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetMessagePriority returns MessagePriority (property field)
+	// Note we reuse the once from confirmed here
 	GetMessagePriority() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	// GetMessage returns Message (property field)
+	// Note we reuse the once from confirmed here
 	GetMessage() BACnetContextTagCharacterString
 	// IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage()
@@ -68,7 +70,7 @@ var _ BACnetUnconfirmedServiceRequestUnconfirmedTextMessage = (*_BACnetUnconfirm
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage factory function for _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString) *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
 	if textMessageSourceDevice == nil {
 		panic("textMessageSourceDevice of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage must not be nil")
 	}
@@ -79,7 +81,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceD
 		panic("message of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		TextMessageSourceDevice:                 textMessageSourceDevice,
 		MessageClass:                            messageClass,
 		MessagePriority:                         messagePriority,
@@ -318,12 +320,12 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType any) B
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (textMessageSourceDevice)
 	lengthInBits += m.TextMessageSourceDevice.GetLengthInBits(ctx)
@@ -342,7 +344,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -414,7 +416,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) SerializeWithWr
 			return errors.Wrap(err, "Error serializing 'textMessageSourceDevice' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", GetRef(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", new(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageClass' field")
 		}
 

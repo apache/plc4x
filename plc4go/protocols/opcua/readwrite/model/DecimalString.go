@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastDecimalString(structType any) DecimalString {
 	return nil
 }
 
-func (m *_DecimalString) GetTypeName() string {
+func (m *_DecimalString) GetPlx4xTypeName() string {
 	return "DecimalString"
 }
 
-func (m *_DecimalString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DecimalString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_DecimalString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DecimalString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func DecimalStringParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func DecimalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
-	v, err := (&_DecimalString{}).parse(ctx, readBuffer)
+	v, err := (new(_DecimalString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

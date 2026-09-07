@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastDateString(structType any) DateString {
 	return nil
 }
 
-func (m *_DateString) GetTypeName() string {
+func (m *_DateString) GetPlx4xTypeName() string {
 	return "DateString"
 }
 
-func (m *_DateString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DateString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_DateString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DateString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func DateStringParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
-	v, err := (&_DateString{}).parse(ctx, readBuffer)
+	v, err := (new(_DateString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

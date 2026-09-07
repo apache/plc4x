@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAckedTransitions = (*_BACnetConstructedDataAckedTrans
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAckedTransitions)(nil)
 
 // NewBACnetConstructedDataAckedTransitions factory function for _BACnetConstructedDataAckedTransitions
-func NewBACnetConstructedDataAckedTransitions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackedTransitions BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckedTransitions {
+func NewBACnetConstructedDataAckedTransitions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackedTransitions BACnetEventTransitionBitsTagged) *_BACnetConstructedDataAckedTransitions {
 	if ackedTransitions == nil {
 		panic("ackedTransitions of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckedTransitions must not be nil")
 	}
 	_result := &_BACnetConstructedDataAckedTransitions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AckedTransitions:              ackedTransitions,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAckedTransitions(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) GetTypeName() string {
+func (m *_BACnetConstructedDataAckedTransitions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAckedTransitions"
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ackedTransitions)
 	lengthInBits += m.AckedTransitions.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -54,7 +54,7 @@ func TestS7MessageBytes(t *testing.T) {
 			args: args{
 				debuggable: model.NewTPKTPacket(
 					model.NewCOTPPacketData(
-						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 3)},
+						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096)},
 						model.NewS7MessageResponseData(
 							11,
 							model.NewS7ParameterReadVarResponse(1),
@@ -66,14 +66,12 @@ func TestS7MessageBytes(t *testing.T) {
 										[]byte{1},
 									),
 								},
-								model.NewS7ParameterReadVarResponse(1),
 							),
 							0,
 							0,
 						),
 						false,
 						13,
-						25,
 					),
 				),
 			},
@@ -375,7 +373,7 @@ func TestS7MessageBytes(t *testing.T) {
 			args: args{
 				debuggable: model.NewTPKTPacket(
 					model.NewCOTPPacketData(
-						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 3)},
+						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096)},
 						model.NewS7MessageRequest(
 							13,
 							model.NewS7ParameterWriteVarRequest([]model.S7VarRequestParameterItem{
@@ -404,21 +402,10 @@ func TestS7MessageBytes(t *testing.T) {
 											0xAF, 0xFE, 0xAF, 0xFE, 0xAF, 0xFE, 0xAF, 0xFE,
 										},
 									),
-								},
-								model.NewS7ParameterWriteVarRequest([]model.S7VarRequestParameterItem{
-									model.NewS7VarRequestParameterItemAddress(model.NewS7AddressAny(
-										model.TransportSize_BYTE,
-										64,
-										13,
-										model.MemoryArea_INPUTS,
-										0,
-										0,
-									)),
-								})),
+								}),
 						),
 						false,
 						13,
-						98,
 					),
 				),
 			},

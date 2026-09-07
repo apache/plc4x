@@ -22,8 +22,8 @@
 
   <name>PLC4X (Proxy-Protocol)</name>
 
-  <protocolName>plc4x</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>plc4x</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>Connection Request</name>

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +240,12 @@ func CastConnectedDataItem(structType any) ConnectedDataItem {
 	return nil
 }
 
-func (m *_ConnectedDataItem) GetTypeName() string {
+func (m *_ConnectedDataItem) GetPlx4xTypeName() string {
 	return "ConnectedDataItem"
 }
 
-func (m *_ConnectedDataItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
+func (m *_ConnectedDataItem) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
 
 	// Implicit Field (packetSize)
 	lengthInBits += 16
@@ -259,7 +259,7 @@ func (m *_ConnectedDataItem) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ConnectedDataItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConnectedDataItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

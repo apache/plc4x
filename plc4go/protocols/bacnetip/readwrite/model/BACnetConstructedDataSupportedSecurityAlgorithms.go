@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataSupportedSecurityAlgorithms = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSupportedSecurityAlgorithms)(nil)
 
 // NewBACnetConstructedDataSupportedSecurityAlgorithms factory function for _BACnetConstructedDataSupportedSecurityAlgorithms
-func NewBACnetConstructedDataSupportedSecurityAlgorithms(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
+func NewBACnetConstructedDataSupportedSecurityAlgorithms(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
 	_result := &_BACnetConstructedDataSupportedSecurityAlgorithms{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SupportedSecurityAlgorithms:   supportedSecurityAlgorithms,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetTypeName() string {
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSupportedSecurityAlgorithms"
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.SupportedSecurityAlgorithms) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

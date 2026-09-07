@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(structType any) B
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

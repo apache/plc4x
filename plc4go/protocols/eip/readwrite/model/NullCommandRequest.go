@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -188,17 +188,17 @@ func CastNullCommandRequest(structType any) NullCommandRequest {
 	return nil
 }
 
-func (m *_NullCommandRequest) GetTypeName() string {
+func (m *_NullCommandRequest) GetPlx4xTypeName() string {
 	return "NullCommandRequest"
 }
 
-func (m *_NullCommandRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+func (m *_NullCommandRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_NullCommandRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NullCommandRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

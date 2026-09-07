@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSerialNumber = (*_BACnetConstructedDataSerialNumber)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSerialNumber)(nil)
 
 // NewBACnetConstructedDataSerialNumber factory function for _BACnetConstructedDataSerialNumber
-func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
+func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString) *_BACnetConstructedDataSerialNumber {
 	if serialNumber == nil {
 		panic("serialNumber of type BACnetApplicationTagCharacterString for BACnetConstructedDataSerialNumber must not be nil")
 	}
 	_result := &_BACnetConstructedDataSerialNumber{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SerialNumber:                  serialNumber,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSerialNumber(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataSerialNumber) GetTypeName() string {
+func (m *_BACnetConstructedDataSerialNumber) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSerialNumber"
 }
 
-func (m *_BACnetConstructedDataSerialNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSerialNumber) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (serialNumber)
 	lengthInBits += m.SerialNumber.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSerialNumber) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSerialNumber) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSerialNumber) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

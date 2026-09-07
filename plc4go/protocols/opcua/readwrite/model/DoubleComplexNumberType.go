@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -222,12 +223,12 @@ func CastDoubleComplexNumberType(structType any) DoubleComplexNumberType {
 	return nil
 }
 
-func (m *_DoubleComplexNumberType) GetTypeName() string {
+func (m *_DoubleComplexNumberType) GetPlx4xTypeName() string {
 	return "DoubleComplexNumberType"
 }
 
-func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (real)
 	lengthInBits += 64
@@ -238,7 +239,7 @@ func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,13 +254,13 @@ func (m *_DoubleComplexNumberType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	real, err := ReadSimpleField(ctx, "real", ReadDouble(readBuffer, uint8(64)))
+	real, err := ReadSimpleField(ctx, "real", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'real' field"))
 	}
 	m.Real = real
 
-	imaginary, err := ReadSimpleField(ctx, "imaginary", ReadDouble(readBuffer, uint8(64)))
+	imaginary, err := ReadSimpleField(ctx, "imaginary", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'imaginary' field"))
 	}
@@ -290,11 +291,11 @@ func (m *_DoubleComplexNumberType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for DoubleComplexNumberType")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "real", m.GetReal(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "real", m.GetReal(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'real' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "imaginary", m.GetImaginary(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "imaginary", m.GetImaginary(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'imaginary' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -57,22 +57,19 @@ type _BACnetEventParameterChangeOfTimerAlarmValue struct {
 	OpeningTag  BACnetOpeningTag
 	AlarmValues []BACnetTimerStateTagged
 	ClosingTag  BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventParameterChangeOfTimerAlarmValue = (*_BACnetEventParameterChangeOfTimerAlarmValue)(nil)
 
 // NewBACnetEventParameterChangeOfTimerAlarmValue factory function for _BACnetEventParameterChangeOfTimerAlarmValue
-func NewBACnetEventParameterChangeOfTimerAlarmValue(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfTimerAlarmValue {
+func NewBACnetEventParameterChangeOfTimerAlarmValue(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfTimerAlarmValue {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
 	}
-	return &_BACnetEventParameterChangeOfTimerAlarmValue{OpeningTag: openingTag, AlarmValues: alarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventParameterChangeOfTimerAlarmValue{OpeningTag: openingTag, AlarmValues: alarmValues, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetEventParameterChangeOfTimerAlarmValueBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfTimerAlarmValueBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventParameterChangeOfTimerAlarmValueBuilder
 	// Build builds the BACnetEventParameterChangeOfTimerAlarmValue or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfTimerAlarmValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithClosingTagBuil
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -235,12 +225,12 @@ func CastBACnetEventParameterChangeOfTimerAlarmValue(structType any) BACnetEvent
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfTimerAlarmValue"
 }
 
-func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -258,7 +248,7 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBits(ctx conte
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -273,7 +263,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParseWithBufferProducer(tagNumbe
 }
 
 func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
-	v, err := (&_BACnetEventParameterChangeOfTimerAlarmValue{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventParameterChangeOfTimerAlarmValue)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) SerializeWithWriteBuffer(
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) IsBACnetEventParameterChangeOfTimerAlarmValue() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) deepCopy() *_BACnetEventP
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetTimerStateTagged, BACnetTimerStateTagged](m.AlarmValues),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfTimerAlarmValueCopy
 }

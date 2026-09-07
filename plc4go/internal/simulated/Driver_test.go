@@ -22,7 +22,8 @@ package simulated
 import (
 	"net/url"
 	"testing"
-	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -42,7 +43,7 @@ func TestDriver_CheckQuery(t *testing.T) {
 		{
 			name: "valid query",
 			args: args{
-				query: "STATE/test:UINT[2]",
+				query: "STATE/test[0..1]:UINT",
 			},
 			wantErr: false,
 		},
@@ -87,7 +88,7 @@ func TestDriver_Discover(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-			if err := d.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
+			if err := d.Discover(t.Context(), tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("Discover() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -103,7 +104,7 @@ func TestDriver_GetConnection(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantErr bool
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "simple no options",
@@ -113,7 +114,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				in1:     nil,
 				options: nil,
 			},
-			wantErr: false,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "simple with options",
@@ -125,24 +126,15 @@ func TestDriver_GetConnection(t *testing.T) {
 					"testOption": {"testValue"},
 				},
 			},
-			wantErr: false,
+			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-			connectionChan := d.GetConnection(tt.args.in0, tt.args.in1, tt.args.options)
-			timeout := time.NewTimer(3 * time.Second)
-			select {
-			case connectResult := <-connectionChan:
-				if tt.wantErr && (connectResult.GetErr() == nil) {
-					t.Errorf("PlcConnectionPool.GetConnection() = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
-				} else if connectResult.GetErr() != nil {
-					t.Errorf("PlcConnectionPool.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
-				}
-			case <-timeout.C:
-				t.Errorf("PlcConnectionPool.GetConnection() got timeout")
-			}
+			conn, err := d.GetConnection(t.Context(), tt.args.in0, tt.args.in1, tt.args.options)
+			tt.wantErr(t, err)
+			assert.NotNil(t, conn)
 		})
 	}
 }

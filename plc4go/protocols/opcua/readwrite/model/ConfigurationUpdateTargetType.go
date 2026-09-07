@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastConfigurationUpdateTargetType(structType any) ConfigurationUpdateTarget
 	return nil
 }
 
-func (m *_ConfigurationUpdateTargetType) GetTypeName() string {
+func (m *_ConfigurationUpdateTargetType) GetPlx4xTypeName() string {
 	return "ConfigurationUpdateTargetType"
 }
 
-func (m *_ConfigurationUpdateTargetType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ConfigurationUpdateTargetType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (path)
 	lengthInBits += m.Path.GetLengthInBits(ctx)
@@ -256,7 +257,7 @@ func (m *_ConfigurationUpdateTargetType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ConfigurationUpdateTargetType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConfigurationUpdateTargetType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -271,13 +272,13 @@ func (m *_ConfigurationUpdateTargetType) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	path, err := ReadSimpleField[PascalString](ctx, "path", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	path, err := ReadSimpleField[PascalString](ctx, "path", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'path' field"))
 	}
 	m.Path = path
 
-	updateType, err := ReadEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", ReadEnum(ConfigurationUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	updateType, err := ReadEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", ReadEnum(ConfigurationUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateType' field"))
 	}
@@ -308,11 +309,11 @@ func (m *_ConfigurationUpdateTargetType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for ConfigurationUpdateTargetType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "path", m.GetPath(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "path", m.GetPath(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'path' field")
 		}
 
-		if err := WriteSimpleEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", m.GetUpdateType(), WriteEnum[ConfigurationUpdateType, uint32](ConfigurationUpdateType.GetValue, ConfigurationUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", m.GetUpdateType(), WriteEnum[ConfigurationUpdateType, uint32](ConfigurationUpdateType.GetValue, ConfigurationUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'updateType' field")
 		}
 

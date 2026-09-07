@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -233,12 +233,12 @@ func CastAlarmMessageQueryType(structType any) AlarmMessageQueryType {
 	return nil
 }
 
-func (m *_AlarmMessageQueryType) GetTypeName() string {
+func (m *_AlarmMessageQueryType) GetPlx4xTypeName() string {
 	return "AlarmMessageQueryType"
 }
 
-func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -266,7 +266,7 @@ func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AlarmMessageQueryType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AlarmMessageQueryType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -281,7 +281,7 @@ func AlarmMessageQueryTypeParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func AlarmMessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageQueryType, error) {
-	v, err := (&_AlarmMessageQueryType{}).parse(ctx, readBuffer)
+	v, err := (new(_AlarmMessageQueryType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -230,11 +230,13 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
                     return _res;
                 }
 
-                <#if case.name == "STRING">
+                <#if case.name == "STRING" || case.name == "WSTRING">
+                    <#-- A wide string is read with the same call as a narrow one, so both are handed
+                         to a creator taking the resulting byte string; only the data type differs. -->
                     <#if simpleField.type.isVstringTypeReference()>
-                *data_item = plc4c_data_create_string_data(stringLength, ${simpleField.name});
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(stringLength, ${simpleField.name});
                     <#else>
-                *data_item = plc4c_data_create_string_data(${simpleField.type.asStringTypeReference().orElseThrow().sizeInBits}, ${simpleField.name});
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(${simpleField.type.asStringTypeReference().orElseThrow().sizeInBits}, ${simpleField.name});
                     </#if>
                 <#elseif case.name == "CHAR">
                 *data_item = plc4c_data_create_${case.name?lower_case}_data(*${simpleField.name});
@@ -324,7 +326,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4x_spi_context 
                     <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
 
                     // Simple field (${simpleField.name})
-                    _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(*data_item)->data." + case.name?lower_case + "_value", simpleField)};
+                    _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(*data_item)->data." + case.name?lower_case + "_value", simpleField, parserArguments!)};
                     if(_res != OK) {
                         return _res;
                     }

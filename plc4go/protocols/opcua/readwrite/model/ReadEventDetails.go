@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -270,12 +271,12 @@ func CastReadEventDetails(structType any) ReadEventDetails {
 	return nil
 }
 
-func (m *_ReadEventDetails) GetTypeName() string {
+func (m *_ReadEventDetails) GetPlx4xTypeName() string {
 	return "ReadEventDetails"
 }
 
-func (m *_ReadEventDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ReadEventDetails) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numValuesPerNode)
 	lengthInBits += 32
@@ -292,7 +293,7 @@ func (m *_ReadEventDetails) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ReadEventDetails) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ReadEventDetails) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -307,25 +308,25 @@ func (m *_ReadEventDetails) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numValuesPerNode, err := ReadSimpleField(ctx, "numValuesPerNode", ReadUnsignedInt(readBuffer, uint8(32)))
+	numValuesPerNode, err := ReadSimpleField(ctx, "numValuesPerNode", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numValuesPerNode' field"))
 	}
 	m.NumValuesPerNode = numValuesPerNode
 
-	startTime, err := ReadSimpleField(ctx, "startTime", ReadSignedLong(readBuffer, uint8(64)))
+	startTime, err := ReadSimpleField(ctx, "startTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startTime' field"))
 	}
 	m.StartTime = startTime
 
-	endTime, err := ReadSimpleField(ctx, "endTime", ReadSignedLong(readBuffer, uint8(64)))
+	endTime, err := ReadSimpleField(ctx, "endTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endTime' field"))
 	}
 	m.EndTime = endTime
 
-	filter, err := ReadSimpleField[EventFilter](ctx, "filter", ReadComplex[EventFilter](ExtensionObjectDefinitionParseWithBufferProducer[EventFilter]((int32)(int32(727))), readBuffer))
+	filter, err := ReadSimpleField[EventFilter](ctx, "filter", ReadComplex[EventFilter](ExtensionObjectDefinitionParseWithBufferProducer[EventFilter]((int32)(int32(727))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}
@@ -356,19 +357,19 @@ func (m *_ReadEventDetails) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ReadEventDetails")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "numValuesPerNode", m.GetNumValuesPerNode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "numValuesPerNode", m.GetNumValuesPerNode(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'numValuesPerNode' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "startTime", m.GetStartTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "startTime", m.GetStartTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'startTime' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "endTime", m.GetEndTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "endTime", m.GetEndTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'endTime' field")
 		}
 
-		if err := WriteSimpleField[EventFilter](ctx, "filter", m.GetFilter(), WriteComplex[EventFilter](writeBuffer)); err != nil {
+		if err := WriteSimpleField[EventFilter](ctx, "filter", m.GetFilter(), WriteComplex[EventFilter](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 

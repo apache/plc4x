@@ -34,7 +34,7 @@
 
 
 // Constant values.
-uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH();
+const uint16_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH();
 
 struct plc4c_s7_read_write_alarm_message_query_type {
   /* Properties */

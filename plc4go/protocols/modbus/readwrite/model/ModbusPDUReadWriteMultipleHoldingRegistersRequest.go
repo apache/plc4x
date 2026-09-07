@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -275,12 +275,12 @@ func CastModbusPDUReadWriteMultipleHoldingRegistersRequest(structType any) Modbu
 	return nil
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetTypeName() string {
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (readStartingAddress)
 	lengthInBits += 16
@@ -299,13 +299,13 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBits(ctx
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 8 * uint16(len(m.Value))
+		lengthInBits += 8 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

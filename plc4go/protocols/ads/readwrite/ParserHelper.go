@@ -22,10 +22,9 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	. "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -36,8 +35,6 @@ type AdsParserHelper struct {
 
 func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
-	case "AmsSerialFrame":
-		return AmsSerialFrameParseWithBuffer(context.Background(), io)
 	case "DataItem":
 		plcValueType, _ := api.PlcValueTypeByName(arguments[0])
 		stringLength, err := utils.StrToInt32(arguments[1])
@@ -45,38 +42,62 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return DataItemParseWithBuffer(context.Background(), io, plcValueType, stringLength)
-	case "AdsTableSizes":
-		return AdsTableSizesParseWithBuffer(context.Background(), io)
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return AdsMultiRequestItemParseWithBuffer[AdsMultiRequestItem](context.Background(), io, indexGroup)
+	case "AdsExtendedInfoEntry":
+		dataType, _ := AdsDatatypeIdByName(arguments[0])
+		return AdsExtendedInfoEntryParseWithBuffer[AdsExtendedInfoEntry](context.Background(), io, dataType)
+	case "AmsTCPPacket":
+		return AmsTCPPacketParseWithBuffer(context.Background(), io)
+	case "AmsPacket":
+		return AmsPacketParseWithBuffer[AmsPacket](context.Background(), io)
+	case "AdsDataTypeAttributes":
+		return AdsDataTypeAttributesParseWithBuffer(context.Background(), io)
+	case "AdsExtendedInfos":
+		dataType, _ := AdsDatatypeIdByName(arguments[0])
+		return AdsExtendedInfosParseWithBuffer(context.Background(), io, dataType)
+	case "AdsString":
+		stringLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return AdsStringParseWithBuffer(context.Background(), io, stringLength)
+	case "AmsSerialFrame":
+		return AmsSerialFrameParseWithBuffer(context.Background(), io)
+	case "AdsMethodInfo":
+		return AdsMethodInfoParseWithBuffer(context.Background(), io)
+	case "AdsMethodInfos":
+		return AdsMethodInfosParseWithBuffer(context.Background(), io)
+	case "AdsTableSizes":
+		return AdsTableSizesParseWithBuffer(context.Background(), io)
 	case "AmsSerialAcknowledgeFrame":
 		return AmsSerialAcknowledgeFrameParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeArrayInfo":
 		return AdsDataTypeArrayInfoParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeTableEntry":
-		return AdsDataTypeTableEntryParseWithBuffer(context.Background(), io)
+		maxDepth, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return AdsDataTypeTableEntryParseWithBuffer(context.Background(), io, maxDepth)
 	case "AmsNetId":
 		return AmsNetIdParseWithBuffer(context.Background(), io)
 	case "AdsStampHeader":
 		return AdsStampHeaderParseWithBuffer(context.Background(), io)
 	case "AmsSerialResetFrame":
 		return AmsSerialResetFrameParseWithBuffer(context.Background(), io)
-	case "AdsDataTypeTableChildEntry":
-		return AdsDataTypeTableChildEntryParseWithBuffer(context.Background(), io)
-	case "AdsConstants":
-		return AdsConstantsParseWithBuffer(context.Background(), io)
+	case "AdsMethodParam":
+		return AdsMethodParamParseWithBuffer(context.Background(), io)
 	case "AdsNotificationSample":
 		return AdsNotificationSampleParseWithBuffer(context.Background(), io)
 	case "AdsSymbolTableEntry":
 		return AdsSymbolTableEntryParseWithBuffer(context.Background(), io)
-	case "AmsTCPPacket":
-		return AmsTCPPacketParseWithBuffer(context.Background(), io)
-	case "AmsPacket":
-		return AmsPacketParseWithBuffer[AmsPacket](context.Background(), io)
+	case "AdsAttributeEntry":
+		return AdsAttributeEntryParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

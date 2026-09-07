@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -214,12 +214,12 @@ func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {
 	return nil
 }
 
-func (m *_TemperatureBroadcastData) GetTypeName() string {
+func (m *_TemperatureBroadcastData) GetPlx4xTypeName() string {
 	return "TemperatureBroadcastData"
 }
 
-func (m *_TemperatureBroadcastData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TemperatureBroadcastData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -237,7 +237,7 @@ func (m *_TemperatureBroadcastData) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_TemperatureBroadcastData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TemperatureBroadcastData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -252,7 +252,7 @@ func TemperatureBroadcastDataParseWithBufferProducer() func(ctx context.Context,
 }
 
 func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
-	v, err := (&_TemperatureBroadcastData{}).parse(ctx, readBuffer)
+	v, err := (new(_TemperatureBroadcastData)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

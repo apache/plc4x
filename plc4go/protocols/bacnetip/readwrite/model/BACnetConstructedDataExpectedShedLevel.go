@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataExpectedShedLevel = (*_BACnetConstructedDataExpectedS
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExpectedShedLevel)(nil)
 
 // NewBACnetConstructedDataExpectedShedLevel factory function for _BACnetConstructedDataExpectedShedLevel
-func NewBACnetConstructedDataExpectedShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, expectedShedLevel BACnetShedLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpectedShedLevel {
+func NewBACnetConstructedDataExpectedShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, expectedShedLevel BACnetShedLevel) *_BACnetConstructedDataExpectedShedLevel {
 	if expectedShedLevel == nil {
 		panic("expectedShedLevel of type BACnetShedLevel for BACnetConstructedDataExpectedShedLevel must not be nil")
 	}
 	_result := &_BACnetConstructedDataExpectedShedLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ExpectedShedLevel:             expectedShedLevel,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataExpectedShedLevel(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataExpectedShedLevel) GetTypeName() string {
+func (m *_BACnetConstructedDataExpectedShedLevel) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExpectedShedLevel"
 }
 
-func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (expectedShedLevel)
 	lengthInBits += m.ExpectedShedLevel.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

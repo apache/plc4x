@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersComplexEventType = (*_BACnetNotificationParame
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersComplexEventType)(nil)
 
 // NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
-func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
+func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues) *_BACnetNotificationParametersComplexEventType {
 	if listOfValues == nil {
 		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
 	}
 	_result := &_BACnetNotificationParametersComplexEventType{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		ListOfValues:                         listOfValues,
 	}
 	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetNotificationParametersComplexEventType(structType any) BACnetNoti
 	return nil
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetTypeName() string {
+func (m *_BACnetNotificationParametersComplexEventType) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersComplexEventType"
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (listOfValues)
 	lengthInBits += m.ListOfValues.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

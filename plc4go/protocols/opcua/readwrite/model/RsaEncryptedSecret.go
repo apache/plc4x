@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastRsaEncryptedSecret(structType any) RsaEncryptedSecret {
 	return nil
 }
 
-func (m *_RsaEncryptedSecret) GetTypeName() string {
+func (m *_RsaEncryptedSecret) GetPlx4xTypeName() string {
 	return "RsaEncryptedSecret"
 }
 
-func (m *_RsaEncryptedSecret) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_RsaEncryptedSecret) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_RsaEncryptedSecret) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RsaEncryptedSecret) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func RsaEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func RsaEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RsaEncryptedSecret, error) {
-	v, err := (&_RsaEncryptedSecret{}).parse(ctx, readBuffer)
+	v, err := (new(_RsaEncryptedSecret)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

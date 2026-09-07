@@ -27,11 +27,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"uuid"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -40,8 +41,8 @@ import (
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
 type DefaultCodecRequirements interface {
 	GetCodec() spi.MessageCodec
-	Send(message spi.Message) error
-	Receive() (spi.Message, error)
+	Send(ctx context.Context, interactionInfo string, message spi.Message) error
+	Receive(ctx context.Context) (spi.Message, error)
 }
 
 // DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
@@ -49,6 +50,7 @@ type DefaultCodec interface {
 	utils.Serializable
 	spi.MessageCodec
 	spi.TransportInstanceExposer
+	spi.TransportErrorHandlerSetter
 }
 
 // NewDefaultCodec is the factory for a DefaultCodec
@@ -56,7 +58,7 @@ func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance tr
 	return buildDefaultCodec(requirements, transportInstance, options...)
 }
 
-type CustomMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+type CustomMessageHandler func(ctx context.Context, codec DefaultCodecRequirements, message spi.Message) bool
 
 func WithCustomMessageHandler(customMessageHandler CustomMessageHandler) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
@@ -70,7 +72,7 @@ func WithCustomMessageHandler(customMessageHandler CustomMessageHandler) options
 
 type withCustomMessageHandler struct {
 	options.Option
-	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+	customMessageHandler CustomMessageHandler
 }
 
 //go:generate go tool plc4xGenerator -type=defaultCodec
@@ -81,23 +83,30 @@ type defaultCodec struct {
 
 	expectations                  []spi.Expectation
 	defaultIncomingMessageChannel chan spi.Message
-	customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+	customMessageHandling         CustomMessageHandler
 
 	expectationsChangeMutex sync.RWMutex
 	running                 atomic.Bool
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
+	notifyExpireWorker      chan struct{} `ignore:"true"`
+	notifyReceiveWorker     chan struct{} `ignore:"true"`
 
 	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
+	ctx       context.Context
+	ctxCancel context.CancelFunc
+
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
+
+	transportErrorHandler transports.TransportErrorHandler
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
-	var customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+	var customMessageHandler CustomMessageHandler
 
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -108,20 +117,26 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 
 	receiveTimeout, timeoutDefined := options.ExtractReceiveTimeout(_options...)
 	if !timeoutDefined {
-		receiveTimeout = 10 * time.Second
+		receiveTimeout = 60 * time.Second
 	}
 	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return &defaultCodec{
-		DefaultCodecRequirements:       defaultCodecRequirements,
-		transportInstance:              transportInstance,
-		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
-		expectations:                   []spi.Expectation{},
-		customMessageHandling:          customMessageHandler,
+	d := &defaultCodec{
+		DefaultCodecRequirements:      defaultCodecRequirements,
+		transportInstance:             transportInstance,
+		defaultIncomingMessageChannel: make(chan spi.Message, 100),
+		expectations:                  []spi.Expectation{},
+		customMessageHandling:         customMessageHandler,
+		// Buffered by one so a notification sent while the worker is between selects
+		// (e.g. inside TimeoutExpectations) is deferred instead of lost.
+		notifyExpireWorker:             make(chan struct{}, 1),
+		notifyReceiveWorker:            make(chan struct{}, 1),
 		receiveTimeout:                 receiveTimeout,
 		traceDefaultMessageCodecWorker: traceDefaultMessageCodecWorker || config.TraceDefaultMessageCodecWorker,
 		log:                            customLogger,
 	}
+	d.ctx, d.ctxCancel = context.WithCancel(context.Background())
+	return d
 }
 
 //
@@ -134,15 +149,15 @@ func (m *defaultCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
 }
 
+func (m *defaultCodec) SetTransportErrorHandler(handler transports.TransportErrorHandler) {
+	m.transportErrorHandler = handler
+}
+
 func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
 	return m.defaultIncomingMessageChannel
 }
 
-func (m *defaultCodec) Connect() error {
-	return m.ConnectWithContext(context.Background())
-}
-
-func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
+func (m *defaultCodec) Connect(ctx context.Context) error {
 	m.stateChange.Lock()
 	defer m.stateChange.Unlock()
 	if m.running.Load() {
@@ -150,27 +165,51 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	}
 	m.log.Trace().Msg("connecting")
 	if !m.transportInstance.IsConnected() {
-		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
+		if err := m.transportInstance.Connect(ctx); err != nil {
 			return err
 		}
 	} else {
-		m.log.Info().Msg("Transport instance already connected")
+		m.log.Debug().Msg("Transport instance already connected")
 	}
 
 	m.log.Debug().Msg("Message codec currently not running, starting worker now")
-	m.startWorker()
+	// The context is one-shot: a previous Disconnect (or a fatal transport error)
+	// cancelled it. Recreate it on reconnect, otherwise the freshly started workers
+	// would exit immediately through their ctx.Done() paths.
+	if m.ctx.Err() != nil {
+		m.ctx, m.ctxCancel = context.WithCancel(context.Background())
+	}
+	// running must be true BEFORE the workers start: a worker that observes
+	// running==false in its loop condition AND in its restart defer terminates
+	// permanently, leaving a "connected" codec whose expectations never expire.
+	// The goroutine-creation happens-before edge guarantees the workers see true.
 	m.running.Store(true)
+	m.startWorkers()
 	m.log.Trace().Msg("connected")
 	return nil
 }
 
 func (m *defaultCodec) Disconnect() error {
+	// Lock-free fast path. A transport-error handler dispatched via
+	// emitTransportError runs on m.wg and may call back into Disconnect (through
+	// connection.Invalidate -> Close) while another Disconnect already holds
+	// stateChange and is blocked in m.wg.Wait(). The error paths store
+	// running=false before emitting, so this check lets the re-entrant call
+	// return before it contends on stateChange, breaking that deadlock cycle.
+	if !m.running.Load() {
+		return errors.New("already disconnected")
+	}
 	m.stateChange.Lock()
 	defer m.stateChange.Unlock()
 	if !m.running.Load() {
 		return errors.New("already disconnected")
 	}
 	m.log.Trace().Msg("Disconnecting")
+	// The ctx cancellation wakes and stops both workers. The notify channels are
+	// deliberately NOT closed: they stay usable across a reconnect, and a late
+	// Expect/SendRequest on a disconnected codec must not panic with a send on a
+	// closed channel.
+	m.ctxCancel()
 	m.running.Store(false)
 	m.log.Trace().Msg("Waiting for worker to shutdown")
 	m.activeWorker.Wait()
@@ -181,6 +220,14 @@ func (m *defaultCodec) Disconnect() error {
 			return errors.Wrap(err, "error closing transport instance")
 		}
 	}
+	for _, expectation := range m.expectations {
+		m.wg.Go(func() {
+			err := errors.New("disconnected")
+			expectation.Cancel(err)
+			_ = expectation.GetHandleError()(err)
+		})
+	}
+	m.wg.Wait()
 	m.log.Trace().Msg("disconnected")
 	return nil
 }
@@ -189,51 +236,94 @@ func (m *defaultCodec) IsRunning() bool {
 	return m.running.Load()
 }
 
-func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) {
-	m.expectationsChangeMutex.Lock()
-	defer m.expectationsChangeMutex.Unlock()
-	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
-	m.expectations = append(m.expectations, expectation)
-	m.log.Debug().Stringer("expectation", expectation).Msg("Added expectation")
+func (m *defaultCodec) Expect(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
+	m.expect(ctx, interactionInfo, acceptsMessage, handleMessage, handleError)
 }
 
-func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+// expect is the implementation of Expect which additionally hands back the
+// registered expectation so internal callers can remove it again.
+func (m *defaultCodec) expect(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) spi.Expectation {
+	m.expectationsChangeMutex.Lock()
+	defer m.expectationsChangeMutex.Unlock()
+	ttl := m.receiveTimeout
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+	}
+	expectation := newDefaultExpectation(ctx, interactionInfo, ttl, acceptsMessage, handleMessage, handleError)
+	m.expectations = append(m.expectations, expectation)
+	m.log.Debug().Str("interactionInfo", interactionInfo).Stringer("expectation", expectation).Msg("Added expectation")
+	select {
+	case m.notifyExpireWorker <- struct{}{}:
+	default:
+	}
+	select {
+	case m.notifyReceiveWorker <- struct{}{}:
+	default:
+	}
+	return expectation
+}
+
+func (m *defaultCodec) removeExpectation(expectation spi.Expectation) {
+	m.expectationsChangeMutex.Lock()
+	defer m.expectationsChangeMutex.Unlock()
+	m.expectations = slices.DeleteFunc(m.expectations, func(candidate spi.Expectation) bool {
+		return candidate == expectation
+	})
+}
+
+func (m *defaultCodec) SendRequest(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	if err := ctx.Err(); err != nil {
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
-	m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl) // We register the expectation first to avoid getting a response between sending and adding the expect
-	m.log.Trace().Msg("Sending request")
-	return m.Send(message)
+	expectation := m.expect(ctx, interactionInfo, acceptsMessage, handleMessage, handleError) // We register the expectation first to avoid getting a response between sending and adding the expect
+	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending request")
+	if err := m.Send(ctx, interactionInfo, message); err != nil {
+		// The caller receives the send error directly; leaving the expectation
+		// registered would fire the error handler a second time on timeout.
+		m.removeExpectation(expectation)
+		return err
+	}
+	return nil
 }
 
-func (m *defaultCodec) TimeoutExpectations(now time.Time) {
+func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
 	m.expectationsChangeMutex.Lock() // TODO: Note: would be nice if this is a read mutex which can be upgraded
 	defer m.expectationsChangeMutex.Unlock()
 	m.expectations = slices.DeleteFunc(m.expectations, func(expectation spi.Expectation) bool {
 		// Check if this expectation has expired.
 		if now.After(expectation.GetExpiration()) {
 			// Remove this expectation from the list.
-			m.log.Info().Stringer("expectation", expectation).Msg("timeout expectation")
+			m.log.Debug().Interface("expectation", expectation).Msg("timeout expectation")
 			// Call the error handler.
-			go func(expectation spi.Expectation) {
-				if err := expectation.GetHandleError()(utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))); err != nil {
+			m.wg.Go(func() {
+				timeoutErr := utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))
+				expectation.Cancel(timeoutErr)
+				if err := expectation.GetHandleError()(timeoutErr); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}(expectation)
+			})
 			return true
 		}
 		if err := expectation.GetContext().Err(); err != nil {
-			m.log.Info().Err(err).Stringer("expectation", expectation).Msg("expectation canceled")
+			m.log.Debug().Err(err).Interface("expectation", expectation).Msg("expectation canceled")
 			// Remove this expectation from the list.
-			go func(expectation spi.Expectation) {
+			m.wg.Go(func() {
 				if err := expectation.GetHandleError()(err); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}(expectation)
+			})
 			return true
 		}
 		return false
 	})
+	nextExpire := 30 * time.Second
+	for _, expectation := range m.expectations {
+		expiresIn := time.Until(expectation.GetExpiration())
+		if expiresIn < nextExpire {
+			nextExpire = expiresIn
+		}
+	}
+	return nextExpire
 }
 
 func (m *defaultCodec) HandleMessages(message spi.Message) bool {
@@ -247,23 +337,23 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
-			expectationLog.Debug().Msg("accepts message")
+			expectationLog.Trace().Interface("handleMessage", message).Msg("accepts message")
 			// TODO: decouple from worker thread
 			if err := expectation.GetHandleMessage()(message); err != nil {
 				expectationLog.Debug().Err(err).Msg("errored handling the message")
 				// Pass the error to the error handler.
-				go func(expectation spi.Expectation) {
+				m.wg.Go(func() {
 					if err := expectation.GetHandleError()(err); err != nil {
 						m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 					}
-				}(expectation)
+				})
 				return false
 			}
 			m.log.Trace().Msg("message handled")
 			messageHandled = true
 			return true
 		} else {
-			expectationLog.Trace().Msg("doesn't accept message")
+			expectationLog.Trace().Interface("handleMessage", message).Msg("doesn't accept message")
 			return false
 		}
 	})
@@ -271,18 +361,94 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	return messageHandled
 }
 
-func (m *defaultCodec) startWorker() {
-	m.log.Trace().Msg("starting worker")
-	m.activeWorker.Add(1)
-	go m.Work()
+func (m *defaultCodec) startWorkers() {
+	m.log.Trace().Msg("starting workers")
+	m.startExpire()
+	m.startReceive()
 }
 
-func (m *defaultCodec) Work() {
-	defer m.activeWorker.Done()
+func (m *defaultCodec) startExpire() {
+	m.log.Trace().Msg("starting expire worker")
+	m.activeWorker.Go(m.ExpireWork)
+}
+
+func (m *defaultCodec) startReceive() {
+	m.log.Trace().Msg("starting receive worker")
+	m.activeWorker.Go(m.ReceiveWork)
+}
+
+func (m *defaultCodec) ExpireWork() {
 	workerLog := m.log.With().Logger()
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
+	workerLog = workerLog.With().Str("workerId", uuid.New().String()).Logger()
+	workerLog.Trace().Msg("Starting expire work")
+	defer workerLog.Trace().Msg("expire work ended")
+
+	defer func() {
+		if err := recover(); err != nil {
+			m.log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
+		}
+		if m.running.Load() {
+			workerLog.Warn().Msg("Keep running")
+			m.startExpire()
+		} else {
+			workerLog.Info().Msg("expire worker terminated")
+		}
+	}()
+
+	// Start an endless loop
+mainLoop:
+	for m.running.Load() {
+		workerLog.Trace().Msg("expire mainloop cycle")
+		now := time.Now()
+
+		// Guard against empty expectations
+		m.expectationsChangeMutex.RLock()
+		numberOfExpectations := len(m.expectations)
+		m.expectationsChangeMutex.RUnlock()
+		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
+			workerLog.Trace().Msg("no available expectations")
+			timer := time.NewTimer(30 * time.Second)
+			select {
+			case <-m.notifyExpireWorker:
+				workerLog.Trace().Msg("waking up because of notification")
+			case <-m.ctx.Done():
+				workerLog.Trace().Msg("context done, exiting expire work")
+				return
+			case <-timer.C:
+				workerLog.Trace().Msg("waking up for next expire")
+			}
+			continue mainLoop
+		}
+		nextExpire := m.TimeoutExpectations(now)
+		m.expectationsChangeMutex.RLock()
+		numberOfExpectations = len(m.expectations)
+		m.expectationsChangeMutex.RUnlock()
+		workerLog.Debug().Dur("nextExpire", nextExpire).Int("numberOfExpectations", numberOfExpectations).Msg("waiting for next expire")
+		timer := time.NewTimer(nextExpire)
+		select {
+		case <-m.notifyExpireWorker:
+			workerLog.Trace().Msg("waking up because of notification")
+		case <-m.ctx.Done():
+			workerLog.Trace().Msg("context done, exiting expire work")
+			return
+		case <-timer.C:
+			workerLog.Trace().Msg("waking up for next expire")
+		}
+	}
+}
+
+func (m *defaultCodec) ReceiveWork() {
+	workerLog := m.log.With().Logger()
+	if !m.traceDefaultMessageCodecWorker {
+		workerLog = zerolog.Nop()
+	}
+	workerLog = workerLog.With().Str("workerId", uuid.New().String()).Logger()
 	workerLog.Trace().Msg("Starting work")
 	defer workerLog.Trace().Msg("work ended")
 
@@ -295,9 +461,9 @@ func (m *defaultCodec) Work() {
 		}
 		if m.running.Load() {
 			workerLog.Warn().Msg("Keep running")
-			m.startWorker()
+			m.startReceive()
 		} else {
-			workerLog.Info().Msg("Worker terminated")
+			workerLog.Info().Msg("receive worker terminated")
 		}
 	}()
 
@@ -305,19 +471,17 @@ func (m *defaultCodec) Work() {
 	// Start an endless loop
 mainLoop:
 	for m.running.Load() {
-		if processingTime := time.Since(lastLoopTime); processingTime < 10*time.Millisecond {
+		const cycleTime = 10 * time.Millisecond
+		if processingTime := time.Since(lastLoopTime); processingTime < cycleTime {
 			// Ensure that we leave at least 10ms between loops to not burn cycles
-			sleepTime := 10*time.Millisecond - processingTime
-			workerLog.Trace().Stringer("sleepTime", sleepTime).Msg("sleeping") // we use stringer instead of Dur to have it a bit more readable
+			sleepTime := cycleTime - processingTime
+			workerLog.Trace().Dur("sleepTime", sleepTime).Msg("sleeping")
 			time.Sleep(sleepTime)
 		} else {
-			workerLog.Debug().Stringer("processingTime", processingTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
+			workerLog.Debug().Dur("processingTime", processingTime).Dur("cycleTime", cycleTime).Msg("no need to sleep")
 		}
-		workerLog.Trace().Msg("Working")
-		// Check for any expired expectations.
-		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
-		now := time.Now()
-		lastLoopTime = now
+		workerLog.Trace().Msg("receive mainloop cycle")
+		lastLoopTime = time.Now()
 
 		// Guard against empty expectations
 		m.expectationsChangeMutex.RLock()
@@ -325,9 +489,18 @@ mainLoop:
 		m.expectationsChangeMutex.RUnlock()
 		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
-			continue mainLoop
+			timer := time.NewTimer(30 * time.Second)
+			select {
+			case <-m.notifyReceiveWorker:
+				workerLog.Trace().Msg("waking up because of notification")
+			case <-m.ctx.Done():
+				workerLog.Trace().Msg("context done, exiting receive work")
+				return
+			case <-timer.C:
+				workerLog.Trace().Msg("waking up for next receive")
+				continue mainLoop
+			}
 		}
-		m.TimeoutExpectations(now)
 
 		workerLog.Trace().Msg("Receiving message")
 		// Check for incoming messages.
@@ -335,20 +508,33 @@ mainLoop:
 		var err error
 		{
 			syncer := make(chan struct{})
-			m.wg.Add(1)
-			go func() {
-				defer m.wg.Done()
+			m.wg.Go(func() {
 				defer close(syncer)
+				// A malformed frame can panic generated parsers (e.g. allocation
+				// panics on wire-declared sizes); recover here so a poisoned frame
+				// fails this receive cycle instead of killing the process.
+				defer func() {
+					if r := recover(); r != nil {
+						m.log.Error().
+							Str("stack", string(debug.Stack())).
+							Interface("err", r).
+							Msg("panic-ed while receiving")
+						err = errors.Errorf("panic while receiving: %v", r)
+					}
+				}()
 				if !m.running.Load() {
 					err = errors.New("not running")
 					return
 				}
-				message, err = m.Receive()
-			}()
+				message, err = m.Receive(m.ctx)
+			})
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
 			case <-syncer:
-				// nothing
+			// nothing
+			case <-m.ctx.Done():
+				workerLog.Trace().Msg("context done, exiting receive work")
+				return
 			case <-timeoutTimer.C:
 				workerLog.Error().Dur("receiveTimeout", m.receiveTimeout).Msg("receive timeout")
 				continue mainLoop
@@ -356,19 +542,23 @@ mainLoop:
 		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
-			continue mainLoop
+			if m.handleTransportError(workerLog, err) {
+				continue mainLoop
+			}
+			workerLog.Debug().Msg("transport error requested worker shutdown")
+			return
 		}
 		if message == nil {
 			workerLog.Trace().Msg("Not enough data yet")
 			continue mainLoop
 		}
-		workerLog.Trace().Stringer("message", message).Msg("got message")
+		workerLog.Trace().Interface("message", message).Msg("got message")
 
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
 			start := time.Now()
-			handled := m.customMessageHandling(m.DefaultCodecRequirements, message)
-			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("custom handling took elapsedTime")
+			handled := m.customMessageHandling(m.ctx, m.DefaultCodecRequirements, message)
+			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Bool("handled", handled).Msg("custom handling took elapsedTime")
 			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop
@@ -392,6 +582,128 @@ func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Log
 	select {
 	case m.defaultIncomingMessageChannel <- message:
 	default:
-		workerLog.Warn().Stringer("message", message).Msg("Message discarded")
+		workerLog.Warn().Interface("message", message).Msg("Message discarded")
+	}
+}
+
+func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error) bool {
+	if err == nil {
+		return true
+	}
+	// Defuse improperly constructed error chains (e.g. a typed-nil *net.OpError
+	// wrapped via %w) once at the entry point: everything below - classification,
+	// wrapping, expectation fan-out, logging - walks the chain repeatedly, and
+	// unguarded walks dereference such values, which killed the receive worker
+	// with a recovered nil-pointer panic in the field. A corrupt chain is
+	// flattened and tagged with errors.ErrCorruptErrorChain so the anomaly
+	// stays visible downstream instead of being silently swallowed.
+	err = errors.SanitizeError(err)
+	if transports.ErrorIs(err, context.Canceled) {
+		workerLog.Debug().Msg("receive aborted due to context cancellation")
+		return false
+	}
+
+	kind := transports.TransportErrorUnknown
+	if transports.ErrorIs(err, context.DeadlineExceeded) {
+		kind = transports.TransportErrorRetryable
+	} else if m.transportInstance != nil {
+		kind = m.transportInstance.ClassifyError(err)
+	}
+	if kind == transports.TransportErrorUnknown {
+		workerLog.Warn().Err(err).Msg("transport error classified as unknown; treating as fatal")
+		kind = transports.TransportErrorFatal
+	}
+
+	switch kind {
+	case transports.TransportErrorTransient:
+		workerLog.Debug().Err(err).Msg("transient transport error; keeping worker alive")
+		m.emitTransportError(kind, transports.NewTransportError(kind, err))
+		return true
+	case transports.TransportErrorRetryable:
+		workerLog.Warn().Err(err).Msg("retryable transport error; resetting transport instance")
+		if m.transportInstance != nil {
+			defer func() {
+				if recoverErr := recover(); recoverErr != nil {
+					workerLog.Error().Interface("panic", recoverErr).Msg("panic while resetting transport instance")
+				}
+			}()
+			m.transportInstance.Reset()
+		}
+		m.emitTransportError(kind, transports.NewTransportError(kind, err))
+		return true
+	case transports.TransportErrorFatal:
+		workerLog.Error().Err(err).Msg("fatal transport error; shutting down codec")
+		wrappedErr := transports.NewTransportError(kind, err)
+		m.failAllExpectations(wrappedErr)
+		if m.transportInstance != nil {
+			if closeErr := m.transportInstance.Close(); closeErr != nil {
+				workerLog.Warn().Err(closeErr).Msg("error closing transport after fatal condition")
+			}
+		}
+		if m.ctxCancel != nil {
+			m.ctxCancel()
+		}
+		m.running.Store(false)
+		m.emitTransportError(kind, wrappedErr)
+		return false
+	default:
+		workerLog.Error().Err(err).Msg("unexpected transport error classification; treating as fatal")
+		wrappedErr := transports.NewTransportError(transports.TransportErrorFatal, err)
+		m.failAllExpectations(wrappedErr)
+		if m.transportInstance != nil {
+			if closeErr := m.transportInstance.Close(); closeErr != nil {
+				workerLog.Warn().Err(closeErr).Msg("error closing transport after unexpected classification")
+			}
+		}
+		if m.ctxCancel != nil {
+			m.ctxCancel()
+		}
+		m.running.Store(false)
+		m.emitTransportError(transports.TransportErrorFatal, wrappedErr)
+		return false
+	}
+}
+
+func (m *defaultCodec) emitTransportError(kind transports.TransportErrorKind, err error) {
+	handler := m.transportErrorHandler
+	if handler == nil {
+		return
+	}
+	// The handler is external code (typically the owning connection) that may
+	// react to a fatal error by invalidating and closing the connection, which
+	// calls back into Disconnect(). Disconnect() blocks on activeWorker.Wait()
+	// until the receive/expire workers have exited and contends on stateChange.
+	// emitTransportError is invoked *from* the receive worker, so calling the
+	// handler inline would make that worker wait for itself - or deadlock
+	// against a concurrent Disconnect() that already holds stateChange and is
+	// waiting for this worker to exit. Dispatch it on a goroutine so the worker
+	// can return and exit. The re-entrant Disconnect() is safe here because its
+	// lock-free fast path returns before contending on stateChange/m.wg once
+	// shutdown has been signalled (running == false).
+	m.wg.Go(func() {
+		defer func() {
+			if r := recover(); r != nil {
+				m.log.Error().Interface("panic", r).Msg("recovered from panic in transport error handler")
+			}
+		}()
+		handler(kind, err)
+	})
+}
+
+func (m *defaultCodec) failAllExpectations(err error) {
+	m.expectationsChangeMutex.Lock()
+	expectations := slices.Clone(m.expectations)
+	m.expectations = nil
+	m.expectationsChangeMutex.Unlock()
+
+	for _, expectation := range expectations {
+		expectation.Cancel(err)
+		if handleErr := expectation.GetHandleError(); handleErr != nil {
+			m.wg.Go(func() {
+				if handlerErr := handleErr(err); handlerErr != nil {
+					m.log.Error().Err(handlerErr).Msg("error returned by expectation error handler")
+				}
+			})
+		}
 	}
 }

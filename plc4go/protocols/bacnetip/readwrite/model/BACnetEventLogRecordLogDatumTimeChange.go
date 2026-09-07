@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetEventLogRecordLogDatumTimeChange = (*_BACnetEventLogRecordLogDatumTi
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumTimeChange)(nil)
 
 // NewBACnetEventLogRecordLogDatumTimeChange factory function for _BACnetEventLogRecordLogDatumTimeChange
-func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetEventLogRecordLogDatumTimeChange {
+func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal) *_BACnetEventLogRecordLogDatumTimeChange {
 	if timeChange == nil {
 		panic("timeChange of type BACnetContextTagReal for BACnetEventLogRecordLogDatumTimeChange must not be nil")
 	}
 	_result := &_BACnetEventLogRecordLogDatumTimeChange{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		TimeChange:                           timeChange,
 	}
 	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetEventLogRecordLogDatumTimeChange(structType any) BACnetEventLogRe
 	return nil
 }
 
-func (m *_BACnetEventLogRecordLogDatumTimeChange) GetTypeName() string {
+func (m *_BACnetEventLogRecordLogDatumTimeChange) GetPlx4xTypeName() string {
 	return "BACnetEventLogRecordLogDatumTimeChange"
 }
 
-func (m *_BACnetEventLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetEventLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (timeChange)
 	lengthInBits += m.TimeChange.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetEventLogRecordLogDatumTimeChange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatumTimeChange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

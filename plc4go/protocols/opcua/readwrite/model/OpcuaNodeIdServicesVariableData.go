@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,6 +218,7 @@ const (
 	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID_DiagnosticsLevel                              OpcuaNodeIdServicesVariableData = 19674
 	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID                                             OpcuaNodeIdServicesVariableData = 19675
 	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel                            OpcuaNodeIdServicesVariableData = 19676
+	OpcuaNodeIdServicesVariableData_DataTypeRefinementType_FieldDescription_Placeholder                                                    OpcuaNodeIdServicesVariableData = 19821
 	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId                                                                      OpcuaNodeIdServicesVariableData = 21092
 	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetFieldContentMask                                                              OpcuaNodeIdServicesVariableData = 21093
 	OpcuaNodeIdServicesVariableData_DataSetWriterType_KeyFrameCount                                                                        OpcuaNodeIdServicesVariableData = 21094
@@ -412,6 +413,7 @@ func init() {
 		OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID,
 		OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel,
+		OpcuaNodeIdServicesVariableData_DataTypeRefinementType_FieldDescription_Placeholder,
 		OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId,
 		OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetFieldContentMask,
 		OpcuaNodeIdServicesVariableData_DataSetWriterType_KeyFrameCount,
@@ -775,6 +777,8 @@ func OpcuaNodeIdServicesVariableDataByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID, true
 	case 19676:
 		return OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel, true
+	case 19821:
+		return OpcuaNodeIdServicesVariableData_DataTypeRefinementType_FieldDescription_Placeholder, true
 	case 21092:
 		return OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId, true
 	case 21093:
@@ -1155,6 +1159,8 @@ func OpcuaNodeIdServicesVariableDataByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID, true
 	case "DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel":
 		return OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel, true
+	case "DataTypeRefinementType_FieldDescription_Placeholder":
+		return OpcuaNodeIdServicesVariableData_DataTypeRefinementType_FieldDescription_Placeholder, true
 	case "DataSetWriterType_DataSetWriterId":
 		return OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId, true
 	case "DataSetWriterType_DataSetFieldContentMask":
@@ -1204,11 +1210,11 @@ func CastOpcuaNodeIdServicesVariableData(structType any) OpcuaNodeIdServicesVari
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableData) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableData) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -1600,6 +1606,8 @@ func (e OpcuaNodeIdServicesVariableData) PLC4XEnumName() string {
 		return "DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID"
 	case OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel:
 		return "DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel"
+	case OpcuaNodeIdServicesVariableData_DataTypeRefinementType_FieldDescription_Placeholder:
+		return "DataTypeRefinementType_FieldDescription_Placeholder"
 	case OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId:
 		return "DataSetWriterType_DataSetWriterId"
 	case OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetFieldContentMask:

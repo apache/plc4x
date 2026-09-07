@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastEphemeralKeyType(structType any) EphemeralKeyType {
 	return nil
 }
 
-func (m *_EphemeralKeyType) GetTypeName() string {
+func (m *_EphemeralKeyType) GetPlx4xTypeName() string {
 	return "EphemeralKeyType"
 }
 
-func (m *_EphemeralKeyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_EphemeralKeyType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (publicKey)
 	lengthInBits += m.PublicKey.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_EphemeralKeyType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EphemeralKeyType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EphemeralKeyType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_EphemeralKeyType) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	publicKey, err := ReadSimpleField[PascalByteString](ctx, "publicKey", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	publicKey, err := ReadSimpleField[PascalByteString](ctx, "publicKey", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publicKey' field"))
 	}
 	m.PublicKey = publicKey
 
-	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_EphemeralKeyType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for EphemeralKeyType")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "publicKey", m.GetPublicKey(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "publicKey", m.GetPublicKey(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publicKey' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 

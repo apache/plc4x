@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -60,8 +62,8 @@ type StatusRequestContract interface {
 
 // StatusRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type StatusRequestRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetStatusType returns StatusType (discriminator field)
 	GetStatusType() byte
 }
@@ -253,26 +255,26 @@ func CastStatusRequest(structType any) StatusRequest {
 	return nil
 }
 
-func (m *_StatusRequest) GetTypeName() string {
+func (m *_StatusRequest) GetPlx4xTypeName() string {
 	return "StatusRequest"
 }
 
-func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_StatusRequest) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_StatusRequest) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func StatusRequestParse[T StatusRequest](ctx context.Context, theBytes []byte) (T, error) {
-	return StatusRequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
+	return StatusRequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -287,7 +289,7 @@ func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Co
 }
 
 func StatusRequestParseWithBuffer[T StatusRequest](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_StatusRequest{}).parse(ctx, readBuffer)
+	v, err := (new(_StatusRequest)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -309,7 +311,7 @@ func (m *_StatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0)
+	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusType' field"))
 	}

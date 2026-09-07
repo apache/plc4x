@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement = 
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement)(nil)
 
 // NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement factory function for _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencedPropertyIncrement BACnetContextTagReal, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencedPropertyIncrement BACnetContextTagReal) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
 	if referencedPropertyIncrement == nil {
 		panic("referencedPropertyIncrement of type BACnetContextTagReal for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement must not be nil")
 	}
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag),
 		ReferencedPropertyIncrement:                          referencedPropertyIncrement,
 	}
 	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
 
 	// Simple field (referencedPropertyIncrement)
 	lengthInBits += m.ReferencedPropertyIncrement.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

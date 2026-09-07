@@ -79,20 +79,47 @@ plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_of(char* v
     if(strcmp(value_string, "BLOCK_TYPES") == 0) {
         return plc4c_s7_read_write_szl_sublist_BLOCK_TYPES;
     }
+    if(strcmp(value_string, "PRIORITY_CLASSES") == 0) {
+        return plc4c_s7_read_write_szl_sublist_PRIORITY_CLASSES;
+    }
+    if(strcmp(value_string, "EXTENDED_PRIORITY_CLASSES") == 0) {
+        return plc4c_s7_read_write_szl_sublist_EXTENDED_PRIORITY_CLASSES;
+    }
+    if(strcmp(value_string, "OPERATING_SYSTEM") == 0) {
+        return plc4c_s7_read_write_szl_sublist_OPERATING_SYSTEM;
+    }
     if(strcmp(value_string, "STATUS_MODULE_LEDS") == 0) {
         return plc4c_s7_read_write_szl_sublist_STATUS_MODULE_LEDS;
     }
     if(strcmp(value_string, "COMPONENT_IDENTIFICATION") == 0) {
         return plc4c_s7_read_write_szl_sublist_COMPONENT_IDENTIFICATION;
     }
+    if(strcmp(value_string, "INTERRUPT_INFO") == 0) {
+        return plc4c_s7_read_write_szl_sublist_INTERRUPT_INFO;
+    }
     if(strcmp(value_string, "INTERRUPT_STATUS") == 0) {
         return plc4c_s7_read_write_szl_sublist_INTERRUPT_STATUS;
+    }
+    if(strcmp(value_string, "OPERATION_HISTORY") == 0) {
+        return plc4c_s7_read_write_szl_sublist_OPERATION_HISTORY;
+    }
+    if(strcmp(value_string, "OPERATING_MODES") == 0) {
+        return plc4c_s7_read_write_szl_sublist_OPERATING_MODES;
     }
     if(strcmp(value_string, "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS") == 0) {
         return plc4c_s7_read_write_szl_sublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS;
     }
+    if(strcmp(value_string, "COMMUNICATION_MODE_DATA") == 0) {
+        return plc4c_s7_read_write_szl_sublist_COMMUNICATION_MODE_DATA;
+    }
     if(strcmp(value_string, "COMMUNICATION_STATUS_DATA") == 0) {
         return plc4c_s7_read_write_szl_sublist_COMMUNICATION_STATUS_DATA;
+    }
+    if(strcmp(value_string, "DIAGNOSTIC_DATA_ON_COMM_OBJECTS") == 0) {
+        return plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS;
+    }
+    if(strcmp(value_string, "STATUS_H_SYSTEM") == 0) {
+        return plc4c_s7_read_write_szl_sublist_STATUS_H_SYSTEM;
     }
     if(strcmp(value_string, "H_CPU_GROUP_INFORMATION") == 0) {
         return plc4c_s7_read_write_szl_sublist_H_CPU_GROUP_INFORMATION;
@@ -143,7 +170,7 @@ plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_of(char* v
 }
 
 int plc4c_s7_read_write_szl_sublist_num_values() {
-  return 26;
+  return 35;
 }
 
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_for_index(int index) {
@@ -167,63 +194,90 @@ plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_for_index(
         return plc4c_s7_read_write_szl_sublist_BLOCK_TYPES;
       }
       case 6: {
-        return plc4c_s7_read_write_szl_sublist_STATUS_MODULE_LEDS;
+        return plc4c_s7_read_write_szl_sublist_PRIORITY_CLASSES;
       }
       case 7: {
-        return plc4c_s7_read_write_szl_sublist_COMPONENT_IDENTIFICATION;
+        return plc4c_s7_read_write_szl_sublist_EXTENDED_PRIORITY_CLASSES;
       }
       case 8: {
-        return plc4c_s7_read_write_szl_sublist_INTERRUPT_STATUS;
+        return plc4c_s7_read_write_szl_sublist_OPERATING_SYSTEM;
       }
       case 9: {
-        return plc4c_s7_read_write_szl_sublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS;
+        return plc4c_s7_read_write_szl_sublist_STATUS_MODULE_LEDS;
       }
       case 10: {
-        return plc4c_s7_read_write_szl_sublist_COMMUNICATION_STATUS_DATA;
+        return plc4c_s7_read_write_szl_sublist_COMPONENT_IDENTIFICATION;
       }
       case 11: {
-        return plc4c_s7_read_write_szl_sublist_H_CPU_GROUP_INFORMATION;
+        return plc4c_s7_read_write_szl_sublist_INTERRUPT_INFO;
       }
       case 12: {
-        return plc4c_s7_read_write_szl_sublist_STATUS_SINGLE_MODULE_LED;
+        return plc4c_s7_read_write_szl_sublist_INTERRUPT_STATUS;
       }
       case 13: {
-        return plc4c_s7_read_write_szl_sublist_SWITCHED_DP_SLAVES_H_SYSTEM;
+        return plc4c_s7_read_write_szl_sublist_OPERATION_HISTORY;
       }
       case 14: {
-        return plc4c_s7_read_write_szl_sublist_DP_MASTER_SYSTEM_INFORMATION;
+        return plc4c_s7_read_write_szl_sublist_OPERATING_MODES;
       }
       case 15: {
-        return plc4c_s7_read_write_szl_sublist_MODULE_STATUS_INFORMATION;
+        return plc4c_s7_read_write_szl_sublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS;
       }
       case 16: {
-        return plc4c_s7_read_write_szl_sublist_RACK_OR_STATION_STATUS_INFORMATION;
+        return plc4c_s7_read_write_szl_sublist_COMMUNICATION_MODE_DATA;
       }
       case 17: {
-        return plc4c_s7_read_write_szl_sublist_RACK_OR_STATION_STATUS_INFORMATION_2;
+        return plc4c_s7_read_write_szl_sublist_COMMUNICATION_STATUS_DATA;
       }
       case 18: {
-        return plc4c_s7_read_write_szl_sublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION;
+        return plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS;
       }
       case 19: {
-        return plc4c_s7_read_write_szl_sublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP;
+        return plc4c_s7_read_write_szl_sublist_STATUS_H_SYSTEM;
       }
       case 20: {
-        return plc4c_s7_read_write_szl_sublist_TOOL_CHANGER_INFORMATION_PROFINET;
+        return plc4c_s7_read_write_szl_sublist_H_CPU_GROUP_INFORMATION;
       }
       case 21: {
-        return plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_BUFFER;
+        return plc4c_s7_read_write_szl_sublist_STATUS_SINGLE_MODULE_LED;
       }
       case 22: {
-        return plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR0;
+        return plc4c_s7_read_write_szl_sublist_SWITCHED_DP_SLAVES_H_SYSTEM;
       }
       case 23: {
-        return plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR1_GI;
+        return plc4c_s7_read_write_szl_sublist_DP_MASTER_SYSTEM_INFORMATION;
       }
       case 24: {
-        return plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR1_LA;
+        return plc4c_s7_read_write_szl_sublist_MODULE_STATUS_INFORMATION;
       }
       case 25: {
+        return plc4c_s7_read_write_szl_sublist_RACK_OR_STATION_STATUS_INFORMATION;
+      }
+      case 26: {
+        return plc4c_s7_read_write_szl_sublist_RACK_OR_STATION_STATUS_INFORMATION_2;
+      }
+      case 27: {
+        return plc4c_s7_read_write_szl_sublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION;
+      }
+      case 28: {
+        return plc4c_s7_read_write_szl_sublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP;
+      }
+      case 29: {
+        return plc4c_s7_read_write_szl_sublist_TOOL_CHANGER_INFORMATION_PROFINET;
+      }
+      case 30: {
+        return plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_BUFFER;
+      }
+      case 31: {
+        return plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR0;
+      }
+      case 32: {
+        return plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR1_GI;
+      }
+      case 33: {
+        return plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR1_LA;
+      }
+      case 34: {
         return plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_DATA_DP_SLAVE;
       }
       default: {

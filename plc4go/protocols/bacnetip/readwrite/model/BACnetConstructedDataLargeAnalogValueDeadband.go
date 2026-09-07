@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLargeAnalogValueDeadband = (*_BACnetConstructedDataLa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueDeadband)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueDeadband factory function for _BACnetConstructedDataLargeAnalogValueDeadband
-func NewBACnetConstructedDataLargeAnalogValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueDeadband {
+func NewBACnetConstructedDataLargeAnalogValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagDouble) *_BACnetConstructedDataLargeAnalogValueDeadband {
 	if deadband == nil {
 		panic("deadband of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueDeadband must not be nil")
 	}
 	_result := &_BACnetConstructedDataLargeAnalogValueDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Deadband:                      deadband,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLargeAnalogValueDeadband(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueDeadband"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (deadband)
 	lengthInBits += m.Deadband.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

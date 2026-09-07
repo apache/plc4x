@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +60,6 @@ type DF1ResponseMessageContract interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetPayloadLength() returns a parser argument
-	GetPayloadLength() uint16
 	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
 	// CreateBuilder creates a DF1ResponseMessageBuilder
@@ -68,8 +68,8 @@ type DF1ResponseMessageContract interface {
 
 // DF1ResponseMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1ResponseMessageRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -84,9 +84,6 @@ type _DF1ResponseMessage struct {
 	SourceAddress      uint8
 	Status             uint8
 	TransactionCounter uint16
-
-	// Arguments.
-	PayloadLength uint16
 	// Reserved Fields
 	reservedField0 *uint8
 	reservedField1 *uint8
@@ -95,8 +92,8 @@ type _DF1ResponseMessage struct {
 var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
 
 // NewDF1ResponseMessage factory function for _DF1ResponseMessage
-func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
-	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
+func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1ResponseMessage {
+	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
 }
 
 ///////////////////////////////////////////////////////////
@@ -117,8 +114,6 @@ type DF1ResponseMessageBuilder interface {
 	WithStatus(uint8) DF1ResponseMessageBuilder
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1ResponseMessageBuilder
-	// WithArgPayloadLength sets a parser argument
-	WithArgPayloadLength(uint16) DF1ResponseMessageBuilder
 	// AsDF1CommandResponseMessageProtectedTypedLogicalRead converts this build to a subType of DF1ResponseMessage. It is always possible to return to current builder using Done()
 	AsDF1CommandResponseMessageProtectedTypedLogicalRead() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 	// Build builds the DF1ResponseMessage or returns an error if something is wrong
@@ -173,11 +168,6 @@ func (b *_DF1ResponseMessageBuilder) WithStatus(status uint8) DF1ResponseMessage
 
 func (b *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1ResponseMessageBuilder {
 	b.TransactionCounter = transactionCounter
-	return b
-}
-
-func (b *_DF1ResponseMessageBuilder) WithArgPayloadLength(payloadLength uint16) DF1ResponseMessageBuilder {
-	b.PayloadLength = payloadLength
 	return b
 }
 
@@ -286,12 +276,12 @@ func CastDF1ResponseMessage(structType any) DF1ResponseMessage {
 	return nil
 }
 
-func (m *_DF1ResponseMessage) GetTypeName() string {
+func (m *_DF1ResponseMessage) GetPlx4xTypeName() string {
 	return "DF1ResponseMessage"
 }
 
-func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -316,16 +306,16 @@ func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DF1ResponseMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1ResponseMessage) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_DF1ResponseMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1ResponseMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func DF1ResponseMessageParse[T DF1ResponseMessage](ctx context.Context, theBytes []byte, payloadLength uint16) (T, error) {
-	return DF1ResponseMessageParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), payloadLength)
+	return DF1ResponseMessageParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), payloadLength)
 }
 
 func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -340,7 +330,7 @@ func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLeng
 }
 
 func DF1ResponseMessageParseWithBuffer[T DF1ResponseMessage](ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (T, error) {
-	v, err := (&_DF1ResponseMessage{PayloadLength: payloadLength}).parse(ctx, readBuffer, payloadLength)
+	v, err := (new(_DF1ResponseMessage)).parse(ctx, readBuffer, payloadLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -362,42 +352,42 @@ func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	destinationAddress, err := ReadSimpleField(ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	destinationAddress, err := ReadSimpleField(ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
 	m.DestinationAddress = destinationAddress
 
-	sourceAddress, err := ReadSimpleField(ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	sourceAddress, err := ReadSimpleField(ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
 	m.SourceAddress = sourceAddress
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField1 = reservedField1
 
-	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(8)))
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
-	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 	m.Status = status
 
-	transactionCounter, err := ReadSimpleField(ctx, "transactionCounter", ReadUnsignedShort(readBuffer, uint8(16)))
+	transactionCounter, err := ReadSimpleField(ctx, "transactionCounter", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionCounter' field"))
 	}
@@ -407,7 +397,7 @@ func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child DF1ResponseMessage
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, payloadLength); err != nil {
+		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, uint16(payloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandResponseMessageProtectedTypedLogicalRead for type-switch of DF1ResponseMessage")
 		}
 	default:
@@ -433,31 +423,31 @@ func (pm *_DF1ResponseMessage) serializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for DF1ResponseMessage")
 	}
 
-	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	if err := WriteSimpleField[uint8](ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[uint8](ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 	}
 
-	if err := WriteSimpleField[uint8](ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[uint8](ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 	}
 
-	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "commandCode", m.GetCommandCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "commandCode", m.GetCommandCode(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commandCode' field")
 	}
 
-	if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	if err := WriteSimpleField[uint16](ctx, "transactionCounter", m.GetTransactionCounter(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+	if err := WriteSimpleField[uint16](ctx, "transactionCounter", m.GetTransactionCounter(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'transactionCounter' field")
 	}
 
@@ -471,16 +461,6 @@ func (pm *_DF1ResponseMessage) serializeParent(ctx context.Context, writeBuffer 
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_DF1ResponseMessage) GetPayloadLength() uint16 {
-	return m.PayloadLength
-}
-
-//
-////
 
 func (m *_DF1ResponseMessage) IsDF1ResponseMessage() {}
 
@@ -498,7 +478,6 @@ func (m *_DF1ResponseMessage) deepCopy() *_DF1ResponseMessage {
 		m.SourceAddress,
 		m.Status,
 		m.TransactionCounter,
-		m.PayloadLength,
 		m.reservedField0,
 		m.reservedField1,
 	}

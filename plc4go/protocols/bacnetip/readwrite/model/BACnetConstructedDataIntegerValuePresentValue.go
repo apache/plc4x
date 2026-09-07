@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValuePresentValue = (*_BACnetConstructedDataIn
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValuePresentValue)(nil)
 
 // NewBACnetConstructedDataIntegerValuePresentValue factory function for _BACnetConstructedDataIntegerValuePresentValue
-func NewBACnetConstructedDataIntegerValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValuePresentValue {
+func NewBACnetConstructedDataIntegerValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValuePresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValuePresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValuePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataIntegerValuePresentValue(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegerValuePresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegerValuePresentValue"
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIntegerValuePresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

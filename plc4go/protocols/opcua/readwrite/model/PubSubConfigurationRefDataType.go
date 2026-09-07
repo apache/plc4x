@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -252,12 +253,12 @@ func CastPubSubConfigurationRefDataType(structType any) PubSubConfigurationRefDa
 	return nil
 }
 
-func (m *_PubSubConfigurationRefDataType) GetTypeName() string {
+func (m *_PubSubConfigurationRefDataType) GetPlx4xTypeName() string {
 	return "PubSubConfigurationRefDataType"
 }
 
-func (m *_PubSubConfigurationRefDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PubSubConfigurationRefDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (configurationMask)
 	lengthInBits += 32
@@ -274,7 +275,7 @@ func (m *_PubSubConfigurationRefDataType) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_PubSubConfigurationRefDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PubSubConfigurationRefDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,25 +290,25 @@ func (m *_PubSubConfigurationRefDataType) parse(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	configurationMask, err := ReadEnumField[PubSubConfigurationRefMask](ctx, "configurationMask", "PubSubConfigurationRefMask", ReadEnum(PubSubConfigurationRefMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	configurationMask, err := ReadEnumField[PubSubConfigurationRefMask](ctx, "configurationMask", "PubSubConfigurationRefMask", ReadEnum(PubSubConfigurationRefMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationMask' field"))
 	}
 	m.ConfigurationMask = configurationMask
 
-	elementIndex, err := ReadSimpleField(ctx, "elementIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	elementIndex, err := ReadSimpleField(ctx, "elementIndex", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementIndex' field"))
 	}
 	m.ElementIndex = elementIndex
 
-	connectionIndex, err := ReadSimpleField(ctx, "connectionIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	connectionIndex, err := ReadSimpleField(ctx, "connectionIndex", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionIndex' field"))
 	}
 	m.ConnectionIndex = connectionIndex
 
-	groupIndex, err := ReadSimpleField(ctx, "groupIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	groupIndex, err := ReadSimpleField(ctx, "groupIndex", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupIndex' field"))
 	}
@@ -338,19 +339,19 @@ func (m *_PubSubConfigurationRefDataType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfigurationRefDataType")
 		}
 
-		if err := WriteSimpleEnumField[PubSubConfigurationRefMask](ctx, "configurationMask", "PubSubConfigurationRefMask", m.GetConfigurationMask(), WriteEnum[PubSubConfigurationRefMask, uint32](PubSubConfigurationRefMask.GetValue, PubSubConfigurationRefMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[PubSubConfigurationRefMask](ctx, "configurationMask", "PubSubConfigurationRefMask", m.GetConfigurationMask(), WriteEnum[PubSubConfigurationRefMask, uint32](PubSubConfigurationRefMask.GetValue, PubSubConfigurationRefMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationMask' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "elementIndex", m.GetElementIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "elementIndex", m.GetElementIndex(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'elementIndex' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "connectionIndex", m.GetConnectionIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "connectionIndex", m.GetConnectionIndex(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'connectionIndex' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "groupIndex", m.GetGroupIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "groupIndex", m.GetGroupIndex(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'groupIndex' field")
 		}
 

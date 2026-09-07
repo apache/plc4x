@@ -54,10 +54,19 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
+    protected List<Template> getConstantsTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/c/constants-template.h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/constants-template.c.ftlh")
+        );
+    }
+
+    @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
             freemarkerConfiguration.getTemplate("templates/c/complex-type-template.h.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/c/complex-type-template.c.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/c/complex-type-template.c.ftlh")
+        );
     }
 
     @Override

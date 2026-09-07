@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,25 +218,25 @@ func CastAccessControlDataValidAccessRequest(structType any) AccessControlDataVa
 	return nil
 }
 
-func (m *_AccessControlDataValidAccessRequest) GetTypeName() string {
+func (m *_AccessControlDataValidAccessRequest) GetPlx4xTypeName() string {
 	return "AccessControlDataValidAccessRequest"
 }
 
-func (m *_AccessControlDataValidAccessRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
+func (m *_AccessControlDataValidAccessRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	// Simple field (accessControlDirection)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

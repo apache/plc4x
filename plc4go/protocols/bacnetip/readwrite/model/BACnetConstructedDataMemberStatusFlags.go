@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMemberStatusFlags = (*_BACnetConstructedDataMemberSta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMemberStatusFlags)(nil)
 
 // NewBACnetConstructedDataMemberStatusFlags factory function for _BACnetConstructedDataMemberStatusFlags
-func NewBACnetConstructedDataMemberStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberStatusFlags {
+func NewBACnetConstructedDataMemberStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged) *_BACnetConstructedDataMemberStatusFlags {
 	if statusFlags == nil {
 		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataMemberStatusFlags must not be nil")
 	}
 	_result := &_BACnetConstructedDataMemberStatusFlags{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		StatusFlags:                   statusFlags,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataMemberStatusFlags(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataMemberStatusFlags) GetTypeName() string {
+func (m *_BACnetConstructedDataMemberStatusFlags) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMemberStatusFlags"
 }
 
-func (m *_BACnetConstructedDataMemberStatusFlags) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataMemberStatusFlags) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (statusFlags)
 	lengthInBits += m.StatusFlags.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataMemberStatusFlags) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMemberStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataMemberStatusFlags) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

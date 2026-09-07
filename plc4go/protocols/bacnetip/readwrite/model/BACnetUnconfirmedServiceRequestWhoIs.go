@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ BACnetUnconfirmedServiceRequestWhoIs = (*_BACnetUnconfirmedServiceRequestW
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
 
 // NewBACnetUnconfirmedServiceRequestWhoIs factory function for _BACnetUnconfirmedServiceRequestWhoIs
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoIs {
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger) *_BACnetUnconfirmedServiceRequestWhoIs {
 	_result := &_BACnetUnconfirmedServiceRequestWhoIs{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
 	}
@@ -246,12 +246,12 @@ func CastBACnetUnconfirmedServiceRequestWhoIs(structType any) BACnetUnconfirmedS
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoIs"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {
@@ -266,7 +266,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -326,11 +326,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWhoIs")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", GetRef(m.GetDeviceInstanceRangeLowLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", new(m.GetDeviceInstanceRangeLowLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeLowLimit' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", GetRef(m.GetDeviceInstanceRangeHighLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", new(m.GetDeviceInstanceRangeHighLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeHighLimit' field")
 		}
 

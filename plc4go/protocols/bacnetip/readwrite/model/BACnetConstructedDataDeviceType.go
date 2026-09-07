@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDeviceType = (*_BACnetConstructedDataDeviceType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceType)(nil)
 
 // NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
-func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
+func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString) *_BACnetConstructedDataDeviceType {
 	if deviceType == nil {
 		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
 	}
 	_result := &_BACnetConstructedDataDeviceType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DeviceType:                    deviceType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDeviceType(structType any) BACnetConstructedDataDe
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceType) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceType"
 }
 
-func (m *_BACnetConstructedDataDeviceType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDeviceType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (deviceType)
 	lengthInBits += m.DeviceType.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDeviceType) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDeviceType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDeviceType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

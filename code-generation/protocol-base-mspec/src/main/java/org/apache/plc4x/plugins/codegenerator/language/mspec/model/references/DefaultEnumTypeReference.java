@@ -64,7 +64,7 @@ public class DefaultEnumTypeReference implements EnumTypeReference {
     @Override
     public void setTypeDefinition(TypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
-        if(!(typeDefinition instanceof EnumTypeDefinition)) {
+        if (!(typeDefinition instanceof EnumTypeDefinition)) {
             throw new IllegalArgumentException("DefaultEnumTypeReferences only accept instances of EnumTypeDefinitions");
         }
         this.typeDefinition = ((EnumTypeDefinition) typeDefinition);
@@ -86,9 +86,9 @@ public class DefaultEnumTypeReference implements EnumTypeReference {
     @Override
     public String toString() {
         return "DefaultEnumTypeReference{" +
-                "name='" + name + '\'' +
-                ", params=" + params +
-                '}';
+            "name='" + name + '\'' +
+            ", params=" + params +
+            '}';
     }
 
     @Override

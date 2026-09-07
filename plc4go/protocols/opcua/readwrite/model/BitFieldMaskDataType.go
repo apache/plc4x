@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,17 +135,17 @@ func CastBitFieldMaskDataType(structType any) BitFieldMaskDataType {
 	return nil
 }
 
-func (m *_BitFieldMaskDataType) GetTypeName() string {
+func (m *_BitFieldMaskDataType) GetPlx4xTypeName() string {
 	return "BitFieldMaskDataType"
 }
 
-func (m *_BitFieldMaskDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BitFieldMaskDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_BitFieldMaskDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BitFieldMaskDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -160,7 +160,7 @@ func BitFieldMaskDataTypeParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BitFieldMaskDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldMaskDataType, error) {
-	v, err := (&_BitFieldMaskDataType{}).parse(ctx, readBuffer)
+	v, err := (new(_BitFieldMaskDataType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

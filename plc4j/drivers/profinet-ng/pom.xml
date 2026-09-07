@@ -17,13 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.1</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>plc4j-driver-profinet-ng</artifactId>
@@ -32,7 +31,14 @@
   <description>Implementation of a PLC4X driver for the Profinet protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T21:23:45Z</project.build.outputTimestamp>
+    <!--
+      This driver is not marked as fully supported for Java in the protocol
+      support table (website/asciidoc/modules/users/pages/protocols/index.adoc),
+      so it is built and installed locally, but not published to a repository.
+      Remove this once the driver is marked with a green check for Java.
+    -->
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <build>
@@ -69,6 +75,56 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/apache/plc4x/java/profinet/ProfinetConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/ProfinetMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/ProfinetDriver.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/channel/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/discovery/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/context/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/config/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/readwrite/utils/StaticHelper.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/utils/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/gsdml/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/packets/PnDcpPacketFactory*.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/apache/plc4x/java/profinet/ProfinetConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/ProfinetMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/ProfinetDriver.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/channel/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/discovery/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/context/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/config/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/readwrite/utils/StaticHelper.class</exclude>
+                <exclude>org/apache/plc4x/java/profinet/utils/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/gsdml/**</exclude>
+                <exclude>org/apache/plc4x/java/profinet/packets/PnDcpPacketFactory*.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -76,7 +132,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus.ProfinetDriver</Export-Service>
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.profinet.ProfinetDriver</Export-Service>
             <Import-Package>
               *
             </Import-Package>
@@ -90,71 +146,97 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-raw-socket</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-raw-sockets</artifactId>
-      <version>0.13.1</version>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-core</artifactId>
-      <!-- Override the "provided" scope -->
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-raw-socket</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
+      <!-- Used at runtime only -->
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-packetfactory-static</artifactId>
+      <!-- Used at runtime only -->
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-generator</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -170,7 +252,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-profinet</artifactId>
-      <version>0.13.1</version>
+      <version>1.0.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -198,8 +280,7 @@
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>src/main/generated</outputDir>
                   <options>
-                    <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
-                    <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
+                    <!-- We want properties that contain the values of reserved fields if the value differs from the expected one -->
                     <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
                   </options>
                 </configuration>
@@ -213,7 +294,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -221,7 +302,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-profinet</artifactId>
-          <version>0.13.1</version>
+          <version>1.0.0</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ S7PayloadWriteVarRequest = (*_S7PayloadWriteVarRequest)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadWriteVarRequest)(nil)
 
 // NewS7PayloadWriteVarRequest factory function for _S7PayloadWriteVarRequest
-func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadWriteVarRequest {
+func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem) *_S7PayloadWriteVarRequest {
 	_result := &_S7PayloadWriteVarRequest{
-		S7PayloadContract: NewS7Payload(parameter),
+		S7PayloadContract: NewS7Payload(),
 		Items:             items,
 	}
 	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
@@ -211,12 +211,12 @@ func CastS7PayloadWriteVarRequest(structType any) S7PayloadWriteVarRequest {
 	return nil
 }
 
-func (m *_S7PayloadWriteVarRequest) GetTypeName() string {
+func (m *_S7PayloadWriteVarRequest) GetPlx4xTypeName() string {
 	return "S7PayloadWriteVarRequest"
 }
 
-func (m *_S7PayloadWriteVarRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadContract.(*_S7Payload).getLengthInBits(ctx))
+func (m *_S7PayloadWriteVarRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadContract.(*_S7Payload).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Items) > 0 {
@@ -229,7 +229,7 @@ func (m *_S7PayloadWriteVarRequest) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_S7PayloadWriteVarRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadWriteVarRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

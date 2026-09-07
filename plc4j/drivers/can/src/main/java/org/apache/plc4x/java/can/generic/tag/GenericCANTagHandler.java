@@ -18,17 +18,17 @@
  */
 package org.apache.plc4x.java.can.generic.tag;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-
-import java.util.Optional;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class GenericCANTagHandler implements PlcTagHandler {
 
     @Override
-    public GenericCANTag parseTag(String tagAddress) {
-        Optional<GenericCANTag> tag = GenericCANTag.matches(tagAddress);
-        return tag.orElse(null);
+    public PlcTag parseTag(String tagAddress) {
+        return GenericCANTag.matches(tagAddress)
+            .orElseThrow(() -> new PlcInvalidTagException(tagAddress));
     }
 
     @Override

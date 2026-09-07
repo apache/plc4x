@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataTimerAlarmValues = (*_BACnetConstructedDataTimerAlarm
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerAlarmValues)(nil)
 
 // NewBACnetConstructedDataTimerAlarmValues factory function for _BACnetConstructedDataTimerAlarmValues
-func NewBACnetConstructedDataTimerAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetTimerStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerAlarmValues {
+func NewBACnetConstructedDataTimerAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetTimerStateTagged) *_BACnetConstructedDataTimerAlarmValues {
 	_result := &_BACnetConstructedDataTimerAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AlarmValues:                   alarmValues,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataTimerAlarmValues(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValues) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerAlarmValues"
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataTimerAlarmValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AlarmValues) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTimerAlarmValues) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataTimerAlarmValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

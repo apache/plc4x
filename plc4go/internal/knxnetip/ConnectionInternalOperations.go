@@ -22,12 +22,10 @@ package knxnetip
 import (
 	"context"
 	"reflect"
-	"time"
-
-	"github.com/pkg/errors"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -58,47 +56,33 @@ func (m *Connection) sendGatewaySearchRequest(ctx context.Context) (driverModel.
 
 	result := make(chan driverModel.SearchResponse, 1)
 	errorResult := make(chan error, 1)
-	err = m.messageCodec.SendRequest(ctx, searchRequest,
-		func(message spi.Message) bool {
-			_, ok := message.(driverModel.SearchResponse)
-			return ok
-		},
-		func(message spi.Message) error {
-			searchResponse := message.(driverModel.SearchResponse)
-			result <- searchResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl)
-
-	if err != nil {
+	if err = m.messageCodec.SendRequest(ctx, "gateway_search_request", searchRequest, func(message spi.Message) bool {
+		_, ok := message.(driverModel.SearchResponse)
+		return ok
+	}, func(message spi.Message) error {
+		searchResponse := message.(driverModel.SearchResponse)
+		result <- searchResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending search request")
 	}
 
-	ttlTimer := time.NewTimer(m.defaultTtl)
 	select {
 	case response := <-result:
-		if !ttlTimer.Stop() {
-			<-ttlTimer.C
-		}
 		return response, nil
 	case errorResponse := <-errorResult:
-		if !ttlTimer.Stop() {
-			<-ttlTimer.C
-		}
 		return nil, errorResponse
 		// For search requests there is no timeout handler running, so we have to do it manually.
-	case <-ttlTimer.C:
-		ttlTimer.Stop()
-		return nil, errors.New("timeout")
+	case <-ctx.Done():
+		return nil, errors.Wrap(ctx.Err(), "timeout")
 	}
 }
 
@@ -112,33 +96,27 @@ func (m *Connection) sendGatewayConnectionRequest(ctx context.Context) (driverMo
 	connectionRequest := driverModel.NewConnectionRequest(
 		driverModel.NewHPAIDiscoveryEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
 		driverModel.NewHPAIDataEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
-		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
+		driverModel.NewConnectionRequestInformationTunnelConnection(m.getTunnelConnectionType()),
 	)
 
 	result := make(chan driverModel.ConnectionResponse, 1)
 	errorResult := make(chan error, 1)
-	err = m.messageCodec.SendRequest(ctx, connectionRequest,
-		func(message spi.Message) bool {
-			_, ok := message.(driverModel.ConnectionResponse)
-			return ok
-		},
-		func(message spi.Message) error {
-			connectionResponse := message.(driverModel.ConnectionResponse)
-			result <- connectionResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl)
-
-	if err != nil {
+	if err = m.messageCodec.SendRequest(ctx, "gateway_connection_request", connectionRequest, func(message spi.Message) bool {
+		_, ok := message.(driverModel.ConnectionResponse)
+		return ok
+	}, func(message spi.Message) error {
+		connectionResponse := message.(driverModel.ConnectionResponse)
+		result <- connectionResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
 	}
 
@@ -168,29 +146,22 @@ func (m *Connection) sendGatewayDisconnectionRequest(ctx context.Context) (drive
 
 	result := make(chan driverModel.DisconnectResponse, 1)
 	errorResult := make(chan error, 1)
-	err = m.messageCodec.SendRequest(ctx, disconnectRequest,
-		func(message spi.Message) bool {
-			_, ok := message.(driverModel.DisconnectResponse)
-			return ok
-		},
-		func(message spi.Message) error {
-			disconnectResponse := message.(driverModel.DisconnectResponse)
-			result <- disconnectResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	)
-
-	if err != nil {
+	if err := m.messageCodec.SendRequest(ctx, "disconnect_request", disconnectRequest, func(message spi.Message) bool {
+		_, ok := message.(driverModel.DisconnectResponse)
+		return ok
+	}, func(message spi.Message) error {
+		disconnectResponse := message.(driverModel.DisconnectResponse)
+		result <- disconnectResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
 	}
 
@@ -217,27 +188,22 @@ func (m *Connection) sendConnectionStateRequest(ctx context.Context) (driverMode
 
 	result := make(chan driverModel.ConnectionStateResponse, 1)
 	errorResult := make(chan error, 1)
-	err = m.messageCodec.SendRequest(ctx, connectionStateRequest,
-		func(message spi.Message) bool {
-			_, ok := message.(driverModel.ConnectionStateResponse)
-			return ok
-		},
-		func(message spi.Message) error {
-			connectionStateResponse := message.(driverModel.ConnectionStateResponse)
-			result <- connectionStateResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	)
+	err = m.messageCodec.SendRequest(ctx, "connection_state_request", connectionStateRequest, func(message spi.Message) bool {
+		_, ok := message.(driverModel.ConnectionStateResponse)
+		return ok
+	}, func(message spi.Message) error {
+		connectionStateResponse := message.(driverModel.ConnectionStateResponse)
+		result <- connectionStateResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	})
 
 	if err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
@@ -271,65 +237,55 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 				driverModel.NewApduDataContainer(
 					false,
 					0,
-					driverModel.NewApduDataGroupValueRead(0),
-					0,
+					driverModel.NewApduDataGroupValueRead(),
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataGroupValueResponse, 1)
 	errorResult := make(chan error, 1)
-	err := m.messageCodec.SendRequest(ctx, groupAddressReadRequest,
-		func(message spi.Message) bool {
-			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
-			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-				return false
-			}
-			lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-			if !ok {
-				return false
-			}
-			dataFrameExt, ok := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-			if !ok {
-				return false
-			}
-			dataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
-			if !ok {
-				return false
-			}
-			_, ok = dataContainer.GetDataApdu().(driverModel.ApduDataGroupValueResponse)
-			if !ok {
-				return false
-			}
-			// Check if it's a value response for the given group address
-			return dataFrameExt.GetGroupAddress() && reflect.DeepEqual(dataFrameExt.GetSourceAddress(), groupAddress)
-		},
-		func(message spi.Message) error {
-			tunnelingRequest := message.(driverModel.TunnelingRequest)
-			lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-			dataFrameExt := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-			dataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
-			groupReadResponse := dataContainer.GetDataApdu().(driverModel.ApduDataGroupValueResponse)
+	if err := m.messageCodec.SendRequest(ctx, "send_group_address_read_request", groupAddressReadRequest, func(message spi.Message) bool {
+		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+			return false
+		}
+		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		if !ok {
+			return false
+		}
+		dataFrameExt, ok := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+		if !ok {
+			return false
+		}
+		dataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+		if !ok {
+			return false
+		}
+		_, ok = dataContainer.GetDataApdu().(driverModel.ApduDataGroupValueResponse)
+		if !ok {
+			return false
+		}
+		// Check if it's a value response for the given group address
+		return dataFrameExt.GetGroupAddress() && reflect.DeepEqual(dataFrameExt.GetSourceAddress(), groupAddress)
+	}, func(message spi.Message) error {
+		tunnelingRequest := message.(driverModel.TunnelingRequest)
+		lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		dataFrameExt := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+		dataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+		groupReadResponse := dataContainer.GetDataApdu().(driverModel.ApduDataGroupValueResponse)
 
-			result <- groupReadResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	)
-
-	if err != nil {
+		result <- groupReadResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
 	}
 
@@ -338,6 +294,157 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
+	}
+}
+
+// sendGroupAddressWriteRequest puts a GroupValueWrite for the given group address onto the
+// bus. A gateway answers such a tunneling-request twice: first with a TunnelingResponse
+// acknowledging it accepted the frame, and then with an LDataCon echoing the frame back as
+// soon as it made it onto the bus. Both are correlated here, so a write only reports success
+// if the frame was really sent.
+// (Java: KnxNetIpConnection#onWrite)
+func (m *Connection) sendGroupAddressWriteRequest(ctx context.Context, groupAddress []byte, dataFirstByte int8, data []byte) error {
+	sequenceCounter := m.getNewSequenceCounter()
+	groupAddressWriteRequest := driverModel.NewTunnelingRequest(
+		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, sequenceCounter),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				true,
+				false,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+				true,
+				6,
+				0,
+				m.ClientKnxAddress, groupAddress,
+				driverModel.NewApduDataContainer(
+					false,
+					0,
+					driverModel.NewApduDataGroupValueWrite(dataFirstByte, data),
+				),
+			),
+		),
+	)
+
+	// The confirmation expectation gets a context of its own so it can be dropped again as
+	// soon as this write is done. A stale expectation - e.g. one left behind by a write
+	// which already failed on the ack - would otherwise stay registered until its ttl runs
+	// out and consume the confirmation of a later write, since HandleMessages fans a
+	// message out to every expectation accepting it.
+	confirmationCtx, cancelConfirmation := context.WithCancel(ctx)
+	defer cancelConfirmation()
+
+	// Register the expectation for the confirmation before sending anything, otherwise a
+	// fast gateway could confirm the frame before we started listening for it.
+	confirmationResult := make(chan error, 1)
+	m.messageCodec.Expect(
+		confirmationCtx,
+		"group_address_write_confirmation",
+		func(message spi.Message) bool {
+			// A canceled expectation is only removed the next time the expire-worker runs,
+			// so stop accepting anything the moment this write is over.
+			if confirmationCtx.Err() != nil {
+				return false
+			}
+			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+				return false
+			}
+			lDataCon, ok := tunnelingRequest.GetCemi().(driverModel.LDataCon)
+			if !ok {
+				return false
+			}
+			dataFrameExt, ok := lDataCon.GetDataFrame().(driverModel.LDataExtended)
+			if !ok {
+				return false
+			}
+			// Only the confirmation of the very frame we sent is of interest here: the
+			// gateway echoes it back verbatim, so source- and destination-address as well
+			// as the payload have to match, otherwise concurrent writes (to the same group
+			// address, or from another client on the same tunnel) satisfy each other.
+			if !dataFrameExt.GetGroupAddress() ||
+				!m.sliceEqual(dataFrameExt.GetDestinationAddress(), groupAddress) ||
+				!knxAddressEqual(dataFrameExt.GetSourceAddress(), m.ClientKnxAddress) {
+				return false
+			}
+			dataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+			if !ok {
+				return false
+			}
+			groupValueWrite, ok := dataContainer.GetDataApdu().(driverModel.ApduDataGroupValueWrite)
+			if !ok {
+				return false
+			}
+			return groupValueWrite.GetDataFirstByte() == dataFirstByte &&
+				m.sliceEqual(groupValueWrite.GetData(), data)
+		},
+		func(message spi.Message) error {
+			lDataCon := message.(driverModel.TunnelingRequest).GetCemi().(driverModel.LDataCon)
+			if lDataCon.GetDataFrame().GetErrorFlag() {
+				confirmationResult <- errors.New("the gateway reported an error confirming the group value write")
+				return nil
+			}
+			confirmationResult <- nil
+			return nil
+		},
+		func(err error) error {
+			// If this is a timeout, do a check if the connection requires a reconnection
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
+				m.handleTimeout()
+			}
+			confirmationResult <- errors.Wrap(err, "got error waiting for the write confirmation")
+			return nil
+		},
+	)
+
+	ackResult := make(chan error, 1)
+	if err := m.messageCodec.SendRequest(ctx, "send_group_address_write_request", groupAddressWriteRequest, func(message spi.Message) bool {
+		tunnelingResponse, ok := message.(driverModel.TunnelingResponse)
+		if !ok {
+			return false
+		}
+		dataBlock := tunnelingResponse.GetTunnelingResponseDataBlock()
+		return dataBlock.GetCommunicationChannelId() == m.CommunicationChannelId &&
+			dataBlock.GetSequenceCounter() == sequenceCounter
+	}, func(message spi.Message) error {
+		tunnelingResponse := message.(driverModel.TunnelingResponse)
+		if status := tunnelingResponse.GetTunnelingResponseDataBlock().GetStatus(); status != driverModel.Status_NO_ERROR {
+			ackResult <- errors.Errorf("got a return status of: %s", status)
+			return nil
+		}
+		ackResult <- nil
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		ackResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "got error sending request")
+	}
+
+	// First wait for the gateway to acknowledge the tunneling-request itself ...
+	select {
+	case err := <-ackResult:
+		if err != nil {
+			return err
+		}
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "context done while waiting for the tunneling ack")
+	}
+	// ... and then for the confirmation that the frame was put onto the bus.
+	select {
+	case err := <-confirmationResult:
+		return err
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "context done while waiting for the write confirmation")
 	}
 }
 
@@ -362,69 +469,61 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 					false,
 					0,
 					driverModel.NewApduControlConnect(),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduControlConnect, 1)
 	errorResult := make(chan error, 1)
-	err := m.messageCodec.SendRequest(ctx, deviceConnectionRequest,
-		func(message spi.Message) bool {
-			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
-			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-				return false
-			}
-			lDataCon, ok := tunnelingRequest.GetCemi().(driverModel.LDataCon)
-			if !ok {
-				return false
-			}
-			lDataFrameExt, ok := lDataCon.GetDataFrame().(driverModel.LDataExtended)
-			if !ok {
-				return false
-			}
-			// Check if the address matches
-			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			if ByteArrayToKnxAddress(ctxForModel, lDataFrameExt.GetDestinationAddress()) != targetAddress {
-				return false
-			}
-			apduControlContainer, ok := lDataFrameExt.GetApdu().(driverModel.ApduControlContainer)
-			if !ok {
-				return false
-			}
-			_, ok = apduControlContainer.GetControlApdu().(driverModel.ApduControlConnect)
-			return ok
-		},
-		func(message spi.Message) error {
-			tunnelingRequest := message.(driverModel.TunnelingRequest)
-			lDataCon := tunnelingRequest.GetCemi().(driverModel.LDataCon)
-			lDataFrameExt := lDataCon.GetDataFrame().(driverModel.LDataExtended)
-			apduControlContainer := lDataFrameExt.GetApdu().(driverModel.ApduControlContainer)
-			apduControlConnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlConnect)
+	err := m.messageCodec.SendRequest(ctx, "send_device_connection_request", deviceConnectionRequest, func(message spi.Message) bool {
+		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+			return false
+		}
+		lDataCon, ok := tunnelingRequest.GetCemi().(driverModel.LDataCon)
+		if !ok {
+			return false
+		}
+		lDataFrameExt, ok := lDataCon.GetDataFrame().(driverModel.LDataExtended)
+		if !ok {
+			return false
+		}
+		// Check if the address matches
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		if ByteArrayToKnxAddress(ctxForModel, lDataFrameExt.GetDestinationAddress()) != targetAddress {
+			return false
+		}
+		apduControlContainer, ok := lDataFrameExt.GetApdu().(driverModel.ApduControlContainer)
+		if !ok {
+			return false
+		}
+		_, ok = apduControlContainer.GetControlApdu().(driverModel.ApduControlConnect)
+		return ok
+	}, func(message spi.Message) error {
+		tunnelingRequest := message.(driverModel.TunnelingRequest)
+		lDataCon := tunnelingRequest.GetCemi().(driverModel.LDataCon)
+		lDataFrameExt := lDataCon.GetDataFrame().(driverModel.LDataExtended)
+		apduControlContainer := lDataFrameExt.GetApdu().(driverModel.ApduControlContainer)
+		apduControlConnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlConnect)
 
-			// If the error flag is set, there was an error connecting
-			if lDataCon.GetDataFrame().GetErrorFlag() {
-				errorResult <- errors.Errorf("error connecting to device at: %s", KnxAddressToString(targetAddress))
-			} else {
-				result <- apduControlConnect
-			}
+		// If the error flag is set, there was an error connecting
+		if lDataCon.GetDataFrame().GetErrorFlag() {
+			errorResult <- errors.Errorf("error connecting to device at: %s", KnxAddressToString(targetAddress))
+		} else {
+			result <- apduControlConnect
+		}
 
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	)
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	})
 
 	if err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
@@ -459,70 +558,62 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 					false,
 					0,
 					driverModel.NewApduControlDisconnect(),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduControlDisconnect, 1)
 	errorResult := make(chan error, 1)
-	if err := m.messageCodec.SendRequest(ctx, deviceDisconnectionRequest,
-		func(message spi.Message) bool {
-			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
-			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-				return false
-			}
-			lDataCon, ok := tunnelingRequest.GetCemi().(driverModel.LDataCon)
-			if !ok {
-				return false
-			}
-			dataFrameExt, ok := lDataCon.GetDataFrame().(driverModel.LDataExtended)
-			if !ok {
-				return false
-			}
-			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
-			// Check if the address matches
-			if curTargetAddress != targetAddress {
-				return false
-			}
-			apduControlContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduControlContainer)
-			if !ok {
-				return false
-			}
-			apduControlDisconnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
-			return apduControlDisconnect != nil
-		},
-		func(message spi.Message) error {
-			tunnelingRequest := message.(driverModel.TunnelingRequest)
-			lDataCon := tunnelingRequest.GetCemi().(driverModel.LDataCon)
-			dataFrameExt := lDataCon.GetDataFrame().(driverModel.LDataExtended)
-			apduControlContainer := dataFrameExt.GetApdu().(driverModel.ApduControlContainer)
-			apduControlDisconnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
+	if err := m.messageCodec.SendRequest(ctx, "send_device_disconnection_request", deviceDisconnectionRequest, func(message spi.Message) bool {
+		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+			return false
+		}
+		lDataCon, ok := tunnelingRequest.GetCemi().(driverModel.LDataCon)
+		if !ok {
+			return false
+		}
+		dataFrameExt, ok := lDataCon.GetDataFrame().(driverModel.LDataExtended)
+		if !ok {
+			return false
+		}
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
+		// Check if the address matches
+		if curTargetAddress != targetAddress {
+			return false
+		}
+		apduControlContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduControlContainer)
+		if !ok {
+			return false
+		}
+		apduControlDisconnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
+		return apduControlDisconnect != nil
+	}, func(message spi.Message) error {
+		tunnelingRequest := message.(driverModel.TunnelingRequest)
+		lDataCon := tunnelingRequest.GetCemi().(driverModel.LDataCon)
+		dataFrameExt := lDataCon.GetDataFrame().(driverModel.LDataExtended)
+		apduControlContainer := dataFrameExt.GetApdu().(driverModel.ApduControlContainer)
+		apduControlDisconnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
 
-			// If the error flag is set, there was an error disconnecting
-			if lDataCon.GetDataFrame().GetErrorFlag() {
-				errorResult <- errors.Errorf("error disconnecting from device at: %s", KnxAddressToString(targetAddress))
-			} else {
-				result <- apduControlDisconnect
-			}
+		// If the error flag is set, there was an error disconnecting
+		if lDataCon.GetDataFrame().GetErrorFlag() {
+			errorResult <- errors.Errorf("error disconnecting from device at: %s", KnxAddressToString(targetAddress))
+		} else {
+			result <- apduControlDisconnect
+		}
 
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
-			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	); err != nil {
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
 	}
 
@@ -564,91 +655,84 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 					true,
 					counter,
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, buildingKey, 0),
-						0,
+						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, buildingKey),
 					),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataExtAuthorizeResponse, 1)
 	errorResult := make(chan error, 1)
-	if err := m.messageCodec.SendRequest(ctx, deviceAuthenticationRequest,
-		func(message spi.Message) bool {
-			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
-			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-				return false
-			}
-			lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-			if !ok {
-				return false
-			}
-			dataFrameExt, ok := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-			if !ok {
-				return false
-			}
-			apduDataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
-			if !ok {
-				return false
-			}
-			apduDataOther, ok := apduDataContainer.GetDataApdu().(driverModel.ApduDataOther)
-			if !ok {
-				return false
-			}
-			_, ok = apduDataOther.GetExtendedApdu().(driverModel.ApduDataExtAuthorizeResponse)
-			if !ok {
-				return false
-			}
-			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
-			// Check if the addresses match
-			if curTargetAddress != m.ClientKnxAddress {
-				return false
-			}
-			if dataFrameExt.GetSourceAddress() != targetAddress {
-				return false
-			}
-			// Check if the counter matches
-			if dataFrameExt.GetApdu().GetCounter() != counter {
-				return false
-			}
-			return true
-		}, func(message spi.Message) error {
-			tunnelingRequest := message.(driverModel.TunnelingRequest)
-			lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-			dataFrameExt := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-			apduDataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
-			apduDataOther := apduDataContainer.GetDataApdu().(driverModel.ApduDataOther)
-			apduAuthorizeResponse := apduDataOther.GetExtendedApdu().(driverModel.ApduDataExtAuthorizeResponse)
+	if err := m.messageCodec.SendRequest(ctx, "send_device_authentication", deviceAuthenticationRequest, func(message spi.Message) bool {
+		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+			return false
+		}
+		lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		if !ok {
+			return false
+		}
+		dataFrameExt, ok := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+		if !ok {
+			return false
+		}
+		apduDataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+		if !ok {
+			return false
+		}
+		apduDataOther, ok := apduDataContainer.GetDataApdu().(driverModel.ApduDataOther)
+		if !ok {
+			return false
+		}
+		_, ok = apduDataOther.GetExtendedApdu().(driverModel.ApduDataExtAuthorizeResponse)
+		if !ok {
+			return false
+		}
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
+		// Check if the addresses match
+		if curTargetAddress != m.ClientKnxAddress {
+			return false
+		}
+		if dataFrameExt.GetSourceAddress() != targetAddress {
+			return false
+		}
+		// Check if the counter matches
+		if dataFrameExt.GetApdu().GetCounter() != counter {
+			return false
+		}
+		return true
+	}, func(message spi.Message) error {
+		tunnelingRequest := message.(driverModel.TunnelingRequest)
+		lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		dataFrameExt := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+		apduDataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+		apduDataOther := apduDataContainer.GetDataApdu().(driverModel.ApduDataOther)
+		apduAuthorizeResponse := apduDataOther.GetExtendedApdu().(driverModel.ApduDataExtAuthorizeResponse)
 
-			// Acknowledge the receipt
-			_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
-				// If the error flag is set, there was an error authenticating
-				if lDataInd.GetDataFrame().GetErrorFlag() {
-					errorResult <- errors.New("error authenticating at device: " + KnxAddressToString(targetAddress))
-				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
-				} else {
-					result <- apduAuthorizeResponse
-				}
-			})
-
-			return nil
-		}, func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
+		// Acknowledge the receipt
+		_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
+			// If the error flag is set, there was an error authenticating
+			if lDataInd.GetDataFrame().GetErrorFlag() {
+				errorResult <- errors.New("error authenticating at device: " + KnxAddressToString(targetAddress))
+			} else if err != nil {
+				errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
+			} else {
+				result <- apduAuthorizeResponse
 			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	); err != nil {
+		})
+
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending request")
 	}
 
@@ -682,18 +766,15 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 				driverModel.NewApduDataContainer(
 					true,
 					counter,
-					driverModel.NewApduDataDeviceDescriptorRead(0, 0),
-					0,
+					driverModel.NewApduDataDeviceDescriptorRead(0),
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataDeviceDescriptorResponse, 1)
 	errorResult := make(chan error, 1)
-	err := m.messageCodec.SendRequest(ctx, deviceDescriptorReadRequest, func(message spi.Message) bool {
+	if err := m.messageCodec.SendRequest(ctx, "send_device_descriptor_read_request", deviceDescriptorReadRequest, func(message spi.Message) bool {
 		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
 		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 			return false
@@ -751,9 +832,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		}
 		errorResult <- errors.Wrap(err, "got error processing request")
 		return nil
-	}, m.defaultTtl)
-
-	if err != nil {
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending device descriptor read request")
 	}
 
@@ -789,88 +868,79 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 					true,
 					counter,
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex, 0),
-						0,
+						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex),
 					),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataExtPropertyValueResponse, 1)
 	errorResult := make(chan error, 1)
-	if err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
-		func(message spi.Message) bool {
-			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
-			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-				return false
-			}
-			lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-			if !ok {
-				return false
-			}
-			dataFrameExt, ok := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-			if !ok {
-				return false
-			}
-			// Check if the address matches
-			if dataFrameExt.GetSourceAddress() != targetAddress {
-				return false
-			}
-			// Check if the counter matches
-			if dataFrameExt.GetApdu().GetCounter() != counter {
-				return false
-			}
-			dataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
-			if !ok {
-				return false
-			}
-			dataApduOther, ok := dataContainer.GetDataApdu().(driverModel.ApduDataOther)
-			if !ok {
-				return false
-			}
-			propertyValueResponse, ok := dataApduOther.GetExtendedApdu().(driverModel.ApduDataExtPropertyValueResponse)
-			if !ok {
-				return false
-			}
-			return propertyValueResponse.GetObjectIndex() == objectId && propertyValueResponse.GetPropertyId() == propertyId
-		},
-		func(message spi.Message) error {
-			tunnelingRequest := message.(driverModel.TunnelingRequest)
-			lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-			dataFrameExt := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-			dataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
-			dataApduOther := dataContainer.GetDataApdu().(driverModel.ApduDataOther)
-			propertyValueResponse := dataApduOther.GetExtendedApdu().(driverModel.ApduDataExtPropertyValueResponse)
+	if err := m.messageCodec.SendRequest(ctx, "send_device_property_read_request", propertyReadRequest, func(message spi.Message) bool {
+		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
+		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+			return false
+		}
+		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		if !ok {
+			return false
+		}
+		dataFrameExt, ok := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+		if !ok {
+			return false
+		}
+		// Check if the address matches
+		if dataFrameExt.GetSourceAddress() != targetAddress {
+			return false
+		}
+		// Check if the counter matches
+		if dataFrameExt.GetApdu().GetCounter() != counter {
+			return false
+		}
+		dataContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+		if !ok {
+			return false
+		}
+		dataApduOther, ok := dataContainer.GetDataApdu().(driverModel.ApduDataOther)
+		if !ok {
+			return false
+		}
+		propertyValueResponse, ok := dataApduOther.GetExtendedApdu().(driverModel.ApduDataExtPropertyValueResponse)
+		if !ok {
+			return false
+		}
+		return propertyValueResponse.GetObjectIndex() == objectId && propertyValueResponse.GetPropertyId() == propertyId
+	}, func(message spi.Message) error {
+		tunnelingRequest := message.(driverModel.TunnelingRequest)
+		lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		dataFrameExt := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+		dataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
+		dataApduOther := dataContainer.GetDataApdu().(driverModel.ApduDataOther)
+		propertyValueResponse := dataApduOther.GetExtendedApdu().(driverModel.ApduDataExtPropertyValueResponse)
 
-			// Acknowledge the receipt
-			_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
-				// If the error flag is set, there was an error authenticating
-				if lDataInd.GetDataFrame().GetErrorFlag() {
-					errorResult <- errors.New("error reading property value from device: " + KnxAddressToString(targetAddress))
-				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
-				} else {
-					result <- propertyValueResponse
-				}
-			})
-
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				m.handleTimeout()
+		// Acknowledge the receipt
+		_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
+			// If the error flag is set, there was an error authenticating
+			if lDataInd.GetDataFrame().GetErrorFlag() {
+				errorResult <- errors.New("error reading property value from device: " + KnxAddressToString(targetAddress))
+			} else if err != nil {
+				errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
+			} else {
+				result <- propertyValueResponse
 			}
-			errorResult <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.defaultTtl,
-	); err != nil {
+		})
+
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			m.handleTimeout()
+		}
+		errorResult <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		return nil, errors.Wrap(err, "got error sending device property read request")
 	}
 
@@ -906,20 +976,19 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 					true,
 					counter,
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1, 0),
-						0,
+						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1),
 					),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse, 1)
 	errorResult := make(chan error, 1)
-	err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
+	if err := m.messageCodec.SendRequest(
+		ctx,
+		"send_device_property_description_read_request",
+		propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
 			if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -976,7 +1045,8 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 			})
 
 			return nil
-		}, func(err error) error {
+		},
+		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
 			var timeoutError utils.TimeoutError
 			if errors.As(err, &timeoutError) {
@@ -984,9 +1054,8 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 			}
 			errorResult <- errors.Wrapf(err, "got error processing request")
 			return nil
-		}, m.defaultTtl)
-
-	if err != nil {
+		},
+	); err != nil {
 		return nil, errors.Wrap(err, "got error sending property description read request")
 	}
 
@@ -1022,18 +1091,18 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 				driverModel.NewApduDataContainer(
 					true,
 					counter,
-					driverModel.NewApduDataMemoryRead(numBytes, address, 0),
-					0,
+					driverModel.NewApduDataMemoryRead(numBytes, address),
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataMemoryResponse, 1)
 	errorResult := make(chan error, 1)
-	if err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
+	if err := m.messageCodec.SendRequest(
+		ctx,
+		"send_device_memory_read_request",
+		propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
 			if !ok ||
@@ -1097,7 +1166,6 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
-		m.defaultTtl,
 	); err != nil {
 		return nil, errors.Wrap(err, "got error sending memory read request")
 	}
@@ -1126,14 +1194,15 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(true, counter, driverModel.NewApduControlAck(), 0),
+				driverModel.NewApduControlContainer(true, counter, driverModel.NewApduControlAck()),
 			),
-			0,
 		),
-		0,
 	)
 
-	if err := m.messageCodec.SendRequest(ctx, ack,
+	if err := m.messageCodec.SendRequest(
+		ctx,
+		"send_device_ack",
+		ack,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
 			if !ok ||
@@ -1181,7 +1250,6 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 			callback(errors.Wrap(err, "got error processing request"))
 			return nil
 		},
-		m.defaultTtl,
 	); err != nil {
 		return errors.Wrap(err, "got error sending ack request")
 	}

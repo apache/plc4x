@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNetworkPortMaxInfoFrames = (*_BACnetConstructedDataNe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkPortMaxInfoFrames)(nil)
 
 // NewBACnetConstructedDataNetworkPortMaxInfoFrames factory function for _BACnetConstructedDataNetworkPortMaxInfoFrames
-func NewBACnetConstructedDataNetworkPortMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxInfoFrames {
+func NewBACnetConstructedDataNetworkPortMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxInfoFrames {
 	if maxInfoFrames == nil {
 		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkPortMaxInfoFrames must not be nil")
 	}
 	_result := &_BACnetConstructedDataNetworkPortMaxInfoFrames{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxInfoFrames:                 maxInfoFrames,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNetworkPortMaxInfoFrames(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkPortMaxInfoFrames"
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxInfoFrames)
 	lengthInBits += m.MaxInfoFrames.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

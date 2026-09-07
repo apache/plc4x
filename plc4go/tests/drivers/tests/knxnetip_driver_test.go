@@ -20,7 +20,6 @@
 package tests
 
 import (
-	"context"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
@@ -33,7 +32,7 @@ import (
 func TestKNXNetIPDriver(t *testing.T) {
 	t.Skip("No test yet")
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return readWriteModel.KnxNetIpMessageParseWithBuffer[readWriteModel.KnxNetIpMessage](context.Background(), readBufferByteBased)
+		return readWriteModel.KnxNetIpMessageParseWithBuffer[readWriteModel.KnxNetIpMessage](t.Context(), readBufferByteBased)
 	}
 	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(

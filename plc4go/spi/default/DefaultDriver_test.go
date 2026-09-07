@@ -159,52 +159,6 @@ func Test_defaultDriver_Discover(t *testing.T) {
 		plcTagHandler             spi.PlcTagHandler
 	}
 	type args struct {
-		callback         func(event apiModel.PlcDiscoveryItem)
-		discoveryOptions []options.WithDiscoveryOption
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		setup   func(t *testing.T, fields *fields, args *args)
-		wantErr assert.ErrorAssertionFunc
-	}{
-		{
-			name: "discover it",
-			setup: func(t *testing.T, fields *fields, args *args) {
-				requirements := NewMockDefaultDriverRequirements(t)
-				requirements.EXPECT().DiscoverWithContext(mock.Anything, mock.Anything).Return(nil)
-				fields.DefaultDriverRequirements = requirements
-			},
-			wantErr: assert.NoError,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args)
-			}
-			d := &defaultDriver{
-				DefaultDriverRequirements: tt.fields.DefaultDriverRequirements,
-				protocolCode:              tt.fields.protocolCode,
-				protocolName:              tt.fields.protocolName,
-				defaultTransport:          tt.fields.defaultTransport,
-				plcTagHandler:             tt.fields.plcTagHandler,
-			}
-			tt.wantErr(t, d.Discover(tt.args.callback, tt.args.discoveryOptions...), fmt.Sprintf("Discover(func(), %v)", tt.args.discoveryOptions))
-		})
-	}
-}
-
-func Test_defaultDriver_DiscoverWithContext(t *testing.T) {
-	type fields struct {
-		DefaultDriverRequirements DefaultDriverRequirements
-		protocolCode              string
-		protocolName              string
-		defaultTransport          string
-		plcTagHandler             spi.PlcTagHandler
-	}
-	type args struct {
 		in0 context.Context
 		in1 func(event apiModel.PlcDiscoveryItem)
 		in2 []options.WithDiscoveryOption
@@ -229,7 +183,7 @@ func Test_defaultDriver_DiscoverWithContext(t *testing.T) {
 				defaultTransport:          tt.fields.defaultTransport,
 				plcTagHandler:             tt.fields.plcTagHandler,
 			}
-			tt.wantErr(t, d.DiscoverWithContext(tt.args.in0, tt.args.in1, tt.args.in2...), fmt.Sprintf("DiscoverWithContext(%v, func(), %v)", tt.args.in0, tt.args.in2))
+			tt.wantErr(t, d.Discover(tt.args.in0, tt.args.in1, tt.args.in2...), fmt.Sprintf("Discover(%v, func(), %v)", tt.args.in0, tt.args.in2))
 		})
 	}
 }
@@ -243,33 +197,39 @@ func Test_defaultDriver_GetConnection(t *testing.T) {
 		plcTagHandler             spi.PlcTagHandler
 	}
 	type args struct {
+		ctx          context.Context
 		transportUrl url.URL
 		transports   map[string]transports.Transport
 		options      map[string][]string
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields, args *args, want *<-chan plc4go.PlcConnectionConnectResult)
-		want   <-chan plc4go.PlcConnectionConnectResult
+		name       string
+		fields     fields
+		args       args
+		setup      func(t *testing.T, fields *fields, args *args)
+		wantAssert func(*testing.T, plc4go.PlcConnection) bool
+		wantErr    assert.ErrorAssertionFunc
 	}{
 		{
 			name: "get a connection",
-			setup: func(t *testing.T, fields *fields, args *args, want *<-chan plc4go.PlcConnectionConnectResult) {
+			args: args{
+				ctx: t.Context(),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultDriverRequirements(t)
-				results := make(chan plc4go.PlcConnectionConnectResult, 1)
-				*want = results
-				results <- NewMockPlcConnectionConnectResult(t)
-				requirements.EXPECT().GetConnectionWithContext(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(results)
+				requirements.EXPECT().GetConnection(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, nil)
 				fields.DefaultDriverRequirements = requirements
 			},
+			wantAssert: func(t *testing.T, got plc4go.PlcConnection) bool {
+				return assert.Nil(t, got)
+			},
+			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args, &tt.want)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			d := &defaultDriver{
 				DefaultDriverRequirements: tt.fields.DefaultDriverRequirements,
@@ -278,7 +238,9 @@ func Test_defaultDriver_GetConnection(t *testing.T) {
 				defaultTransport:          tt.fields.defaultTransport,
 				plcTagHandler:             tt.fields.plcTagHandler,
 			}
-			assert.Equalf(t, tt.want, d.GetConnection(tt.args.transportUrl, tt.args.transports, tt.args.options), "GetConnection(%v, %v, %v)", tt.args.transportUrl, tt.args.transports, tt.args.options)
+			connection, err := d.GetConnection(tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)
+			tt.wantErr(t, err, fmt.Sprintf("GetConnection(%v, %v, %v)", tt.args.transportUrl, tt.args.transports, tt.args.options))
+			assert.Truef(t, tt.wantAssert(t, connection), "GetConnection(%v, %v, %v)", tt.args.transportUrl, tt.args.transports, tt.args.options)
 		})
 	}
 }

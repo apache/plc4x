@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,8 +62,8 @@ type NodeIdTypeDefinitionContract interface {
 
 // NodeIdTypeDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
 type NodeIdTypeDefinitionRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetNodeType returns NodeType (discriminator field)
 	GetNodeType() NodeIdType
 	// GetIdentifier returns Identifier (abstract field)
@@ -291,23 +291,23 @@ func CastNodeIdTypeDefinition(structType any) NodeIdTypeDefinition {
 	return nil
 }
 
-func (m *_NodeIdTypeDefinition) GetTypeName() string {
+func (m *_NodeIdTypeDefinition) GetPlx4xTypeName() string {
 	return "NodeIdTypeDefinition"
 }
 
-func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (nodeType)
 	lengthInBits += 6
 
 	return lengthInBits
 }
 
-func (m *_NodeIdTypeDefinition) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_NodeIdTypeDefinition) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_NodeIdTypeDefinition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeIdTypeDefinition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -327,7 +327,7 @@ func NodeIdTypeDefinitionParseWithBufferProducer[T NodeIdTypeDefinition]() func(
 }
 
 func NodeIdTypeDefinitionParseWithBuffer[T NodeIdTypeDefinition](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_NodeIdTypeDefinition{}).parse(ctx, readBuffer)
+	v, err := (new(_NodeIdTypeDefinition)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

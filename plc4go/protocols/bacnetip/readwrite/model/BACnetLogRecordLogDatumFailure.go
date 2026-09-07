@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumFailure = (*_BACnetLogRecordLogDatumFailure)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumFailure)(nil)
 
 // NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
-func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
+func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed) *_BACnetLogRecordLogDatumFailure {
 	if failure == nil {
 		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumFailure{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		Failure:                         failure,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetLogRecordLogDatumFailure(structType any) BACnetLogRecordLogDatumF
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumFailure) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumFailure"
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (failure)
 	lengthInBits += m.Failure.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -25,12 +25,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -224,16 +224,16 @@ func CastBVLCDeleteForeignDeviceTableEntry(structType any) BVLCDeleteForeignDevi
 	return nil
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetPlx4xTypeName() string {
 	return "BVLCDeleteForeignDeviceTableEntry"
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Ip) > 0 {
-		lengthInBits += 8 * uint16(len(m.Ip))
+		lengthInBits += 8 * uint64(len(m.Ip))
 	}
 
 	// Simple field (port)
@@ -242,7 +242,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -257,13 +257,13 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) parse(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)), codegen.WithByteOrder(binary.BigEndian))
+	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ip' field"))
 	}
 	m.Ip = ip
 
-	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
@@ -294,11 +294,11 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCDeleteForeignDeviceTableEntry")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "ip", m.GetIp(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "ip", m.GetIp(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'ip' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 

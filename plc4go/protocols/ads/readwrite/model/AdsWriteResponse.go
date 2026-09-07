@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +42,7 @@ type AdsWriteResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number
 	GetResult() ReturnCode
 	// IsAdsWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteResponse()
@@ -59,7 +60,7 @@ var _ AdsWriteResponse = (*_AdsWriteResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteResponse)(nil)
 
 // NewAdsWriteResponse factory function for _AdsWriteResponse
-func NewAdsWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsWriteResponse {
+func NewAdsWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode) *_AdsWriteResponse {
 	_result := &_AdsWriteResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -211,12 +212,12 @@ func CastAdsWriteResponse(structType any) AdsWriteResponse {
 	return nil
 }
 
-func (m *_AdsWriteResponse) GetTypeName() string {
+func (m *_AdsWriteResponse) GetPlx4xTypeName() string {
 	return "AdsWriteResponse"
 }
 
-func (m *_AdsWriteResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+func (m *_AdsWriteResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -224,7 +225,7 @@ func (m *_AdsWriteResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsWriteResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsWriteResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

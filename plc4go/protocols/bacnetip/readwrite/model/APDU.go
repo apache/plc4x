@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -50,8 +50,6 @@ type APDU interface {
 
 // APDUContract provides a set of functions which can be overwritten by a sub struct
 type APDUContract interface {
-	// GetApduLength() returns a parser argument
-	GetApduLength() uint16
 	// IsAPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDU()
 	// CreateBuilder creates a APDUBuilder
@@ -60,8 +58,8 @@ type APDUContract interface {
 
 // APDURequirements provides a set of functions which need to be implemented by a sub struct
 type APDURequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetApduType returns ApduType (discriminator field)
 	GetApduType() ApduType
 }
@@ -72,16 +70,13 @@ type _APDU struct {
 		APDUContract
 		APDURequirements
 	}
-
-	// Arguments.
-	ApduLength uint16
 }
 
 var _ APDUContract = (*_APDU)(nil)
 
 // NewAPDU factory function for _APDU
-func NewAPDU(apduLength uint16) *_APDU {
-	return &_APDU{ApduLength: apduLength}
+func NewAPDU() *_APDU {
+	return &_APDU{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type APDUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() APDUBuilder
-	// WithArgApduLength sets a parser argument
-	WithArgApduLength(uint16) APDUBuilder
 	// AsAPDUConfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
 	AsAPDUConfirmedRequest() APDUConfirmedRequestBuilder
 	// AsAPDUUnconfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
@@ -146,11 +139,6 @@ type _APDUBuilder struct {
 var _ (APDUBuilder) = (*_APDUBuilder)(nil)
 
 func (b *_APDUBuilder) WithMandatoryFields() APDUBuilder {
-	return b
-}
-
-func (b *_APDUBuilder) WithArgApduLength(apduLength uint16) APDUBuilder {
-	b.ApduLength = apduLength
 	return b
 }
 
@@ -313,23 +301,23 @@ func CastAPDU(structType any) APDU {
 	return nil
 }
 
-func (m *_APDU) GetTypeName() string {
+func (m *_APDU) GetPlx4xTypeName() string {
 	return "APDU"
 }
 
-func (m *_APDU) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_APDU) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (apduType)
 	lengthInBits += 4
 
 	return lengthInBits
 }
 
-func (m *_APDU) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_APDU) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_APDU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_APDU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +337,7 @@ func APDUParseWithBufferProducer[T APDU](apduLength uint16) func(ctx context.Con
 }
 
 func APDUParseWithBuffer[T APDU](ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (T, error) {
-	v, err := (&_APDU{ApduLength: apduLength}).parse(ctx, readBuffer, apduLength)
+	v, err := (new(_APDU)).parse(ctx, readBuffer, apduLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -380,39 +368,39 @@ func (m *_APDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLeng
 	var _child APDU
 	switch {
 	case apduType == ApduType_CONFIRMED_REQUEST_PDU: // APDUConfirmedRequest
-		if _child, err = new(_APDUConfirmedRequest).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUConfirmedRequest).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUConfirmedRequest for type-switch of APDU")
 		}
 	case apduType == ApduType_UNCONFIRMED_REQUEST_PDU: // APDUUnconfirmedRequest
-		if _child, err = new(_APDUUnconfirmedRequest).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUUnconfirmedRequest).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUUnconfirmedRequest for type-switch of APDU")
 		}
 	case apduType == ApduType_SIMPLE_ACK_PDU: // APDUSimpleAck
-		if _child, err = new(_APDUSimpleAck).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUSimpleAck).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUSimpleAck for type-switch of APDU")
 		}
 	case apduType == ApduType_COMPLEX_ACK_PDU: // APDUComplexAck
-		if _child, err = new(_APDUComplexAck).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUComplexAck).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUComplexAck for type-switch of APDU")
 		}
 	case apduType == ApduType_SEGMENT_ACK_PDU: // APDUSegmentAck
-		if _child, err = new(_APDUSegmentAck).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUSegmentAck).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUSegmentAck for type-switch of APDU")
 		}
 	case apduType == ApduType_ERROR_PDU: // APDUError
-		if _child, err = new(_APDUError).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUError).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUError for type-switch of APDU")
 		}
 	case apduType == ApduType_REJECT_PDU: // APDUReject
-		if _child, err = new(_APDUReject).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUReject).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUReject for type-switch of APDU")
 		}
 	case apduType == ApduType_ABORT_PDU: // APDUAbort
-		if _child, err = new(_APDUAbort).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUAbort).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUAbort for type-switch of APDU")
 		}
 	case 0 == 0: // APDUUnknown
-		if _child, err = new(_APDUUnknown).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUUnknown).parse(ctx, readBuffer, m, uint16(apduLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUUnknown for type-switch of APDU")
 		}
 	default:
@@ -453,16 +441,6 @@ func (pm *_APDU) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_APDU) GetApduLength() uint16 {
-	return m.ApduLength
-}
-
-//
-////
-
 func (m *_APDU) IsAPDU() {}
 
 func (m *_APDU) DeepCopy() any {
@@ -475,7 +453,6 @@ func (m *_APDU) deepCopy() *_APDU {
 	}
 	_APDUCopy := &_APDU{
 		nil, // will be set by child
-		m.ApduLength,
 	}
 	return _APDUCopy
 }

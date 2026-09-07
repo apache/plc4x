@@ -22,11 +22,14 @@ package org.apache.plc4x.java.profinet.context;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
-import org.apache.plc4x.java.spi.context.DriverContext;
-
 import java.net.DatagramSocket;
 
-public class ProfinetDriverContext implements DriverContext {
+/**
+ * Per-connection state. Used to be wired up as the old SPI's
+ * {@code DriverContext}; with the new SPI the connection just owns one of
+ * these directly.
+ */
+public class ProfinetDriverContext {
 
     public static final int DEFAULT_UDP_PORT = 34964;
     private ProfinetDeviceMessageHandler handler;

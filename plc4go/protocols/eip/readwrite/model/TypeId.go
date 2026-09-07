@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -58,8 +58,8 @@ type TypeIdContract interface {
 
 // TypeIdRequirements provides a set of functions which need to be implemented by a sub struct
 type TypeIdRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetId returns Id (discriminator field)
 	GetId() uint16
 }
@@ -253,23 +253,23 @@ func CastTypeId(structType any) TypeId {
 	return nil
 }
 
-func (m *_TypeId) GetTypeName() string {
+func (m *_TypeId) GetPlx4xTypeName() string {
 	return "TypeId"
 }
 
-func (m *_TypeId) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_TypeId) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (id)
 	lengthInBits += 16
 
 	return lengthInBits
 }
 
-func (m *_TypeId) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_TypeId) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -289,7 +289,7 @@ func TypeIdParseWithBufferProducer[T TypeId]() func(ctx context.Context, readBuf
 }
 
 func TypeIdParseWithBuffer[T TypeId](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_TypeId{}).parse(ctx, readBuffer)
+	v, err := (new(_TypeId)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

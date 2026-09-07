@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -66,8 +66,8 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract interface
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -341,12 +341,12 @@ func CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(structType an
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -359,11 +359,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthIn
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -383,7 +383,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBufferPro
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer[T BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

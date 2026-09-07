@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ COTPParameterDisconnectAdditionalInformation = (*_COTPParameterDisconnectA
 var _ COTPParameterRequirements = (*_COTPParameterDisconnectAdditionalInformation)(nil)
 
 // NewCOTPParameterDisconnectAdditionalInformation factory function for _COTPParameterDisconnectAdditionalInformation
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *_COTPParameterDisconnectAdditionalInformation {
 	_result := &_COTPParameterDisconnectAdditionalInformation{
-		COTPParameterContract: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(),
 		Data:                  data,
 	}
 	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
@@ -207,22 +207,22 @@ func CastCOTPParameterDisconnectAdditionalInformation(structType any) COTPParame
 	return nil
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
+func (m *_COTPParameterDisconnectAdditionalInformation) GetPlx4xTypeName() string {
 	return "COTPParameterDisconnectAdditionalInformation"
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

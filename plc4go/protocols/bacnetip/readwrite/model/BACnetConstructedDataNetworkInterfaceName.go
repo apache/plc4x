@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNetworkInterfaceName = (*_BACnetConstructedDataNetwor
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
 
 // NewBACnetConstructedDataNetworkInterfaceName factory function for _BACnetConstructedDataNetworkInterfaceName
-func NewBACnetConstructedDataNetworkInterfaceName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkInterfaceName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkInterfaceName {
+func NewBACnetConstructedDataNetworkInterfaceName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkInterfaceName BACnetApplicationTagCharacterString) *_BACnetConstructedDataNetworkInterfaceName {
 	if networkInterfaceName == nil {
 		panic("networkInterfaceName of type BACnetApplicationTagCharacterString for BACnetConstructedDataNetworkInterfaceName must not be nil")
 	}
 	_result := &_BACnetConstructedDataNetworkInterfaceName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NetworkInterfaceName:          networkInterfaceName,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataNetworkInterfaceName(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkInterfaceName) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkInterfaceName"
 }
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (networkInterfaceName)
 	lengthInBits += m.NetworkInterfaceName.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

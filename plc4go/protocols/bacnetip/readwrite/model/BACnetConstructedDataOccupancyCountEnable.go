@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOccupancyCountEnable = (*_BACnetConstructedDataOccupa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCountEnable)(nil)
 
 // NewBACnetConstructedDataOccupancyCountEnable factory function for _BACnetConstructedDataOccupancyCountEnable
-func NewBACnetConstructedDataOccupancyCountEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountEnable {
+func NewBACnetConstructedDataOccupancyCountEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataOccupancyCountEnable {
 	if occupancyCountEnable == nil {
 		panic("occupancyCountEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataOccupancyCountEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OccupancyCountEnable:          occupancyCountEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataOccupancyCountEnable(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyCountEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyCountEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyCountEnable"
 }
 
-func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (occupancyCountEnable)
 	lengthInBits += m.OccupancyCountEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

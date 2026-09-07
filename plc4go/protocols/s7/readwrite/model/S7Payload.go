@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,8 +48,6 @@ type S7Payload interface {
 
 // S7PayloadContract provides a set of functions which can be overwritten by a sub struct
 type S7PayloadContract interface {
-	// GetParameter() returns a parser argument
-	GetParameter() S7Parameter
 	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Payload()
 	// CreateBuilder creates a S7PayloadBuilder
@@ -58,8 +56,8 @@ type S7PayloadContract interface {
 
 // S7PayloadRequirements provides a set of functions which need to be implemented by a sub struct
 type S7PayloadRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterParameterType returns ParameterParameterType (discriminator field)
@@ -72,16 +70,13 @@ type _S7Payload struct {
 		S7PayloadContract
 		S7PayloadRequirements
 	}
-
-	// Arguments.
-	Parameter S7Parameter
 }
 
 var _ S7PayloadContract = (*_S7Payload)(nil)
 
 // NewS7Payload factory function for _S7Payload
-func NewS7Payload(parameter S7Parameter) *_S7Payload {
-	return &_S7Payload{Parameter: parameter}
+func NewS7Payload() *_S7Payload {
+	return &_S7Payload{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type S7PayloadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7PayloadBuilder
-	// WithArgParameter sets a parser argument
-	WithArgParameter(S7Parameter) S7PayloadBuilder
 	// AsS7PayloadReadVarResponse converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
 	AsS7PayloadReadVarResponse() S7PayloadReadVarResponseBuilder
 	// AsS7PayloadWriteVarRequest converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
@@ -136,11 +129,6 @@ type _S7PayloadBuilder struct {
 var _ (S7PayloadBuilder) = (*_S7PayloadBuilder)(nil)
 
 func (b *_S7PayloadBuilder) WithMandatoryFields() S7PayloadBuilder {
-	return b
-}
-
-func (b *_S7PayloadBuilder) WithArgParameter(parameter S7Parameter) S7PayloadBuilder {
-	b.Parameter = parameter
 	return b
 }
 
@@ -253,21 +241,21 @@ func CastS7Payload(structType any) S7Payload {
 	return nil
 }
 
-func (m *_S7Payload) GetTypeName() string {
+func (m *_S7Payload) GetPlx4xTypeName() string {
 	return "S7Payload"
 }
 
-func (m *_S7Payload) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7Payload) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_S7Payload) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Payload) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7Payload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7Payload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -287,7 +275,7 @@ func S7PayloadParseWithBufferProducer[T S7Payload](messageType uint8, parameter 
 }
 
 func S7PayloadParseWithBuffer[T S7Payload](ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (T, error) {
-	v, err := (&_S7Payload{Parameter: parameter}).parse(ctx, readBuffer, messageType, parameter)
+	v, err := (new(_S7Payload)).parse(ctx, readBuffer, messageType, parameter)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -313,19 +301,19 @@ func (m *_S7Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, mes
 	var _child S7Payload
 	switch {
 	case CastS7Parameter(parameter).GetParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
-		if _child, err = new(_S7PayloadReadVarResponse).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadReadVarResponse).parse(ctx, readBuffer, m, uint8(messageType), parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadReadVarResponse for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
-		if _child, err = new(_S7PayloadWriteVarRequest).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadWriteVarRequest).parse(ctx, readBuffer, m, uint8(messageType), parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadWriteVarRequest for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
-		if _child, err = new(_S7PayloadWriteVarResponse).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadWriteVarResponse).parse(ctx, readBuffer, m, uint8(messageType), parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadWriteVarResponse for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
-		if _child, err = new(_S7PayloadUserData).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadUserData).parse(ctx, readBuffer, m, uint8(messageType), parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserData for type-switch of S7Payload")
 		}
 	default:
@@ -362,16 +350,6 @@ func (pm *_S7Payload) serializeParent(ctx context.Context, writeBuffer utils.Wri
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_S7Payload) GetParameter() S7Parameter {
-	return m.Parameter
-}
-
-//
-////
-
 func (m *_S7Payload) IsS7Payload() {}
 
 func (m *_S7Payload) DeepCopy() any {
@@ -384,7 +362,6 @@ func (m *_S7Payload) deepCopy() *_S7Payload {
 	}
 	_S7PayloadCopy := &_S7Payload{
 		nil, // will be set by child
-		m.Parameter,
 	}
 	return _S7PayloadCopy
 }

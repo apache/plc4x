@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAuthenticationStatus = (*_BACnetConstructedDataAuthen
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationStatus)(nil)
 
 // NewBACnetConstructedDataAuthenticationStatus factory function for _BACnetConstructedDataAuthenticationStatus
-func NewBACnetConstructedDataAuthenticationStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authenticationStatus BACnetAuthenticationStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationStatus {
+func NewBACnetConstructedDataAuthenticationStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authenticationStatus BACnetAuthenticationStatusTagged) *_BACnetConstructedDataAuthenticationStatus {
 	if authenticationStatus == nil {
 		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetConstructedDataAuthenticationStatus must not be nil")
 	}
 	_result := &_BACnetConstructedDataAuthenticationStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AuthenticationStatus:          authenticationStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAuthenticationStatus(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthenticationStatus) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthenticationStatus"
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (authenticationStatus)
 	lengthInBits += m.AuthenticationStatus.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

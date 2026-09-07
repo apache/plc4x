@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +226,12 @@ func CastTransmitQosPriorityDataType(structType any) TransmitQosPriorityDataType
 	return nil
 }
 
-func (m *_TransmitQosPriorityDataType) GetTypeName() string {
+func (m *_TransmitQosPriorityDataType) GetPlx4xTypeName() string {
 	return "TransmitQosPriorityDataType"
 }
 
-func (m *_TransmitQosPriorityDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_TransmitQosPriorityDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (priorityLabel)
 	lengthInBits += m.PriorityLabel.GetLengthInBits(ctx)
@@ -238,7 +239,7 @@ func (m *_TransmitQosPriorityDataType) GetLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_TransmitQosPriorityDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TransmitQosPriorityDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +254,7 @@ func (m *_TransmitQosPriorityDataType) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	priorityLabel, err := ReadSimpleField[PascalString](ctx, "priorityLabel", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	priorityLabel, err := ReadSimpleField[PascalString](ctx, "priorityLabel", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityLabel' field"))
 	}
@@ -284,7 +285,7 @@ func (m *_TransmitQosPriorityDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for TransmitQosPriorityDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "priorityLabel", m.GetPriorityLabel(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "priorityLabel", m.GetPriorityLabel(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'priorityLabel' field")
 		}
 

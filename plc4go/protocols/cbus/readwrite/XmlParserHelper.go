@@ -24,9 +24,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,8 +105,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return HVACHumidityParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HVACHumidityModeAndFlags":
 		return HVACHumidityModeAndFlagsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CBusConstants":
-		return CBusConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SerialInterfaceAddress":
 		return SerialInterfaceAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MeasurementData":

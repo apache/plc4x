@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -64,12 +64,12 @@ var _ BACnetContextTagBoolean = (*_BACnetContextTagBoolean)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBoolean)(nil)
 
 // NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
+func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean) *_BACnetContextTagBoolean {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
 	}
 	_result := &_BACnetContextTagBoolean{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Value:                    value,
 		Payload:                  payload,
 	}
@@ -257,12 +257,12 @@ func CastBACnetContextTagBoolean(structType any) BACnetContextTagBoolean {
 	return nil
 }
 
-func (m *_BACnetContextTagBoolean) GetTypeName() string {
+func (m *_BACnetContextTagBoolean) GetPlx4xTypeName() string {
 	return "BACnetContextTagBoolean"
 }
 
-func (m *_BACnetContextTagBoolean) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagBoolean) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -275,7 +275,7 @@ func (m *_BACnetContextTagBoolean) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagBoolean) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

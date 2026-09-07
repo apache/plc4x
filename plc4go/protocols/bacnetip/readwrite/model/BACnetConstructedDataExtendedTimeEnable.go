@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataExtendedTimeEnable = (*_BACnetConstructedDataExtended
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
 
 // NewBACnetConstructedDataExtendedTimeEnable factory function for _BACnetConstructedDataExtendedTimeEnable
-func NewBACnetConstructedDataExtendedTimeEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, extendedTimeEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
+func NewBACnetConstructedDataExtendedTimeEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, extendedTimeEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataExtendedTimeEnable {
 	if extendedTimeEnable == nil {
 		panic("extendedTimeEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataExtendedTimeEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataExtendedTimeEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ExtendedTimeEnable:            extendedTimeEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataExtendedTimeEnable(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataExtendedTimeEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExtendedTimeEnable"
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (extendedTimeEnable)
 	lengthInBits += m.ExtendedTimeEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

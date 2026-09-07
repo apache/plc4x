@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,6 +45,7 @@ type BACnetVendorIdTagged interface {
 	// GetValue returns Value (property field)
 	GetValue() BACnetVendorId
 	// GetUnknownId returns UnknownId (property field)
+	//TODO: change to uint32 once cast is inserted
 	GetUnknownId() uint32
 	// GetIsUnknownId returns IsUnknownId (virtual field)
 	GetIsUnknownId() bool
@@ -59,20 +60,16 @@ type _BACnetVendorIdTagged struct {
 	Header    BACnetTagHeader
 	Value     BACnetVendorId
 	UnknownId uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetVendorIdTagged = (*_BACnetVendorIdTagged)(nil)
 
 // NewBACnetVendorIdTagged factory function for _BACnetVendorIdTagged
-func NewBACnetVendorIdTagged(header BACnetTagHeader, value BACnetVendorId, unknownId uint32, tagNumber uint8, tagClass TagClass) *_BACnetVendorIdTagged {
+func NewBACnetVendorIdTagged(header BACnetTagHeader, value BACnetVendorId, unknownId uint32) *_BACnetVendorIdTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetVendorIdTagged must not be nil")
 	}
-	return &_BACnetVendorIdTagged{Header: header, Value: value, UnknownId: unknownId, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetVendorIdTagged{Header: header, Value: value, UnknownId: unknownId}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +90,6 @@ type BACnetVendorIdTaggedBuilder interface {
 	WithValue(BACnetVendorId) BACnetVendorIdTaggedBuilder
 	// WithUnknownId adds UnknownId (property field)
 	WithUnknownId(uint32) BACnetVendorIdTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetVendorIdTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetVendorIdTaggedBuilder
 	// Build builds the BACnetVendorIdTagged or returns an error if something is wrong
 	Build() (BACnetVendorIdTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +135,6 @@ func (b *_BACnetVendorIdTaggedBuilder) WithValue(value BACnetVendorId) BACnetVen
 
 func (b *_BACnetVendorIdTaggedBuilder) WithUnknownId(unknownId uint32) BACnetVendorIdTaggedBuilder {
 	b.UnknownId = unknownId
-	return b
-}
-
-func (b *_BACnetVendorIdTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetVendorIdTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetVendorIdTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetVendorIdTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,28 +225,28 @@ func CastBACnetVendorIdTagged(structType any) BACnetVendorIdTagged {
 	return nil
 }
 
-func (m *_BACnetVendorIdTagged) GetTypeName() string {
+func (m *_BACnetVendorIdTagged) GetPlx4xTypeName() string {
 	return "BACnetVendorIdTagged"
 }
 
-func (m *_BACnetVendorIdTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetVendorIdTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsUnknownId(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (unknownId)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsUnknownId(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
 
-func (m *_BACnetVendorIdTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetVendorIdTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +261,7 @@ func BACnetVendorIdTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 }
 
 func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetVendorIdTagged, error) {
-	v, err := (&_BACnetVendorIdTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetVendorIdTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +361,6 @@ func (m *_BACnetVendorIdTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetVendorIdTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetVendorIdTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetVendorIdTagged) IsBACnetVendorIdTagged() {}
 
 func (m *_BACnetVendorIdTagged) DeepCopy() any {
@@ -404,8 +375,6 @@ func (m *_BACnetVendorIdTagged) deepCopy() *_BACnetVendorIdTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.UnknownId,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetVendorIdTaggedCopy
 }

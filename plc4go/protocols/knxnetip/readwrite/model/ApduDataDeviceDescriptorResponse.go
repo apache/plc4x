@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ ApduDataDeviceDescriptorResponse = (*_ApduDataDeviceDescriptorResponse)(ni
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorResponse)(nil)
 
 // NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
-func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
+func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte) *_ApduDataDeviceDescriptorResponse {
 	_result := &_ApduDataDeviceDescriptorResponse{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		DescriptorType:   descriptorType,
 		Data:             data,
 	}
@@ -222,25 +222,25 @@ func CastApduDataDeviceDescriptorResponse(structType any) ApduDataDeviceDescript
 	return nil
 }
 
-func (m *_ApduDataDeviceDescriptorResponse) GetTypeName() string {
+func (m *_ApduDataDeviceDescriptorResponse) GetPlx4xTypeName() string {
 	return "ApduDataDeviceDescriptorResponse"
 }
 
-func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

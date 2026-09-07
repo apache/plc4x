@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccessEventAuthenticationFactor = (*_BACnetConstructe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventAuthenticationFactor)(nil)
 
 // NewBACnetConstructedDataAccessEventAuthenticationFactor factory function for _BACnetConstructedDataAccessEventAuthenticationFactor
-func NewBACnetConstructedDataAccessEventAuthenticationFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventAuthenticationFactor BACnetAuthenticationFactor, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventAuthenticationFactor {
+func NewBACnetConstructedDataAccessEventAuthenticationFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventAuthenticationFactor BACnetAuthenticationFactor) *_BACnetConstructedDataAccessEventAuthenticationFactor {
 	if accessEventAuthenticationFactor == nil {
 		panic("accessEventAuthenticationFactor of type BACnetAuthenticationFactor for BACnetConstructedDataAccessEventAuthenticationFactor must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccessEventAuthenticationFactor{
-		BACnetConstructedDataContract:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AccessEventAuthenticationFactor: accessEventAuthenticationFactor,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAccessEventAuthenticationFactor(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessEventAuthenticationFactor"
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (accessEventAuthenticationFactor)
 	lengthInBits += m.AccessEventAuthenticationFactor.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBits(
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

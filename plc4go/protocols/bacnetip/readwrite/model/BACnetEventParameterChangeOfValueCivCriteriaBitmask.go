@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParame
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 
 // NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
-func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
 	if bitmask == nil {
 		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
 	}
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag),
 		Bitmask: bitmask,
 	}
 	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteriaBitmask"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
 
 	// Simple field (bitmask)
 	lengthInBits += m.Bitmask.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(c
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

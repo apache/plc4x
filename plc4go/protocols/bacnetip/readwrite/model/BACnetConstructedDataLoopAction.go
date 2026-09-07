@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLoopAction = (*_BACnetConstructedDataLoopAction)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoopAction)(nil)
 
 // NewBACnetConstructedDataLoopAction factory function for _BACnetConstructedDataLoopAction
-func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, action BACnetActionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
+func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, action BACnetActionTagged) *_BACnetConstructedDataLoopAction {
 	if action == nil {
 		panic("action of type BACnetActionTagged for BACnetConstructedDataLoopAction must not be nil")
 	}
 	_result := &_BACnetConstructedDataLoopAction{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Action:                        action,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLoopAction(structType any) BACnetConstructedDataLo
 	return nil
 }
 
-func (m *_BACnetConstructedDataLoopAction) GetTypeName() string {
+func (m *_BACnetConstructedDataLoopAction) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLoopAction"
 }
 
-func (m *_BACnetConstructedDataLoopAction) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLoopAction) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (action)
 	lengthInBits += m.Action.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLoopAction) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLoopAction) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLoopAction) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

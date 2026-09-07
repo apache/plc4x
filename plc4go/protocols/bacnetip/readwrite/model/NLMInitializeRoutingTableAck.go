@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,9 +62,9 @@ var _ NLMInitializeRoutingTableAck = (*_NLMInitializeRoutingTableAck)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTableAck)(nil)
 
 // NewNLMInitializeRoutingTableAck factory function for _NLMInitializeRoutingTableAck
-func NewNLMInitializeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTableAck {
+func NewNLMInitializeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) *_NLMInitializeRoutingTableAck {
 	_result := &_NLMInitializeRoutingTableAck{
-		NLMContract:   NewNLM(apduLength),
+		NLMContract:   NewNLM(),
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
 	}
@@ -222,12 +222,12 @@ func CastNLMInitializeRoutingTableAck(structType any) NLMInitializeRoutingTableA
 	return nil
 }
 
-func (m *_NLMInitializeRoutingTableAck) GetTypeName() string {
+func (m *_NLMInitializeRoutingTableAck) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTableAck"
 }
 
-func (m *_NLMInitializeRoutingTableAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMInitializeRoutingTableAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -243,7 +243,7 @@ func (m *_NLMInitializeRoutingTableAck) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_NLMInitializeRoutingTableAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMInitializeRoutingTableAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

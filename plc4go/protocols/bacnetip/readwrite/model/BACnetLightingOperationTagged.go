@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,20 +59,16 @@ type _BACnetLightingOperationTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLightingOperation
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLightingOperationTagged = (*_BACnetLightingOperationTagged)(nil)
 
 // NewBACnetLightingOperationTagged factory function for _BACnetLightingOperationTagged
-func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingOperationTagged {
+func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32) *_BACnetLightingOperationTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLightingOperationTagged must not be nil")
 	}
-	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLightingOperationTaggedBuilder interface {
 	WithValue(BACnetLightingOperation) BACnetLightingOperationTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLightingOperationTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLightingOperationTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLightingOperationTaggedBuilder
 	// Build builds the BACnetLightingOperationTagged or returns an error if something is wrong
 	Build() (BACnetLightingOperationTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLightingOperationTaggedBuilder) WithValue(value BACnetLightingOp
 
 func (b *_BACnetLightingOperationTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLightingOperationTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLightingOperationTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLightingOperationTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLightingOperationTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLightingOperationTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,28 +224,28 @@ func CastBACnetLightingOperationTagged(structType any) BACnetLightingOperationTa
 	return nil
 }
 
-func (m *_BACnetLightingOperationTagged) GetTypeName() string {
+func (m *_BACnetLightingOperationTagged) GetPlx4xTypeName() string {
 	return "BACnetLightingOperationTagged"
 }
 
-func (m *_BACnetLightingOperationTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLightingOperationTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
+	lengthInBits += uint64(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
 
-func (m *_BACnetLightingOperationTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLightingOperationTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -277,7 +260,7 @@ func BACnetLightingOperationTaggedParseWithBufferProducer(tagNumber uint8, tagCl
 }
 
 func BACnetLightingOperationTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLightingOperationTagged, error) {
-	v, err := (&_BACnetLightingOperationTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLightingOperationTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLightingOperationTagged) SerializeWithWriteBuffer(ctx context.Co
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLightingOperationTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLightingOperationTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLightingOperationTagged) IsBACnetLightingOperationTagged() {}
 
 func (m *_BACnetLightingOperationTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLightingOperationTagged) deepCopy() *_BACnetLightingOperationTag
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLightingOperationTaggedCopy
 }

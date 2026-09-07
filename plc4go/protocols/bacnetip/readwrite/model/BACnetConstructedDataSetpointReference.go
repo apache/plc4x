@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSetpointReference = (*_BACnetConstructedDataSetpointR
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpointReference)(nil)
 
 // NewBACnetConstructedDataSetpointReference factory function for _BACnetConstructedDataSetpointReference
-func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpointReference BACnetSetpointReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
+func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpointReference BACnetSetpointReference) *_BACnetConstructedDataSetpointReference {
 	if setpointReference == nil {
 		panic("setpointReference of type BACnetSetpointReference for BACnetConstructedDataSetpointReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataSetpointReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SetpointReference:             setpointReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataSetpointReference(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataSetpointReference) GetTypeName() string {
+func (m *_BACnetConstructedDataSetpointReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSetpointReference"
 }
 
-func (m *_BACnetConstructedDataSetpointReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSetpointReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (setpointReference)
 	lengthInBits += m.SetpointReference.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSetpointReference) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSetpointReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSetpointReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

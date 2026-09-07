@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +62,7 @@ var _ BACnetServiceAckAtomicReadFile = (*_BACnetServiceAckAtomicReadFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicReadFile)(nil)
 
 // NewBACnetServiceAckAtomicReadFile factory function for _BACnetServiceAckAtomicReadFile
-func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint32) *_BACnetServiceAckAtomicReadFile {
+func NewBACnetServiceAckAtomicReadFile(serviceAckLength uint32, endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord) *_BACnetServiceAckAtomicReadFile {
 	if endOfFile == nil {
 		panic("endOfFile of type BACnetApplicationTagBoolean for BACnetServiceAckAtomicReadFile must not be nil")
 	}
@@ -258,12 +258,12 @@ func CastBACnetServiceAckAtomicReadFile(structType any) BACnetServiceAckAtomicRe
 	return nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFile) GetTypeName() string {
+func (m *_BACnetServiceAckAtomicReadFile) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicReadFile"
 }
 
-func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (endOfFile)
 	lengthInBits += m.EndOfFile.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLargeAnalogValueHighLimit = (*_BACnetConstructedDataL
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueHighLimit)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for _BACnetConstructedDataLargeAnalogValueHighLimit
-func NewBACnetConstructedDataLargeAnalogValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueHighLimit {
+func NewBACnetConstructedDataLargeAnalogValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagDouble) *_BACnetConstructedDataLargeAnalogValueHighLimit {
 	if highLimit == nil {
 		panic("highLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataLargeAnalogValueHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		HighLimit:                     highLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLargeAnalogValueHighLimit(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueHighLimit"
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (highLimit)
 	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

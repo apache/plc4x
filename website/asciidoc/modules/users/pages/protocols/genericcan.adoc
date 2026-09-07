@@ -19,69 +19,80 @@
 
 = Generic CAN
 
+Generic CAN is a transport-agnostic driver for raw xref:protocols/can.adoc[CAN Bus] traffic. It
+applies no application-layer protocol of its own: every field is addressed as a raw node id plus a
+data type, and the values written or received for a single node id are packed into a single CAN
+frame in field order. It is a good fit where the devices on the bus speak a proprietary or
+undocumented protocol built directly on raw CAN frames - anything that follows a specific
+higher-level protocol on top of CAN bus, such as CANopen, is better served by
+xref:protocols/canopen.adoc[CANopen].
 
-
-== CAN Bus semantics
-
-This driver is a generic purpose driver.
-It allows implementing a basic CAN bus listening or writing scenarios.
-
-CAN bus open is a specific protocol built on top of CAN bus.
-
-== Connection String Options
-
-include::partial$genericcan.adoc[]
+== Supported Operations
 
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
 
-3+|Supported Operations
-
 | publish
 | `write`
-| Allows to publish a CAN frame via CAN transport.
+| Publishes a CAN frame via the CAN transport.
 
 | receive
 | `subscribe`
-| This operation allows listening for incoming data or requests.
+| Listens for incoming CAN frames matching a subscribed node id.
 
 |===
 
-== More details on the driver
+There is no read support; the driver only writes and subscribes.
 
-Given popularity of CAN in multiple market segments there is variety of protocols which can't be published.
-Also, for many cases which are data acquisition oriented it is necessary to tap only parts of communications.
+== Connection String
 
-This driver allows to model incoming and outgoing communication using plain Apache PLC4X api.
-The written CAN data is constructed from fields submitted via write request builder.
-The receiving data is transformed in similar fashion, based on subscribed fields.
+[source]
+----
+genericcan:can-socketcan://{interface}[?{options}]
+genericcan:can-virtualcan://{bus-name}[?{options}]
+----
 
-=== Address format
+[source]
+----
+genericcan:can-socketcan://can0
+genericcan:can-virtualcan://test
+----
 
-[cols="1,1a,1a,2a"]
-|===
-|Service | Format |Supported operations |Description
+== Connection String Options
 
-| n/a
-| nodeId:type[arraySize]
-| - `write`
-- `subscribe`
-| There is only one syntax which is currently supported by this driver.
-|===
+include::partial$genericcan.adoc[]
 
-Pay attention.
-You can use multiple fields to write and subscribe actual data.
-All fields must sum to up to 64 bits.
-If you subscribe less, then remaining data is discarded and not available via PLC4X api.
+== Tag Addresses
 
-The data will be sent in the same order as fields.
+Addressing is implemented in Java. There is no read support; the driver writes and subscribes. See
+the xref:protocols/index.adoc[protocol support matrix] for what each implementation does.
 
-Below table contains type mapping defined in Generic CAN driver.
+=== General Format
+
+----
+nodeId:type[arraySize]
+----
+
+`nodeId` is a plain (non-hexadecimal) integer CAN node/frame identifier. `type` is one of the data
+types listed below. `arraySize` is optional; see xref:array-notation.adoc[Addressing arrays].
+
+The underlying pattern (`GenericCANTag.java:36-37`) is
+`(?<nodeId>\d+):(?<dataType>\w+)(?:\[(?<arraySize>\d+)\])?`. It is not anchored with `^`/`$`, but
+`GenericCANTag.matches()` (`GenericCANTag.java:83`) applies it with `Matcher.matches()`, which
+requires the whole input string to match. Trailing text after a valid address is therefore
+rejected, not silently ignored.
+
+You can use multiple fields to write and subscribe actual data. All fields together must sum up to
+64 bits. If you subscribe to less than the frame contains, the remaining data is discarded and not
+available via the PLC4X API. Written and received data is ordered the same as the fields in the
+request.
+
+=== Data Types
 
 [cols="2,2,2"]
 |===
-|CANopen Type        |Length (in bits)| PLC4X Type
+|Address Type        |Length (in bits)| PLC4X Type
 | BOOLEAN            |        1 | BOOL
 | UNSIGNED8          |        8 | USINT
 | UNSIGNED16         |       16 | UINT
@@ -103,5 +114,18 @@ Below table contains type mapping defined in Generic CAN driver.
 | REAL64             |       64 | LREAL
 |===
 
-The type table is similar to CANopen.
-Main difference is lack of support for string types.
+This type table is similar to CANopen's. The main difference is the lack of support for string
+types.
+
+=== Examples
+
+----
+200:BYTE
+200:BYTE[8]
+----
+
+== More Information
+
+* xref:protocols/can.adoc[CAN Bus] - the shared transport and frame model used by this driver.
+* xref:protocols/canopen.adoc[CANopen] - the driver to use for devices that follow the CANopen
+application layer instead of raw frames.

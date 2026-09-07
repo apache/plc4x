@@ -18,28 +18,32 @@
  */
 package org.apache.plc4x.java.api;
 
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-public interface PlcConnectionManager {
+/**
+ * A {@link PlcConnectionFactory} that keeps the connections it hands out, and therefore has a
+ * lifecycle of its own.
+ * <p>
+ * A connection cache is the typical example: it holds on to the real connections so it can hand
+ * them out again, which means someone has to release them eventually. Closing the manager is what
+ * releases them, and having that on the interface is what lets a caller dispose of a manager
+ * without knowing which implementation it was handed, be it in a try-with-resources block or
+ * through a framework's disposal callback.
+ * <p>
+ * Implementations that merely create connections and leave them to their callers implement
+ * {@link PlcConnectionFactory} instead - there is nothing for them to close.
+ */
+public interface PlcConnectionManager extends PlcConnectionFactory, AutoCloseable {
 
     /**
-     * Connects to a PLC using the given plc connection string.
+     * Closes every connection this manager still holds and releases the resources it acquired,
+     * leaving it unusable afterward.
+     * <p>
+     * Closing a manager that is already closed does nothing.
      *
-     * @param url plc connection string.
-     * @return PlcConnection object.
-     * @throws PlcConnectionException an exception if the connection attempt failed.
+     * @throws PlcConnectionException if the resources could not be released.
      */
-    PlcConnection getConnection(String url) throws PlcConnectionException;
-
-    /**
-     * Connects to a PLC using the given plc connection string using given authentication credentials.
-     *
-     * @param url            plc connection string.
-     * @param authentication authentication credentials.
-     * @return PlcConnection object.
-     * @throws PlcConnectionException an exception if the connection attempt failed.
-     */
-    PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException;
+    @Override
+    void close() throws PlcConnectionException;
 
 }

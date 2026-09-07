@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
 var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 
 // NewExtensiblePayload factory function for _ExtensiblePayload
-func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject, byteCount uint32) *_ExtensiblePayload {
+func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject) *_ExtensiblePayload {
 	if payload == nil {
 		panic("payload of type RootExtensionObject for ExtensiblePayload must not be nil")
 	}
 	_result := &_ExtensiblePayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		PayloadContract: NewPayload(sequenceHeader),
 		Payload:         payload,
 	}
 	_result.PayloadContract.(*_Payload)._SubType = _result
@@ -225,12 +225,12 @@ func CastExtensiblePayload(structType any) ExtensiblePayload {
 	return nil
 }
 
-func (m *_ExtensiblePayload) GetTypeName() string {
+func (m *_ExtensiblePayload) GetPlx4xTypeName() string {
 	return "ExtensiblePayload"
 }
 
-func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ExtensiblePayload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ExtensiblePayload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

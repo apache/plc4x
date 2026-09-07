@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadProperty)(nil)
 
 // NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
-func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
+func NewBACnetServiceAckReadProperty(serviceAckLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData) *_BACnetServiceAckReadProperty {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
 	}
@@ -312,12 +312,12 @@ func CastBACnetServiceAckReadProperty(structType any) BACnetServiceAckReadProper
 	return nil
 }
 
-func (m *_BACnetServiceAckReadProperty) GetTypeName() string {
+func (m *_BACnetServiceAckReadProperty) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadProperty"
 }
 
-func (m *_BACnetServiceAckReadProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+func (m *_BACnetServiceAckReadProperty) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -338,7 +338,7 @@ func (m *_BACnetServiceAckReadProperty) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckReadProperty) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckReadProperty) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -418,11 +418,11 @@ func (m *_BACnetServiceAckReadProperty) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "values", GetRef(m.GetValues()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "values", new(m.GetValues()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 

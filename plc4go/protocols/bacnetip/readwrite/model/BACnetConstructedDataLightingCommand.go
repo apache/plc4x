@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLightingCommand = (*_BACnetConstructedDataLightingCom
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommand)(nil)
 
 // NewBACnetConstructedDataLightingCommand factory function for _BACnetConstructedDataLightingCommand
-func NewBACnetConstructedDataLightingCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommand BACnetLightingCommand, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommand {
+func NewBACnetConstructedDataLightingCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommand BACnetLightingCommand) *_BACnetConstructedDataLightingCommand {
 	if lightingCommand == nil {
 		panic("lightingCommand of type BACnetLightingCommand for BACnetConstructedDataLightingCommand must not be nil")
 	}
 	_result := &_BACnetConstructedDataLightingCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LightingCommand:               lightingCommand,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLightingCommand(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingCommand) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingCommand) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingCommand"
 }
 
-func (m *_BACnetConstructedDataLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLightingCommand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lightingCommand)
 	lengthInBits += m.LightingCommand.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLightingCommand) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLightingCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

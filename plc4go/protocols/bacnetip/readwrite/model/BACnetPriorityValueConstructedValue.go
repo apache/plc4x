@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetPriorityValueConstructedValue = (*_BACnetPriorityValueConstructedVal
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueConstructedValue)(nil)
 
 // NewBACnetPriorityValueConstructedValue factory function for _BACnetPriorityValueConstructedValue
-func NewBACnetPriorityValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueConstructedValue {
+func NewBACnetPriorityValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData) *_BACnetPriorityValueConstructedValue {
 	if constructedValue == nil {
 		panic("constructedValue of type BACnetConstructedData for BACnetPriorityValueConstructedValue must not be nil")
 	}
 	_result := &_BACnetPriorityValueConstructedValue{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		ConstructedValue:            constructedValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetPriorityValueConstructedValue(structType any) BACnetPriorityValue
 	return nil
 }
 
-func (m *_BACnetPriorityValueConstructedValue) GetTypeName() string {
+func (m *_BACnetPriorityValueConstructedValue) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueConstructedValue"
 }
 
-func (m *_BACnetPriorityValueConstructedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
+func (m *_BACnetPriorityValueConstructedValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (constructedValue)
 	lengthInBits += m.ConstructedValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetPriorityValueConstructedValue) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

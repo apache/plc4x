@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLoadControlPresentValue = (*_BACnetConstructedDataLoa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoadControlPresentValue)(nil)
 
 // NewBACnetConstructedDataLoadControlPresentValue factory function for _BACnetConstructedDataLoadControlPresentValue
-func NewBACnetConstructedDataLoadControlPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetShedStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoadControlPresentValue {
+func NewBACnetConstructedDataLoadControlPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetShedStateTagged) *_BACnetConstructedDataLoadControlPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetShedStateTagged for BACnetConstructedDataLoadControlPresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataLoadControlPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLoadControlPresentValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataLoadControlPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLoadControlPresentValue"
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLoadControlPresentValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLoadControlPresentValue) GetLengthInBits(ctx cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLoadControlPresentValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

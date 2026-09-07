@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDirectReading = (*_BACnetConstructedDataDirectReading
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDirectReading)(nil)
 
 // NewBACnetConstructedDataDirectReading factory function for _BACnetConstructedDataDirectReading
-func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, directReading BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
+func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, directReading BACnetApplicationTagReal) *_BACnetConstructedDataDirectReading {
 	if directReading == nil {
 		panic("directReading of type BACnetApplicationTagReal for BACnetConstructedDataDirectReading must not be nil")
 	}
 	_result := &_BACnetConstructedDataDirectReading{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DirectReading:                 directReading,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDirectReading(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataDirectReading) GetTypeName() string {
+func (m *_BACnetConstructedDataDirectReading) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDirectReading"
 }
 
-func (m *_BACnetConstructedDataDirectReading) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDirectReading) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (directReading)
 	lengthInBits += m.DirectReading.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDirectReading) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDirectReading) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDirectReading) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

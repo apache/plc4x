@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBlinkWarnEnable = (*_BACnetConstructedDataBlinkWarnEn
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBlinkWarnEnable)(nil)
 
 // NewBACnetConstructedDataBlinkWarnEnable factory function for _BACnetConstructedDataBlinkWarnEnable
-func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, blinkWarnEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBlinkWarnEnable {
+func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, blinkWarnEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataBlinkWarnEnable {
 	if blinkWarnEnable == nil {
 		panic("blinkWarnEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataBlinkWarnEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataBlinkWarnEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BlinkWarnEnable:               blinkWarnEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBlinkWarnEnable(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBlinkWarnEnable"
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (blinkWarnEnable)
 	lengthInBits += m.BlinkWarnEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

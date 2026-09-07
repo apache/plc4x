@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataAuthenticationFactors interface {
 	// GetAuthenticationFactors returns AuthenticationFactors (property field)
 	GetAuthenticationFactors() []BACnetCredentialAuthenticationFactor
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataAuthenticationFactors is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAuthenticationFactors()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataAuthenticationFactors = (*_BACnetConstructedDataAuthe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationFactors)(nil)
 
 // NewBACnetConstructedDataAuthenticationFactors factory function for _BACnetConstructedDataAuthenticationFactors
-func NewBACnetConstructedDataAuthenticationFactors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationFactors []BACnetCredentialAuthenticationFactor, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationFactors {
+func NewBACnetConstructedDataAuthenticationFactors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationFactors []BACnetCredentialAuthenticationFactor) *_BACnetConstructedDataAuthenticationFactors {
 	_result := &_BACnetConstructedDataAuthenticationFactors{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AuthenticationFactors:         authenticationFactors,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataAuthenticationFactors(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactors) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthenticationFactors) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthenticationFactors"
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactors) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAuthenticationFactors) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataAuthenticationFactors) GetLengthInBits(ctx contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactors) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAuthenticationFactors) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataAuthenticationFactors) SerializeWithWriteBuffer(c
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

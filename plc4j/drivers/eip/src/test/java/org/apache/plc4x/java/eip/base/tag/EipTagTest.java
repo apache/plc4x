@@ -27,12 +27,36 @@ public class EipTagTest {
 
     @Test
     public void testTagParse() {
-        EipTag eipTag = EipTag.of("%A0:2");
+        EipTag eipTag = EipTag.of("%A0[0..1]");
 
         Assertions.assertNotNull(eipTag);
-        Assertions.assertEquals(eipTag.getTag(), "%A0");
+        Assertions.assertEquals("%A0[0..1]", eipTag.getTag());
         Assertions.assertEquals(eipTag.getType(), CIPDataTypeCode.DINT);
         Assertions.assertEquals(eipTag.getElementNb(), 2);
+    }
+
+    /**
+     * Every address form documented in the EtherNet/IP page (website/asciidoc, "Address Format")
+     * has to parse the way it is documented - see GH-1481, where the docs had the data type and
+     * the element count the wrong way round. If a form changes here, update the page too.
+     */
+    @Test
+    public void testDocumentedAddressForms() {
+        assertTag("myTag", "myTag", CIPDataTypeCode.DINT, 1);
+        assertTag("myTag:REAL", "myTag", CIPDataTypeCode.REAL, 1);
+        assertTag("myTag[0..3]", "myTag[0..3]", CIPDataTypeCode.DINT, 4);
+        assertTag("myArray[3]:DINT", "myArray[3]", CIPDataTypeCode.DINT, 1);
+        assertTag("myArray[0..3]:DINT", "myArray[0..3]", CIPDataTypeCode.DINT, 4);
+        // The '%' prefix is optional.
+        assertTag("%myTag:REAL", "%myTag", CIPDataTypeCode.REAL, 1);
+    }
+
+    private void assertTag(String address, String tag, CIPDataTypeCode type, int elementNb) {
+        EipTag eipTag = EipTag.of(address);
+        Assertions.assertNotNull(eipTag, address);
+        Assertions.assertEquals(tag, eipTag.getTag(), address);
+        Assertions.assertEquals(type, eipTag.getType(), address);
+        Assertions.assertEquals(elementNb, eipTag.getElementNb(), address);
     }
 
 }

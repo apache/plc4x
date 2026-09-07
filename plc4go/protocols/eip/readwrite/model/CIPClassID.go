@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -498,11 +498,11 @@ func CastCIPClassID(structType any) CIPClassID {
 	return castFunc(structType)
 }
 
-func (m CIPClassID) GetLengthInBits(ctx context.Context) uint16 {
+func (m CIPClassID) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m CIPClassID) GetLengthInBytes(ctx context.Context) uint16 {
+func (m CIPClassID) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

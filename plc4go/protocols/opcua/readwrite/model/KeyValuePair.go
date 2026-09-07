@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,12 +259,12 @@ func CastKeyValuePair(structType any) KeyValuePair {
 	return nil
 }
 
-func (m *_KeyValuePair) GetTypeName() string {
+func (m *_KeyValuePair) GetPlx4xTypeName() string {
 	return "KeyValuePair"
 }
 
-func (m *_KeyValuePair) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_KeyValuePair) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += m.Key.GetLengthInBits(ctx)
@@ -274,7 +275,7 @@ func (m *_KeyValuePair) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_KeyValuePair) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_KeyValuePair) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -289,13 +290,13 @@ func (m *_KeyValuePair) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	key, err := ReadSimpleField[QualifiedName](ctx, "key", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	key, err := ReadSimpleField[QualifiedName](ctx, "key", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
 	m.Key = key
 
-	value, err := ReadSimpleField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	value, err := ReadSimpleField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_KeyValuePair) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for KeyValuePair")
 		}
 
-		if err := WriteSimpleField[QualifiedName](ctx, "key", m.GetKey(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+		if err := WriteSimpleField[QualifiedName](ctx, "key", m.GetKey(), WriteComplex[QualifiedName](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 
-		if err := WriteSimpleField[Variant](ctx, "value", m.GetValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Variant](ctx, "value", m.GetValue(), WriteComplex[Variant](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

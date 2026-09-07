@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -287,12 +287,12 @@ func CastBACnetEventParameterChangeOfDiscreteValue(structType any) BACnetEventPa
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfDiscreteValue) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfDiscreteValue) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfDiscreteValue"
 }
 
-func (m *_BACnetEventParameterChangeOfDiscreteValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
+func (m *_BACnetEventParameterChangeOfDiscreteValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -306,7 +306,7 @@ func (m *_BACnetEventParameterChangeOfDiscreteValue) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfDiscreteValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfDiscreteValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

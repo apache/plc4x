@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,12 +215,12 @@ func CastBACnetLogDataLogDataEntryAnyValue(structType any) BACnetLogDataLogDataE
 	return nil
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValue) GetTypeName() string {
+func (m *_BACnetLogDataLogDataEntryAnyValue) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogDataEntryAnyValue"
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
+func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Optional Field (anyValue)
 	if m.AnyValue != nil {
@@ -230,7 +230,7 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -280,7 +280,7 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryAnyValue")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", GetRef(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", new(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'anyValue' field")
 		}
 

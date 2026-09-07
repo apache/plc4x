@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -175,12 +175,12 @@ func CastSecurityHeader(structType any) SecurityHeader {
 	return nil
 }
 
-func (m *_SecurityHeader) GetTypeName() string {
+func (m *_SecurityHeader) GetPlx4xTypeName() string {
 	return "SecurityHeader"
 }
 
-func (m *_SecurityHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SecurityHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (secureChannelId)
 	lengthInBits += 32
@@ -191,7 +191,7 @@ func (m *_SecurityHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -206,7 +206,7 @@ func SecurityHeaderParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func SecurityHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
-	v, err := (&_SecurityHeader{}).parse(ctx, readBuffer)
+	v, err := (new(_SecurityHeader)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -292,12 +292,12 @@ func CastHVACHumidityModeAndFlags(structType any) HVACHumidityModeAndFlags {
 	return nil
 }
 
-func (m *_HVACHumidityModeAndFlags) GetTypeName() string {
+func (m *_HVACHumidityModeAndFlags) GetPlx4xTypeName() string {
 	return "HVACHumidityModeAndFlags"
 }
 
-func (m *_HVACHumidityModeAndFlags) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HVACHumidityModeAndFlags) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 1
@@ -336,7 +336,7 @@ func (m *_HVACHumidityModeAndFlags) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_HVACHumidityModeAndFlags) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HVACHumidityModeAndFlags) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -351,7 +351,7 @@ func HVACHumidityModeAndFlagsParseWithBufferProducer() func(ctx context.Context,
 }
 
 func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
-	v, err := (&_HVACHumidityModeAndFlags{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACHumidityModeAndFlags)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

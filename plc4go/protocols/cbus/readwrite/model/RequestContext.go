@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,6 +43,7 @@ type RequestContext interface {
 	utils.Serializable
 	utils.Copyable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
+	// Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
 	GetSendIdentifyRequestBefore() bool
 	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestContext()
@@ -161,12 +164,12 @@ func CastRequestContext(structType any) RequestContext {
 	return nil
 }
 
-func (m *_RequestContext) GetTypeName() string {
+func (m *_RequestContext) GetPlx4xTypeName() string {
 	return "RequestContext"
 }
 
-func (m *_RequestContext) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_RequestContext) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (sendIdentifyRequestBefore)
 	lengthInBits += 1
@@ -174,12 +177,12 @@ func (m *_RequestContext) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RequestContext) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RequestContext) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
 func RequestContextParse(ctx context.Context, theBytes []byte) (RequestContext, error) {
-	return RequestContextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return RequestContextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func RequestContextParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
@@ -189,7 +192,7 @@ func RequestContextParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
-	v, err := (&_RequestContext{}).parse(ctx, readBuffer)
+	v, err := (new(_RequestContext)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +208,7 @@ func (m *_RequestContext) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sendIdentifyRequestBefore, err := ReadSimpleField(ctx, "sendIdentifyRequestBefore", ReadBoolean(readBuffer))
+	sendIdentifyRequestBefore, err := ReadSimpleField(ctx, "sendIdentifyRequestBefore", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
 	}
@@ -219,7 +222,7 @@ func (m *_RequestContext) parse(ctx context.Context, readBuffer utils.ReadBuffer
 }
 
 func (m *_RequestContext) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -235,7 +238,7 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for RequestContext")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'sendIdentifyRequestBefore' field")
 	}
 

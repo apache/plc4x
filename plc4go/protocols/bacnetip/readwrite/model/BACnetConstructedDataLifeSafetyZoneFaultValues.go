@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataLifeSafetyZoneFaultValues = (*_BACnetConstructedDataL
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneFaultValues)(nil)
 
 // NewBACnetConstructedDataLifeSafetyZoneFaultValues factory function for _BACnetConstructedDataLifeSafetyZoneFaultValues
-func NewBACnetConstructedDataLifeSafetyZoneFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneFaultValues {
+func NewBACnetConstructedDataLifeSafetyZoneFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetLifeSafetyStateTagged) *_BACnetConstructedDataLifeSafetyZoneFaultValues {
 	_result := &_BACnetConstructedDataLifeSafetyZoneFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultValues:                   faultValues,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataLifeSafetyZoneFaultValues(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetTypeName() string {
+func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLifeSafetyZoneFaultValues"
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FaultValues) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetLengthInBits(ctx co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLifeSafetyZoneFaultValues) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,17 +180,17 @@ func CastApduControlNack(structType any) ApduControlNack {
 	return nil
 }
 
-func (m *_ApduControlNack) GetTypeName() string {
+func (m *_ApduControlNack) GetPlx4xTypeName() string {
 	return "ApduControlNack"
 }
 
-func (m *_ApduControlNack) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
+func (m *_ApduControlNack) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduControlNack) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduControlNack) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

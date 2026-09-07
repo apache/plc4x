@@ -20,16 +20,19 @@ package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.*;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.ConfigurationParameterConverter;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.config.annotations.Required;
+import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class AdsConfiguration implements PlcConnectionConfiguration {
+public class AdsConfiguration implements Configuration {
 
     public static final Pattern AMS_NET_ID_PATTERN =
         Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
@@ -56,14 +59,19 @@ public class AdsConfiguration implements PlcConnectionConfiguration {
     @Description("AMS port of the source.")
     protected int sourceAmsPort;
 
-    @ConfigurationParameter("timeout-request")
+    @ConfigurationParameter("request-timeout-ms")
     @IntDefaultValue(4000)
     @Description("Default timeout for all types of requests.")
     protected int timeoutRequest;
 
+    @ConfigurationParameter("max-data-type-table-depth")
+    @IntDefaultValue(20)
+    @Description("Maximum nesting depth accepted when parsing the data-type table uploaded from the device. An entry may contain further entries, so without a limit the depth of the tree is dictated by the device rather than by the driver, and a table of well under a megabyte can nest deeply enough to exhaust the parser's stack. Real type hierarchies are only a handful of levels deep, so the default is already generous; raise it for a device that is known to need more. Note that the JVM's own stack imposes a practical ceiling of a few thousand levels regardless of what is configured here.")
+    protected int maxDataTypeTableDepth;
+
     @ConfigurationParameter("load-symbol-and-data-type-tables")
     @BooleanDefaultValue(true)
-    @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, symbolic addresses will manually be resolved as soon as an address is used.")
+    @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, reading and writing is limited to direct addresses (`{IndexGroup}/{IndexOffset}:{TYPE}`): symbolic addresses cannot be resolved without the tables and are rejected with a corresponding error. Browsing is unavailable for the same reason. Subscriptions are unaffected, as they resolve symbol handles on the device.")
     protected boolean loadSymbolAndDataTypeTables;
 
     public AmsNetId getTargetAmsNetId() {
@@ -106,6 +114,14 @@ public class AdsConfiguration implements PlcConnectionConfiguration {
         this.timeoutRequest = timeoutRequest;
     }
 
+    public int getMaxDataTypeTableDepth() {
+        return maxDataTypeTableDepth;
+    }
+
+    public void setMaxDataTypeTableDepth(int maxDataTypeTableDepth) {
+        this.maxDataTypeTableDepth = maxDataTypeTableDepth;
+    }
+
     public boolean isLoadSymbolAndDataTypeTables() {
         return loadSymbolAndDataTypeTables;
     }
@@ -134,6 +150,18 @@ public class AdsConfiguration implements PlcConnectionConfiguration {
         String[] split = address.split("\\.");
         short[] shorts = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::shortValue).toArray(Short[]::new));
         return new AmsNetId(shorts[0], shorts[1], shorts[2], shorts[3], shorts[4], shorts[5]);
+    }
+
+    @Override
+    public String toString() {
+        return "AdsConfiguration{" +
+            "targetAmsNetId=" + targetAmsNetId +
+            ", targetAmsPort=" + targetAmsPort +
+            ", sourceAmsNetId=" + sourceAmsNetId +
+            ", sourceAmsPort=" + sourceAmsPort +
+            ", timeoutRequest=" + timeoutRequest +
+            ", loadSymbolAndDataTypeTables=" + loadSymbolAndDataTypeTables +
+            '}';
     }
 
 }

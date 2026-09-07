@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLifeSafetyZoneMaintenanceRequired = (*_BACnetConstruc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
 
 // NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
-func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetApplicationTagBoolean) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
 	if maintenanceRequired == nil {
 		panic("maintenanceRequired of type BACnetApplicationTagBoolean for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired must not be nil")
 	}
 	_result := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaintenanceRequired:           maintenanceRequired,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(structType any) 
 	return nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetTypeName() string {
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maintenanceRequired)
 	lengthInBits += m.MaintenanceRequired.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBit
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

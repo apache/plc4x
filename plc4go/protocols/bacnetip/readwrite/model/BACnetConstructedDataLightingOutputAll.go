@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataLightingOutputAll = (*_BACnetConstructedDataLightingO
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputAll)(nil)
 
 // NewBACnetConstructedDataLightingOutputAll factory function for _BACnetConstructedDataLightingOutputAll
-func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputAll {
+func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataLightingOutputAll {
 	_result := &_BACnetConstructedDataLightingOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataLightingOutputAll(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingOutputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingOutputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingOutputAll"
 }
 
-func (m *_BACnetConstructedDataLightingOutputAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLightingOutputAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLightingOutputAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLightingOutputAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

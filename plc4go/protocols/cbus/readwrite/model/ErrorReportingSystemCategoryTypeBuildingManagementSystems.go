@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,12 +207,12 @@ func CastErrorReportingSystemCategoryTypeBuildingManagementSystems(structType an
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetTypeName() string {
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeBuildingManagementSystems"
 }
 
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
 
 	// Simple field (categoryForType)
 	lengthInBits += 4
@@ -220,7 +220,7 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthIn
 	return lengthInBits
 }
 
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

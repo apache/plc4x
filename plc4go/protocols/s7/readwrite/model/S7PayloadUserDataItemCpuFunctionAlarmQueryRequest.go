@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,6 +41,7 @@ const S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_VARIABLESPEC uint8 = 0x1
 const S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_LENGTH uint8 = 0x08
 
 // S7PayloadUserDataItemCpuFunctionAlarmQueryRequest is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+// ALARM_QUERY Request for alarms stored in the controller
 type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware
@@ -279,12 +280,12 @@ func CastS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(structType any) S7Pay
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmQueryRequest"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -316,7 +317,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

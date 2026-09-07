@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,6 +46,7 @@ type BACnetConstructedDataIPv6DNSServer interface {
 	// GetIpv6DnsServer returns Ipv6DnsServer (property field)
 	GetIpv6DnsServer() []BACnetApplicationTagOctetString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataIPv6DNSServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6DNSServer()
@@ -64,9 +65,9 @@ var _ BACnetConstructedDataIPv6DNSServer = (*_BACnetConstructedDataIPv6DNSServer
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DNSServer)(nil)
 
 // NewBACnetConstructedDataIPv6DNSServer factory function for _BACnetConstructedDataIPv6DNSServer
-func NewBACnetConstructedDataIPv6DNSServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, ipv6DnsServer []BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DNSServer {
+func NewBACnetConstructedDataIPv6DNSServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, ipv6DnsServer []BACnetApplicationTagOctetString) *_BACnetConstructedDataIPv6DNSServer {
 	_result := &_BACnetConstructedDataIPv6DNSServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		Ipv6DnsServer:                 ipv6DnsServer,
 	}
@@ -257,12 +258,12 @@ func CastBACnetConstructedDataIPv6DNSServer(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServer) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6DNSServer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6DNSServer"
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPv6DNSServer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -281,7 +282,7 @@ func (m *_BACnetConstructedDataIPv6DNSServer) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPv6DNSServer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -349,7 +350,7 @@ func (m *_BACnetConstructedDataIPv6DNSServer) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", new(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 

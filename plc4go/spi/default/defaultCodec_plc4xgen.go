@@ -62,7 +62,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.transportInstance)
-			if err := writeBuffer.WriteString("transportInstance", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("transportInstance", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -86,7 +86,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}
@@ -100,21 +100,81 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.WriteString("defaultIncomingMessageChannel", uint32(len(_defaultIncomingMessageChannel_plx4gen_description)*8), _defaultIncomingMessageChannel_plx4gen_description); err != nil {
 		return err
 	}
+	{
+		_value := fmt.Sprintf("%v", d.customMessageHandling)
 
-	if err := writeBuffer.WriteBit("customMessageHandling", d.customMessageHandling != nil); err != nil {
-		return err
+		if err := writeBuffer.WriteString("customMessageHandling", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
+			return err
+		}
 	}
 
 	if err := writeBuffer.WriteBit("running", d.running.Load()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%s", d.receiveTimeout))*8), fmt.Sprintf("%s", d.receiveTimeout)); err != nil {
+	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%s", d.receiveTimeout))*8), fmt.Sprintf("%s", d.receiveTimeout), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
 	if err := writeBuffer.WriteBit("traceDefaultMessageCodecWorker", d.traceDefaultMessageCodecWorker); err != nil {
 		return err
+	}
+
+	if d.ctx != nil {
+		if serializableField, ok := any(d.ctx).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("ctx"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ctx"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.ctx)
+			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.ctxCancel != nil {
+		if serializableField, ok := any(d.ctxCancel).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("ctxCancel"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ctxCancel"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.ctxCancel)
+			if err := writeBuffer.WriteString("ctxCancel", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.transportErrorHandler != nil {
+		if serializableField, ok := any(d.transportErrorHandler).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("transportErrorHandler"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("transportErrorHandler"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.transportErrorHandler)
+			if err := writeBuffer.WriteString("transportErrorHandler", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
+				return err
+			}
+		}
 	}
 	if err := writeBuffer.PopContext("defaultCodec"); err != nil {
 		return err

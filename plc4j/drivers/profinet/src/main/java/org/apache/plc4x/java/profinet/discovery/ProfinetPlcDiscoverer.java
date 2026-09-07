@@ -28,10 +28,14 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
-import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryResponse;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
@@ -129,7 +133,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
             Map<String, PnDcp_Block> blocks = new HashMap<>();
             for (PnDcp_Block block : identifyResPDU.getBlocks()) {
-                String blockName = block.getOption().name() + "-" + block.getSuboption().toString();
+                String blockName = block.getOption().name() + "-" + block.getSuboption();
                 blocks.put(blockName, block);
             }
 
@@ -210,7 +214,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             options.put("packetType", "dcp");
             String name = deviceTypeName + " - " + deviceName;
             PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
-                ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
+                ProfinetDriver.DRIVER_CODE, "raw-socket",
                 remoteIpAddress, options, name, Collections.emptyMap());
             values.add(value);
 
@@ -270,7 +274,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
         if (profibusDevice) {
             PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
-                ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
+                ProfinetDriver.DRIVER_CODE, "raw-socket",
                 "lldp_response_packet", options, options.get("portId"), Collections.emptyMap());
             values.add(value);
 
@@ -298,15 +302,15 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, (short) 0,
                             new Ethernet_FramePayload_PnDcp(
                                 new PnDcp_Pdu_IdentifyReq(PnDcp_FrameId.DCP_Identify_ReqPDU.getValue(),
-                                    1,
+                                    1L,
                                     256,
                                     Collections.singletonList(
                                         new PnDcp_Block_ALLSelector()
                                     )))));
-                    WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
+                    WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[identificationRequest.getLengthInBytes()]);
                     try {
                         identificationRequest.serialize(buffer);
-                    } catch (SerializationException e) {
+                    } catch ( BufferException e) {
                         throw new RuntimeException(e);
                     }
                     Packet packet = null;
@@ -402,12 +406,12 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                     } catch (DecoderException e) {
                         throw new RuntimeException(e);
                     }
-                    WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
+                    WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[identificationRequest.getLengthInBytes()]);
                     try {
                         identificationRequest.serialize(buffer);
                         Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
                         handle.sendPacket(packet);
-                    } catch (PcapNativeException | NotOpenException | SerializationException | IllegalRawDataException e) {
+                    } catch (PcapNativeException | NotOpenException |  BufferException | IllegalRawDataException e) {
                         throw new RuntimeException(e);
                     }
                     return null;

@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAnalogInputAll = (*_BACnetConstructedDataAnalogInputA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogInputAll)(nil)
 
 // NewBACnetConstructedDataAnalogInputAll factory function for _BACnetConstructedDataAnalogInputAll
-func NewBACnetConstructedDataAnalogInputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputAll {
+func NewBACnetConstructedDataAnalogInputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAnalogInputAll {
 	_result := &_BACnetConstructedDataAnalogInputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataAnalogInputAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogInputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogInputAll"
 }
 
-func (m *_BACnetConstructedDataAnalogInputAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAnalogInputAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogInputAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAnalogInputAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

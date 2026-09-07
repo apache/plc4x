@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,12 +59,12 @@ var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble = (*_BACnetFaultPa
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble)(nil)
 
 // NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
-func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doubleValue BACnetApplicationTagDouble, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble {
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doubleValue BACnetApplicationTagDouble) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble {
 	if doubleValue == nil {
 		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble must not be nil")
 	}
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble{
-		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag),
 		DoubleValue: doubleValue,
 	}
 	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
@@ -221,12 +221,12 @@ func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(structType any)
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue).getLengthInBits(ctx))
 
 	// Simple field (doubleValue)
 	lengthInBits += m.DoubleValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetLengthInBi
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

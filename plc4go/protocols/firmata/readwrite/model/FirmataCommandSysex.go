@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ FirmataCommandSysex = (*_FirmataCommandSysex)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSysex)(nil)
 
 // NewFirmataCommandSysex factory function for _FirmataCommandSysex
-func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
+func NewFirmataCommandSysex(command SysexCommand) *_FirmataCommandSysex {
 	if command == nil {
 		panic("command of type SysexCommand for FirmataCommandSysex must not be nil")
 	}
 	_result := &_FirmataCommandSysex{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 		Command:                command,
 	}
 	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
@@ -227,12 +227,12 @@ func CastFirmataCommandSysex(structType any) FirmataCommandSysex {
 	return nil
 }
 
-func (m *_FirmataCommandSysex) GetTypeName() string {
+func (m *_FirmataCommandSysex) GetPlx4xTypeName() string {
 	return "FirmataCommandSysex"
 }
 
-func (m *_FirmataCommandSysex) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+func (m *_FirmataCommandSysex) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)
@@ -243,7 +243,7 @@ func (m *_FirmataCommandSysex) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSysex) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommandSysex) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

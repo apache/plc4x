@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataDatetimepatternValueAll = (*_BACnetConstructedDataDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDatetimepatternValueAll)(nil)
 
 // NewBACnetConstructedDataDatetimepatternValueAll factory function for _BACnetConstructedDataDatetimepatternValueAll
-func NewBACnetConstructedDataDatetimepatternValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatetimepatternValueAll {
+func NewBACnetConstructedDataDatetimepatternValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataDatetimepatternValueAll {
 	_result := &_BACnetConstructedDataDatetimepatternValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataDatetimepatternValueAll(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatetimepatternValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataDatetimepatternValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatetimepatternValueAll"
 }
 
-func (m *_BACnetConstructedDataDatetimepatternValueAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDatetimepatternValueAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDatetimepatternValueAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDatetimepatternValueAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

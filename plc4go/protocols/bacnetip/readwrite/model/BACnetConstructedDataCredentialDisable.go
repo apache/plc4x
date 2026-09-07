@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCredentialDisable = (*_BACnetConstructedDataCredentia
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDisable)(nil)
 
 // NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
-func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
+func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged) *_BACnetConstructedDataCredentialDisable {
 	if credentialDisable == nil {
 		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
 	}
 	_result := &_BACnetConstructedDataCredentialDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CredentialDisable:             credentialDisable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataCredentialDisable(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialDisable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialDisable"
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (credentialDisable)
 	lengthInBits += m.CredentialDisable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCredentialDisable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

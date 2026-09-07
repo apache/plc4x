@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -63,12 +63,12 @@ var _ BACnetContextTagObjectIdentifier = (*_BACnetContextTagObjectIdentifier)(ni
 var _ BACnetContextTagRequirements = (*_BACnetContextTagObjectIdentifier)(nil)
 
 // NewBACnetContextTagObjectIdentifier factory function for _BACnetContextTagObjectIdentifier
-func NewBACnetContextTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier, tagNumberArgument uint8) *_BACnetContextTagObjectIdentifier {
+func NewBACnetContextTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier) *_BACnetContextTagObjectIdentifier {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetContextTagObjectIdentifier must not be nil")
 	}
 	_result := &_BACnetContextTagObjectIdentifier{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
@@ -250,12 +250,12 @@ func CastBACnetContextTagObjectIdentifier(structType any) BACnetContextTagObject
 	return nil
 }
 
-func (m *_BACnetContextTagObjectIdentifier) GetTypeName() string {
+func (m *_BACnetContextTagObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetContextTagObjectIdentifier"
 }
 
-func (m *_BACnetContextTagObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+func (m *_BACnetContextTagObjectIdentifier) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -267,7 +267,7 @@ func (m *_BACnetContextTagObjectIdentifier) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetContextTagObjectIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

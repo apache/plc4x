@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReliabilityEvaluationInhibit = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReliabilityEvaluationInhibit)(nil)
 
 // NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for _BACnetConstructedDataReliabilityEvaluationInhibit
-func NewBACnetConstructedDataReliabilityEvaluationInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliabilityEvaluationInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliabilityEvaluationInhibit {
+func NewBACnetConstructedDataReliabilityEvaluationInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliabilityEvaluationInhibit BACnetApplicationTagBoolean) *_BACnetConstructedDataReliabilityEvaluationInhibit {
 	if reliabilityEvaluationInhibit == nil {
 		panic("reliabilityEvaluationInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataReliabilityEvaluationInhibit must not be nil")
 	}
 	_result := &_BACnetConstructedDataReliabilityEvaluationInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReliabilityEvaluationInhibit:  reliabilityEvaluationInhibit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataReliabilityEvaluationInhibit(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetTypeName() string {
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReliabilityEvaluationInhibit"
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (reliabilityEvaluationInhibit)
 	lengthInBits += m.ReliabilityEvaluationInhibit.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

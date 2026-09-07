@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -1398,11 +1398,11 @@ func CastAccessControlCommandTypeContainer(structType any) AccessControlCommandT
 	return castFunc(structType)
 }
 
-func (m AccessControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m AccessControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m AccessControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AccessControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

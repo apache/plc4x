@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,17 +176,17 @@ func CastMeteringDataMeasureGas(structType any) MeteringDataMeasureGas {
 	return nil
 }
 
-func (m *_MeteringDataMeasureGas) GetTypeName() string {
+func (m *_MeteringDataMeasureGas) GetPlx4xTypeName() string {
 	return "MeteringDataMeasureGas"
 }
 
-func (m *_MeteringDataMeasureGas) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+func (m *_MeteringDataMeasureGas) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_MeteringDataMeasureGas) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeteringDataMeasureGas) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

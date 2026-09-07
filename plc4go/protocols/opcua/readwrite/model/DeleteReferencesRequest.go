@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,12 +241,12 @@ func CastDeleteReferencesRequest(structType any) DeleteReferencesRequest {
 	return nil
 }
 
-func (m *_DeleteReferencesRequest) GetTypeName() string {
+func (m *_DeleteReferencesRequest) GetPlx4xTypeName() string {
 	return "DeleteReferencesRequest"
 }
 
-func (m *_DeleteReferencesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_DeleteReferencesRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -264,7 +265,7 @@ func (m *_DeleteReferencesRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DeleteReferencesRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeleteReferencesRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -279,19 +280,19 @@ func (m *_DeleteReferencesRequest) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfReferencesToDelete, err := ReadImplicitField[int32](ctx, "noOfReferencesToDelete", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencesToDelete, err := ReadImplicitField[int32](ctx, "noOfReferencesToDelete", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencesToDelete' field"))
 	}
 	_ = noOfReferencesToDelete
 
-	referencesToDelete, err := ReadCountArrayField[DeleteReferencesItem](ctx, "referencesToDelete", ReadComplex[DeleteReferencesItem](ExtensionObjectDefinitionParseWithBufferProducer[DeleteReferencesItem]((int32)(int32(387))), readBuffer), uint64(noOfReferencesToDelete))
+	referencesToDelete, err := ReadCountArrayField[DeleteReferencesItem](ctx, "referencesToDelete", ReadComplex[DeleteReferencesItem](ExtensionObjectDefinitionParseWithBufferProducer[DeleteReferencesItem]((int32)(int32(387))), readBuffer), uint64(noOfReferencesToDelete), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencesToDelete' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for DeleteReferencesRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfReferencesToDelete := int32(utils.InlineIf(bool((m.GetReferencesToDelete()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencesToDelete()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReferencesToDelete", noOfReferencesToDelete, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReferencesToDelete", noOfReferencesToDelete, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencesToDelete' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "referencesToDelete", m.GetReferencesToDelete(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "referencesToDelete", m.GetReferencesToDelete(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'referencesToDelete' field")
 		}
 

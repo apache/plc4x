@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +68,7 @@ var _ BACnetConfirmedServiceRequestSubscribeCOV = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOV)(nil)
 
 // NewBACnetConfirmedServiceRequestSubscribeCOV factory function for _BACnetConfirmedServiceRequestSubscribeCOV
-func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmed BACnetContextTagBoolean, lifetimeInSeconds BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOV {
+func NewBACnetConfirmedServiceRequestSubscribeCOV(serviceRequestLength uint32, subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmed BACnetContextTagBoolean, lifetimeInSeconds BACnetContextTagUnsignedInteger) *_BACnetConfirmedServiceRequestSubscribeCOV {
 	if subscriberProcessIdentifier == nil {
 		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOV must not be nil")
 	}
@@ -312,12 +312,12 @@ func CastBACnetConfirmedServiceRequestSubscribeCOV(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOV"
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -338,7 +338,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -418,11 +418,11 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmed", GetRef(m.GetIssueConfirmed()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmed", new(m.GetIssueConfirmed()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'issueConfirmed' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetimeInSeconds", GetRef(m.GetLifetimeInSeconds()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetimeInSeconds", new(m.GetLifetimeInSeconds()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lifetimeInSeconds' field")
 		}
 

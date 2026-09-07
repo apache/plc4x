@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPNATTraversal = (*_BACnetConstructedDataBACnet
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
 
 // NewBACnetConstructedDataBACnetIPNATTraversal factory function for _BACnetConstructedDataBACnetIPNATTraversal
-func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
+func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean) *_BACnetConstructedDataBACnetIPNATTraversal {
 	if bacnetIPNATTraversal == nil {
 		panic("bacnetIPNATTraversal of type BACnetApplicationTagBoolean for BACnetConstructedDataBACnetIPNATTraversal must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BacnetIPNATTraversal:          bacnetIPNATTraversal,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataBACnetIPNATTraversal(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetTypeName() string {
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBACnetIPNATTraversal"
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (bacnetIPNATTraversal)
 	lengthInBits += m.BacnetIPNATTraversal.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

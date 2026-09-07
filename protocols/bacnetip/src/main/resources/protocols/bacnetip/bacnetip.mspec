@@ -17,11 +17,11 @@
  * under the License.
  */
 
-[type BacnetConstants
+[constants
     [const    uint 16     bacnetUdpDefaultPort 47808]
 ]
 
-[discriminatedType BVLC byteOrder='BIG_ENDIAN'
+[discriminatedType BVLC byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const         uint 8   bacnetType   0x81                   ]
     [discriminator uint 8   bvlcFunction                        ]
     [implicit      uint 16  bvlcLength          'lengthInBytes' ]
@@ -302,7 +302,8 @@
                                     '3 + (segmentedMessage ? 2 : 0)'        ]
             [optional BACnetConfirmedServiceRequest('apduLength - apduHeaderReduction')
                                 serviceRequest       '!segmentedMessage'    ]
-            [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage'
+            [validation '(!segmentedMessage && serviceRequest != null)
+                      || (segmentedMessage && sequenceNumber != null && proposedWindowSize != null)'
                         "service request should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
             [optional BACnetConfirmedServiceChoice
@@ -336,7 +337,8 @@
                                     '2 + (segmentedMessage ? 2 : 0)'    ]
             [optional BACnetServiceAck('apduLength - apduHeaderReduction')
                                 serviceAck         '!segmentedMessage'  ]
-            [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage'
+            [validation '(!segmentedMessage && serviceAck != null)
+                      || (segmentedMessage && sequenceNumber != null && proposedWindowSize != null)'
                         "service ack should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
             [optional BACnetConfirmedServiceChoice
@@ -411,6 +413,7 @@
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
 [type BACnetRejectReasonTagged(uint 32 actualLength)
+    [state          actualLength                                                        ]
     [manual   BACnetRejectReason
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetRejectReason.VENDOR_PROPRIETARY_VALUE)'
@@ -427,6 +430,7 @@
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
 [type BACnetAbortReasonTagged(uint 32 actualLength)
+    [state          actualLength                                                        ]
     [manual   BACnetAbortReason
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetAbortReason.VENDOR_PROPRIETARY_VALUE)'
@@ -443,7 +447,8 @@
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 32 serviceRequestLength)
     [discriminator BACnetConfirmedServiceChoice serviceChoice]
-    // we substract serviceChoice from our payload
+    // we subtract serviceChoice from our payload
+    [state                  serviceRequestLength                                                                   ]
     [virtual       uint 32  serviceRequestPayloadLength '(serviceRequestLength>0)?(serviceRequestLength - 1):0'    ]
     [typeSwitch serviceChoice
         ////
@@ -1050,9 +1055,10 @@
 ]
 
 [discriminatedType BACnetServiceAck(uint 32 serviceAckLength)
+    [state              serviceAckLength                                                               ]
     [discriminator   BACnetConfirmedServiceChoice
                         serviceChoice                   ]
-    // we substract serviceChoice from our payload
+    // we subtract serviceChoice from our payload
     [virtual       uint 32  serviceAckPayloadLength '(serviceAckLength>0)?(serviceAckLength - 1):0'    ]
     [typeSwitch serviceChoice
         ////

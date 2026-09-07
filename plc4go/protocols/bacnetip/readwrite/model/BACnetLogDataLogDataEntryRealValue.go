@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetLogDataLogDataEntryRealValue(structType any) BACnetLogDataLogData
 	return nil
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValue) GetTypeName() string {
+func (m *_BACnetLogDataLogDataEntryRealValue) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogDataEntryRealValue"
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
+func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

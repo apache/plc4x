@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFileRecordCount = (*_BACnetConstructedDataFileRecordC
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileRecordCount)(nil)
 
 // NewBACnetConstructedDataFileRecordCount factory function for _BACnetConstructedDataFileRecordCount
-func NewBACnetConstructedDataFileRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileRecordCount {
+func NewBACnetConstructedDataFileRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordCount BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataFileRecordCount {
 	if recordCount == nil {
 		panic("recordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileRecordCount must not be nil")
 	}
 	_result := &_BACnetConstructedDataFileRecordCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RecordCount:                   recordCount,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataFileRecordCount(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataFileRecordCount) GetTypeName() string {
+func (m *_BACnetConstructedDataFileRecordCount) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFileRecordCount"
 }
 
-func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (recordCount)
 	lengthInBits += m.RecordCount.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBits(ctx context.Cont
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -21,22 +21,24 @@ package transactions
 
 import (
 	"context"
+	"sync"
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 )
 
 func Test_newRequestTransaction(t *testing.T) {
 	type args struct {
-		localLog      zerolog.Logger
-		parent        *requestTransactionManager
-		transactionId int32
+		localLog        zerolog.Logger
+		parent          *requestTransactionManager
+		transactionId   int32
+		transactionInfo string
 	}
 	tests := []struct {
 		name string
@@ -46,13 +48,13 @@ func Test_newRequestTransaction(t *testing.T) {
 		{
 			name: "create it",
 			want: &requestTransaction{
-				log: zerolog.Logger{}.With().Int32("transactionId", 0).Logger(),
+				log: zerolog.Logger{}.With().Int32("transactionId", 0).Str("transactionInfo", "").Logger(),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, newRequestTransaction(tt.args.localLog, tt.args.parent, tt.args.transactionId), "newRequestTransaction(%v, %v, %v)", tt.args.localLog, tt.args.parent, tt.args.transactionId)
+			assert.Equalf(t, tt.want, newRequestTransaction(tt.args.localLog, tt.args.parent, tt.args.transactionId, tt.args.transactionInfo), "newRequestTransaction(%v, %v, %v, %v)", tt.args.localLog, tt.args.parent, tt.args.transactionId, tt.args.transactionInfo)
 		})
 	}
 }
@@ -230,7 +232,7 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 				parent: &requestTransactionManager{},
 			},
 			args: args{
-				operation: func(_ RequestTransaction) {
+				operation: func(context.Context, RequestTransaction) {
 					// NOOP
 				},
 			},
@@ -239,12 +241,12 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 			name: "submit something again",
 			fields: fields{
 				parent: &requestTransactionManager{},
-				operation: func() {
+				operation: func(context.Context) {
 					// NOOP
 				},
 			},
 			args: args{
-				operation: func(_ RequestTransaction) {
+				operation: func(context.Context, RequestTransaction) {
 					// NOOP
 				},
 			},
@@ -253,29 +255,29 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 			name: "submit completed",
 			fields: fields{
 				parent: &requestTransactionManager{},
-				operation: func() {
+				operation: func(context.Context) {
 					// NOOP
 				},
 				completed: true,
 			},
 			args: args{
-				operation: func(_ RequestTransaction) {
+				operation: func(context.Context, RequestTransaction) {
 					// NOOP
 				},
 			},
 		},
 	}
 	for _, tt := range tests {
-		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &requestTransaction{
+		t1.Run(tt.name, func(t *testing.T) {
+			rt := &requestTransaction{
 				parent:        tt.fields.parent,
 				transactionId: tt.fields.transactionId,
 				operation:     tt.fields.operation,
 				log:           tt.fields.transactionLog,
 				completed:     tt.fields.completed,
 			}
-			t.Submit(tt.args.operation)
-			t.operation()
+			rt.Submit(t.Name(), tt.args.operation)
+			rt.operation(t.Context())
 		})
 	}
 }
@@ -306,7 +308,7 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 			},
 			args: args{
 				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t1.Context())
 					cancelFunc()
 					return ctx
 				}(),
@@ -317,13 +319,15 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				expect.AwaitCompletion(mock.Anything).Return(nil)
 				var completionFuture pool.CompletionFuture = completionFutureMock
 				transaction.completionFuture.Store(&completionFuture)
-				go func() {
+				var wg sync.WaitGroup
+				t.Cleanup(wg.Wait)
+				wg.Go(func() {
 					time.Sleep(100 * time.Millisecond)
 					r := transaction.parent
-					r.workLogMutex.RLock()
-					defer r.workLogMutex.RUnlock()
+					r.runningRequestMutex.Lock()
+					defer r.runningRequestMutex.Unlock()
 					r.runningRequests = append(r.runningRequests, &requestTransaction{transactionId: 1})
-				}()
+				})
 			},
 		},
 	}

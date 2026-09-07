@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataUserInformationReference = (*_BACnetConstructedDataUs
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserInformationReference)(nil)
 
 // NewBACnetConstructedDataUserInformationReference factory function for _BACnetConstructedDataUserInformationReference
-func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
+func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString) *_BACnetConstructedDataUserInformationReference {
 	if userInformationReference == nil {
 		panic("userInformationReference of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserInformationReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataUserInformationReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UserInformationReference:      userInformationReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataUserInformationReference(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataUserInformationReference) GetTypeName() string {
+func (m *_BACnetConstructedDataUserInformationReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUserInformationReference"
 }
 
-func (m *_BACnetConstructedDataUserInformationReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataUserInformationReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (userInformationReference)
 	lengthInBits += m.UserInformationReference.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataUserInformationReference) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUserInformationReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataUserInformationReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

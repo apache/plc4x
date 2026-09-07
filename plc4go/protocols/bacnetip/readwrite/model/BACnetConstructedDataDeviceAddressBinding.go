@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +59,9 @@ var _ BACnetConstructedDataDeviceAddressBinding = (*_BACnetConstructedDataDevice
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceAddressBinding)(nil)
 
 // NewBACnetConstructedDataDeviceAddressBinding factory function for _BACnetConstructedDataDeviceAddressBinding
-func NewBACnetConstructedDataDeviceAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAddressBinding {
+func NewBACnetConstructedDataDeviceAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceAddressBinding []BACnetAddressBinding) *_BACnetConstructedDataDeviceAddressBinding {
 	_result := &_BACnetConstructedDataDeviceAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DeviceAddressBinding:          deviceAddressBinding,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -211,12 +211,12 @@ func CastBACnetConstructedDataDeviceAddressBinding(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBinding) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceAddressBinding"
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDeviceAddressBinding) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.DeviceAddressBinding) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBinding) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDeviceAddressBinding) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

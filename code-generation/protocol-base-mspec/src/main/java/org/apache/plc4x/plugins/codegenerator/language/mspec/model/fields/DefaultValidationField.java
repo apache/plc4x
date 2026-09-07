@@ -18,23 +18,22 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ValidationField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
-public class DefaultValidationField extends DefaultField implements ValidationField, Field {
+public class DefaultValidationField extends DefaultField implements ValidationField {
 
     private final Term validationExpression;
     private final String description;
-
     private final boolean shouldFail;
 
-    public DefaultValidationField(Map<String, Term> attributes, Term validationExpression, String description, boolean shouldFail) {
-        super(attributes);
+    public DefaultValidationField(Map<String, Term> attributes, Set<String> currentAttributeNames, Term validationExpression, String description, boolean shouldFail, String comment) {
+        super(attributes, currentAttributeNames, comment);
         this.validationExpression = Objects.requireNonNull(validationExpression);
         this.description = description;
         this.shouldFail = shouldFail;

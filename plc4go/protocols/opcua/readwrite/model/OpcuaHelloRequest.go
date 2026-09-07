@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -65,7 +65,7 @@ var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
 
 // NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
-func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString, binary bool) *_OpcuaHelloRequest {
+func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
 	if limits == nil {
 		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
 	}
@@ -73,7 +73,7 @@ func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolL
 		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
 	}
 	_result := &_OpcuaHelloRequest{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		Version:            version,
 		Limits:             limits,
 		Endpoint:           endpoint,
@@ -277,12 +277,12 @@ func CastOpcuaHelloRequest(structType any) OpcuaHelloRequest {
 	return nil
 }
 
-func (m *_OpcuaHelloRequest) GetTypeName() string {
+func (m *_OpcuaHelloRequest) GetPlx4xTypeName() string {
 	return "OpcuaHelloRequest"
 }
 
-func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 32
@@ -296,7 +296,7 @@ func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

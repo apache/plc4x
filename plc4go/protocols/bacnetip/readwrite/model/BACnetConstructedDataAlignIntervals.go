@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAlignIntervals = (*_BACnetConstructedDataAlignInterva
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlignIntervals)(nil)
 
 // NewBACnetConstructedDataAlignIntervals factory function for _BACnetConstructedDataAlignIntervals
-func NewBACnetConstructedDataAlignIntervals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alignIntervals BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
+func NewBACnetConstructedDataAlignIntervals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alignIntervals BACnetApplicationTagBoolean) *_BACnetConstructedDataAlignIntervals {
 	if alignIntervals == nil {
 		panic("alignIntervals of type BACnetApplicationTagBoolean for BACnetConstructedDataAlignIntervals must not be nil")
 	}
 	_result := &_BACnetConstructedDataAlignIntervals{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AlignIntervals:                alignIntervals,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataAlignIntervals(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) GetTypeName() string {
+func (m *_BACnetConstructedDataAlignIntervals) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAlignIntervals"
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (alignIntervals)
 	lengthInBits += m.AlignIntervals.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

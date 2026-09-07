@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,12 +221,12 @@ func CastBACnetHostAddressName(structType any) BACnetHostAddressName {
 	return nil
 }
 
-func (m *_BACnetHostAddressName) GetTypeName() string {
+func (m *_BACnetHostAddressName) GetPlx4xTypeName() string {
 	return "BACnetHostAddressName"
 }
 
-func (m *_BACnetHostAddressName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetHostAddressContract.(*_BACnetHostAddress).getLengthInBits(ctx))
+func (m *_BACnetHostAddressName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetHostAddressContract.(*_BACnetHostAddress).getLengthInBits(ctx))
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetHostAddressName) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetHostAddressName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetHostAddressName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

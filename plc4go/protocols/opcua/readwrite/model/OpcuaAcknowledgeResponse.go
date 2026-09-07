@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,12 +62,12 @@ var _ OpcuaAcknowledgeResponse = (*_OpcuaAcknowledgeResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaAcknowledgeResponse)(nil)
 
 // NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, binary bool) *_OpcuaAcknowledgeResponse {
+func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
 	if limits == nil {
 		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
 	}
 	_result := &_OpcuaAcknowledgeResponse{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		Version:            version,
 		Limits:             limits,
 	}
@@ -244,12 +244,12 @@ func CastOpcuaAcknowledgeResponse(structType any) OpcuaAcknowledgeResponse {
 	return nil
 }
 
-func (m *_OpcuaAcknowledgeResponse) GetTypeName() string {
+func (m *_OpcuaAcknowledgeResponse) GetPlx4xTypeName() string {
 	return "OpcuaAcknowledgeResponse"
 }
 
-func (m *_OpcuaAcknowledgeResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+func (m *_OpcuaAcknowledgeResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 32
@@ -260,7 +260,7 @@ func (m *_OpcuaAcknowledgeResponse) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_OpcuaAcknowledgeResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaAcknowledgeResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

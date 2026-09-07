@@ -24,9 +24,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,9 +54,9 @@ var _ BACnetConstructedDataLifeSafetyZoneAll = (*_BACnetConstructedDataLifeSafet
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneAll)(nil)
 
 // NewBACnetConstructedDataLifeSafetyZoneAll factory function for _BACnetConstructedDataLifeSafetyZoneAll
-func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneAll {
+func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataLifeSafetyZoneAll {
 	_result := &_BACnetConstructedDataLifeSafetyZoneAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
@@ -184,17 +184,17 @@ func CastBACnetConstructedDataLifeSafetyZoneAll(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetTypeName() string {
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLifeSafetyZoneAll"
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

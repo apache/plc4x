@@ -24,11 +24,12 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,12 +226,12 @@ func CastNetworkAddressDataType(structType any) NetworkAddressDataType {
 	return nil
 }
 
-func (m *_NetworkAddressDataType) GetTypeName() string {
+func (m *_NetworkAddressDataType) GetPlx4xTypeName() string {
 	return "NetworkAddressDataType"
 }
 
-func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (networkInterface)
 	lengthInBits += m.NetworkInterface.GetLengthInBits(ctx)
@@ -238,7 +239,7 @@ func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NetworkAddressDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NetworkAddressDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -253,7 +254,7 @@ func (m *_NetworkAddressDataType) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkInterface, err := ReadSimpleField[PascalString](ctx, "networkInterface", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	networkInterface, err := ReadSimpleField[PascalString](ctx, "networkInterface", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkInterface' field"))
 	}
@@ -284,7 +285,7 @@ func (m *_NetworkAddressDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for NetworkAddressDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "networkInterface", m.GetNetworkInterface(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "networkInterface", m.GetNetworkInterface(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkInterface' field")
 		}
 

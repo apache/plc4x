@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,6 +44,7 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetNotification returns Notification (property field)
+	//TODO this below slurps to much because of the service choice... :( find workaround we might need fragments for that...
 	GetNotification() ConfirmedEventNotificationRequest
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
@@ -65,7 +66,7 @@ var _ BACnetEventLogRecordLogDatumNotification = (*_BACnetEventLogRecordLogDatum
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumNotification)(nil)
 
 // NewBACnetEventLogRecordLogDatumNotification factory function for _BACnetEventLogRecordLogDatumNotification
-func NewBACnetEventLogRecordLogDatumNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumNotification {
+func NewBACnetEventLogRecordLogDatumNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag) *_BACnetEventLogRecordLogDatumNotification {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatumNotification must not be nil")
 	}
@@ -76,7 +77,7 @@ func NewBACnetEventLogRecordLogDatumNotification(openingTag BACnetOpeningTag, pe
 		panic("innerClosingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatumNotification must not be nil")
 	}
 	_result := &_BACnetEventLogRecordLogDatumNotification{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		Notification:                         notification,
 		InnerClosingTag:                      innerClosingTag,
@@ -287,12 +288,12 @@ func CastBACnetEventLogRecordLogDatumNotification(structType any) BACnetEventLog
 	return nil
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) GetTypeName() string {
+func (m *_BACnetEventLogRecordLogDatumNotification) GetPlx4xTypeName() string {
 	return "BACnetEventLogRecordLogDatumNotification"
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -306,7 +307,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatumNotification) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -25,9 +25,9 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -181,17 +181,17 @@ func CastDF1SymbolMessageFrameNAK(structType any) DF1SymbolMessageFrameNAK {
 	return nil
 }
 
-func (m *_DF1SymbolMessageFrameNAK) GetTypeName() string {
+func (m *_DF1SymbolMessageFrameNAK) GetPlx4xTypeName() string {
 	return "DF1SymbolMessageFrameNAK"
 }
 
-func (m *_DF1SymbolMessageFrameNAK) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
+func (m *_DF1SymbolMessageFrameNAK) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_DF1SymbolMessageFrameNAK) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1SymbolMessageFrameNAK) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

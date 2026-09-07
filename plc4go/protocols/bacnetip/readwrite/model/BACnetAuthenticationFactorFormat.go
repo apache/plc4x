@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -231,12 +231,12 @@ func CastBACnetAuthenticationFactorFormat(structType any) BACnetAuthenticationFa
 	return nil
 }
 
-func (m *_BACnetAuthenticationFactorFormat) GetTypeName() string {
+func (m *_BACnetAuthenticationFactorFormat) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationFactorFormat"
 }
 
-func (m *_BACnetAuthenticationFactorFormat) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAuthenticationFactorFormat) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (formatType)
 	lengthInBits += m.FormatType.GetLengthInBits(ctx)
@@ -254,7 +254,7 @@ func (m *_BACnetAuthenticationFactorFormat) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetAuthenticationFactorFormat) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAuthenticationFactorFormat) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -269,7 +269,7 @@ func BACnetAuthenticationFactorFormatParseWithBufferProducer() func(ctx context.
 }
 
 func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
-	v, err := (&_BACnetAuthenticationFactorFormat{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAuthenticationFactorFormat)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
@@ -339,11 +339,11 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(err, "Error serializing 'formatType' field")
 	}
 
-	if err := WriteOptionalField[BACnetVendorIdTagged](ctx, "vendorId", GetRef(m.GetVendorId()), WriteComplex[BACnetVendorIdTagged](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetVendorIdTagged](ctx, "vendorId", new(m.GetVendorId()), WriteComplex[BACnetVendorIdTagged](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'vendorId' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", GetRef(m.GetVendorFormat()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", new(m.GetVendorFormat()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'vendorFormat' field")
 	}
 

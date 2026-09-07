@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,6 +44,7 @@ type CALDataWrite interface {
 	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
+	// Request
 	GetParamNo() Parameter
 	// GetCode returns Code (property field)
 	GetCode() byte
@@ -65,12 +68,12 @@ var _ CALDataWrite = (*_CALDataWrite)(nil)
 var _ CALDataRequirements = (*_CALDataWrite)(nil)
 
 // NewCALDataWrite factory function for _CALDataWrite
-func NewCALDataWrite(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code byte, parameterValue ParameterValue, requestContext RequestContext) *_CALDataWrite {
+func NewCALDataWrite(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code byte, parameterValue ParameterValue) *_CALDataWrite {
 	if parameterValue == nil {
 		panic("parameterValue of type ParameterValue for CALDataWrite must not be nil")
 	}
 	_result := &_CALDataWrite{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		ParamNo:         paramNo,
 		Code:            code,
 		ParameterValue:  parameterValue,
@@ -251,12 +254,12 @@ func CastCALDataWrite(structType any) CALDataWrite {
 	return nil
 }
 
-func (m *_CALDataWrite) GetTypeName() string {
+func (m *_CALDataWrite) GetPlx4xTypeName() string {
 	return "CALDataWrite"
 }
 
-func (m *_CALDataWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+func (m *_CALDataWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -270,7 +273,7 @@ func (m *_CALDataWrite) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALDataWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALDataWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -285,19 +288,19 @@ func (m *_CALDataWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
 	m.ParamNo = paramNo
 
-	code, err := ReadSimpleField(ctx, "code", ReadByte(readBuffer, 8))
+	code, err := ReadSimpleField(ctx, "code", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
 	m.Code = code
 
-	parameterValue, err := ReadSimpleField[ParameterValue](ctx, "parameterValue", ReadComplex[ParameterValue](ParameterValueParseWithBufferProducer[ParameterValue]((ParameterType)(paramNo.ParameterType()), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2)))), readBuffer))
+	parameterValue, err := ReadSimpleField[ParameterValue](ctx, "parameterValue", ReadComplex[ParameterValue](ParameterValueParseWithBufferProducer[ParameterValue]((ParameterType)(paramNo.ParameterType()), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2)))), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterValue' field"))
 	}
@@ -311,7 +314,7 @@ func (m *_CALDataWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_CALDataWrite) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -328,15 +331,15 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for CALDataWrite")
 		}
 
-		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "code", m.GetCode(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "code", m.GetCode(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 
-		if err := WriteSimpleField[ParameterValue](ctx, "parameterValue", m.GetParameterValue(), WriteComplex[ParameterValue](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ParameterValue](ctx, "parameterValue", m.GetParameterValue(), WriteComplex[ParameterValue](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'parameterValue' field")
 		}
 

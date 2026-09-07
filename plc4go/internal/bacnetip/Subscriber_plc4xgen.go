@@ -52,7 +52,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		{
 			_value := fmt.Sprintf("%v", d.connection)
 
-			if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), _value); err != nil {
+			if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), _value, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -76,12 +76,43 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
 	}
 	if err := writeBuffer.PopContext("consumers", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("handles", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for _name, elem := range d.handles {
+		name := fmt.Sprintf("%v", _name)
+
+		var elem any = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString, utils.WithEncoding("UTF-8")); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("handles", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteUint32("nextProcessId", 32, d.nextProcessId.Load()); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("_options", utils.WithRenderAsList(true)); err != nil {
@@ -103,7 +134,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 					return err
 				}
 			}

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,7 +59,7 @@ var _ BACnetConfirmedServiceRequestGetEventInformation = (*_BACnetConfirmedServi
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
 
 // NewBACnetConfirmedServiceRequestGetEventInformation factory function for _BACnetConfirmedServiceRequestGetEventInformation
-func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEventInformation {
+func NewBACnetConfirmedServiceRequestGetEventInformation(serviceRequestLength uint32, lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier) *_BACnetConfirmedServiceRequestGetEventInformation {
 	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		LastReceivedObjectIdentifier:          lastReceivedObjectIdentifier,
@@ -219,12 +219,12 @@ func CastBACnetConfirmedServiceRequestGetEventInformation(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEventInformation"
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (lastReceivedObjectIdentifier)
 	if m.LastReceivedObjectIdentifier != nil {
@@ -234,7 +234,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -284,7 +284,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEventInformation")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", GetRef(m.GetLastReceivedObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", new(m.GetLastReceivedObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastReceivedObjectIdentifier' field")
 		}
 

@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDescriptionOfHalt = (*_BACnetConstructedDataDescripti
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
 
 // NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
-func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
+func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString) *_BACnetConstructedDataDescriptionOfHalt {
 	if descriptionForHalt == nil {
 		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
 	}
 	_result := &_BACnetConstructedDataDescriptionOfHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DescriptionForHalt:            descriptionForHalt,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
@@ -246,12 +246,12 @@ func CastBACnetConstructedDataDescriptionOfHalt(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataDescriptionOfHalt) GetTypeName() string {
+func (m *_BACnetConstructedDataDescriptionOfHalt) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDescriptionOfHalt"
 }
 
-func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (descriptionForHalt)
 	lengthInBits += m.DescriptionForHalt.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBits(ctx context.Co
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

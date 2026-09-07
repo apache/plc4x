@@ -21,14 +21,16 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,9 +61,9 @@ var _ IdentifyReplyCommandNetworkTerminalLevels = (*_IdentifyReplyCommandNetwork
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
 
 // NewIdentifyReplyCommandNetworkTerminalLevels factory function for _IdentifyReplyCommandNetworkTerminalLevels
-func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandNetworkTerminalLevels {
+func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte) *_IdentifyReplyCommandNetworkTerminalLevels {
 	_result := &_IdentifyReplyCommandNetworkTerminalLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		NetworkTerminalLevels:        networkTerminalLevels,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
@@ -207,22 +209,22 @@ func CastIdentifyReplyCommandNetworkTerminalLevels(structType any) IdentifyReply
 	return nil
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetTypeName() string {
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandNetworkTerminalLevels"
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.NetworkTerminalLevels) > 0 {
-		lengthInBits += 8 * uint16(len(m.NetworkTerminalLevels))
+		lengthInBits += 8 * uint64(len(m.NetworkTerminalLevels))
 	}
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -237,7 +239,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) parse(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkTerminalLevels, err := readBuffer.ReadByteArray("networkTerminalLevels", int(numBytes))
+	networkTerminalLevels, err := readBuffer.ReadByteArray("networkTerminalLevels", int(numBytes), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkTerminalLevels' field"))
 	}
@@ -251,7 +253,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) parse(ctx context.Context, 
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -268,7 +270,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandNetworkTerminalLevels")
 		}
 
-		if err := WriteByteArrayField(ctx, "networkTerminalLevels", m.GetNetworkTerminalLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "networkTerminalLevels", m.GetNetworkTerminalLevels(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkTerminalLevels' field")
 		}
 

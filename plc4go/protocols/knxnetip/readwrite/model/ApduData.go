@@ -24,11 +24,11 @@ import (
 	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -50,8 +50,6 @@ type ApduData interface {
 
 // ApduDataContract provides a set of functions which can be overwritten by a sub struct
 type ApduDataContract interface {
-	// GetDataLength() returns a parser argument
-	GetDataLength() uint8
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduData()
 	// CreateBuilder creates a ApduDataBuilder
@@ -60,8 +58,8 @@ type ApduDataContract interface {
 
 // ApduDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetApciType returns ApciType (discriminator field)
 	GetApciType() uint8
 }
@@ -72,16 +70,13 @@ type _ApduData struct {
 		ApduDataContract
 		ApduDataRequirements
 	}
-
-	// Arguments.
-	DataLength uint8
 }
 
 var _ ApduDataContract = (*_ApduData)(nil)
 
 // NewApduData factory function for _ApduData
-func NewApduData(dataLength uint8) *_ApduData {
-	return &_ApduData{DataLength: dataLength}
+func NewApduData() *_ApduData {
+	return &_ApduData{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type ApduDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataBuilder
-	// WithArgDataLength sets a parser argument
-	WithArgDataLength(uint8) ApduDataBuilder
 	// AsApduDataGroupValueRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
 	AsApduDataGroupValueRead() ApduDataGroupValueReadBuilder
 	// AsApduDataGroupValueResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
@@ -160,11 +153,6 @@ type _ApduDataBuilder struct {
 var _ (ApduDataBuilder) = (*_ApduDataBuilder)(nil)
 
 func (b *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
-	return b
-}
-
-func (b *_ApduDataBuilder) WithArgDataLength(dataLength uint8) ApduDataBuilder {
-	b.DataLength = dataLength
 	return b
 }
 
@@ -397,23 +385,23 @@ func CastApduData(structType any) ApduData {
 	return nil
 }
 
-func (m *_ApduData) GetTypeName() string {
+func (m *_ApduData) GetPlx4xTypeName() string {
 	return "ApduData"
 }
 
-func (m *_ApduData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ApduData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (apciType)
 	lengthInBits += 4
 
 	return lengthInBits
 }
 
-func (m *_ApduData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ApduData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
@@ -433,7 +421,7 @@ func ApduDataParseWithBufferProducer[T ApduData](dataLength uint8) func(ctx cont
 }
 
 func ApduDataParseWithBuffer[T ApduData](ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (T, error) {
-	v, err := (&_ApduData{DataLength: dataLength}).parse(ctx, readBuffer, dataLength)
+	v, err := (new(_ApduData)).parse(ctx, readBuffer, dataLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -464,67 +452,67 @@ func (m *_ApduData) parse(ctx context.Context, readBuffer utils.ReadBuffer, data
 	var _child ApduData
 	switch {
 	case apciType == 0x0: // ApduDataGroupValueRead
-		if _child, err = new(_ApduDataGroupValueRead).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataGroupValueRead).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataGroupValueRead for type-switch of ApduData")
 		}
 	case apciType == 0x1: // ApduDataGroupValueResponse
-		if _child, err = new(_ApduDataGroupValueResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataGroupValueResponse).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataGroupValueResponse for type-switch of ApduData")
 		}
 	case apciType == 0x2: // ApduDataGroupValueWrite
-		if _child, err = new(_ApduDataGroupValueWrite).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataGroupValueWrite).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataGroupValueWrite for type-switch of ApduData")
 		}
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
-		if _child, err = new(_ApduDataIndividualAddressWrite).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataIndividualAddressWrite).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataIndividualAddressWrite for type-switch of ApduData")
 		}
 	case apciType == 0x4: // ApduDataIndividualAddressRead
-		if _child, err = new(_ApduDataIndividualAddressRead).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataIndividualAddressRead).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataIndividualAddressRead for type-switch of ApduData")
 		}
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
-		if _child, err = new(_ApduDataIndividualAddressResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataIndividualAddressResponse).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataIndividualAddressResponse for type-switch of ApduData")
 		}
 	case apciType == 0x6: // ApduDataAdcRead
-		if _child, err = new(_ApduDataAdcRead).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataAdcRead).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataAdcRead for type-switch of ApduData")
 		}
 	case apciType == 0x7: // ApduDataAdcResponse
-		if _child, err = new(_ApduDataAdcResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataAdcResponse).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataAdcResponse for type-switch of ApduData")
 		}
 	case apciType == 0x8: // ApduDataMemoryRead
-		if _child, err = new(_ApduDataMemoryRead).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataMemoryRead).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataMemoryRead for type-switch of ApduData")
 		}
 	case apciType == 0x9: // ApduDataMemoryResponse
-		if _child, err = new(_ApduDataMemoryResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataMemoryResponse).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataMemoryResponse for type-switch of ApduData")
 		}
 	case apciType == 0xA: // ApduDataMemoryWrite
-		if _child, err = new(_ApduDataMemoryWrite).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataMemoryWrite).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataMemoryWrite for type-switch of ApduData")
 		}
 	case apciType == 0xB: // ApduDataUserMessage
-		if _child, err = new(_ApduDataUserMessage).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataUserMessage).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataUserMessage for type-switch of ApduData")
 		}
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
-		if _child, err = new(_ApduDataDeviceDescriptorRead).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataDeviceDescriptorRead).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataDeviceDescriptorRead for type-switch of ApduData")
 		}
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
-		if _child, err = new(_ApduDataDeviceDescriptorResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataDeviceDescriptorResponse).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataDeviceDescriptorResponse for type-switch of ApduData")
 		}
 	case apciType == 0xE: // ApduDataRestart
-		if _child, err = new(_ApduDataRestart).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataRestart).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataRestart for type-switch of ApduData")
 		}
 	case apciType == 0xF: // ApduDataOther
-		if _child, err = new(_ApduDataOther).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataOther).parse(ctx, readBuffer, m, uint8(dataLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataOther for type-switch of ApduData")
 		}
 	default:
@@ -565,16 +553,6 @@ func (pm *_ApduData) serializeParent(ctx context.Context, writeBuffer utils.Writ
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ApduData) GetDataLength() uint8 {
-	return m.DataLength
-}
-
-//
-////
-
 func (m *_ApduData) IsApduData() {}
 
 func (m *_ApduData) DeepCopy() any {
@@ -587,7 +565,6 @@ func (m *_ApduData) deepCopy() *_ApduData {
 	}
 	_ApduDataCopy := &_ApduData{
 		nil, // will be set by child
-		m.DataLength,
 	}
 	return _ApduDataCopy
 }
