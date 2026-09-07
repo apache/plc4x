@@ -201,7 +201,7 @@ if [[ "$OFFLINE" == false ]]; then
     # credentials, same "stage.pom", so it fails in exactly the same way a stale password would
     # fail an hour into the release. Letting Maven do the call also means the credentials are
     # read and decrypted the way Maven does it, rather than parsed out of settings.xml here.
-    NEXUS_OUTPUT=$("$DIRECTORY/mvnw" -q -f "$DIRECTORY/tools/stage.pom" \
+    NEXUS_OUTPUT=$(MAVEN_OPTS="$NEXUS_MAVEN_OPTS" "$DIRECTORY/mvnw" -q -f "$DIRECTORY/tools/stage.pom" \
         nexus-staging:rc-list -DstagingProfileId="$STAGING_PROFILE_ID" 2>&1)
     NEXUS_STATUS=$?
     if [[ $NEXUS_STATUS -eq 0 ]]; then
@@ -209,7 +209,7 @@ if [[ "$OFFLINE" == false ]]; then
     elif echo "$NEXUS_OUTPUT" | grep -q "401"; then
         fail "$NEXUS_URL rejects the 'apache.releases.https' credentials from your settings.xml (401)."
     else
-        fail "Could not talk to $NEXUS_URL, run 'mvnw -f tools/stage.pom nexus-staging:rc-list -DstagingProfileId=$STAGING_PROFILE_ID' to see why."
+        fail "Could not talk to $NEXUS_URL, run 'MAVEN_OPTS=\"$NEXUS_MAVEN_OPTS\" mvnw -f tools/stage.pom nexus-staging:rc-list -DstagingProfileId=$STAGING_PROFILE_ID' to see why."
     fi
 fi
 

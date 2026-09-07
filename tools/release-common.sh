@@ -30,6 +30,14 @@ STAGING_PROFILE_ID=15cd9d785359f8
 
 NEXUS_URL="https://repository.apache.org"
 
+# The nexus-staging-maven-plugin serializes its requests with XStream, which reflects into
+# "java.util" collection classes. Since JDK 16 that module is not open to the unnamed module, so
+# every goal of the plugin that sends a list - "rc-release", "rc-drop", ... - dies client-side with
+# "No converter available ... java.util.Arrays$ArrayList" before anything reaches Nexus. Opening
+# the package for the Maven JVM is the only workaround; the plugin has not been released since.
+# Kept separate from any MAVEN_OPTS already set, which is prepended so it still wins.
+NEXUS_MAVEN_OPTS="${MAVEN_OPTS:+$MAVEN_OPTS }--add-opens java.base/java.util=ALL-UNNAMED"
+
 # Where release candidates are staged and where releases end up. Everything below
 # https://dist.apache.org/repos/dist/ needs an Apache committer account to write to.
 DIST_BASE="https://dist.apache.org/repos/dist"

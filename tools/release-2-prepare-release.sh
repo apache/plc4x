@@ -261,7 +261,7 @@ echo "Deploying artifacts:"
 # and that will cause errors when closing. It is only there after a previous staging attempt,
 # hence the "-f".
 rm -f "$DIRECTORY/out/.local-artifacts-dir/$STAGING_PROFILE_ID.properties"
-if ! "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:deploy-staged-repository -DstagingProfileId=$STAGING_PROFILE_ID; then
+if ! MAVEN_OPTS="$NEXUS_MAVEN_OPTS" "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:deploy-staged-repository -DstagingProfileId=$STAGING_PROFILE_ID; then
     echo "❌ Got non-0 exit code from staging artifacts, aborting."
     exit 1
 fi
