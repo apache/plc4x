@@ -177,7 +177,7 @@
     <reflow.skin.version>2.3.3</reflow.skin.version>
     <saxon.version>13.0</saxon.version>
     <semver4j.version>3.1.0</semver4j.version>
-    <slf4j.version>2.0.18</slf4j.version>
+    <slf4j.version>2.0.19</slf4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <testcontainers-virtualavr.version>0.0.2</testcontainers-virtualavr.version>
     <xmlunit.version>2.13.0</xmlunit.version>
