@@ -43,7 +43,7 @@ import (
 // WaitGroup and wedge Disconnect indefinitely.
 func TestReader_lateTimeoutAfterFailedSendMustNotBlock(t *testing.T) {
 	codec := newCaptureCodec(errors.New("send failed: broken pipe"))
-	reader := NewReader(DefaultConfiguration(), codec)
+	reader := NewReader(DefaultConfiguration(), codec, testTransactionManager())
 	tag := NewTag(HoldingRegister, 1, 1, readWriteModel.ModbusDataType_UINT)
 	request := spiModel.NewDefaultPlcReadRequest(
 		map[string]apiModel.PlcTag{"tag": tag}, []string{"tag"}, reader, nil)
@@ -78,7 +78,7 @@ func TestReader_lateTimeoutAfterFailedSendMustNotBlock(t *testing.T) {
 // not ours, and if one is handed to us anyway it becomes an error result.
 func TestReader_nonAduMessageIsRejected(t *testing.T) {
 	codec := newCaptureCodec(nil)
-	reader := NewReader(DefaultConfiguration(), codec)
+	reader := NewReader(DefaultConfiguration(), codec, testTransactionManager())
 	tag := NewTag(HoldingRegister, 1, 1, readWriteModel.ModbusDataType_UINT)
 	request := spiModel.NewDefaultPlcReadRequest(
 		map[string]apiModel.PlcTag{"tag": tag}, []string{"tag"}, reader, nil)
@@ -113,7 +113,7 @@ func readRequestFor(t *testing.T, reader *Reader, tag apiModel.PlcTag) apiModel.
 func capturedReadRequest(t *testing.T, configuration Configuration, tag apiModel.PlcTag) readWriteModel.ModbusTcpADU {
 	t.Helper()
 	codec := newCaptureCodec(nil)
-	reader := NewReader(configuration, codec)
+	reader := NewReader(configuration, codec, testTransactionManager())
 	_ = reader.Read(testutils.TestContext(t), readRequestFor(t, reader, tag))
 
 	select {
@@ -155,7 +155,7 @@ func TestReader_asksForTheRegistersAStringOccupies(t *testing.T) {
 
 // A string is decoded with the length its address declared.
 func TestReader_decodesAStringOfTheDeclaredLength(t *testing.T) {
-	reader := NewReader(DefaultConfiguration(), newCaptureCodec(nil))
+	reader := NewReader(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	tag := parseTag(t, "holding-register:1:STRING(6)")
 	request := readRequestFor(t, reader, tag)
 	responseAdu := readWriteModel.NewModbusTcpADU(1, 1, readWriteModel.NewModbusPDUReadHoldingRegistersResponse(
@@ -180,7 +180,7 @@ func TestReader_decodesInTheResolvedByteOrder(t *testing.T) {
 	}
 	decode := func(t *testing.T, configuration Configuration, address string, responseData []byte) uint32 {
 		t.Helper()
-		reader := NewReader(configuration, newCaptureCodec(nil))
+		reader := NewReader(configuration, newCaptureCodec(nil), testTransactionManager())
 		request := readRequestFor(t, reader, parseTag(t, address))
 		responseAdu := readWriteModel.NewModbusTcpADU(1, 1,
 			readWriteModel.NewModbusPDUReadHoldingRegistersResponse(responseData))
@@ -221,7 +221,7 @@ type addressedTag struct {
 func runRead(t *testing.T, configuration Configuration, requested []addressedTag, responses ...readWriteModel.ModbusPDU) (apiModel.PlcReadRequestResult, []readWriteModel.ModbusTcpADU) {
 	t.Helper()
 	codec := newCaptureCodec(nil)
-	reader := NewReader(configuration, codec)
+	reader := NewReader(configuration, codec, testTransactionManager())
 	tags := make(map[string]apiModel.PlcTag, len(requested))
 	tagNames := make([]string, 0, len(requested))
 	for _, entry := range requested {
@@ -339,7 +339,7 @@ func TestReader_aBlockThatIsNeverAnsweredTimesOut(t *testing.T) {
 	configuration := DefaultConfiguration()
 	configuration.requestTimeout = 50 * time.Millisecond
 	codec := newCaptureCodec(nil)
-	reader := NewReader(configuration, codec)
+	reader := NewReader(configuration, codec, testTransactionManager())
 	tag := parseTag(t, "holding-register:1:REAL")
 	request := spiModel.NewDefaultPlcReadRequest(
 		map[string]apiModel.PlcTag{"tag": tag}, []string{"tag"}, reader, nil)

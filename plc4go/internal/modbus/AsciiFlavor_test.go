@@ -137,7 +137,7 @@ func TestReader_asciiFlavorSendsAnAsciiAdu(t *testing.T) {
 	codec := newCaptureCodec(nil)
 	configuration := asciiConfiguration()
 	configuration.unitIdentifier = 7
-	reader := NewReader(configuration, codec)
+	reader := NewReader(configuration, codec, testTransactionManager())
 	tag := NewTag(HoldingRegister, 1, 1, readWriteModel.ModbusDataType_UINT)
 	request := spiModel.NewDefaultPlcReadRequest(
 		map[string]apiModel.PlcTag{"tag": tag}, []string{"tag"}, reader, nil)
@@ -179,7 +179,7 @@ func TestWriter_asciiFlavorSendsAnAsciiAdu(t *testing.T) {
 	codec := newCaptureCodec(nil)
 	configuration := asciiConfiguration()
 	configuration.unitIdentifier = 7
-	writer := NewWriter(configuration, codec)
+	writer := NewWriter(configuration, codec, testTransactionManager())
 	tag := NewTag(HoldingRegister, 1, 1, readWriteModel.ModbusDataType_UINT)
 	request := spiModel.NewDefaultPlcWriteRequest(
 		map[string]apiModel.PlcTag{"tag": tag},

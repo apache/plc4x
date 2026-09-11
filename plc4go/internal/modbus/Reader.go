@@ -35,6 +35,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/spi/values"
 )
@@ -43,6 +44,9 @@ type Reader struct {
 	transactionIdentifier int32
 	configuration         Configuration
 	messageCodec          spi.MessageCodec
+	// tm is the connection's request transaction manager, which the blocks go out through so that
+	// they queue behind the connection's writes and ping rather than overtaking them.
+	tm transactions.RequestTransactionManager
 
 	wg sync.WaitGroup // use to track spawned go routines
 
@@ -50,13 +54,14 @@ type Reader struct {
 	log            zerolog.Logger
 }
 
-func NewReader(configuration Configuration, messageCodec spi.MessageCodec, _options ...options.WithOption) *Reader {
+func NewReader(configuration Configuration, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		transactionIdentifier: 0,
 		configuration:         configuration,
 		messageCodec:          messageCodec,
+		tm:                    tm,
 		passLogToModel:        passLoggerToModel,
 		log:                   customLogger,
 	}
@@ -307,7 +312,7 @@ func (m *Reader) readBlock(ctx context.Context, block readBlock) blockOutcome {
 	}
 
 	m.log.Trace().Msg("Send ADU")
-	if err := m.messageCodec.SendRequest(requestCtx, "read", requestAdu, func(message spi.Message) bool {
+	if err := sendTransacted(requestCtx, m.log, m.messageCodec, m.tm, "read", requestAdu, func(message spi.Message) bool {
 		return adus.acceptsResponse(requestAdu, message)
 	}, func(message spi.Message) error {
 		// Convert the response into an ADU
@@ -327,8 +332,23 @@ func (m *Reader) readBlock(ctx context.Context, block readBlock) blockOutcome {
 		})
 		return nil
 	}); err != nil {
+		// Nothing reached the wire. A block that ran out of time while it was still waiting its
+		// turn behind another request timed out just as surely as one the device never answered,
+		// so it is reported as a timeout; anything else is the codec refusing to send.
+		//
+		// NOT PINNED BY A TEST. Deleting the choice below and always reporting INTERNAL_ERROR
+		// leaves the package green, because the obvious way to provoke it - queue a block behind a
+		// slow one until its deadline passes - is noticed by the outer wait further down first,
+		// which reports REQUEST_TIMEOUT of its own. Reaching this line needs sendTransacted to
+		// return while requestCtx is already expired. Three sites in this function now produce
+		// REQUEST_TIMEOUT under conditions that overlap, which is the actual smell; collapsing
+		// them into one decision would be worth more than a test that reaches this one.
+		responseCode := apiModel.PlcResponseCode_INTERNAL_ERROR
+		if requestCtx.Err() != nil {
+			responseCode = apiModel.PlcResponseCode_REQUEST_TIMEOUT
+		}
 		complete(blockOutcome{
-			responseCode: apiModel.PlcResponseCode_INTERNAL_ERROR,
+			responseCode: responseCode,
 			err:          errors.Wrap(err, "error sending message"),
 		})
 	}

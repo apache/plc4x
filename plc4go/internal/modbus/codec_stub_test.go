@@ -23,8 +23,16 @@ import (
 	"context"
 
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
+
+// testTransactionManager is the request transaction manager for a Reader or Writer a test builds
+// by hand, bounded exactly the way a connection bounds its own. A connection hands the same one to
+// both of them; a test that builds one of them alone gives it one of its own.
+func testTransactionManager() transactions.RequestTransactionManager {
+	return transactions.NewRequestTransactionManager(maxConcurrentRequests)
+}
 
 // captureCodec is a minimal spi.MessageCodec stub that hands the callbacks
 // passed to SendRequest back to the test and returns a configurable error.

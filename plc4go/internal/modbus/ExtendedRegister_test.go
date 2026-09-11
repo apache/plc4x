@@ -157,7 +157,7 @@ func TestReader_extendedRegisterSplitsAtTheFileBoundary(t *testing.T) {
 // The registers of every item of the response together are the value; a value split across a file
 // boundary would otherwise be decoded from the first half alone.
 func TestReader_extendedRegisterResponseIsAssembledFromAllItems(t *testing.T) {
-	reader := NewReader(DefaultConfiguration(), newCaptureCodec(nil))
+	reader := NewReader(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	request := readRequestFor(t, reader, parseTag(t, "extended-register:9999:UDINT"))
 	responseAdu := readWriteModel.NewModbusTcpADU(1, 1, readWriteModel.NewModbusPDUReadFileRecordResponse(
 		[]readWriteModel.ModbusPDUReadFileRecordResponseItem{
@@ -220,7 +220,7 @@ func TestWriter_extendedRegisterHonoursTheTagSettings(t *testing.T) {
 
 // A write-file-record response that isn't an exception is a successful write.
 func TestWriter_extendedRegisterWriteResponse(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	tag := parseTag(t, "extended-register:1:UDINT")
 	request := writeRequestFor(t, writer, tag, spiValues.NewPlcUDINT(0x01020304))
 	requestPdu := readWriteModel.NewModbusPDUWriteFileRecordRequest(

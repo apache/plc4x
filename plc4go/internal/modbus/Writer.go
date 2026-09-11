@@ -37,6 +37,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,18 +45,23 @@ type Writer struct {
 	transactionIdentifier int32
 	configuration         Configuration
 	messageCodec          spi.MessageCodec
+	// tm is the connection's request transaction manager. A write request is cut into one request
+	// per tag by the interceptor, which hands them all to the writer at once - so this is what
+	// keeps a multi-tag write from putting every one of them on the wire together.
+	tm transactions.RequestTransactionManager
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
 
-func NewWriter(configuration Configuration, messageCodec spi.MessageCodec, _options ...options.WithOption) *Writer {
+func NewWriter(configuration Configuration, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Writer{
 		transactionIdentifier: 0,
 		configuration:         configuration,
 		messageCodec:          messageCodec,
+		tm:                    tm,
 		log:                   customLogger,
 	}
 }
@@ -225,8 +231,11 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		adus := m.configuration.adus()
 		requestAdu := adus.buildRequest(uint16(transactionIdentifier), modbusTag.resolveUnitId(m.configuration.unitIdentifier), pdu)
 
-		// Send the ADU over the wire
-		if err = m.messageCodec.SendRequest(requestCtx, "write", requestAdu, func(message spi.Message) bool {
+		// Send the ADU over the wire, once the requests ahead of it have been answered. A write
+		// request of several tags arrives here as one sub-write per tag, all of them at once
+		// (spi/model.DefaultPlcWriteRequest.ExecuteWithContextAndInterceptor), so without the
+		// transaction manager in the middle they would all go out together.
+		if err = sendTransacted(requestCtx, m.log, m.messageCodec, m.tm, "write", requestAdu, func(message spi.Message) bool {
 			return adus.acceptsResponse(requestAdu, message)
 		}, func(message spi.Message) error {
 			// Convert the response into an ADU

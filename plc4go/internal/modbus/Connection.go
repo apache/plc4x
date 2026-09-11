@@ -38,6 +38,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 )
 
 type Connection struct {
@@ -50,6 +51,12 @@ type Connection struct {
 	// interceptor: they are merged into block requests by the read optimizer instead, which is the
 	// whole point of merging them.
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
+	// tm bounds how many requests this connection has on the wire at the same time. It belongs to
+	// the connection rather than to the driver, the way plc4j's getMaxConcurrentRequests() does:
+	// the wire it is bounding is this connection's, and two connections to two devices have
+	// nothing to serialise against each other. Every path that sends a PDU - reads, the per-tag
+	// writes and the ping - goes through it (see Requests.go).
+	tm transactions.RequestTransactionManager
 
 	// transactionIdentifier numbers the requests Ping sends; reads and writes have counters of
 	// their own in Reader and Writer.
@@ -84,6 +91,7 @@ func NewConnection(configuration Configuration, messageCodec spi.MessageCodec, c
 			spiModel.NewDefaultPlcWriteResponse,
 			_options...,
 		),
+		tm:       transactions.NewRequestTransactionManager(maxConcurrentRequests, _options...),
 		log:      customLogger,
 		_options: _options,
 	}
@@ -164,7 +172,10 @@ func (c *Connection) Ping(ctx context.Context) error {
 
 	errChan := make(chan error, 1)
 	successChan := make(chan struct{}, 1)
-	if err := c.messageCodec.SendRequest(requestCtx, "ping", pingRequest, func(message spi.Message) bool {
+	// The ping shares the wire with the reads and the writes, so it queues behind them rather than
+	// slipping past them. It can't deadlock behind the permit it is waiting for: it holds nothing
+	// while it waits, and requestCtx bounds the wait the same way it bounds the answer.
+	if err := sendTransacted(requestCtx, c.log, c.messageCodec, c.tm, "ping", pingRequest, func(message spi.Message) bool {
 		return adus.acceptsResponse(pingRequest, message)
 	}, func(message spi.Message) error {
 		c.log.Trace().Msg("Received Message")
@@ -243,6 +254,7 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			NewReader(
 				c.configuration,
 				c.messageCodec,
+				c.tm,
 				append(c._options, options.WithCustomLogger(c.log))...,
 			),
 		),
@@ -258,10 +270,41 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 		NewWriter(
 			c.configuration,
 			c.messageCodec,
+			c.tm,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 		c.writeRequestInterceptor,
 	)
+}
+
+// Close drops the connection and the request transaction manager with it.
+//
+// The codec goes first, and the order is the point: disconnecting it fails every expectation that
+// is still registered, and those failures are what end the transactions the requests in flight are
+// holding. A manager closed ahead of them would hand their permits back to nobody - which costs
+// nothing here, as the manager is going away too, but it would leave requests waiting for a turn
+// that never comes.
+func (c *Connection) Close() error {
+	err := c.DefaultConnection.Close()
+	if tmErr := c.tm.Close(); tmErr != nil {
+		c.log.Warn().Err(tmErr).Msg("Error closing the request transaction manager")
+	}
+	return err
+}
+
+// Invalidate closes the transaction manager as well, which Close alone does not reach.
+//
+// defaultConnection.Invalidate calls d.Close(), and d is the embedded struct - Go resolves that to
+// defaultConnection.Close, not to the Close below, because embedding is not virtual dispatch. So
+// on the invalidation path, which is the common one when a connection breaks, the manager would
+// never be told. It holds no goroutines of its own (the executor is a package-level singleton), so
+// nothing leaks, but anything queued behind the permit would wait out its own context instead of
+// being failed immediately.
+func (c *Connection) Invalidate() {
+	if tmErr := c.tm.Close(); tmErr != nil {
+		c.log.Warn().Err(tmErr).Msg("Error closing the request transaction manager")
+	}
+	c.DefaultConnection.Invalidate()
 }
 
 func (c *Connection) String() string {

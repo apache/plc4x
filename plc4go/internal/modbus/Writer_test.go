@@ -52,7 +52,7 @@ func testWriteRequest(t *testing.T, writer *Writer) apiModel.PlcWriteRequest {
 // a channel that never receives anything.
 func TestWriter_failedSendDeliversErrorResult(t *testing.T) {
 	codec := newCaptureCodec(errors.New("send failed: broken pipe"))
-	writer := NewWriter(DefaultConfiguration(), codec)
+	writer := NewWriter(DefaultConfiguration(), codec, testTransactionManager())
 
 	results := writer.Write(testutils.TestContext(t), testWriteRequest(t, writer))
 
@@ -71,7 +71,7 @@ func TestWriter_failedSendDeliversErrorResult(t *testing.T) {
 // disconnect fan-out) must not block forever on the full single-slot buffer.
 func TestWriter_duplicateErrorHandlerMustNotBlock(t *testing.T) {
 	codec := newCaptureCodec(nil)
-	writer := NewWriter(DefaultConfiguration(), codec)
+	writer := NewWriter(DefaultConfiguration(), codec, testTransactionManager())
 
 	_ = writer.Write(testutils.TestContext(t), testWriteRequest(t, writer))
 
@@ -118,7 +118,7 @@ func capturedRequestPdu(t *testing.T, tag apiModel.PlcTag, value apiValues.PlcVa
 func capturedRequestPduWith(t *testing.T, configuration Configuration, tag apiModel.PlcTag, value apiValues.PlcValue) (readWriteModel.ModbusTcpADU, capturedHandlers) {
 	t.Helper()
 	codec := newCaptureCodec(nil)
-	writer := NewWriter(configuration, codec)
+	writer := NewWriter(configuration, codec, testTransactionManager())
 	_ = writer.Write(testutils.TestContext(t), writeRequestFor(t, writer, tag, value))
 
 	select {
@@ -176,7 +176,7 @@ func TestWriter_coilWritesUseWriteMultipleCoils(t *testing.T) {
 // A payload that doesn't cover the addressed coils would go out as a frame whose byte count and
 // quantity contradict each other.
 func TestWriter_coilWriteRejectsAMismatchedPayload(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	value := spiValues.NewPlcList([]apiValues.PlcValue{spiValues.NewPlcBOOL(true), spiValues.NewPlcBOOL(false)})
 	results := writer.Write(testutils.TestContext(t), writeRequestFor(t, writer, NewTag(Coil, 3, 20, readWriteModel.ModbusDataType_BOOL), value))
 
@@ -191,7 +191,7 @@ func TestWriter_coilWriteRejectsAMismatchedPayload(t *testing.T) {
 
 // A value that isn't a coil state at all has no place in a coil write.
 func TestWriter_coilWriteRejectsANonBoolValue(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	results := writer.Write(testutils.TestContext(t), writeRequestFor(t, writer, NewTag(Coil, 3, 1, readWriteModel.ModbusDataType_BOOL), spiValues.NewPlcSTRING("nope")))
 
 	select {
@@ -222,7 +222,7 @@ func TestWriter_multiWordValueUsesWriteMultipleHoldingRegisters(t *testing.T) {
 }
 
 func TestWriter_singleWriteEchoValidation(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	tests := []struct {
 		name     string
 		request  readWriteModel.ModbusPDU
@@ -279,7 +279,7 @@ func TestWriter_singleWriteEchoValidation(t *testing.T) {
 // REMOTE_ERROR - leaving the tag out of the response map instead has GetResponseCode report it as
 // NOT_FOUND, which reads as "no such tag" rather than "the device said no".
 func TestWriter_exceptionResponseCodes(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	tests := []struct {
 		name          string
 		exceptionCode readWriteModel.ModbusErrorCode
@@ -319,7 +319,7 @@ func TestWriter_exceptionResponseCodes(t *testing.T) {
 // A response PDU that doesn't belong to the request we sent must be an error rather than a panic
 // on an unchecked type assertion.
 func TestWriter_mismatchedRequestPduIsAnError(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	request := writeRequestFor(t, writer, NewTag(HoldingRegister, 3, 1, readWriteModel.ModbusDataType_UINT), spiValues.NewPlcUINT(42))
 	response, err := writer.ToPlc4xWriteResponse(
 		readWriteModel.NewModbusTcpADU(1, 1, readWriteModel.NewModbusPDUWriteSingleCoilRequest(2, 0xFF00)),
@@ -342,7 +342,7 @@ func TestWriter_nonAduMessageIsRejected(t *testing.T) {
 // tearing down the whole process.
 func TestWriter_panicIsDeliveredAsAnErrorResult(t *testing.T) {
 	codec := newCaptureCodec(nil)
-	writer := NewWriter(DefaultConfiguration(), codec)
+	writer := NewWriter(DefaultConfiguration(), codec, testTransactionManager())
 	// No value for the tag: serializing it dereferences a nil PlcValue.
 	results := writer.Write(testutils.TestContext(t), writeRequestFor(t, writer, NewTag(HoldingRegister, 3, 1, readWriteModel.ModbusDataType_UINT), nil))
 
@@ -419,7 +419,7 @@ func TestWriter_writesAStringOfTheDeclaredLength(t *testing.T) {
 // An odd-length payload used to go out as quantity 2 with a byte count of 3, a frame no conforming
 // server accepts; plc4j's getWriteRequestPdu throws instead of sending it.
 func TestWriter_registerWriteRejectsAPayloadThatIsntWholeRegisters(t *testing.T) {
-	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil), testTransactionManager())
 	tag := parseTag(t, "holding-register:1:STRING(3)")
 	results := writer.Write(testutils.TestContext(t), writeRequestFor(t, writer, tag, spiValues.NewPlcSTRING("abc")))
 
