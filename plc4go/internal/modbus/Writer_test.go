@@ -274,6 +274,48 @@ func TestWriter_singleWriteEchoValidation(t *testing.T) {
 	}
 }
 
+// Every exception a device answers with has to reach the caller as a response code. An exception
+// code the specification doesn't define is still the device refusing the write, so it becomes
+// REMOTE_ERROR - leaving the tag out of the response map instead has GetResponseCode report it as
+// NOT_FOUND, which reads as "no such tag" rather than "the device said no".
+func TestWriter_exceptionResponseCodes(t *testing.T) {
+	writer := NewWriter(DefaultConfiguration(), newCaptureCodec(nil))
+	tests := []struct {
+		name          string
+		exceptionCode readWriteModel.ModbusErrorCode
+		expected      apiModel.PlcResponseCode
+	}{
+		{
+			"illegal data address",
+			readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS,
+			apiModel.PlcResponseCode_INVALID_ADDRESS,
+		},
+		{
+			"slave device busy",
+			readWriteModel.ModbusErrorCode_SLAVE_DEVICE_BUSY,
+			apiModel.PlcResponseCode_REMOTE_BUSY,
+		},
+		{
+			// 0x09 is one of the gaps the specification leaves between the codes it defines.
+			"a code outside the known set",
+			readWriteModel.ModbusErrorCode(9),
+			apiModel.PlcResponseCode_REMOTE_ERROR,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			request := writeRequestFor(t, writer, NewTag(HoldingRegister, 3, 1, readWriteModel.ModbusDataType_UINT), spiValues.NewPlcUINT(42))
+			response, err := writer.ToPlc4xWriteResponse(
+				readWriteModel.NewModbusTcpADU(1, 1, readWriteModel.NewModbusPDUWriteSingleRegisterRequest(2, 42)),
+				readWriteModel.NewModbusTcpADU(1, 1, readWriteModel.NewModbusPDUError(test.exceptionCode)),
+				request,
+			)
+			require.NoError(t, err)
+			assert.Equal(t, test.expected, response.GetResponseCode("tag"))
+		})
+	}
+}
+
 // A response PDU that doesn't belong to the request we sent must be an error rather than a panic
 // on an unchecked type assertion.
 func TestWriter_mismatchedRequestPduIsAnError(t *testing.T) {
