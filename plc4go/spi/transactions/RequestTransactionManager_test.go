@@ -23,6 +23,7 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 
@@ -496,6 +497,39 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 			r.submitTransaction(tt.args.handle)
 		})
 	}
+}
+
+func Test_requestTransactionManager_submitTransaction_startsInSubmissionOrder(t *testing.T) {
+	executor := pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+	executor.Start()
+	rtm := NewRequestTransactionManager(1, options.WithCustomLogger(produceTestingLogger(t)), WithCustomExecutor(executor))
+	t.Cleanup(func() {
+		assert.NoError(t, rtm.Close())
+	})
+
+	// The first transaction occupies the only slot until released, so the two others are bound to queue up.
+	release := make(chan struct{})
+	var startOrderMutex sync.Mutex
+	var startOrder []string
+	var allDone sync.WaitGroup
+	allDone.Add(3)
+	for _, transactionInfo := range []string{"first", "second", "third"} {
+		transaction := rtm.StartTransaction(transactionInfo)
+		transaction.Submit(transactionInfo, func(_ context.Context, transaction RequestTransaction) {
+			defer allDone.Done()
+			startOrderMutex.Lock()
+			startOrder = append(startOrder, transactionInfo)
+			startOrderMutex.Unlock()
+			<-release
+			assert.NoError(t, transaction.EndRequest())
+		})
+	}
+	close(release)
+	allDone.Wait()
+
+	startOrderMutex.Lock()
+	defer startOrderMutex.Unlock()
+	assert.Equal(t, []string{"first", "second", "third"}, startOrder, "transactions should start in submission order")
 }
 
 func Test_requestTransactionManager_Close(t *testing.T) {

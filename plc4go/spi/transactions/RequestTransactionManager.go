@@ -80,8 +80,10 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...op
 	rtm := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		currentTransactionId:       0,
-		workLog:                    *list.New(),
-		executor:                   sharedExecutorInstance,
+		// note: the zero value is an empty list ready to use. Copying the result of list.New() would leave the
+		// sentinel pointing to the discarded original, which breaks PushBack and makes Front return the sentinel.
+		workLog:  list.List{},
+		executor: sharedExecutorInstance,
 
 		traceTransactionManagerTransactions: extractTraceTransactionManagerTransactions || config.TraceTransactionManagerTransactions,
 
@@ -163,9 +165,9 @@ func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 
 func (r *requestTransactionManager) submitTransaction(transaction *requestTransaction) {
 	// Add this Request with the transaction i the work log
-	// Put Transaction into work log
+	// Put Transaction into work log at the back as processWorklog drains from the front (FIFO)
 	r.workLogMutex.Lock()
-	r.workLog.PushFront(transaction)
+	r.workLog.PushBack(transaction)
 	r.workLogMutex.Unlock()
 	// Try to Process the work log
 	r.processWorklog()
