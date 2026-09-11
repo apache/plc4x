@@ -40,13 +40,10 @@ import (
 // the single response is split apart again afterwards.
 //
 // Nothing in this file talks to a connection. optimizeReads decides what to ask for and
-// splitBlockResponse decodes what came back; issuing the requests is the caller's business.
+// splitBlockResponse decodes what came back; issuing the requests is Reader.read's business.
 //
-// NOTE: nothing calls this yet. The driver still issues one request per tag (see Reader.Read,
-// which rejects multi-tag requests outright, and the SingleItemRequestInterceptor the connection
-// installs). Wiring it in changes per-tag failure semantics - a failed block fails every tag in
-// it - and so is a separate, separately reviewable step. Until then this file changes no
-// behaviour.
+// How wide a block may get is the connection's max-coils-per-request and max-registers-per-request
+// (see Configuration), which default to what the specification itself allows.
 
 // namedTag pairs a tag with the name the read request knows it by. Tags travel by value here, the
 // way they do everywhere else in this package - castToModbusTagFromPlcTag hands out a value too.
@@ -112,7 +109,8 @@ type unitGroupKey struct {
 }
 
 // optimizeReadsWithSpecLimits merges tags using the largest request the modbus specification
-// allows, which is also what plc4j defaults to.
+// allows, which is what plc4j defaults to and what a connection nobody configured otherwise uses
+// (see defaultMaxCoilsPerRequest and defaultMaxRegistersPerRequest).
 func optimizeReadsWithSpecLimits(tags []namedTag) []readBlock {
 	return optimizeReads(tags, maxCoilQuantity, maxRegisterQuantity)
 }

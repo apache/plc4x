@@ -43,10 +43,13 @@ import (
 type Connection struct {
 	_default.DefaultConnection
 
-	configuration      Configuration
-	messageCodec       spi.MessageCodec
-	options            map[string][]string
-	requestInterceptor interceptors.RequestInterceptor
+	configuration Configuration
+	messageCodec  spi.MessageCodec
+	options       map[string][]string
+	// writeRequestInterceptor splits a write request into one request per tag. Reads have no such
+	// interceptor: they are merged into block requests by the read optimizer instead, which is the
+	// whole point of merging them.
+	writeRequestInterceptor interceptors.WriteRequestInterceptor
 
 	// transactionIdentifier numbers the requests Ping sends; reads and writes have counters of
 	// their own in Reader and Writer.
@@ -71,7 +74,10 @@ func NewConnection(configuration Configuration, messageCodec spi.MessageCodec, c
 		configuration: configuration,
 		messageCodec:  messageCodec,
 		options:       connectionOptions,
-		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
+		// Modbus writes one operation per PDU - there is no function code that writes two
+		// unrelated addresses - so a write request is still cut into one request per tag. plc4j
+		// keeps per-tag writes for the same reason (ModbusTcpConnection.onWrite).
+		writeRequestInterceptor: interceptors.NewSingleItemRequestInterceptor(
 			spiModel.NewDefaultPlcReadRequest,
 			spiModel.NewDefaultPlcWriteRequest,
 			spiModel.NewDefaultPlcReadResponse,
@@ -222,15 +228,26 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	}
 }
 
+// ReadRequestBuilder builds a read request that reaches the reader whole. Reads used to be split
+// into one request per tag by a SingleItemRequestInterceptor, which cost a round trip per tag; the
+// reader merges them into block reads instead (see ReadOptimizer.go), and it can only do that if
+// it is handed every tag at once.
+//
+// The builder is this driver's own so that an address it can't parse costs only its own tag rather
+// than the entire request (see ReadRequestBuilder.go).
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return spiModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
-		c.GetPlcTagHandler(),
-		NewReader(
-			c.configuration,
-			c.messageCodec,
-			append(c._options, options.WithCustomLogger(c.log))...,
+	tagHandler := c.GetPlcTagHandler()
+	return newReadRequestBuilder(
+		spiModel.NewDefaultPlcReadRequestBuilder(
+			tagHandler,
+			NewReader(
+				c.configuration,
+				c.messageCodec,
+				append(c._options, options.WithCustomLogger(c.log))...,
+			),
 		),
-		c.requestInterceptor,
+		tagHandler,
+		c.log,
 	)
 }
 
@@ -243,7 +260,7 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 			c.messageCodec,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
-		c.requestInterceptor,
+		c.writeRequestInterceptor,
 	)
 }
 

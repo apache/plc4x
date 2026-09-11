@@ -75,6 +75,8 @@ func TestTheCanonicalNamesAreRecognisedHere(t *testing.T) {
 		"default-unit-identifier":    {"3"},
 		"request-timeout-ms":         {"5000"},
 		"default-payload-byte-order": {"LITTLE_ENDIAN"},
+		"max-coils-per-request":      {"2000"},
+		"max-registers-per-request":  {"125"},
 	})
 	assert.NotContains(t, logged, "not known", "every canonical modbus name must be read here")
 
