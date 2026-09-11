@@ -254,6 +254,69 @@ class ModbusReadOptimizerTest {
     }
 
     /**
+     * A string declares its length in the address, not in its data type - ModbusDataType answers 1
+     * for STRING - so a block cut to the type's size asks for a single register while the tag
+     * occupies three, and the tag then decodes registers the device never sent.
+     */
+    @Test
+    void aLoneStringIsReadWithItsWholeSpan() {
+        processReadRequest(new ModbusTag[]{
+                // Five characters, packed two to a register: three registers.
+                new ModbusTagHoldingRegister(1, 1, 5, ModbusDataType.STRING, Collections.emptyMap())
+            },
+            optimizedReads -> {
+                assertEquals(1, optimizedReads.size());
+                ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                assertInstanceOf(ModbusTagHoldingRegister.class, mergedTag);
+                assertEquals(1, mergedTag.getAddress());
+                // The quantity that goes on the wire (see the connections' readRequestPdu).
+                assertEquals(3, mergedTag.getLengthWords());
+                assertEquals(3, mergedTag.getNumberOfElements());
+            });
+    }
+
+    /**
+     * The same where the string is merged with a neighbour: the block ends where the string ends,
+     * so a span read off the data type cuts the block off inside the string.
+     */
+    @Test
+    void aStringMergedWithANeighbourKeepsItsWholeSpan() {
+        processReadRequest(new ModbusTag[]{
+                // The neighbour comes first, so the block's end is the string's own.
+                new ModbusTagHoldingRegister(1, 1, ModbusDataType.INT, Collections.emptyMap()),
+                new ModbusTagHoldingRegister(2, 1, 5, ModbusDataType.STRING, Collections.emptyMap())
+            },
+            optimizedReads -> {
+                assertEquals(1, optimizedReads.size());
+                ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                assertEquals(1, mergedTag.getAddress());
+                // One register for the neighbour plus the string's three.
+                assertEquals(4, mergedTag.getLengthWords());
+                assertEquals(4, mergedTag.getNumberOfElements());
+            });
+    }
+
+    /**
+     * A coil block is cut in coils, one per element - the quantity an unoptimized read of the tag
+     * asks for. A coil carries a single bit and anything wider is answered UNSUPPORTED, so a
+     * non-BOOL coil tag must not reserve one coil per bit of its data type: the block would reach
+     * past the coils the device has and fail the BOOL tags sharing it, for data nobody can decode.
+     */
+    @Test
+    void aNonBoolCoilDoesNotWidenTheBlock() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagCoil(0, 1, ModbusDataType.INT, Collections.emptyMap())
+            },
+            optimizedReads -> {
+                assertEquals(1, optimizedReads.size());
+                ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                assertInstanceOf(ModbusTagCoil.class, mergedTag);
+                assertEquals(0, mergedTag.getAddress());
+                assertEquals(1, mergedTag.getNumberOfElements());
+            });
+    }
+
+    /**
      * A coil array (BOOL[n]) has to yield all n values, not just the first one - see GH-2060.
      * The block read already covers the whole array, so the data is on the wire either way.
      */

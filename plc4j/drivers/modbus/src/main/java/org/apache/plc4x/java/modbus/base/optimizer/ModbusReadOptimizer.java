@@ -262,8 +262,12 @@ public class ModbusReadOptimizer {
 
         for (Map.Entry<String, ModbusTag> entry : sorted) {
             ModbusTag tag = entry.getValue();
-            int sizeInCoils = tag.getDataType() == ModbusDataType.BOOL ? 1 : tag.getDataType().getDataTypeSize() * 8;
-            int tagEnd = tag.getAddress() + (sizeInCoils * tag.getNumberOfElements());
+            // One coil per element, which is exactly the quantity an unoptimized read of the same
+            // tag puts into its request (see the connections' readRequestPdu). Reserving eight
+            // coils per byte of the data type instead would cover a tag that cannot be answered
+            // anyway - anything but BOOL is reported UNSUPPORTED in splitResponse - while pushing
+            // the block over a device's coil count and so failing the BOOL tags sharing it.
+            int tagEnd = tag.getAddress() + tag.getNumberOfElements();
 
             if (firstAddress == -1) {
                 firstAddress = tag.getAddress();
@@ -329,8 +333,13 @@ public class ModbusReadOptimizer {
 
         for (Map.Entry<String, ModbusTag> entry : sorted) {
             ModbusTag tag = entry.getValue();
-            int sizeInRegisters = (int) Math.ceil((double) tag.getDataType().getDataTypeSize() / 2);
-            int tagEnd = tag.getAddress() + (sizeInRegisters * tag.getNumberOfElements());
+            // The tag's own span, which is the quantity an unoptimized read of it puts into its
+            // request and the width splitResponse slices back out. Deriving the span from the data
+            // type instead misses everything the type does not carry: a string's length lives in
+            // the address, and ModbusDataType.getDataTypeSize() answers 1 for STRING, so a lone
+            // STRING(5) reserved a single register while occupying three - the block then
+            // under-requested and the tag decoded registers the device never sent.
+            int tagEnd = tag.getAddress() + tag.getLengthWords();
 
             if (firstRegister == -1) {
                 firstRegister = tag.getAddress();
