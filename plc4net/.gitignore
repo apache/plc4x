@@ -348,3 +348,7 @@ MigrationBackup/
 /spi/bin/
 /drivers/knxnetip/bin/
 /.idea/
+
+# Local NuGet feed round trip (docs/packaging.md, docs/*-hardware-verification.md)
+/_localfeed/
+/_stage/

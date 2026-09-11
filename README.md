@@ -58,7 +58,7 @@ We are planning on shipping libraries for usage in:
 2. Go
 3. C (not ready for usage)
 4. Python (not ready for usage)
-5. C# (.Net) (not ready for usage - abandoned)
+5. C# (.Net) (not ready for usage)
 
 PLC4X also integrates with other Apache projects, such as:
 
@@ -133,9 +133,7 @@ All requirements are retrieved by the build itself
 
 #### For building `PLC4Net` we also need:
 
-1. DotNet SDK 7.0 or above (the projects set `LangVersion 11.0`, which needs at least the 7.0 SDK)
-2. The `.NET Framework 4.5.2` targeting pack: the projects target `net452`, so the matching reference assemblies have to be available.
-   On `Windows` these come with the Visual Studio ".NET Framework 4.5.2 targeting pack" component, on `Mac`/`Linux` they are provided by `Mono`.
+1. .NET SDK 8.0 or above (the projects target `net8.0`, the current LTS)
 
 ### Building with Docker
 
