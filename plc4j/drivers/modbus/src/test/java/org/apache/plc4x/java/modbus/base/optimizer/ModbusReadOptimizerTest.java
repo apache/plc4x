@@ -18,13 +18,17 @@
  */
 package org.apache.plc4x.java.modbus.base.optimizer;
 
+import org.apache.plc4x.java.modbus.base.ModbusRegisterCodec;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagExtendedRegister;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -331,6 +335,190 @@ class ModbusReadOptimizerTest {
                 new byte[]{(byte) 0b00000001});
 
         assertEquals(PlcResponseCode.INTERNAL_ERROR, response.get("tag0").getResponseCode());
+    }
+
+    /** Selects the byte-swapping big endian order, which a tag may ask for by itself. */
+    private static final Map<String, String> BIG_ENDIAN_BYTE_SWAP =
+        Collections.singletonMap("byte-order", ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP.name());
+
+    /**
+     * A CHAR occupies a whole register but carries one byte, so a slice cut to its payload length
+     * cannot be swapped in pairs - the byte would stay where it is, while the unoptimized read,
+     * which is handed the whole register, swaps it. Merging a tag into a block must not change the
+     * value it decodes to.
+     */
+    @Test
+    void oddLengthScalarIsSwappedTheSameWayAnUnoptimizedReadSwapsIt() throws BufferException {
+        ModbusTag tag = new ModbusTagHoldingRegister(1, 1, ModbusDataType.CHAR, BIG_ENDIAN_BYTE_SWAP);
+        byte[] registers = {'A', 'B'};
+
+        Map<String, PlcResponseItem<PlcValue>> response = splitSingleRead(tag, registers);
+
+        assertEquals(PlcResponseCode.OK, response.get("tag0").getResponseCode());
+        assertEquals("B", unoptimizedRead(tag, registers).getString());
+        assertEquals(unoptimizedRead(tag, registers).getString(), response.get("tag0").getValue().getString());
+    }
+
+    /**
+     * The same for a string of odd declared length: three characters sit in two registers, and the
+     * swap has to see both of them.
+     */
+    @Test
+    void oddLengthStringIsSwappedTheSameWayAnUnoptimizedReadSwapsIt() throws BufferException {
+        ModbusTag text = new ModbusTagHoldingRegister(1, 1, 3, ModbusDataType.STRING, BIG_ENDIAN_BYTE_SWAP);
+        // A second tag behind it, so the block really does cover both of the string's registers
+        // rather than the test handing over registers nobody asked for.
+        LinkedHashMap<String, ModbusTag> tags = new LinkedHashMap<>();
+        tags.put("text", text);
+        tags.put("guard", new ModbusTagHoldingRegister(3, 1, ModbusDataType.INT, BIG_ENDIAN_BYTE_SWAP));
+        byte[] blockData = {'A', 'B', 'C', 'D', 0x12, 0x34};
+
+        Map<String, PlcResponseItem<PlcValue>> response = splitRead(tags, blockData);
+
+        assertEquals(PlcResponseCode.OK, response.get("text").getResponseCode());
+        byte[] stringRegisters = {'A', 'B', 'C', 'D'};
+        assertEquals("BAD", unoptimizedRead(text, stringRegisters).getString());
+        assertEquals(unoptimizedRead(text, stringRegisters).getString(), response.get("text").getValue().getString());
+    }
+
+    /**
+     * Decodes the given registers for a single tag the way a read that was never merged into a
+     * block does (see the connections' {@code toPlcValue}): the whole registers the device
+     * answered with, swapped as one, then parsed.
+     */
+    private static PlcValue unoptimizedRead(ModbusTag tag, byte[] registers) throws BufferException {
+        ModbusByteOrder byteOrder = tag.getByteOrder();
+        byte[] data = registers;
+        if (byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
+            data = byteSwap(data);
+        }
+        boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
+        return ModbusRegisterCodec.parse(new ReadBufferByteBased(data), tag.getDataType(),
+            tag.getNumberOfElements(), bigEndian, tag.getStringLength());
+    }
+
+    private static byte[] byteSwap(byte[] in) {
+        byte[] out = new byte[in.length];
+        for (int i = 0; i < out.length - 1; i += 2) {
+            out[i] = in[i + 1];
+            out[i + 1] = in[i];
+        }
+        if (in.length % 2 != 0) {
+            out[in.length - 1] = in[in.length - 1];
+        }
+        return out;
+    }
+
+    /** The largest PDU the Modbus specification allows, request or response. */
+    private static final int MAX_MODBUS_PDU_SIZE = 253;
+
+    /** The number of registers one extended-register file holds. */
+    private static final int EXTENDED_REGISTER_FILE_LENGTH = 10000;
+
+    /**
+     * An extended-register block is answered over FC 0x14 (Read File Record), whose per-item
+     * framing leaves room for fewer registers than FC 0x03 does. A 125-register block is one byte
+     * too wide for it, so two tags spanning that many registers must be read separately - even
+     * though the plain register areas happily merge them.
+     */
+    @Test
+    void extendedRegistersAreNotMergedWiderThanAReadFileRecordResponseFits() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagExtendedRegister(1, 1, ModbusDataType.INT, Collections.emptyMap()),
+                new ModbusTagExtendedRegister(125, 1, ModbusDataType.INT, Collections.emptyMap())
+            },
+            optimizedReads -> {
+                assertEquals(2, optimizedReads.size());
+                ModbusTag first = optimizedReads.getFirst().mergedTag;
+                assertInstanceOf(ModbusTagExtendedRegister.class, first);
+                assertEquals(1, first.getAddress());
+                assertEquals(1, first.getNumberOfElements());
+                ModbusTag second = optimizedReads.get(1).mergedTag;
+                assertInstanceOf(ModbusTagExtendedRegister.class, second);
+                assertEquals(125, second.getAddress());
+                assertEquals(1, second.getNumberOfElements());
+            });
+
+        // The same two addresses in a holding register: the narrower ceiling is the extended
+        // registers' own, not a tightening of the limit every area is cut with.
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagHoldingRegister(1, 1, ModbusDataType.INT, Collections.emptyMap()),
+                new ModbusTagHoldingRegister(125, 1, ModbusDataType.INT, Collections.emptyMap())
+            },
+            optimizedReads -> {
+                assertEquals(1, optimizedReads.size());
+                assertEquals(125, optimizedReads.getFirst().mergedTag.getNumberOfElements());
+            });
+    }
+
+    /**
+     * Extended registers that do fit stay merged - the ceiling must not cost a round trip it
+     * doesn't have to.
+     */
+    @Test
+    void extendedRegistersThatFitAreStillMerged() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagExtendedRegister(1, 1, ModbusDataType.INT, Collections.emptyMap()),
+                new ModbusTagExtendedRegister(123, 1, ModbusDataType.INT, Collections.emptyMap())
+            },
+            optimizedReads -> {
+                assertEquals(1, optimizedReads.size());
+                ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                assertInstanceOf(ModbusTagExtendedRegister.class, mergedTag);
+                assertEquals(1, mergedTag.getAddress());
+                assertEquals(123, mergedTag.getNumberOfElements());
+            });
+    }
+
+    /**
+     * Whatever the optimizer emits for extended registers has to be answerable: no block may ask
+     * for more than an FC 0x14 response can carry back, including one that crosses a file boundary
+     * and is therefore answered as two items.
+     */
+    @Test
+    void everyExtendedRegisterBlockFitsTheModbusPduLimit() {
+        // Densely addressed tags, so every block is cut as wide as the optimizer will allow, both
+        // inside a single file and across the boundary between two of them.
+        LinkedHashMap<String, ModbusTag> tags = new LinkedHashMap<>();
+        for (int address = 1; address < 250; address++) {
+            tags.put("low" + address, new ModbusTagExtendedRegister(address, 1, ModbusDataType.INT, Collections.emptyMap()));
+        }
+        for (int address = 9900; address < 10200; address++) {
+            tags.put("boundary" + address, new ModbusTagExtendedRegister(address, 1, ModbusDataType.INT, Collections.emptyMap()));
+        }
+
+        ModbusReadOptimizer optimizer = new ModbusReadOptimizer(2000, 125, ModbusByteOrder.BIG_ENDIAN);
+        List<ModbusReadOptimizer.OptimizedRead> optimizedReads = optimizer.optimizeReads(tags);
+
+        assertFalse(optimizedReads.isEmpty());
+        boolean sawBlockCrossingAFileBoundary = false;
+        for (ModbusReadOptimizer.OptimizedRead optimizedRead : optimizedReads) {
+            ModbusTag block = optimizedRead.mergedTag;
+            sawBlockCrossingAFileBoundary |= itemsOf(block) > 1;
+            int pduSize = readFileRecordResponseSize(block);
+            assertTrue(pduSize <= MAX_MODBUS_PDU_SIZE,
+                "the block at " + block.getAddress() + " covering " + block.getNumberOfElements()
+                    + " registers is answered with a " + pduSize + " byte PDU");
+        }
+        assertTrue(sawBlockCrossingAFileBoundary, "the two-item shape wasn't exercised");
+    }
+
+    /**
+     * The size of the FC 0x14 response answering the given extended-register block: function code
+     * (1) + response data length (1) + per item [data length (1) + reference type (1) + data].
+     */
+    private static int readFileRecordResponseSize(ModbusTag block) {
+        return 1 + 1 + itemsOf(block) * 2 + block.getNumberOfElements() * 2;
+    }
+
+    /**
+     * The number of items the response is split into: one per file the block reaches into, the
+     * way the connections group an extended-register read.
+     */
+    private static int itemsOf(ModbusTag block) {
+        int firstFile = block.getAddress() / EXTENDED_REGISTER_FILE_LENGTH;
+        int lastFile = (block.getAddress() + block.getNumberOfElements() - 1) / EXTENDED_REGISTER_FILE_LENGTH;
+        return lastFile - firstFile + 1;
     }
 
     /**

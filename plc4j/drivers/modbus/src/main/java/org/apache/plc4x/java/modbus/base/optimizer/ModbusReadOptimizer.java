@@ -49,6 +49,20 @@ public class ModbusReadOptimizer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModbusReadOptimizer.class);
 
+    /**
+     * The widest extended-register block whose response still fits the 253-byte Modbus PDU limit.
+     * <p>
+     * Extended registers travel over FC 0x14 (Read File Record), whose response carries a byte
+     * count and then per-item framing that the plain register function codes do not:
+     * 1 (function code) + 1 (response data length) + per item [1 (data length) + 1 (reference
+     * type) + 2 bytes per register]. A 125-register block therefore answers with
+     * 1 + 1 + 1 + 1 + 250 = 254 bytes, one past the limit. A block straddling a 10000-register
+     * file boundary is split into two items (see the extended-register handling in the
+     * connections) and answers with 1 + 1 + 2 * (1 + 1) + 250 = 256 bytes, overflowing by more.
+     * 123 registers is the widest that fits both shapes: 250 bytes as one item, 252 as two.
+     */
+    private static final int MAX_EXTENDED_REGISTERS_PER_REQUEST = 123;
+
     private final int maxCoilsPerRequest;
     private final int maxRegistersPerRequest;
     private final ModbusByteOrder defaultByteOrder;
@@ -90,13 +104,13 @@ public class ModbusReadOptimizer {
             result.addAll(optimizeCoils(group.getKey(), group.getValue()));
         }
         for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : holdingRegisters.entrySet()) {
-            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), ModbusReadOptimizer::createHoldingRegister));
+            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), maxRegistersPerRequest, ModbusReadOptimizer::createHoldingRegister));
         }
         for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : inputRegisters.entrySet()) {
-            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), ModbusReadOptimizer::createInputRegister));
+            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), maxRegistersPerRequest, ModbusReadOptimizer::createInputRegister));
         }
         for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : extendedRegisters.entrySet()) {
-            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), ModbusReadOptimizer::createExtendedRegister));
+            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), maxExtendedRegistersPerRequest(), ModbusReadOptimizer::createExtendedRegister));
         }
         for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : discreteInputs.entrySet()) {
             result.addAll(optimizeCoils(group.getKey(), group.getValue()));
@@ -158,7 +172,22 @@ public class ModbusReadOptimizer {
                 } else {
                     // Registers: byte-level extraction
                     int byteOffset = (originalTag.getAddress() - blockTag.getAddress()) * 2;
-                    int byteLength = originalTag.getLengthBytes();
+                    // Whole REGISTERS, not the tag's packed byte length. The two differ for any
+                    // type whose payload is an odd number of bytes - a scalar CHAR, a STRING of
+                    // odd declared length - and the difference is not cosmetic: the byte swap
+                    // below can only swap whole pairs, so an odd-length slice leaves its last
+                    // byte unswapped while the unoptimized read, which is handed the device's
+                    // whole registers, swaps it. Slicing to the payload length would therefore
+                    // decode a DIFFERENT value than the same tag read on its own, silently and
+                    // with an OK response code. The parser ignores the bytes it does not need,
+                    // which is exactly what the unoptimized path already relies on, and the block
+                    // covers the wider slice because its span reserves whole registers too.
+                    int byteLength = originalTag.getLengthWords() * 2;
+                    if (byteOffset + byteLength > blockData.length) {
+                        // The device answered with fewer registers than we asked for.
+                        result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                        continue;
+                    }
                     byte[] tagData = new byte[byteLength];
                     System.arraycopy(blockData, byteOffset, tagData, 0, byteLength);
 
@@ -274,7 +303,21 @@ public class ModbusReadOptimizer {
         return result;
     }
 
-    private List<OptimizedRead> optimizeRegisters(Short unitId, Map<String, ModbusTag> tagsByName, TagFactory tagFactory) {
+    /**
+     * The ceiling that applies to a block of extended registers: the configured register limit,
+     * capped at what an FC 0x14 response can carry back.
+     */
+    private int maxExtendedRegistersPerRequest() {
+        return Math.min(maxRegistersPerRequest, MAX_EXTENDED_REGISTERS_PER_REQUEST);
+    }
+
+    /**
+     * Cuts one group of register tags into blocks no wider than {@code maxPerRequest} registers.
+     * The ceiling is passed in rather than read off the field, because extended registers answer
+     * over a different function code and so tolerate a narrower block than the other two areas
+     * (see {@link #MAX_EXTENDED_REGISTERS_PER_REQUEST}).
+     */
+    private List<OptimizedRead> optimizeRegisters(Short unitId, Map<String, ModbusTag> tagsByName, int maxPerRequest, TagFactory tagFactory) {
         List<Map.Entry<String, ModbusTag>> sorted = new ArrayList<>(tagsByName.entrySet());
         sorted.sort(Comparator.comparingInt(e -> e.getValue().getAddress()));
 
@@ -292,7 +335,7 @@ public class ModbusReadOptimizer {
             if (firstRegister == -1) {
                 firstRegister = tag.getAddress();
                 lastRegister = tagEnd;
-                maxRegister = tag.getAddress() + maxRegistersPerRequest;
+                maxRegister = tag.getAddress() + maxPerRequest;
                 currentGroup.put(entry.getKey(), tag);
                 continue;
             }
@@ -307,7 +350,7 @@ public class ModbusReadOptimizer {
                 currentGroup = new LinkedHashMap<>();
                 firstRegister = tag.getAddress();
                 lastRegister = tagEnd;
-                maxRegister = tag.getAddress() + maxRegistersPerRequest;
+                maxRegister = tag.getAddress() + maxPerRequest;
             } else {
                 lastRegister = Math.max(lastRegister, tagEnd);
             }
