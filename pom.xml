@@ -112,7 +112,7 @@
     <antlr.version>4.13.2</antlr.version>
     <assertj.version>3.27.7</assertj.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <bouncycastle.version>1.85</bouncycastle.version>
+    <bouncycastle.version>1.86</bouncycastle.version>
     <!-- Bouncy Castle occasionally ships a patch release for "bcprov" alone (1.80.2, 1.81.1,
          1.85.2 ...) while "bcpkix", "bctls" and "bcutil" stay on the base version. Those three
          all resolve down to bcprov, so a single shared property would either hold bcprov back
