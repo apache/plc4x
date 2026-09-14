@@ -119,7 +119,7 @@
          or point the other three at a version that was never published. Hence the separate
          property: keep it on the newest patch of the "bouncycastle.version" line, and move both
          together when the base version changes. -->
-    <bouncycastle-prov.version>1.85.2</bouncycastle-prov.version>
+    <bouncycastle-prov.version>1.86</bouncycastle-prov.version>
     <byte-buddy.version>1.18.13</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-cli.version>1.11.0</commons-cli.version>
