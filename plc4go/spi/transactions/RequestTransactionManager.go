@@ -287,13 +287,12 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
-	if r.executor != sharedExecutorInstance {
-		if err := r.executor.Close(); err != nil {
-			return errors.Wrap(err, "error closing executor")
-		}
-	} else {
-		r.log.Warn().Msg("not closing shared instance")
-	}
+	// The executor is never this manager's to close. It is either the process-wide shared one or
+	// one the caller handed over with WithCustomExecutor, and in both cases it outlives this
+	// manager: whoever created it is still using it and still has to stop it. Closing it from here
+	// stopped it for everybody else on it, which is every other connection of a driver that gives
+	// each connection its own manager the way modbus does - and a stopped executor never runs the
+	// work queued into it, so those connections simply never send anything again.
 	r.cancelCtx()
 	r.log.Debug().Msg("closed")
 	return nil
