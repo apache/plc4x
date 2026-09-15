@@ -1,0 +1,154 @@
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+name: ".Net Platform Compatibility"
+
+# plc4net builds and tests with the .NET SDK alone - no JDK, no Maven. The
+# module still carries a pom.xml so `./mvnw -Pwith-dotnet install` keeps working
+# for the release reactor, but nothing here needs it: `dotnet build` and
+# `dotnet test` cover the whole module, and the mspec -> C# generator under
+# plc4net/tools/code-gen is itself a .NET project.
+
+on:
+  push:
+    branches: [ "develop", "plc4net" ]
+    paths:
+      - code-generation/**
+      - protocols/**
+      - plc4net/**
+  pull_request:
+    branches: [ "develop", "plc4net" ]
+    paths:
+      - code-generation/**
+      - protocols/**
+      - plc4net/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  license-headers:
+    name: "ASF license headers"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # The Maven reactor validates headers with apache-rat; this is the same
+      # check for contributors who only run the .NET toolchain, so a missing
+      # header is caught in the PR rather than at release time.
+      - name: Check ASF license headers on plc4net sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          while IFS= read -r f; do
+            if ! head -n 25 "$f" | grep -q "Licensed to the Apache Software Foundation"; then
+              echo "::error file=$f::missing ASF license header"
+              missing=1
+            fi
+          done < <(git ls-files \
+            'plc4net/*.cs' 'plc4net/*.csproj' 'plc4net/*.props' \
+            'plc4net/*.g4' 'plc4net/*.md' 'plc4net/*.yml' \
+            'plc4net/**/*.cs' 'plc4net/**/*.csproj' 'plc4net/**/*.props' \
+            'plc4net/**/*.g4' 'plc4net/**/*.md' 'plc4net/**/*.yml' \
+            'plc4net/Makefile' \
+            ':!:plc4net/**/generated/*.interp' \
+            ':!:plc4net/**/generated/*.tokens')
+          exit "$missing"
+
+  generated-code-is-current:
+    name: "generated model matches the mspec"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .Net
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+
+      # The pure-.NET generator (no JDK, no freemarker) regenerates the
+      # checked-in driver models; a drift means the mspec changed without a
+      # regen, or someone hand-edited generated code.
+      - name: Regenerate the Modbus model
+        run: >
+          dotnet run --project plc4net/tools/code-gen --configuration Release --
+          modbus
+          protocols/modbus/src/main/resources/protocols/modbus/modbus.mspec
+          plc4net/drivers/modbus/src/drivers/modbus/readwrite
+          org.apache.plc4net.drivers.modbus.readwrite
+
+      - name: Regenerate the S7 model
+        run: >
+          dotnet run --project plc4net/tools/code-gen --configuration Release --
+          s7
+          protocols/s7/src/main/resources/protocols/s7/s7.mspec
+          plc4net/drivers/s7/src/drivers/s7/readwrite
+          org.apache.plc4net.drivers.s7.readwrite
+
+      - name: Regenerate the KNXnet/IP model
+        run: >
+          dotnet run --project plc4net/tools/code-gen --configuration Release --
+          knxnetip
+          "protocols/knxnetip/src/main/resources/protocols/knxnetip;protocols/knxnetip/src/main/generated/protocols/knxnetip"
+          plc4net/drivers/knxnetip/src/drivers/knxnetip/readwrite
+          org.apache.plc4net.drivers.knxnetip.readwrite
+
+      - name: Fail if the generated model drifted
+        # `git diff --exit-code` alone misses a brand-new file the generator
+        # started emitting, so stage first and diff the index.
+        run: |
+          git add -A -- plc4net/drivers/modbus/src plc4net/drivers/s7/src plc4net/drivers/knxnetip/src
+          git diff --cached --exit-code -- plc4net/drivers/modbus/src plc4net/drivers/s7/src plc4net/drivers/knxnetip/src
+
+  test:
+    name: "build + test"
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .Net
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('plc4net/**/*.csproj', 'plc4net/Directory.Build.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore plc4net/plc4net.sln
+
+      - name: Build
+        run: >
+          dotnet build plc4net/plc4net.sln
+          --configuration Debug --no-restore --no-incremental
+
+      - name: Test
+        run: >
+          dotnet test plc4net/plc4net.sln
+          --configuration Debug --no-build --verbosity normal
