@@ -63,6 +63,8 @@
               org.osgi.framework.wiring;version=1.2,
               *
             </Import-Package>
+            <SPI-Consumer>*</SPI-Consumer>
+            <SPI-Provider>*</SPI-Provider>  
           </instructions>
         </configuration>
       </plugin>
