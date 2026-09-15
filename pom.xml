@@ -134,7 +134,7 @@
     <docker-java.version>3.7.1</docker-java.version>
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.5.2</equalsverifier.version>
-    <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
+    <extra-enforcer-rules.version>1.12.1</extra-enforcer-rules.version>
     <freemarker.version>2.3.35</freemarker.version>
     <glob.version>0.9.0</glob.version>
     <groovy.version>5.1.2</groovy.version>
