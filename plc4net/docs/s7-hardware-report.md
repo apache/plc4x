@@ -21,6 +21,51 @@
 Output of `tools/s7-verify` against real hardware. The procedure and the data
 block layout are in [s7-hardware-verification.md](s7-hardware-verification.md).
 
+## 2026-09-16 — Siemens S7-1214C, persistent I/Q/M/DB matrix
+
+The PLC had no external equipment attached. Inputs were read only. DB100,
+M100..M117 and Q0..Q17 were each exercised with read-before → write →
+immediate read-back, with all three restore steps explicitly disabled. After
+the write session closed, every target was independently read through a new
+connection.
+
+- **Device endpoint**: `192.168.1.11`, rack 0 / slot 1
+- **Connection**: COTP + Setup Communication passed; negotiated PDU 240 bytes
+- **Main run**: **PASS (43/43)**
+- **Independent read-back**: **PASS (25/25)**
+- **Persistent write ranges**: DB100 bytes 0..17, M100..M117, Q0..Q17
+
+  | Area/type | Address | Independently read back |
+  |---|---|---:|
+  | Input bit | `%I0.0` | `False` |
+  | Input byte | `%IB0` | `0x00` |
+  | Input word | `%IW0` | `0x0000` |
+  | Input double word | `%ID0` | `0x00000000` |
+  | Output BOOL | `%Q0.0` | `True` |
+  | Output BYTE | `%QB1` | `0x3C` |
+  | Output INT | `%QW2` | `23456` (`0x5BA0`) |
+  | Output DINT | `%QD4` | `-123456789` (`0xF8A432EB`) |
+  | Output REAL | `%QD8` | `-12.5` (`0xC1480000`) |
+  | Output WORD | `%QW12` | `0x1357` |
+  | Output DWORD | `%QD14` | `0x89ABCDEF` |
+  | Marker BOOL | `%M100.0` | `True` |
+  | Marker BYTE | `%MB101` | `0x3C` |
+  | Marker INT | `%MW102` | `23456` (`0x5BA0`) |
+  | Marker DINT | `%MD104` | `-123456789` (`0xF8A432EB`) |
+  | Marker REAL | `%MD108` | `-12.5` (`0xC1480000`) |
+  | Marker WORD | `%MW112` | `0x1357` |
+  | Marker DWORD | `%MD114` | `0x89ABCDEF` |
+  | DB BOOL | `%DB100.DBX0.0` | `False` |
+  | DB BYTE | `%DB100.DBB1` | `0x3C` |
+  | DB INT | `%DB100.DBW2` | `23456` (`0x5BA0`) |
+  | DB DINT | `%DB100.DBD4` | `-123456789` (`0xF8A432EB`) |
+  | DB REAL | `%DB100.DBD8` | `-12.5` (`0xC1480000`) |
+  | DB WORD | `%DB100.DBW12` | `0x1357` |
+  | DB DWORD | `%DB100.DBD14` | `0x89ABCDEF` |
+
+These are live process-image/memory values, not retained startup values; PLC
+logic, an input transition, a mode change or a restart may overwrite them.
+
 ## 2026-09-16 — Siemens S7-1214C, persistent Q write verification
 
 The PLC had no external equipment attached. The output matrix was explicitly

@@ -57,7 +57,8 @@ namespace org.apache.plc4net.tools.s7verify
                     "usage: s7-verify <host> [--rack N] [--slot N] [--db N] " +
                     "[--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN] [--read <address>] " +
                     "[--i-base N] [--q-base N] [--m-base N] [--read-only] " +
-                    "[--write-markers] [--write-outputs] [--keep-output-values]");
+                    "[--write-markers] [--write-outputs] [--keep-db-values] " +
+                    "[--keep-marker-values] [--keep-output-values]");
                 return 2;
             }
 
@@ -134,7 +135,10 @@ namespace org.apache.plc4net.tools.s7verify
                 // ── multi-tag single request ──
                 await MultiRead(reader, connection, report, db);
 
-                // ── write matrices: read -> write -> read -> restore -> read ──
+                // ── write matrices: read -> write -> read [-> restore -> read] ──
+                var restoreDb = !opts.ContainsKey("keep-db-values");
+                if (!restoreDb)
+                    report.Line("- **WARNING**: DB values will remain changed after verification");
                 await WriteTypeMatrix(reader, writer, connection, report,
                     new[]
                     {
@@ -145,12 +149,15 @@ namespace org.apache.plc4net.tools.s7verify
                         ("REAL", $"%DB{db}.DBD8", (object)(-12.5f)),
                         ("WORD", $"%DB{db}.DBW12", (object)0x1357),
                         ("DWORD", $"%DB{db}.DBD14", (object)0x89ABCDEFL),
-                    }, restore: true);
+                    }, restoreDb);
 
                 if (opts.ContainsKey("write-markers"))
                 {
+                    var restoreMarkers = !opts.ContainsKey("keep-marker-values");
+                    if (!restoreMarkers)
+                        report.Line("- **WARNING**: marker values will remain changed after verification");
                     await WriteTypeMatrix(reader, writer, connection, report,
-                        AreaWriteMatrix("M", mBase), restore: true);
+                        AreaWriteMatrix("M", mBase), restoreMarkers);
                 }
                 if (opts.ContainsKey("write-outputs"))
                 {

@@ -92,7 +92,7 @@ s7-verify <host> [--rack N] [--slot N] [--db N]
           [--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN]
           [--read <address>] [--i-base N] [--q-base N] [--m-base N]
           [--read-only] [--write-markers] [--write-outputs]
-          [--keep-output-values]
+          [--keep-db-values] [--keep-marker-values] [--keep-output-values]
 ```
 
 Defaults: `--rack 0 --slot 1 --db 100`. `--read <address>` skips the suite and
@@ -100,11 +100,16 @@ just connects, reads that one tag and prints the outcome — a focused probe for
 one address (e.g. `--read "%I0.0"`, `--read "%DB100.DBW2"`) that needs neither
 DB100 nor the full layout.
 
-The normal suite writes all seven scalar types only in DB100. `--read-only`
-stops after the DB and I/Q/M address reads without sending any Write Var.
+The normal suite writes all seven scalar types only in DB100 and restores every
+original value. `--read-only` stops after the DB and I/Q/M address reads without
+sending any Write Var. `--keep-db-values` intentionally skips the DB restore so
+the written values remain available for online inspection.
+
 `--write-markers` additionally exercises BOOL/BYTE/INT/DINT/REAL/WORD/DWORD at
-M100..M117, restoring every original value. Change `--m-base` if that range is
-not reserved for testing.
+M100..M117, restoring every original value by default. Change `--m-base` if
+that range is not reserved for testing. Combining it with
+`--keep-marker-values` intentionally leaves the written marker values in the
+PLC.
 
 `--write-outputs` performs the same sequence in Q memory and is deliberately
 opt-in: Q writes can energize physical outputs. Use it only after the machine is
@@ -144,6 +149,12 @@ TIA date/time types, subscriptions.
 
 ## Change log
 
+- 2026-09-16 19:53: Verified the persistent I/Q/M/DB matrix against the
+  isolated S7-1214C: main run 43/43 and independent new-connection read-back
+  25/25. DB100, M100..M117 and Q0..Q17 were deliberately not restored.
+- 2026-09-16: Added explicit `--keep-db-values` and `--keep-marker-values`
+  modes so DB and marker values can be retained for PLC-side online inspection;
+  the default restore behavior remains unchanged.
 - 2026-09-16 19:24: Added the explicit `--keep-output-values` mode and verified
   persistent Q writes against an isolated S7-1214C with no attached equipment.
 - 2026-09-16 19:19: DB100 and M100..M117 passed the expanded 50/50 hardware
