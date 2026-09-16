@@ -23,6 +23,7 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 
@@ -498,6 +499,39 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 	}
 }
 
+func Test_requestTransactionManager_submitTransaction_startsInSubmissionOrder(t *testing.T) {
+	executor := pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+	executor.Start()
+	rtm := NewRequestTransactionManager(1, options.WithCustomLogger(produceTestingLogger(t)), WithCustomExecutor(executor))
+	t.Cleanup(func() {
+		assert.NoError(t, rtm.Close())
+	})
+
+	// The first transaction occupies the only slot until released, so the two others are bound to queue up.
+	release := make(chan struct{})
+	var startOrderMutex sync.Mutex
+	var startOrder []string
+	var allDone sync.WaitGroup
+	allDone.Add(3)
+	for _, transactionInfo := range []string{"first", "second", "third"} {
+		transaction := rtm.StartTransaction(transactionInfo)
+		transaction.Submit(transactionInfo, func(_ context.Context, transaction RequestTransaction) {
+			defer allDone.Done()
+			startOrderMutex.Lock()
+			startOrder = append(startOrder, transactionInfo)
+			startOrderMutex.Unlock()
+			<-release
+			assert.NoError(t, transaction.EndRequest())
+		})
+	}
+	close(release)
+	allDone.Wait()
+
+	startOrderMutex.Lock()
+	defer startOrderMutex.Unlock()
+	assert.Equal(t, []string{"first", "second", "third"}, startOrder, "transactions should start in submission order")
+}
+
 func Test_requestTransactionManager_Close(t *testing.T) {
 	type fields struct {
 		runningRequests                     []*requestTransaction
@@ -519,9 +553,10 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 			name: "close it",
 			setup: func(t *testing.T, fields *fields) {
 				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
-				executor := NewMockExecutor(t)
-				executor.EXPECT().Close().Return(nil)
-				fields.executor = executor
+				// No Close expectation: the executor belongs to whoever handed it over, so
+				// closing the manager has to leave it running. The mock fails the test if it
+				// is closed anyway.
+				fields.executor = NewMockExecutor(t)
 			},
 			wantErr: assert.NoError,
 		},
@@ -572,9 +607,10 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 			name: "close it",
 			setup: func(t *testing.T, fields *fields) {
 				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
-				executor := NewMockExecutor(t)
-				executor.EXPECT().Close().Return(nil)
-				fields.executor = executor
+				// No Close expectation: the executor belongs to whoever handed it over, so
+				// closing the manager has to leave it running. The mock fails the test if it
+				// is closed anyway.
+				fields.executor = NewMockExecutor(t)
 			},
 			wantErr: assert.NoError,
 		},
@@ -585,9 +621,10 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
-				executor := NewMockExecutor(t)
-				executor.EXPECT().Close().Return(nil)
-				fields.executor = executor
+				// No Close expectation: the executor belongs to whoever handed it over, so
+				// closing the manager has to leave it running. The mock fails the test if it
+				// is closed anyway.
+				fields.executor = NewMockExecutor(t)
 			},
 			wantErr: assert.NoError,
 		},
@@ -603,9 +640,10 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.ctx, fields.cancelCtx = context.WithCancel(t.Context())
-				executor := NewMockExecutor(t)
-				executor.EXPECT().Close().Return(nil)
-				fields.executor = executor
+				// No Close expectation: the executor belongs to whoever handed it over, so
+				// closing the manager has to leave it running. The mock fails the test if it
+				// is closed anyway.
+				fields.executor = NewMockExecutor(t)
 			},
 			wantErr: assert.NoError,
 		},
@@ -706,4 +744,33 @@ func Test_requestTransactionManager_String(t *testing.T) {
 			assert.Equalf(t, tt.want, r.String(), "String()")
 		})
 	}
+}
+
+func Test_requestTransactionManager_Close_leavesACallerSuppliedExecutorAlone(t *testing.T) {
+	executor := pool.NewFixedSizeExecutor(1, 10, options.WithCustomLogger(produceTestingLogger(t)))
+	executor.Start()
+	t.Cleanup(executor.Stop)
+
+	// Two managers on one executor is the shape that makes this matter: a driver which bounds the
+	// wire per connection - modbus does - builds a manager per connection, and every one of them
+	// is handed the same executor. Closing the first connection must not take the executor down
+	// with it, or every connection opened after it silently never sends anything again.
+	first := NewRequestTransactionManager(1, options.WithCustomLogger(produceTestingLogger(t)), WithCustomExecutor(executor))
+	second := NewRequestTransactionManager(1, options.WithCustomLogger(produceTestingLogger(t)), WithCustomExecutor(executor))
+
+	require.NoError(t, first.Close())
+	assert.True(t, executor.IsRunning(), "closing a manager must not stop an executor it was handed")
+
+	ran := make(chan struct{})
+	transaction := second.StartTransaction("after the first manager closed")
+	transaction.Submit("after the first manager closed", func(_ context.Context, transaction RequestTransaction) {
+		defer close(ran)
+		assert.NoError(t, transaction.EndRequest())
+	})
+	select {
+	case <-ran:
+	case <-time.After(5 * time.Second):
+		t.Error("the second manager never got its transaction run")
+	}
+	assert.NoError(t, second.Close())
 }

@@ -43,6 +43,13 @@ type Configuration struct {
 	pingAddress string
 	// requestTimeout bounds how long a single request waits for its response.
 	requestTimeout time.Duration
+	// maxCoilsPerRequest is the widest run of coils or discrete inputs the read optimizer merges
+	// into one request.
+	maxCoilsPerRequest uint16
+	// maxRegistersPerRequest is the widest run of registers the read optimizer merges into one
+	// request. It applies to all three register areas; the extended registers are cut down further
+	// where FC 0x14's framing demands it (see maxPerRequestFor).
+	maxRegistersPerRequest uint16
 	// flavor is the framing this connection speaks. It is not something the connection string can
 	// say - each driver speaks exactly one flavor and sets it on the configuration it hands to the
 	// connection. The zero value is flavorTcp, so a configuration nobody told otherwise behaves
@@ -67,6 +74,12 @@ const (
 	defaultPingAddress = "4x00001:BOOL"
 	// defaultRequestTimeout is plc4j's request-timeout-ms default of five seconds.
 	defaultRequestTimeout = 5 * time.Second
+	// defaultMaxCoilsPerRequest and defaultMaxRegistersPerRequest are plc4j's
+	// max-coils-per-request and max-registers-per-request defaults, which are the ceilings the
+	// modbus specification itself imposes - merging up to them asks for the largest request that
+	// can be answered at all.
+	defaultMaxCoilsPerRequest     = uint16(maxCoilQuantity)
+	defaultMaxRegistersPerRequest = uint16(maxRegisterQuantity)
 )
 
 // DefaultConfiguration is a connection without any options set.
@@ -76,6 +89,8 @@ func DefaultConfiguration() Configuration {
 		defaultPayloadByteOrder: BigEndianOrder,
 		pingAddress:             defaultPingAddress,
 		requestTimeout:          defaultRequestTimeout,
+		maxCoilsPerRequest:      defaultMaxCoilsPerRequest,
+		maxRegistersPerRequest:  defaultMaxRegistersPerRequest,
 	}
 }
 
@@ -130,7 +145,62 @@ func ParseFromOptions(localLog zerolog.Logger, connectionOptions map[string][]st
 		configuration.requestTimeout = time.Duration(parsedUint) * time.Millisecond
 	}
 
+	// The two ceilings the read optimizer merges within. plc4j declares them on all three modbus
+	// configurations - ModbusTcpConfiguration and its RTU and ASCII twins - and the website
+	// documents them (modbus-tcp.adoc and friends), so a connection string that sets them is one
+	// users have been told to write. This driver never read them, which made merging silently
+	// ignore a device that can't answer a full-width request.
+	maxCoilsPerRequest, err := parseMaxPerRequest(localLog, reader, "max-coils-per-request",
+		configuration.maxCoilsPerRequest, maxCoilQuantity)
+	if err != nil {
+		return Configuration{}, err
+	}
+	configuration.maxCoilsPerRequest = maxCoilsPerRequest
+
+	maxRegistersPerRequest, err := parseMaxPerRequest(localLog, reader, "max-registers-per-request",
+		configuration.maxRegistersPerRequest, maxRegisterQuantity)
+	if err != nil {
+		return Configuration{}, err
+	}
+	configuration.maxRegistersPerRequest = maxRegistersPerRequest
+
 	return configuration, nil
+}
+
+// parseMaxPerRequest reads one of the two per-request ceilings, falling back to the given default
+// when the connection string doesn't name it.
+//
+// Both bounds are refused rather than clamped. Zero would ask the device for nothing, which it
+// answers happily, so a read would report success and no data; anything above what the
+// specification allows produces a response that doesn't fit into a modbus PDU, which no device can
+// send. Either way a request built from such a number cannot work, and saying so beats sending it.
+func parseMaxPerRequest(localLog zerolog.Logger, reader *spiOptions.OptionReader, name string, defaultValue uint16, ceiling uint16) (uint16, error) {
+	value := reader.Get(name)
+	if value == "" {
+		return defaultValue, nil
+	}
+	parsedUint, err := strconv.ParseUint(value, 10, 16)
+	if err != nil {
+		return 0, errors.Wrapf(err, "Error parsing %s %s", name, value)
+	}
+	// Clamp rather than reject. plc4j declares these as plain ints with no validation at all
+	// (ModbusTcpConfiguration and its RTU/ASCII siblings), so a connection string that opens a
+	// connection there must open one here too -- refusing it would make the option LESS portable
+	// than it was when plc4go ignored it entirely, which is the opposite of the point.
+	//
+	// Zero would mean "no tag may ever be read" and the ceiling is what one request can physically
+	// carry, so both ends are pinned to something usable and the reason is logged.
+	if parsedUint == 0 {
+		localLog.Warn().Str("option", name).Str("value", value).Uint16("using", defaultValue).
+			Msg("a per-request ceiling of zero would read nothing, so the default is used")
+		return defaultValue, nil
+	}
+	if parsedUint > uint64(ceiling) {
+		localLog.Warn().Str("option", name).Str("value", value).Uint16("using", ceiling).
+			Msg("a per-request ceiling beyond what one modbus request can carry is clamped")
+		return ceiling, nil
+	}
+	return uint16(parsedUint), nil
 }
 
 // withRequestTimeout bounds a single request. The codec turns the deadline of the context it is

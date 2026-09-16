@@ -112,14 +112,14 @@
     <antlr.version>4.13.2</antlr.version>
     <assertj.version>3.27.7</assertj.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <bouncycastle.version>1.85</bouncycastle.version>
+    <bouncycastle.version>1.86</bouncycastle.version>
     <!-- Bouncy Castle occasionally ships a patch release for "bcprov" alone (1.80.2, 1.81.1,
          1.85.2 ...) while "bcpkix", "bctls" and "bcutil" stay on the base version. Those three
          all resolve down to bcprov, so a single shared property would either hold bcprov back
          or point the other three at a version that was never published. Hence the separate
          property: keep it on the newest patch of the "bouncycastle.version" line, and move both
          together when the base version changes. -->
-    <bouncycastle-prov.version>1.85.2</bouncycastle-prov.version>
+    <bouncycastle-prov.version>1.86</bouncycastle-prov.version>
     <byte-buddy.version>1.18.13</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-cli.version>1.11.0</commons-cli.version>
@@ -134,7 +134,7 @@
     <docker-java.version>3.7.1</docker-java.version>
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.5.2</equalsverifier.version>
-    <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
+    <extra-enforcer-rules.version>1.12.1</extra-enforcer-rules.version>
     <freemarker.version>2.3.35</freemarker.version>
     <glob.version>0.9.0</glob.version>
     <groovy.version>5.1.2</groovy.version>
@@ -177,7 +177,7 @@
     <reflow.skin.version>2.3.3</reflow.skin.version>
     <saxon.version>13.0</saxon.version>
     <semver4j.version>3.1.0</semver4j.version>
-    <slf4j.version>2.0.18</slf4j.version>
+    <slf4j.version>2.0.19</slf4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <testcontainers-virtualavr.version>0.0.2</testcontainers-virtualavr.version>
     <xmlunit.version>2.13.0</xmlunit.version>
@@ -1175,18 +1175,18 @@
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
               <artifactId>plexus-compiler-api</artifactId>
-              <version>2.17.0</version>
+              <version>2.17.1</version>
             </dependency>
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
               <artifactId>plexus-compiler-eclipse</artifactId>
-              <version>2.17.0</version>
+              <version>2.17.1</version>
             </dependency>
             <!-- Redundant import, however we might need to bump this version more often -->
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
-              <version>3.46.0</version>
+              <version>3.46.100</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -1328,13 +1328,13 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.6.3</version>
+          <version>3.6.4</version>
         </plugin>
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.2</version>
         </plugin>
 
         <plugin>
@@ -1358,7 +1358,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>5.7.0.6970</version>
+          <version>5.8.0.7211</version>
         </plugin>
 
         <plugin>
@@ -1407,7 +1407,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>xml-maven-plugin</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2</version>
         </plugin>
 
         <plugin>

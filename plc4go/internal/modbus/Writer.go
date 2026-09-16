@@ -37,6 +37,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,18 +45,23 @@ type Writer struct {
 	transactionIdentifier int32
 	configuration         Configuration
 	messageCodec          spi.MessageCodec
+	// tm is the connection's request transaction manager. A write request is cut into one request
+	// per tag by the interceptor, which hands them all to the writer at once - so this is what
+	// keeps a multi-tag write from putting every one of them on the wire together.
+	tm transactions.RequestTransactionManager
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
 
-func NewWriter(configuration Configuration, messageCodec spi.MessageCodec, _options ...options.WithOption) *Writer {
+func NewWriter(configuration Configuration, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Writer{
 		transactionIdentifier: 0,
 		configuration:         configuration,
 		messageCodec:          messageCodec,
+		tm:                    tm,
 		log:                   customLogger,
 	}
 }
@@ -225,8 +231,11 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		adus := m.configuration.adus()
 		requestAdu := adus.buildRequest(uint16(transactionIdentifier), modbusTag.resolveUnitId(m.configuration.unitIdentifier), pdu)
 
-		// Send the ADU over the wire
-		if err = m.messageCodec.SendRequest(requestCtx, "write", requestAdu, func(message spi.Message) bool {
+		// Send the ADU over the wire, once the requests ahead of it have been answered. A write
+		// request of several tags arrives here as one sub-write per tag, all of them at once
+		// (spi/model.DefaultPlcWriteRequest.ExecuteWithContextAndInterceptor), so without the
+		// transaction manager in the middle they would all go out together.
+		if err = sendTransacted(requestCtx, m.log, m.messageCodec, m.tm, "write", requestAdu, func(message spi.Message) bool {
 			return adus.acceptsResponse(requestAdu, message)
 		}, func(message spi.Message) error {
 			// Convert the response into an ADU
@@ -253,6 +262,40 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		}
 	})
 	return result
+}
+
+// responseCodeOf maps a modbus exception onto the response code the caller sees, exactly as plc4j's
+// ModbusTcpConnection.getErrorCode does. The second value is false for a code the specification
+// doesn't define, which is left to the caller to report - a read and a write have different things
+// to say about one.
+func responseCodeOf(exceptionCode readWriteModel.ModbusErrorCode) (apiModel.PlcResponseCode, bool) {
+	switch exceptionCode {
+	case readWriteModel.ModbusErrorCode_ILLEGAL_FUNCTION:
+		return apiModel.PlcResponseCode_UNSUPPORTED, true
+	case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
+		return apiModel.PlcResponseCode_INVALID_ADDRESS, true
+	case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_VALUE:
+		return apiModel.PlcResponseCode_INVALID_DATA, true
+	case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_FAILURE:
+		return apiModel.PlcResponseCode_REMOTE_ERROR, true
+	case readWriteModel.ModbusErrorCode_ACKNOWLEDGE:
+		// The device took the request and will take its time over it. For a write that is as good
+		// as done; a read has nothing to show for it, which is why extractResponseData overrides
+		// this one.
+		return apiModel.PlcResponseCode_OK, true
+	case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_BUSY:
+		return apiModel.PlcResponseCode_REMOTE_BUSY, true
+	case readWriteModel.ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
+		return apiModel.PlcResponseCode_REMOTE_ERROR, true
+	case readWriteModel.ModbusErrorCode_MEMORY_PARITY_ERROR:
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, true
+	case readWriteModel.ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, true
+	case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
+		return apiModel.PlcResponseCode_REMOTE_ERROR, true
+	default:
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, false
+	}
 }
 
 // ToPlc4xWriteResponse turns the ADU a device answered with into a PLC4X response. It takes the
@@ -317,30 +360,15 @@ func (m *Writer) toPlc4xWriteResponse(requestPdu readWriteModel.ModbusPDU, respo
 		}
 		responseCodes[tagName] = apiModel.PlcResponseCode_OK
 	case readWriteModel.ModbusPDUError:
-		switch resp.GetExceptionCode() {
-		case readWriteModel.ModbusErrorCode_ILLEGAL_FUNCTION:
-			responseCodes[tagName] = apiModel.PlcResponseCode_UNSUPPORTED
-		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
-			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_VALUE:
-			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_DATA
-		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_FAILURE:
-			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
-		case readWriteModel.ModbusErrorCode_ACKNOWLEDGE:
-			responseCodes[tagName] = apiModel.PlcResponseCode_OK
-		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_BUSY:
-			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_BUSY
-		case readWriteModel.ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
-			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
-		case readWriteModel.ModbusErrorCode_MEMORY_PARITY_ERROR:
-			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-		case readWriteModel.ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
-			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
-			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
-		default:
+		responseCode, mapped := responseCodeOf(resp.GetExceptionCode())
+		if !mapped {
+			// An exception code the specification doesn't define. The device refused; which way it
+			// spelled that is all that is unknown. Leaving the tag out of the map instead would have
+			// the caller read it back as NOT_FOUND, which says the tag was never written at all.
 			m.log.Debug().Interface("exceptionCode", resp.GetExceptionCode()).Msg("Unmapped exception code")
+			responseCode = apiModel.PlcResponseCode_REMOTE_ERROR
 		}
+		responseCodes[tagName] = responseCode
 	default:
 		return nil, errors.Errorf("unsupported response type %T", resp)
 	}

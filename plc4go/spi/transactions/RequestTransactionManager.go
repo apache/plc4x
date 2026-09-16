@@ -80,8 +80,10 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...op
 	rtm := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		currentTransactionId:       0,
-		workLog:                    *list.New(),
-		executor:                   sharedExecutorInstance,
+		// note: the zero value is an empty list ready to use. Copying the result of list.New() would leave the
+		// sentinel pointing to the discarded original, which breaks PushBack and makes Front return the sentinel.
+		workLog:  list.List{},
+		executor: sharedExecutorInstance,
 
 		traceTransactionManagerTransactions: extractTraceTransactionManagerTransactions || config.TraceTransactionManagerTransactions,
 
@@ -163,9 +165,9 @@ func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 
 func (r *requestTransactionManager) submitTransaction(transaction *requestTransaction) {
 	// Add this Request with the transaction i the work log
-	// Put Transaction into work log
+	// Put Transaction into work log at the back as processWorklog drains from the front (FIFO)
 	r.workLogMutex.Lock()
-	r.workLog.PushFront(transaction)
+	r.workLog.PushBack(transaction)
 	r.workLogMutex.Unlock()
 	// Try to Process the work log
 	r.processWorklog()
@@ -285,13 +287,12 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
-	if r.executor != sharedExecutorInstance {
-		if err := r.executor.Close(); err != nil {
-			return errors.Wrap(err, "error closing executor")
-		}
-	} else {
-		r.log.Warn().Msg("not closing shared instance")
-	}
+	// The executor is never this manager's to close. It is either the process-wide shared one or
+	// one the caller handed over with WithCustomExecutor, and in both cases it outlives this
+	// manager: whoever created it is still using it and still has to stop it. Closing it from here
+	// stopped it for everybody else on it, which is every other connection of a driver that gives
+	// each connection its own manager the way modbus does - and a stopped executor never runs the
+	// work queued into it, so those connections simply never send anything again.
 	r.cancelCtx()
 	r.log.Debug().Msg("closed")
 	return nil
