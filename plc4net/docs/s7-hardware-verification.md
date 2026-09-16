@@ -149,6 +149,9 @@ TIA date/time types, subscriptions.
 
 ## Change log
 
+- 2026-09-16 20:09: Added the original S7-1214C test-rig, DB100 online-value
+  and I/Q/M watch-table images as PLC-side evidence for the persistent matrix
+  verification. The images are unedited copies of the captured files.
 - 2026-09-16 19:53: Verified the persistent I/Q/M/DB matrix against the
   isolated S7-1214C: main run 43/43 and independent new-connection read-back
   25/25. DB100, M100..M117 and Q0..Q17 were deliberately not restored.

@@ -66,6 +66,19 @@ connection.
 These are live process-image/memory values, not retained startup values; PLC
 logic, an input transition, a mode change or a restart may overwrite them.
 
+### PLC-side visual evidence
+
+The following images were captured after the persistent write and independent
+read-back. They provide PLC-side confirmation in TIA Portal in addition to the
+driver-side report above.
+
+- [S7-1214C test rig](images/s7-1214c-test-rig.jpg) — CPU 1214C DC/DC/DC on the
+  isolated bench with its 24 VDC power supply.
+- [DB100 online values](images/s7-db100-online-values.png) — DB100 offsets,
+  declared types, start values and monitored values in TIA Portal.
+- [I/Q/M watch table](images/s7-iqm-watch-table.png) — input reads and the
+  persistent output/marker values at the tested absolute addresses.
+
 ## 2026-09-16 — Siemens S7-1214C, persistent Q write verification
 
 The PLC had no external equipment attached. The output matrix was explicitly
