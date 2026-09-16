@@ -133,8 +133,17 @@ namespace org.apache.plc4net.spi.test.drivers
         [InlineData("%DB5.DBD20", S7Tag.AreaType.DataBlock, 5, 20, -1, 4)]
         [InlineData("%M0.0", S7Tag.AreaType.Merker, 0, 0, 0, 1)]
         [InlineData("%M10", S7Tag.AreaType.Merker, 0, 10, -1, 1)]
+        [InlineData("%MB10", S7Tag.AreaType.Merker, 0, 10, -1, 1)]
+        [InlineData("%MW10", S7Tag.AreaType.Merker, 0, 10, -1, 2)]
+        [InlineData("%MD10", S7Tag.AreaType.Merker, 0, 10, -1, 4)]
         [InlineData("%I0.0", S7Tag.AreaType.Input, 0, 0, 0, 1)]
+        [InlineData("%IB0", S7Tag.AreaType.Input, 0, 0, -1, 1)]
+        [InlineData("%IW0", S7Tag.AreaType.Input, 0, 0, -1, 2)]
+        [InlineData("%ID0", S7Tag.AreaType.Input, 0, 0, -1, 4)]
         [InlineData("%Q4.5", S7Tag.AreaType.Output, 0, 4, 5, 1)]
+        [InlineData("%QB0", S7Tag.AreaType.Output, 0, 0, -1, 1)]
+        [InlineData("%QW0", S7Tag.AreaType.Output, 0, 0, -1, 2)]
+        [InlineData("%QD0", S7Tag.AreaType.Output, 0, 0, -1, 4)]
         public void Tag_parsing_yields_correct_areas_and_offsets(
             string address, S7Tag.AreaType expectedArea,
             int expectedDb, int expectedOffset, int expectedBit, int expectedSize)
@@ -160,6 +169,7 @@ namespace org.apache.plc4net.spi.test.drivers
             Assert.Throws<S7DriverException>(() => S7Tag.Parse("%DB1.DBD70000"));
             Assert.Throws<S7DriverException>(() => S7Tag.Parse("%M0.9"));
             Assert.Throws<S7DriverException>(() => S7Tag.Parse("%DB1.DBX0.8"));
+            Assert.Throws<S7DriverException>(() => S7Tag.Parse("%IW0.0"));
         }
 
         [Fact]
@@ -218,17 +228,28 @@ namespace org.apache.plc4net.spi.test.drivers
         }
 
         [Theory]
-        [InlineData("%DB1.DBB10", TransportSize.BYTE)]
-        [InlineData("%DB1.DBW10", TransportSize.WORD)]
-        [InlineData("%DB1.DBD10", TransportSize.DWORD)]
-        [InlineData("%DB1.DBX0.0", TransportSize.BOOL)]
-        public void The_address_transport_size_matches_the_tag_width(string address, TransportSize expected)
+        [InlineData("%DB1.DBB10", MemoryArea.DATA_BLOCKS, TransportSize.BYTE)]
+        [InlineData("%DB1.DBW10", MemoryArea.DATA_BLOCKS, TransportSize.WORD)]
+        [InlineData("%DB1.DBD10", MemoryArea.DATA_BLOCKS, TransportSize.DWORD)]
+        [InlineData("%DB1.DBX0.0", MemoryArea.DATA_BLOCKS, TransportSize.BOOL)]
+        [InlineData("%IB0", MemoryArea.INPUTS, TransportSize.BYTE)]
+        [InlineData("%IW0", MemoryArea.INPUTS, TransportSize.WORD)]
+        [InlineData("%ID0", MemoryArea.INPUTS, TransportSize.DWORD)]
+        [InlineData("%QB0", MemoryArea.OUTPUTS, TransportSize.BYTE)]
+        [InlineData("%QW0", MemoryArea.OUTPUTS, TransportSize.WORD)]
+        [InlineData("%QD0", MemoryArea.OUTPUTS, TransportSize.DWORD)]
+        [InlineData("%MB0", MemoryArea.FLAGS_MARKERS, TransportSize.BYTE)]
+        [InlineData("%MW0", MemoryArea.FLAGS_MARKERS, TransportSize.WORD)]
+        [InlineData("%MD0", MemoryArea.FLAGS_MARKERS, TransportSize.DWORD)]
+        public void The_address_area_and_transport_size_match_the_tag(
+            string address, MemoryArea expectedArea, TransportSize expectedSize)
         {
             var pdu = S7Constants.BuildReadRequest(1, new List<S7Tag> { S7Tag.Parse(address) });
             var param = (S7ParameterReadVarRequest)((S7MessageRequest)
                 S7Message.StaticParse(new ReadBuffer(pdu))).Parameter!;
             var addr = (S7AddressAny)((S7VarRequestParameterItemAddress)param.Items[0]).Address;
-            Assert.Equal(expected, addr.TransportSize);
+            Assert.Equal(expectedArea, addr.Area);
+            Assert.Equal(expectedSize, addr.TransportSize);
         }
 
         [Fact]
@@ -571,6 +592,25 @@ namespace org.apache.plc4net.spi.test.drivers
             Assert.Equal(new byte[] { 0x00, 0x05 }, S7Connection.EncodeWriteValue(5, db)); // int coerced to WORD
             Assert.Throws<S7DriverException>(() => S7Connection.EncodeWriteValue(70000, db));
             Assert.Throws<S7DriverException>(() => S7Connection.EncodeWriteValue(1.5f, db));
+        }
+
+        [Fact]
+        public void Write_encoding_covers_the_seven_S7_scalar_types()
+        {
+            Assert.Equal(new byte[] { 0x01 },
+                S7Connection.EncodeWriteValue(true, S7Tag.Parse("%DB1.DBX0.0")));
+            Assert.Equal(new byte[] { 0xA5 },
+                S7Connection.EncodeWriteValue((byte)0xA5, S7Tag.Parse("%DB1.DBB1")));
+            Assert.Equal(new byte[] { 0xCF, 0xC7 },
+                S7Connection.EncodeWriteValue((short)-12345, S7Tag.Parse("%DB1.DBW2")));
+            Assert.Equal(new byte[] { 0xFF, 0xF0, 0xBD, 0xC0 },
+                S7Connection.EncodeWriteValue(-1000000, S7Tag.Parse("%DB1.DBD4")));
+            Assert.Equal(new byte[] { 0x40, 0x49, 0x0F, 0xD0 },
+                S7Connection.EncodeWriteValue(3.14159f, S7Tag.Parse("%DB1.DBD8")));
+            Assert.Equal(new byte[] { 0xBE, 0xEF },
+                S7Connection.EncodeWriteValue(0xBEEF, S7Tag.Parse("%DB1.DBW12")));
+            Assert.Equal(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF },
+                S7Connection.EncodeWriteValue(0xDEADBEEFL, S7Tag.Parse("%DB1.DBD14")));
         }
     }
 }

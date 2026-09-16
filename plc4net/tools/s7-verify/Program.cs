@@ -55,7 +55,9 @@ namespace org.apache.plc4net.tools.s7verify
             {
                 Console.Error.WriteLine(
                     "usage: s7-verify <host> [--rack N] [--slot N] [--db N] " +
-                    "[--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN] [--read <address>]");
+                    "[--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN] [--read <address>] " +
+                    "[--i-base N] [--q-base N] [--m-base N] [--read-only] " +
+                    "[--write-markers] [--write-outputs] [--keep-output-values]");
                 return 2;
             }
 
@@ -119,20 +121,46 @@ namespace org.apache.plc4net.tools.s7verify
                 await ReadScalar(reader, connection, report, "DWORD", $"%DB{db}.DBD14",
                     v => $"0x{v.GetUint():X8}", "0xDEADBEEF");
 
+                // ── absolute-address matrix ──
+                var iBase = GetInt(opts, "i-base", 0);
+                var qBase = GetInt(opts, "q-base", 0);
+                var mBase = GetInt(opts, "m-base", 100);
+                await ReadAreaMatrix(reader, connection, report, "I", iBase);
+                await ReadAreaMatrix(reader, connection, report, "Q", qBase);
+                await ReadAreaMatrix(reader, connection, report, "M", mBase);
+                if (opts.ContainsKey("read-only"))
+                    return report.Failures == 0 ? 0 : 1;
+
                 // ── multi-tag single request ──
                 await MultiRead(reader, connection, report, db);
 
-                // ── write round-trip ──
-                await WriteRoundTrip(reader, writer, connection, report, $"%DB{db}.DBW18",
-                    b => b.AddTag("w", $"%DB{db}.DBW18", (short)6789),
-                    v => unchecked((short)v.GetUshort()).ToString(CultureInfo.InvariantCulture), "6789");
-                // 12345.5 is exact in IEEE-754 single, so a byte-perfect round-trip
-                // renders back to the same string. (A value like 12345.678f is really
-                // 12345.6787..., which would fail a literal string compare.)
-                await WriteRoundTrip(reader, writer, connection, report, $"%DB{db}.DBD20",
-                    b => b.AddTag("w", $"%DB{db}.DBD20", 12345.5f),
-                    v => BitConverter.Int32BitsToSingle(unchecked((int)v.GetUint()))
-                        .ToString("0.###", CultureInfo.InvariantCulture), "12345.5");
+                // ── write matrices: read -> write -> read -> restore -> read ──
+                await WriteTypeMatrix(reader, writer, connection, report,
+                    new[]
+                    {
+                        ("BOOL", $"%DB{db}.DBX0.0", (object)false),
+                        ("BYTE", $"%DB{db}.DBB1", (object)(byte)0x3C),
+                        ("INT", $"%DB{db}.DBW2", (object)(short)23456),
+                        ("DINT", $"%DB{db}.DBD4", (object)(-123456789)),
+                        ("REAL", $"%DB{db}.DBD8", (object)(-12.5f)),
+                        ("WORD", $"%DB{db}.DBW12", (object)0x1357),
+                        ("DWORD", $"%DB{db}.DBD14", (object)0x89ABCDEFL),
+                    }, restore: true);
+
+                if (opts.ContainsKey("write-markers"))
+                {
+                    await WriteTypeMatrix(reader, writer, connection, report,
+                        AreaWriteMatrix("M", mBase), restore: true);
+                }
+                if (opts.ContainsKey("write-outputs"))
+                {
+                    report.Line("- **WARNING**: output write matrix explicitly enabled");
+                    var restoreOutputs = !opts.ContainsKey("keep-output-values");
+                    if (!restoreOutputs)
+                        report.Line("- **WARNING**: output values will remain changed after verification");
+                    await WriteTypeMatrix(reader, writer, connection, report,
+                        AreaWriteMatrix("Q", qBase), restoreOutputs);
+                }
 
                 // ── error path ──
                 await ErrorPath(reader, connection, report);
@@ -182,7 +210,7 @@ namespace org.apache.plc4net.tools.s7verify
                 Console.WriteLine($"Read {address}: {code}");
                 if (code == PlcResponseCode.Ok)
                 {
-                    Console.WriteLine($"  value: {Render(resp.GetValue("tag"))}");
+                    Console.WriteLine($"  value: {RenderAddress(address, resp.GetValue("tag"))}");
                     return 0;
                 }
                 if (code == PlcResponseCode.AccessDenied)
@@ -270,33 +298,188 @@ namespace org.apache.plc4net.tools.s7verify
             }
         }
 
-        private static async Task WriteRoundTrip(PlcReader reader, PlcWriter writer, IPlcConnection connection,
-            Report report, string address, Action<DefaultPlcWriteRequestBuilder> addWrite,
-            Func<org.apache.plc4net.api.value.IPlcValue, string> render, string expected)
+        private static async Task ReadAreaMatrix(PlcReader reader, IPlcConnection connection,
+            Report report, string area, int offset)
         {
+            var addresses = new[]
+            {
+                $"%{area}{offset}.0", $"%{area}B{offset}",
+                $"%{area}W{offset}", $"%{area}D{offset}",
+            };
+            foreach (var address in addresses)
+            {
+                try
+                {
+                    var value = await ReadOne(reader, connection, address);
+                    report.Pass($"Read {address}", $"= {RenderAddress(address, value)}");
+                }
+                catch (Exception e)
+                {
+                    report.Fail($"Read {address}", e.Message);
+                }
+            }
+        }
+
+        private static (string Type, string Address, object Value)[] AreaWriteMatrix(string area, int offset) =>
+            new[]
+            {
+                ("BOOL", $"%{area}{offset}.0", (object)true),
+                ("BYTE", $"%{area}B{offset + 1}", (object)(byte)0x3C),
+                ("INT", $"%{area}W{offset + 2}", (object)(short)23456),
+                ("DINT", $"%{area}D{offset + 4}", (object)(-123456789)),
+                ("REAL", $"%{area}D{offset + 8}", (object)(-12.5f)),
+                ("WORD", $"%{area}W{offset + 12}", (object)0x1357),
+                ("DWORD", $"%{area}D{offset + 14}", (object)0x89ABCDEFL),
+            };
+
+        private static async Task WriteTypeMatrix(PlcReader reader, PlcWriter writer,
+            IPlcConnection connection, Report report,
+            IEnumerable<(string Type, string Address, object Value)> cases, bool restore)
+        {
+            foreach (var item in cases)
+            {
+                await WriteRoundTripRestored(reader, writer, connection, report,
+                    item.Type, item.Address, item.Value, restore);
+            }
+        }
+
+        private static async Task WriteRoundTripRestored(PlcReader reader, PlcWriter writer,
+            IPlcConnection connection, Report report, string type, string address,
+            object testValue, bool restore)
+        {
+            IPlcValue? original = null;
             try
             {
-                var wb = (DefaultPlcWriteRequestBuilder)connection.WriteRequestBuilder;
-                addWrite(wb);
-                var wResp = (DefaultPlcWriteResponse)await writer.Write((DefaultPlcWriteRequest)wb.Build());
-                if (wResp.GetResponseCode("w") != PlcResponseCode.Ok)
-                {
-                    report.Fail($"Write {address}", $"write code {wResp.GetResponseCode("w")}");
-                    return;
-                }
-
-                var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
-                rb.AddTagAddress("v", address);
-                var rResp = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
-                var actual = render(rResp.GetValue("v"));
-                if (actual == expected) report.Pass($"Write + read-back {address}", $"= {actual}");
-                else report.Fail($"Write + read-back {address}", $"read back {actual}, expected {expected}");
+                original = await ReadOne(reader, connection, address);
+                var before = RenderAs(type, original);
+                await WriteOne(writer, connection, address, testValue);
+                var after = RenderAs(type, await ReadOne(reader, connection, address));
+                var expected = RenderExpected(type, testValue);
+                if (after == expected)
+                    report.Pass($"Read/write/read {type} {address}", $"before {before}, after {after}");
+                else
+                    report.Fail($"Read/write/read {type} {address}",
+                        $"before {before}, read back {after}, expected {expected}");
             }
             catch (Exception e)
             {
-                report.Fail($"Write + read-back {address}", e.Message);
+                report.Fail($"Read/write/read {type} {address}", e.Message);
+            }
+            finally
+            {
+                if (restore && original != null)
+                {
+                    try
+                    {
+                        await WriteOne(writer, connection, address, ToWritableValue(address, original));
+                        var restored = await ReadOne(reader, connection, address);
+                        if (Snapshot(address, restored) == Snapshot(address, original))
+                            report.Pass($"Restore {address}", $"= {RenderAddress(address, restored)}");
+                        else
+                            report.Fail($"Restore {address}",
+                                $"got {RenderAddress(address, restored)}, " +
+                                $"expected {RenderAddress(address, original)}");
+                    }
+                    catch (Exception e)
+                    {
+                        report.Fail($"Restore {address}", e.Message);
+                    }
+                }
             }
         }
+
+        private static async Task<IPlcValue> ReadOne(PlcReader reader,
+            IPlcConnection connection, string address)
+        {
+            var rb = (DefaultPlcReadRequestBuilder)connection.ReadRequestBuilder;
+            rb.AddTagAddress("v", address);
+            var response = (DefaultPlcReadResponse)await reader.Read((DefaultPlcReadRequest)rb.Build());
+            var code = response.GetResponseCode("v");
+            if (code != PlcResponseCode.Ok)
+                throw new S7DriverException($"read returned {code}");
+            return response.GetValue("v");
+        }
+
+        private static async Task WriteOne(PlcWriter writer, IPlcConnection connection,
+            string address, object value)
+        {
+            var wb = (DefaultPlcWriteRequestBuilder)connection.WriteRequestBuilder;
+            switch (value)
+            {
+                case bool v: wb.AddTag("w", address, v); break;
+                case byte v: wb.AddTag("w", address, v); break;
+                case short v: wb.AddTag("w", address, v); break;
+                case int v: wb.AddTag("w", address, v); break;
+                case long v: wb.AddTag("w", address, v); break;
+                case float v: wb.AddTag("w", address, v); break;
+                default: throw new S7DriverException($"unsupported write value {value.GetType().Name}");
+            }
+            var response = (DefaultPlcWriteResponse)await writer.Write((DefaultPlcWriteRequest)wb.Build());
+            var code = response.GetResponseCode("w");
+            if (code != PlcResponseCode.Ok)
+                throw new S7DriverException($"write returned {code}");
+        }
+
+        private static object ToWritableValue(string address, IPlcValue value)
+        {
+            var tag = S7Tag.Parse(address);
+            if (tag.BitOffset >= 0) return value.GetBool();
+            return tag.DataTypeSize switch
+            {
+                1 => value.GetByte(),
+                2 => (int)value.GetUshort(),
+                _ => (long)value.GetUint(),
+            };
+        }
+
+        private static string Snapshot(string address, IPlcValue value)
+        {
+            var tag = S7Tag.Parse(address);
+            if (tag.BitOffset >= 0) return $"B:{value.GetBool()}";
+            return tag.DataTypeSize switch
+            {
+                1 => $"U8:{value.GetByte():X2}",
+                2 => $"U16:{value.GetUshort():X4}",
+                _ => $"U32:{value.GetUint():X8}",
+            };
+        }
+
+        private static string RenderAddress(string address, IPlcValue value)
+        {
+            var tag = S7Tag.Parse(address);
+            if (tag.BitOffset >= 0) return value.GetBool().ToString();
+            return tag.DataTypeSize switch
+            {
+                1 => $"0x{value.GetByte():X2}",
+                2 => $"0x{value.GetUshort():X4}",
+                _ => $"0x{value.GetUint():X8}",
+            };
+        }
+
+        private static string RenderAs(string type, IPlcValue value) => type switch
+        {
+            "BOOL" => value.GetBool().ToString(),
+            "BYTE" => $"0x{value.GetByte():X2}",
+            "INT" => unchecked((short)value.GetUshort()).ToString(CultureInfo.InvariantCulture),
+            "DINT" => unchecked((int)value.GetUint()).ToString(CultureInfo.InvariantCulture),
+            "REAL" => BitConverter.Int32BitsToSingle(unchecked((int)value.GetUint()))
+                .ToString("0.####", CultureInfo.InvariantCulture),
+            "WORD" => $"0x{value.GetUshort():X4}",
+            "DWORD" => $"0x{value.GetUint():X8}",
+            _ => Render(value),
+        };
+
+        private static string RenderExpected(string type, object value) => type switch
+        {
+            "BOOL" => ((bool)value).ToString(),
+            "BYTE" => $"0x{(byte)value:X2}",
+            "INT" => ((short)value).ToString(CultureInfo.InvariantCulture),
+            "DINT" => ((int)value).ToString(CultureInfo.InvariantCulture),
+            "REAL" => ((float)value).ToString("0.####", CultureInfo.InvariantCulture),
+            "WORD" => $"0x{Convert.ToUInt16(value, CultureInfo.InvariantCulture):X4}",
+            "DWORD" => $"0x{Convert.ToUInt32(value, CultureInfo.InvariantCulture):X8}",
+            _ => value.ToString() ?? string.Empty,
+        };
 
         private static async Task ErrorPath(PlcReader reader, IPlcConnection connection, Report report)
         {
@@ -324,12 +507,15 @@ namespace org.apache.plc4net.tools.s7verify
         private static Dictionary<string, string> ParseOptions(string[] args)
         {
             var opts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            for (var i = 1; i < args.Length - 1; i++)
+            for (var i = 1; i < args.Length; i++)
             {
                 if (args[i].StartsWith("--", StringComparison.Ordinal))
                 {
-                    opts[args[i].Substring(2)] = args[i + 1];
-                    i++;
+                    var key = args[i].Substring(2);
+                    if (i + 1 < args.Length && !args[i + 1].StartsWith("--", StringComparison.Ordinal))
+                        opts[key] = args[++i];
+                    else
+                        opts[key] = "true";
                 }
             }
             return opts;
@@ -337,6 +523,10 @@ namespace org.apache.plc4net.tools.s7verify
 
         private static string Get(Dictionary<string, string> opts, string key, string fallback) =>
             opts.TryGetValue(key, out var v) ? v : fallback;
+
+        private static int GetInt(Dictionary<string, string> opts, string key, int fallback) =>
+            opts.TryGetValue(key, out var value)
+                ? int.Parse(value, CultureInfo.InvariantCulture) : fallback;
 
         private sealed class Report
         {

@@ -50,7 +50,7 @@ namespace org.apache.plc4net.drivers.s7
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private static readonly Regex MioPattern = new Regex(
-            @"^%?(?<area>[MIQ])(?<offset>\d+)(\.(?<bit>\d))?$",
+            @"^%?(?<area>[MIQ])(?<type>[BWD]?)(?<offset>\d+)(\.(?<bit>\d))?$",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public enum AreaType { DataBlock, Merker, Input, Output, Counter, Timer }
@@ -114,7 +114,9 @@ namespace org.apache.plc4net.drivers.s7
                 return Validated(new S7Tag(area, 0, num, -1, 2), tagAddress);
             }
 
-            // M/I/Q: %M0.0, %I0.0, %Q4.5
+            // M/I/Q: bit (%M0.0), byte (%MB0), word (%MW0), dword (%MD0).
+            // The old suffix-less whole-byte form (%M0) remains accepted for
+            // compatibility, but ToString() emits the canonical Siemens form.
             var mioMatch = MioPattern.Match(tagAddress);
             if (mioMatch.Success)
             {
@@ -128,12 +130,19 @@ namespace org.apache.plc4net.drivers.s7
                 var offset = int.Parse(mioMatch.Groups["offset"].Value, CultureInfo.InvariantCulture);
                 var bit = mioMatch.Groups["bit"].Success
                     ? int.Parse(mioMatch.Groups["bit"].Value, CultureInfo.InvariantCulture) : -1;
-                return Validated(new S7Tag(area, 0, offset, bit, 1), tagAddress);
+                var type = mioMatch.Groups["type"].Value.ToUpperInvariant();
+                if (bit >= 0 && type.Length != 0)
+                {
+                    throw new S7DriverException(
+                        $"S7 bit address '{tagAddress}' must not include a B/W/D size suffix.");
+                }
+                var size = type switch { "W" => 2, "D" => 4, _ => 1 };
+                return Validated(new S7Tag(area, 0, offset, bit, size), tagAddress);
             }
 
             throw new S7DriverException(
                 $"Cannot parse S7 tag address '{tagAddress}'. " +
-                "Expected format: %DBn.DBTm, %MBn, %IBn, %QBn, %Cn, or %Tn.");
+                "Expected format: %DBn.DBTm, %[MIQ]byte.bit, %[MIQ][BWD]byte, %Cn, or %Tn.");
         }
 
         // The S7-ANY address item carries the DB number and the byte address in
@@ -171,7 +180,9 @@ namespace org.apache.plc4net.drivers.s7
                 return $"{prefix}{typeSuffix}{ByteOffset}{bitSuffix}";
             }
 
-            return BitOffset >= 0 ? $"{prefix}{ByteOffset}.{BitOffset}" : $"{prefix}{ByteOffset}";
+            if (BitOffset >= 0) return $"{prefix}{ByteOffset}.{BitOffset}";
+            var suffix = DataTypeSize switch { 2 => "W", 4 => "D", _ => "B" };
+            return $"{prefix}{suffix}{ByteOffset}";
         }
     }
 }

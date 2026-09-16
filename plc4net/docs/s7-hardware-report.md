@@ -21,6 +21,71 @@
 Output of `tools/s7-verify` against real hardware. The procedure and the data
 block layout are in [s7-hardware-verification.md](s7-hardware-verification.md).
 
+## 2026-09-16 — Siemens S7-1214C, persistent Q write verification
+
+The PLC had no external equipment attached. The output matrix was explicitly
+run with `--write-outputs --keep-output-values`, so the final values were not
+restored and can be inspected online in TIA Portal.
+
+- **Device endpoint**: `192.168.1.11`, rack 0 / slot 1
+- **Sequence**: each Q target passed read-before → write → immediate read-back
+- **Independent read-back**: all targets were read again over new connections
+  after the write session closed
+- **Result**: **PASS (43/43)** for the full run; persistent Q values:
+
+  | Type | Address | Before | Written and independently read back |
+  |---|---|---:|---:|
+  | BOOL | `%Q0.0` | `False` | `True` |
+  | BYTE | `%QB1` | `0x00` | `0x3C` |
+  | INT | `%QW2` | `0` | `23456` (`0x5BA0`) |
+  | DINT | `%QD4` | `0` | `-123456789` (`0xF8A432EB`) |
+  | REAL | `%QD8` | `0.0` | `-12.5` (`0xC1480000`) |
+  | WORD | `%QW12` | `0x0000` | `0x1357` |
+  | DWORD | `%QD14` | `0x00000000` | `0x89ABCDEF` |
+
+DB100 was also exercised by the normal suite and restored byte-identically.
+Marker writes were not requested in this run.
+
+## 2026-09-16 — Siemens S7-1214C, expanded verification
+
+Re-run from the `feature/plc4net-revival` working tree based on `e86bdd028`
+after PUT/GET access was restored on the CPU.
+
+- **Device endpoint**: `192.168.1.11`, rack 0 / slot 1
+- **Connection**: COTP + Setup Communication passed; negotiated PDU 240 bytes
+- **Address reads**: DB100 scalar values and I/Q/M X/B/W/D forms — PASS 20/20
+- **DB writes**: BOOL/BYTE/INT/DINT/REAL/WORD/DWORD — each passed
+  read-before → write → read-back → restore → restore-read-back
+- **Marker writes**: the same seven types at M100..M117 — each passed and
+  restored to its original value
+- **Output writes**: not attempted; Q reads passed, but physical-output writes
+  remain behind the explicit `--write-outputs` safety switch
+- **Error path**: a non-existent DB returned `NotFound`; connection survived
+- **Result**: **PASS (50/50)**
+
+Restored values were byte-identical to the snapshots: DB100 returned to
+`true/A5/CFC7/FFF0BDC0/40490FD0/BEEF/DEADBEEF`, and M100..M117 returned to all
+zeroes.
+
+## 2026-09-16 — Siemens S7-1214C, expanded re-verification blocked
+
+Attempted from the `feature/plc4net-revival` working tree based on
+`e86bdd028`. The expanded harness first ran in `--read-only` mode, so it sent no
+Write Var request.
+
+- **Device endpoint**: `192.168.1.11`, rack 0 / slot 1
+- **Connection**: COTP + Setup Communication passed; negotiated PDU 240 bytes
+- **Read targets**: DB100 scalar values plus I/Q/M X/B/W/D address forms
+- **Result**: **BLOCKED** — all 19 reads returned `AccessDenied`
+- **Write status**: not attempted; the read gate failed
+- **Likely cause**: the CPU's PUT/GET permission is no longer effective. Enable
+  "Permit access with PUT/GET communication from remote partner", compile, and
+  download the hardware configuration before retrying.
+
+The failure was consistent across DB100, `%I`, `%Q`, and `%M`, while the S7
+session stayed connected. This distinguishes an access-policy refusal from an
+address parser or individual memory-range failure.
+
 ## 2026-09-04 — Siemens S7-1214C (DC/DC/DC), re-verify
 
 Re-run on `feature/plc4net-revival` at `39e3792a0` — after `develop` was merged,
@@ -109,3 +174,13 @@ way the Java driver's `mapPlcErrorCode` does. Regression tests:
   Read/Write Var comes back `0x8104` even though Setup Communication succeeds.
 - **DB100 must exist and be non-optimized.** A missing block returns `NotFound`
   per item; an optimized block cannot be reached by absolute addressing.
+
+## Change log
+
+- 2026-09-16 19:24: Appended persistent Q write verification after the owner
+  confirmed that no external equipment was attached; Q values were intentionally
+  left changed and independently read back over new connections.
+- 2026-09-16 19:19: Appended the successful 50/50 expanded verification after
+  CPU PUT/GET access was restored; all DB and marker writes were rolled back.
+- 2026-09-16: Appended the expanded read-only re-verification failure. The
+  successful 2026-09-03 and 2026-09-04 records above remain unchanged.

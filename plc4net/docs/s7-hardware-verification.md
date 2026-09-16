@@ -21,10 +21,12 @@
 `tools/s7-verify` drives the **public driver API** exactly as a NuGet consumer
 would — `new S7Driver(new DefaultTransportManager()).Connect("s7://host?…")` —
 then connects, runs S7 Setup Communication, reads every scalar type from a data
-block, round-trips a write, and checks an error path. It prints a Markdown
-report and exits 0 on pass, 1 on any failure.
+block, checks the I/Q/M X/B/W/D absolute-address matrix, round-trips writes, and
+checks an error path. Every write case follows read-before → write → read-back →
+restore → restore-read-back. It prints a Markdown report and exits 0 on pass, 1
+on any failure.
 
-Verified against: **Siemens S7-1214C DC/DC/DC (S7-1200 family), 2026-09-03 — PASS 12/12.**
+Verified against: **Siemens S7-1214C DC/DC/DC (S7-1200 family), 2026-09-16 — PASS 50/50.**
 See [s7-hardware-report.md](s7-hardware-report.md) for the run log.
 
 ## 1. Prepare the PLC (TIA Portal)
@@ -88,13 +90,28 @@ feed. Nothing is published anywhere; `_localfeed` is a folder on your machine.
 ```
 s7-verify <host> [--rack N] [--slot N] [--db N]
           [--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN]
-          [--read <address>]
+          [--read <address>] [--i-base N] [--q-base N] [--m-base N]
+          [--read-only] [--write-markers] [--write-outputs]
+          [--keep-output-values]
 ```
 
 Defaults: `--rack 0 --slot 1 --db 100`. `--read <address>` skips the suite and
 just connects, reads that one tag and prints the outcome — a focused probe for
 one address (e.g. `--read "%I0.0"`, `--read "%DB100.DBW2"`) that needs neither
 DB100 nor the full layout.
+
+The normal suite writes all seven scalar types only in DB100. `--read-only`
+stops after the DB and I/Q/M address reads without sending any Write Var.
+`--write-markers` additionally exercises BOOL/BYTE/INT/DINT/REAL/WORD/DWORD at
+M100..M117, restoring every original value. Change `--m-base` if that range is
+not reserved for testing.
+
+`--write-outputs` performs the same sequence in Q memory and is deliberately
+opt-in: Q writes can energize physical outputs. Use it only after the machine is
+isolated, a second on-site approver has confirmed the test, and the selected
+`--q-base` range exists. It restores Q values by default. Combining it with
+`--keep-output-values` intentionally leaves the written Q values in the PLC for
+online inspection. Input memory is always read-only.
 
 ## 3. If the connection fails
 
@@ -117,9 +134,20 @@ driver's documentation and, ideally, as the S7-1200/1500 default.
 - COTP CR/CC handshake, S7 Setup Communication, negotiated PDU length
 - Read: BOOL, BYTE, INT, DINT, REAL, WORD, DWORD from a DB; a 3-tag single
   request
-- Write + read-back: an Int and a Real to the DB
+- Read absolute addresses: I/Q/M bit, byte, word and double word
+- Write + read-back + restore: BOOL, BYTE, INT, DINT, REAL, WORD and DWORD in
+  the DB; optionally the same matrix in M or Q
 - Error path: reading a non-existent DB, connection survives
 
-Not covered yet: reads larger than one negotiated PDU (multi-PDU), `%M`/`%I`/`%Q`
-word access (the tag parser only takes `%M0` / `%M0.0`), STRING, the TIA
-date/time types, subscriptions.
+Not covered yet: reads larger than one negotiated PDU (multi-PDU), STRING, the
+TIA date/time types, subscriptions.
+
+## Change log
+
+- 2026-09-16 19:24: Added the explicit `--keep-output-values` mode and verified
+  persistent Q writes against an isolated S7-1214C with no attached equipment.
+- 2026-09-16 19:19: DB100 and M100..M117 passed the expanded 50/50 hardware
+  verification; every write was restored and verified.
+- 2026-09-16: Expanded the procedure for I/Q/M X/B/W/D addresses and seven
+  scalar read-before/write/read-back/restore verification. Historical run logs
+  remain unchanged; output writes stay behind an explicit safety switch.
