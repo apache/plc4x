@@ -89,10 +89,9 @@ def checkDotnet() {
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
         String curVersion = matcher[0][1]
-        // `dotnet --version` reports the SDK version, not the TargetFramework: the csproj
-        // files target "net452", but they also set "LangVersion 11.0", and C# 11 is only
-        // supported by the .NET SDK 7.0 and above.
-        def result = checkVersionAtLeast(curVersion, "7.0.0")
+        // `dotnet --version` reports the SDK version, not the TargetFramework: the
+        // csproj files target "net8.0" (LTS), which needs the .NET 8.0 SDK or newer.
+        def result = checkVersionAtLeast(curVersion, "8.0.0")
         if (!result) {
             allConditionsMet = false
         }
