@@ -32,22 +32,21 @@ part that faced real silicon.
 | **Modbus TCP** | software slave — no Modbus/TCP device on hand | **PASS 5/5** | 2026-09-06 |
 | **KNXnet/IP** | nothing — scripted loopback gateway only | **not hardware-verified** | — |
 
-What each of those is worth, stated plainly:
+What each result covers:
 
-- **S7 is verified in the strong sense.** A real CPU, every scalar width,
+- **S7 — full.** A real CPU, every scalar width,
   absolute I/Q/M addressing, writes confirmed by reading back over *new*
   connections, and an error path. It also found a real driver bug.
-- **Modbus RTU is verified at the wire and framing level only.** The QJ71C24N
-  has no native Modbus slave firmware, so its ladder answers every request with
-  the same canned frame regardless of function code, address or quantity. That
-  proves the serial transport, RTU framing, CRC and the driver's read path
-  against a real byte-at-a-time UART. It does **not** exercise slave-side
-  address-range handling or exception codes.
-- **Modbus TCP** never faced hardware — the slave was a program on the same
-  machine.
-- **KNXnet/IP** has no hardware evidence at all. Its only oracle is a fake
-  gateway in the test suite, written from the same reading of the spec as the
-  driver, so it cannot catch a shared misunderstanding.
+- **Modbus RTU — wire and framing only.** The QJ71C24N has no native Modbus
+  slave firmware, so its ladder answers every request with the same canned frame
+  regardless of function code, address or quantity. That proves the serial
+  transport, RTU framing, CRC and the driver's read path against a real
+  byte-at-a-time UART. It does **not** exercise slave-side address-range
+  handling or exception codes.
+- **Modbus TCP — no hardware.** The slave was a program on the same machine.
+- **KNXnet/IP — none.** Its only oracle is a fake gateway in the test suite,
+  written from the same reading of the spec as the driver, so it cannot catch a
+  shared misunderstanding.
 
 Both harnesses drive the **public driver API**, exactly as a NuGet consumer
 would, print a Markdown report, and exit 0 on pass and 1 on any failure. They
@@ -213,27 +212,23 @@ date/time types, subscriptions.
 
 ## Evidence
 
-Captured on the PLC side, in TIA Portal, after the persistent write and the
-independent read-back — so this is confirmation from somewhere other than the
-tool under test. Resizing is the only processing applied to any image here; none
-has been cropped, annotated or otherwise altered.
+The bench these runs were made on, and what the PLC showed while they ran.
 
 ![S7-1214C test rig](images/s7-1214c-test-rig.jpg)
 
-*The isolated bench: CPU 1214C DC/DC/DC with its 24 VDC supply, nothing attached
-to the outputs.*
+*S7-1214C DC/DC/DC with its 24 VDC supply. Nothing is wired to the outputs —
+the Q-write test drives real transistor outputs.*
 
 ![DB100 online values](images/s7-db100-online-values.png)
 
-*DB100 in TIA Portal — offsets, declared types, start values and monitored
-values. The offsets here are what the driver addresses as `%DB100.DBX0.0`,
-`%DB100.DBB1`, `%DB100.DBW2` and so on.*
+*DB100 in TIA Portal: offsets, declared types, start values, monitored values.
+The offsets here are the ones the driver addresses as `%DB100.DBX0.0`,
+`%DB100.DBB1`, `%DB100.DBW2`.*
 
 ![I/Q/M watch table](images/s7-iqm-watch-table.png)
 
-*The absolute addresses after the persistent write. These are the same values
-the driver read back over new connections — PLC-side confirmation that the
-writes landed where the addressing said they would.*
+*The absolute addresses after the persistent write, monitored on the PLC — the
+same values the driver read back over new connections.*
 
 ## Troubleshooting
 
