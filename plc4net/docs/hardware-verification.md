@@ -374,12 +374,30 @@ the Java driver's `mapPlcErrorCode` does. Regression tests:
 Captured after the persistent write and independent read-back; they confirm the
 values in TIA Portal, on the PLC side, in addition to the driver-side report.
 
-- [S7-1214C test rig](images/s7-1214c-test-rig.jpg) — CPU 1214C DC/DC/DC on the
-  isolated bench with its 24 VDC power supply.
-- [DB100 online values](images/s7-db100-online-values.png) — DB100 offsets,
-  declared types, start values and monitored values in TIA Portal.
-- [I/Q/M watch table](images/s7-iqm-watch-table.png) — input reads and the
-  persistent output/marker values at the tested absolute addresses.
+### The bench
+
+![S7-1214C test rig](images/s7-1214c-test-rig.jpg)
+
+*CPU 1214C DC/DC/DC on the isolated bench with its 24 VDC power supply. No
+external equipment was attached to the outputs during the persistent Q write.*
+
+### DB100, monitored in TIA Portal
+
+![DB100 online values](images/s7-db100-online-values.png)
+
+*DB100 offsets, declared types, start values and monitored values. This is the
+non-optimized layout the procedure above builds — the offsets shown here are
+what the driver addresses as `%DB100.DBX0.0`, `%DB100.DBB1`, `%DB100.DBW2` and
+so on.*
+
+### I/Q/M absolute addresses, after the persistent write
+
+![I/Q/M watch table](images/s7-iqm-watch-table.png)
+
+*Input reads and the persistent output and marker values at the tested absolute
+addresses. These are the same values the driver read back independently over
+new connections — PLC-side confirmation that the writes landed where the
+addressing said they would.*
 
 ---
 
@@ -511,16 +529,29 @@ of the earlier `_port.BaseStream.ReadAsync(ct)` loop.
 
 ### 2026-09-19 — Modbus RTU PLC-side evidence
 
-- [QJ71C24N test rig](images/modbus-qj71c24n-test-rig.jpg) — the isolated bench:
-  24 VDC supply, the Mitsubishi Q-series rack (Q64PN power supply, CPU, and the
-  QJ71C24N serial module with its RS-485 terminal block wired to the USB
-  adapter), alongside the S7-1214C used for the S7 verification.
-- [QJ71C24N ladder program](images/modbus-qj71c24n-ladder.png) — the receive and
-  send rungs monitored online in GX Works2. Rung 23 gates `G.INPUT` (channel 2,
-  receive into `D100`, completion flag `M100`); rung 43 gates `G.OUTPUT`
-  (channel 2, send `D200`…, completion flag `M110`) behind the `M2000` interlock
-  and the `T200` turnaround timer. `D200` monitors as `769` (`0x0301`) — the
-  first two bytes of the canned response, `01 03`.
+#### The bench
+
+![QJ71C24N test rig](images/modbus-qj71c24n-test-rig.jpg)
+
+*The isolated bench: 24 VDC supply on the left, then the Mitsubishi Q-series
+rack — Q64PN power supply, CPU, and the QJ71C24N serial module whose RS-485
+terminal block is wired to the USB adapter that presents `COM3` to the PC. The
+Siemens S7-1214C used for the S7 verification sits on the same bench, top
+right.*
+
+#### The slave, monitored online in GX Works2
+
+![QJ71C24N ladder program](images/modbus-qj71c24n-ladder.png)
+
+*The receive and send rungs. Rung 23 gates `G.INPUT` — channel 2 (`D0` = 2),
+receive into `D100`, completion flag `M100`. Rung 43 gates `G.OUTPUT` — channel
+2, send from `D200`…, completion flag `M110` — behind the `M2000` interlock and
+the `T200` turnaround timer. `M2000` is the send-side interlock described above:
+while it was unsatisfied, requests arrived and were received correctly but no
+response was ever transmitted. `D100` and `D200` both monitor as `769`
+(`0x0301`) — the first two bytes of the request and of the canned response are
+the same, `01 03`. `D205` holds `H0D04` and `D206` `H14`, the trailing
+`… 04 0D 14` of the 13-byte response including its CRC.*
 
 ### 2026-09-06 — Modbus TCP against a software slave
 
@@ -596,6 +627,12 @@ bytes have arrived.
 
 ## Change log
 
+- 2026-09-19: Embedded the PLC-side images in the document rather than linking
+  them — a hardware verification report should show the hardware. The S7
+  test-rig photo was resized from 4032x3024 to 1600x1200 (5.2 MB to 345 kB) so
+  it renders at a sane weight; the QJ71C24N photo was resized the same way
+  before it was first committed. Resizing is the only processing applied to any
+  image; none has been cropped, annotated or otherwise altered.
 - 2026-09-19: Merged the four separate hardware documents
   (`s7-hardware-verification.md`, `s7-hardware-report.md`,
   `modbus-hardware-verification.md`, `modbus-hardware-report.md`) into this one
