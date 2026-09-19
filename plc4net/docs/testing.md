@@ -266,16 +266,22 @@ reads every scalar type from the DB, round-trips a write, and checks an error
 path.  It also packs as a local `dotnet tool` so the same check can be run the
 way a NuGet consumer would.
 
-**Modbus** — **not yet verified against hardware.**  `tools/modbus-verify` does
-the same job for Modbus TCP (`ModbusConnection`) and Modbus RTU
+**Modbus** — **TCP verified against a software slave; RTU verified end-to-end
+2026-09-19** against a Mitsubishi QJ71C24N (non-procedure communication acting
+as a fixed-response slave) — both the raw frame exchange and the
+`ModbusRtuConnection` driver read (`holding:0`) are correct.  `tools/modbus-verify`
+does the same job for Modbus TCP (`ModbusConnection`) and Modbus RTU
 (`ModbusRtuConnection` over the serial transport — the first real exercise of
 `SerialTransportInstance`).  The RTU path also runs a raw request/response on the
 wire, independent of the driver's framing, so a framing fault is visible even
-when the driver mis-decodes.  Setup (an S7-1214C + CM 1241 as `MB_SLAVE`) and the
-troubleshooting table are in **`docs/modbus-hardware-verification.md`**.
+when the driver mis-decodes.  Setup and the troubleshooting table are in
+**`docs/modbus-hardware-verification.md`**; the run log is in
+**`docs/modbus-hardware-report.md`**.  An earlier attempt against a Siemens
+S7-1214C + CM 1241 was dropped after its RS-485 bench link never completed a
+round trip — isolated to the link, not the driver.
 
 ```
-dotnet run --project tools/modbus-verify -- COM3 1 holding:0 --baud 19200 --parity Even
+dotnet run --project tools/modbus-verify -- COM3 1 holding:0 --baud 9600 --parity Even
 dotnet run --project tools/modbus-verify -- <ip> 502 1 holding:0
 ```
 
@@ -283,7 +289,7 @@ dotnet run --project tools/modbus-verify -- <ip> 502 1 holding:0
 
 | Area | Reason |
 |---|---|
-| Modbus against real hardware | Simulated via TestTransport; byte-identical response for unit-test purposes. `tools/modbus-verify` runs against a real TCP or RTU device — hardware verification planned, see `docs/modbus-hardware-verification.md`. |
+| Modbus against real hardware (in the automated suite) | Simulated via TestTransport; byte-identical response for unit-test purposes. `tools/modbus-verify` runs against a real TCP or RTU device — see the *Hardware verification* section above for the verified run. |
 | S7 reads larger than one PDU | A read whose response would exceed the negotiated PDU length is not split into multiple requests. |
 | S7 typed reads | A read returns the raw bytes typed by width (`PlcBYTE` / `PlcUINT` / `PlcUDINT`, or `PlcBOOL` for a bit) - a REAL / DINT is reinterpreted by the caller. |
 | Subscribe / Browse / Ping / Discovery | Interfaces declared; no implementation exists. |
