@@ -120,7 +120,7 @@
          property: keep it on the newest patch of the "bouncycastle.version" line, and move both
          together when the base version changes. -->
     <bouncycastle-prov.version>1.86</bouncycastle-prov.version>
-    <byte-buddy.version>1.18.13</byte-buddy.version>
+    <byte-buddy.version>1.18.14</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-cli.version>1.11.0</commons-cli.version>
     <commons-codec.version>1.22.1</commons-codec.version>
