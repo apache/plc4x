@@ -97,13 +97,19 @@ namespace org.apache.plc4net.transports.serial
                         continue;
                     }
 
-                    // SerialPort.BaseStream.ReadAsync does not respect
-                    // CancellationToken natively; the token cancels the
-                    // polling task.
                     var toRead = Math.Min(buf.Length, free);
-                    var bytesRead = await _port.BaseStream.ReadAsync(
-                        buf, 0, toRead, ct).ConfigureAwait(false);
-                    if (bytesRead == 0) break;
+                    var available = _port.BytesToRead;
+                    if (available == 0)
+                    {
+                        await Task.Delay(1, ct).ConfigureAwait(false);
+                        continue;
+                    }
+
+                    var bytesRead = _port.Read(buf, 0, Math.Min(toRead, available));
+                    if (bytesRead == 0)
+                    {
+                        continue;
+                    }
 
                     lock (_readBuffer)
                     {

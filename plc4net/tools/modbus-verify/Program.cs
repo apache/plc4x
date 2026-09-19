@@ -93,6 +93,7 @@ namespace org.apache.plc4net.tools.modbusverify
             w.WriteLine();
             w.WriteLine("Modbus RTU:  modbus-verify <COMx|/dev/ttyUSB0> [unit-id] [read-address] \\");
             w.WriteLine("                 [--baud 19200] [--parity Even] [--stop-bits One] [--data-bits 8]");
+            w.WriteLine("                 [--quantity 1]");
             w.WriteLine("             modbus-verify COM3 1 holding:0 --baud 19200 --parity Even");
         }
 
@@ -117,6 +118,7 @@ namespace org.apache.plc4net.tools.modbusverify
             int unitId;
             string readAddress;
             string baud, parity, stopBits, dataBits;
+            var quantity = ParseQuantity(flags);
 
             if (positional[0].Contains("://"))
             {
@@ -149,6 +151,7 @@ namespace org.apache.plc4net.tools.modbusverify
             w.WriteLine($"**Target**: `{url}`");
             w.WriteLine($"**Line settings**: {baud} {dataBits}{ParityLetter(parity)}{(StopBitCount(stopBits))}");
             w.WriteLine($"**Read address**: `{readAddress}`");
+            w.WriteLine($"**Quantity**: {quantity}");
             w.WriteLine();
 
             var parsed = ConnectionString.Parse(url);
@@ -168,6 +171,11 @@ namespace org.apache.plc4net.tools.modbusverify
                 try
                 {
                     instance = serialTransport.CreateTransportInstance(parsed.TransportConfig, config);
+                    if (instance is IAsyncTransportInstance asyncTransport)
+                    {
+                        asyncTransport.RegisterDisconnectListener(ex =>
+                            w.WriteLine($"Serial receive loop stopped: {ex.GetType().Name} - {ex.Message}"));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -181,8 +189,12 @@ namespace org.apache.plc4net.tools.modbusverify
                 w.WriteLine($"Opened `{port}`.");
                 w.WriteLine();
 
+                // Allow USB serial adapters and the background receive loop to
+                // settle before the first frame is transmitted.
+                await Task.Delay(100).ConfigureAwait(false);
+
                 var tag = ModbusTag.Parse(readAddress);
-                var requestPdu = BuildReadPdu(tag);
+                var requestPdu = BuildReadPdu(tag, quantity);
                 var requestFrame = BuildRtuFrame((byte)unitId, requestPdu);
 
                 // ── 2. Raw frame exchange (independent of the driver's framing) ──
@@ -215,8 +227,34 @@ namespace org.apache.plc4net.tools.modbusverify
                 w.WriteLine();
                 rawOk = raw.Length >= 5;
                 crcOk = raw.Length >= 4 && ModbusCRC.Validate(raw, raw.Length);
+                var rawShapeOk = HasExpectedReadShape(raw, (byte)unitId, tag, quantity);
                 AnalyzeRaw(w, raw, (byte)unitId);
+                if (rawOk)
+                {
+                    w.WriteLine($"- Expected response shape {(rawShapeOk ? "valid" : "**invalid**")}");
+                    PrintRawValues(w, raw, tag, quantity);
+                }
                 w.WriteLine();
+
+                if (quantity != 1)
+                {
+                    w.WriteLine("## 3. Driver read - `ModbusRtuConnection`");
+                    w.WriteLine();
+                    w.WriteLine("Skipped: the current plc4net ModbusTag and driver read path issue a single-value");
+                    w.WriteLine("request. The raw exchange above validates this fixed multi-register slave request.");
+                    w.WriteLine();
+                    w.WriteLine("## 4. Summary");
+                    w.WriteLine();
+                    w.WriteLine("| Step | Result |");
+                    w.WriteLine("|---|---|");
+                    w.WriteLine($"| Open `{port}` | {Mark(true)} |");
+                    w.WriteLine($"| Raw response received | {Mark(rawOk)} |");
+                    w.WriteLine($"| Raw response shape valid | {Mark(rawShapeOk)} |");
+                    w.WriteLine($"| Raw response CRC valid | {Mark(crcOk)} |");
+                    w.WriteLine($"| Driver read (`{readAddress}`) | skipped (single-value API) |");
+                    w.WriteLine();
+                    return rawOk && rawShapeOk && crcOk ? 0 : 1;
+                }
 
                 // ── 3. Driver read path ──
                 w.WriteLine("## 3. Driver read — `ModbusRtuConnection`");
@@ -282,16 +320,16 @@ namespace org.apache.plc4net.tools.modbusverify
             }
         }
 
-        private static byte[] BuildReadPdu(ModbusTag tag) => tag.Type switch
+        private static byte[] BuildReadPdu(ModbusTag tag, ushort quantity) => tag.Type switch
         {
             ModbusTag.TagType.Coil => ModbusPDU.BuildReadBitsRequest(
-                ModbusFunctionCodes.ReadCoils, tag.Address, 1),
+                ModbusFunctionCodes.ReadCoils, tag.Address, quantity),
             ModbusTag.TagType.DiscreteInput => ModbusPDU.BuildReadBitsRequest(
-                ModbusFunctionCodes.ReadDiscreteInputs, tag.Address, 1),
+                ModbusFunctionCodes.ReadDiscreteInputs, tag.Address, quantity),
             ModbusTag.TagType.HoldingRegister => ModbusPDU.BuildReadRegistersRequest(
-                ModbusFunctionCodes.ReadHoldingRegisters, tag.Address, 1),
+                ModbusFunctionCodes.ReadHoldingRegisters, tag.Address, quantity),
             ModbusTag.TagType.InputRegister => ModbusPDU.BuildReadRegistersRequest(
-                ModbusFunctionCodes.ReadInputRegisters, tag.Address, 1),
+                ModbusFunctionCodes.ReadInputRegisters, tag.Address, quantity),
             _ => throw new ArgumentException($"Cannot read a {tag.Type} tag.")
         };
 
@@ -507,6 +545,52 @@ namespace org.apache.plc4net.tools.modbusverify
         // ────────────────────────────────────────────────────────────
         //  shared helpers
         // ────────────────────────────────────────────────────────────
+
+        private static ushort ParseQuantity(IReadOnlyDictionary<string, string> flags)
+        {
+            var text = Flag(flags, "1", "quantity", "count");
+            if (!ushort.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var quantity)
+                || quantity < 1 || quantity > 125)
+            {
+                throw new ArgumentException("--quantity must be an integer from 1 to 125.");
+            }
+            return quantity;
+        }
+
+        private static bool HasExpectedReadShape(
+            byte[] frame, byte unitId, ModbusTag tag, ushort quantity)
+        {
+            var function = tag.Type switch
+            {
+                ModbusTag.TagType.Coil => ModbusFunctionCodes.ReadCoils,
+                ModbusTag.TagType.DiscreteInput => ModbusFunctionCodes.ReadDiscreteInputs,
+                ModbusTag.TagType.HoldingRegister => ModbusFunctionCodes.ReadHoldingRegisters,
+                ModbusTag.TagType.InputRegister => ModbusFunctionCodes.ReadInputRegisters,
+                _ => (byte)0
+            };
+            var dataBytes = tag.Type is ModbusTag.TagType.Coil or ModbusTag.TagType.DiscreteInput
+                ? (quantity + 7) / 8
+                : quantity * 2;
+            return frame.Length == dataBytes + 5
+                   && frame[0] == unitId
+                   && frame[1] == function
+                   && frame[2] == dataBytes;
+        }
+
+        private static void PrintRawValues(
+            TextWriter w, byte[] frame, ModbusTag tag, ushort quantity)
+        {
+            if (!HasExpectedReadShape(frame, frame[0], tag, quantity)
+                || tag.Type is not (ModbusTag.TagType.HoldingRegister
+                                    or ModbusTag.TagType.InputRegister))
+            {
+                return;
+            }
+
+            var values = Enumerable.Range(0, quantity)
+                .Select(i => (ushort)((frame[3 + i * 2] << 8) | frame[4 + i * 2]));
+            w.WriteLine($"- Register values: `{string.Join(", ", values)}`");
+        }
 
         private static string Flag(
             IReadOnlyDictionary<string, string> flags, string fallback, params string[] names)
