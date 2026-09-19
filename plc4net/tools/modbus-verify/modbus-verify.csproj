@@ -27,7 +27,7 @@
       Packable as a local dotnet tool, the same as s7-verify: `dotnet pack`
       bundles every dependency into one self-contained .nupkg so the hardware
       check can be run the way a NuGet consumer would. Not published anywhere -
-      see docs/modbus-hardware-verification.md.
+      see docs/hardware-verification.md.
     -->
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>

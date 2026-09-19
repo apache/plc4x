@@ -45,7 +45,7 @@ namespace org.apache.plc4net.tools.s7verify
     ///             [--device-group PG_OR_PC|OS|OTHERS] [--remote-tsap 0xNNNN]
     ///
     /// Defaults: rack 0, slot 1, db 100. Build the data block per
-    /// docs/s7-hardware-verification.md before running.
+    /// docs/hardware-verification.md before running.
     /// </summary>
     public static class Program
     {

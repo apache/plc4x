@@ -24,8 +24,8 @@
 |---|---|
 | Test projects | 2 |
 | Test framework | xUnit.net |
-| Total test cases | **428** |
-| Passing | 428 |
+| Total test cases | **449** |
+| Passing | 449 |
 | Failing | 0 |
 | Build warnings | 0 (`dotnet build --no-incremental`) |
 | CI matrix | ubuntu / macos / windows (`.github/workflows/dotnet-platform.yml`), .NET SDK only |
@@ -37,7 +37,7 @@
 
 | Project | Assembly | Tests | What it covers |
 |---|---|---|---|
-| `test/spi-test` | `plc4net-spi-test` | 383 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
+| `test/spi-test` | `plc4net-spi-test` | 404 | SPI framework, value model (incl. `PlcStruct` / `PlcRawByteArray`), bit/buffer I/O, transports (TCP, UDP, COTP, test), Modbus driver, S7 driver, code-gen pipeline (incl. `dataIo` struct cases, external enums, hyphenated ids), Modbus + S7 generated round-trip, `DataItem` `dataIo` round-trip, DI extensions |
 | `test/knxnetip-test` | `plc4net-driver-knxnetip-test` | 45 | KNX group-address parsing and DPT resolution; the KNXnet/IP connection - handshake, group Read / Write, bus monitor - against a scripted gateway on a loopback UDP socket; DPT 9.x 16-bit float codec |
 
 Both projects sit under the `test/` solution folder in Visual Studio, following
@@ -184,7 +184,7 @@ exception response that fails the tag without killing the connection.
 transmitter echo that is stripped rather than decoded as a value, and a stale
 response from a timed-out request that no longer bricks the connection. A
 physical device is still verified separately with `tools/modbus-verify`
-(`docs/modbus-hardware-verification.md`).
+(`docs/hardware-verification.md`).
 
 The S7 tests cover: tag parsing for all seven address forms (DB, M, I, Q, C,
 T, plus bit offsets), Read / Write / Setup-Communication PDUs round-tripped
@@ -246,39 +246,34 @@ not part of PR validation.
 
 ## Hardware verification
 
-**S7-1214C (Siemens, DC/DC/DC — S7-1200 family)** — **verified 2026-09-03, PASS 12/12**.  The COTP
-handshake, S7 Setup Communication (PDU 240) and single-item reads of every
-scalar width, a three-item read, a write + read-back of an INT and a REAL, and
-an error path were all exercised end to end against the CPU at rack 0 / slot 1
-with the rack/slot-default TSAP `0x0101`.  The run log is in
-**`docs/s7-hardware-report.md`**; the TIA Portal setup (non-optimized DB,
-PUT/GET enabled *and downloaded*) and troubleshooting table are in
-**`docs/s7-hardware-verification.md`**.  The run also found and fixed a driver
-bug — a bare Ack (ROSCTR 0x02) was framed as 10 bytes instead of 12, desyncing
-every request after a CPU refusal.
+Procedures, run logs, troubleshooting tables and the PLC-side image evidence for
+every physical run all live in **`docs/hardware-verification.md`**.  Summary:
 
-```
-dotnet run --project tools/s7-verify -- <ip> --db 100 > docs/s7-hardware-report.md
-```
+| Protocol | Rig | Result |
+|---|---|---|
+| S7 | Siemens S7-1214C DC/DC/DC, rack 0 / slot 1 | **PASS 50/50** (2026-09-16); persistent I/Q/M/DB matrix 43/43 with independent read-back 25/25 |
+| Modbus TCP | software slave — no Modbus/TCP device on hand | **PASS 5/5** (2026-09-06) |
+| Modbus RTU | Mitsubishi QJ71C24N, non-procedure mode, *fixed-response* slave | **PASS** — raw exchange and driver read (2026-09-19) |
+| KNXnet/IP | none — scripted loopback gateway only | **not hardware-verified** |
 
-It connects through the public driver API (`new S7Driver(…).Connect("s7://…")`),
-reads every scalar type from the DB, round-trips a write, and checks an error
-path.  It also packs as a local `dotnet tool` so the same check can be run the
-way a NuGet consumer would.
+**S7** is verified in the strong sense: a real CPU, every scalar width, absolute
+I/Q/M addressing, writes with independent read-back over new connections, and an
+error path.  The first run also found and fixed a driver bug — a bare Ack
+(ROSCTR 0x02) was framed as 10 bytes instead of 12, desyncing every request
+after a CPU refusal.
 
-**Modbus** — **TCP verified against a software slave; RTU verified end-to-end
-2026-09-19** against a Mitsubishi QJ71C24N (non-procedure communication acting
-as a fixed-response slave) — both the raw frame exchange and the
-`ModbusRtuConnection` driver read (`holding:0`) are correct.  `tools/modbus-verify`
-does the same job for Modbus TCP (`ModbusConnection`) and Modbus RTU
-(`ModbusRtuConnection` over the serial transport — the first real exercise of
-`SerialTransportInstance`).  The RTU path also runs a raw request/response on the
-wire, independent of the driver's framing, so a framing fault is visible even
-when the driver mis-decodes.  Setup and the troubleshooting table are in
-**`docs/modbus-hardware-verification.md`**; the run log is in
-**`docs/modbus-hardware-report.md`**.  An earlier attempt against a Siemens
-S7-1214C + CM 1241 was dropped after its RS-485 bench link never completed a
-round trip — isolated to the link, not the driver.
+**Modbus RTU** is verified at the wire and framing level only.  The QJ71C24N has
+no native Modbus slave firmware, so its ladder program answers *every* request
+with the same canned response regardless of function code, address or requested
+quantity.  That proves the serial transport, RTU framing, CRC and the driver's
+read path against a real byte-at-a-time UART; it does **not** exercise
+slave-side address-range handling or exception codes.  An earlier attempt
+against a Siemens S7-1214C + CM 1241 was retired after its RS-485 bench link
+never completed a round trip — isolated to the link, not the driver.
+
+Both harnesses connect through the public driver API, exactly as a NuGet
+consumer would, and pack as local `dotnet tool`s so the same check can be run
+the way a consumer would run it.
 
 ```
 dotnet run --project tools/modbus-verify -- COM3 1 holding:0 --baud 9600 --parity Even
