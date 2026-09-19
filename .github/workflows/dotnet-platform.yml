@@ -69,7 +69,8 @@ jobs:
             'plc4net/**/*.g4' 'plc4net/**/*.md' 'plc4net/**/*.yml' \
             'plc4net/Makefile' \
             ':!:plc4net/**/generated/*.interp' \
-            ':!:plc4net/**/generated/*.tokens')
+            ':!:plc4net/**/generated/*.tokens' \
+            ':!:plc4net/tools/code-gen/Expression.g4')
           exit "$missing"
 
   generated-code-is-current:

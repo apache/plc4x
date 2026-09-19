@@ -63,6 +63,13 @@
             <inputExclude>**/*.sln</inputExclude>
             <inputExclude>**/generated/*.interp</inputExclude>
             <inputExclude>**/generated/*.tokens</inputExclude>
+            <!--
+              tools/code-gen/Expression.g4 is a verbatim copy of the shared
+              grammar, which is public-domain (Unlicense) and carries that
+              dedication in-file instead of an ASF header. Both copies are
+              listed in the root LICENSE.
+            -->
+            <inputExclude>**/Expression.g4</inputExclude>
           </inputExcludes>
         </configuration>
       </plugin>
@@ -135,9 +142,11 @@
 
         ./mvnw -P'with-dotnet,update-generated-code' -pl :plc4net install
 
-      knxnetip is not regenerated yet: its mspec spans three files including
-      the machine-generated knx-master-data.mspec, and dataIo emission is
-      still open (see docs/design.md).
+      The three executions below must stay in step with the
+      "generated-code-is-current" job in .github/workflows/dotnet-platform.yml,
+      which regenerates the same three models and fails on any drift. knxnetip
+      takes two source paths because its mspec spans the hand-written
+      descriptions and the machine-generated knx-master-data.mspec.
     -->
     <profile>
       <id>update-generated-code</id>
@@ -190,6 +199,29 @@
                     <argument>${project.basedir}/../protocols/s7/src/main/resources/protocols/s7/s7.mspec</argument>
                     <argument>${project.basedir}/drivers/s7/src/drivers/s7/readwrite</argument>
                     <argument>org.apache.plc4net.drivers.s7.readwrite</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-knxnetip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>dotnet</executable>
+                  <workingDirectory>${project.basedir}</workingDirectory>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>--project</argument>
+                    <argument>tools/code-gen</argument>
+                    <argument>--configuration</argument>
+                    <argument>Release</argument>
+                    <argument>--</argument>
+                    <argument>knxnetip</argument>
+                    <argument>${project.basedir}/../protocols/knxnetip/src/main/resources/protocols/knxnetip;${project.basedir}/../protocols/knxnetip/src/main/generated/protocols/knxnetip</argument>
+                    <argument>${project.basedir}/drivers/knxnetip/src/drivers/knxnetip/readwrite</argument>
+                    <argument>org.apache.plc4net.drivers.knxnetip.readwrite</argument>
                   </arguments>
                 </configuration>
               </execution>
