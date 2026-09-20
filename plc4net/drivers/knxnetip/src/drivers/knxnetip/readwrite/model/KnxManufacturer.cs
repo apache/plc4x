@@ -855,8 +855,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_RUEDIGER_WOLF_AB = 827,
         M_KOLORS_INDIA_PRIVATE_LIMITED = 828,
         M_GERALD_DOCENKO = 829,
-        M_ABB___RESERVED = 830,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 831,
+        M_VK_SYSTEMS_OY = 830,
+        M_GXCIT = 831,
+        M_SCHWARZ_WORKS_GMBH = 832,
+        M_LTECH = 833,
+        M_LE_ETS_AI = 834,
+        M_ABB___RESERVED = 835,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 836,
     }
 
     public static class KnxManufacturerInfo
@@ -3305,10 +3310,25 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
                     return 122;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '830' */
+                case KnxManufacturer.M_VK_SYSTEMS_OY: { /* '830' */
+                    return 892;
+                }
+                case KnxManufacturer.M_GXCIT: { /* '831' */
+                    return 893;
+                }
+                case KnxManufacturer.M_SCHWARZ_WORKS_GMBH: { /* '832' */
+                    return 894;
+                }
+                case KnxManufacturer.M_LTECH: { /* '833' */
+                    return 895;
+                }
+                case KnxManufacturer.M_LE_ETS_AI: { /* '834' */
+                    return 896;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '835' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '831' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '836' */
                     return 43959;
                 }
                 case KnxManufacturer.M_INNOTEAM: { /* '84' */
@@ -5764,7 +5784,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                     return "SYNCPRO";
                 }
                 case KnxManufacturer.M_HAAR_INFORMATIK: { /* '816' */
-                    return "Haar-Informatik";
+                    return "Haar Informatik";
                 }
                 case KnxManufacturer.M_DIE_BILDUNGSMANUFAKTUR_GMBH: { /* '817' */
                     return "DIE-Bildungsmanufaktur GmbH";
@@ -5811,10 +5831,25 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
                     return "Durable Technologies";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '830' */
+                case KnxManufacturer.M_VK_SYSTEMS_OY: { /* '830' */
+                    return "VK Systems Oy";
+                }
+                case KnxManufacturer.M_GXCIT: { /* '831' */
+                    return "GXCIT";
+                }
+                case KnxManufacturer.M_SCHWARZ_WORKS_GMBH: { /* '832' */
+                    return "Schwarz Works GmbH";
+                }
+                case KnxManufacturer.M_LTECH: { /* '833' */
+                    return "LTECH";
+                }
+                case KnxManufacturer.M_LE_ETS_AI: { /* '834' */
+                    return "LE-ETS-AI";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '835' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '831' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '836' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_INNOTEAM: { /* '84' */
