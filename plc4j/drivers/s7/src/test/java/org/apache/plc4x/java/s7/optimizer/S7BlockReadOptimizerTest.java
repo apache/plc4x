@@ -33,8 +33,10 @@ import org.apache.plc4x.java.spi.drivers.messages.items.PlcTagValueItem;
 import org.apache.plc4x.java.spi.values.PlcINT;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -164,6 +166,78 @@ class S7BlockReadOptimizerTest {
         PlcWriteRequest req = new DefaultPlcWriteRequest(null, tags);
         List<S7WriteChunk> chunks = optimizer.splitWriteRequest(req, tiny);
         assertEquals(4, chunks.size());
+    }
+
+    /** The tag set from GH-2762: one long run of adjacent 2-byte tags in a single DB. */
+    private static PlcReadRequest longRunInOneDb() {
+        String[][] specs = new String[480][];
+        for (int i = 0; i < specs.length; i++) {
+            int byteOffset = 450 + i * 2;
+            specs[i] = new String[] {"t" + byteOffset, "%DB25000:" + byteOffset + ".0:INT"};
+        }
+        return req(specs);
+    }
+
+    @Test
+    void longContiguousRunStaysDecodable() {
+        // GH-2762: such a run used to merge into a single block that no longer fit into one PDU.
+        // The base optimizer then fragmented it, every fragment kept the offsets of the whole
+        // block, and decoding ran off the end of the payload ("arraycopy: length -2 is negative").
+        S7DriverContext ctx = new S7DriverContext();
+        ctx.setPduSize(480);
+        PlcReadRequest r = longRunInOneDb();
+
+        List<S7ReadChunk> chunks = optimizer.splitReadRequest(r, ctx);
+
+        Set<String> decoded = new HashSet<>();
+        for (S7ReadChunk c : chunks) {
+            for (S7ReadChunk.Slot s : c.slots()) {
+                int payloadBytes = s.fragmentTag().getNumberOfElements()
+                    * s.fragmentTag().getDataType().getSizeInBytes();
+                for (S7ReadChunk.Binding b : s.bindings()) {
+                    assertFalse(b.isSplitFragment(), "a merged block must not be fragmented");
+                    // Every binding has to address bytes this slot actually brings back.
+                    assertTrue(b.payloadByteOffset() >= 0
+                            && b.payloadByteOffset() + 2 <= payloadBytes,
+                        "binding for '" + b.tagName() + "' at offset " + b.payloadByteOffset()
+                            + " does not fit into the " + payloadBytes + " byte payload");
+                    assertTrue(decoded.add(b.tagName()), "tag '" + b.tagName() + "' decoded twice");
+                }
+            }
+        }
+        // ... and every tag of the request is decoded by exactly one of them.
+        assertEquals(new HashSet<>(r.getTagNames()), decoded);
+    }
+
+    @Test
+    void blockBindingsPointAtTheAddressTheyWereReadFrom() {
+        // The offsets are relative to the start of the slot's own read, so slot address plus
+        // offset has to land exactly on the tag's address. Before GH-2762 was fixed, the
+        // fragments of an over-sized block all carried the offsets of the whole block, which
+        // decoded other parts of the DB into these tags without any error.
+        S7DriverContext ctx = new S7DriverContext();
+        ctx.setPduSize(480);
+
+        List<S7ReadChunk> chunks = optimizer.splitReadRequest(longRunInOneDb(), ctx);
+
+        int slots = 0;
+        for (S7ReadChunk c : chunks) {
+            for (S7ReadChunk.Slot s : c.slots()) {
+                slots++;
+                int payloadBytes = s.fragmentTag().getNumberOfElements()
+                    * s.fragmentTag().getDataType().getSizeInBytes();
+                assertTrue(payloadBytes + S7Optimizer.EMPTY_READ_RESPONSE_SIZE + 4 <= ctx.getPduSize(),
+                    "block of " + payloadBytes + " bytes does not fit into a " + ctx.getPduSize()
+                        + " byte PDU");
+                for (S7ReadChunk.Binding b : s.bindings()) {
+                    assertEquals(b.originalTag().getByteOffset(),
+                        s.fragmentTag().getByteOffset() + b.payloadByteOffset(),
+                        "binding for '" + b.tagName() + "' decodes the wrong address");
+                }
+            }
+        }
+        // 960 bytes of tags cannot come back in one 480 byte PDU.
+        assertTrue(slots > 1, "expected more than one block, got " + slots);
     }
 
     @Test
