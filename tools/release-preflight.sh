@@ -74,7 +74,7 @@ ok() {
 echo
 echo "── Tools ─────────────────────────────────────────────────────────────────────"
 
-for tool in git docker gpg svn curl java shasum; do
+for tool in git docker gpg ssh svn curl java shasum; do
     if command -v "$tool" > /dev/null 2>&1; then
         ok "'$tool' is installed"
     else
@@ -112,16 +112,92 @@ else
     ok "The working tree is clean"
 fi
 
-if [[ "$OFFLINE" == false ]]; then
+# Nobody has to clone the Apache repository as "origin" - the contributor workflow documented on
+# the website has you clone your own fork under that name and add the Apache one as a second
+# remote. The release scripts therefore look the remote up by URL, and if that does not come down
+# to exactly one remote, every push and fetch of the release would go to the wrong repository.
+if [[ -n "$APACHE_REMOTE" ]]; then
+    ok "The Apache repository is the remote '$APACHE_REMOTE' ($APACHE_REMOTE_URL)"
+else
+    fail "$APACHE_REMOTE_PROBLEM"
+    apache_remote_help
+fi
+
+# Everything the release pushes - the release branch, the release commits, the release tag, the
+# merges back into "develop" and "release" - goes out through these scripts, in the middle of a
+# run that takes the better part of an hour. Over https every one of them needs a password or a
+# credential helper; with an ssh key the agent already holds, none of them needs anything. The
+# release is run over ssh for that reason, so an https remote is treated as a setup error here
+# rather than as something to find out about between two builds.
+if [[ -n "$APACHE_REMOTE" ]]; then
+    # "ssh://[user@]host[:port]/path" and the scp-like "[user@]host:path" are the two spellings
+    # git accepts for ssh. Anything else with a scheme - https, git, file - is not one of them.
+    SSH_TARGET=""
+    case "$APACHE_REMOTE_URL" in
+        ssh://*)
+            SSH_TARGET="${APACHE_REMOTE_URL#ssh://}"
+            SSH_TARGET="${SSH_TARGET%%/*}"
+            # A port would make this no longer a host name ssh can be handed on its own.
+            SSH_TARGET="${SSH_TARGET%:[0-9]*}"
+            ;;
+        *://*)
+            SSH_TARGET=""
+            ;;
+        *:*)
+            SSH_TARGET="${APACHE_REMOTE_URL%%:*}"
+            ;;
+    esac
+    # The part after "user@", for the messages - "github.com" reads better than "git@github.com".
+    SSH_HOST="${SSH_TARGET##*@}"
+
+    if [[ -n "$SSH_TARGET" ]]; then
+        ok "The remote '$APACHE_REMOTE' uses ssh, so key based authentication applies"
+    else
+        fail "The remote '$APACHE_REMOTE' uses '$APACHE_REMOTE_URL', which needs a password or a credential helper the release cannot ask for."
+        echo "   Switch it to ssh:"
+        echo "     git remote set-url $APACHE_REMOTE git@github.com:apache/$APACHE_REPO_NAME.git"
+    fi
+
+    if [[ "$OFFLINE" == false && -n "$SSH_TARGET" ]]; then
+        # "BatchMode" makes ssh fail rather than ask for a passphrase or a password, which is the
+        # situation the release is in. "accept-new" keeps a host this machine has never talked to
+        # from turning into a prompt. Neither GitHub nor gitbox give out a shell, so a successful
+        # login still exits non-zero - the greeting is what says it worked.
+        SSH_OUTPUT=$(ssh -T -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 "$SSH_TARGET" 2>&1)
+        SSH_STATUS=$?
+        # Both GitHub and gitbox greet with "Hi <account>!", which is worth showing: it is the
+        # account the release will be pushed as, and not necessarily the one you expect.
+        SSH_USER=$(echo "$SSH_OUTPUT" | sed -n 's/^Hi \([^!]*\)!.*/\1/p' | head -n 1)
+        SSH_AS=""
+        if [[ -n "$SSH_USER" ]]; then
+            SSH_AS=" (as '$SSH_USER')"
+        fi
+        if [[ $SSH_STATUS -eq 0 ]] || echo "$SSH_OUTPUT" | grep -qiE "successfully authenticated|^Hi |welcome"; then
+            ok "ssh key based authentication to '$SSH_HOST' works$SSH_AS"
+        elif echo "$SSH_OUTPUT" | grep -qiE "permission denied|publickey|no such identity|host key verification failed|too many authentication failures"; then
+            fail "ssh key based authentication to '$SSH_HOST' does not work: $(echo "$SSH_OUTPUT" | tail -n 1)"
+            echo "   The release pushes without a terminal, so the key has to work without a prompt:"
+            echo "     ssh-add ~/.ssh/id_ed25519      # or whichever key is registered with $SSH_HOST"
+            echo "   and the matching public key has to be registered with your $SSH_HOST account."
+        else
+            # A network that is down or a host that is unreachable says nothing about the key.
+            warn "Could not test ssh against '$SSH_HOST': $(echo "$SSH_OUTPUT" | tail -n 1)"
+        fi
+    fi
+fi
+
+# Without a remote to push to there is nothing to authenticate against, and trying it against a
+# fork would only prove access to the fork.
+if [[ "$OFFLINE" == false && -n "$APACHE_REMOTE" ]]; then
     # This authenticates against the remote without changing anything. It does not prove the push
     # will be accepted: the ".asf.yaml" rulesets are evaluated on the real push, and a bypass only
     # applies to the identity that ends up pushing.
-    PUSH_OUTPUT=$(git -C "$DIRECTORY" push --dry-run origin HEAD 2>&1)
+    PUSH_OUTPUT=$(git -C "$DIRECTORY" push --dry-run "$APACHE_REMOTE" HEAD 2>&1)
     PUSH_STATUS=$?
     if [[ $PUSH_STATUS -eq 0 ]]; then
-        ok "Can authenticate against 'origin' for pushing"
-    elif echo "$PUSH_OUTPUT" | grep -qiE "permission denied|authentication|403|could not read from remote"; then
-        fail "Cannot push to 'origin' - check the remote, your ssh key and your access rights."
+        ok "Can authenticate against '$APACHE_REMOTE' for pushing"
+    elif echo "$PUSH_OUTPUT" | grep -qiE "permission denied|authentication|403|could not read from remote|could not read username"; then
+        fail "Cannot push to '$APACHE_REMOTE' - check the remote, your ssh key and your access rights."
     else
         # A rejected push is a different matter than a rejected login: the branch may simply have
         # moved on, which is not something this check has an opinion about.

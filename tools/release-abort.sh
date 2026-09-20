@@ -33,6 +33,11 @@ fi
 # shellcheck source=release-common.sh
 source "$DIRECTORY/tools/release-common.sh"
 
+# The release branch and the release tag belong in the Apache repository, which is not necessarily
+# the remote called "origin" - see "resolve_apache_remote" in "release-common.sh".
+require_apache_remote
+echo "Apache remote:        $APACHE_REMOTE ($APACHE_REMOTE_URL)"
+
 ########################################################################################################################
 # 1. Work out what to roll the versions back to
 ########################################################################################################################
@@ -102,7 +107,7 @@ delete_ref() {
   else
     git -C "$DIRECTORY" show-ref --verify --quiet "refs/tags/$name" && exists_local=true
   fi
-  git -C "$DIRECTORY" ls-remote --exit-code origin "$name" > /dev/null 2>&1 && exists_remote=true
+  git -C "$DIRECTORY" ls-remote --exit-code "$APACHE_REMOTE" "$name" > /dev/null 2>&1 && exists_remote=true
 
   if [[ "$exists_local" == false && "$exists_remote" == false ]]; then
     echo "✅ No $kind '$name' to delete."
@@ -126,10 +131,10 @@ delete_ref() {
 
 delete_ref tag "$TAG_NAME" \
     "git -C \"$DIRECTORY\" tag -d \"$TAG_NAME\"" \
-    "git -C \"$DIRECTORY\" push origin --delete \"$TAG_NAME\""
+    "git -C \"$DIRECTORY\" push $APACHE_REMOTE --delete \"$TAG_NAME\""
 delete_ref branch "$BRANCH_NAME" \
     "git -C \"$DIRECTORY\" branch -D \"$BRANCH_NAME\"" \
-    "git -C \"$DIRECTORY\" push origin --delete \"$BRANCH_NAME\""
+    "git -C \"$DIRECTORY\" push $APACHE_REMOTE --delete \"$BRANCH_NAME\""
 
 ########################################################################################################################
 # 5. What this does not undo

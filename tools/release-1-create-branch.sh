@@ -53,6 +53,11 @@ if [[ $(git -C "$DIRECTORY" status --porcelain) ]]; then
   exit 1
 fi
 
+# The release branch and the release tag belong in the Apache repository, which is not necessarily
+# the remote called "origin" - see "resolve_apache_remote" in "release-common.sh".
+require_apache_remote
+echo "Apache remote:        $APACHE_REMOTE ($APACHE_REMOTE_URL)"
+
 ########################################################################################################################
 # 1. Get and calculate the current version (local)
 ########################################################################################################################
@@ -265,7 +270,7 @@ if ! git -C "$DIRECTORY" checkout "$BRANCH_NAME"; then
 fi
 
 # Make sure the release branch is also pushed to the remote.
-if ! git -C "$DIRECTORY" push --set-upstream origin "$BRANCH_NAME"; then
+if ! git -C "$DIRECTORY" push --set-upstream "$APACHE_REMOTE" "$BRANCH_NAME"; then
     echo "❌ Got non-0 exit code from pushing changes, aborting."
     exit 1
 fi

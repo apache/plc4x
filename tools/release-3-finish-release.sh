@@ -39,6 +39,11 @@ if [[ $(git -C "$DIRECTORY" status --porcelain) ]]; then
   exit 1
 fi
 
+# The release branch and the release tag belong in the Apache repository, which is not necessarily
+# the remote called "origin" - see "resolve_apache_remote" in "release-common.sh".
+require_apache_remote
+echo "Apache remote:        $APACHE_REMOTE ($APACHE_REMOTE_URL)"
+
 # Everything below writes to the release branch, so make sure that is where we are before
 # anything is changed - running this on "develop" by accident would rewrite its documentation
 # version.
@@ -353,7 +358,7 @@ fi
 # throw-away worktree and pushed straight to "develop" - the release branch stays checked out in
 # the working copy the release manager is using.
 
-if ! git -C "$DIRECTORY" fetch origin develop; then
+if ! git -C "$DIRECTORY" fetch "$APACHE_REMOTE" develop; then
     echo "❌ Got non-0 exit code from fetching 'develop', aborting."
     exit 1
 fi
@@ -369,7 +374,7 @@ trap cleanup_develop_worktree EXIT
 
 # A detached worktree, so this works even if "develop" happens to be checked out somewhere else.
 rmdir "$DEVELOP_WORKTREE"
-if ! git -C "$DIRECTORY" worktree add --detach "$DEVELOP_WORKTREE" origin/develop; then
+if ! git -C "$DIRECTORY" worktree add --detach "$DEVELOP_WORKTREE" "$APACHE_REMOTE/develop"; then
     echo "❌ Got non-0 exit code from creating a worktree for 'develop', aborting."
     exit 1
 fi
@@ -490,7 +495,7 @@ else
         echo "❌ Got non-0 exit code from committing the changed files, aborting."
         exit 1
     fi
-    if ! git -C "$DEVELOP_WORKTREE" push origin HEAD:develop; then
+    if ! git -C "$DEVELOP_WORKTREE" push "$APACHE_REMOTE" HEAD:develop; then
         echo "❌ Got non-0 exit code from pushing to 'develop', aborting."
         echo "   Someone probably pushed to 'develop' in the meantime - re-run this script."
         exit 1
@@ -734,14 +739,14 @@ fi
 # The check is a recommendation, not a veto - the question is always asked, because "which line is
 # the current one" is a decision for the release manager, not for a "sort -V".
 
-if ! git -C "$DIRECTORY" fetch origin release; then
+if ! git -C "$DIRECTORY" fetch "$APACHE_REMOTE" release; then
     echo "⚠️  Could not fetch the 'release' branch, skipping it."
     echo "   Merge '$RELEASE_TAG' into it by hand if it should carry $RELEASED_VERSION."
-elif git -C "$DIRECTORY" merge-base --is-ancestor "$RELEASE_TAG" origin/release; then
+elif git -C "$DIRECTORY" merge-base --is-ancestor "$RELEASE_TAG" "$APACHE_REMOTE/release"; then
     echo "✅ The 'release' branch already contains $RELEASE_TAG."
 else
     # What the branch carries now, so the prompt can say what would be replaced.
-    RELEASE_BRANCH_TAG=$(git -C "$DIRECTORY" describe --tags --abbrev=0 --match "v*" origin/release 2>/dev/null)
+    RELEASE_BRANCH_TAG=$(git -C "$DIRECTORY" describe --tags --abbrev=0 --match "v*" "$APACHE_REMOTE/release" 2>/dev/null)
     RELEASE_BRANCH_VERSION=${RELEASE_BRANCH_TAG#v}
 
     echo
@@ -773,7 +778,7 @@ else
         }
         trap cleanup_release_worktree EXIT
         rmdir "$RELEASE_WORKTREE"
-        if ! git -C "$DIRECTORY" worktree add --detach "$RELEASE_WORKTREE" origin/release; then
+        if ! git -C "$DIRECTORY" worktree add --detach "$RELEASE_WORKTREE" "$APACHE_REMOTE/release"; then
             echo "❌ Got non-0 exit code from creating a worktree for 'release', aborting."
             exit 1
         fi
@@ -799,7 +804,7 @@ else
 
         # The merge has "release" as its first parent, so this fast-forwards - no force needed,
         # which also means the ".asf.yaml" protection on the branch is never in the way.
-        if ! git -C "$RELEASE_WORKTREE" push origin HEAD:release; then
+        if ! git -C "$RELEASE_WORKTREE" push "$APACHE_REMOTE" HEAD:release; then
             echo "❌ Got non-0 exit code from pushing the 'release' branch, aborting."
             exit 1
         fi

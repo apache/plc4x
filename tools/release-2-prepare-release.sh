@@ -39,6 +39,11 @@ if [[ $(git -C "$DIRECTORY" status --porcelain) ]]; then
   exit 1
 fi
 
+# The release branch and the release tag belong in the Apache repository, which is not necessarily
+# the remote called "origin" - see "resolve_apache_remote" in "release-common.sh".
+require_apache_remote
+echo "Apache remote:        $APACHE_REMOTE ($APACHE_REMOTE_URL)"
+
 # Maven 4 prefixes even quiet output with "[INFO] [stdout] ", so take the last token of the
 # last line rather than the whole output.
 PROJECT_VERSION=$("$DIRECTORY"/mvnw -f "$DIRECTORY"/pom.xml -q --non-recursive -Dexpression=project.version -DforceStdout help:evaluate | tail -n 1 | awk '{print $NF}')
@@ -61,11 +66,11 @@ else
 fi
 
 # Check if a remote tag already exists (This can happen if a first release attempt failed)
-if git -C "$DIRECTORY" ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME$"; then
-  echo "❌ Tag '$TAG_NAME' exists on remote 'origin'. Please delete with 'git push origin --delete $TAG_NAME'"
+if git -C "$DIRECTORY" ls-remote --tags "$APACHE_REMOTE" | grep -q "refs/tags/$TAG_NAME$"; then
+  echo "❌ Tag '$TAG_NAME' exists on remote '$APACHE_REMOTE'. Please delete with 'git push $APACHE_REMOTE --delete $TAG_NAME'"
   exit 1
 else
-  echo "✅ Tag '$TAG_NAME' does not exist on remote 'origin'."
+  echo "✅ Tag '$TAG_NAME' does not exist on remote '$APACHE_REMOTE'."
 fi
 
 # The Antora documentation version of this branch was already set by 'release-1-create-branch.sh'.
@@ -102,7 +107,7 @@ if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
              GIT_CONFIG_KEY_1=user.email GIT_CONFIG_VALUE_1=\"$GIT_USER_EMAIL\" \
              GIT_CONFIG_KEY_2=commit.gpgsign GIT_CONFIG_VALUE_2=false \
              GIT_CONFIG_KEY_3=tag.gpgsign GIT_CONFIG_VALUE_3=false && \
-           /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository release:prepare -DautoVersionSubmodules=true -DreleaseVersion='$RELEASE_VERSION' -DdevelopmentVersion='$NEW_VERSION' -Dtag='$TAG_NAME'"; then
+           /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository release:prepare -DautoVersionSubmodules=true -DpushChanges=false -DreleaseVersion='$RELEASE_VERSION' -DdevelopmentVersion='$NEW_VERSION' -Dtag='$TAG_NAME'"; then
     echo "❌ Got non-0 exit code from docker compose, aborting."
     exit 1
 fi
@@ -111,8 +116,22 @@ fi
 # 2. Push the changes (local)
 ########################################################################################################################
 
-if ! git -C "$DIRECTORY" push; then
+# "release:prepare" ran with "-DpushChanges=false", so the release commits and the tag it created
+# are still local. The container it ran in has no ssh key, no credential helper and no terminal, so
+# its own push would have failed - after the full build that precedes it. Pushing from the host
+# instead uses the release manager's credentials.
+#
+# The tag has to go with them, and it has to go now: "release:perform" below checks the tag out
+# from the remote, not from this working copy.
+if ! git -C "$DIRECTORY" push "$APACHE_REMOTE" HEAD; then
     echo "❌ Got non-0 exit code from pushing changes to git, aborting."
+    exit 1
+fi
+
+if ! git -C "$DIRECTORY" push "$APACHE_REMOTE" "$TAG_NAME"; then
+    echo "❌ Got non-0 exit code from pushing the release tag to git, aborting."
+    echo "   The commits are already pushed, so only the tag is missing:"
+    echo "     git push $APACHE_REMOTE $TAG_NAME"
     exit 1
 fi
 
