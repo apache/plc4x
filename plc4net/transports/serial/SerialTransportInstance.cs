@@ -34,10 +34,17 @@ namespace org.apache.plc4net.transports.serial
         private readonly SerialPort _port;
         private readonly RingBuffer _readBuffer;
         private readonly CancellationTokenSource _readCts = new CancellationTokenSource();
+        private readonly Task _readLoopTask;
 
         private Action? _dataListener;
         private Action<Exception>? _disconnectListener;
         private volatile bool _closed;
+
+        // Set to the current thread's id for the duration of a synchronous listener
+        // callback invoked from the read loop, so Close() can tell "a listener called
+        // Close() from inside the loop" (must not wait on itself) apart from every
+        // other caller (should wait for the loop to actually unwind).
+        private volatile int _listenerThreadId;
 
         public SerialTransportInstance(
             string portName,
@@ -74,7 +81,7 @@ namespace org.apache.plc4net.transports.serial
                 _port.Dispose();
                 throw;
             }
-            _ = Task.Run(() => ReadLoopAsync(_readCts.Token));
+            _readLoopTask = Task.Run(() => ReadLoopAsync(_readCts.Token));
         }
 
         // ── async read loop ─────────────────────────────────────
@@ -82,6 +89,7 @@ namespace org.apache.plc4net.transports.serial
         private async Task ReadLoopAsync(CancellationToken ct)
         {
             var buf = new byte[4096];
+            var idleDelayMs = 1;
             while (!ct.IsCancellationRequested)
             {
                 try
@@ -101,13 +109,30 @@ namespace org.apache.plc4net.transports.serial
                     var available = _port.BytesToRead;
                     if (available == 0)
                     {
-                        await Task.Delay(1, ct).ConfigureAwait(false);
+                        // The natural blocking wait here would be
+                        // _port.BaseStream.ReadAsync(ct), but it does not observe
+                        // CancellationToken on a real SerialPort (confirmed on real
+                        // hardware — see the commit that introduced this poll), which
+                        // left Close() unable to ever stop this loop. Poll BytesToRead
+                        // instead, backing off while the line is idle so an
+                        // hours-long-idle connection is not spinning at full poll rate;
+                        // reset to a tight poll the moment bytes actually show up.
+                        // Reverting to the ReadAsync(ct) form would silently
+                        // reintroduce that hardware-verified bug.
+                        await Task.Delay(idleDelayMs, ct).ConfigureAwait(false);
+                        idleDelayMs = Math.Min(idleDelayMs * 2, 20);
                         continue;
                     }
+                    idleDelayMs = 1;
 
                     var bytesRead = _port.Read(buf, 0, Math.Min(toRead, available));
                     if (bytesRead == 0)
                     {
+                        // Not observed in practice: the guards above only ever request
+                        // a positive count already confirmed available via BytesToRead,
+                        // and SerialPort.Read throws TimeoutException rather than
+                        // returning 0 for a positive count. Retry rather than end the
+                        // loop in case some platform ever does return 0 here.
                         continue;
                     }
 
@@ -116,6 +141,7 @@ namespace org.apache.plc4net.transports.serial
                         _readBuffer.Write(buf, 0, bytesRead);
                     }
 
+                    _listenerThreadId = Environment.CurrentManagedThreadId;
                     try
                     {
                         _dataListener?.Invoke();
@@ -124,6 +150,10 @@ namespace org.apache.plc4net.transports.serial
                     {
                         // A throwing listener must not kill the read loop.
                         _disconnectListener?.Invoke(listenerEx);
+                    }
+                    finally
+                    {
+                        _listenerThreadId = 0;
                     }
                 }
                 catch (OperationCanceledException)
@@ -140,7 +170,21 @@ namespace org.apache.plc4net.transports.serial
                 }
                 catch (Exception ex)
                 {
-                    _disconnectListener?.Invoke(ex);
+                    // Close() already set _closed before tearing down the port, so a
+                    // fault that only happened because Close() disposed out from under
+                    // us is expected shutdown noise, not a real disconnect to report.
+                    if (!_closed)
+                    {
+                        _listenerThreadId = Environment.CurrentManagedThreadId;
+                        try
+                        {
+                            _disconnectListener?.Invoke(ex);
+                        }
+                        finally
+                        {
+                            _listenerThreadId = 0;
+                        }
+                    }
                     break;
                 }
             }
@@ -188,6 +232,19 @@ namespace org.apache.plc4net.transports.serial
             try { _port.Close(); } catch { /* best-effort */ }
             _readCts.Dispose();
             try { _port.Dispose(); } catch { }
+
+            // Do not wait on the read loop when we are standing inside a listener
+            // callback it invoked synchronously — the loop cannot finish while that
+            // callback (running on the loop's own thread) is still on the stack, so
+            // the wait would just burn its timeout for nothing. Otherwise, give the
+            // loop a bounded window to actually unwind before returning: without this,
+            // a caller could treat the port as fully released while the background
+            // task is still mid-iteration on it — a known SerialPort Close()-vs-
+            // concurrent-Read() hazard (dotnet/runtime#20362, dotnet/corefx#36040).
+            if (Environment.CurrentManagedThreadId != _listenerThreadId)
+            {
+                try { _readLoopTask.Wait(TimeSpan.FromSeconds(1)); } catch { /* best-effort */ }
+            }
         }
 
         // ── IAsyncTransportInstance ──────────────────────────────
