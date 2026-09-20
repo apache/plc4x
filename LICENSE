@@ -209,8 +209,10 @@ plc4go/spi/transports/serial/serialport/apply_darwin.go
 Contain logic derived from github.com/jacobsa/go-serial, copyrighted by Aaron Jacobs,
 which is distributed under the Apache 2.0 license.
 
-The file:
+The files:
 code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4
-is licensed under the Category A: "UNLICENSE" which is available here:
+plc4net/tools/code-gen/Expression.g4
+are licensed under the Category A: "UNLICENSE" which is available here:
 UNLICENSE file in the licenses directory.
+The second is a verbatim copy of the first, used by the .NET code generator.
 

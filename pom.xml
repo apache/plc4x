@@ -803,7 +803,7 @@
             <!--
               Files licensed under other compatible licenses.
             -->
-            <excinputExcludelude>**/Expression.g4</excinputExcludelude>
+            <inputExclude>**/Expression.g4</inputExclude>
 
             <!-- Maven related files -->
             <inputExclude>**/target/**</inputExclude>

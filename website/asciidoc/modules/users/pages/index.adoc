@@ -41,7 +41,7 @@ We are planning on shipping libraries for usage in:
 2. Go
 3. C (not ready for usage)
 4. Python (not ready for usage)
-5. C# (.Net) (not ready for usage - abandoned)
+5. C# (.Net) (not ready for usage)
 
 PLC4X also integrates with other Apache projects, such as:
 
