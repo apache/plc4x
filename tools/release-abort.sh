@@ -24,6 +24,14 @@
 # deleted files from the PARENT of the checkout - and that is where the plc4x-build-tools and
 # plc4x-extras checkouts usually live - whenever the script was not started from "tools".
 DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Values shared with the other release scripts (Nexus staging profile, dist.apache.org URLs) and the
+# ownership settings for the docker builds.
+if [[ ! -f "$DIRECTORY/tools/release-common.sh" ]]; then
+    echo "❌ '$DIRECTORY/tools/release-common.sh' not found, aborting."
+    exit 1
+fi
+# shellcheck source=release-common.sh
+source "$DIRECTORY/tools/release-common.sh"
 
 ########################################################################################################################
 # 1. Work out what to roll the versions back to

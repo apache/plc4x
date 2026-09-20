@@ -48,5 +48,10 @@ RUN pip3 install wheel
 # Required for running on Windows systems
 RUN apt install -y dos2unix
 
+# The checkout is bind-mounted at "/ws" and the release scripts can run this image as the
+# calling user, so git needs an exception for it. It has to live in the system config: a
+# "--global" one lands in "/root/.gitconfig", which that user never reads.
+RUN git config --system --add safe.directory /ws
+
 # Change the working directory (where commands are executed) into the new "ws" directory
 WORKDIR /ws

@@ -20,6 +20,14 @@
 # ----------------------------------------------------------------------------
 
 DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Values shared with the other release scripts (Nexus staging profile, dist.apache.org URLs) and the
+# ownership settings for the docker builds.
+if [[ ! -f "$DIRECTORY/tools/release-common.sh" ]]; then
+    echo "❌ '$DIRECTORY/tools/release-common.sh' not found, aborting."
+    exit 1
+fi
+# shellcheck source=release-common.sh
+source "$DIRECTORY/tools/release-common.sh"
 
 # BSD and GNU sed disagree about "-i": BSD wants a backup suffix as a separate argument, GNU
 # treats that argument as the expression. Editing through a temporary file works on both, and

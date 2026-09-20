@@ -19,9 +19,9 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2034  # these are consumed by the scripts that source this file
 
-# Values that more than one of the release scripts has to agree on. Sourced by
-# "release-2-prepare-release.sh", "release-3-finish-release.sh" and "validate-release.sh" - it is
-# not meant to be executed.
+# Values that more than one of the release scripts has to agree on, and the ownership settings
+# every script that starts the releaser container needs. Sourced by all of the "release-*"
+# scripts and by "validate-release.sh" - it is not meant to be executed.
 
 # The Nexus staging profile of "org.apache.plc4x". If deploying to Nexus starts failing with
 # "404 not found", this is the first thing to check: log in to $NEXUS_URL, open "Staging Profiles",
@@ -44,3 +44,19 @@ DIST_BASE="https://dist.apache.org/repos/dist"
 DIST_DEV="$DIST_BASE/dev/plc4x"
 DIST_RELEASE="$DIST_BASE/release/plc4x"
 KEYS_URL="$DIST_RELEASE/KEYS"
+
+# The docker-compose file runs the releaser container as "$RELEASE_UID:$RELEASE_GID", defaulting to
+# "0:0". Only Linux needs the override: there the bind-mounted checkout keeps the uid the container
+# used, so a build as root leaves an "out" directory, "target" directories and release commits that
+# the user running these scripts can no longer delete. Docker Desktop on macOS and Windows remaps
+# the ownership by itself, so the default is left alone there.
+if [[ "$(uname)" == "Linux" ]]; then
+  RELEASE_UID="$(id -u)"
+  RELEASE_GID="$(id -g)"
+  export RELEASE_UID RELEASE_GID
+fi
+
+# HOME for the container, see the docker-compose file. Created here because the container may not be
+# able to create it itself: the mount root belongs to the user, but a missing directory would have to
+# be created by whoever runs the build.
+mkdir -p "$DIRECTORY/out/home"
