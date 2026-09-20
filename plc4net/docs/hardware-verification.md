@@ -27,9 +27,9 @@ part that faced real silicon.
 
 | Protocol | Verified against | Result | Date |
 |---|---|---|---|
-| **S7** | Siemens S7-1214C DC/DC/DC, rack 0 / slot 1 | **PASS 50/50**, plus a persistent I/Q/M/DB matrix 43/43 with independent read-back 25/25 | 2026-09-16 |
-| **Modbus RTU** | Mitsubishi QJ71C24N, non-procedure mode, as a *fixed-response* slave | **PASS** — raw frame exchange and driver read | 2026-09-19 |
-| **Modbus TCP** | software slave — no Modbus/TCP device on hand | **PASS 5/5** | 2026-09-06 |
+| **S7** | Siemens S7-1214C DC/DC/DC, rack 0 / slot 1 | **PASS 50/50**, plus a persistent I/Q/M/DB matrix 43/43 with independent read-back 25/25 | 2026-09-03 → 2026-09-16, repeated across 3 dates (§3 has every run) |
+| **Modbus RTU** | Mitsubishi QJ71C24N, non-procedure mode, as a *fixed-response* slave | **PASS** — 1 raw exchange, 2 driver reads run back to back. No pass/fail ratio: `modbus-verify` checks one exchange at a time, unlike `s7-verify`'s counted suite | 2026-09-19 |
+| **Modbus TCP** | `tools/modbus-tcp-sim.py` — no Modbus/TCP device on hand | **PASS 5/5** | 2026-09-06 |
 | **KNXnet/IP** | nothing — scripted loopback gateway only | **not hardware-verified** | — |
 
 What each result covers:
@@ -274,9 +274,12 @@ check if requests arrive and nothing comes back.
 Wiring: adapter `A`/`B` (`D+`/`D−`) to the module's RS-485 terminals per its
 manual, signal grounds tied.
 
-**Modbus TCP** — no hardware. A minimal raw-socket Modbus/TCP slave on the same
-machine, with four distinct tables (holding, input, coils, discrete inputs) plus
-an out-of-range address that returns exception `0x02`.
+**Modbus TCP** — no hardware. `tools/modbus-tcp-sim.py`, a stdlib-only Python
+fixture checked into this repo, stands in for it: four distinct tables (holding,
+input, coils, discrete inputs) plus an out-of-range address that returns
+exception `0x02`. It is not pymodbus-based like plc4j's test slave — plc4net
+needed only a fixed single-table TCP responder, not the RTU/ASCII/TLS/UDP matrix
+plc4j's integration tests exercise.
 
 ## 2. How to reproduce
 
@@ -287,8 +290,9 @@ cd plc4x/plc4net
 # at 9600, not plc4net's 19200 default.
 dotnet run --project tools/modbus-verify -- COM3 1 holding:0 --baud 9600 --parity Even
 
-# TCP
-dotnet run --project tools/modbus-verify -- 192.168.0.9 502 1 holding:0
+# TCP, against the checked-in fixture
+python3 tools/modbus-tcp-sim.py 5502 &
+dotnet run --project tools/modbus-verify -- 127.0.0.1 5502 1 holding:0
 ```
 
 ```
@@ -337,7 +341,7 @@ This is also the first hardware confirmation of the `SerialTransportInstance`
 receive loop in its current form — polling `BytesToRead` and reading
 synchronously, in place of an earlier `BaseStream.ReadAsync(ct)` loop.
 
-**Modbus TCP — PASS 5/5**, against the software slave:
+**Modbus TCP — PASS 5/5**, against `tools/modbus-tcp-sim.py`:
 
 | Read | Result |
 |---|---|
@@ -347,7 +351,8 @@ synchronously, in place of an earlier `BaseStream.ReadAsync(ct)` loop.
 | Discrete input 0 / 1 | `True` / `False` |
 | Holding register 200 (outside the map) | `InvalidAddress` |
 
-That run found and fixed two bugs (commit `e86bdd028`): `ModbusConnection` (TCP)
+Reproduced directly from that script with the commands in §2 — all five rows
+match. That run found and fixed two bugs (commit `e86bdd028`): `ModbusConnection` (TCP)
 only handled `Coil` and `HoldingRegister`, so `input:` and `discrete:` tags fell
 through to `AccessDenied` without a request ever reaching the wire, while
 `ModbusRtuConnection` already handled all four; and `modbus-verify` rendered
@@ -394,11 +399,11 @@ included.*
 |---|---|
 | `Could not open COMx` | Wrong port name, another program holds it, or the adapter is unplugged |
 | Request goes out, **nothing** comes back | A/B swapped; baud or parity mismatch with the slave's port config; on the QJ71C24N rig, check the ladder send-side interlock first — a clean receive with no reply is an interlock symptom, not a wiring one |
-| Response **starts with the request bytes** | The adapter echoes its own transmitter (half-duplex self-receive). The driver does not strip that — use an auto-direction adapter that does not echo |
-| Raw CRC valid, driver read not `Ok` | Suspect `ModbusRtuConnection.SendAndReceive` — it reads whatever is available once ≥ 4 bytes arrive, with no expected-length or t3.5 inter-frame-gap check, so a byte-at-a-time UART can hand it a partial frame |
-| Raw shape "invalid", driver read `Ok` | Expected on this rig: it always returns its full fixed response regardless of the requested quantity, and the shape check compares against what was asked |
-| Exception `0x02` (IllegalDataAddress) | The register is outside the slave's map |
-| Exception `0x01` (IllegalFunction) | The slave does not support that function code for that range |
+| Response **starts with the request bytes** | An adapter that echoes its own transmitter (half-duplex self-receive). `ModbusRtuConnection` already discards a read's echo before parsing the reply — if this still shows up, check the raw exchange's own echo detection first, since it looks independently of the driver |
+| Raw CRC valid, driver read not `Ok` | `ModbusRtuConnection.SendAndReceive` reads a 3-byte header, computes the exact frame length from the function code, and waits for that many bytes with a timeout — so a genuinely truncated frame times out rather than silently misparsing. A CRC failure here after a clean raw exchange points at the response content, not the framing |
+| Raw shape "invalid", driver read `Ok` | Expected on the QJ71C24N rig: it always returns its full fixed response regardless of the requested quantity, and the shape check compares against what was asked |
+| Exception `0x02` (IllegalDataAddress) | The register is outside the slave's map — the TCP fixture returns exactly this for `holding:200` (§3). The QJ71C24N RTU rig never returns it; it answers every request identically regardless of address |
+| Exception `0x01` (IllegalFunction) | The slave does not support that function code for that address range. Same RTU-rig caveat as above |
 | TCP connection refused / timeout | Wrong IP or port, port 502 blocked, or the device's Modbus server is off |
 
 ---
@@ -427,7 +432,4 @@ across RUN-mode downloads, so a clean rising edge often never reached it.
 
 Revisiting it would need an isolated adapter (ADM2483 / ADM2587-class, or an FTDI
 part with real direction control) on a terminated pair, with `Modbus_Comm_Load`
-triggered from `#Initial_Call` after a genuine STOP→RUN. Independently of the
-rig, `ModbusRtuConnection.SendAndReceive` should gain an explicit
-expected-length / t3.5 inter-frame-gap check rather than reading whatever has
-arrived once ≥ 4 bytes are present.
+triggered from `#Initial_Call` after a genuine STOP→RUN.
