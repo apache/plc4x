@@ -139,33 +139,39 @@ Input memory is always read-only.
 On the persistent run the restores were deliberately disabled so the values could
 be inspected from the PLC side.
 
-| Area/type | Address | Independently read back |
-|---|---|---:|
-| Input bit | `%I0.0` | `False` |
-| Input byte | `%IB0` | `0x00` |
-| Input word | `%IW0` | `0x0000` |
-| Input double word | `%ID0` | `0x00000000` |
-| Output BOOL | `%Q0.0` | `True` |
-| Output BYTE | `%QB1` | `0x3C` |
-| Output INT | `%QW2` | `23456` (`0x5BA0`) |
-| Output DINT | `%QD4` | `-123456789` (`0xF8A432EB`) |
-| Output REAL | `%QD8` | `-12.5` (`0xC1480000`) |
-| Output WORD | `%QW12` | `0x1357` |
-| Output DWORD | `%QD14` | `0x89ABCDEF` |
-| Marker BOOL | `%M100.0` | `True` |
-| Marker BYTE | `%MB101` | `0x3C` |
-| Marker INT | `%MW102` | `23456` (`0x5BA0`) |
-| Marker DINT | `%MD104` | `-123456789` (`0xF8A432EB`) |
-| Marker REAL | `%MD108` | `-12.5` (`0xC1480000`) |
-| Marker WORD | `%MW112` | `0x1357` |
-| Marker DWORD | `%MD114` | `0x89ABCDEF` |
-| DB BOOL | `%DB100.DBX0.0` | `False` |
-| DB BYTE | `%DB100.DBB1` | `0x3C` |
-| DB INT | `%DB100.DBW2` | `23456` (`0x5BA0`) |
-| DB DINT | `%DB100.DBD4` | `-123456789` (`0xF8A432EB`) |
-| DB REAL | `%DB100.DBD8` | `-12.5` (`0xC1480000`) |
-| DB WORD | `%DB100.DBW12` | `0x1357` |
-| DB DWORD | `%DB100.DBD14` | `0x89ABCDEF` |
+| Area/type | Address | Before | Independently read back |
+|---|---|---:|---:|
+| Input bit | `%I0.0` | n/a (read-only) | `False` |
+| Input byte | `%IB0` | n/a (read-only) | `0x00` |
+| Input word | `%IW0` | n/a (read-only) | `0x0000` |
+| Input double word | `%ID0` | n/a (read-only) | `0x00000000` |
+| Output BOOL | `%Q0.0` | `False` | `True` |
+| Output BYTE | `%QB1` | `0x00` | `0x3C` |
+| Output INT | `%QW2` | `0` | `23456` (`0x5BA0`) |
+| Output DINT | `%QD4` | `0` | `-123456789` (`0xF8A432EB`) |
+| Output REAL | `%QD8` | `0.0` | `-12.5` (`0xC1480000`) |
+| Output WORD | `%QW12` | `0x0000` | `0x1357` |
+| Output DWORD | `%QD14` | `0x00000000` | `0x89ABCDEF` |
+| Marker BOOL | `%M100.0` | not logged separately | `True` |
+| Marker BYTE | `%MB101` | not logged separately | `0x3C` |
+| Marker INT | `%MW102` | not logged separately | `23456` (`0x5BA0`) |
+| Marker DINT | `%MD104` | not logged separately | `-123456789` (`0xF8A432EB`) |
+| Marker REAL | `%MD108` | not logged separately | `-12.5` (`0xC1480000`) |
+| Marker WORD | `%MW112` | not logged separately | `0x1357` |
+| Marker DWORD | `%MD114` | not logged separately | `0x89ABCDEF` |
+| DB BOOL | `%DB100.DBX0.0` | not logged separately | `False` |
+| DB BYTE | `%DB100.DBB1` | not logged separately | `0x3C` |
+| DB INT | `%DB100.DBW2` | not logged separately | `23456` (`0x5BA0`) |
+| DB DINT | `%DB100.DBD4` | not logged separately | `-123456789` (`0xF8A432EB`) |
+| DB REAL | `%DB100.DBD8` | not logged separately | `-12.5` (`0xC1480000`) |
+| DB WORD | `%DB100.DBW12` | not logged separately | `0x1357` |
+| DB DWORD | `%DB100.DBD14` | not logged separately | `0x89ABCDEF` |
+
+The Output row's Before values are from the 2026-09-16 persistent write run,
+which targeted Q memory only. The same run's Marker and DB values were not
+logged as a separate before/after pair (Marker writes were not requested in
+that run; DB100 is exercised by the normal restore-tested suite instead), so
+those rows are not backfilled with an assumed value here.
 
 These are live process-image and memory values, not retained startup values —
 PLC logic, an input transition, a mode change or a restart may overwrite them.
@@ -242,6 +248,9 @@ same values the driver read back over new connections.*
 | A DB read is `InvalidAddress` | The DB is optimized, or the offset does not exist |
 | A read returns the byte offset itself | The *Start value* cell holds the offset. TIA computes offsets; do not type them |
 | TCP timeout | Port 102 blocked, or wrong IP |
+
+Once a `--device-group` / `--remote-tsap` value works, it belongs in the
+driver's documentation and, ideally, as the S7-1200/1500 default.
 
 ---
 
@@ -339,7 +348,12 @@ by the 2 bytes a single-register request would imply, and returns `1` for
 
 This is also the first hardware confirmation of the `SerialTransportInstance`
 receive loop in its current form — polling `BytesToRead` and reading
-synchronously, in place of an earlier `BaseStream.ReadAsync(ct)` loop.
+synchronously, in place of an earlier `BaseStream.ReadAsync(ct)` loop. Both the
+S7-1214C zero-byte runs and this rig's initial zero-byte runs happened with the
+old and new loop respectively without changing the symptom, which is
+consistent with those failures being link/interlock issues rather than a
+receive-loop bug — this run is the first case where bytes actually arrived,
+and the new loop delivered them correctly.
 
 **Modbus TCP — PASS 5/5**, against `tools/modbus-tcp-sim.py`:
 
