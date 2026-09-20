@@ -347,7 +347,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Float must contain at least 1 bit")
         elif bit_length > 32:
             raise SerializationException("Float can only contain max 32 bits")
-        self._handle_numeric_encoding(enum_value(value), bit_length, numeric_format="f", **kwargs)
+        self._handle_numeric_encoding(
+            enum_value(value), bit_length, numeric_format="f", **kwargs
+        )
 
     def write_double(
         self,
@@ -360,7 +362,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Double must contain at least 1 bit")
         elif bit_length > 64:
             raise SerializationException("Double can only contain max 64 bits")
-        self._handle_numeric_encoding(enum_value(value), bit_length, numeric_format="d", **kwargs)
+        self._handle_numeric_encoding(
+            enum_value(value), bit_length, numeric_format="d", **kwargs
+        )
 
     def write_str(
         self,
