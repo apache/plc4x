@@ -17,6 +17,7 @@
 import struct
 import types
 from abc import ABCMeta
+from enum import Enum
 from ctypes import (
     c_byte,
     c_double,
@@ -43,6 +44,19 @@ from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware
 from xsdata.utils.text import camel_case
+
+
+def enum_value(value):
+    """
+    Unwraps an enum member to the number behind it.
+
+    The generated enums extend "aenum.AutoNumberEnum", which - unlike "IntEnum" - is not an int
+    subclass, so "int(member)" raises a TypeError and "str(member)" gives the member's name rather
+    than its value. The generated serializers write an enum field through the writer of the enum's
+    base type ("write_unsigned_byte" for a "ModbusErrorCode"), handing over the member itself, so
+    the unwrapping has to happen here. Anything that is not an enum is passed through untouched.
+    """
+    return value.value if isinstance(value, Enum) else value
 
 
 class PositionAware:
@@ -215,7 +229,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
             self._handle_numeric_encoding(
-                int(value), bit_length, numeric_format="B", **kwargs
+                int(enum_value(value)), bit_length, numeric_format="B", **kwargs
             )
 
     def write_unsigned_short(
@@ -231,7 +245,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
-                int(value), bit_length, numeric_format="H", **kwargs
+                int(enum_value(value)), bit_length, numeric_format="H", **kwargs
             )
 
     def write_unsigned_int(
@@ -247,7 +261,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned int can only contain max 32 bits")
         else:
             self._handle_numeric_encoding(
-                int(value), bit_length, numeric_format="I", **kwargs
+                int(enum_value(value)), bit_length, numeric_format="I", **kwargs
             )
 
     def write_unsigned_long(
@@ -263,7 +277,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned long can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
-                int(value), bit_length, numeric_format="Q", **kwargs
+                int(enum_value(value)), bit_length, numeric_format="Q", **kwargs
             )
 
     def write_signed_byte(
@@ -274,7 +288,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         elif bit_length > 8:
             raise SerializationException("Signed byte can only contain max 8 bits")
         self._handle_numeric_encoding(
-            int(value), bit_length, numeric_format="b", **kwargs
+            int(enum_value(value)), bit_length, numeric_format="b", **kwargs
         )
 
     def write_short(
@@ -289,7 +303,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         elif bit_length > 16:
             raise SerializationException("Signed short can only contain max 16 bits")
         self._handle_numeric_encoding(
-            int(value), bit_length, numeric_format="h", **kwargs
+            int(enum_value(value)), bit_length, numeric_format="h", **kwargs
         )
 
     def write_int(
@@ -304,7 +318,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         elif bit_length > 32:
             raise SerializationException("Signed int can only contain max 32 bits")
         self._handle_numeric_encoding(
-            int(value), bit_length, numeric_format="i", **kwargs
+            int(enum_value(value)), bit_length, numeric_format="i", **kwargs
         )
 
     def write_long(
@@ -319,7 +333,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         elif bit_length > 64:
             raise SerializationException("Signed long can only contain max 64 bits")
         self._handle_numeric_encoding(
-            int(value), bit_length, numeric_format="q", **kwargs
+            int(enum_value(value)), bit_length, numeric_format="q", **kwargs
         )
 
     def write_float(
@@ -333,7 +347,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Float must contain at least 1 bit")
         elif bit_length > 32:
             raise SerializationException("Float can only contain max 32 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="f", **kwargs)
+        self._handle_numeric_encoding(enum_value(value), bit_length, numeric_format="f", **kwargs)
 
     def write_double(
         self,
@@ -346,7 +360,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Double must contain at least 1 bit")
         elif bit_length > 64:
             raise SerializationException("Double can only contain max 64 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="d", **kwargs)
+        self._handle_numeric_encoding(enum_value(value), bit_length, numeric_format="d", **kwargs)
 
     def write_str(
         self,
@@ -455,7 +469,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
 
     def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:
         data_type: str = "bit"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         if "bit_length" in kwargs:
             kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
@@ -464,7 +478,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
 
     def write_byte(self, value: int, logical_name: str = "", **kwargs) -> None:
         data_type: str = "byte"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         if "bit_length" in kwargs:
             kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
@@ -475,7 +489,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         self, value: List[int], logical_name: str = "", **kwargs
     ) -> None:
         data_type: str = "byte"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         if "bit_length" in kwargs:
             kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
@@ -486,7 +500,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
     ) -> None:
         data_type: str = "uint"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -500,7 +514,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "uint"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -514,7 +528,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "udint"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -528,7 +542,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "ulint"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -538,7 +552,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
     ) -> None:
         data_type: str = "byte"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -552,7 +566,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "int"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -566,7 +580,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "dint"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -580,7 +594,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "lint"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -594,7 +608,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "real"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
@@ -608,7 +622,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         data_type: str = "lreal"
-        data: str = str(value)
+        data: str = str(enum_value(value))
         bit_length: str = str(bit_length)
         self._create_and_append(
             camel_case(logical_name), data_type, data, bit_length, **kwargs
