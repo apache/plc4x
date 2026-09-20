@@ -40,6 +40,15 @@ namespace org.apache.plc4net.drivers.modbus.messages
 
         /// <summary>Modbus error offset added to the function code.</summary>
         public const byte ErrorOffset = 0x80;
+
+        /// <summary>
+        /// Total RTU frame length for a Read Coils/Discrete Inputs/Holding/Input
+        /// Registers response: address(1) + function(1) + byteCount(1) + data(N) + crc(2).
+        /// Shared by <c>ModbusRtuConnection</c> (computed from the byte count actually
+        /// received) and the modbus-verify tool (computed from the requested quantity)
+        /// so the two can't silently diverge.
+        /// </summary>
+        public static int ReadResponseRtuFrameLength(int dataByteCount) => dataByteCount + 5;
     }
 
     /// <summary>

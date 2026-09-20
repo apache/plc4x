@@ -118,7 +118,20 @@ namespace org.apache.plc4net.tools.modbusverify
             int unitId;
             string readAddress;
             string baud, parity, stopBits, dataBits;
-            var quantity = ParseQuantity(flags);
+            ushort quantity;
+            try
+            {
+                quantity = ParseQuantity(flags);
+            }
+            catch (Exception ex)
+            {
+                w.WriteLine();
+                w.WriteLine("## Error");
+                w.WriteLine();
+                w.WriteLine($"**{ex.GetType().Name}**: {ex.Message}");
+                w.WriteLine();
+                return 1;
+            }
 
             if (positional[0].Contains("://"))
             {
@@ -162,6 +175,7 @@ namespace org.apache.plc4net.tools.modbusverify
             var rawOk = false;
             var crcOk = false;
             PlcResponseCode driverCode = PlcResponseCode.InternalError;
+            string disconnectNote = null;
 
             try
             {
@@ -173,8 +187,13 @@ namespace org.apache.plc4net.tools.modbusverify
                     instance = serialTransport.CreateTransportInstance(parsed.TransportConfig, config);
                     if (instance is IAsyncTransportInstance asyncTransport)
                     {
+                        // Recorded, not written directly: this callback runs on the
+                        // background receive-loop thread, and interleaving it with the
+                        // main thread's own sequential WriteLine calls would garble the
+                        // report. Printed once, from the main thread, in the finally below.
                         asyncTransport.RegisterDisconnectListener(ex =>
-                            w.WriteLine($"Serial receive loop stopped: {ex.GetType().Name} - {ex.Message}"));
+                            Interlocked.Exchange(ref disconnectNote,
+                                $"Serial receive loop stopped: {ex.GetType().Name} - {ex.Message}"));
                     }
                 }
                 catch (Exception ex)
@@ -232,13 +251,13 @@ namespace org.apache.plc4net.tools.modbusverify
                 if (rawOk)
                 {
                     w.WriteLine($"- Expected response shape {(rawShapeOk ? "valid" : "**invalid**")}");
-                    PrintRawValues(w, raw, tag, quantity);
+                    PrintRawValues(w, raw, tag, quantity, rawShapeOk);
                 }
                 w.WriteLine();
 
                 if (quantity != 1)
                 {
-                    w.WriteLine("## 3. Driver read - `ModbusRtuConnection`");
+                    w.WriteLine("## 3. Driver read — `ModbusRtuConnection`");
                     w.WriteLine();
                     w.WriteLine("Skipped: the current plc4net ModbusTag and driver read path issue a single-value");
                     w.WriteLine("request. The raw exchange above validates this fixed multi-register slave request.");
@@ -294,8 +313,9 @@ namespace org.apache.plc4net.tools.modbusverify
                 w.WriteLine();
                 w.WriteLine("| Step | Result |");
                 w.WriteLine("|---|---|");
-                w.WriteLine($"| Open `{port}` | ✅ |");
+                w.WriteLine($"| Open `{port}` | {Mark(true)} |");
                 w.WriteLine($"| Raw response received | {Mark(rawOk)} |");
+                w.WriteLine($"| Raw response shape valid | {Mark(rawShapeOk)} |");
                 w.WriteLine($"| Raw response CRC valid | {Mark(crcOk)} |");
                 w.WriteLine($"| Driver read (`{readAddress}`) | {(driverCode == PlcResponseCode.Ok ? "✅" : "❌ " + driverCode)} |");
                 w.WriteLine();
@@ -316,6 +336,11 @@ namespace org.apache.plc4net.tools.modbusverify
             }
             finally
             {
+                if (disconnectNote != null)
+                {
+                    w.WriteLine();
+                    w.WriteLine(disconnectNote);
+                }
                 instance?.Close();
             }
         }
@@ -407,13 +432,13 @@ namespace org.apache.plc4net.tools.modbusverify
             }
 
             var crcValid = ModbusCRC.Validate(r, r.Length);
-            w.WriteLine($"- Address byte `0x{r[0]:X2}` ({r[0]})"
-                        + (r[0] == expectedAddr ? " — matches" : $" — expected {expectedAddr}"));
+            w.WriteLine($"- Address byte `0x{r[AddressOffset]:X2}` ({r[AddressOffset]})"
+                        + (r[AddressOffset] == expectedAddr ? " — matches" : $" — expected {expectedAddr}"));
 
-            var fc = r[1];
+            var fc = r[FunctionOffset];
             if ((fc & ModbusFunctionCodes.ErrorOffset) != 0)
             {
-                var code = r.Length > 2 ? r[2] : (byte)0;
+                var code = r.Length > ByteCountOffset ? r[ByteCountOffset] : (byte)0;
                 var name = Enum.IsDefined(typeof(ModbusErrorCode), code)
                     ? ((ModbusErrorCode)code).ToString()
                     : "unknown";
@@ -428,7 +453,7 @@ namespace org.apache.plc4net.tools.modbusverify
             else
             {
                 w.WriteLine($"- Function `0x{fc:X2}`"
-                            + (r.Length > 2 ? $", byte count {r[2]}" : string.Empty));
+                            + (r.Length > ByteCountOffset ? $", byte count {r[ByteCountOffset]}" : string.Empty));
             }
 
             w.WriteLine($"- CRC {(crcValid ? "valid ✅" : "**invalid** ❌ — corrupt, truncated, or contains echoed request bytes")}");
@@ -557,6 +582,12 @@ namespace org.apache.plc4net.tools.modbusverify
             return quantity;
         }
 
+        // RTU read-response frame layout: address(1) + function(1) + byteCount(1) + data(N) + crc(2).
+        private const int AddressOffset = 0;
+        private const int FunctionOffset = 1;
+        private const int ByteCountOffset = 2;
+        private const int DataOffset = 3;
+
         private static bool HasExpectedReadShape(
             byte[] frame, byte unitId, ModbusTag tag, ushort quantity)
         {
@@ -571,16 +602,16 @@ namespace org.apache.plc4net.tools.modbusverify
             var dataBytes = tag.Type is ModbusTag.TagType.Coil or ModbusTag.TagType.DiscreteInput
                 ? (quantity + 7) / 8
                 : quantity * 2;
-            return frame.Length == dataBytes + 5
-                   && frame[0] == unitId
-                   && frame[1] == function
-                   && frame[2] == dataBytes;
+            return frame.Length == ModbusFunctionCodes.ReadResponseRtuFrameLength(dataBytes)
+                   && frame[AddressOffset] == unitId
+                   && frame[FunctionOffset] == function
+                   && frame[ByteCountOffset] == dataBytes;
         }
 
         private static void PrintRawValues(
-            TextWriter w, byte[] frame, ModbusTag tag, ushort quantity)
+            TextWriter w, byte[] frame, ModbusTag tag, ushort quantity, bool shapeOk)
         {
-            if (!HasExpectedReadShape(frame, frame[0], tag, quantity)
+            if (!shapeOk
                 || tag.Type is not (ModbusTag.TagType.HoldingRegister
                                     or ModbusTag.TagType.InputRegister))
             {
@@ -588,7 +619,7 @@ namespace org.apache.plc4net.tools.modbusverify
             }
 
             var values = Enumerable.Range(0, quantity)
-                .Select(i => (ushort)((frame[3 + i * 2] << 8) | frame[4 + i * 2]));
+                .Select(i => (ushort)((frame[DataOffset + i * 2] << 8) | frame[DataOffset + i * 2 + 1]));
             w.WriteLine($"- Register values: `{string.Join(", ", values)}`");
         }
 

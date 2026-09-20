@@ -267,7 +267,7 @@ namespace org.apache.plc4net.drivers.modbus
                     ModbusFunctionCodes.ReadCoils or ModbusFunctionCodes.ReadDiscreteInputs
                         or ModbusFunctionCodes.ReadHoldingRegisters
                         or ModbusFunctionCodes.ReadInputRegisters
-                        => 3 + head[2] + 2, // addr + fc + byteCount + data + crc
+                        => ModbusFunctionCodes.ReadResponseRtuFrameLength(head[2]),
                     _ => 8,                 // write single/multiple echo: addr + fc + addr(2) + val(2) + crc
                 };
             if (total is < 5 or > MaxRtuFrameLen)
