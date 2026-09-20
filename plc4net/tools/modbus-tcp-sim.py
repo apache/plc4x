@@ -103,6 +103,33 @@ def handle_pdu(pdu: bytes) -> bytes:
     return _exception(function, ILLEGAL_FUNCTION)
 
 
+def _recv_exact(conn: socket.socket, size: int) -> bytes:
+    """recv() only returns "up to size" bytes; loop until size is met or the
+    peer closes early. Returns fewer than size bytes only on early close."""
+    chunks = bytearray()
+    while len(chunks) < size:
+        chunk = conn.recv(size - len(chunks))
+        if not chunk:
+            break
+        chunks.extend(chunk)
+    return bytes(chunks)
+
+
+def _handle_connection(conn: socket.socket) -> None:
+    with conn:
+        while True:
+            header = _recv_exact(conn, 7)
+            if len(header) < 7:
+                break
+            txn_id, proto_id, length, unit_id = struct.unpack(">HHHB", header)
+            pdu = _recv_exact(conn, length - 1)
+            response_pdu = handle_pdu(pdu)
+            response_header = struct.pack(
+                ">HHHB", txn_id, proto_id, len(response_pdu) + 1, unit_id
+            )
+            conn.sendall(response_header + response_pdu)
+
+
 def serve(port: int) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -111,18 +138,12 @@ def serve(port: int) -> None:
         print(f"Modbus TCP test slave listening on 0.0.0.0:{port}", flush=True)
         while True:
             conn, _ = server.accept()
-            with conn:
-                while True:
-                    header = conn.recv(7)
-                    if len(header) < 7:
-                        break
-                    txn_id, proto_id, length, unit_id = struct.unpack(">HHHB", header)
-                    pdu = conn.recv(length - 1)
-                    response_pdu = handle_pdu(pdu)
-                    response_header = struct.pack(
-                        ">HHHB", txn_id, proto_id, len(response_pdu) + 1, unit_id
-                    )
-                    conn.sendall(response_header + response_pdu)
+            try:
+                _handle_connection(conn)
+            except OSError as e:
+                # A client dropping mid-exchange (reset, closed early) must not
+                # take the whole slave down -- move on to the next connection.
+                print(f"Connection dropped: {e}", flush=True)
 
 
 if __name__ == "__main__":
