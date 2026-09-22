@@ -41,10 +41,12 @@ type decoratedUdpTransport struct {
 
 	inner *udp.Transport
 	used  bool
+	opts  map[string][]string
 }
 
 func (d *decoratedUdpTransport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, opts map[string][]string, localAddress *net.UDPAddr, _options ...options.WithOption) (transports.TransportInstance, error) {
 	d.used = true
+	d.opts = opts
 	return d.inner.CreateTransportInstanceForLocalAddress(transportUrl, opts, localAddress, _options...)
 }
 
@@ -71,4 +73,36 @@ func TestDriverAcceptsDecoratedUdpTransport(t *testing.T) {
 	t.Cleanup(func() { _ = connection.Close() })
 
 	assert.True(t, decorated.used, "the driver must go through the decorator, not around it")
+}
+
+// TestDriverInjectsNoOptionNothingReads pins that the driver stops handing the transport an
+// option that has no reader.
+//
+// The port-sharing option was injected under a bare name while the transport reads it under the
+// transport's own code, so it never arrived. It could not have helped if it had: the socket
+// option behind it is a documented no-op, because the kernel hashes each broadcast to a single
+// socket and a second stack on the same host still misses traffic. All the injection achieved
+// was a warning that the driver does not know the option -- which is true, and the reason to
+// stop setting it.
+func TestDriverInjectsNoOptionNothingReads(t *testing.T) {
+	inner := udp.NewTransport()
+	decorated := &decoratedUdpTransport{Transport: inner, inner: inner}
+
+	driver := NewDriver()
+	t.Cleanup(func() { _ = driver.Close() })
+
+	connection, err := driver.GetConnection(
+		context.Background(),
+		url.URL{Scheme: "udp", Host: "127.0.0.1:47808"},
+		map[string]transports.Transport{"udp": decorated},
+		map[string][]string{"local-port": {"0"}},
+	)
+	require.NoError(t, err)
+	require.NotNil(t, connection)
+	t.Cleanup(func() { _ = connection.Close() })
+
+	assert.NotContains(t, decorated.opts, "so-reuse",
+		"nothing reads this key, and the socket option behind it does nothing")
+	assert.NotContains(t, decorated.opts, "udp.so-reuse",
+		"setting the key the transport does read would enable a documented no-op")
 }

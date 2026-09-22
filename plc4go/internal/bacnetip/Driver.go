@@ -84,10 +84,6 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	}
 	// Provide a default-port to the transport, used if the user doesn't provide one in the connection string.
 	driverOptions["defaultUdpPort"] = []string{strconv.FormatUint(uint64(model.Constant_BACNETUDPDEFAULTPORT), 10)}
-	// Set so_reuse by default so multiple BACnet processes can share the BACnet/IP UDP port.
-	if _, ok := driverOptions["so-reuse"]; !ok {
-		driverOptions["so-reuse"] = []string{"true"}
-	}
 	// BACnet/IP uses port 47808 on both sides of a conversation; spec-conformant
 	// peers (bacpypes3, EcoStruxure, Niagara, ...) send unsolicited messages
 	// and responses back to the well-known port regardless of the request's
