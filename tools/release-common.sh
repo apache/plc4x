@@ -165,3 +165,47 @@ require_apache_remote() {
 # Resolved once here so that every script that sources this file has APACHE_REMOTE available.
 # Scripts that actually talk to the remote call "require_apache_remote" to insist on it.
 resolve_apache_remote
+
+# ----------------------------------------------------------------------------------------------
+# Finding the signing key
+# ----------------------------------------------------------------------------------------------
+# The artifacts are signed by "release-2-prepare-release.sh" on the host, not by the
+# maven-gpg-plugin, but release managers configure their key the Maven way: as "gpg.keyname" in
+# the "apache-release" profile of their settings.xml. A plain "gpg -ab" ignores that and signs
+# with gpg's default key, which on a machine with more than one secret key is not necessarily the
+# Apache one. So the key is looked up here, and every script that signs or checks the signing
+# passes it to gpg explicitly - that way the preflight checks the very key the release signs with.
+
+# Filled in by "resolve_signing_key": the key, and where it was found.
+SIGNING_KEY=""
+SIGNING_KEY_SOURCE=""
+
+resolve_signing_key() {
+    SIGNING_KEY=""
+    SIGNING_KEY_SOURCE=""
+
+    # Letting Maven evaluate the property reads settings.xml the way a Maven build would - profile
+    # activation, "${env.*}" expressions and all - instead of picking the XML apart here. The
+    # value goes to a file because Maven 4 prefixes even quiet output with "[INFO] [stdout]".
+    local output keyname
+    output=$(mktemp)
+    if "$DIRECTORY/mvnw" -q -f "$DIRECTORY/tools/stage.pom" -Papache-release \
+            help:evaluate -Dexpression=gpg.keyname -Doutput="$output" > /dev/null 2>&1; then
+        keyname=$(head -n 1 "$output" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        # That is what help:evaluate writes for a property that is not set.
+        if [[ -n "$keyname" && "$keyname" != "null object or invalid expression" ]]; then
+            SIGNING_KEY="$keyname"
+            SIGNING_KEY_SOURCE="'gpg.keyname' of the 'apache-release' profile in settings.xml"
+        fi
+    fi
+    rm -f "$output"
+
+    # Without a configured key, settle on the first secret key that can sign - and name it, so it
+    # is at least the same key everywhere rather than whatever gpg picks on its own.
+    if [[ -z "$SIGNING_KEY" ]]; then
+        SIGNING_KEY=$(gpg --list-secret-keys --with-colons 2>/dev/null | awk -F: '$1 == "sec" && $12 ~ /S/ {print $5; exit}')
+        if [[ -n "$SIGNING_KEY" ]]; then
+            SIGNING_KEY_SOURCE="the first secret key in the gpg keyring, as 'gpg.keyname' is not set"
+        fi
+    fi
+}

@@ -44,6 +44,16 @@ fi
 require_apache_remote
 echo "Apache remote:        $APACHE_REMOTE ($APACHE_REMOTE_URL)"
 
+# The artifacts are signed in step 4 with this key, not with gpg's default one - see
+# "resolve_signing_key" in "release-common.sh". Looked up now rather than after the build.
+resolve_signing_key
+if [[ -z "$SIGNING_KEY" ]]; then
+    echo "❌ No gpg secret key found to sign the release with, aborting."
+    echo "   Set 'gpg.keyname' in the 'apache-release' profile of your settings.xml."
+    exit 1
+fi
+echo "Signing key:          $SIGNING_KEY ($SIGNING_KEY_SOURCE)"
+
 # Maven 4 prefixes even quiet output with "[INFO] [stdout] ", so take the last token of the
 # last line rather than the whole output.
 PROJECT_VERSION=$("$DIRECTORY"/mvnw -f "$DIRECTORY"/pom.xml -q --non-recursive -Dexpression=project.version -DforceStdout help:evaluate | tail -n 1 | awk '{print $NF}')
@@ -160,7 +170,7 @@ SIGNED_ARTIFACTS=0
 # carry on to the deployment below with unsigned artifacts.
 while read -r line ; do
     echo "Processing $line"
-    if ! gpg -ab "$line"; then
+    if ! gpg --local-user "$SIGNING_KEY" -ab "$line"; then
         echo "❌ Got non-0 exit code from signing artifact, aborting."
         exit 1
     fi
@@ -234,7 +244,11 @@ SIGNATURE_FILE="$STAGE_DIR/apache-plc4x-$RELEASE_VERSION-source-release.zip.asc"
 # KEYS_URL comes from tools/release-common.sh
 TEMP_DIR=$(mktemp -d)
 KEYS_FILE="$TEMP_DIR/KEYS"
-KEYRING="$TEMP_DIR/pubring.kbx"
+# A throwaway gpg home rather than "--no-default-keyring --keyring": that still reads the user's
+# gpg.conf, common.conf and trustdb, and with "use-keyboxd" set gpg ignores the "--keyring"
+# altogether - so whether the import worked depended on the machine.
+KEYS_GNUPGHOME="$TEMP_DIR/gnupg"
+mkdir -m 700 "$KEYS_GNUPGHOME"
 
 # Fetch KEYS file
 echo "🔽 Downloading KEYS file from $KEYS_URL"
@@ -251,14 +265,15 @@ fi
 
 # Import keys into temporary keyring
 echo "🔑 Importing KEYS into temporary GPG keyring"
-if ! gpg --no-default-keyring --keyring "$KEYRING" --import "$KEYS_FILE" > /dev/null 2>&1; then
-    echo "❌ Could not import the KEYS file into a temporary keyring, aborting."
-    rm -rf "$TEMP_DIR"
-    exit 1
+# gpg exits non-zero if any one key in the file cannot be imported, which says nothing about the
+# key that signed the release - so the output is shown, and the checks below decide.
+if ! IMPORT_OUTPUT=$(gpg --homedir "$KEYS_GNUPGHOME" --batch --import "$KEYS_FILE" 2>&1); then
+    echo "⚠️  gpg reported problems importing the KEYS file:"
+    echo "$IMPORT_OUTPUT" | sed 's|^|     |'
 fi
 # Without this an empty keyring would make the verification below fail, and the message would
 # blame the release manager's key instead of the KEYS file that never arrived.
-IMPORTED_KEYS=$(gpg --no-default-keyring --keyring "$KEYRING" --with-colons --list-keys 2>/dev/null | grep -c '^pub:')
+IMPORTED_KEYS=$(gpg --homedir "$KEYS_GNUPGHOME" --batch --with-colons --list-keys 2>/dev/null | grep -c '^pub:')
 if [[ "$IMPORTED_KEYS" -eq 0 ]]; then
     echo "❌ The temporary keyring contains no keys after importing $KEYS_URL, aborting."
     rm -rf "$TEMP_DIR"
@@ -268,7 +283,7 @@ echo "🔑 Imported $IMPORTED_KEYS keys from the KEYS file"
 
 # Verify the signature
 echo "🧾 Verifying signature on $ORIGINAL_FILE with $SIGNATURE_FILE"
-if gpg --no-default-keyring --keyring "$KEYRING" --verify "$SIGNATURE_FILE" "$ORIGINAL_FILE" > /dev/null 2>&1; then
+if gpg --homedir "$KEYS_GNUPGHOME" --batch --verify "$SIGNATURE_FILE" "$ORIGINAL_FILE" > /dev/null 2>&1; then
     echo "✅ Signature is valid and signed by a key in the Apache PLC4X KEYS file"
 else
     echo "❌ Signature is invalid or the key is not in the Apache PLC4X KEYS file"
@@ -283,13 +298,13 @@ fi
 # the release manager's {apache-id}@apache.org address. A key can have several user ids, and only
 # one of them has to be the Apache one.
 
-SIGNATURE_STATUS=$(gpg --no-default-keyring --keyring "$KEYRING" --status-fd 1 \
+SIGNATURE_STATUS=$(gpg --homedir "$KEYS_GNUPGHOME" --batch --status-fd 1 \
     --verify "$SIGNATURE_FILE" "$ORIGINAL_FILE" 2>/dev/null)
 # Field 3 of VALIDSIG is the key that made the signature, which is the signing subkey for anyone
 # who signs with one. The last field is the fingerprint of the primary key, which is what carries
 # the user ids, so prefer that and fall back to field 3 for older gpg output.
-SIGNING_KEY=$(echo "$SIGNATURE_STATUS" | awk '/^\[GNUPG:\] VALIDSIG /{print ($12 != "" ? $12 : $3); exit}')
-if [[ -z "$SIGNING_KEY" ]]; then
+SIGNATURE_KEY=$(echo "$SIGNATURE_STATUS" | awk '/^\[GNUPG:\] VALIDSIG /{print ($12 != "" ? $12 : $3); exit}')
+if [[ -z "$SIGNATURE_KEY" ]]; then
     echo "❌ Could not work out which key signed the release, aborting."
     rm -rf "$TEMP_DIR"
     exit 1
@@ -297,20 +312,21 @@ fi
 
 # Field 2 is the validity of the user id: skip the ones that are revoked ("r") or expired ("e"),
 # so that an @apache.org address the key no longer stands behind does not satisfy the check.
-SIGNING_UIDS=$(gpg --no-default-keyring --keyring "$KEYRING" --with-colons --list-keys "$SIGNING_KEY" 2>/dev/null \
+SIGNING_UIDS=$(gpg --homedir "$KEYS_GNUPGHOME" --batch --with-colons --list-keys "$SIGNATURE_KEY" 2>/dev/null \
     | awk -F: '$1 == "uid" && $2 !~ /^[re]$/ {print $10}')
 if echo "$SIGNING_UIDS" | grep -qiE '<[^>]+@apache\.org>'; then
     echo "✅ The signing key is registered to an apache.org address"
 else
     echo "❌ The signing key is not registered to an apache.org address, aborting."
     echo "   Releases have to be signed with a key carrying your {apache-id}@apache.org address."
-    echo "   Key $SIGNING_KEY currently carries:"
+    echo "   Key $SIGNATURE_KEY currently carries:"
     echo "$SIGNING_UIDS" | sed 's|^|     |'
     rm -rf "$TEMP_DIR"
     exit 1
 fi
 
 # Cleanup
+gpgconf --homedir "$KEYS_GNUPGHOME" --kill all > /dev/null 2>&1
 rm -rf "$TEMP_DIR"
 
 ########################################################################################################################
