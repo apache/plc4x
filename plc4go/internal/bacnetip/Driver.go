@@ -36,8 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/transports/udp"
+	spiTransports "github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +67,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]spiTransports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
 	connectionLog.Debug().
 		Int("nTransports", len(transports)).
@@ -112,11 +111,11 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	localAddress := &net.UDPAddr{IP: net.IPv4zero, Port: localPort}
 	connectionLog.Info().Stringer("localAddress", localAddress).Msg("BACnet driver binding local UDP")
 
-	udpTransport, ok := transport.(*udp.Transport)
+	localAddressTransport, ok := transport.(spiTransports.LocalAddressAware)
 	if !ok {
-		return nil, errors.Errorf("BACnet/IP requires the udp transport; got %T", transport)
+		return nil, errors.Errorf("BACnet/IP needs a transport that can bind a local address; got %T", transport)
 	}
-	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(
+	transportInstance, err := localAddressTransport.CreateTransportInstanceForLocalAddress(
 		transportUrl,
 		driverOptions,
 		localAddress,
