@@ -42,6 +42,16 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <inputExcludes combine.children="append">
+            <!-- A Visual Studio solution cannot carry a license header. -->
+            <inputExclude>**/*.sln</inputExclude>
+          </inputExcludes>
+        </configuration>
+      </plugin>
       <!-- Build the project -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -60,8 +70,24 @@
                 <argument>build</argument>
                 <argument>plc4net.sln</argument>
                 <argument>--configuration=Debug</argument>
-                <argument>--output=${project.build.directory}/build</argument>
                 <argument>-p:Version=${project.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>dotnet-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <executable>dotnet</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>test</argument>
+                <argument>plc4net.sln</argument>
+                <argument>--configuration=Debug</argument>
               </arguments>
             </configuration>
           </execution>
