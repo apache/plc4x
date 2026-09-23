@@ -161,7 +161,7 @@
     <javapoet.version>0.20.0</javapoet.version>
     <jaxb.version>4.0.5</jaxb.version>
     <jna.version>5.19.1</jna.version>
-    <joda-time.version>2.14.3</joda-time.version>
+    <joda-time.version>2.14.4</joda-time.version>
     <jserialcom.version>2.11.4</jserialcom.version>
     <jsoup.version>1.22.2</jsoup.version>
     <jssc.version>2.10.4</jssc.version>
