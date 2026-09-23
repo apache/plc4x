@@ -346,5 +346,4 @@ MigrationBackup/
 # Ignore the bin directories
 /api/bin/
 /spi/bin/
-/drivers/knxnetip/bin/
 /.idea/
