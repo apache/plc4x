@@ -155,8 +155,8 @@ namespace org.apache.plc4net.spi.test.model.values
             Assert.True(value.IsStruct());
             Assert.True(value.HasKey("control"));
             Assert.False(value.HasKey("missing"));
-            Assert.True(value.GetValue("control").GetBool());
-            Assert.Equal((byte)7, value.GetValue("level").GetByte());
+            Assert.True(value.GetValue("control")!.GetBool());
+            Assert.Equal((byte)7, value.GetValue("level")!.GetByte());
             Assert.Equal(new[] { "control", "level" }, value.GetKeys().OrderBy(k => k));
         }
 

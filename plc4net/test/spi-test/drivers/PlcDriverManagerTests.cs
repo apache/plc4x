@@ -44,7 +44,7 @@ namespace org.apache.plc4net.spi.test.drivers
             throw new NotSupportedException();
         }
 
-        public IPlcConnection Connect(string connectionString, IPlcAuthentication authentication)
+        public IPlcConnection Connect(string connectionString, IPlcAuthentication? authentication)
         {
             throw new NotSupportedException();
         }
@@ -97,7 +97,7 @@ namespace org.apache.plc4net.spi.test.drivers
         public void Registering_null_is_rejected()
         {
             Assert.Throws<ArgumentNullException>(
-                () => PlcDriverManager.Instance.RegisterDriver(null));
+                () => PlcDriverManager.Instance.RegisterDriver(null!));
         }
 
         [Fact]

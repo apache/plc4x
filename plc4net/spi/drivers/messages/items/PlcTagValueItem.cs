@@ -28,6 +28,6 @@ namespace org.apache.plc4net.spi.drivers.messages.items
     public interface PlcTagValueItem<T> : PlcTagItem<T> where T : IPlcTag
     {
         /// <summary>The value to write to this tag.</summary>
-        object Value { get; }
+        object? Value { get; }
     }
 }

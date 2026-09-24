@@ -33,6 +33,9 @@ namespace org.apache.plc4net.spi.model.values
 
         public PlcLTIME_OF_DAY(ulong nanosecondsSinceMidnight)
         {
+            if (nanosecondsSinceMidnight >= NanosPerDay)
+                throw new ArgumentOutOfRangeException(nameof(nanosecondsSinceMidnight),
+                    $"nanosecondsSinceMidnight must be < {NanosPerDay} ns/day, got {nanosecondsSinceMidnight}.");
             this.nanosecondsSinceMidnight = nanosecondsSinceMidnight;
         }
 
@@ -60,7 +63,8 @@ namespace org.apache.plc4net.spi.model.values
 
         public override TimeOnly GetTime()
         {
-            var ns = Math.Min(nanosecondsSinceMidnight, NanosPerDay - 1);
+            var maxTicksAsNanos = unchecked((ulong)long.MaxValue * 100);
+            var ns = Math.Min(nanosecondsSinceMidnight, Math.Min(NanosPerDay - 1, maxTicksAsNanos));
             return TimeOnly.FromTimeSpan(TimeSpan.FromTicks((long)(ns / 100)));
         }
 
@@ -69,7 +73,7 @@ namespace org.apache.plc4net.spi.model.values
             return nanosecondsSinceMidnight == other.nanosecondsSinceMidnight;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

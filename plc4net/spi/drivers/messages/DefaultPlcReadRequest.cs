@@ -46,7 +46,7 @@ namespace org.apache.plc4net.spi.drivers.messages
 
         public IEnumerable<string> TagNames => _tags.Keys;
 
-        public IPlcTag GetTagByName(string name)
+        public IPlcTag? GetTagByName(string name)
         {
             return _tags.TryGetValue(name, out var item) ? item.Tag : null;
         }

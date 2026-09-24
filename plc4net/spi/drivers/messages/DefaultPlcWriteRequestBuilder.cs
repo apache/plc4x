@@ -36,7 +36,7 @@ namespace org.apache.plc4net.spi.drivers.messages
         private readonly Dictionary<string, PlcTagValueItem<IPlcTag>> _tags
             = new Dictionary<string, PlcTagValueItem<IPlcTag>>();
 
-        public DefaultPlcWriteRequestBuilder(PlcWriter writer, Func<string, IPlcTag> tagParser)
+        public DefaultPlcWriteRequestBuilder(PlcWriter writer, Func<string, IPlcTag>? tagParser)
         {
             _writer = writer;
             _tagParser = tagParser ?? (s => new GenericTag(s));
@@ -131,7 +131,7 @@ namespace org.apache.plc4net.spi.drivers.messages
         /// If the array has one element, return it directly; if more than one,
         /// throw because multi-value writes are not yet supported.
         /// </summary>
-        private static object Unwrap<T>(T[] values)
+        private static object? Unwrap<T>(T[] values)
         {
             if (values == null || values.Length == 0) return null;
             if (values.Length == 1) return values[0];

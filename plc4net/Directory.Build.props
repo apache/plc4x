@@ -32,7 +32,11 @@
     -->
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Nullable>annotations</Nullable>
+    <!-- Full nullable analysis: warnings stay on so a false non-null contract
+         cannot ship. Public members whose documented contract allows null
+         (e.g. feature-gated request builders, unknown transport codes) must
+         annotate that with `?`. -->
+    <Nullable>enable</Nullable>
     <!-- The module builds warning-clean today; keep it that way in CI so a
          later change cannot quietly regress it. -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

@@ -26,7 +26,7 @@ namespace org.apache.plc4net.spi.drivers.messages.items
     /// </summary>
     public class DefaultPlcResponseItem<T> : PlcResponseItem<T>
     {
-        public DefaultPlcResponseItem(PlcResponseCode code, T value)
+        public DefaultPlcResponseItem(PlcResponseCode code, T? value)
         {
             Code = code;
             Value = value;
@@ -34,6 +34,6 @@ namespace org.apache.plc4net.spi.drivers.messages.items
 
         public PlcResponseCode Code { get; }
 
-        public T Value { get; }
+        public T? Value { get; }
     }
 }

@@ -84,7 +84,7 @@ namespace org.apache.plc4net.spi.drivers
         protected abstract ConnectionBase CreateConnection(
             ConnectionString connectionString,
             ITransportInstance transportInstance,
-            IPlcAuthentication authentication);
+            IPlcAuthentication? authentication);
 
         // ----- public driver API -----
 
@@ -93,7 +93,7 @@ namespace org.apache.plc4net.spi.drivers
             return Connect(connectionString, null);
         }
 
-        public IPlcConnection Connect(string connectionString, IPlcAuthentication authentication)
+        public IPlcConnection Connect(string connectionString, IPlcAuthentication? authentication)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -203,7 +203,7 @@ namespace org.apache.plc4net.spi.drivers
         /// </summary>
         public async System.Threading.Tasks.Task<IPlcConnection> ConnectAsync(
             string connectionString,
-            IPlcAuthentication authentication = null)
+            IPlcAuthentication? authentication = null)
         {
             var parsed = ConnectionString.Parse(connectionString);
 

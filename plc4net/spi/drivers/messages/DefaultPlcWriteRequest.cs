@@ -48,7 +48,7 @@ namespace org.apache.plc4net.spi.drivers.messages
 
         public IEnumerable<string> TagNames => _tags.Keys;
 
-        public IPlcTag GetTagByName(string name)
+        public IPlcTag? GetTagByName(string name)
         {
             return _tags.TryGetValue(name, out var item) ? item.Tag : null;
         }
@@ -56,7 +56,7 @@ namespace org.apache.plc4net.spi.drivers.messages
         public IEnumerable<IPlcTag> Tags => _tags.Values.Select(v => v.Tag);
 
         /// <summary>Returns the value to write to the named tag, or null.</summary>
-        public object GetValue(string name)
+        public object? GetValue(string name)
         {
             return _tags.TryGetValue(name, out var item) ? item.Value : null;
         }

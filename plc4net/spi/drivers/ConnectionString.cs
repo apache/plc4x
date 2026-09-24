@@ -50,7 +50,7 @@ namespace org.apache.plc4net.spi.drivers
 
         private ConnectionString(
             string protocolCode,
-            string transportCode,
+            string? transportCode,
             string transportConfig,
             string paramString,
             IReadOnlyDictionary<string, string> parameters)
@@ -66,7 +66,7 @@ namespace org.apache.plc4net.spi.drivers
         public string ProtocolCode { get; }
 
         /// <summary>e.g. "tcp", "cotp". Null when the string relies on the driver's default.</summary>
-        public string TransportCode { get; }
+        public string? TransportCode { get; }
 
         /// <summary>The address the transport consumes, e.g. "192.168.0.1:102".</summary>
         public string TransportConfig { get; }
@@ -77,7 +77,7 @@ namespace org.apache.plc4net.spi.drivers
         /// <summary>Query parameters, parsed. Keys are case-insensitive.</summary>
         public IReadOnlyDictionary<string, string> Parameters { get; }
 
-        public static ConnectionString Parse(string connectionString)
+        public static ConnectionString Parse(string? connectionString)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -161,7 +161,7 @@ namespace org.apache.plc4net.spi.drivers
         /// <summary>
         /// Looks up a parameter, returning <paramref name="defaultValue"/> when absent.
         /// </summary>
-        public string GetParameter(string name, string defaultValue = null)
+        public string? GetParameter(string name, string? defaultValue = null)
         {
             return Parameters.TryGetValue(name, out var value) ? value : defaultValue;
         }
@@ -196,7 +196,7 @@ namespace org.apache.plc4net.spi.drivers
         /// Replaces credential-bearing parameter values with '***' so a connection string
         /// can be written to a log.
         /// </summary>
-        public static string RedactSecrets(string connectionString)
+        public static string? RedactSecrets(string? connectionString)
         {
             if (connectionString == null)
             {
@@ -209,7 +209,9 @@ namespace org.apache.plc4net.spi.drivers
         {
             var transport = TransportCode == null ? string.Empty : ":" + TransportCode;
             var parameters = ParamString.Length == 0 ? string.Empty : "?" + ParamString;
-            return RedactSecrets($"{ProtocolCode}{transport}://{TransportConfig}{parameters}");
+            // The argument is an interpolated string, so RedactSecrets cannot
+            // return null here; the coalesce only satisfies its nullable return.
+            return RedactSecrets($"{ProtocolCode}{transport}://{TransportConfig}{parameters}") ?? string.Empty;
         }
     }
 }

@@ -42,16 +42,18 @@ namespace org.apache.plc4net.api
         IPlcTag Parse(string tagQuery);
 
         /// <summary>null when reading is not supported.</summary>
-        IPlcReadRequestBuilder ReadRequestBuilder { get; }
+        IPlcReadRequestBuilder? ReadRequestBuilder { get; }
 
         /// <summary>null when writing is not supported.</summary>
-        IPlcWriteRequestBuilder WriteRequestBuilder { get; }
+        IPlcWriteRequestBuilder? WriteRequestBuilder { get; }
 
         /// <summary>null when subscriptions are not supported.</summary>
-        IPlcSubscriptionRequestBuilder SubscriptionRequestBuilder { get; }
+        IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder { get; }
 
-        IPlcUnsubscriptionRequestBuilder UnsubscriptionRequestBuilder { get; }
+        /// <summary>null when subscriptions are not supported.</summary>
+        IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder { get; }
 
-        IPlcAuthentication Authentication { get; }
+        /// <summary>null when the connection was established without authentication.</summary>
+        IPlcAuthentication? Authentication { get; }
     }
 }

@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using org.apache.plc4net.api.value;
+using org.apache.plc4net.exceptions;
 
 namespace org.apache.plc4net.spi.model.values
 {
@@ -66,7 +67,8 @@ namespace org.apache.plc4net.spi.model.values
 
         public virtual bool[] GetBoolArray()
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} has no boolean array (check IsBool()).");
         }
 
         public virtual bool IsByte()
@@ -176,7 +178,8 @@ namespace org.apache.plc4net.spi.model.values
 
         public virtual string GetString()
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} has no string representation (check IsString()).");
         }
 
         public virtual bool IsDuration()
@@ -221,7 +224,8 @@ namespace org.apache.plc4net.spi.model.values
 
         public virtual byte[] GetRaw()
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} has no raw representation.");
         }
 
         public virtual bool IsList()
@@ -236,12 +240,14 @@ namespace org.apache.plc4net.spi.model.values
 
         public virtual IPlcValue GetIndex(int index)
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} is not indexable (check IsList()).");
         }
 
         public virtual List<IPlcValue> GetList()
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} is not a list (check IsList()).");
         }
 
         public virtual bool IsStruct()
@@ -251,7 +257,8 @@ namespace org.apache.plc4net.spi.model.values
 
         public virtual string[] GetKeys()
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} is not a struct (check IsStruct()).");
         }
 
         public virtual bool HasKey(string key)
@@ -259,14 +266,16 @@ namespace org.apache.plc4net.spi.model.values
             return false;
         }
 
-        public virtual IPlcValue GetValue(string key)
+        public virtual IPlcValue? GetValue(string key)
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} is not a struct (check IsStruct()).");
         }
 
         public virtual Dictionary<string, IPlcValue> GetStruct()
         {
-            return default;
+            throw new PlcIncompatibleDatatypeException(
+                $"Value of type {GetType().Name} is not a struct (check IsStruct()).");
         }
     }
 }

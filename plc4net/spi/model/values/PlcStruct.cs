@@ -50,7 +50,7 @@ namespace org.apache.plc4net.spi.model.values
             return values.ContainsKey(key);
         }
 
-        public override IPlcValue GetValue(string key)
+        public override IPlcValue? GetValue(string key)
         {
             return values.TryGetValue(key, out var value) ? value : null;
         }
@@ -67,7 +67,7 @@ namespace org.apache.plc4net.spi.model.values
                                        && Equals(kv.Value, v));
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

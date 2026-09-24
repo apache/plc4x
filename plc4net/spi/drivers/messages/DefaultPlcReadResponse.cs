@@ -61,7 +61,7 @@ namespace org.apache.plc4net.spi.drivers.messages
         /// <summary>
         /// Returns the value for a named tag, or null if the tag is absent or in error.
         /// </summary>
-        public IPlcValue GetValue(string name)
+        public IPlcValue? GetValue(string name)
         {
             return _values.TryGetValue(name, out var item) && item.Code == PlcResponseCode.Ok
                 ? item.Value

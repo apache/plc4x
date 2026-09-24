@@ -138,7 +138,7 @@ namespace org.apache.plc4net.spi.test.drivers
 
             public BufferBackedTransport(byte[] initial) => _buffer = new List<byte>(initial);
 
-            public ITransportConfiguration Configuration => null;
+            public ITransportConfiguration Configuration => null!;
             public string DriverConfig => string.Empty;
             public bool IsOpen => true;
 

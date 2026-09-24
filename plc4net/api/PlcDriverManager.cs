@@ -89,7 +89,7 @@ namespace org.apache.plc4net
             return GetDriverByCode(scheme);
         }
 
-        public IPlcDriver GetDriverByCode(string protocolCode)
+        public IPlcDriver GetDriverByCode(string? protocolCode)
         {
             if (protocolCode != null
                 && _drivers.TryGetValue(protocolCode, out var driver)
@@ -106,7 +106,7 @@ namespace org.apache.plc4net
             return GetConnection(connectionString, null);
         }
 
-        public IPlcConnection GetConnection(string connectionString, IPlcAuthentication authentication)
+        public IPlcConnection GetConnection(string connectionString, IPlcAuthentication? authentication)
         {
             var driver = GetDriver(connectionString);
             return driver.Connect(connectionString, authentication);

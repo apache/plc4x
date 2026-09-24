@@ -225,7 +225,10 @@ namespace org.apache.plc4net.spi.model.values
 
         public override string GetString()
         {
-            return Convert.ToString(value, CultureInfo.InvariantCulture);
+            // Convert.ToString only yields null for a null reference. Every subclass
+            // stores a numeric value type, but the IComparable constraint on T does
+            // not enforce that, so fall back to empty to keep the non-null contract.
+            return Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty;
         }
 
         protected bool Equals(SimpleNumericValueAdapter<T> other)
@@ -233,7 +236,7 @@ namespace org.apache.plc4net.spi.model.values
             return Equals(value, other.value);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

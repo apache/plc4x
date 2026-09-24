@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using org.apache.plc4net.api;
 using org.apache.plc4net.api.authentication;
 using org.apache.plc4net.api.metadata;
@@ -56,11 +57,23 @@ namespace org.apache.plc4net.spi.test.drivers
         }
     }
 
-    internal class RecordingTransport : ITransport
+    /// <summary>
+    /// A transport whose instance creation blocks until the test releases it, so a test can
+    /// observe what the caller does while the transport is still being created.
+    /// </summary>
+    internal class GatedTransport : ITransport
     {
+        private readonly ManualResetEventSlim _entered;
+        private readonly ManualResetEventSlim _release;
+
+        public GatedTransport(ManualResetEventSlim entered, ManualResetEventSlim release)
+        {
+            _entered = entered;
+            _release = release;
+        }
+
         public string TransportCode => "fake";
-        public string TransportName => "Recording Transport";
-        public int OpenThreadId { get; private set; }
+        public string TransportName => "Gated Transport";
 
         public ITransportConfiguration CreateConfiguration(IReadOnlyDictionary<string, string> parameters)
             => new FakeTransportConfiguration();
@@ -68,7 +81,15 @@ namespace org.apache.plc4net.spi.test.drivers
         public ITransportInstance CreateTransportInstance(
             string transportConfig, ITransportConfiguration configuration)
         {
-            OpenThreadId = Environment.CurrentManagedThreadId;
+            _entered.Set();
+
+            // Bounded, so that a regression which creates the transport on the caller
+            // fails the test instead of hanging it.
+            if (!_release.Wait(TimeSpan.FromSeconds(10)))
+            {
+                throw new TimeoutException("The test never released the transport.");
+            }
+
             return new FakeTransportInstance(configuration);
         }
     }
@@ -96,12 +117,12 @@ namespace org.apache.plc4net.spi.test.drivers
         public FakeConnection(ConnectionString cs, ITransportInstance transport)
             : base(cs, transport) { }
 
-        public override IPlcConnectionMetadata PlcConnectionMetadata => null;
-        public override IPlcTag Parse(string tagQuery) => null;
-        public override IPlcReadRequestBuilder ReadRequestBuilder => null;
-        public override IPlcWriteRequestBuilder WriteRequestBuilder => null;
-        public override IPlcSubscriptionRequestBuilder SubscriptionRequestBuilder => null;
-        public override IPlcUnsubscriptionRequestBuilder UnsubscriptionRequestBuilder => null;
+        public override IPlcConnectionMetadata PlcConnectionMetadata => null!;
+        public override IPlcTag Parse(string tagQuery) => null!;
+        public override IPlcReadRequestBuilder? ReadRequestBuilder => null;
+        public override IPlcWriteRequestBuilder? WriteRequestBuilder => null;
+        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => null;
+        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => null;
     }
 
     /// <summary>
@@ -125,7 +146,7 @@ namespace org.apache.plc4net.spi.test.drivers
         protected override ConnectionBase CreateConnection(
             ConnectionString connectionString,
             ITransportInstance transportInstance,
-            IPlcAuthentication authentication)
+            IPlcAuthentication? authentication)
         {
             return new FakeConnection(connectionString, transportInstance);
         }
@@ -136,13 +157,32 @@ namespace org.apache.plc4net.spi.test.drivers
         [Fact]
         public async System.Threading.Tasks.Task ConnectAsync_opens_transport_off_the_caller_thread()
         {
-            var transport = new RecordingTransport();
+            using var entered = new ManualResetEventSlim();
+            using var release = new ManualResetEventSlim();
+            var transport = new GatedTransport(entered, release);
             var driver = new StubDriver(new DefaultTransportManager(new[] { transport }));
-            var callerThreadId = Environment.CurrentManagedThreadId;
 
-            using var connection = await driver.ConnectAsync("stub://192.168.0.1");
+            // The transport cannot finish until it is released below, so ConnectAsync can only
+            // hand back a pending task if it creates the transport somewhere other than on the
+            // caller. Comparing thread ids would not show that: when the caller is a thread-pool
+            // thread, work it queues and then awaits can be picked up again by that same thread.
+            var connecting = driver.ConnectAsync("stub://192.168.0.1");
+            try
+            {
+                Assert.False(
+                    connecting.IsCompleted,
+                    "ConnectAsync finished while the transport was still being created.");
+                Assert.True(
+                    entered.Wait(TimeSpan.FromSeconds(30)),
+                    "The transport was never created.");
+            }
+            finally
+            {
+                release.Set();
+            }
 
-            Assert.NotEqual(callerThreadId, transport.OpenThreadId);
+            using var connection = await connecting;
+            Assert.True(connection.IsConnected);
         }
 
         [Fact]
@@ -237,7 +277,7 @@ namespace org.apache.plc4net.spi.test.drivers
 
             // The caller never gets a reference to the connection, so if Connect() did not
             // close the transport itself the socket would stay bound with no way to reach it.
-            Assert.True(driver.LastTransportInstance.Closed);
+            Assert.True(driver.LastTransportInstance!.Closed);
         }
 
         [Fact]
@@ -252,7 +292,7 @@ namespace org.apache.plc4net.spi.test.drivers
 
             var ex = Assert.Throws<PlcConnectionException>(() => driver.Connect("hooked://192.168.0.1"));
             Assert.IsType<TransportException>(ex.InnerException);
-            Assert.True(driver.LastTransportInstance.Closed);
+            Assert.True(driver.LastTransportInstance!.Closed);
         }
     }
 
@@ -286,12 +326,12 @@ namespace org.apache.plc4net.spi.test.drivers
             }
         }
 
-        public override IPlcConnectionMetadata PlcConnectionMetadata => null;
-        public override IPlcTag Parse(string tagQuery) => null;
-        public override IPlcReadRequestBuilder ReadRequestBuilder => null;
-        public override IPlcWriteRequestBuilder WriteRequestBuilder => null;
-        public override IPlcSubscriptionRequestBuilder SubscriptionRequestBuilder => null;
-        public override IPlcUnsubscriptionRequestBuilder UnsubscriptionRequestBuilder => null;
+        public override IPlcConnectionMetadata PlcConnectionMetadata => null!;
+        public override IPlcTag Parse(string tagQuery) => null!;
+        public override IPlcReadRequestBuilder? ReadRequestBuilder => null;
+        public override IPlcWriteRequestBuilder? WriteRequestBuilder => null;
+        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => null;
+        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => null;
     }
 
     /// <summary>
@@ -324,7 +364,7 @@ namespace org.apache.plc4net.spi.test.drivers
             _failWithTransportException = failWithTransportException;
         }
 
-        public ClosableTransportInstance LastTransportInstance { get; private set; }
+        public ClosableTransportInstance? LastTransportInstance { get; private set; }
 
         public override string ProtocolCode => "hooked";
         public override string ProtocolName => "Hooked Driver";
@@ -334,7 +374,7 @@ namespace org.apache.plc4net.spi.test.drivers
         protected override ConnectionBase CreateConnection(
             ConnectionString connectionString,
             ITransportInstance transportInstance,
-            IPlcAuthentication authentication)
+            IPlcAuthentication? authentication)
         {
             // Swap in an instance that reports closure, so the failure path can be asserted.
             LastTransportInstance = new ClosableTransportInstance(transportInstance.Configuration);

@@ -49,7 +49,7 @@ namespace org.apache.plc4net.spi.model.values
             return value.Equals(other.value);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

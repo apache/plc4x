@@ -51,7 +51,7 @@ namespace org.apache.plc4net.spi.transports
     public interface ITransportManager
     {
         /// <summary>Returns the transport for a code, or null when none is registered.</summary>
-        ITransport GetTransport(string transportCode);
+        ITransport? GetTransport(string transportCode);
 
         IReadOnlyCollection<string> GetTransportCodes();
     }
@@ -91,7 +91,7 @@ namespace org.apache.plc4net.spi.transports
             _transports[transport.TransportCode] = transport;
         }
 
-        public ITransport GetTransport(string transportCode)
+        public ITransport? GetTransport(string transportCode)
         {
             if (transportCode == null)
             {

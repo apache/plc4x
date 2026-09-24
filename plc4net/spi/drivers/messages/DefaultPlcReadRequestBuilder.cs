@@ -36,7 +36,7 @@ namespace org.apache.plc4net.spi.drivers.messages
         private readonly Dictionary<string, PlcTagItem<IPlcTag>> _tags
             = new Dictionary<string, PlcTagItem<IPlcTag>>();
 
-        public DefaultPlcReadRequestBuilder(PlcReader reader, Func<string, IPlcTag> tagParser)
+        public DefaultPlcReadRequestBuilder(PlcReader reader, Func<string, IPlcTag>? tagParser)
         {
             _reader = reader;
             _tagParser = tagParser ?? (s => new GenericTag(s));

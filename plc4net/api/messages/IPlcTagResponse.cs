@@ -38,8 +38,8 @@ namespace org.apache.plc4net.messages
         /// Get a tag by name
         /// </summary>
         /// <param name="name">Name of the tag to retrieve</param>
-        /// <returns>Tag with the given name</returns>
-        IPlcTag GetTagByName(string name);
+        /// <returns>Tag with the given name, or null when absent</returns>
+        IPlcTag? GetTagByName(string name);
 
         /// <summary>
         /// Get the response code from the PLC

@@ -49,6 +49,10 @@ namespace org.apache.plc4net.spi.model.values
 
         public override TimeSpan GetDuration()
         {
+            const long MaxTicks = long.MaxValue;
+            if (nanoseconds > unchecked((ulong)MaxTicks * 100))
+                throw new OverflowException(
+                    $"LTIME duration {nanoseconds} ns exceeds TimeSpan.MaxValue ({MaxTicks} ticks).");
             return TimeSpan.FromTicks((long)(nanoseconds / 100));
         }
 
@@ -57,7 +61,7 @@ namespace org.apache.plc4net.spi.model.values
             return nanoseconds == other.nanoseconds;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

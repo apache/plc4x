@@ -42,6 +42,6 @@ namespace org.apache.plc4net.api
         /// <exception cref="PlcConnectionException">on connection failure</exception>
         IPlcConnection Connect(string connectionString);
 
-        IPlcConnection Connect(string connectionString, IPlcAuthentication authentication);
+        IPlcConnection Connect(string connectionString, IPlcAuthentication? authentication);
     }
 }

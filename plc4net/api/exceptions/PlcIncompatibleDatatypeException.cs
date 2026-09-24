@@ -17,20 +17,28 @@
  * under the License.
  */
 
-using org.apache.plc4net.types;
+using System;
 
-namespace org.apache.plc4net.spi.drivers.messages.items
+namespace org.apache.plc4net.exceptions
 {
     /// <summary>
-    /// An item inside a response — either a value or an error.
-    /// Mirrors Java SPI3 <c>PlcResponseItem&lt;T&gt;</c>.
+    /// Thrown when a <c>PlcValue</c> accessor is used for a type the value
+    /// cannot represent, e.g. calling <c>GetString()</c> on a numeric value.
+    /// Mirrors the Java SPI3 <c>PlcIncompatibleDatatypeException</c>: check the
+    /// <c>IsXxx()</c> guards instead of catching this.
     /// </summary>
-    public interface PlcResponseItem<T>
+    public class PlcIncompatibleDatatypeException : PlcException
     {
-        /// <summary>The response code for this item.</summary>
-        PlcResponseCode Code { get; }
+        public PlcIncompatibleDatatypeException()
+        {
+        }
 
-        /// <summary>The value, valid only when <see cref="Code"/> is <see cref="PlcResponseCode.OK"/>.</summary>
-        T? Value { get; }
+        public PlcIncompatibleDatatypeException(string message) : base(message)
+        {
+        }
+
+        public PlcIncompatibleDatatypeException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }

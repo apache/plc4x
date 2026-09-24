@@ -44,10 +44,17 @@ namespace org.apache.plc4net.spi.model.values
             // Unspecified to match plc4j's zoneless LocalDateTime semantics -
             // otherwise the two factories below disagree (UnixEpoch is Utc,
             // `new DateTime(y,m,d,…)` is Unspecified).
+            if (nanosecondsOfSecond > 999_999_999)
+                throw new ArgumentOutOfRangeException(nameof(nanosecondsOfSecond),
+                    $"nanosecondsOfSecond must be in [0, 999_999_999], got {nanosecondsOfSecond}.");
             var subSecondTicks = dateTime.Ticks % TimeSpan.TicksPerSecond;
+            var nanoFromTicks = (uint)(subSecondTicks * 100);
+            if (nanosecondsOfSecond + nanoFromTicks > 999_999_999)
+                throw new ArgumentOutOfRangeException(nameof(nanosecondsOfSecond),
+                    $"nanosecondsOfSecond ({nanosecondsOfSecond}) + subsecond ticks ({nanoFromTicks}) exceeds 999_999_999.");
             wholeSeconds = DateTime.SpecifyKind(
                 new DateTime(dateTime.Ticks - subSecondTicks), DateTimeKind.Unspecified);
-            this.nanosecondsOfSecond = nanosecondsOfSecond + (uint)(subSecondTicks * 100);
+            this.nanosecondsOfSecond = nanosecondsOfSecond + nanoFromTicks;
         }
 
         public static PlcDATE_AND_LTIME OfNanosecondsSinceEpoch(ulong nanosecondsSinceEpoch)
@@ -62,6 +69,9 @@ namespace org.apache.plc4net.spi.model.values
         {
             try
             {
+                if (nanoseconds < 0 || nanoseconds > 999_999_999)
+                    throw new ArgumentOutOfRangeException(nameof(nanoseconds),
+                        $"nanoseconds must be in [0, 999_999_999], got {nanoseconds}.");
                 return new PlcDATE_AND_LTIME(
                     new DateTime(year, month == 0 ? 1 : month, day == 0 ? 1 : day, hour, minutes, seconds),
                     (uint)nanoseconds);
@@ -101,7 +111,7 @@ namespace org.apache.plc4net.spi.model.values
                 && nanosecondsOfSecond == other.nanosecondsOfSecond;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

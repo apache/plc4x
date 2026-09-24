@@ -26,7 +26,7 @@ namespace org.apache.plc4net.spi.drivers.messages.items
     /// </summary>
     public class DefaultPlcTagValueItem<T> : PlcTagValueItem<T> where T : IPlcTag
     {
-        public DefaultPlcTagValueItem(string name, T tag, object value)
+        public DefaultPlcTagValueItem(string name, T tag, object? value)
         {
             Name = name;
             Tag = tag;
@@ -37,6 +37,6 @@ namespace org.apache.plc4net.spi.drivers.messages.items
 
         public T Tag { get; }
 
-        public object Value { get; }
+        public object? Value { get; }
     }
 }

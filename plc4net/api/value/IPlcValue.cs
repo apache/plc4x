@@ -88,7 +88,9 @@ namespace org.apache.plc4net.api.value
         bool IsStruct();
         string[] GetKeys();
         bool HasKey(string key);
-        IPlcValue GetValue(string key);
+        /// <summary>null when no value is stored under <paramref name="key"/>
+        /// (mirrors Java's <c>PlcStruct.getValue</c> returning <c>map.get(key)</c>).</summary>
+        IPlcValue? GetValue(string key);
         Dictionary<string, IPlcValue> GetStruct();
     }
 }

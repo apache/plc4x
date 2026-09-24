@@ -30,12 +30,12 @@ namespace org.apache.plc4net.types
         public static readonly PlcValueType NULL = new PlcValueType(0x00, null);
         public static readonly PlcValueType BOOL = new PlcValueType(0x01, typeof(bool));
         public static readonly PlcValueType BYTE = new PlcValueType(0x02, typeof(byte));
-        public static readonly PlcValueType WORD = new PlcValueType(0x03, typeof(short));
-        public static readonly PlcValueType DWORD = new PlcValueType(0x04, typeof(int));
-        public static readonly PlcValueType LWORD = new PlcValueType(0x05, typeof(long));
-        public static readonly PlcValueType USINT = new PlcValueType(0x11, typeof(ushort));
-        public static readonly PlcValueType UINT = new PlcValueType(0x12, typeof(uint));
-        public static readonly PlcValueType UDINT = new PlcValueType(0x13, typeof(ulong));
+        public static readonly PlcValueType WORD = new PlcValueType(0x03, typeof(ushort));
+        public static readonly PlcValueType DWORD = new PlcValueType(0x04, typeof(uint));
+        public static readonly PlcValueType LWORD = new PlcValueType(0x05, typeof(ulong));
+        public static readonly PlcValueType USINT = new PlcValueType(0x11, typeof(byte));
+        public static readonly PlcValueType UINT = new PlcValueType(0x12, typeof(ushort));
+        public static readonly PlcValueType UDINT = new PlcValueType(0x13, typeof(uint));
         public static readonly PlcValueType ULINT = new PlcValueType(0x14, typeof(System.Numerics.BigInteger));
         public static readonly PlcValueType SINT = new PlcValueType(0x21, typeof(sbyte));
         public static readonly PlcValueType INT = new PlcValueType(0x22, typeof(short));
@@ -44,15 +44,15 @@ namespace org.apache.plc4net.types
         public static readonly PlcValueType REAL = new PlcValueType(0x31, typeof(float));
         public static readonly PlcValueType LREAL = new PlcValueType(0x32, typeof(double));
         public static readonly PlcValueType CHAR = new PlcValueType(0x41, typeof(char));
-        public static readonly PlcValueType WCHAR = new PlcValueType(0x42, typeof(short));
+        public static readonly PlcValueType WCHAR = new PlcValueType(0x42, typeof(char));
         public static readonly PlcValueType STRING = new PlcValueType(0x43, typeof(string));
         public static readonly PlcValueType WSTRING = new PlcValueType(0x44, typeof(string));
         public static readonly PlcValueType TIME = new PlcValueType(0x51, typeof(TimeSpan));
         public static readonly PlcValueType LTIME = new PlcValueType(0x52, typeof(TimeSpan));
-        public static readonly PlcValueType DATE = new PlcValueType(0x53, typeof(DateTime));
-        public static readonly PlcValueType LDATE = new PlcValueType(0x54, typeof(DateTime));
-        public static readonly PlcValueType TIME_OF_DAY = new PlcValueType(0x55, typeof(TimeSpan));
-        public static readonly PlcValueType LTIME_OF_DAY = new PlcValueType(0x56, typeof(TimeSpan));
+        public static readonly PlcValueType DATE = new PlcValueType(0x53, typeof(DateOnly));
+        public static readonly PlcValueType LDATE = new PlcValueType(0x54, typeof(DateOnly));
+        public static readonly PlcValueType TIME_OF_DAY = new PlcValueType(0x55, typeof(TimeOnly));
+        public static readonly PlcValueType LTIME_OF_DAY = new PlcValueType(0x56, typeof(TimeOnly));
         public static readonly PlcValueType DATE_AND_TIME = new PlcValueType(0x57, typeof(DateTime));
         public static readonly PlcValueType DATE_AND_LTIME = new PlcValueType(0x58, typeof(DateTime));
         public static readonly PlcValueType LDATE_AND_TIME = new PlcValueType(0x59, typeof(DateTime));
@@ -74,15 +74,15 @@ namespace org.apache.plc4net.types
         }
 
         public short Value { get; }
-        public Type DefaultDotNetType { get; }
+        public Type? DefaultDotNetType { get; }
 
-        private PlcValueType(short value, Type defaultDotNetType)
+        private PlcValueType(short value, Type? defaultDotNetType)
         {
             Value = value;
             DefaultDotNetType = defaultDotNetType;
         }
 
-        public static PlcValueType EnumForValue(short value)
+        public static PlcValueType? EnumForValue(short value)
         {
             map.TryGetValue(value, out var result);
             return result;

@@ -40,7 +40,7 @@ namespace org.apache.plc4net.spi.drivers
     {
         private readonly ITransportInstance _transportInstance;
         private readonly ConnectionString _connectionString;
-        private IPlcAuthentication _authentication;
+        private IPlcAuthentication? _authentication;
         private ILogger _logger = NullLogger.Instance;
 
         protected ConnectionBase(ConnectionString connectionString, ITransportInstance transportInstance)
@@ -64,7 +64,7 @@ namespace org.apache.plc4net.spi.drivers
 
         protected ConnectionString ConnectionInfo => _connectionString;
 
-        public IPlcAuthentication Authentication
+        public IPlcAuthentication? Authentication
         {
             get => _authentication;
             set => _authentication = value;
@@ -137,12 +137,12 @@ namespace org.apache.plc4net.spi.drivers
 
         public abstract IPlcTag Parse(string tagQuery);
 
-        public abstract IPlcReadRequestBuilder ReadRequestBuilder { get; }
+        public abstract IPlcReadRequestBuilder? ReadRequestBuilder { get; }
 
-        public abstract IPlcWriteRequestBuilder WriteRequestBuilder { get; }
+        public abstract IPlcWriteRequestBuilder? WriteRequestBuilder { get; }
 
-        public abstract IPlcSubscriptionRequestBuilder SubscriptionRequestBuilder { get; }
+        public abstract IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder { get; }
 
-        public abstract IPlcUnsubscriptionRequestBuilder UnsubscriptionRequestBuilder { get; }
+        public abstract IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder { get; }
     }
 }
