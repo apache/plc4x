@@ -42,16 +42,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <inputExcludes combine.children="append">
-            <!-- A Visual Studio solution cannot carry a license header. -->
-            <inputExclude>**/*.sln</inputExclude>
-          </inputExcludes>
-        </configuration>
-      </plugin>
       <!-- Build the project -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
